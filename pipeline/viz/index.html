@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Paper Graph Viewer</title>
+<style>
+  :root {
+    --entity-w: 300px;
+    --prop-w: 260px;
+    --row-h: 44px;
+    --node-h: 32px;
+    --lane-gap: 160px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin: 0;
+    background: #fafafa;
+    color: #212529;
+  }
+  header {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    border-bottom: 1px solid #dee2e6;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    z-index: 10;
+  }
+  header h1 {
+    font-size: 15px;
+    margin: 0;
+    font-weight: 600;
+    color: #495057;
+  }
+  select, input[type="file"] {
+    font-size: 13px;
+    padding: 4px 6px;
+  }
+  #meta {
+    font-size: 12px;
+    color: #868e96;
+  }
+  #legend {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-size: 11px;
+    color: #495057;
+    padding: 6px 16px;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+  }
+  #legend .swatch {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
+  #laneLabels {
+    display: flex;
+    padding: 10px 0 0 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: #868e96;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  #chartWrap {
+    padding: 0 24px 60px 24px;
+    overflow-x: auto;
+  }
+  svg { display: block; }
+  .node rect {
+    stroke-width: 1.5px;
+    cursor: pointer;
+  }
+  .node.pinned rect {
+    stroke-width: 3.5px;
+    filter: drop-shadow(0 0 4px rgba(0,0,0,0.35));
+  }
+  .node text {
+    font-size: 11px;
+    fill: #fff;
+    pointer-events: none;
+  }
+  .node.dim { opacity: 0.25; }
+  .edge { fill: none; opacity: 0.55; }
+  .edge.dim { opacity: 0.06; }
+  .edge.higher-order { stroke-dasharray: 4 3; }
+  .empty-state {
+    padding: 40px;
+    color: #868e96;
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Paper Graph Viewer</h1>
+  <select id="paperSelect"><option value="">(loading manifest...)</option></select>
+  <label style="font-size:12px;color:#868e96;">or load a JSON file:
+    <input type="file" id="fileInput" accept="application/json">
+  </label>
+  <span id="meta"></span>
+</header>
+<div id="legend"></div>
+<div id="laneLabels">
+  <div style="width: calc(24px + var(--entity-w));">Entities (order of first mention)</div>
+  <div>Propositions (extraction / narrative order)</div>
+</div>
+<div id="chartWrap"><div class="empty-state">Loading...</div></div>
+
+<script>
+const ENTITY_COLORS = {
+  problem: "#d9480f",
+  method: "#1864ab",
+  system: "#5f3dc4",
+  tool: "#0b7285",
+  dataset: "#2b8a3e",
+  population: "#087f5b",
+  concept: "#e8590c",
+  phenomenon: "#c2255c",
+  artifact: "#495057",
+  metric: "#1098ad",
+  claim: "#f08c00",
+};
+const DEFAULT_COLOR = "#495057";
+const PROP_FILL = "#f1f3f5";
+const PROP_STROKE_FIRST = "#adb5bd";
+const PROP_STROKE_HIGHER = "#e8590c";
+const EDGE_FIRST = "#adb5bd";
+const EDGE_HIGHER = "#e8590c";
+
+const chartWrap = document.getElementById("chartWrap");
+const paperSelect = document.getElementById("paperSelect");
+const fileInput = document.getElementById("fileInput");
+const metaEl = document.getElementById("meta");
+const legendEl = document.getElementById("legend");
+let pinnedId = null; // id of the node currently pinned by a click, or null
+
+function buildLegend() {
+  const items = Object.entries(ENTITY_COLORS)
+    .map(([kind, color]) => `<span><span class="swatch" style="background:${color}"></span>${kind}</span>`)
+    .join("");
+  legendEl.innerHTML = items +
+    `<span><span class="swatch" style="background:${PROP_FILL};border:1.5px solid ${PROP_STROKE_HIGHER}"></span>higher-order proposition</span>` +
+    `<span><span class="swatch" style="background:${PROP_FILL};border:1.5px solid ${PROP_STROKE_FIRST}"></span>first-order proposition</span>` +
+    `<span style="color:#adb5bd;">hover to preview · click a node to pin · click background to clear</span>`;
+}
+
+// Mirrors PaperGraph.proposition_orders() in schema.py: order 0 connects only
+// entities; order N connects a proposition of order N-1.
+function propositionOrders(graph) {
+  const byId = Object.fromEntries(graph.propositions.map(p => [p.id, p]));
+  const entityIds = new Set(graph.entities.map(e => e.id));
+  const memo = {};
+  function orderOf(pid, stack) {
+    if (pid in memo) return memo[pid];
+    if (stack.has(pid)) return 0;
+    const prop = byId[pid];
+    if (!prop) return 0;
+    let maxOrder = 0;
+    for (const a of prop.args) {
+      if (entityIds.has(a)) continue;
+      if (a in byId) {
+        const nextStack = new Set(stack); nextStack.add(pid);
+        maxOrder = Math.max(maxOrder, orderOf(a, nextStack) + 1);
+      }
+    }
+    memo[pid] = maxOrder;
+    return maxOrder;
+  }
+  const result = {};
+  for (const p of graph.propositions) result[p.id] = orderOf(p.id, new Set());
+  return result;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+function render(graph) {
+  const rowH = 44, nodeH = 32, marginTop = 30;
+  const entityX = 24, entityW = 300;
+  const propX = entityX + entityW + 160, propW = 260;
+
+  const entityIndex = {};
+  graph.entities.forEach((e, i) => entityIndex[e.id] = i);
+  const propIndex = {};
+  graph.propositions.forEach((p, i) => propIndex[p.id] = i);
+  const orders = propositionOrders(graph);
+
+  const height = marginTop + rowH * Math.max(graph.entities.length, graph.propositions.length) + 20;
+  const width = propX + propW + 40;
+
+  const svgParts = [];
+  svgParts.push(`<svg id="chart" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`);
+
+  // edges first so nodes paint on top
+  const edgeParts = [];
+  graph.propositions.forEach((p, pi) => {
+    const py = marginTop + pi * rowH + nodeH / 2;
+    const isHigherOrderTarget = orders[p.id] > 0;
+    p.args.forEach(a => {
+      if (a in entityIndex) {
+        const ei = entityIndex[a];
+        const ey = marginTop + ei * rowH + nodeH / 2;
+        const x1 = entityX + entityW, y1 = ey;
+        const x2 = propX, y2 = py;
+        const cx = (x1 + x2) / 2;
+        edgeParts.push(
+          `<path class="edge first-order" data-a="${a}" data-b="${p.id}" ` +
+          `d="M ${x1} ${y1} C ${cx} ${y1}, ${cx} ${y2}, ${x2} ${y2}" stroke="${EDGE_FIRST}" stroke-width="1.5"/>`
+        );
+      } else if (a in propIndex) {
+        const oi = propIndex[a];
+        const oy = marginTop + oi * rowH + nodeH / 2;
+        const x1 = propX + propW, y1 = oy;
+        const x2 = propX + propW, y2 = py;
+        const bulge = 40 + Math.abs(oi - pi) * 2;
+        edgeParts.push(
+          `<path class="edge higher-order" data-a="${a}" data-b="${p.id}" ` +
+          `d="M ${x1} ${y1} C ${x1 + bulge} ${y1}, ${x2 + bulge} ${y2}, ${x2} ${y2}" stroke="${EDGE_HIGHER}" stroke-width="2"/>`
+        );
+      }
+    });
+  });
+  svgParts.push(`<g id="edges">${edgeParts.join("")}</g>`);
+
+  // entity nodes
+  const entityParts = graph.entities.map((e, i) => {
+    const y = marginTop + i * rowH;
+    const color = ENTITY_COLORS[e.kind] || DEFAULT_COLOR;
+    const label = `${e.name}`;
+    return `<g class="node" data-id="${e.id}">
+      <rect x="${entityX}" y="${y}" width="${entityW}" height="${nodeH}" rx="6" fill="${color}" stroke="${color}">
+        <title>[${escapeHtml(e.kind)}] ${escapeHtml(e.name)}</title>
+      </rect>
+      <foreignObject x="${entityX + 8}" y="${y}" width="${entityW - 16}" height="${nodeH}">
+        <div xmlns="http://www.w3.org/1999/xhtml" style="height:${nodeH}px;display:flex;align-items:center;color:#fff;font-size:11px;font-family:inherit;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">
+          <span style="opacity:0.75;margin-right:5px;">${escapeHtml(e.kind)}</span>${escapeHtml(label)}
+        </div>
+      </foreignObject>
+    </g>`;
+  });
+  svgParts.push(`<g id="entities">${entityParts.join("")}</g>`);
+
+  // proposition nodes
+  const propParts = graph.propositions.map((p, i) => {
+    const y = marginTop + i * rowH;
+    const higher = orders[p.id] > 0;
+    const stroke = higher ? PROP_STROKE_HIGHER : PROP_STROKE_FIRST;
+    const strokeW = higher ? 2.5 : 1.5;
+    return `<g class="node" data-id="${p.id}">
+      <rect x="${propX}" y="${y}" width="${propW}" height="${nodeH}" rx="6" fill="${PROP_FILL}" stroke="${stroke}" stroke-width="${strokeW}">
+        <title>${escapeHtml(p.predicate)}(${p.args.join(", ")})\n${escapeHtml(p.evidence)}</title>
+      </rect>
+      <foreignObject x="${propX + 8}" y="${y}" width="${propW - 16}" height="${nodeH}">
+        <div xmlns="http://www.w3.org/1999/xhtml" style="height:${nodeH}px;display:flex;align-items:center;color:#212529;font-size:11px;font-family:inherit;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">
+          <strong style="margin-right:5px;">${escapeHtml(p.predicate)}</strong>
+          <span style="color:#868e96;">(${p.args.join(", ")})</span>
+        </div>
+      </foreignObject>
+    </g>`;
+  });
+  svgParts.push(`<g id="props">${propParts.join("")}</g>`);
+
+  svgParts.push("</svg>");
+  chartWrap.innerHTML = svgParts.join("");
+
+  // Hover previews a highlight; click pins it (stays after the mouse leaves) until
+  // the same node or the background is clicked again.
+  pinnedId = null;
+
+  function applyHighlight(id) {
+    const edges = [...chartWrap.querySelectorAll(".edge")];
+    edges.forEach(edge => {
+      const touches = edge.dataset.a === id || edge.dataset.b === id;
+      edge.classList.toggle("dim", !touches);
+    });
+    chartWrap.querySelectorAll(".node").forEach(other => {
+      if (other.dataset.id === id) { other.classList.remove("dim"); return; }
+      const rel = edges.some(edge =>
+        (edge.dataset.a === id && edge.dataset.b === other.dataset.id) ||
+        (edge.dataset.b === id && edge.dataset.a === other.dataset.id)
+      );
+      other.classList.toggle("dim", !rel);
+    });
+  }
+
+  function clearHighlight() {
+    chartWrap.querySelectorAll(".edge, .node").forEach(el => el.classList.remove("dim", "pinned"));
+  }
+
+  chartWrap.querySelectorAll(".node").forEach(g => {
+    g.addEventListener("mouseenter", () => {
+      if (!pinnedId) applyHighlight(g.dataset.id);
+    });
+    g.addEventListener("mouseleave", () => {
+      if (!pinnedId) clearHighlight();
+    });
+    g.addEventListener("click", (evt) => {
+      evt.stopPropagation();
+      const id = g.dataset.id;
+      if (pinnedId === id) {
+        pinnedId = null;
+        clearHighlight();
+        return;
+      }
+      pinnedId = id;
+      applyHighlight(id);
+      chartWrap.querySelectorAll(".node.pinned").forEach(el => el.classList.remove("pinned"));
+      g.classList.add("pinned");
+    });
+  });
+
+  chartWrap.addEventListener("click", () => {
+    if (pinnedId) {
+      pinnedId = null;
+      clearHighlight();
+    }
+  });
+
+  const summary = summarize(graph, orders);
+  metaEl.textContent =
+    `${graph.entities.length} entities · ${graph.propositions.length} propositions · ` +
+    `max order ${summary.maxOrder} · mean order ${summary.meanOrder.toFixed(2)}`;
+}
+
+function summarize(graph, orders) {
+  const vals = Object.values(orders);
+  if (!vals.length) return { maxOrder: 0, meanOrder: 0 };
+  return {
+    maxOrder: Math.max(...vals),
+    meanOrder: vals.reduce((a, b) => a + b, 0) / vals.length,
+  };
+}
+
+function showError(msg) {
+  chartWrap.innerHTML = `<div class="empty-state">${escapeHtml(msg)}</div>`;
+}
+
+async function loadFromManifest() {
+  try {
+    const res = await fetch("../output/manifest.json");
+    if (!res.ok) throw new Error("no manifest");
+    const manifest = await res.json();
+    paperSelect.innerHTML = manifest
+      .map(m => `<option value="${m.file}">${escapeHtml(m.title)}</option>`)
+      .join("");
+    if (manifest.length) {
+      await loadGraphFile(manifest[0].file);
+    } else {
+      showError("No graphs found in output/. Run cli.py first.");
+    }
+  } catch (e) {
+    paperSelect.innerHTML = `<option value="">(served over file:// -- use the file picker instead)</option>`;
+    showError("Couldn't fetch ../output/manifest.json (this happens when the page is opened directly " +
+      "from disk rather than via a local server, since fetch() is blocked for file:// URLs). " +
+      "Use \"load a JSON file\" above to pick one of the files in output/ manually, or serve this " +
+      "folder with e.g. `python3 -m http.server` and reload.");
+  }
+}
+
+async function loadGraphFile(file) {
+  const res = await fetch("../output/" + file);
+  const graph = await res.json();
+  render(graph);
+}
+
+paperSelect.addEventListener("change", () => {
+  if (paperSelect.value) loadGraphFile(paperSelect.value);
+});
+
+fileInput.addEventListener("change", () => {
+  const file = fileInput.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      render(JSON.parse(reader.result));
+    } catch (e) {
+      showError("Couldn't parse that file as JSON: " + e.message);
+    }
+  };
+  reader.readAsText(file);
+});
+
+buildLegend();
+loadFromManifest();
+</script>
+</body>
+</html>

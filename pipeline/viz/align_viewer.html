@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Alignment Step Viewer</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin: 0;
+    background: #fafafa;
+    color: #212529;
+  }
+  header {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    border-bottom: 1px solid #dee2e6;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    z-index: 10;
+  }
+  header h1 {
+    font-size: 15px;
+    margin: 0;
+    font-weight: 600;
+    color: #495057;
+    white-space: nowrap;
+  }
+  select, input[type="file"], button {
+    font-size: 13px;
+    padding: 4px 8px;
+  }
+  button {
+    cursor: pointer;
+    border: 1px solid #ced4da;
+    background: #fff;
+    border-radius: 4px;
+  }
+  button:hover { background: #f1f3f5; }
+  button.active { background: #1c7ed6; color: #fff; border-color: #1c7ed6; }
+  #controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    flex-wrap: wrap;
+  }
+  #stepSlider { flex: 1; min-width: 160px; }
+  #stepLabel { font-size: 12px; color: #868e96; white-space: nowrap; min-width: 70px; }
+  #phaseButtons { display: flex; gap: 4px; }
+  #panel {
+    padding: 10px 16px;
+    background: #fff8e1;
+    border-bottom: 1px solid #f1e2a8;
+    font-size: 13px;
+  }
+  #panel .title { font-weight: 600; margin-bottom: 2px; }
+  #chartWrap {
+    padding: 20px 24px 60px 24px;
+    overflow-x: auto;
+  }
+  svg { display: block; }
+  .node rect { stroke-width: 1.5px; }
+  .node text { font-size: 11px; fill: #fff; pointer-events: none; }
+  .node.dim { opacity: 0.2; }
+  .lane-label { font-size: 11px; font-weight: 600; fill: #adb5bd; text-transform: uppercase; letter-spacing: 0.04em; }
+  .edge { fill: none; }
+  .edge.candidate { stroke: #ced4da; stroke-width: 1.2; opacity: 0.6; }
+  .edge.removed { stroke: #e03131; stroke-width: 1.5; stroke-dasharray: 3 3; opacity: 0.8; }
+  .edge.accepted { stroke: #1c7ed6; stroke-width: 1.6; opacity: 0.55; }
+  .edge.accepted-now { stroke: #2f9e44; stroke-width: 3; opacity: 0.95; }
+  .edge.rejected-now { stroke: #e03131; stroke-width: 3; stroke-dasharray: 5 3; opacity: 0.95; }
+  .edge.local-first { stroke: #7048e8; stroke-width: 1.6; opacity: 0.85; }
+  .edge.local-higher { stroke: #7048e8; stroke-width: 1.6; stroke-dasharray: 4 3; opacity: 0.85; }
+  .empty-state { padding: 40px; color: #868e96; font-size: 13px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Alignment Step Viewer</h1>
+  <select id="pairSelect"><option value="">(loading manifest...)</option></select>
+  <label style="font-size:12px;color:#868e96;">or load a trace JSON:
+    <input type="file" id="fileInput" accept="application/json">
+  </label>
+  <span id="meta" style="font-size:12px;color:#868e96;"></span>
+</header>
+
+<div id="controls">
+  <button id="prevBtn">&larr; Prev</button>
+  <button id="playBtn">Play</button>
+  <button id="nextBtn">Next &rarr;</button>
+  <input type="range" id="stepSlider" min="0" max="0" value="0">
+  <span id="stepLabel">step 0/0</span>
+  <div id="phaseButtons"></div>
+  <span style="font-size:11px;color:#adb5bd;">hover a proposition to see its own arguments (violet)</span>
+</div>
+
+<div id="panel">
+  <div class="title" id="panelTitle">Loading...</div>
+  <div id="panelDesc"></div>
+</div>
+
+<div id="chartWrap"><div class="empty-state">Loading...</div></div>
+
+<script>
+const ENTITY_COLORS = {
+  problem: "#d9480f", method: "#1864ab", system: "#5f3dc4", tool: "#0b7285",
+  dataset: "#2b8a3e", population: "#087f5b", concept: "#e8590c",
+  phenomenon: "#c2255c", artifact: "#495057", metric: "#1098ad", claim: "#f08c00",
+};
+const DEFAULT_COLOR = "#495057";
+const PROP_FILL = "#f1f3f5";
+const PROP_STROKE = "#adb5bd";
+
+const rowH = 40, nodeH = 30, marginTop = 40, laneGap = 110;
+const aEntityW = 250, aPropW = 210, bPropW = 210, bEntityW = 250;
+const aEntityX = 20;
+const aPropX = aEntityX + aEntityW + laneGap;
+const bPropX = aPropX + aPropW + laneGap;
+const bEntityX = bPropX + bPropW + laneGap;
+
+const chartWrap = document.getElementById("chartWrap");
+const pairSelect = document.getElementById("pairSelect");
+const fileInput = document.getElementById("fileInput");
+const metaEl = document.getElementById("meta");
+const panelTitle = document.getElementById("panelTitle");
+const panelDesc = document.getElementById("panelDesc");
+const stepSlider = document.getElementById("stepSlider");
+const stepLabel = document.getElementById("stepLabel");
+const phaseButtonsEl = document.getElementById("phaseButtons");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const playBtn = document.getElementById("playBtn");
+
+let frames = [];
+let currentIndex = 0;
+let playTimer = null;
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+// Mirrors PaperGraph.proposition_orders() in schema.py.
+function propositionOrders(graph) {
+  const byId = Object.fromEntries(graph.propositions.map(p => [p.id, p]));
+  const entityIds = new Set(graph.entities.map(e => e.id));
+  const memo = {};
+  function orderOf(pid, stack) {
+    if (pid in memo) return memo[pid];
+    if (stack.has(pid)) return 0;
+    const prop = byId[pid];
+    if (!prop) return 0;
+    let maxOrder = 0;
+    for (const a of prop.args) {
+      if (entityIds.has(a)) continue;
+      if (a in byId) {
+        const nextStack = new Set(stack); nextStack.add(pid);
+        maxOrder = Math.max(maxOrder, orderOf(a, nextStack) + 1);
+      }
+    }
+    memo[pid] = maxOrder;
+    return maxOrder;
+  }
+  const result = {};
+  for (const p of graph.propositions) result[p.id] = orderOf(p.id, new Set());
+  return result;
+}
+
+function propEdgePath(yA, yB) {
+  const x1 = aPropX + aPropW, y1 = yA;
+  const x2 = bPropX, y2 = yB;
+  const cx = (x1 + x2) / 2;
+  return `M ${x1} ${y1} C ${cx} ${y1}, ${cx} ${y2}, ${x2} ${y2}`;
+}
+
+function entityEdgePath(yA, yB) {
+  const x1 = aEntityX + aEntityW, y1 = yA;
+  const x2 = bEntityX, y2 = yB;
+  const arcY = Math.min(y1, y2) - 70;
+  const cx1 = x1 + (x2 - x1) * 0.25, cx2 = x1 + (x2 - x1) * 0.75;
+  return `M ${x1} ${y1} C ${cx1} ${arcY}, ${cx2} ${arcY}, ${x2} ${y2}`;
+}
+
+// Within-graph edges (a proposition to its own argument), drawn only on hover.
+// Side A has entities to the LEFT of its propositions; side B is mirrored
+// (entities to the RIGHT), so a first-order arg edge crosses in opposite
+// directions on each side, and a higher-order (prop-to-prop) arg edge bulges
+// away from that side's entity lane, into the shared middle gap.
+function localFirstOrderPath(side, yEntity, yProp) {
+  const x1 = side === "A" ? aEntityX + aEntityW : bPropX + bPropW;
+  const x2 = side === "A" ? aPropX : bEntityX;
+  const cx = (x1 + x2) / 2;
+  return `M ${x1} ${yEntity} C ${cx} ${yEntity}, ${cx} ${yProp}, ${x2} ${yProp}`;
+}
+
+function localHigherOrderPath(side, y1, y2) {
+  const x = side === "A" ? aPropX + aPropW : bPropX;
+  const bulge = (side === "A" ? 1 : -1) * (30 + Math.abs(y1 - y2) * 0.15);
+  return `M ${x} ${y1} C ${x + bulge} ${y1}, ${x + bulge} ${y2}, ${x} ${y2}`;
+}
+
+// ---------------------------------------------------------------------------
+// Static base render: both full graphs, mirrored, in a 4-lane layout:
+//   [A entities] [A propositions]   [B propositions] [B entities]
+// Node positions never change across steps; only the edge overlay + dim state do.
+// ---------------------------------------------------------------------------
+
+let layoutA, layoutB, height, width;
+
+function nodeGroup(side, id, kind, x, w, y, label, fill, stroke, strokeW, title, sub) {
+  return `<g class="node" data-id="${side}:${id}" data-kind="${kind}">
+    <rect x="${x}" y="${y}" width="${w}" height="${nodeH}" rx="6" fill="${fill}" stroke="${stroke}" stroke-width="${strokeW}">
+      <title>${escapeHtml(title)}</title>
+    </rect>
+    <foreignObject x="${x + 8}" y="${y}" width="${w - 16}" height="${nodeH}">
+      <div xmlns="http://www.w3.org/1999/xhtml" style="height:${nodeH}px;display:flex;align-items:center;color:${fill===PROP_FILL?'#212529':'#fff'};font-size:11px;font-family:inherit;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">
+        ${sub ? `<span style="opacity:0.7;margin-right:5px;">${escapeHtml(sub)}</span>` : ""}${escapeHtml(label)}
+      </div>
+    </foreignObject>
+  </g>`;
+}
+
+function buildLane(graph, side, entityX, propX) {
+  const orders = propositionOrders(graph);
+  const entityIndex = {}; graph.entities.forEach((e, i) => entityIndex[e.id] = i);
+  const propIndex = {}; graph.propositions.forEach((p, i) => propIndex[p.id] = i);
+
+  const entityNodes = graph.entities.map((e, i) => {
+    const y = marginTop + i * rowH;
+    const color = ENTITY_COLORS[e.kind] || DEFAULT_COLOR;
+    return nodeGroup(side, e.id, "entity", entityX, aEntityW, y, e.name, color, color, 1.5, `[${e.kind}] ${e.name}`, e.kind);
+  });
+  const propNodes = graph.propositions.map((p, i) => {
+    const y = marginTop + i * rowH;
+    const higher = orders[p.id] > 0;
+    return nodeGroup(side, p.id, "proposition", propX, aPropW, y, `(${p.args.join(",")})`, PROP_FILL, higher ? "#e8590c" : PROP_STROKE, higher ? 2.5 : 1.5, `${p.predicate}(${p.args.join(", ")})\n${p.evidence}`, p.predicate);
+  });
+
+  return { entityIndex, propIndex, entityNodes, propNodes, orders };
+}
+
+function renderBase(trace) {
+  layoutA = buildLane(trace.paper_a, "A", aEntityX, aPropX);
+  layoutB = buildLane(trace.paper_b, "B", bEntityX, bPropX);
+
+  height = marginTop + rowH * Math.max(
+    trace.paper_a.entities.length, trace.paper_a.propositions.length,
+    trace.paper_b.entities.length, trace.paper_b.propositions.length
+  ) + 20;
+  width = bEntityX + bEntityW + 20;
+
+  const labels = `
+    <text class="lane-label" x="${aEntityX}" y="24">${escapeHtml(trace.paper_a_id)} -- entities</text>
+    <text class="lane-label" x="${aPropX}" y="24">${escapeHtml(trace.paper_a_id)} -- propositions</text>
+    <text class="lane-label" x="${bPropX}" y="24">${escapeHtml(trace.paper_b_id)} -- propositions</text>
+    <text class="lane-label" x="${bEntityX}" y="24">${escapeHtml(trace.paper_b_id)} -- entities</text>
+  `;
+
+  chartWrap.innerHTML = `<svg id="chart" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+    ${labels}
+    <g id="edgeLayer"></g>
+    <g id="hoverEdgeLayer"></g>
+    <g id="nodeLayerAEntities">${layoutA.entityNodes.join("")}</g>
+    <g id="nodeLayerAProps">${layoutA.propNodes.join("")}</g>
+    <g id="nodeLayerBProps">${layoutB.propNodes.join("")}</g>
+    <g id="nodeLayerBEntities">${layoutB.entityNodes.join("")}</g>
+  </svg>`;
+
+  attachPropositionHover(trace);
+}
+
+// Hovering a proposition draws its own within-graph argument edges (to the
+// entities, or -- for higher-order relations -- the other propositions, that
+// it connects) on a layer separate from the cross-graph correspondence edges,
+// so it never interferes with whatever algorithm step is currently shown.
+function attachPropositionHover(trace) {
+  const hoverLayer = document.getElementById("hoverEdgeLayer");
+  const bySide = { A: trace.paper_a, B: trace.paper_b };
+  const layoutBySide = { A: layoutA, B: layoutB };
+
+  chartWrap.querySelectorAll('.node[data-kind="proposition"]').forEach(node => {
+    const [side, propId] = node.dataset.id.split(":");
+    const graph = bySide[side];
+    const layout = layoutBySide[side];
+    const prop = graph.propositions.find(p => p.id === propId);
+    if (!prop) return;
+
+    node.addEventListener("mouseenter", () => {
+      const yProp = marginTop + layout.propIndex[propId] * rowH + nodeH / 2;
+      const parts = [];
+      prop.args.forEach(argId => {
+        if (argId in layout.entityIndex) {
+          const yEntity = marginTop + layout.entityIndex[argId] * rowH + nodeH / 2;
+          parts.push(`<path class="edge local-first" d="${localFirstOrderPath(side, yEntity, yProp)}"/>`);
+        } else if (argId in layout.propIndex) {
+          const yOther = marginTop + layout.propIndex[argId] * rowH + nodeH / 2;
+          parts.push(`<path class="edge local-higher" d="${localHigherOrderPath(side, yOther, yProp)}"/>`);
+        }
+      });
+      hoverLayer.innerHTML = parts.join("");
+    });
+    node.addEventListener("mouseleave", () => { hoverLayer.innerHTML = ""; });
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Frame construction: one frame per algorithm decision, derived fresh from the
+// trace + an index so prev/next/jump are all just "recompute and redraw".
+// ---------------------------------------------------------------------------
+
+function buildFrames(trace) {
+  const frames = [];
+  const allCandidates = trace.candidates.proposition_candidates;
+
+  frames.push({
+    phase: "start", title: "Setup",
+    description: `Both papers loaded: ${trace.paper_a.entities.length} entities / ${trace.paper_a.propositions.length} propositions ` +
+      `vs ${trace.paper_b.entities.length} entities / ${trace.paper_b.propositions.length} propositions. No candidates generated yet.`,
+    propEdges: [], entityEdges: [],
+  });
+
+  frames.push({
+    phase: "candidates", title: "1. Local match (structurally blind)",
+    description: `${trace.candidates.entity_candidate_count} entity candidate pairs (any kind -- kind is only a scoring bonus, not a filter) ` +
+      `and ${allCandidates.length} proposition candidate pairs (same predicate + arity) generated, with no consistency checking yet.`,
+    propEdges: allCandidates.map(c => ({ a: c.a, b: c.b, cls: "candidate" })),
+    entityEdges: [],
+  });
+
+  let removedSoFar = new Set();
+  trace.connectivity_passes.forEach(pass => {
+    const removedThisPass = new Set(pass.removed.map(r => r.a + "|" + r.b));
+    const survivorsBefore = allCandidates.filter(c => !removedSoFar.has(c.a + "|" + c.b));
+    frames.push({
+      phase: "connectivity", title: `2. Parallel connectivity -- pass ${pass.pass}`,
+      description: `Checked ${survivorsBefore.length} surviving candidate(s); removed ${pass.removed.length} whose ` +
+        `arguments no longer correspond (shown in red). ${pass.surviving_count} remain.` +
+        (pass.removed.length ? " Example: " + pass.removed.slice(0, 3).map(r => `${r.a}/${r.b} (${r.reason})`).join("; ") : ""),
+      propEdges: survivorsBefore.map(c => {
+        const key = c.a + "|" + c.b;
+        return { a: c.a, b: c.b, cls: removedThisPass.has(key) ? "removed" : "candidate" };
+      }),
+      entityEdges: [],
+    });
+    pass.removed.forEach(r => removedSoFar.add(r.a + "|" + r.b));
+  });
+
+  frames.push({
+    phase: "kernels", title: "3. Kernels built",
+    description: `${trace.kernels.length} kernels built from ${trace.surviving_after_connectivity.length} surviving proposition ` +
+      `correspondences -- each kernel is one correspondence plus everything its own arguments structurally require.`,
+    propEdges: trace.surviving_after_connectivity.map(c => ({ a: c.a, b: c.b, cls: "candidate" })),
+    entityEdges: [],
+  });
+
+  let acceptedProp = [], acceptedEntity = [];
+  trace.merge_steps.forEach(step => {
+    const kernelProp = step.nodes.filter(n => n.kind === "proposition").map(n => ({ a: n.a, b: n.b }));
+    const kernelEntity = step.nodes.filter(n => n.kind === "entity").map(n => ({ a: n.a, b: n.b }));
+    const cls = step.decision === "accepted" ? "accepted-now" : "rejected-now";
+
+    let description = `Kernel with ${step.nodes.length} correspondence(s), score ${step.score}. `;
+    description += step.decision === "accepted"
+      ? "No conflicts with anything accepted so far -- ACCEPTED."
+      : `Conflict: "${step.conflict.id}" is already bound to "${step.conflict.existing_partner}", ` +
+        `this kernel would bind it to "${step.conflict.wanted_partner}" instead -- REJECTED.`;
+
+    frames.push({
+      phase: "merge", title: `4. Merge -- considering kernel ${step.rank + 1}/${trace.merge_steps.length}`,
+      description,
+      propEdges: [
+        ...acceptedProp.map(e => ({ ...e, cls: "accepted" })),
+        ...kernelProp.map(e => ({ ...e, cls })),
+      ],
+      entityEdges: [
+        ...acceptedEntity.map(e => ({ ...e, cls: "accepted" })),
+        ...kernelEntity.map(e => ({ ...e, cls })),
+      ],
+    });
+
+    if (step.decision === "accepted") {
+      acceptedProp = acceptedProp.concat(kernelProp);
+      acceptedEntity = acceptedEntity.concat(kernelEntity);
+    }
+  });
+
+  frames.push({
+    phase: "final", title: "5. Final mapping",
+    description: `${trace.final.entity_correspondences.length} entity + ${trace.final.proposition_correspondences.length} ` +
+      `proposition correspondences survive as the maximal structurally consistent mapping.`,
+    propEdges: trace.final.proposition_correspondences.map(p => ({ a: p.a, b: p.b, cls: "accepted" })),
+    entityEdges: trace.final.entity_correspondences.map(e => ({ a: e.a, b: e.b, cls: "accepted" })),
+  });
+
+  return frames;
+}
+
+// ---------------------------------------------------------------------------
+// Rendering one frame: rebuild the edge overlay + dim state; nodes stay put.
+// ---------------------------------------------------------------------------
+
+function renderFrame(index) {
+  currentIndex = Math.max(0, Math.min(index, frames.length - 1));
+  const frame = frames[currentIndex];
+
+  const edgeParts = [];
+  frame.propEdges.forEach(e => {
+    const yA = marginTop + layoutA.propIndex[e.a] * rowH + nodeH / 2;
+    const yB = marginTop + layoutB.propIndex[e.b] * rowH + nodeH / 2;
+    edgeParts.push(`<path class="edge ${e.cls}" data-a="A:${e.a}" data-b="B:${e.b}" d="${propEdgePath(yA, yB)}"/>`);
+  });
+  frame.entityEdges.forEach(e => {
+    const yA = marginTop + layoutA.entityIndex[e.a] * rowH + nodeH / 2;
+    const yB = marginTop + layoutB.entityIndex[e.b] * rowH + nodeH / 2;
+    edgeParts.push(`<path class="edge ${e.cls}" data-a="A:${e.a}" data-b="B:${e.b}" d="${entityEdgePath(yA, yB)}"/>`);
+  });
+  document.getElementById("edgeLayer").innerHTML = edgeParts.join("");
+
+  const active = new Set();
+  frame.propEdges.forEach(e => { active.add("A:" + e.a); active.add("B:" + e.b); });
+  frame.entityEdges.forEach(e => { active.add("A:" + e.a); active.add("B:" + e.b); });
+  chartWrap.querySelectorAll(".node").forEach(n => {
+    n.classList.toggle("dim", active.size > 0 && !active.has(n.dataset.id));
+  });
+
+  panelTitle.textContent = frame.title;
+  panelDesc.textContent = frame.description;
+  stepSlider.max = frames.length - 1;
+  stepSlider.value = currentIndex;
+  stepLabel.textContent = `step ${currentIndex + 1}/${frames.length}`;
+
+  phaseButtonsEl.querySelectorAll("button").forEach(b => {
+    b.classList.toggle("active", b.dataset.phase === frame.phase);
+  });
+}
+
+function buildPhaseButtons() {
+  const phases = ["start", "candidates", "connectivity", "kernels", "merge", "final"];
+  const labels = { start: "Setup", candidates: "1. Candidates", connectivity: "2. Connectivity", kernels: "3. Kernels", merge: "4. Merge", final: "5. Final" };
+  phaseButtonsEl.innerHTML = "";
+  phases.forEach(phase => {
+    const firstIndex = frames.findIndex(f => f.phase === phase);
+    if (firstIndex === -1) return;
+    const btn = document.createElement("button");
+    btn.textContent = labels[phase];
+    btn.dataset.phase = phase;
+    btn.addEventListener("click", () => { stopPlay(); renderFrame(firstIndex); });
+    phaseButtonsEl.appendChild(btn);
+  });
+}
+
+function stopPlay() {
+  if (playTimer) { clearInterval(playTimer); playTimer = null; playBtn.textContent = "Play"; }
+}
+
+prevBtn.addEventListener("click", () => { stopPlay(); renderFrame(currentIndex - 1); });
+nextBtn.addEventListener("click", () => { stopPlay(); renderFrame(currentIndex + 1); });
+stepSlider.addEventListener("input", () => { stopPlay(); renderFrame(parseInt(stepSlider.value, 10)); });
+playBtn.addEventListener("click", () => {
+  if (playTimer) { stopPlay(); return; }
+  playBtn.textContent = "Pause";
+  playTimer = setInterval(() => {
+    if (currentIndex >= frames.length - 1) { stopPlay(); return; }
+    renderFrame(currentIndex + 1);
+  }, 900);
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowRight") { stopPlay(); renderFrame(currentIndex + 1); }
+  if (e.key === "ArrowLeft") { stopPlay(); renderFrame(currentIndex - 1); }
+});
+
+function showError(msg) {
+  chartWrap.innerHTML = `<div class="empty-state">${escapeHtml(msg)}</div>`;
+}
+
+function loadTrace(trace) {
+  stopPlay();
+  trace.paper_a_id = trace.paper_a.paper_id;
+  trace.paper_b_id = trace.paper_b.paper_id;
+  renderBase(trace);
+  frames = buildFrames(trace);
+  buildPhaseButtons();
+  renderFrame(0);
+  metaEl.textContent = `${trace.paper_a.title} vs ${trace.paper_b.title}`;
+}
+
+async function loadFromManifest() {
+  try {
+    const res = await fetch("../output/trace_manifest.json");
+    if (!res.ok) throw new Error("no manifest");
+    const manifest = await res.json();
+    pairSelect.innerHTML = manifest
+      .map(m => `<option value="${m.file}">${escapeHtml(m.paper_a)} vs ${escapeHtml(m.paper_b)} (${m.num_steps} steps)</option>`)
+      .join("");
+    if (manifest.length) {
+      await loadTraceFile(manifest[0].file);
+    } else {
+      showError("No traces found in output/. Run align_trace.py first.");
+    }
+  } catch (e) {
+    pairSelect.innerHTML = `<option value="">(served over file:// -- use the file picker instead)</option>`;
+    showError("Couldn't fetch ../output/trace_manifest.json (this happens when the page is opened directly " +
+      "from disk rather than via a local server). Use \"load a trace JSON\" above to pick a trace_*.json " +
+      "file manually, or serve this folder with e.g. `python3 -m http.server` and reload.");
+  }
+}
+
+async function loadTraceFile(file) {
+  const res = await fetch("../output/" + file);
+  loadTrace(await res.json());
+}
+
+pairSelect.addEventListener("change", () => { if (pairSelect.value) loadTraceFile(pairSelect.value); });
+
+fileInput.addEventListener("change", () => {
+  const file = fileInput.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try { loadTrace(JSON.parse(reader.result)); }
+    catch (e) { showError("Couldn't parse that file as JSON: " + e.message); }
+  };
+  reader.readAsText(file);
+});
+
+loadFromManifest();
+</script>
+</body>
+</html>

@@ -1,0 +1,806 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Bidirectional Tag Match Viewer</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin: 0;
+    background: #fafafa;
+    color: #212529;
+  }
+  header {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    border-bottom: 1px solid #dee2e6;
+    padding: 5px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    z-index: 20;
+  }
+  header h1 { font-size: 14px; margin: 0; font-weight: 600; color: #495057; }
+  #legend {
+    font-size: 10.5px;
+    color: #868e96;
+    padding: 4px 16px;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 31px;
+    z-index: 19;
+  }
+  #stage { position: relative; padding: 10px 14px; }
+  #linkLayer { position: absolute; top: 0; left: 0; z-index: 0; pointer-events: none; }
+  #columns { position: relative; z-index: 1; display: flex; gap: 56px; align-items: flex-start; }
+  .column { flex: 1 1 0; min-width: 0; background: transparent; }
+  .paper-title {
+    font-size: 13px; font-weight: 700; color: #343a40;
+    padding-bottom: 4px; margin-bottom: 6px; border-bottom: 2px solid #343a40;
+  }
+  .section-block {
+    background: #fff;
+    border: 1.5px solid #e9ecef;
+    border-radius: 6px;
+    padding: 6px 9px;
+    margin-bottom: 5px;
+    transition: border-color 0.1s, box-shadow 0.1s;
+  }
+  .section-block.linkable { cursor: pointer; }
+  .section-block.highlight { border-color: #1c7ed6; box-shadow: 0 0 0 2px rgba(28,126,214,0.25); }
+  .section-block.dim { opacity: 0.35; }
+  .section-head { display: flex; align-items: baseline; gap: 6px; margin-bottom: 3px; flex-wrap: wrap; }
+  .tag-badge {
+    font-size: 11px; font-weight: 600; color: #343a40; background: #eef1f3;
+    border: 1px solid #dee2e6; padding: 1px 7px; border-radius: 9px; white-space: normal;
+    line-height: 1.3;
+  }
+  .section-title { font-size: 12.5px; font-weight: 600; color: #212529; }
+  .relation-badge {
+    font-size: 9.5px; font-style: italic; color: #495057; background: #f1f3f5;
+    border: 1px solid #dee2e6; padding: 1px 6px; border-radius: 9px; white-space: nowrap;
+  }
+  .section-text { font-size: 12px; line-height: 1.35; color: #495057; white-space: normal; }
+  .section-text-preview:empty { display: none; }
+  .section-text-full { display: none; }
+  .section-block.expanded .section-text-preview { display: none; }
+  .section-block.expanded .section-text-full { display: block; }
+  .expand-hint { font-size: 10px; color: #adb5bd; margin-top: 2px; }
+  .section-block.expanded .expand-hint::after { content: "collapse ▴"; }
+  .section-block:not(.expanded) .expand-hint::after { content: "click to expand ▾"; }
+  .empty-state { padding: 40px; color: #868e96; font-size: 13px; }
+  .granularity-btn {
+    font-size: 11px; padding: 3px 10px; border: 1px solid #ced4da; background: #fff; color: #495057;
+    cursor: pointer; border-radius: 0;
+  }
+  .granularity-btn:first-child { border-radius: 4px 0 0 4px; }
+  .granularity-btn:last-child { border-radius: 0 4px 4px 0; }
+  .granularity-btn:not(:first-child) { border-left: none; }
+  .granularity-btn.active { background: #1c7ed6; color: #fff; border-color: #1c7ed6; }
+
+  #treeLinkLayer { position: absolute; top: 0; left: 0; z-index: 0; pointer-events: none; }
+  #treeRoot { position: relative; z-index: 1; display: flex; gap: 40px; align-items: flex-start; }
+  .tree-node-wrap { display: flex; flex-direction: column; align-items: center; }
+  .tree-node {
+    background: #fff; border: 1.5px solid #ced4da; border-radius: 8px;
+    padding: 8px 12px; cursor: pointer; min-width: 170px; max-width: 230px;
+    text-align: center; transition: border-color 0.1s, box-shadow 0.1s;
+  }
+  .tree-node:hover { border-color: #1c7ed6; }
+  .tree-node.open { border-color: #1c7ed6; box-shadow: 0 0 0 2px rgba(28,126,214,0.15); }
+  .tree-node-question { font-size: 12.5px; line-height: 1.35; }
+  .super-node .tree-node-question { font-weight: 700; color: #212529; }
+  .group-node { background: #f8f9fa; }
+  .group-node .tree-node-question { font-weight: 600; color: #343a40; font-size: 12px; }
+  .tree-node-meta { font-size: 10px; color: #868e96; margin-top: 3px; font-weight: 400; }
+  .tree-children { display: flex; gap: 24px; align-items: flex-start; margin-top: 36px; }
+  /* extra headroom under super-groups specifically, so the arced sibling-group
+     links (which bulge upward up to ~110px) have room to clear without being
+     hidden behind the super-group node above them */
+  #treeRoot > .tree-node-wrap > .tree-children { margin-top: 140px; }
+  .group-detail-children { margin-top: 36px; }
+  .group-columns-wrap { position: relative; width: min(90vw, 760px); }
+  .group-link-layer { position: absolute; top: 0; left: 0; pointer-events: none; }
+  .group-columns { position: relative; display: flex; gap: 30px; align-items: flex-start; }
+  .group-columns .column { flex: 1 1 0; min-width: 0; text-align: left; }
+  .group-columns .paper-title { font-size: 11px; }
+  .group-column-empty { font-size: 11.5px; color: #adb5bd; font-style: italic; padding: 6px 2px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Bidirectional Tag Match Viewer</h1>
+  <div id="granularityTabs" style="display:flex;gap:2px;"></div>
+  <label style="font-size:11px;color:#495057;display:flex;align-items:center;gap:6px;">
+    preview length
+    <input type="range" id="previewSlider" min="0" max="200" step="10" value="200">
+    <span id="previewValue">200</span>
+  </label>
+  <label style="font-size:11px;color:#495057;display:flex;align-items:center;gap:6px;">
+    min similarity
+    <input type="range" id="similaritySlider" min="0" max="1" step="0.01" value="0">
+    <span id="similarityValue">0.00</span>
+  </label>
+  <span style="font-size:11px;color:#868e96;">hover a unit to preview its links; click to pin and expand full text</span>
+</header>
+<div id="legend">tags are free-text questions/phrases, not a fixed category. Only <strong>bidirectional</strong> matches (mutual top-3) are shown; use the slider above to filter out weaker matches.</div>
+<div id="stage"><div class="empty-state">Loading...</div></div>
+
+<script>
+const GRANULARITIES = ["sections", "paragraphs"]; // matching/data granularities
+const GRANULARITY_LABELS = { sections: "Section", paragraphs: "Paragraph" };
+const TABS = ["sections", "paragraphs", "groups"]; // UI tabs -- "groups" is a display mode, not a matching granularity
+const TAB_LABELS = { sections: "Section", paragraphs: "Paragraph", groups: "Groups" };
+
+const stage = document.getElementById("stage");
+const granularityTabsEl = document.getElementById("granularityTabs");
+const previewSlider = document.getElementById("previewSlider");
+const previewValueEl = document.getElementById("previewValue");
+const similaritySlider = document.getElementById("similaritySlider");
+const similarityValueEl = document.getElementById("similarityValue");
+let pinnedId = null;
+let currentLinks = []; // links for the current granularity AND above the current similarity threshold
+const expandedIds = new Set(); // units expanded to full text -- independent per unit, click toggles membership
+let previewChars = Number(previewSlider.value);
+let similarityThreshold = Number(similaritySlider.value);
+const sectionTextById = {}; // id -> normalized full text, for live preview-length updates
+
+let allPapers = [];
+let allLinksByGranularity = { sections: [], paragraphs: [] };
+let rawLinksForGranularity = []; // all links for the current granularity, before the similarity filter
+let currentGranularity = "sections"; // matching is always within one granularity: sections<->sections, paragraphs<->paragraphs
+
+let allGroups = []; // paragraph groups only, each with an overarching_question
+let paragraphUnitLookup = {}; // "paper_id:unit_id" -> full paragraph object, for group-detail rendering
+let groupById = {}; // group_id -> full group object, for tree-node click lookups
+
+let allSuperGroups = []; // groups-of-groups, each with an overarching_question and member groups
+const openSuperGroupIds = new Set(); // super_group_id currently expanded to show member groups
+const openGroupIds = new Set(); // group_id currently expanded to show its 3-column quote detail
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+function preview(text, maxChars) {
+  if (maxChars <= 0) return "";
+  return text.length > maxChars ? text.slice(0, maxChars) + "…" : text;
+}
+
+function updatePreviews() {
+  stage.querySelectorAll(".section-block").forEach(el => {
+    const text = sectionTextById[el.dataset.id] || "";
+    const previewEl = el.querySelector(".section-text-preview");
+    if (previewEl) previewEl.textContent = preview(text, previewChars);
+  });
+  refreshView(); // preview height changed, so link endpoints moved
+}
+
+async function loadAll() {
+  const base = "../output/sections/";
+  const opts = { cache: "no-store" }; // these files change often during development; never serve a stale cached copy
+  const manifest = await (await fetch(base + "manifest.json", opts)).json();
+  const papers = [];
+  for (const m of manifest) {
+    papers.push(await (await fetch(base + m.file, opts)).json());
+  }
+  const links = await (await fetch(base + "bidirectional_matches.json", opts)).json();
+  const groups = await (await fetch(base + "quote_groups.json", opts)).json();
+  const superGroups = await (await fetch(base + "group_of_groups.json", opts)).json();
+  return { papers, links, groups, superGroups };
+}
+
+function buildParagraphUnitLookup() {
+  paragraphUnitLookup = {};
+  allPapers.forEach(paper => {
+    (paper.paragraphs || []).forEach(unit => {
+      paragraphUnitLookup[`${paper.paper_id}:${unit.id}`] = unit;
+    });
+  });
+}
+
+function buildGroupById() {
+  groupById = {};
+  allGroups.forEach(g => { groupById[g.group_id] = g; });
+}
+
+function linkedIdSet(links) {
+  const ids = new Set();
+  links.forEach(l => {
+    ids.add(`${l.paper_a}:${l.section_a}`);
+    ids.add(`${l.paper_b}:${l.section_b}`);
+  });
+  return ids;
+}
+
+function renderColumns(papers, granularity) {
+  // Only units that have at least one bidirectional match are shown -- an
+  // unmatched section/paragraph is pruned from view entirely.
+  const linked = linkedIdSet(currentLinks);
+  const cols = papers.map(paper => {
+    const units = (paper[granularity] || []).filter(sec => linked.has(`${paper.paper_id}:${sec.id}`));
+    const blocks = units.map(sec => {
+      const text = (sec.text || "").replace(/\s+/g, " ").trim();
+      const id = `${paper.paper_id}:${sec.id}`;
+      sectionTextById[id] = text;
+      const previewText = preview(text, previewChars);
+      const titleHtml = sec.title ? `<span class="section-title">${escapeHtml(sec.title)}</span>` : "";
+      // prev_relation/next_relation only exist at paragraph granularity (always "" for sections)
+      const prevHtml = sec.prev_relation ? `<span class="relation-badge">← ${escapeHtml(sec.prev_relation)}</span>` : "";
+      const nextHtml = sec.next_relation ? `<span class="relation-badge">${escapeHtml(sec.next_relation)} →</span>` : "";
+      return `<div class="section-block linkable" data-id="${id}">
+        <div class="section-head">
+          <span class="tag-badge">${escapeHtml(sec.tag)}</span>
+          ${titleHtml}
+          ${prevHtml}
+          ${nextHtml}
+        </div>
+        <div class="section-text section-text-preview">${escapeHtml(previewText)}</div>
+        <div class="section-text section-text-full">${escapeHtml(text)}</div>
+        <div class="expand-hint"></div>
+      </div>`;
+    }).join("");
+    return `<div class="column" data-paper="${paper.paper_id}">
+      <div class="paper-title">${escapeHtml(paper.title)}</div>
+      ${blocks}
+    </div>`;
+  }).join("");
+
+  stage.innerHTML = `<svg id="linkLayer"></svg><div id="columns">${cols}</div>`;
+}
+
+function elFor(id) {
+  return stage.querySelector(`.section-block[data-id="${CSS.escape(id)}"]`);
+}
+
+function drawLinks(links) {
+  const svg = document.getElementById("linkLayer");
+  const stageRect = stage.getBoundingClientRect();
+  const columnsEl = document.getElementById("columns");
+  // scrollWidth/Height (not offsetWidth/Height) -- offset* clamps to the
+  // element's own box, which can be narrower than its rendered content when
+  // children overflow it, silently clipping any link endpoint beyond that.
+  const height = columnsEl.scrollHeight;
+  const width = columnsEl.scrollWidth;
+  svg.setAttribute("width", width);
+  svg.setAttribute("height", height);
+  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+
+  const paths = links.map(link => {
+    const aId = `${link.paper_a}:${link.section_a}`;
+    const bId = `${link.paper_b}:${link.section_b}`;
+    const aEl = elFor(aId), bEl = elFor(bId);
+    if (!aEl || !bEl) return "";
+    const aRect = aEl.getBoundingClientRect(), bRect = bEl.getBoundingClientRect();
+    const aOnLeft = aRect.left < bRect.left;
+    const x1 = (aOnLeft ? aRect.right : aRect.left) - stageRect.left;
+    const y1 = aRect.top + aRect.height / 2 - stageRect.top;
+    const x2 = (aOnLeft ? bRect.left : bRect.right) - stageRect.left;
+    const y2 = bRect.top + bRect.height / 2 - stageRect.top;
+    const cx = (x1 + x2) / 2;
+    const opacity = 0.15 + 0.3 * link.similarity;
+    // const opacity = 0.25;
+    const baseWidth = 1 + 2.5 * link.similarity; // ribbon width scales with confidence, Sankey-style
+    return `<path class="link-edge" data-a="${aId}" data-b="${bId}" data-base-width="${baseWidth}" data-similarity="${link.similarity}" ` +
+      `d="M ${x1} ${y1} C ${cx} ${y1}, ${cx} ${y2}, ${x2} ${y2}" ` +
+      `stroke="#495057" stroke-width="${baseWidth}" fill="none" opacity="${opacity}"/>`;
+  });
+  svg.innerHTML = paths.join("");
+}
+
+const THICKENED_MIN_WIDTH = 25;  // px, given to the lowest-similarity link in the whole graph when thickened
+const THICKENED_MAX_WIDTH = 50; // px, given to the highest-similarity link in the whole graph when thickened
+const THICKENED_OPACITY = 0.15;
+
+function similarityRange(links) {
+  const sims = links.map(l => l.similarity);
+  return { min: Math.min(...sims), max: Math.max(...sims) };
+}
+
+function applyHighlight(id) {
+  const related = new Set([id]);
+  currentLinks.forEach(link => {
+    const aId = `${link.paper_a}:${link.section_a}`;
+    const bId = `${link.paper_b}:${link.section_b}`;
+    if (aId === id) related.add(bId);
+    if (bId === id) related.add(aId);
+  });
+  stage.querySelectorAll(".section-block").forEach(el => {
+    const isRelated = related.has(el.dataset.id);
+    el.classList.toggle("highlight", isRelated && el.dataset.id !== id ? true : el.dataset.id === id);
+    el.classList.toggle("dim", !isRelated);
+  });
+  const { min, max } = similarityRange(currentLinks);
+  document.querySelectorAll(".link-edge").forEach(edge => {
+    const touches = edge.dataset.a === id || edge.dataset.b === id;
+    if (touches) {
+      const sim = parseFloat(edge.dataset.similarity);
+      const t = max > min ? (sim - min) / (max - min) : 1;
+      const width = THICKENED_MIN_WIDTH + t * (THICKENED_MAX_WIDTH - THICKENED_MIN_WIDTH);
+      edge.style.strokeWidth = width + "px";
+      edge.style.opacity = THICKENED_OPACITY;
+    } else {
+      edge.style.strokeWidth = "";
+      edge.style.opacity = 0.05;
+    }
+  });
+}
+
+function resetEdgeStyles() {
+  document.querySelectorAll(".link-edge").forEach(edge => {
+    edge.style.opacity = "";
+    edge.style.strokeWidth = "";
+  });
+}
+
+function clearTransientHighlight() {
+  stage.querySelectorAll(".section-block").forEach(el => el.classList.remove("highlight", "dim"));
+  resetEdgeStyles();
+}
+
+function setExpanded(id, expanded) {
+  const el = elFor(id);
+  if (el) el.classList.toggle("expanded", expanded);
+}
+
+function clearAlignment() {
+  document.querySelectorAll(".column").forEach(col => { col.style.paddingTop = ""; });
+}
+
+// Re-flow every OTHER column so that whichever of its units is linked to the
+// anchor lands on the anchor's own row, while every unit before/after that
+// linked one keeps its normal relative order -- implemented by padding the
+// top of each column (never reordering DOM children), so within-paper order
+// is always preserved. A column with no link to the anchor is left alone.
+function computeAndApplyAlignment(anchorId) {
+  clearAlignment(); // undo any previous alignment before measuring natural positions
+  const anchorEl = elFor(anchorId);
+  if (!anchorEl) return;
+  const stageRect = stage.getBoundingClientRect();
+  const anchorY = anchorEl.getBoundingClientRect().top - stageRect.top;
+  const anchorPaper = anchorId.split(":")[0];
+
+  const partnerForPaper = {}; // other paper id -> the one unit in it linked to the anchor
+  currentLinks.forEach(l => {
+    const aId = `${l.paper_a}:${l.section_a}`;
+    const bId = `${l.paper_b}:${l.section_b}`;
+    if (aId === anchorId && !(l.paper_b in partnerForPaper)) partnerForPaper[l.paper_b] = bId;
+    if (bId === anchorId && !(l.paper_a in partnerForPaper)) partnerForPaper[l.paper_a] = aId;
+  });
+
+  const offsets = { [anchorPaper]: 0 };
+  Object.entries(partnerForPaper).forEach(([paperId, linkedId]) => {
+    const linkedEl = elFor(linkedId);
+    if (!linkedEl) return;
+    const linkedY = linkedEl.getBoundingClientRect().top - stageRect.top;
+    offsets[paperId] = anchorY - linkedY;
+  });
+
+  const globalMin = Math.min(0, ...Object.values(offsets));
+  document.querySelectorAll(".column").forEach(col => {
+    const paperId = col.dataset.paper;
+    if (paperId in offsets) col.style.paddingTop = (offsets[paperId] - globalMin) + "px";
+  });
+}
+
+function refreshView() {
+  if (pinnedId) computeAndApplyAlignment(pinnedId);
+  else clearAlignment();
+  drawLinks(currentLinks);
+  if (pinnedId) applyHighlight(pinnedId);
+  else clearTransientHighlight();
+}
+
+function attachInteractions() {
+  stage.querySelectorAll(".section-block").forEach(el => {
+    const id = el.dataset.id;
+    el.addEventListener("mouseenter", () => { if (!pinnedId) applyHighlight(id); });
+    el.addEventListener("mouseleave", () => { if (!pinnedId) clearTransientHighlight(); });
+
+    el.addEventListener("click", (evt) => {
+      evt.stopPropagation();
+      pinnedId = pinnedId === id ? null : id;
+      refreshView();
+    });
+
+    const hint = el.querySelector(".expand-hint");
+    if (hint) {
+      hint.addEventListener("click", (evt) => {
+        evt.stopPropagation();
+        const isExpanded = expandedIds.has(id);
+        if (isExpanded) { expandedIds.delete(id); setExpanded(id, false); }
+        else { expandedIds.add(id); setExpanded(id, true); }
+        refreshView(); // height changed, so link/alignment positions need recomputing
+      });
+    }
+  });
+}
+
+function buildGranularityTabs() {
+  granularityTabsEl.innerHTML = TABS.map(g =>
+    `<button type="button" class="granularity-btn${g === currentGranularity ? " active" : ""}" data-granularity="${g}">${TAB_LABELS[g]}</button>`
+  ).join("");
+  granularityTabsEl.querySelectorAll(".granularity-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      if (btn.dataset.granularity !== currentGranularity) switchGranularity(btn.dataset.granularity);
+    });
+  });
+}
+
+// Renders the full super-group -> group -> quotes tree from scratch, driven
+// entirely by openSuperGroupIds/openGroupIds. Any state change (a node click,
+// a slider change, a resize) just mutates those sets (or nothing, for
+// sliders) and calls this again -- simpler than patching the DOM in place,
+// and cheap since there's no API call involved.
+function renderGroupsTree() {
+  if (!allSuperGroups.length) {
+    stage.innerHTML = `<div class="empty-state">No groups available.</div>`;
+    return;
+  }
+
+  const superNodesHtml = allSuperGroups.map(sg => {
+    const isOpen = openSuperGroupIds.has(sg.super_group_id);
+    let childrenHtml = "";
+    if (isOpen) {
+      const childNodesHtml = sg.members.map(m => {
+        const groupIsOpen = openGroupIds.has(m.group_id);
+        const detailHtml = groupIsOpen
+          ? `<div class="tree-children group-detail-children" data-group-detail-for="${m.group_id}"></div>`
+          : "";
+        return `<div class="tree-node-wrap">
+          <div class="tree-node group-node${groupIsOpen ? " open" : ""}" data-group-id="${m.group_id}">
+            <div class="tree-node-question">${escapeHtml(m.overarching_question)}</div>
+          </div>
+          ${detailHtml}
+        </div>`;
+      }).join("");
+      childrenHtml = `<div class="tree-children">${childNodesHtml}</div>`;
+    }
+    return `<div class="tree-node-wrap">
+      <div class="tree-node super-node${isOpen ? " open" : ""}" data-super-group-id="${sg.super_group_id}">
+        <div class="tree-node-question">${escapeHtml(sg.overarching_question || "(no summary)")}</div>
+        <div class="tree-node-meta">${sg.members.length} group${sg.members.length === 1 ? "" : "s"}</div>
+      </div>
+      ${childrenHtml}
+    </div>`;
+  }).join("");
+
+  stage.innerHTML = `<svg id="treeLinkLayer"></svg><div id="treeRoot">${superNodesHtml}</div>`;
+
+  openGroupIds.forEach(groupId => {
+    const slot = stage.querySelector(`.group-detail-children[data-group-detail-for="${CSS.escape(groupId)}"]`);
+    const group = groupById[groupId];
+    if (slot && group) renderGroupDetail(slot, group);
+  });
+
+  attachTreeInteractions();
+  drawTreeLinks();
+}
+
+function attachTreeInteractions() {
+  stage.querySelectorAll(".super-node").forEach(el => {
+    el.addEventListener("click", (evt) => {
+      evt.stopPropagation();
+      const id = el.dataset.superGroupId;
+      if (openSuperGroupIds.has(id)) {
+        openSuperGroupIds.delete(id);
+        // collapsing hides its member groups too, so their own expanded state no longer applies
+        const sg = allSuperGroups.find(s => s.super_group_id === id);
+        if (sg) sg.members.forEach(m => openGroupIds.delete(m.group_id));
+      } else {
+        openSuperGroupIds.add(id);
+      }
+      renderGroupsTree();
+    });
+  });
+  stage.querySelectorAll(".group-node").forEach(el => {
+    const id = el.dataset.groupId;
+    el.addEventListener("mouseenter", () => setArcEmphasis(id, true));
+    el.addEventListener("mouseleave", () => { if (!openGroupIds.has(id)) setArcEmphasis(id, false); });
+
+    el.addEventListener("click", (evt) => {
+      evt.stopPropagation();
+      if (openGroupIds.has(id)) openGroupIds.delete(id);
+      else openGroupIds.add(id);
+      renderGroupsTree();
+    });
+  });
+}
+
+function treeLinkPath(fromEl, toEl, originRect) {
+  const fromRect = fromEl.getBoundingClientRect();
+  const toRect = toEl.getBoundingClientRect();
+  const x1 = fromRect.left + fromRect.width / 2 - originRect.left;
+  const y1 = fromRect.bottom - originRect.top;
+  const x2 = toRect.left + toRect.width / 2 - originRect.left;
+  const y2 = toRect.top - originRect.top;
+  const cy = (y1 + y2) / 2;
+  return `<path class="tree-link-edge" d="M ${x1} ${y1} C ${x1} ${cy}, ${x2} ${cy}, ${x2} ${y2}" stroke="#adb5bd" stroke-width="1.5" fill="none"/>`;
+}
+
+// Arced link between two SIBLING group nodes (a bidirectional match between
+// their overarching_questions, not a containment relation) -- drawn as a
+// hump above the node row, in the app's accent blue so it reads as a
+// different kind of edge than the neutral-gray tree containment lines.
+// Arc height scales with horizontal distance so arcs between distant
+// siblings clear the nodes in between (classic arc-diagram style).
+function groupArcPath(aEl, bEl, originRect, similarity, groupAId, groupBId) {
+  const aRect = aEl.getBoundingClientRect(), bRect = bEl.getBoundingClientRect();
+  const x1 = aRect.left + aRect.width / 2 - originRect.left;
+  const y1 = aRect.top - originRect.top;
+  const x2 = bRect.left + bRect.width / 2 - originRect.left;
+  const y2 = bRect.top - originRect.top;
+  const h = Math.min(110, 26 + Math.abs(x2 - x1) * 0.18);
+  // const opacity = 0.3 + 0.55 * similarity;
+  const opacity = 0.15 + 0.25 * similarity;
+  const width = 1 + 2.5 * similarity;
+  return `<path class="group-arc-edge" data-group-a="${groupAId}" data-group-b="${groupBId}" ` +
+    `data-base-opacity="${opacity}" data-base-width="${width}" ` +
+    `d="M ${x1} ${y1} C ${x1} ${y1 - h}, ${x2} ${y2 - h}, ${x2} ${y2}" ` +
+    `stroke="#1c7ed6" stroke-width="${width}" fill="none" opacity="${opacity}"/>`;
+}
+
+const ARC_EMPHASIS_OPACITY_BOOST = 0.5;
+const ARC_EMPHASIS_WIDTH_BOOST = 2.5;
+
+// Darkens + thickens every arc touching the given group, relative to its own
+// base (similarity-derived) opacity/width -- used on hover, and kept applied
+// for whichever group(s) are currently expanded (open).
+function setArcEmphasis(groupId, emphasized) {
+  const svg = document.getElementById("treeLinkLayer");
+  if (!svg) return;
+  svg.querySelectorAll(".group-arc-edge").forEach(edge => {
+    if (edge.dataset.groupA !== groupId && edge.dataset.groupB !== groupId) return;
+    if (emphasized) {
+      edge.style.opacity = Math.min(1, parseFloat(edge.dataset.baseOpacity) + ARC_EMPHASIS_OPACITY_BOOST);
+      edge.style.strokeWidth = (parseFloat(edge.dataset.baseWidth) + ARC_EMPHASIS_WIDTH_BOOST) + "px";
+    } else {
+      edge.style.opacity = "";
+      edge.style.strokeWidth = "";
+    }
+  });
+}
+
+// Draws the group -> quote-detail containment line, plus the arced
+// bidirectional similarity links between sibling groups. The super-group ->
+// group containment line is deliberately NOT drawn (per explicit request) --
+// expanding a super-group shows its children without gray connector lines to
+// them; only the actual similarity arcs between those children are shown.
+function drawTreeLinks() {
+  const svg = document.getElementById("treeLinkLayer");
+  const treeRoot = document.getElementById("treeRoot");
+  const stageRect = stage.getBoundingClientRect();
+  // scrollWidth/Height, not offsetWidth/Height: the tree can grow wider than
+  // its own box when expanded (nowrap flex children overflowing), and
+  // offset* clamps to that box -- sizing the SVG from it would clip any link
+  // endpoint that falls in the overflowed region instead of drawing it.
+  const width = treeRoot.scrollWidth;
+  const height = treeRoot.scrollHeight;
+  svg.setAttribute("width", width);
+  svg.setAttribute("height", height);
+  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+
+  const paths = [];
+
+  stage.querySelectorAll("#treeRoot > .tree-node-wrap").forEach(sgWrap => {
+    const sgNode = sgWrap.querySelector(":scope > .super-node");
+    const childrenContainer = sgWrap.querySelector(":scope > .tree-children");
+    if (!sgNode || !childrenContainer) return;
+
+    const nodeByGroupId = {};
+    childrenContainer.querySelectorAll(":scope > .tree-node-wrap").forEach(gWrap => {
+      const gNode = gWrap.querySelector(":scope > .group-node");
+      if (!gNode) return;
+      nodeByGroupId[gNode.dataset.groupId] = gNode;
+    });
+
+    // bidirectional similarity links between sibling groups (already
+    // similarity-thresholded once at grouping time in group_groups.py;
+    // filter again here so the slider still narrows what's drawn)
+    const sg = allSuperGroups.find(s => s.super_group_id === sgNode.dataset.superGroupId);
+    if (sg) {
+      sg.links.forEach(link => {
+        if (link.similarity < similarityThreshold) return;
+        const aNode = nodeByGroupId[link.group_a];
+        const bNode = nodeByGroupId[link.group_b];
+        if (aNode && bNode) paths.push(groupArcPath(aNode, bNode, stageRect, link.similarity, link.group_a, link.group_b));
+      });
+    }
+  });
+
+  stage.querySelectorAll(".group-detail-children").forEach(detailEl => {
+    if (!detailEl.firstElementChild) return;
+    const groupWrap = detailEl.closest(".tree-node-wrap");
+    const gNode = groupWrap ? groupWrap.querySelector(":scope > .group-node") : null;
+    if (gNode) paths.push(treeLinkPath(gNode, detailEl.firstElementChild, stageRect));
+  });
+
+  svg.innerHTML = paths.join("");
+  openGroupIds.forEach(id => setArcEmphasis(id, true)); // expanded groups stay emphasized, not just on hover
+}
+
+function renderGroupDetail(slot, group) {
+  const membersByPaper = {};
+  group.members.forEach(m => {
+    const unit = paragraphUnitLookup[`${m.paper}:${m.unit_id}`];
+    if (!unit) return;
+    (membersByPaper[m.paper] = membersByPaper[m.paper] || []).push(unit);
+  });
+
+  const cols = allPapers
+    .map(paper => {
+      const units = membersByPaper[paper.paper_id] || [];
+      const blocks = units.map(unit => {
+        const text = (unit.text || "").replace(/\s+/g, " ").trim();
+        const id = `${paper.paper_id}:${unit.id}`;
+        const previewText = preview(text, previewChars);
+        const titleHtml = unit.title ? `<span class="section-title">${escapeHtml(unit.title)}</span>` : "";
+        const prevHtml = unit.prev_relation ? `<span class="relation-badge">← ${escapeHtml(unit.prev_relation)}</span>` : "";
+        const nextHtml = unit.next_relation ? `<span class="relation-badge">${escapeHtml(unit.next_relation)} →</span>` : "";
+        return `<div class="section-block linkable" data-group-unit-id="${id}">
+          <div class="section-head">
+            <span class="tag-badge">${escapeHtml(unit.tag)}</span>
+            ${titleHtml}
+            ${prevHtml}
+            ${nextHtml}
+          </div>
+          <div class="section-text section-text-preview">${escapeHtml(previewText)}</div>
+          <div class="section-text section-text-full">${escapeHtml(text)}</div>
+          <div class="expand-hint"></div>
+        </div>`;
+      }).join("");
+      const bodyHtml = units.length ? blocks : `<div class="group-column-empty">no quotes in this group</div>`;
+      return `<div class="column" data-paper="${paper.paper_id}">
+        <div class="paper-title">${escapeHtml(paper.title)}</div>
+        ${bodyHtml}
+      </div>`;
+    }).join("");
+
+  slot.innerHTML = `<div class="group-columns-wrap"><svg class="group-link-layer"></svg><div class="group-columns">${cols}</div></div>`;
+
+  drawGroupLinks(slot, group);
+  attachGroupInteractions(slot, group);
+}
+
+function drawGroupLinks(slot, group) {
+  const svg = slot.querySelector(".group-link-layer");
+  const wrap = slot.querySelector(".group-columns-wrap");
+  const columnsEl = slot.querySelector(".group-columns");
+  const wrapRect = wrap.getBoundingClientRect();
+  const height = columnsEl.scrollHeight;
+  const width = columnsEl.scrollWidth;
+  svg.setAttribute("width", width);
+  svg.setAttribute("height", height);
+  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+
+  const links = group.links.filter(l => l.similarity >= similarityThreshold);
+  const paths = links.map(link => {
+    const aId = `${link.paper_a}:${link.section_a}`;
+    const bId = `${link.paper_b}:${link.section_b}`;
+    const aEl = slot.querySelector(`.section-block[data-group-unit-id="${CSS.escape(aId)}"]`);
+    const bEl = slot.querySelector(`.section-block[data-group-unit-id="${CSS.escape(bId)}"]`);
+    if (!aEl || !bEl) return "";
+    const aRect = aEl.getBoundingClientRect(), bRect = bEl.getBoundingClientRect();
+    const aOnLeft = aRect.left < bRect.left;
+    const x1 = (aOnLeft ? aRect.right : aRect.left) - wrapRect.left;
+    const y1 = aRect.top + aRect.height / 2 - wrapRect.top;
+    const x2 = (aOnLeft ? bRect.left : bRect.right) - wrapRect.left;
+    const y2 = bRect.top + bRect.height / 2 - wrapRect.top;
+    const cx = (x1 + x2) / 2;
+    const opacity = 0.25 + 0.55 * link.similarity;
+    const baseWidth = 1 + 2.5 * link.similarity;
+    return `<path class="link-edge" data-a="${aId}" data-b="${bId}" data-similarity="${link.similarity}" ` +
+      `d="M ${x1} ${y1} C ${cx} ${y1}, ${cx} ${y2}, ${x2} ${y2}" ` +
+      `stroke="#495057" stroke-width="${baseWidth}" fill="none" opacity="${opacity}"/>`;
+  });
+  svg.innerHTML = paths.join("");
+}
+
+function attachGroupInteractions(slot, group) {
+  const activeLinks = group.links.filter(l => l.similarity >= similarityThreshold);
+
+  slot.querySelectorAll(".section-block").forEach(el => {
+    const id = el.dataset.groupUnitId;
+
+    el.addEventListener("mouseenter", () => {
+      const related = new Set([id]);
+      activeLinks.forEach(link => {
+        const aId = `${link.paper_a}:${link.section_a}`;
+        const bId = `${link.paper_b}:${link.section_b}`;
+        if (aId === id) related.add(bId);
+        if (bId === id) related.add(aId);
+      });
+      slot.querySelectorAll(".section-block").forEach(b => {
+        const isRelated = related.has(b.dataset.groupUnitId);
+        b.classList.toggle("highlight", isRelated && b.dataset.groupUnitId !== id);
+        b.classList.toggle("dim", !isRelated);
+      });
+      slot.querySelectorAll(".link-edge").forEach(edge => {
+        edge.style.opacity = (edge.dataset.a === id || edge.dataset.b === id) ? "0.9" : "0.05";
+      });
+    });
+    el.addEventListener("mouseleave", () => {
+      slot.querySelectorAll(".section-block").forEach(b => b.classList.remove("highlight", "dim"));
+      slot.querySelectorAll(".link-edge").forEach(edge => { edge.style.opacity = ""; });
+    });
+
+    const hint = el.querySelector(".expand-hint");
+    if (hint) {
+      hint.addEventListener("click", (evt) => {
+        evt.stopPropagation();
+        el.classList.toggle("expanded");
+        drawGroupLinks(slot, group); // height changed, so link endpoints need repositioning
+      });
+    }
+  });
+}
+
+// Recomputes currentLinks from rawLinksForGranularity + similarityThreshold, then
+// fully re-renders. Shared by granularity switches and similarity-slider changes,
+// since both change which links (and therefore which units) should be visible.
+function applyFilterAndRender() {
+  currentLinks = rawLinksForGranularity.filter(l => l.similarity >= similarityThreshold);
+  pinnedId = null;
+  expandedIds.clear();
+  renderColumns(allPapers, currentGranularity);
+  drawLinks(currentLinks);
+  attachInteractions();
+}
+
+function switchGranularity(granularity) {
+  currentGranularity = granularity;
+  buildGranularityTabs();
+  if (granularity === "groups") {
+    renderGroupsTree();
+    return;
+  }
+  rawLinksForGranularity = allLinksByGranularity[granularity] || [];
+  applyFilterAndRender();
+}
+
+async function init() {
+  const { papers, links, groups, superGroups } = await loadAll();
+  allPapers = papers;
+  allLinksByGranularity = links;
+  allGroups = groups.paragraphs || [];
+  allSuperGroups = superGroups || [];
+  buildParagraphUnitLookup();
+  buildGroupById();
+  rawLinksForGranularity = links[currentGranularity] || [];
+
+  buildGranularityTabs();
+  applyFilterAndRender();
+
+  stage.addEventListener("click", () => {
+    if (pinnedId) {
+      pinnedId = null;
+      refreshView();
+    }
+  });
+  window.addEventListener("resize", () => {
+    if (currentGranularity === "groups") renderGroupsTree();
+    else refreshView();
+  });
+  previewSlider.addEventListener("input", () => {
+    previewChars = Number(previewSlider.value);
+    previewValueEl.textContent = String(previewChars);
+    if (currentGranularity === "groups") renderGroupsTree();
+    else updatePreviews();
+  });
+  similaritySlider.addEventListener("input", () => {
+    similarityThreshold = Number(similaritySlider.value);
+    similarityValueEl.textContent = similarityThreshold.toFixed(2);
+    if (currentGranularity === "groups") renderGroupsTree();
+    else applyFilterAndRender();
+  });
+}
+
+init();
+</script>
+</body>
+</html>
