@@ -248,7 +248,7 @@ function drawLinks(links) {
     const y2 = bRect.top + bRect.height / 2 - stageRect.top;
     const cx = (x1 + x2) / 2;
     const opacity = 0.25 + 0.55 * link.similarity;
-    const baseWidth = 1 + 2.5 * link.similarity; // ribbon width scales with confidence, Sankey-style
+    const baseWidth = 1 + 2.5 * link.similarity; // ribbon width scales with lexical similarity, Sankey-style
     const color = tagColor(link.tag_a);
     return `<path class="link-edge" data-a="${aId}" data-b="${bId}" data-base-width="${baseWidth}" data-similarity="${link.similarity}" ` +
       `d="M ${x1} ${y1} C ${cx} ${y1}, ${cx} ${y2}, ${x2} ${y2}" ` +

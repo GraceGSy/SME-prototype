@@ -19,16 +19,19 @@ Similarity is computed directly on the tag strings via text_similarity()
 this project) -- purely the tag, not blended with the unit's own text this
 time, per the current instructions.
 """
+
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 from align_graphs import text_similarity
+from pipeline_paths import output_dir
 from section_schema import GRANULARITIES, SectionedPaper
 
-OUTPUT_DIR = Path(__file__).resolve().parent / "output" / "sections"
-TOP_K = 3
+OUTPUT_DIR = output_dir()
+TOP_K = int(os.environ.get("SME_MATCH_TOP_K", "3"))
 
 
 def _load(path: Path) -> SectionedPaper:
@@ -41,7 +44,9 @@ def top_matches(tag: str, other_units: list, k: int = TOP_K) -> list[tuple]:
     return scored[:k]
 
 
-def match_granularity(papers: dict[str, SectionedPaper], granularity: str) -> list[dict]:
+def match_granularity(
+    papers: dict[str, SectionedPaper], granularity: str
+) -> list[dict]:
     paper_ids = list(papers.keys())
     entries = []
     for paper_id in paper_ids:
@@ -53,18 +58,22 @@ def match_granularity(papers: dict[str, SectionedPaper], granularity: str) -> li
                     continue
                 other_units = getattr(papers[other_id], granularity)
                 for other_unit, score in top_matches(unit.tag, other_units):
-                    matches.append({
-                        "paper": other_id,
-                        "unit_id": other_unit.id,
-                        "tag": other_unit.tag,
-                        "similarity": round(score, 3),
-                    })
-            entries.append({
-                "paper": paper_id,
-                "unit_id": unit.id,
-                "tag": unit.tag,
-                "matches": matches,
-            })
+                    matches.append(
+                        {
+                            "paper": other_id,
+                            "unit_id": other_unit.id,
+                            "tag": other_unit.tag,
+                            "similarity": round(score, 3),
+                        }
+                    )
+            entries.append(
+                {
+                    "paper": paper_id,
+                    "unit_id": unit.id,
+                    "tag": unit.tag,
+                    "matches": matches,
+                }
+            )
     return entries
 
 
@@ -77,7 +86,9 @@ def main() -> None:
         entries = match_granularity(papers, granularity)
         output[granularity] = entries
         total_matches = sum(len(e["matches"]) for e in entries)
-        print(f"[{granularity}] {len(entries)} units, {total_matches} candidate matches (top {TOP_K} per other paper)")
+        print(
+            f"[{granularity}] {len(entries)} units, {total_matches} candidate matches (top {TOP_K} per other paper)"
+        )
 
     out_path = OUTPUT_DIR / "tag_matches.json"
     out_path.write_text(json.dumps(output, indent=2))

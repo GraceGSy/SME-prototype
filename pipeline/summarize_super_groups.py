@@ -1,113 +1,90 @@
-"""Enrichment step: for each super-group in group_of_groups.json (a group of
-groups -- see group_groups.py), ask Claude what overarching research question
-or purpose unifies the group's member overarching_questions, and save that
-back onto the super-group as "overarching_question".
-
-Same prompt-caching (cache_utils.py) and per-item response caching (resume-
-safe if interrupted) pattern as summarize_groups.py, just applied one level
-up: the input is each super-group's member overarching_question strings
-instead of raw paragraph tags.
-
-Usage:
-    python3 summarize_super_groups.py
-"""
+"""Synthesize each initial super-group question from its complete paragraphs."""
 from __future__ import annotations
 
 import json
-import os
-from pathlib import Path
 
-from anthropic import Anthropic
+from pipeline_paths import output_dir
+from question_synthesis import synthesize_question
+from section_schema import SectionedPaper
 
-from cache_utils import cached_system, log_cache_usage
-
-DEFAULT_MODEL = os.environ.get("SME_EXTRACT_MODEL", "claude-sonnet-5")
-OUTPUT_DIR = Path(__file__).resolve().parent / "output" / "sections"
+OUTPUT_DIR = output_dir()
 CACHE_DIR = OUTPUT_DIR / "_cache" / "super_group_summaries"
 
-SYSTEM_PROMPT = """You will be given a list of short questions/phrases, each capturing the overarching \
-research question or purpose that unifies a group of related paragraphs across DIFFERENT academic papers. \
-These groups were themselves grouped together because their overarching questions are similar to each \
-other.
 
-Identify the overarching research question these questions collectively answer, or the overall purpose \
-they play across these papers -- something like "What overarching research question do these questions \
-answer?" or "What overall purpose do these questions play within the research paper?"
-
-Answer with a single short question or phrase (same style as the input -- not a fixed category, \
-under ~12 words) that captures this shared theme. Give just the one overarching tag, not a list or \
-an explanation."""
-
-USER_PROMPT_TEMPLATE = """Questions from this group-of-groups:
-{questions}
-
-Identify the overarching question/purpose using the record_overarching_question tool."""
-
-
-def _build_tool() -> dict:
-    return {
-        "name": "record_overarching_question",
-        "description": "Record the overarching research question or purpose that unifies a group of group-level questions.",
-        "input_schema": {
-            "type": "object",
-            "properties": {
-                "overarching_question": {
-                    "type": "string",
-                    "description": "a short question or phrase (same style as the input questions) capturing the shared theme -- not a list, not an explanation",
-                },
-            },
-            "required": ["overarching_question"],
-        },
-    }
-
-
-def _cache_path(super_group_id: str) -> Path:
-    return CACHE_DIR / f"{super_group_id}.json"
-
-
-def summarize_super_group(super_group_id: str, questions: list[str], model: str = DEFAULT_MODEL) -> str:
-    cache_path = _cache_path(super_group_id)
-    if cache_path.exists():
-        print(f"    {super_group_id}: using cached response")
-        return json.loads(cache_path.read_text())["overarching_question"]
-
-    joined = "\n".join(f"- {q}" for q in questions)
-    client = Anthropic()
-    response = client.messages.create(
-        model=model,
-        max_tokens=200,
-        system=cached_system(SYSTEM_PROMPT),
-        messages=[{"role": "user", "content": USER_PROMPT_TEMPLATE.format(questions=joined)}],
-        tools=[_build_tool()],
-        tool_choice={"type": "tool", "name": "record_overarching_question"},
-    )
-    log_cache_usage(super_group_id, response)
-
-    for block in response.content:
-        if block.type == "tool_use" and block.name == "record_overarching_question":
-            data = block.input
-            if set(data.keys()) - {"overarching_question"} and len(data) == 1:
-                data = next(iter(data.values()))
-            result = data.get("overarching_question", "")
-            CACHE_DIR.mkdir(parents=True, exist_ok=True)
-            cache_path.write_text(json.dumps({"overarching_question": result}, indent=2))
-            return result
-
-    raise RuntimeError(f"Model did not call record_overarching_question for super-group {super_group_id!r}")
+def _paragraph_lookup(manifest: list[dict]) -> dict[tuple[str, str], dict]:
+    lookup: dict[tuple[str, str], dict] = {}
+    for entry in manifest:
+        paper = SectionedPaper.model_validate(
+            json.loads((OUTPUT_DIR / entry["file"]).read_text(encoding="utf-8"))
+        )
+        section_titles = {section.id: section.title for section in paper.sections}
+        for paragraph in paper.paragraphs:
+            lookup[(paper.paper_id, paragraph.id)] = {
+                "paper": paper.paper_id,
+                "unit_id": paragraph.id,
+                "parent_section_id": paragraph.parent_section_id,
+                "section_title": section_titles.get(paragraph.parent_section_id, ""),
+                "tag": paragraph.tag,
+                "text": paragraph.text,
+            }
+    return lookup
 
 
 def main() -> None:
     path = OUTPUT_DIR / "group_of_groups.json"
-    groups = json.loads(path.read_text())
+    super_groups = json.loads(path.read_text(encoding="utf-8"))
+    quote_groups = json.loads((OUTPUT_DIR / "quote_groups.json").read_text(encoding="utf-8"))
+    group_by_id = {group["group_id"]: group for group in quote_groups.get("paragraphs", [])}
+    manifest = json.loads((OUTPUT_DIR / "manifest.json").read_text(encoding="utf-8"))
+    lookup = _paragraph_lookup(manifest)
 
-    print(f"Summarizing {len(groups)} super-groups ...")
-    for group in groups:
-        questions = [m["overarching_question"] for m in group["members"]]
-        overarching = summarize_super_group(group["super_group_id"], questions)
-        group["overarching_question"] = overarching
-        print(f"  {group['super_group_id']} ({len(questions)} members): {overarching!r}")
+    print(f"Preparing {len(super_groups)} merged and carried question groups ...")
+    for super_group in super_groups:
+        member_keys: set[tuple[str, str]] = set()
+        previous_questions = []
+        for member_group in super_group["members"]:
+            group = group_by_id.get(member_group["group_id"])
+            if not group:
+                continue
+            previous_questions.append(group.get("overarching_question", ""))
+            member_keys.update(
+                (member["paper"], member["unit_id"]) for member in group["members"]
+            )
+        paragraphs = [lookup[key] for key in sorted(member_keys) if key in lookup]
+        if not super_group.get("is_merged", len(super_group["members"]) > 1):
+            question = previous_questions[0] if previous_questions else ""
+            super_group["overarching_question"] = question
+            super_group["synthesis_provenance"] = {
+                "overarching_question": question,
+                "type": "singleton_carryover",
+                "input_group_ids": [
+                    member["group_id"] for member in super_group["members"]
+                ],
+                "input_paragraph_ids": [
+                    f"{paragraph['paper']}:{paragraph['unit_id']}"
+                    for paragraph in paragraphs
+                ],
+            }
+            print(
+                f"  {super_group['super_group_id']} carried forward unchanged "
+                f"({len(paragraphs)} complete paragraphs)"
+            )
+            continue
+        synthesis = synthesize_question(
+            super_group["super_group_id"],
+            paragraphs,
+            CACHE_DIR,
+            previous_questions=previous_questions,
+        )
+        super_group["overarching_question"] = synthesis["overarching_question"]
+        super_group["synthesis_provenance"] = synthesis
+        print(
+            f"  {super_group['super_group_id']} merged "
+            f"({len(paragraphs)} complete paragraphs): "
+            f"{super_group['overarching_question']!r}"
+        )
 
-    path.write_text(json.dumps(groups, indent=2))
+    path.write_text(json.dumps(super_groups, indent=2), encoding="utf-8")
     print(f"\nupdated {path}")
 
 

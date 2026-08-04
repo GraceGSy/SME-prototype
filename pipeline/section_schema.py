@@ -10,7 +10,7 @@ now, the unit's own text).
 section has its own heading text."""
 from __future__ import annotations
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 # Discourse relations: describe how a paragraph relates to its immediate
 # neighbor, not what role it plays in the paper. The same vocabulary is used for
@@ -29,10 +29,19 @@ GRANULARITIES = ["sections", "paragraphs"]
 class Section(BaseModel):
     id: str = Field(description="short stable id, e.g. 's1'")
     title: str = Field(default="", description="the section's own heading text as it appears in the paper, e.g. '4. Evaluation' (empty for paragraph units)")
-    tag: str = Field(description="a short question or phrase (not a fixed category) capturing what question about the research this unit answers, or what role it plays in describing the research")
+    tag: str = Field(description="a short, complete question capturing what question about the research this unit answers")
     text: str = Field(default="", description="the unit's own raw text, sliced locally from the extracted PDF text (not model-generated)")
+    parent_section_id: str = Field(default="", description="paragraph only: stable id of the source section containing this paragraph")
     prev_relation: str = Field(default="", description=f"paragraph only: this unit's discourse relation to the PREVIOUS unit, e.g. one of {DISCOURSE_TAGS}; empty if it's the first unit in its section")
     next_relation: str = Field(default="", description=f"paragraph only: this unit's discourse relation to the FOLLOWING unit, e.g. one of {DISCOURSE_TAGS}; empty if it's the last unit in its section")
+
+    @field_validator("tag")
+    @classmethod
+    def tag_must_be_a_question(cls, value: str) -> str:
+        normalized = " ".join(value.strip().split())
+        if not normalized.endswith("?"):
+            raise ValueError("unit tags must be complete questions ending in '?'")
+        return normalized
 
 
 class SectionedPaper(BaseModel):

@@ -1,185 +1,187 @@
-# Structural cross-paper matching pipeline
+# Question Atlas refinement prototype
 
-Extracts a hierarchical structure (sections → paragraphs) from a set of academic
-papers, tags each unit with a free-text question describing its role, cross-matches
-those tags between papers, groups the resulting links, and visualizes everything in
-an interactive HTML viewer.
-
-Loosely inspired by Gentner's Structure-Mapping Engine (structural alignment between
-papers), but implemented as a much simpler tag-matching pipeline rather than a full
-entity/proposition graph aligner. (An earlier, more literal SME-style attempt lives in
-`schema.py` / `extract_graph.py` / `align_graphs.py` / `align_trace.py` / `cli.py` and
-`viz/index.html` / `viz/align_viewer.html` — **not used by the current pipeline**,
-kept only for reference. Everything below is the active pipeline.)
+This repository turns academic papers into question-tagged sections and paragraphs,
+finds initial cross-paper correspondences, and then runs an inspectable sequence of
+Claude-backed refinement epochs. The active implementation is a question-mapping
+experiment inspired by structure mapping; it is not yet a literal implementation of
+Gentner's Structure-Mapping Engine.
 
 ## Setup
 
-```bash
-pip install -r requirements.txt
+```powershell
+cd pipeline
+python -m venv .venv
+.venv\Scripts\python -m pip install -r requirements.txt
 ```
 
-Requires an Anthropic API key with available credit:
+Set `ANTHROPIC_API_KEY` in the environment or in a `.env` file anywhere from the
+repository directory up through its ancestors, or enter a key for one run in the
+local run menu. A run-menu key is passed only to the child analysis process, is
+cleared from the form after launch, and is never written to run state or artifacts.
 
-```bash
-export ANTHROPIC_API_KEY=sk-ant-...
+## Run the application
+
+```powershell
+cd pipeline
+python analysis_server.py
 ```
 
-(The scripts read this from the environment directly via the `anthropic` SDK — there's
-no `.env` loading in the code, so `export` it in your shell, or `source` a `.env` file
-yourself before running.)
+The server opens `http://127.0.0.1:8743/` automatically and restores the newest
+completed saved run. Pass `--no-browser` to suppress automatic opening. Do not use
+`python -m http.server`: the viewer depends on the local API to load saved runs and
+start Claude-backed analyses securely. Analysis jobs use `pipeline/.venv` when it is
+available, even if the server was launched with global Python.
 
-Optionally override the model used for extraction/summarization calls (defaults to
-`claude-sonnet-5`):
+The UI lets a user:
 
-```bash
-export SME_EXTRACT_MODEL=claude-sonnet-5
+- select any combination of reusable library PDFs and newly uploaded PDFs;
+- configure the model, epoch count, context/chunk sizes, assignment batch size,
+  candidate count, every grouping/merge/stability threshold, paragraph-labeling
+  context, and assignment evidence;
+- start the complete analysis and follow its stage log;
+- inspect the initial section and paragraph comparisons;
+- visually replay initial groups, the initial supergroup merge, and every immutable
+  epoch on one pan-and-zoom canvas, with stable origin labels such as `0-1` for an
+  initial group and `2-1` for the first group created in epoch 2;
+- switch between all Claude-selected memberships and each paragraph's strongest
+  deterministic ranking;
+- inspect newly assigned and orphaned paragraphs with complete provenance;
+- click any question marked as revised to compare its previous and revised wording,
+  lexical similarity, and the newly assigned paragraphs considered in that revision;
+- read the complete papers side by side in a synchronized-scroll `Paper Map`, where
+  every paragraph is colored by its best-one group at the selected replay step,
+  groups can be pinned for cross-paper scanning, and a wordless skeleton shows
+  paragraph-length color bands as they change across merges and assignments;
+- show every unmatched or unassigned paragraph rather than silently pruning it.
+
+Each run is stored under `pipeline/output/runs/<run_id>/`. The most recent completed
+run is reopened when the server restarts, and any completed run can be reopened from
+the run menu. Every run stores copies of its input PDFs, their hashes, all settings,
+the exact prompt templates/tool schemas, runtime versions, Git/source-file hashes,
+and the generated artifacts. Generated output is gitignored.
+
+The run menu also supports controlled ablations. `fixed paragraph corpus` copies
+verified paragraph ids, boundaries, text, and relations from a saved run before
+rerunning downstream stages. It can preserve the questions, relabel each fixed
+paragraph with one complete section as context, or relabel it with one complete paper
+as context. `fixed pre-epoch state` additionally reuses all initial matching and group
+artifacts so an assignment-prompt treatment changes no upstream state. Reuse is
+allowed only when paper ids and PDF SHA-256 hashes match exactly; the source run,
+scope, copied-artifact hash, and paragraph-id hash are recorded.
+
+## Active pipeline
+
+The server runs these stages in order:
+
+1. `extract_sections.py` extracts high-level section headings and complete question
+   tags with one Claude call per paper. The default sends the complete extracted
+   paper; the run menu can impose an explicit character limit when needed.
+2. `attach_section_text.py` deterministically slices complete source section text
+   between the extracted headings.
+3. `extract_fine_grained.py` sends each complete section to Claude. It identifies
+   paragraph boundaries, a complete question per paragraph, adjacent discourse
+   relations, and a stable `parent_section_id`. Oversized sections are split at
+   deterministic text boundaries using the configured chunk size; they are never
+   silently collapsed into one fallback paragraph.
+   In the optional context treatments, `relabel_section_context.py` gives Claude the
+   fixed paragraphs from one complete section per request, while
+   `relabel_full_paper.py` gives it every fixed paragraph in one complete paper
+   context. Both change only paragraph questions. Text, ids, order, section
+   membership, and relations remain fixed, with every old/new question recorded in
+   `paragraph_context_relabel.json`.
+4. `match_tags.py` finds the configured number of question-tag matches in every other
+   paper by a deterministic lexical score. `prune_bidirectional.py` keeps reciprocal candidates.
+5. `group_matches.py` forms thresholded connected components.
+6. `summarize_groups.py` gives Claude the **complete source text and provenance of
+   every paragraph** in each group, rather than only its question tags.
+7. `match_groups.py` asks Claude for directional conceptual equivalence judgments
+   between group questions. `prune_group_bidirectional.py` keeps only reciprocal
+   judgments, and `group_groups.py` applies the deterministic lexical threshold.
+   Every nonmerged group remains as a singleton. `summarize_super_groups.py`
+   synthesizes actual merges from all complete paragraphs and copies singleton
+   questions without another model call.
+8. `refine_epochs.py` performs zero or more alternating refinement epochs.
+
+## Epoch semantics
+
+Epoch 0 records every initial paragraph group and every paragraph outside those
+groups. Every later epoch performs these monotonic substeps:
+
+1. Claude judges directional conceptual equivalence between the current group
+   questions. A merge edge exists only when Claude selects both directions and the
+   deterministic lexical score passes the configured threshold. Connected groups
+   merge; all other groups carry forward unchanged.
+2. Claude receives only the currently unassigned complete paragraphs, current group
+   questions, and source-section provenance. It returns zero, one, or many groups for
+   every supplied paragraph. The prompt explicitly prohibits force-fitting. An
+   evidence treatment can accompany each question with either all assigned
+   paragraphs or a deterministic TF-IDF medoid sample, selected per paper with exact
+   paragraph-id provenance and explicit user-configured limits.
+3. A corpus-local TF-IDF cosine score is computed for every paragraph/question pair.
+   Same-section cohesion counts only peers from the exact section in the same source
+   paper. Claude-selected memberships are ranked by
+   `(1 - section_weight) * TF-IDF + section_weight * cohesion`; the UI can show all
+   selected memberships or rank one only.
+4. Only groups that gained paragraphs are reconsidered. Claude receives every complete
+   paragraph in that group and either preserves or revises its complete question.
+5. The run stops at the configured maximum or when there are no merges, no new
+   assignments, and no material question revisions.
+
+Membership is sticky: an assigned paragraph is never removed or reconsidered by a
+later assignment step. Groups can merge but never split, retire, or disappear, so
+assigned-paragraph coverage can only increase and group count can only decrease or
+stay constant.
+
+The lexical merge score is deterministic:
+`0.5 * token-set Jaccard + 0.5 * SequenceMatcher ratio`, using lowercased question
+text. It is a gate after reciprocal Claude judgment, not a model-reported confidence.
+
+`epoch_history.json` records configuration, full group lineage, Claude assignment
+decisions, deterministic component scores, source membership, newly added paragraphs,
+synthesis prompt hashes, model names, and stopping evidence. Source paragraph text
+remains in each paper JSON and is joined by stable `paper_id`/`unit_id` provenance.
+Every substep also stores `unassigned_paragraphs`. The viewer exposes these by paper
+without changing their total when `changed only` is selected. Initial section,
+paragraph, and group views likewise expose unmatched units behind the
+`show unassigned` control.
+
+## Important interpretation
+
+Claude makes conceptual merge and membership judgments. Deterministic lexical
+similarity gates reciprocal merge judgments; deterministic TF-IDF and section scores
+rank Claude-selected memberships. None of these values are calibrated probabilities.
+A many-to-many display is the complete model output, while "best one" is only a
+viewer filter over those Claude-selected memberships.
+
+Initial paragraph matching is still lexical and structurally shallow. Epochs add
+iterative question merging, orphan assignment, and non-splitting lineage, but they do
+not yet construct or align Gentner-style within-paper relational trees.
+
+## Tests
+
+```powershell
+cd pipeline
+.venv\Scripts\python -m unittest discover -s tests -v
 ```
 
-## Input papers
+The focused suite checks full-paragraph prompt inclusion, the two-gate merge contract,
+deterministic scoring, same-section weighting, singleton survival, append-only
+membership, and lossless batching.
 
-The pipeline expects PDFs in `SME/papers/`. Three example papers are checked in
-there already:
+Regenerate the quantitative audit from every saved operational run with:
 
-```
-SME/papers/examplore_chi18.pdf
-SME/papers/mesotext.pdf
-SME/papers/paralib_uist22.pdf
-```
-
-To use your own papers, drop PDFs into `SME/papers/` and either edit each script's
-`DEFAULT_PAPERS` list or pass paths explicitly, e.g. `python3 extract_sections.py
-my_paper.pdf`. The paper's filename stem (minus `.pdf`) becomes its `paper_id`
-throughout the pipeline and viewer.
-
-## Running the pipeline
-
-Run these **in order** from `SME/pipeline/`. Each step reads the previous step's
-output from `output/sections/`, so later steps will silently do nothing useful (or
-crash) if run out of order.
-
-```bash
-# 1. Extract each paper's high-level sections + a free-text role tag per section.
-#    One Claude call per paper.
-python3 extract_sections.py
-
-# 2. Fill in each section's actual text by slicing the raw PDF text locally.
-#    No API call. MUST run before step 3, and MUST be re-run any time step 1
-#    is re-run (extract_sections.py resets section text to "").
-python3 attach_section_text.py
-
-# 3. Extract paragraphs within each section, each with its own free-text tag
-#    plus prev/next discourse-relation tags. One Claude call per section.
-python3 extract_fine_grained.py
-
-# 4. For every section/paragraph, find its top-3 most similar tags in each
-#    OTHER paper (directional candidates). No API call -- pure lexical
-#    similarity. -> tag_matches.json
-python3 match_tags.py
-
-# 5. Prune to only bidirectional (mutual top-3) matches. No API call.
-#    -> bidirectional_matches.json
-python3 prune_bidirectional.py
-
-# 6. Group linked quotes into connected components (transitive), filtered to
-#    a per-granularity similarity threshold before grouping. No API call.
-#    -> quote_groups.json
-python3 group_matches.py
-
-# 7. For each paragraph group, ask Claude what overarching research question
-#    unifies its members. One Claude call per group. Writes back onto
-#    quote_groups.json.
-python3 summarize_groups.py
-
-# 8. Match paragraph-group summary questions against each other (top-3 each),
-#    then prune to bidirectional. No API calls. -> group_matches.json,
-#    bidirectional_group_matches.json
-python3 match_groups.py
-python3 prune_group_bidirectional.py
-
-# 9. Group the paragraph-groups themselves into super-groups (connected
-#    components over the bidirectional group matches, threshold-filtered).
-#    No API call. -> group_of_groups.json
-python3 group_groups.py
-
-# 10. Ask Claude what overarching question unifies each super-group's member
-#     questions. One Claude call per super-group. Writes back onto
-#     group_of_groups.json.
-python3 summarize_super_groups.py
+```powershell
+cd pipeline
+.venv\Scripts\python build_run_analysis_report.py
 ```
 
-Steps 1, 3, 7, and 10 are the only ones that call the Claude API. All of them cache
-their responses to disk (per paper/section/group id, under
-`output/sections/_cache/`) and check the cache before calling again — safe to re-run
-a script after a crash or after running out of credit; already-completed items are
-skipped. To force a full re-run of a step, delete its cache subdirectory first (and
-remember step 2's note above about re-running `attach_section_text.py` after step 1).
+The command writes `output/pdf/question_atlas_run_analysis.pdf` at the repository
+root and includes failed attempts explicitly while using only completed runs for
+final treatment comparisons.
 
-Anthropic prompt caching (`cache_control: ephemeral` on the system prompt) is also
-used within steps 1/3/7/10 so that repeated calls in one run only pay full price for
-the first call.
+## Earlier implementations
 
-### Output files
-
-Everything lands in `output/sections/`:
-
-| File | Produced by | Contents |
-|---|---|---|
-| `<paper_id>.json` | extract_sections.py, attach_section_text.py, extract_fine_grained.py | one paper's sections + paragraphs, each with `id`, `title`, `tag`, `text`, `prev_relation`, `next_relation` |
-| `manifest.json` | extract_sections.py | `[{paper_id, title, file}, ...]` for every paper in `output/sections/` |
-| `tag_matches.json` | match_tags.py | directional top-3 tag candidates per unit, per granularity |
-| `bidirectional_matches.json` | prune_bidirectional.py | mutual-match links only, per granularity |
-| `quote_groups.json` | group_matches.py, summarize_groups.py | connected-component groups of linked quotes (sections + paragraphs); paragraph groups also get an `overarching_question` |
-| `group_matches.json` | match_groups.py | directional top-3 similar groups per paragraph group |
-| `bidirectional_group_matches.json` | prune_group_bidirectional.py | mutual-match links between paragraph groups |
-| `group_of_groups.json` | group_groups.py, summarize_super_groups.py | super-groups of paragraph groups, each with an `overarching_question` |
-
-`output/sections/_cache/` holds the raw per-item Claude responses (safe to delete to
-force a re-run; safe to commit or ignore, your call — it's just a speed/cost
-optimization, not required output).
-
-## Viewing the results
-
-Serve `SME/pipeline/` over HTTP (the viewer fetches JSON via `fetch()`, which won't
-work from a `file://` URL) and open the viewer:
-
-```bash
-python3 -m http.server 8743 --directory SME/pipeline
-```
-
-then open `http://localhost:8743/viz/tag_matches_viewer.html` (this is the current,
-active viewer — `viz/sections_viewer.html` is an earlier iteration kept for
-reference; `viz/index.html` and `viz/align_viewer.html` belong to the old
-entity/proposition pipeline mentioned above, not this one).
-
-The viewer has three tabs:
-- **Section** / **Paragraph** — columns of quotes (one column per paper), with
-  bidirectional matches drawn as curved links between them. Hover a quote to preview
-  its links; click to pin it and re-align the other columns so linked quotes land on
-  the same row; click a quote's "expand" hint to toggle its full text independently
-  of pinning.
-- **Groups** — a node-link tree: top-level nodes are super-groups (click to expand
-  into their member paragraph-groups, shown with arced similarity links between
-  siblings); click a group node to expand it into a 3-column quote view (same
-  link-drawing/hover/expand behavior as the Section/Paragraph tabs), showing that
-  group's actual member quotes and the links between them.
-
-Both tabs share a **preview length** slider (how much quote text to show before
-truncating) and a **min similarity** slider (filters out weaker links/arcs below the
-chosen threshold).
-
-If you edit the viewer HTML/JS and don't see changes reflected, hard-refresh or
-append a cache-busting query string (`?t=2`) — browsers can cache the HTML file
-itself, not just the JSON it fetches (which already requests `cache: "no-store"`).
-
-## Tuning knobs
-
-- `TOP_K = 3` in `match_tags.py` / `match_groups.py` — how many candidate matches to
-  keep per unit/group before bidirectional pruning.
-- `SIMILARITY_THRESHOLDS` in `group_matches.py` (`0.33` sections, `0.45` paragraphs)
-  and `SIMILARITY_THRESHOLD = 0.33` in `group_groups.py` — links below this score are
-  dropped *before* connected-components grouping, to keep groups from collapsing into
-  one giant blob on a dense link graph. Raise these if groups still look too broad;
-  lower them if you're getting too many tiny/singleton groups.
-- Similarity itself (`text_similarity()` in `align_graphs.py`) is a 50/50 blend of
-  Jaccard word-overlap and character-level sequence similarity — cheap and
-  dependency-free, no embeddings or extra API calls involved.
+`schema.py`, `extract_graph.py`, `align_graphs.py`, `align_trace.py`, `cli.py`,
+`viz/index.html`, and `viz/align_viewer.html` contain an older entity/proposition SME
+experiment. The active pipeline reuses only `align_graphs.text_similarity()` for
+legacy lexical matching and stability reporting.

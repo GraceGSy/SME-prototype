@@ -2,805 +2,1728 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Bidirectional Tag Match Viewer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Question Atlas</title>
+<link rel="icon" href="data:,">
 <style>
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    margin: 0;
-    background: #fafafa;
-    color: #212529;
+    margin: 0; background: #fafafa; color: #212529; overflow-x: hidden;
   }
   header {
-    position: sticky;
-    top: 0;
-    background: #fff;
+    position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: 14px;
+    flex-wrap: wrap; min-height: 36px; padding: 5px 16px; background: #fff;
     border-bottom: 1px solid #dee2e6;
-    padding: 5px 16px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    flex-wrap: wrap;
-    z-index: 20;
   }
-  header h1 { font-size: 14px; margin: 0; font-weight: 600; color: #495057; }
+  header h1 { margin: 0; color: #495057; font-size: 14px; font-weight: 600; }
+  button, input, select { font: inherit; }
+  button { cursor: pointer; }
+  button:disabled { cursor: default; opacity: .45; }
+  .tab-list { display: flex; gap: 0; }
+  .tab-button {
+    padding: 3px 10px; border: 1px solid #ced4da; border-radius: 0; background: #fff;
+    color: #495057; font-size: 11px;
+  }
+  .tab-button:first-child { border-radius: 4px 0 0 4px; }
+  .tab-button:last-child { border-radius: 0 4px 4px 0; }
+  .tab-button:not(:first-child) { border-left: 0; }
+  .tab-button.active { border-color: #1c7ed6; background: #1c7ed6; color: #fff; }
+  .header-control { display: flex; align-items: center; gap: 6px; color: #495057; font-size: 11px; }
+  .header-control select, .header-control button {
+    min-height: 24px; padding: 2px 7px; border: 1px solid #ced4da; border-radius: 4px;
+    background: #fff; color: #495057;
+  }
+  .header-control input[type="range"] { width: 105px; }
   #legend {
-    font-size: 10.5px;
-    color: #868e96;
-    padding: 4px 16px;
-    background: #fff;
-    border-bottom: 1px solid #eee;
-    position: sticky;
-    top: 31px;
-    z-index: 19;
+    position: sticky; top: 36px; z-index: 29; padding: 4px 16px; background: #fff;
+    border-bottom: 1px solid #eee; color: #868e96; font-size: 10.5px;
+  }
+  .analysis-panel { margin: 8px 14px 0; border: 1px solid #dee2e6; border-radius: 6px; background: #fff; }
+  .analysis-panel > summary {
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    padding: 7px 10px; cursor: pointer; list-style: none; color: #495057; font-size: 11px;
+  }
+  .analysis-panel > summary::-webkit-details-marker { display: none; }
+  .analysis-title { font-weight: 600; }
+  .run-state { color: #868e96; font-size: 10px; }
+  .run-body { padding: 10px; border-top: 1px solid #e9ecef; }
+  .run-grid { display: grid; grid-template-columns: minmax(280px, 1.4fr) minmax(280px, 1fr); gap: 14px; }
+  .run-section { min-width: 0; }
+  .run-section h2 { margin: 0 0 6px; color: #495057; font-size: 11px; font-weight: 600; }
+  .paper-picker { display: flex; flex-wrap: wrap; gap: 5px; max-height: 94px; overflow: auto; }
+  .paper-option {
+    display: flex; align-items: center; gap: 4px; max-width: 100%; padding: 3px 7px;
+    border: 1px solid #dee2e6; border-radius: 9px; background: #f8f9fa;
+    color: #495057; font-size: 10.5px;
+  }
+  .paper-option span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .upload-row { display: flex; align-items: center; gap: 7px; margin-top: 8px; color: #868e96; font-size: 10.5px; }
+  .upload-row input[type="file"] { max-width: 270px; }
+  .settings-grid { display: grid; grid-template-columns: repeat(3, minmax(100px, 1fr)); gap: 7px; }
+  .run-field { display: grid; gap: 3px; color: #6c757d; font-size: 9.5px; }
+  .run-field input, .run-field select {
+    width: 100%; min-width: 0; padding: 4px 6px; border: 1px solid #ced4da;
+    border-radius: 4px; background: #fff; color: #343a40; font-size: 11px;
+  }
+  .key-field { grid-column: span 2; }
+  .advanced-settings { margin-top: 8px; color: #6c757d; font-size: 10px; }
+  .advanced-settings summary { cursor: pointer; }
+  .advanced-settings .settings-grid { margin-top: 7px; }
+  .run-actions { display: flex; align-items: end; gap: 7px; margin-top: 9px; }
+  .primary-action {
+    padding: 5px 10px; border: 1px solid #1c7ed6; border-radius: 4px;
+    background: #1c7ed6; color: #fff; font-size: 11px;
+  }
+  .secondary-action {
+    padding: 5px 9px; border: 1px solid #ced4da; border-radius: 4px;
+    background: #fff; color: #495057; font-size: 11px;
+  }
+  .run-error { margin-top: 7px; color: #495057; font-size: 11px; font-weight: 600; }
+  .run-log-wrap { margin-top: 8px; color: #6c757d; font-size: 10px; }
+  .run-log {
+    max-height: 140px; overflow: auto; margin: 6px 0 0; padding: 8px;
+    border: 1px solid #dee2e6; border-radius: 4px; background: #f8f9fa;
+    color: #495057; font: 10px/1.4 Consolas, monospace; white-space: pre-wrap;
   }
   #stage { position: relative; padding: 10px 14px; }
-  #linkLayer { position: absolute; top: 0; left: 0; z-index: 0; pointer-events: none; }
+  .empty-state { padding: 40px; color: #868e96; font-size: 13px; }
+
+  /* Original section/paragraph comparison surface. */
+  #alignmentCanvas { position: relative; }
+  #linkLayer { position: absolute; inset: 0 auto auto 0; z-index: 0; pointer-events: none; }
   #columns { position: relative; z-index: 1; display: flex; gap: 56px; align-items: flex-start; }
-  .column { flex: 1 1 0; min-width: 0; background: transparent; }
+  .column { flex: 1 1 0; min-width: 0; }
   .paper-title {
-    font-size: 13px; font-weight: 700; color: #343a40;
-    padding-bottom: 4px; margin-bottom: 6px; border-bottom: 2px solid #343a40;
+    margin-bottom: 6px; padding-bottom: 4px; border-bottom: 2px solid #343a40;
+    color: #343a40; font-size: 13px; font-weight: 700;
   }
   .section-block {
-    background: #fff;
-    border: 1.5px solid #e9ecef;
-    border-radius: 6px;
-    padding: 6px 9px;
-    margin-bottom: 5px;
-    transition: border-color 0.1s, box-shadow 0.1s;
+    margin-bottom: 5px; padding: 6px 9px; border: 1.5px solid #e9ecef;
+    border-radius: 6px; background: #fff; transition: border-color .1s, box-shadow .1s, opacity .1s;
   }
   .section-block.linkable { cursor: pointer; }
-  .section-block.highlight { border-color: #1c7ed6; box-shadow: 0 0 0 2px rgba(28,126,214,0.25); }
-  .section-block.dim { opacity: 0.35; }
-  .section-head { display: flex; align-items: baseline; gap: 6px; margin-bottom: 3px; flex-wrap: wrap; }
+  .section-block.highlight { border-color: #1c7ed6; box-shadow: 0 0 0 2px rgba(28,126,214,.25); }
+  .section-block.dim { opacity: .35; }
+  .section-block.orphan { border-style: dashed; border-color: #adb5bd; }
+  .section-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; margin-bottom: 3px; }
   .tag-badge {
-    font-size: 11px; font-weight: 600; color: #343a40; background: #eef1f3;
-    border: 1px solid #dee2e6; padding: 1px 7px; border-radius: 9px; white-space: normal;
-    line-height: 1.3;
+    padding: 1px 7px; border: 1px solid #dee2e6; border-radius: 9px; background: #eef1f3;
+    color: #343a40; font-size: 11px; font-weight: 600; line-height: 1.3;
   }
-  .section-title { font-size: 12.5px; font-weight: 600; color: #212529; }
+  .section-title { color: #212529; font-size: 12.5px; font-weight: 600; }
   .relation-badge {
-    font-size: 9.5px; font-style: italic; color: #495057; background: #f1f3f5;
-    border: 1px solid #dee2e6; padding: 1px 6px; border-radius: 9px; white-space: nowrap;
+    padding: 1px 6px; border: 1px solid #dee2e6; border-radius: 9px;
+    background: #f1f3f5; color: #495057; font-size: 9.5px; font-style: italic;
   }
-  .section-text { font-size: 12px; line-height: 1.35; color: #495057; white-space: normal; }
-  .section-text-preview:empty { display: none; }
+  .orphan-badge { color: #868e96; font-size: 9px; font-weight: 600; }
+  .section-text { color: #495057; font-size: 12px; line-height: 1.35; }
   .section-text-full { display: none; }
   .section-block.expanded .section-text-preview { display: none; }
   .section-block.expanded .section-text-full { display: block; }
-  .expand-hint { font-size: 10px; color: #adb5bd; margin-top: 2px; }
+  .expand-hint { margin-top: 2px; color: #adb5bd; font-size: 10px; }
   .section-block.expanded .expand-hint::after { content: "collapse ▴"; }
   .section-block:not(.expanded) .expand-hint::after { content: "click to expand ▾"; }
-  .empty-state { padding: 40px; color: #868e96; font-size: 13px; }
-  .granularity-btn {
-    font-size: 11px; padding: 3px 10px; border: 1px solid #ced4da; background: #fff; color: #495057;
-    cursor: pointer; border-radius: 0;
-  }
-  .granularity-btn:first-child { border-radius: 4px 0 0 4px; }
-  .granularity-btn:last-child { border-radius: 0 4px 4px 0; }
-  .granularity-btn:not(:first-child) { border-left: none; }
-  .granularity-btn.active { background: #1c7ed6; color: #fff; border-color: #1c7ed6; }
 
-  #treeLinkLayer { position: absolute; top: 0; left: 0; z-index: 0; pointer-events: none; }
-  #treeRoot { position: relative; z-index: 1; display: flex; gap: 40px; align-items: flex-start; }
-  .tree-node-wrap { display: flex; flex-direction: column; align-items: center; }
-  .tree-node {
-    background: #fff; border: 1.5px solid #ced4da; border-radius: 8px;
-    padding: 8px 12px; cursor: pointer; min-width: 170px; max-width: 230px;
-    text-align: center; transition: border-color 0.1s, box-shadow 0.1s;
+  /* Group replay uses the original white cards, gray edges, and blue accent. */
+  .replay-shell { position: relative; }
+  .replay-summary {
+    position: absolute; top: 8px; left: 8px; z-index: 8; display: flex; gap: 10px;
+    padding: 5px 8px; border: 1px solid #dee2e6; border-radius: 4px;
+    background: rgba(255,255,255,.94); color: #6c757d; font-size: 10px;
   }
-  .tree-node:hover { border-color: #1c7ed6; }
-  .tree-node.open { border-color: #1c7ed6; box-shadow: 0 0 0 2px rgba(28,126,214,0.15); }
-  .tree-node-question { font-size: 12.5px; line-height: 1.35; }
-  .super-node .tree-node-question { font-weight: 700; color: #212529; }
-  .group-node { background: #f8f9fa; }
-  .group-node .tree-node-question { font-weight: 600; color: #343a40; font-size: 12px; }
-  .tree-node-meta { font-size: 10px; color: #868e96; margin-top: 3px; font-weight: 400; }
-  .tree-children { display: flex; gap: 24px; align-items: flex-start; margin-top: 36px; }
-  /* extra headroom under super-groups specifically, so the arced sibling-group
-     links (which bulge upward up to ~110px) have room to clear without being
-     hidden behind the super-group node above them */
-  #treeRoot > .tree-node-wrap > .tree-children { margin-top: 140px; }
-  .group-detail-children { margin-top: 36px; }
-  .group-columns-wrap { position: relative; width: min(90vw, 760px); }
-  .group-link-layer { position: absolute; top: 0; left: 0; pointer-events: none; }
-  .group-columns { position: relative; display: flex; gap: 30px; align-items: flex-start; }
-  .group-columns .column { flex: 1 1 0; min-width: 0; text-align: left; }
-  .group-columns .paper-title { font-size: 11px; }
-  .group-column-empty { font-size: 11.5px; color: #adb5bd; font-style: italic; padding: 6px 2px; }
+  #replayViewport {
+    position: relative; height: calc(100vh - 132px); min-height: 520px; overflow: hidden;
+    border: 1px solid #dee2e6; border-radius: 6px; background: #fafafa;
+    cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none;
+  }
+  #replayViewport.dragging { cursor: grabbing; }
+  #replayWorld { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+  #replayEdges { position: absolute; inset: 0; z-index: 0; overflow: visible; pointer-events: none; }
+  #replayNodes { position: absolute; inset: 0; z-index: 1; }
+  .replay-node {
+    position: absolute; padding: 9px 11px; border: 1.5px solid #ced4da;
+    border-radius: 8px; background: #fff; color: #212529; text-align: center;
+    box-shadow: 0 1px 2px rgba(0,0,0,.04); transition: border-color .15s, box-shadow .15s;
+  }
+  .replay-node:hover, .replay-node.selected { border-color: #1c7ed6; box-shadow: 0 0 0 2px rgba(28,126,214,.15); }
+  .replay-node.updated, .replay-node.new-node { border-color: #1c7ed6; animation: replayPulse 1.15s ease-out; }
+  @keyframes replayPulse {
+    0% { box-shadow: 0 0 0 0 rgba(28,126,214,.35); }
+    100% { box-shadow: 0 0 0 9px rgba(28,126,214,0); }
+  }
+  .replay-super-node { border-color: #1c7ed6; }
+  .replay-group-node { background: #f8f9fa; }
+  .replay-origin-label {
+    margin-bottom: 2px; color: #6c757d; font-size: 9.5px; font-weight: 700;
+    letter-spacing: .02em; text-align: left;
+  }
+  .replay-question {
+    display: flex; align-items: center; justify-content: center; width: 100%; min-height: 102px;
+    margin: 0; padding: 0; border: 0; background: transparent; color: #212529;
+    font-size: 12.5px; font-weight: 600; line-height: 1.35; overflow-wrap: anywhere; text-align: center;
+  }
+  .replay-super-node .replay-question { font-weight: 700; }
+  .replay-meta { margin-top: 3px; color: #868e96; font-size: 10px; }
+  .member-lanes {
+    display: grid; grid-template-columns: repeat(var(--paper-count), minmax(72px, 1fr));
+    gap: 5px; margin-top: 8px; padding-top: 7px; border-top: 1px solid #e9ecef; text-align: left;
+  }
+  .member-lane { min-width: 0; }
+  .member-lane-label { overflow: hidden; margin-bottom: 3px; color: #868e96; font-size: 8.5px; text-overflow: ellipsis; white-space: nowrap; }
+  .paragraph-dots { display: flex; flex-wrap: wrap; gap: 3px; align-content: flex-start; }
+  .paragraph-dot {
+    width: 9px; height: 9px; padding: 0; border: 1px solid #adb5bd; border-radius: 2px;
+    background: #fff; cursor: pointer;
+  }
+  .paragraph-dot:hover, .paragraph-dot.moved, .paragraph-dot.newly-assigned {
+    border-color: #1c7ed6; background: #1c7ed6;
+  }
+  .paragraph-dot.orphan { border-style: dashed; background: #f8f9fa; }
+  .replay-tray {
+    position: absolute; padding: 8px 10px; border: 1px dashed #adb5bd;
+    border-radius: 6px; background: #fff; text-align: left;
+  }
+  .replay-tray-title { color: #495057; font-size: 11px; font-weight: 600; }
+  .replay-tray .member-lanes { margin-top: 5px; }
+  .replay-edge {
+    fill: none; stroke: #adb5bd; stroke-width: 1.5;
+    transition: stroke-width .12s ease, opacity .12s ease;
+  }
+  .replay-edge.similarity { stroke: #1c7ed6; opacity: .35; }
+  .replay-edge.merge { stroke: #1c7ed6; stroke-width: 2; }
+  .replay-edge.containment { stroke: #adb5bd; stroke-width: 1.5; }
+  .replay-badge {
+    display: inline-block; margin-top: 4px; padding: 1px 5px; border: 1px solid #ced4da;
+    border-radius: 8px; color: #6c757d; font-size: 8.5px; font-weight: 600;
+  }
+  .replay-badge-slot { height: 22px; }
+  .replay-badge.changed { border-color: #1c7ed6; color: #1c7ed6; }
+  .replay-detail {
+    position: absolute; padding: 12px; border: 1.5px solid #ced4da; border-radius: 8px;
+    background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.05); text-align: left;
+  }
+  .replay-detail-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 9px; }
+  .replay-detail-head strong { color: #343a40; font-size: 12px; }
+  .replay-detail-head span { color: #868e96; font-size: 10px; }
+  .replay-detail-scroll { position: relative; max-height: 390px; overflow: auto; }
+  .group-columns-wrap { position: relative; min-width: 760px; }
+  .group-link-layer { position: absolute; inset: 0 auto auto 0; z-index: 0; pointer-events: none; }
+  .group-columns { position: relative; z-index: 1; display: flex; gap: 30px; align-items: flex-start; padding-top: 34px; }
+  .group-columns .column { flex: 1 1 0; min-width: 220px; }
+  .group-columns .paper-title {
+    padding: 5px 8px; border: 1px solid #ced4da; border-radius: 6px; background: #f8f9fa;
+    font-size: 11px; text-align: center;
+  }
+  .group-column-empty { padding: 6px 2px; color: #adb5bd; font-size: 11.5px; font-style: italic; }
+  .group-paragraph-card .tag-badge { border: 0; padding: 0; background: transparent; text-align: left; cursor: pointer; }
+  .detail-link-edge { fill: none; stroke: #495057; }
+  .detail-tree-edge { fill: none; stroke: #adb5bd; stroke-width: 1.25; }
+
+  /* Final best-one assignments shown in full-paper reading order. */
+  .paper-map-shell {
+    display: grid; grid-template-rows: auto minmax(0, 1fr); min-height: 520px;
+    border: 1px solid #dee2e6; border-radius: 6px; background: #fff; overflow: hidden;
+  }
+  .paper-map-overview {
+    display: flex; align-items: center; gap: 10px; min-width: 0; padding: 7px 9px;
+    border-bottom: 1px solid #e9ecef; background: #f8f9fa;
+  }
+  .paper-map-summary { flex: 0 0 auto; color: #6c757d; font-size: 10px; white-space: nowrap; }
+  .paper-map-mode-toggle { display: inline-flex; flex: 0 0 auto; border: 1px solid #ced4da; border-radius: 5px; overflow: hidden; }
+  .paper-map-mode-button {
+    padding: 3px 7px; border: 0; border-right: 1px solid #ced4da; background: #fff;
+    color: #495057; font-size: 9.5px;
+  }
+  .paper-map-mode-button:last-child { border-right: 0; }
+  .paper-map-mode-button.active { background: #0d6efd; color: #fff; }
+  .paper-map-legend { display: flex; gap: 5px; min-width: 0; overflow-x: auto; scrollbar-width: thin; }
+  .paper-map-legend-item {
+    display: inline-flex; align-items: center; gap: 5px; flex: 0 0 auto; max-width: 235px;
+    padding: 3px 7px; border: 1px solid #dee2e6; border-radius: 10px; background: #fff;
+    color: #495057; font-size: 9.5px; text-align: left;
+  }
+  .paper-map-legend-item:hover, .paper-map-legend-item.highlight, .paper-map-legend-item.selected {
+    border-color: var(--group-color); box-shadow: inset 0 0 0 1px var(--group-color);
+  }
+  .paper-map-legend-item.selected { background: var(--group-fill); }
+  .paper-map-swatch { flex: 0 0 auto; width: 9px; height: 9px; border-radius: 2px; background: var(--group-color); }
+  .paper-map-legend-question { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .paper-map-legend-count { color: #868e96; }
+  .paper-map-columns {
+    display: grid; grid-template-columns: repeat(var(--paper-count), minmax(320px, 1fr));
+    gap: 10px; min-height: 0; padding: 10px; overflow-x: auto; background: #fafafa;
+  }
+  .paper-map-column {
+    min-width: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable;
+    border: 1px solid #dee2e6; border-radius: 6px; background: #fff;
+  }
+  .paper-map-paper-head {
+    position: sticky; top: 0; z-index: 3; padding: 8px 10px; border-bottom: 2px solid #343a40;
+    background: rgba(255,255,255,.97); color: #343a40; font-size: 13px; font-weight: 700;
+  }
+  .paper-map-section-head {
+    margin: 11px 9px 5px; padding-bottom: 4px; border-bottom: 1px solid #dee2e6;
+    color: #495057; font-size: 10.5px; font-weight: 700;
+  }
+  .paper-map-paragraph {
+    margin: 0 8px 7px; padding: 8px 9px; border: 1px solid var(--group-color);
+    border-left-width: 5px; border-radius: 5px; background: var(--group-fill); cursor: pointer;
+    transition: opacity .12s ease, box-shadow .12s ease;
+  }
+  .paper-map-paragraph:hover, .paper-map-paragraph.highlight { box-shadow: 0 0 0 2px color-mix(in srgb, var(--group-color) 28%, transparent); }
+  .paper-map-paragraph.inspected { box-shadow: 0 0 0 2px #343a40; }
+  .paper-map-paragraph.dim, .paper-map-legend-item.dim { opacity: .24; }
+  .paper-map-paragraph.orphan {
+    --group-color: #adb5bd; --group-fill: #f8f9fa; border-style: dashed;
+  }
+  .paper-map-paragraph-meta { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 4px; color: #868e96; font-size: 8.5px; }
+  .paper-map-paragraph-question { margin-bottom: 4px; color: #343a40; font-size: 11px; font-weight: 650; line-height: 1.35; overflow-wrap: anywhere; }
+  .paper-map-paragraph-text { color: #495057; font-size: 10.5px; line-height: 1.45; white-space: pre-line; overflow-wrap: anywhere; }
+
+  .paper-map-skeleton-columns {
+    display: grid; grid-template-columns: repeat(var(--paper-count), minmax(220px, 1fr));
+    gap: 18px; min-height: 0; padding: 14px 22px 18px; overflow: auto; background: #fafafa;
+  }
+  .paper-map-skeleton-paper {
+    display: grid; grid-template-rows: auto minmax(0, 1fr); min-width: 0; min-height: 0;
+    border: 1px solid #dee2e6; border-radius: 6px; background: #fff; overflow: hidden;
+  }
+  .paper-map-skeleton-frame { min-height: 0; padding: 8px; background: #f8f9fa; }
+  .paper-map-skeleton-track {
+    display: flex; flex-direction: column; width: 100%; height: 100%; min-height: 380px;
+    border: 1px solid #ced4da; border-radius: 3px; background: #fff; overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  }
+  .paper-map-skeleton-block {
+    position: relative; flex: var(--paragraph-weight) 1 0; min-height: 1px; width: 100%; border: 0;
+    padding: 0; background: var(--group-color); cursor: pointer;
+    box-shadow: inset 0 -1px rgba(255,255,255,.25);
+    transition: opacity .12s ease, filter .12s ease;
+  }
+  .paper-map-skeleton-block:hover, .paper-map-skeleton-block.highlight { z-index: 1; filter: saturate(1.22) brightness(1.05); }
+  .paper-map-skeleton-block.inspected { z-index: 2; box-shadow: inset 0 0 0 2px #212529; }
+  .paper-map-skeleton-block.dim { opacity: .14; filter: saturate(.45); }
+  .paper-map-skeleton-block.orphan {
+    --group-color: #ced4da;
+    background: repeating-linear-gradient(-45deg, #ced4da 0, #ced4da 3px, #f1f3f5 3px, #f1f3f5 6px);
+  }
+
+  .inspector {
+    position: fixed; top: 36px; right: 0; z-index: 50; width: min(440px, 92vw); height: calc(100vh - 36px);
+    display: grid; grid-template-rows: auto 1fr; border-left: 1px solid #ced4da;
+    background: #fff; box-shadow: -4px 0 18px rgba(0,0,0,.09);
+  }
+  .inspector[hidden] { display: none; }
+  .inspector-head { display: flex; justify-content: space-between; gap: 10px; padding: 10px 12px; border-bottom: 1px solid #dee2e6; }
+  .inspector-head strong { color: #343a40; font-size: 12px; }
+  .inspector-close { border: 0; background: transparent; color: #868e96; font-size: 18px; }
+  .inspector-body { overflow: auto; padding: 12px; }
+  .inspector-body h2 { margin: 0 0 8px; color: #212529; font-size: 16px; line-height: 1.35; }
+  .inspector-body h3 { margin: 16px 0 6px; color: #495057; font-size: 11px; }
+  .inspector-body p { color: #495057; font-size: 12px; line-height: 1.5; }
+  .inspector-meta { color: #868e96; font-size: 10px; line-height: 1.5; }
+  .history-row { padding: 6px 0; border-top: 1px solid #e9ecef; color: #495057; font-size: 11px; }
+  .member-button {
+    display: block; width: 100%; margin-bottom: 4px; padding: 5px 7px; border: 1px solid #e9ecef;
+    border-radius: 4px; background: #f8f9fa; color: #495057; font-size: 10.5px; text-align: left;
+  }
+  @media (max-width: 850px) {
+    .run-grid { grid-template-columns: 1fr; }
+    .settings-grid { grid-template-columns: repeat(2, minmax(100px, 1fr)); }
+    #columns { min-width: 900px; }
+    #stage { overflow-x: auto; }
+    #replayViewport { min-width: 0; }
+  }
 </style>
 </head>
 <body>
-
 <header>
-  <h1>Bidirectional Tag Match Viewer</h1>
-  <div id="granularityTabs" style="display:flex;gap:2px;"></div>
-  <label style="font-size:11px;color:#495057;display:flex;align-items:center;gap:6px;">
-    preview length
+  <h1>Question Atlas</h1>
+  <div id="tabs" class="tab-list"></div>
+  <label id="previewControl" class="header-control">preview length
     <input type="range" id="previewSlider" min="0" max="200" step="10" value="200">
     <span id="previewValue">200</span>
   </label>
-  <label style="font-size:11px;color:#495057;display:flex;align-items:center;gap:6px;">
-    min similarity
-    <input type="range" id="similaritySlider" min="0" max="1" step="0.01" value="0">
+  <label id="similarityControl" class="header-control">min lexical similarity
+    <input type="range" id="similaritySlider" min="0" max="1" step="0.01" value="0" aria-label="Minimum lexical similarity">
     <span id="similarityValue">0.00</span>
   </label>
-  <span style="font-size:11px;color:#868e96;">hover a unit to preview its links; click to pin and expand full text</span>
+  <div id="replayControls" class="header-control" hidden>
+    <button type="button" id="prevStep" aria-label="Previous replay step">previous</button>
+    <select id="replayStep" aria-label="Replay step"></select>
+    <button type="button" id="nextStep" aria-label="Next replay step">next</button>
+    <select id="membershipMode" aria-label="Membership display mode">
+      <option value="many">many-to-many</option>
+      <option value="best">best one</option>
+    </select>
+    <label id="shiftedOnlyControl"><input type="checkbox" id="shiftedOnly"> changed only</label>
+    <button type="button" id="zoomOut" aria-label="Zoom out">−</button>
+    <button type="button" id="fitReplay">fit</button>
+    <button type="button" id="zoomIn" aria-label="Zoom in">+</button>
+  </div>
+  <label id="orphanControl" class="header-control"><input type="checkbox" id="showOrphans" checked> show unassigned</label>
 </header>
-<div id="legend">tags are free-text questions/phrases, not a fixed category. Only <strong>bidirectional</strong> matches (mutual top-3) are shown; use the slider above to filter out weaker matches.</div>
-<div id="stage"><div class="empty-state">Loading...</div></div>
+<div id="legend">Tags are complete free-text questions. Hover a unit to inspect its links; click to expand its source text.</div>
+
+<details id="analysisPanel" class="analysis-panel">
+  <summary><span class="analysis-title">Run papers</span><span id="runState" class="run-state">connecting</span></summary>
+  <form id="runForm" class="run-body">
+    <div class="run-grid">
+      <section class="run-section">
+        <h2>Paper inputs</h2>
+        <div id="paperPicker" class="paper-picker"></div>
+        <div class="upload-row">
+          <input id="paperUpload" type="file" accept="application/pdf,.pdf" multiple>
+          <button id="uploadPapers" class="secondary-action" type="button">Add PDFs</button>
+          <span id="uploadState"></span>
+        </div>
+        <div class="run-actions">
+          <label class="run-field" style="flex:1">Open saved run<select id="savedRun"><option value="">Select a saved run</option></select></label>
+          <button id="openRun" class="secondary-action" type="button">Open</button>
+        </div>
+      </section>
+      <section class="run-section">
+        <h2>Run settings</h2>
+        <div class="settings-grid">
+          <label class="run-field key-field">Claude API key<input id="apiKey" type="password" autocomplete="off" placeholder="Use server key"></label>
+          <label class="run-field">Run label<input id="experimentLabel" type="text" maxlength="100" placeholder="e.g. full-paper context"></label>
+          <label class="run-field">Model<input id="model" type="text" value="claude-sonnet-5"></label>
+          <label class="run-field">Maximum epochs<input id="maxEpochs" type="number" min="0" max="20" value="3"></label>
+          <label class="run-field">Same-section weight<input id="sectionWeight" type="number" min="0" max="1" step="0.01" value="0.15"></label>
+          <label class="run-field" title="A reciprocal Claude match must also meet this deterministic lexical score.">Merge lexical threshold<input id="supergroupThreshold" type="number" min="0" max="1" step="0.01" value="0.33"></label>
+          <label class="run-field">Question stability<input id="questionStability" type="number" min="0" max="1" step="0.01" value="0.97"></label>
+        </div>
+        <details class="advanced-settings">
+          <summary>Advanced deterministic and context settings</summary>
+          <div class="settings-grid">
+            <label class="run-field">Paragraph question context<select id="paragraphContext"><option value="section">section + boundary extraction (baseline)</option><option value="fixed_section">complete section, fixed paragraphs</option><option value="full_paper">complete paper, fixed paragraphs</option></select></label>
+            <label class="run-field">Assignment evidence<select id="assignmentContext"><option value="question_only">group question only</option><option value="representative_group_paragraphs">deterministic representative paragraphs</option><option value="all_group_paragraphs">all assigned paragraphs</option></select></label>
+            <label class="run-field">Reuse scope<select id="reuseScope"><option value="fresh">fresh extraction</option><option value="paragraph_corpus">fixed paragraph corpus</option><option value="pre_epoch">fixed pre-epoch state</option></select></label>
+            <label class="run-field">Source saved run<select id="sourceRun" disabled><option value="">Select a source run</option></select></label>
+            <label class="run-field">Section context chars (0 = full)<input id="sectionContext" type="number" min="0" step="10000" value="0"></label>
+            <label class="run-field">Paragraph chunk chars (0 = full)<input id="paragraphChunk" type="number" min="0" step="5000" value="50000"></label>
+            <label class="run-field">Assignment batch chars<input id="assignmentBatch" type="number" min="10000" step="5000" value="80000"></label>
+            <label class="run-field">Representatives per paper<input id="representativePerPaper" type="number" min="1" max="20" value="2"></label>
+            <label class="run-field">Max representatives per group<input id="representativeMaxPerGroup" type="number" min="1" max="100" value="6"></label>
+            <label class="run-field">Candidate top K<input id="matchTopK" type="number" min="1" max="20" value="3"></label>
+            <label class="run-field">Section grouping threshold<input id="sectionThreshold" type="number" min="0" max="1" step="0.01" value="0.33"></label>
+            <label class="run-field">Paragraph grouping threshold<input id="paragraphThreshold" type="number" min="0" max="1" step="0.01" value="0.45"></label>
+          </div>
+        </details>
+        <div class="run-actions"><button id="startAnalysis" class="primary-action" type="button">Analyze selected papers</button></div>
+      </section>
+    </div>
+    <div id="runError" class="run-error" hidden></div>
+    <details id="runLogWrap" class="run-log-wrap" hidden><summary>Pipeline log</summary><pre id="runLog" class="run-log"></pre></details>
+  </form>
+</details>
+
+<main id="stage"><div class="empty-state">Loading…</div></main>
+<aside id="inspector" class="inspector" hidden>
+  <div class="inspector-head"><strong id="inspectorTitle">Provenance</strong><button id="inspectorClose" class="inspector-close" type="button" aria-label="Close inspector">×</button></div>
+  <div id="inspectorBody" class="inspector-body"></div>
+</aside>
 
 <script>
-const GRANULARITIES = ["sections", "paragraphs"]; // matching/data granularities
-const GRANULARITY_LABELS = { sections: "Section", paragraphs: "Paragraph" };
-const TABS = ["sections", "paragraphs", "groups"]; // UI tabs -- "groups" is a display mode, not a matching granularity
-const TAB_LABELS = { sections: "Section", paragraphs: "Paragraph", groups: "Groups" };
+const LOCAL_SERVER_URL = "http://127.0.0.1:8743/";
+const REDIRECT_FROM_FILE = window.location.protocol === "file:";
+if (REDIRECT_FROM_FILE) window.location.replace(LOCAL_SERVER_URL);
 
-const stage = document.getElementById("stage");
-const granularityTabsEl = document.getElementById("granularityTabs");
-const previewSlider = document.getElementById("previewSlider");
-const previewValueEl = document.getElementById("previewValue");
-const similaritySlider = document.getElementById("similaritySlider");
-const similarityValueEl = document.getElementById("similarityValue");
-let pinnedId = null;
-let currentLinks = []; // links for the current granularity AND above the current similarity threshold
-const expandedIds = new Set(); // units expanded to full text -- independent per unit, click toggles membership
-let previewChars = Number(previewSlider.value);
-let similarityThreshold = Number(similaritySlider.value);
-const sectionTextById = {}; // id -> normalized full text, for live preview-length updates
+const TABS = ["sections", "paragraphs", "groups", "paper-map"];
+const TAB_LABELS = { sections: "Section", paragraphs: "Paragraph", groups: "Groups", "paper-map": "Paper Map" };
+const $ = id => document.getElementById(id);
+const stage = $("stage");
+const state = {
+  papers: [], links: {sections: [], paragraphs: []}, groups: [], superGroups: [], groupLinks: [],
+  epochs: null, runId: null, loadedRunId: null, tab: "sections", previewChars: 200,
+  similarity: 0, replaySteps: [], replayIndex: 0, replayScale: 1, replayX: 20, replayY: 20,
+  groupReplayIndex: 0, paperMapReplayIndex: null,
+  worldWidth: 1200, worldHeight: 700, libraryPapers: [], uploads: [], runs: [], statusTimer: null,
+  paperMapScrollRatio: 0, paperMapMode: "reading", paperMapSelectedGroupId: null,
+  inspectorSelection: null,
+  pinnedAlignmentId: null, expandedAlignmentIds: new Set(), openReplayGroupId: null,
+};
+let paragraphLookup = {};
+let groupLookup = {};
 
-let allPapers = [];
-let allLinksByGranularity = { sections: [], paragraphs: [] };
-let rawLinksForGranularity = []; // all links for the current granularity, before the similarity filter
-let currentGranularity = "sections"; // matching is always within one granularity: sections<->sections, paragraphs<->paragraphs
-
-let allGroups = []; // paragraph groups only, each with an overarching_question
-let paragraphUnitLookup = {}; // "paper_id:unit_id" -> full paragraph object, for group-detail rendering
-let groupById = {}; // group_id -> full group object, for tree-node click lookups
-
-let allSuperGroups = []; // groups-of-groups, each with an overarching_question and member groups
-const openSuperGroupIds = new Set(); // super_group_id currently expanded to show member groups
-const openGroupIds = new Set(); // group_id currently expanded to show its 3-column quote detail
-
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
 }
 
-function preview(text, maxChars) {
-  if (maxChars <= 0) return "";
-  return text.length > maxChars ? text.slice(0, maxChars) + "…" : text;
+function paragraphKey(value) { return `${value.paper}:${value.unit_id || value.id}`; }
+function compactText(value) { return String(value || "").replace(/\s+/g, " ").trim(); }
+function shortPaperLabel(paperOrId) {
+  const id = typeof paperOrId === "string" ? paperOrId : paperOrId?.paper_id || "";
+  return id.replace(/_(?:[a-z]+)?\d{2,4}$/i, "").replace(/[_-]+/g, " ") || id;
+}
+function preview(value) {
+  const text = compactText(value);
+  return state.previewChars > 0 && text.length > state.previewChars ? text.slice(0, state.previewChars) + "…" : text;
 }
 
-function updatePreviews() {
-  stage.querySelectorAll(".section-block").forEach(el => {
-    const text = sectionTextById[el.dataset.id] || "";
-    const previewEl = el.querySelector(".section-text-preview");
-    if (previewEl) previewEl.textContent = preview(text, previewChars);
-  });
-  refreshView(); // preview height changed, so link endpoints moved
+async function fetchJson(url, options = {}) {
+  const response = await fetch(url, {cache: "no-store", ...options});
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || `${response.status} ${response.statusText}`);
+  return data;
 }
 
-async function loadAll() {
-  const base = "../output/sections/";
-  const opts = { cache: "no-store" }; // these files change often during development; never serve a stale cached copy
-  const manifest = await (await fetch(base + "manifest.json", opts)).json();
-  const papers = [];
-  for (const m of manifest) {
-    papers.push(await (await fetch(base + m.file, opts)).json());
+function artifactUrl(filename, runId = state.runId) {
+  return `/api/artifacts/${encodeURIComponent(filename)}${runId ? `?run_id=${encodeURIComponent(runId)}` : ""}`;
+}
+
+function buildLookups() {
+  paragraphLookup = {};
+  state.papers.forEach(paper => (paper.paragraphs || []).forEach(paragraph => {
+    paragraphLookup[`${paper.paper_id}:${paragraph.id}`] = {...paragraph, paper: paper.paper_id};
+  }));
+  groupLookup = Object.fromEntries(state.groups.map(group => [group.group_id, group]));
+}
+
+async function loadRun(runId, switchToGroups = false) {
+  closeInspector();
+  state.runId = runId;
+  state.replayIndex = 0;
+  state.groupReplayIndex = 0;
+  state.paperMapReplayIndex = null;
+  state.openReplayGroupId = null;
+  state.paperMapSelectedGroupId = null;
+  state.paperMapScrollRatio = 0;
+  state.pinnedAlignmentId = null;
+  state.expandedAlignmentIds.clear();
+  const manifest = await fetchJson(artifactUrl("manifest.json", runId));
+  const papers = await Promise.all(manifest.map(entry => fetchJson(artifactUrl(entry.file, runId))));
+  const [links, grouped, superGroups, groupLinks, epochs] = await Promise.all([
+    fetchJson(artifactUrl("bidirectional_matches.json", runId)),
+    fetchJson(artifactUrl("quote_groups.json", runId)),
+    fetchJson(artifactUrl("group_of_groups.json", runId)),
+    fetchJson(artifactUrl("bidirectional_group_matches.json", runId)),
+    fetchJson(artifactUrl("epoch_history.json", runId)),
+  ]);
+  state.papers = papers;
+  state.links = links;
+  state.groups = grouped.paragraphs || [];
+  state.superGroups = superGroups || [];
+  state.groupLinks = groupLinks || [];
+  state.epochs = epochs;
+  state.loadedRunId = runId;
+  if ([...$("savedRun").options].some(option => option.value === runId)) $("savedRun").value = runId;
+  const viewerUrl = new URL(window.location.href);
+  viewerUrl.searchParams.set("run_id", runId);
+  window.history.replaceState(null, "", viewerUrl);
+  buildLookups();
+  buildReplaySteps();
+  if (switchToGroups) state.tab = "groups";
+  if (state.tab === "paper-map") {
+    state.paperMapReplayIndex = Math.max(0, state.replaySteps.length - 1);
+    state.replayIndex = state.paperMapReplayIndex;
   }
-  const links = await (await fetch(base + "bidirectional_matches.json", opts)).json();
-  const groups = await (await fetch(base + "quote_groups.json", opts)).json();
-  const superGroups = await (await fetch(base + "group_of_groups.json", opts)).json();
-  return { papers, links, groups, superGroups };
+  renderTabs();
+  renderCurrentView();
+  $("analysisPanel").open = false;
 }
 
-function buildParagraphUnitLookup() {
-  paragraphUnitLookup = {};
-  allPapers.forEach(paper => {
-    (paper.paragraphs || []).forEach(unit => {
-      paragraphUnitLookup[`${paper.paper_id}:${unit.id}`] = unit;
-    });
-  });
-}
-
-function buildGroupById() {
-  groupById = {};
-  allGroups.forEach(g => { groupById[g.group_id] = g; });
-}
-
-function linkedIdSet(links) {
-  const ids = new Set();
-  links.forEach(l => {
-    ids.add(`${l.paper_a}:${l.section_a}`);
-    ids.add(`${l.paper_b}:${l.section_b}`);
-  });
-  return ids;
-}
-
-function renderColumns(papers, granularity) {
-  // Only units that have at least one bidirectional match are shown -- an
-  // unmatched section/paragraph is pruned from view entirely.
-  const linked = linkedIdSet(currentLinks);
-  const cols = papers.map(paper => {
-    const units = (paper[granularity] || []).filter(sec => linked.has(`${paper.paper_id}:${sec.id}`));
-    const blocks = units.map(sec => {
-      const text = (sec.text || "").replace(/\s+/g, " ").trim();
-      const id = `${paper.paper_id}:${sec.id}`;
-      sectionTextById[id] = text;
-      const previewText = preview(text, previewChars);
-      const titleHtml = sec.title ? `<span class="section-title">${escapeHtml(sec.title)}</span>` : "";
-      // prev_relation/next_relation only exist at paragraph granularity (always "" for sections)
-      const prevHtml = sec.prev_relation ? `<span class="relation-badge">← ${escapeHtml(sec.prev_relation)}</span>` : "";
-      const nextHtml = sec.next_relation ? `<span class="relation-badge">${escapeHtml(sec.next_relation)} →</span>` : "";
-      return `<div class="section-block linkable" data-id="${id}">
-        <div class="section-head">
-          <span class="tag-badge">${escapeHtml(sec.tag)}</span>
-          ${titleHtml}
-          ${prevHtml}
-          ${nextHtml}
-        </div>
-        <div class="section-text section-text-preview">${escapeHtml(previewText)}</div>
-        <div class="section-text section-text-full">${escapeHtml(text)}</div>
-        <div class="expand-hint"></div>
-      </div>`;
-    }).join("");
-    return `<div class="column" data-paper="${paper.paper_id}">
-      <div class="paper-title">${escapeHtml(paper.title)}</div>
-      ${blocks}
-    </div>`;
-  }).join("");
-
-  stage.innerHTML = `<svg id="linkLayer"></svg><div id="columns">${cols}</div>`;
-}
-
-function elFor(id) {
-  return stage.querySelector(`.section-block[data-id="${CSS.escape(id)}"]`);
-}
-
-function drawLinks(links) {
-  const svg = document.getElementById("linkLayer");
-  const stageRect = stage.getBoundingClientRect();
-  const columnsEl = document.getElementById("columns");
-  // scrollWidth/Height (not offsetWidth/Height) -- offset* clamps to the
-  // element's own box, which can be narrower than its rendered content when
-  // children overflow it, silently clipping any link endpoint beyond that.
-  const height = columnsEl.scrollHeight;
-  const width = columnsEl.scrollWidth;
-  svg.setAttribute("width", width);
-  svg.setAttribute("height", height);
-  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-
-  const paths = links.map(link => {
-    const aId = `${link.paper_a}:${link.section_a}`;
-    const bId = `${link.paper_b}:${link.section_b}`;
-    const aEl = elFor(aId), bEl = elFor(bId);
-    if (!aEl || !bEl) return "";
-    const aRect = aEl.getBoundingClientRect(), bRect = bEl.getBoundingClientRect();
-    const aOnLeft = aRect.left < bRect.left;
-    const x1 = (aOnLeft ? aRect.right : aRect.left) - stageRect.left;
-    const y1 = aRect.top + aRect.height / 2 - stageRect.top;
-    const x2 = (aOnLeft ? bRect.left : bRect.right) - stageRect.left;
-    const y2 = bRect.top + bRect.height / 2 - stageRect.top;
-    const cx = (x1 + x2) / 2;
-    const opacity = 0.15 + 0.3 * link.similarity;
-    // const opacity = 0.25;
-    const baseWidth = 1 + 2.5 * link.similarity; // ribbon width scales with confidence, Sankey-style
-    return `<path class="link-edge" data-a="${aId}" data-b="${bId}" data-base-width="${baseWidth}" data-similarity="${link.similarity}" ` +
-      `d="M ${x1} ${y1} C ${cx} ${y1}, ${cx} ${y2}, ${x2} ${y2}" ` +
-      `stroke="#495057" stroke-width="${baseWidth}" fill="none" opacity="${opacity}"/>`;
-  });
-  svg.innerHTML = paths.join("");
-}
-
-const THICKENED_MIN_WIDTH = 25;  // px, given to the lowest-similarity link in the whole graph when thickened
-const THICKENED_MAX_WIDTH = 50; // px, given to the highest-similarity link in the whole graph when thickened
-const THICKENED_OPACITY = 0.15;
-
-function similarityRange(links) {
-  const sims = links.map(l => l.similarity);
-  return { min: Math.min(...sims), max: Math.max(...sims) };
-}
-
-function applyHighlight(id) {
-  const related = new Set([id]);
-  currentLinks.forEach(link => {
-    const aId = `${link.paper_a}:${link.section_a}`;
-    const bId = `${link.paper_b}:${link.section_b}`;
-    if (aId === id) related.add(bId);
-    if (bId === id) related.add(aId);
-  });
-  stage.querySelectorAll(".section-block").forEach(el => {
-    const isRelated = related.has(el.dataset.id);
-    el.classList.toggle("highlight", isRelated && el.dataset.id !== id ? true : el.dataset.id === id);
-    el.classList.toggle("dim", !isRelated);
-  });
-  const { min, max } = similarityRange(currentLinks);
-  document.querySelectorAll(".link-edge").forEach(edge => {
-    const touches = edge.dataset.a === id || edge.dataset.b === id;
-    if (touches) {
-      const sim = parseFloat(edge.dataset.similarity);
-      const t = max > min ? (sim - min) / (max - min) : 1;
-      const width = THICKENED_MIN_WIDTH + t * (THICKENED_MAX_WIDTH - THICKENED_MIN_WIDTH);
-      edge.style.strokeWidth = width + "px";
-      edge.style.opacity = THICKENED_OPACITY;
-    } else {
-      edge.style.strokeWidth = "";
-      edge.style.opacity = 0.05;
+function renderTabs() {
+  $("tabs").innerHTML = TABS.map(tab => `<button type="button" class="tab-button${state.tab === tab ? " active" : ""}" data-tab="${tab}">${TAB_LABELS[tab]}</button>`).join("");
+  $("tabs").querySelectorAll("button").forEach(button => button.addEventListener("click", () => {
+    const nextTab = button.dataset.tab;
+    if (state.tab !== nextTab) closeInspector();
+    if (state.tab === "groups") state.groupReplayIndex = state.replayIndex;
+    if (state.tab === "paper-map") state.paperMapReplayIndex = state.replayIndex;
+    state.tab = nextTab;
+    if (state.tab === "groups") state.replayIndex = state.groupReplayIndex;
+    if (state.tab === "paper-map") {
+      if (state.paperMapReplayIndex === null) state.paperMapReplayIndex = Math.max(0, state.replaySteps.length - 1);
+      state.replayIndex = state.paperMapReplayIndex;
     }
+    renderTabs();
+    renderCurrentView();
+  }));
+}
+
+function updateHeaderForView() {
+  const isGroups = state.tab === "groups";
+  const isPaperMap = state.tab === "paper-map";
+  $("previewControl").hidden = isGroups || isPaperMap;
+  $("similarityControl").hidden = isGroups || isPaperMap;
+  $("replayControls").hidden = !(isGroups || isPaperMap);
+  $("membershipMode").hidden = isPaperMap;
+  $("shiftedOnlyControl").hidden = isPaperMap;
+  $("zoomOut").hidden = isPaperMap;
+  $("fitReplay").hidden = isPaperMap;
+  $("zoomIn").hidden = isPaperMap;
+  $("orphanControl").hidden = isPaperMap;
+  $("legend").innerHTML = isGroups
+    ? "Replay the actual group lineage. Labels use creation epoch-number: 0-1 is the first initial group and 2-1 is the first group created in epoch 2. Blue arcs are reciprocal Claude question matches that pass the lexical threshold; blue outlines and paragraph marks show changes."
+    : isPaperMap
+      ? "Each paragraph uses its best-one group color at the selected replay step. Labels use creation epoch-number, and remain stable as groups carry forward. Move through epochs to see merges, new assignments, and revised questions."
+    : "Tags are complete free-text questions. Hover a unit to inspect its links; click to expand its source text.";
+}
+
+function renderCurrentView() {
+  updateHeaderForView();
+  if (!state.papers.length) {
+    stage.innerHTML = `<div class="empty-state">Upload or select at least two papers, provide a Claude API key, and start an analysis.</div>`;
+    return;
+  }
+  if (state.tab === "groups") renderReplay(false);
+  else if (state.tab === "paper-map") renderPaperMap();
+  else renderAlignment();
+}
+
+function activeAlignmentLinks() {
+  return (state.links[state.tab] || []).filter(link => link.similarity >= state.similarity);
+}
+
+function renderAlignment() {
+  const links = activeAlignmentLinks();
+  const linked = new Set();
+  links.forEach(link => {
+    linked.add(`${link.paper_a}:${link.section_a}`);
+    linked.add(`${link.paper_b}:${link.section_b}`);
   });
+  const columns = state.papers.map(paper => {
+    const units = (paper[state.tab] || []).filter(unit => $("showOrphans").checked || linked.has(`${paper.paper_id}:${unit.id}`));
+    const cards = units.map(unit => {
+      const id = `${paper.paper_id}:${unit.id}`;
+      const orphan = !linked.has(id);
+      return `<article class="section-block linkable${orphan ? " orphan" : ""}${state.expandedAlignmentIds.has(id) ? " expanded" : ""}" data-unit-id="${escapeHtml(id)}">
+        <div class="section-head"><span class="tag-badge">${escapeHtml(unit.tag)}</span>${unit.title ? `<span class="section-title">${escapeHtml(unit.title)}</span>` : ""}
+        ${unit.prev_relation ? `<span class="relation-badge">← ${escapeHtml(unit.prev_relation)}</span>` : ""}${unit.next_relation ? `<span class="relation-badge">${escapeHtml(unit.next_relation)} →</span>` : ""}
+        ${orphan ? `<span class="orphan-badge">unassigned</span>` : ""}</div>
+        <div class="section-text section-text-preview">${escapeHtml(preview(unit.text))}</div>
+        <div class="section-text section-text-full">${escapeHtml(compactText(unit.text))}</div><div class="expand-hint"></div>
+      </article>`;
+    }).join("");
+    return `<section class="column" data-paper="${escapeHtml(paper.paper_id)}"><div class="paper-title" title="${escapeHtml(paper.title)}">${escapeHtml(shortPaperLabel(paper))}</div>${cards}</section>`;
+  }).join("");
+  stage.innerHTML = `<div id="alignmentCanvas"><svg id="linkLayer"></svg><div id="columns">${columns}</div></div>`;
+  if (state.pinnedAlignmentId && !stage.querySelector(`[data-unit-id="${CSS.escape(state.pinnedAlignmentId)}"]`)) state.pinnedAlignmentId = null;
+  attachAlignmentInteractions(links);
+  requestAnimationFrame(() => refreshAlignment(links));
 }
 
-function resetEdgeStyles() {
-  document.querySelectorAll(".link-edge").forEach(edge => {
-    edge.style.opacity = "";
-    edge.style.strokeWidth = "";
-  });
+const PAPER_MAP_HUES = [205, 25, 145, 48, 275, 175, 350, 95, 230, 8, 160, 62, 305, 190, 330, 118];
+
+function activeReplayStep() {
+  if (!state.replaySteps.length) return {kind:"initial", label:"Initial groups", groups:state.groups, unassigned:[]};
+  state.replayIndex = Math.max(0, Math.min(state.replayIndex, state.replaySteps.length - 1));
+  return state.replaySteps[state.replayIndex];
 }
 
-function clearTransientHighlight() {
-  stage.querySelectorAll(".section-block").forEach(el => el.classList.remove("highlight", "dim"));
-  resetEdgeStyles();
+function syncReplayControls() {
+  $("replayStep").value = String(state.replayIndex);
+  $("prevStep").disabled = state.replayIndex === 0;
+  $("nextStep").disabled = state.replayIndex === state.replaySteps.length - 1;
 }
 
-function setExpanded(id, expanded) {
-  const el = elFor(id);
-  if (el) el.classList.toggle("expanded", expanded);
+function selectReplayStep(index) {
+  state.replayIndex = Math.max(0, Math.min(index, state.replaySteps.length - 1));
+  if (state.tab === "groups") state.groupReplayIndex = state.replayIndex;
+  if (state.tab === "paper-map") state.paperMapReplayIndex = state.replayIndex;
+  if (state.tab === "groups") {
+    renderReplay(true);
+    requestAnimationFrame(fitReplay);
+  } else if (state.tab === "paper-map") {
+    renderPaperMap();
+  }
 }
 
-function clearAlignment() {
-  document.querySelectorAll(".column").forEach(col => { col.style.paddingTop = ""; });
+function replayStepEpoch(step) {
+  const explicitEpoch = Number(step?.epoch?.epoch);
+  if (Number.isInteger(explicitEpoch) && explicitEpoch >= 0) return explicitEpoch;
+  const labelEpoch = String(step?.label || "").match(/Epoch\s+(\d+)/i);
+  return labelEpoch ? Number(labelEpoch[1]) : 0;
 }
 
-// Re-flow every OTHER column so that whichever of its units is linked to the
-// anchor lands on the anchor's own row, while every unit before/after that
-// linked one keeps its normal relative order -- implemented by padding the
-// top of each column (never reordering DOM children), so within-paper order
-// is always preserved. A column with no link to the anchor is left alone.
-function computeAndApplyAlignment(anchorId) {
-  clearAlignment(); // undo any previous alignment before measuring natural positions
-  const anchorEl = elFor(anchorId);
-  if (!anchorEl) return;
-  const stageRect = stage.getBoundingClientRect();
-  const anchorY = anchorEl.getBoundingClientRect().top - stageRect.top;
-  const anchorPaper = anchorId.split(":")[0];
-
-  const partnerForPaper = {}; // other paper id -> the one unit in it linked to the anchor
-  currentLinks.forEach(l => {
-    const aId = `${l.paper_a}:${l.section_a}`;
-    const bId = `${l.paper_b}:${l.section_b}`;
-    if (aId === anchorId && !(l.paper_b in partnerForPaper)) partnerForPaper[l.paper_b] = bId;
-    if (bId === anchorId && !(l.paper_a in partnerForPaper)) partnerForPaper[l.paper_a] = aId;
-  });
-
-  const offsets = { [anchorPaper]: 0 };
-  Object.entries(partnerForPaper).forEach(([paperId, linkedId]) => {
-    const linkedEl = elFor(linkedId);
-    if (!linkedEl) return;
-    const linkedY = linkedEl.getBoundingClientRect().top - stageRect.top;
-    offsets[paperId] = anchorY - linkedY;
-  });
-
-  const globalMin = Math.min(0, ...Object.values(offsets));
-  document.querySelectorAll(".column").forEach(col => {
-    const paperId = col.dataset.paper;
-    if (paperId in offsets) col.style.paddingTop = (offsets[paperId] - globalMin) + "px";
-  });
-}
-
-function refreshView() {
-  if (pinnedId) computeAndApplyAlignment(pinnedId);
-  else clearAlignment();
-  drawLinks(currentLinks);
-  if (pinnedId) applyHighlight(pinnedId);
-  else clearTransientHighlight();
-}
-
-function attachInteractions() {
-  stage.querySelectorAll(".section-block").forEach(el => {
-    const id = el.dataset.id;
-    el.addEventListener("mouseenter", () => { if (!pinnedId) applyHighlight(id); });
-    el.addEventListener("mouseleave", () => { if (!pinnedId) clearTransientHighlight(); });
-
-    el.addEventListener("click", (evt) => {
-      evt.stopPropagation();
-      pinnedId = pinnedId === id ? null : id;
-      refreshView();
+function groupLineageCatalog() {
+  const catalog = new Map();
+  const epochCounts = new Map();
+  state.replaySteps.forEach(step => {
+    const originEpoch = replayStepEpoch(step);
+    const newGroups = (step.groups || []).filter(group => !catalog.has(group.group_id));
+    const epochStart = epochCounts.get(originEpoch) || 0;
+    const epochIndexById = new Map(
+      [...newGroups]
+        .sort((a, b) => String(a.group_id).localeCompare(String(b.group_id), undefined, {numeric:true}))
+        .map((group, index) => [group.group_id, epochStart + index + 1])
+    );
+    epochCounts.set(originEpoch, epochStart + newGroups.length);
+    newGroups.forEach(group => {
+      const epochIndex = epochIndexById.get(group.group_id);
+      const colorIndex = catalog.size;
+      const creationEvent = (step.events || []).find(event => event.group_id === group.group_id);
+      catalog.set(group.group_id, {
+        label:`${originEpoch}-${epochIndex}`,
+        originEpoch,
+        epochIndex,
+        originStepLabel:step.label,
+        parentGroupIds:creationEvent?.parent_group_ids || [],
+        color:paperMapColor(colorIndex),
+      });
     });
+  });
+  return catalog;
+}
 
-    const hint = el.querySelector(".expand-hint");
-    if (hint) {
-      hint.addEventListener("click", (evt) => {
-        evt.stopPropagation();
-        const isExpanded = expandedIds.has(id);
-        if (isExpanded) { expandedIds.delete(id); setExpanded(id, false); }
-        else { expandedIds.add(id); setExpanded(id, true); }
-        refreshView(); // height changed, so link/alignment positions need recomputing
+function groupLabelInfo(groupId) {
+  const catalog = groupLineageCatalog();
+  return catalog.get(groupId) || {
+    label:String(groupId || "?"), originEpoch:null, epochIndex:null,
+    color:paperMapColor(catalog.size),
+  };
+}
+
+function groupDisplayLabel(groupId) {
+  return groupLabelInfo(groupId).label;
+}
+
+function paperMapColor(index) {
+  const hue = PAPER_MAP_HUES[index % PAPER_MAP_HUES.length] + Math.floor(index / PAPER_MAP_HUES.length) * 11;
+  return {border:`hsl(${hue % 360} 58% 38%)`, fill:`hsl(${hue % 360} 72% 95%)`};
+}
+
+function paperMapMembershipScore(member) {
+  return Number(member.assignment_combined_score ?? member.combined_score ?? member.semantic_similarity ?? 0);
+}
+
+function buildPaperMapModel(step = activeReplayStep()) {
+  const catalog = groupLineageCatalog();
+  const groups = [...(step.groups || [])].sort((a, b) => String(a.group_id).localeCompare(String(b.group_id)));
+  const groupEntries = groups.map(group => ({
+    group,
+    ...(catalog.get(group.group_id) || {label:group.group_id, color:paperMapColor(catalog.size)}),
+    count:0,
+  }));
+  const entriesById = new Map(groupEntries.map(entry => [entry.group.group_id, entry]));
+  const candidates = new Map();
+  groupEntries.forEach(entry => (entry.group.members || []).forEach(member => {
+    const key = paragraphKey(member);
+    if (!candidates.has(key)) candidates.set(key, []);
+    candidates.get(key).push({entry, member});
+  }));
+  const assignments = new Map();
+  candidates.forEach((options, key) => {
+    options.sort((a, b) => {
+      const rankA = Number.isFinite(Number(a.member.rank_for_paragraph)) ? Number(a.member.rank_for_paragraph) : Number.POSITIVE_INFINITY;
+      const rankB = Number.isFinite(Number(b.member.rank_for_paragraph)) ? Number(b.member.rank_for_paragraph) : Number.POSITIVE_INFINITY;
+      return rankA - rankB || paperMapMembershipScore(b.member) - paperMapMembershipScore(a.member)
+        || String(a.entry.group.group_id).localeCompare(String(b.entry.group.group_id));
+    });
+    const selected = options[0];
+    selected.entry.count += 1;
+    assignments.set(key, selected);
+  });
+  return {step, groups, groupEntries, entriesById, assignments};
+}
+
+function renderPaperMap() {
+  const model = buildPaperMapModel();
+  if (state.paperMapSelectedGroupId && !model.entriesById.has(state.paperMapSelectedGroupId)) {
+    state.paperMapSelectedGroupId = null;
+  }
+  const totalParagraphs = state.papers.reduce((sum, paper) => sum + (paper.paragraphs || []).length, 0);
+  const orphanCount = totalParagraphs - model.assignments.size;
+  syncReplayControls();
+  const legend = model.groupEntries.map(entry => {
+    const question = entry.group.question || entry.group.overarching_question || "(no question)";
+    const style = `--group-color:${entry.color.border};--group-fill:${entry.color.fill}`;
+    const selected = state.paperMapSelectedGroupId === entry.group.group_id;
+    return `<button type="button" class="paper-map-legend-item${selected ? " selected" : ""}" data-paper-map-group="${escapeHtml(entry.group.group_id)}" data-group-label="${escapeHtml(entry.label)}" style="${style}" title="${escapeHtml(`${entry.label} · ${question}`)}" aria-pressed="${selected}">
+      <span class="paper-map-swatch"></span><strong>${escapeHtml(entry.label)}</strong><span class="paper-map-legend-question">${escapeHtml(question)}</span><span class="paper-map-legend-count">${entry.count}</span>
+    </button>`;
+  }).join("");
+  const modeToggle = `<div class="paper-map-mode-toggle" role="group" aria-label="Paper Map display">
+    <button type="button" class="paper-map-mode-button${state.paperMapMode === "reading" ? " active" : ""}" data-paper-map-mode="reading" aria-pressed="${state.paperMapMode === "reading"}">Read</button>
+    <button type="button" class="paper-map-mode-button${state.paperMapMode === "skeleton" ? " active" : ""}" data-paper-map-mode="skeleton" aria-pressed="${state.paperMapMode === "skeleton"}">Skeleton</button>
+  </div>`;
+  const content = state.paperMapMode === "skeleton"
+    ? renderPaperMapSkeleton(model)
+    : renderPaperMapReading(model);
+  stage.innerHTML = `<div class="paper-map-shell"><div class="paper-map-overview">
+    <div class="paper-map-summary"><strong>${escapeHtml(model.step.label)}</strong> · best one · ${model.groups.length} groups · ${model.assignments.size} assigned · ${orphanCount} unassigned</div>
+    ${modeToggle}<div class="paper-map-legend" aria-label="Question groups at ${escapeHtml(model.step.label)}">${legend}</div>
+  </div>${content}</div>`;
+  attachPaperMapInteractions(model);
+  requestAnimationFrame(() => {
+    updatePaperMapHeight();
+    if (state.paperMapMode === "reading") {
+      stage.querySelectorAll(".paper-map-column").forEach(column => {
+        const maximum = Math.max(0, column.scrollHeight - column.clientHeight);
+        column.scrollTop = maximum * state.paperMapScrollRatio;
       });
     }
   });
 }
 
-function buildGranularityTabs() {
-  granularityTabsEl.innerHTML = TABS.map(g =>
-    `<button type="button" class="granularity-btn${g === currentGranularity ? " active" : ""}" data-granularity="${g}">${TAB_LABELS[g]}</button>`
-  ).join("");
-  granularityTabsEl.querySelectorAll(".granularity-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      if (btn.dataset.granularity !== currentGranularity) switchGranularity(btn.dataset.granularity);
-    });
-  });
-}
-
-// Renders the full super-group -> group -> quotes tree from scratch, driven
-// entirely by openSuperGroupIds/openGroupIds. Any state change (a node click,
-// a slider change, a resize) just mutates those sets (or nothing, for
-// sliders) and calls this again -- simpler than patching the DOM in place,
-// and cheap since there's no API call involved.
-function renderGroupsTree() {
-  if (!allSuperGroups.length) {
-    stage.innerHTML = `<div class="empty-state">No groups available.</div>`;
-    return;
-  }
-
-  const superNodesHtml = allSuperGroups.map(sg => {
-    const isOpen = openSuperGroupIds.has(sg.super_group_id);
-    let childrenHtml = "";
-    if (isOpen) {
-      const childNodesHtml = sg.members.map(m => {
-        const groupIsOpen = openGroupIds.has(m.group_id);
-        const detailHtml = groupIsOpen
-          ? `<div class="tree-children group-detail-children" data-group-detail-for="${m.group_id}"></div>`
-          : "";
-        return `<div class="tree-node-wrap">
-          <div class="tree-node group-node${groupIsOpen ? " open" : ""}" data-group-id="${m.group_id}">
-            <div class="tree-node-question">${escapeHtml(m.overarching_question)}</div>
-          </div>
-          ${detailHtml}
-        </div>`;
-      }).join("");
-      childrenHtml = `<div class="tree-children">${childNodesHtml}</div>`;
-    }
-    return `<div class="tree-node-wrap">
-      <div class="tree-node super-node${isOpen ? " open" : ""}" data-super-group-id="${sg.super_group_id}">
-        <div class="tree-node-question">${escapeHtml(sg.overarching_question || "(no summary)")}</div>
-        <div class="tree-node-meta">${sg.members.length} group${sg.members.length === 1 ? "" : "s"}</div>
-      </div>
-      ${childrenHtml}
-    </div>`;
-  }).join("");
-
-  stage.innerHTML = `<svg id="treeLinkLayer"></svg><div id="treeRoot">${superNodesHtml}</div>`;
-
-  openGroupIds.forEach(groupId => {
-    const slot = stage.querySelector(`.group-detail-children[data-group-detail-for="${CSS.escape(groupId)}"]`);
-    const group = groupById[groupId];
-    if (slot && group) renderGroupDetail(slot, group);
-  });
-
-  attachTreeInteractions();
-  drawTreeLinks();
-}
-
-function attachTreeInteractions() {
-  stage.querySelectorAll(".super-node").forEach(el => {
-    el.addEventListener("click", (evt) => {
-      evt.stopPropagation();
-      const id = el.dataset.superGroupId;
-      if (openSuperGroupIds.has(id)) {
-        openSuperGroupIds.delete(id);
-        // collapsing hides its member groups too, so their own expanded state no longer applies
-        const sg = allSuperGroups.find(s => s.super_group_id === id);
-        if (sg) sg.members.forEach(m => openGroupIds.delete(m.group_id));
-      } else {
-        openSuperGroupIds.add(id);
+function renderPaperMapReading(model) {
+  const columns = state.papers.map(paper => {
+    const sections = new Map((paper.sections || []).map(section => [section.id, section]));
+    let previousSectionId = null;
+    const paragraphs = (paper.paragraphs || []).map(paragraph => {
+      const key = `${paper.paper_id}:${paragraph.id}`;
+      const selected = model.assignments.get(key);
+      const entry = selected?.entry;
+      const groupId = entry?.group.group_id || "";
+      const style = entry ? `--group-color:${entry.color.border};--group-fill:${entry.color.fill}` : "";
+      let sectionHeading = "";
+      if (paragraph.parent_section_id !== previousSectionId) {
+        previousSectionId = paragraph.parent_section_id;
+        const section = sections.get(previousSectionId);
+        sectionHeading = `<div class="paper-map-section-head">${escapeHtml(section?.title || section?.tag || previousSectionId || "Unsectioned")}</div>`;
       }
-      renderGroupsTree();
-    });
-  });
-  stage.querySelectorAll(".group-node").forEach(el => {
-    const id = el.dataset.groupId;
-    el.addEventListener("mouseenter", () => setArcEmphasis(id, true));
-    el.addEventListener("mouseleave", () => { if (!openGroupIds.has(id)) setArcEmphasis(id, false); });
-
-    el.addEventListener("click", (evt) => {
-      evt.stopPropagation();
-      if (openGroupIds.has(id)) openGroupIds.delete(id);
-      else openGroupIds.add(id);
-      renderGroupsTree();
-    });
-  });
-}
-
-function treeLinkPath(fromEl, toEl, originRect) {
-  const fromRect = fromEl.getBoundingClientRect();
-  const toRect = toEl.getBoundingClientRect();
-  const x1 = fromRect.left + fromRect.width / 2 - originRect.left;
-  const y1 = fromRect.bottom - originRect.top;
-  const x2 = toRect.left + toRect.width / 2 - originRect.left;
-  const y2 = toRect.top - originRect.top;
-  const cy = (y1 + y2) / 2;
-  return `<path class="tree-link-edge" d="M ${x1} ${y1} C ${x1} ${cy}, ${x2} ${cy}, ${x2} ${y2}" stroke="#adb5bd" stroke-width="1.5" fill="none"/>`;
-}
-
-// Arced link between two SIBLING group nodes (a bidirectional match between
-// their overarching_questions, not a containment relation) -- drawn as a
-// hump above the node row, in the app's accent blue so it reads as a
-// different kind of edge than the neutral-gray tree containment lines.
-// Arc height scales with horizontal distance so arcs between distant
-// siblings clear the nodes in between (classic arc-diagram style).
-function groupArcPath(aEl, bEl, originRect, similarity, groupAId, groupBId) {
-  const aRect = aEl.getBoundingClientRect(), bRect = bEl.getBoundingClientRect();
-  const x1 = aRect.left + aRect.width / 2 - originRect.left;
-  const y1 = aRect.top - originRect.top;
-  const x2 = bRect.left + bRect.width / 2 - originRect.left;
-  const y2 = bRect.top - originRect.top;
-  const h = Math.min(110, 26 + Math.abs(x2 - x1) * 0.18);
-  // const opacity = 0.3 + 0.55 * similarity;
-  const opacity = 0.15 + 0.25 * similarity;
-  const width = 1 + 2.5 * similarity;
-  return `<path class="group-arc-edge" data-group-a="${groupAId}" data-group-b="${groupBId}" ` +
-    `data-base-opacity="${opacity}" data-base-width="${width}" ` +
-    `d="M ${x1} ${y1} C ${x1} ${y1 - h}, ${x2} ${y2 - h}, ${x2} ${y2}" ` +
-    `stroke="#1c7ed6" stroke-width="${width}" fill="none" opacity="${opacity}"/>`;
-}
-
-const ARC_EMPHASIS_OPACITY_BOOST = 0.5;
-const ARC_EMPHASIS_WIDTH_BOOST = 2.5;
-
-// Darkens + thickens every arc touching the given group, relative to its own
-// base (similarity-derived) opacity/width -- used on hover, and kept applied
-// for whichever group(s) are currently expanded (open).
-function setArcEmphasis(groupId, emphasized) {
-  const svg = document.getElementById("treeLinkLayer");
-  if (!svg) return;
-  svg.querySelectorAll(".group-arc-edge").forEach(edge => {
-    if (edge.dataset.groupA !== groupId && edge.dataset.groupB !== groupId) return;
-    if (emphasized) {
-      edge.style.opacity = Math.min(1, parseFloat(edge.dataset.baseOpacity) + ARC_EMPHASIS_OPACITY_BOOST);
-      edge.style.strokeWidth = (parseFloat(edge.dataset.baseWidth) + ARC_EMPHASIS_WIDTH_BOOST) + "px";
-    } else {
-      edge.style.opacity = "";
-      edge.style.strokeWidth = "";
-    }
-  });
-}
-
-// Draws the group -> quote-detail containment line, plus the arced
-// bidirectional similarity links between sibling groups. The super-group ->
-// group containment line is deliberately NOT drawn (per explicit request) --
-// expanding a super-group shows its children without gray connector lines to
-// them; only the actual similarity arcs between those children are shown.
-function drawTreeLinks() {
-  const svg = document.getElementById("treeLinkLayer");
-  const treeRoot = document.getElementById("treeRoot");
-  const stageRect = stage.getBoundingClientRect();
-  // scrollWidth/Height, not offsetWidth/Height: the tree can grow wider than
-  // its own box when expanded (nowrap flex children overflowing), and
-  // offset* clamps to that box -- sizing the SVG from it would clip any link
-  // endpoint that falls in the overflowed region instead of drawing it.
-  const width = treeRoot.scrollWidth;
-  const height = treeRoot.scrollHeight;
-  svg.setAttribute("width", width);
-  svg.setAttribute("height", height);
-  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-
-  const paths = [];
-
-  stage.querySelectorAll("#treeRoot > .tree-node-wrap").forEach(sgWrap => {
-    const sgNode = sgWrap.querySelector(":scope > .super-node");
-    const childrenContainer = sgWrap.querySelector(":scope > .tree-children");
-    if (!sgNode || !childrenContainer) return;
-
-    const nodeByGroupId = {};
-    childrenContainer.querySelectorAll(":scope > .tree-node-wrap").forEach(gWrap => {
-      const gNode = gWrap.querySelector(":scope > .group-node");
-      if (!gNode) return;
-      nodeByGroupId[gNode.dataset.groupId] = gNode;
-    });
-
-    // bidirectional similarity links between sibling groups (already
-    // similarity-thresholded once at grouping time in group_groups.py;
-    // filter again here so the slider still narrows what's drawn)
-    const sg = allSuperGroups.find(s => s.super_group_id === sgNode.dataset.superGroupId);
-    if (sg) {
-      sg.links.forEach(link => {
-        if (link.similarity < similarityThreshold) return;
-        const aNode = nodeByGroupId[link.group_a];
-        const bNode = nodeByGroupId[link.group_b];
-        if (aNode && bNode) paths.push(groupArcPath(aNode, bNode, stageRect, link.similarity, link.group_a, link.group_b));
-      });
-    }
-  });
-
-  stage.querySelectorAll(".group-detail-children").forEach(detailEl => {
-    if (!detailEl.firstElementChild) return;
-    const groupWrap = detailEl.closest(".tree-node-wrap");
-    const gNode = groupWrap ? groupWrap.querySelector(":scope > .group-node") : null;
-    if (gNode) paths.push(treeLinkPath(gNode, detailEl.firstElementChild, stageRect));
-  });
-
-  svg.innerHTML = paths.join("");
-  openGroupIds.forEach(id => setArcEmphasis(id, true)); // expanded groups stay emphasized, not just on hover
-}
-
-function renderGroupDetail(slot, group) {
-  const membersByPaper = {};
-  group.members.forEach(m => {
-    const unit = paragraphUnitLookup[`${m.paper}:${m.unit_id}`];
-    if (!unit) return;
-    (membersByPaper[m.paper] = membersByPaper[m.paper] || []).push(unit);
-  });
-
-  const cols = allPapers
-    .map(paper => {
-      const units = membersByPaper[paper.paper_id] || [];
-      const blocks = units.map(unit => {
-        const text = (unit.text || "").replace(/\s+/g, " ").trim();
-        const id = `${paper.paper_id}:${unit.id}`;
-        const previewText = preview(text, previewChars);
-        const titleHtml = unit.title ? `<span class="section-title">${escapeHtml(unit.title)}</span>` : "";
-        const prevHtml = unit.prev_relation ? `<span class="relation-badge">← ${escapeHtml(unit.prev_relation)}</span>` : "";
-        const nextHtml = unit.next_relation ? `<span class="relation-badge">${escapeHtml(unit.next_relation)} →</span>` : "";
-        return `<div class="section-block linkable" data-group-unit-id="${id}">
-          <div class="section-head">
-            <span class="tag-badge">${escapeHtml(unit.tag)}</span>
-            ${titleHtml}
-            ${prevHtml}
-            ${nextHtml}
-          </div>
-          <div class="section-text section-text-preview">${escapeHtml(previewText)}</div>
-          <div class="section-text section-text-full">${escapeHtml(text)}</div>
-          <div class="expand-hint"></div>
-        </div>`;
-      }).join("");
-      const bodyHtml = units.length ? blocks : `<div class="group-column-empty">no quotes in this group</div>`;
-      return `<div class="column" data-paper="${paper.paper_id}">
-        <div class="paper-title">${escapeHtml(paper.title)}</div>
-        ${bodyHtml}
-      </div>`;
+      return `${sectionHeading}<article class="paper-map-paragraph${entry ? "" : " orphan"}" data-paper-map-paragraph="${escapeHtml(key)}" data-paper-map-group="${escapeHtml(groupId)}" style="${style}">
+        <div class="paper-map-paragraph-meta"><span>${escapeHtml(paragraph.id)}</span><span>${entry ? escapeHtml(entry.label) : "Unassigned"}</span></div>
+        <div class="paper-map-paragraph-question">${escapeHtml(paragraph.tag || "(no question)")}</div>
+        <div class="paper-map-paragraph-text">${escapeHtml(compactText(paragraph.text))}</div>
+      </article>`;
     }).join("");
-
-  slot.innerHTML = `<div class="group-columns-wrap"><svg class="group-link-layer"></svg><div class="group-columns">${cols}</div></div>`;
-
-  drawGroupLinks(slot, group);
-  attachGroupInteractions(slot, group);
+    return `<section class="paper-map-column" data-paper="${escapeHtml(paper.paper_id)}">
+      <div class="paper-map-paper-head" title="${escapeHtml(paper.title)}">${escapeHtml(shortPaperLabel(paper))} · ${(paper.paragraphs || []).length} paragraphs</div>${paragraphs}
+    </section>`;
+  }).join("");
+  return `<div class="paper-map-columns" style="--paper-count:${state.papers.length}">${columns}</div>`;
 }
 
-function drawGroupLinks(slot, group) {
-  const svg = slot.querySelector(".group-link-layer");
-  const wrap = slot.querySelector(".group-columns-wrap");
-  const columnsEl = slot.querySelector(".group-columns");
-  const wrapRect = wrap.getBoundingClientRect();
-  const height = columnsEl.scrollHeight;
-  const width = columnsEl.scrollWidth;
-  svg.setAttribute("width", width);
-  svg.setAttribute("height", height);
-  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-
-  const links = group.links.filter(l => l.similarity >= similarityThreshold);
-  const paths = links.map(link => {
-    const aId = `${link.paper_a}:${link.section_a}`;
-    const bId = `${link.paper_b}:${link.section_b}`;
-    const aEl = slot.querySelector(`.section-block[data-group-unit-id="${CSS.escape(aId)}"]`);
-    const bEl = slot.querySelector(`.section-block[data-group-unit-id="${CSS.escape(bId)}"]`);
-    if (!aEl || !bEl) return "";
-    const aRect = aEl.getBoundingClientRect(), bRect = bEl.getBoundingClientRect();
-    const aOnLeft = aRect.left < bRect.left;
-    const x1 = (aOnLeft ? aRect.right : aRect.left) - wrapRect.left;
-    const y1 = aRect.top + aRect.height / 2 - wrapRect.top;
-    const x2 = (aOnLeft ? bRect.left : bRect.right) - wrapRect.left;
-    const y2 = bRect.top + bRect.height / 2 - wrapRect.top;
-    const cx = (x1 + x2) / 2;
-    const opacity = 0.25 + 0.55 * link.similarity;
-    const baseWidth = 1 + 2.5 * link.similarity;
-    return `<path class="link-edge" data-a="${aId}" data-b="${bId}" data-similarity="${link.similarity}" ` +
-      `d="M ${x1} ${y1} C ${cx} ${y1}, ${cx} ${y2}, ${x2} ${y2}" ` +
-      `stroke="#495057" stroke-width="${baseWidth}" fill="none" opacity="${opacity}"/>`;
-  });
-  svg.innerHTML = paths.join("");
+function renderPaperMapSkeleton(model) {
+  const papers = state.papers.map(paper => {
+    const blocks = (paper.paragraphs || []).map(paragraph => {
+      const key = `${paper.paper_id}:${paragraph.id}`;
+      const selected = model.assignments.get(key);
+      const entry = selected?.entry;
+      const groupId = entry?.group.group_id || "";
+      const characterCount = Math.max(1, compactText(paragraph.text).length);
+      const label = entry ? entry.label : "Unassigned";
+      const style = `${entry ? `--group-color:${entry.color.border};` : ""}--paragraph-weight:${characterCount}`;
+      return `<button type="button" class="paper-map-skeleton-block${entry ? "" : " orphan"}" data-paper-map-paragraph="${escapeHtml(key)}" data-paper-map-group="${escapeHtml(groupId)}" style="${style}" title="${escapeHtml(`${paragraph.id} · ${label} · ${characterCount.toLocaleString()} characters`)}" aria-label="${escapeHtml(`${shortPaperLabel(paper)} ${paragraph.id}, ${label}, ${characterCount.toLocaleString()} characters`)}"></button>`;
+    }).join("");
+    return `<section class="paper-map-skeleton-paper" data-paper="${escapeHtml(paper.paper_id)}">
+      <div class="paper-map-paper-head" title="${escapeHtml(paper.title)}">${escapeHtml(shortPaperLabel(paper))} · ${(paper.paragraphs || []).length} paragraphs</div>
+      <div class="paper-map-skeleton-frame"><div class="paper-map-skeleton-track">${blocks}</div></div>
+    </section>`;
+  }).join("");
+  return `<div class="paper-map-skeleton-columns" style="--paper-count:${state.papers.length}">${papers}</div>`;
 }
 
-function attachGroupInteractions(slot, group) {
-  const activeLinks = group.links.filter(l => l.similarity >= similarityThreshold);
+function updatePaperMapHeight() {
+  const shell = stage.querySelector(".paper-map-shell");
+  if (!shell) return;
+  shell.style.height = `${Math.max(520, window.innerHeight - shell.getBoundingClientRect().top - 10)}px`;
+}
 
-  slot.querySelectorAll(".section-block").forEach(el => {
-    const id = el.dataset.groupUnitId;
-
-    el.addEventListener("mouseenter", () => {
-      const related = new Set([id]);
-      activeLinks.forEach(link => {
-        const aId = `${link.paper_a}:${link.section_a}`;
-        const bId = `${link.paper_b}:${link.section_b}`;
-        if (aId === id) related.add(bId);
-        if (bId === id) related.add(aId);
-      });
-      slot.querySelectorAll(".section-block").forEach(b => {
-        const isRelated = related.has(b.dataset.groupUnitId);
-        b.classList.toggle("highlight", isRelated && b.dataset.groupUnitId !== id);
-        b.classList.toggle("dim", !isRelated);
-      });
-      slot.querySelectorAll(".link-edge").forEach(edge => {
-        edge.style.opacity = (edge.dataset.a === id || edge.dataset.b === id) ? "0.9" : "0.05";
-      });
-    });
-    el.addEventListener("mouseleave", () => {
-      slot.querySelectorAll(".section-block").forEach(b => b.classList.remove("highlight", "dim"));
-      slot.querySelectorAll(".link-edge").forEach(edge => { edge.style.opacity = ""; });
-    });
-
-    const hint = el.querySelector(".expand-hint");
-    if (hint) {
-      hint.addEventListener("click", (evt) => {
-        evt.stopPropagation();
-        el.classList.toggle("expanded");
-        drawGroupLinks(slot, group); // height changed, so link endpoints need repositioning
-      });
+function setPaperMapGroupEmphasis(hoveredGroupId = null) {
+  const groupId = hoveredGroupId || state.paperMapSelectedGroupId;
+  const active = Boolean(groupId);
+  stage.querySelectorAll("[data-paper-map-group]").forEach(element => {
+    const matches = element.dataset.paperMapGroup === groupId;
+    element.classList.toggle("highlight", active && matches);
+    element.classList.toggle("dim", active && !matches);
+    if (element.classList.contains("paper-map-legend-item")) {
+      const selected = element.dataset.paperMapGroup === state.paperMapSelectedGroupId;
+      element.classList.toggle("selected", selected);
+      element.setAttribute("aria-pressed", String(selected));
     }
   });
 }
 
-// Recomputes currentLinks from rawLinksForGranularity + similarityThreshold, then
-// fully re-renders. Shared by granularity switches and similarity-slider changes,
-// since both change which links (and therefore which units) should be visible.
-function applyFilterAndRender() {
-  currentLinks = rawLinksForGranularity.filter(l => l.similarity >= similarityThreshold);
-  pinnedId = null;
-  expandedIds.clear();
-  renderColumns(allPapers, currentGranularity);
-  drawLinks(currentLinks);
-  attachInteractions();
+function attachPaperMapInteractions(model) {
+  stage.querySelectorAll("[data-paper-map-mode]").forEach(button => button.addEventListener("click", event => {
+    event.stopPropagation();
+    state.paperMapMode = button.dataset.paperMapMode;
+    renderPaperMap();
+  }));
+  stage.querySelectorAll(".paper-map-paragraph, .paper-map-skeleton-block").forEach(card => {
+    const groupId = card.dataset.paperMapGroup;
+    card.addEventListener("mouseenter", () => setPaperMapGroupEmphasis(groupId));
+    card.addEventListener("mouseleave", () => setPaperMapGroupEmphasis());
+    card.addEventListener("click", event => {
+      event.stopPropagation();
+      openParagraphInspector(card.dataset.paperMapParagraph);
+    });
+  });
+  stage.querySelectorAll(".paper-map-legend-item").forEach(button => {
+    const groupId = button.dataset.paperMapGroup;
+    button.addEventListener("mouseenter", () => setPaperMapGroupEmphasis(groupId));
+    button.addEventListener("mouseleave", () => setPaperMapGroupEmphasis());
+    button.addEventListener("click", event => {
+      event.stopPropagation();
+      if (state.paperMapSelectedGroupId === groupId) {
+        state.paperMapSelectedGroupId = null;
+        if (state.inspectorSelection === `group:${groupId}`) closeInspector();
+      } else {
+        state.paperMapSelectedGroupId = groupId;
+        openGroupInspector(groupId, model.entriesById.get(groupId)?.group);
+      }
+      setPaperMapGroupEmphasis();
+    });
+  });
+  setPaperMapGroupEmphasis();
+  syncInspectorSelection();
+  const columns = [...stage.querySelectorAll(".paper-map-column")];
+  let synchronizing = false;
+  columns.forEach(source => source.addEventListener("scroll", () => {
+    if (synchronizing) return;
+    const maximum = Math.max(0, source.scrollHeight - source.clientHeight);
+    state.paperMapScrollRatio = maximum ? source.scrollTop / maximum : 0;
+    synchronizing = true;
+    columns.forEach(target => {
+      if (target === source) return;
+      target.scrollTop = state.paperMapScrollRatio * Math.max(0, target.scrollHeight - target.clientHeight);
+    });
+    requestAnimationFrame(() => { synchronizing = false; });
+  }, {passive:true}));
 }
 
-function switchGranularity(granularity) {
-  currentGranularity = granularity;
-  buildGranularityTabs();
-  if (granularity === "groups") {
-    renderGroupsTree();
+function drawAlignmentLinks(links) {
+  const svg = $("linkLayer");
+  const canvas = $("alignmentCanvas");
+  const columns = $("columns");
+  if (!svg || !canvas || !columns) return;
+  const origin = canvas.getBoundingClientRect();
+  svg.setAttribute("width", columns.scrollWidth);
+  svg.setAttribute("height", columns.scrollHeight);
+  const paths = links.map(link => {
+    const a = stage.querySelector(`[data-unit-id="${CSS.escape(`${link.paper_a}:${link.section_a}`)}"]`);
+    const b = stage.querySelector(`[data-unit-id="${CSS.escape(`${link.paper_b}:${link.section_b}`)}"]`);
+    if (!a || !b) return "";
+    const ar = a.getBoundingClientRect(), br = b.getBoundingClientRect();
+    const left = ar.left < br.left;
+    const x1 = (left ? ar.right : ar.left) - origin.left, y1 = ar.top + ar.height / 2 - origin.top;
+    const x2 = (left ? br.left : br.right) - origin.left, y2 = br.top + br.height / 2 - origin.top;
+    const cx = (x1 + x2) / 2;
+    const baseWidth = 1 + 2.5 * link.similarity;
+    return `<path class="link-edge" data-a="${escapeHtml(`${link.paper_a}:${link.section_a}`)}" data-b="${escapeHtml(`${link.paper_b}:${link.section_b}`)}" data-base-width="${baseWidth}" data-similarity="${link.similarity}" d="M ${x1} ${y1} C ${cx} ${y1}, ${cx} ${y2}, ${x2} ${y2}" fill="none" stroke="#495057" stroke-width="${baseWidth}" opacity="${.15 + .3 * link.similarity}"/>`;
+  }).join("");
+  svg.innerHTML = paths;
+}
+
+const THICKENED_MIN_WIDTH = 25;
+const THICKENED_MAX_WIDTH = 50;
+const THICKENED_OPACITY = .15;
+
+function alignmentSimilarityRange(links) {
+  const similarities = links.map(link => Number(link.similarity));
+  return {min:Math.min(...similarities), max:Math.max(...similarities)};
+}
+
+function applyAlignmentHighlight(id, links) {
+  const related = new Set([id]);
+  links.forEach(link => {
+    const a = `${link.paper_a}:${link.section_a}`, b = `${link.paper_b}:${link.section_b}`;
+    if (a === id) related.add(b); if (b === id) related.add(a);
+  });
+  stage.querySelectorAll(".section-block").forEach(card => {
+    card.classList.toggle("highlight", related.has(card.dataset.unitId));
+    card.classList.toggle("dim", !related.has(card.dataset.unitId));
+  });
+  const {min, max} = alignmentSimilarityRange(links);
+  stage.querySelectorAll(".link-edge").forEach(edge => {
+    const touches = edge.dataset.a === id || edge.dataset.b === id;
+    if (!touches) {
+      edge.style.strokeWidth = ""; edge.style.opacity = ".05"; return;
+    }
+    const similarity = Number(edge.dataset.similarity);
+    const position = max > min ? (similarity - min) / (max - min) : 1;
+    edge.style.strokeWidth = `${THICKENED_MIN_WIDTH + position * (THICKENED_MAX_WIDTH - THICKENED_MIN_WIDTH)}px`;
+    edge.style.opacity = String(THICKENED_OPACITY);
+  });
+}
+
+function clearAlignmentHighlight() {
+  stage.querySelectorAll(".section-block").forEach(card => card.classList.remove("highlight", "dim"));
+  stage.querySelectorAll(".link-edge").forEach(edge => { edge.style.strokeWidth = ""; edge.style.opacity = ""; });
+}
+
+function clearColumnAlignment() {
+  stage.querySelectorAll(".column").forEach(column => { column.style.paddingTop = ""; });
+}
+
+function alignColumnsTo(id, links) {
+  clearColumnAlignment();
+  const anchor = stage.querySelector(`[data-unit-id="${CSS.escape(id)}"]`); if (!anchor) return;
+  const origin = stage.getBoundingClientRect(), anchorY = anchor.getBoundingClientRect().top - origin.top;
+  const anchorPaper = id.split(":")[0], partnerByPaper = {};
+  links.forEach(link => {
+    const a = `${link.paper_a}:${link.section_a}`, b = `${link.paper_b}:${link.section_b}`;
+    if (a === id && partnerByPaper[link.paper_b] === undefined) partnerByPaper[link.paper_b] = b;
+    if (b === id && partnerByPaper[link.paper_a] === undefined) partnerByPaper[link.paper_a] = a;
+  });
+  const offsets = {[anchorPaper]:0};
+  Object.entries(partnerByPaper).forEach(([paperId, partnerId]) => {
+    const partner = stage.querySelector(`[data-unit-id="${CSS.escape(partnerId)}"]`); if (!partner) return;
+    offsets[paperId] = anchorY - (partner.getBoundingClientRect().top - origin.top);
+  });
+  const minimum = Math.min(0, ...Object.values(offsets));
+  stage.querySelectorAll(".column").forEach(column => {
+    if (offsets[column.dataset.paper] !== undefined) column.style.paddingTop = `${offsets[column.dataset.paper] - minimum}px`;
+  });
+}
+
+function refreshAlignment(links) {
+  if (state.pinnedAlignmentId) alignColumnsTo(state.pinnedAlignmentId, links); else clearColumnAlignment();
+  drawAlignmentLinks(links);
+  if (state.pinnedAlignmentId) applyAlignmentHighlight(state.pinnedAlignmentId, links); else clearAlignmentHighlight();
+}
+
+function attachAlignmentInteractions(links) {
+  stage.querySelectorAll(".section-block").forEach(card => {
+    const id = card.dataset.unitId;
+    card.addEventListener("mouseenter", () => { if (!state.pinnedAlignmentId) applyAlignmentHighlight(id, links); });
+    card.addEventListener("mouseleave", () => { if (!state.pinnedAlignmentId) clearAlignmentHighlight(); });
+    card.addEventListener("click", event => {
+      event.stopPropagation(); state.pinnedAlignmentId = state.pinnedAlignmentId === id ? null : id; refreshAlignment(links);
+    });
+    card.querySelector(".expand-hint")?.addEventListener("click", event => {
+      event.stopPropagation();
+      if (state.expandedAlignmentIds.has(id)) state.expandedAlignmentIds.delete(id); else state.expandedAlignmentIds.add(id);
+      card.classList.toggle("expanded", state.expandedAlignmentIds.has(id)); requestAnimationFrame(() => refreshAlignment(links));
+    });
+  });
+}
+
+function allParagraphKeys() {
+  return state.papers.flatMap(paper => (paper.paragraphs || []).map(paragraph => `${paper.paper_id}:${paragraph.id}`));
+}
+
+function uniqueMemberKeys(groups) {
+  const keys = new Set();
+  groups.forEach(group => (group.members || []).forEach(member => keys.add(paragraphKey(member))));
+  return keys;
+}
+
+function epochChangeMap(epoch) {
+  return Object.fromEntries((epoch?.paragraph_changes || []).map(change => [paragraphKey(change), change]));
+}
+
+function isChangedParagraph(change) {
+  return Boolean(change?.newly_assigned || change?.shifted);
+}
+
+function legacyMergedGroups() {
+  const used = new Set(), merged = [];
+  state.superGroups.forEach(superGroup => {
+    const childGroups = (superGroup.members || []).map(member => groupLookup[member.group_id]).filter(Boolean);
+    childGroups.forEach(group => used.add(group.group_id));
+    const members = new Map(), paragraphLinks = [];
+    childGroups.forEach(group => {
+      (group.members || []).forEach(member => members.set(paragraphKey(member), member));
+      paragraphLinks.push(...(group.links || []));
+    });
+    merged.push({
+      group_id:superGroup.super_group_id, question:superGroup.overarching_question,
+      parent_group_ids:childGroups.map(group => group.group_id), members:[...members.values()],
+      paragraph_links:paragraphLinks,
+    });
+  });
+  state.groups.filter(group => !used.has(group.group_id)).forEach(group => merged.push({
+    ...group, question:group.overarching_question, parent_group_ids:[group.group_id], paragraph_links:group.links || [],
+  }));
+  return merged;
+}
+
+function buildReplaySteps() {
+  if ((state.epochs?.schema_version || 1) >= 2 && state.epochs?.initial_state) {
+    const initial = state.epochs.initial_state;
+    state.replaySteps = [{
+      kind:"initial", label:"Initial groups", groups:initial.groups || [],
+      unassigned:initial.unassigned_paragraphs || [], changeMap:{},
+      similarityLinks:initial.question_match_links || [], previousGroups:[], events:[], revisions:[],
+    }];
+    let previousGroups = initial.groups || [];
+    (state.epochs.epochs || []).forEach(epoch => {
+      const changeMap = epochChangeMap(epoch);
+      state.replaySteps.push({
+        kind:"merge", label:`Epoch ${epoch.epoch} · merge`, groups:epoch.merge?.groups || [],
+        unassigned:epoch.merge?.unassigned_paragraphs || [], changeMap:{}, previousGroups,
+        events:epoch.merge?.events || [], revisions:[], similarityLinks:epoch.merge?.reciprocal_links || [], epoch,
+      });
+      state.replaySteps.push({
+        kind:"assignment", label:`Epoch ${epoch.epoch} · assign orphans`, groups:epoch.assignment?.groups || epoch.groups || [],
+        unassigned:epoch.assignment?.remaining_unassigned_paragraphs || epoch.unassigned_paragraphs || [], changeMap,
+        previousGroups:epoch.merge?.groups || previousGroups, events:[], revisions:[], similarityLinks:[], epoch,
+      });
+      state.replaySteps.push({
+        kind:"revision", label:`Epoch ${epoch.epoch} · revise questions`, groups:epoch.question_revision?.groups || epoch.groups || [],
+        unassigned:epoch.unassigned_paragraphs || [], changeMap,
+        previousGroups:epoch.assignment?.groups || previousGroups, events:[],
+        revisions:epoch.question_revision?.revisions || [], similarityLinks:[], epoch,
+      });
+      previousGroups = epoch.groups || previousGroups;
+    });
+  } else {
+    const initialAssigned = uniqueMemberKeys(state.groups);
+    const mergedGroups = legacyMergedGroups();
+    state.replaySteps = [
+      {kind:"initial", label:"Initial groups", groups:state.groups.map(group => ({...group, question:group.overarching_question, paragraph_links:group.links || []})), unassigned:allParagraphKeys().filter(key => !initialAssigned.has(key)), changeMap:{}, similarityLinks:state.groupLinks, previousGroups:[], events:[], revisions:[]},
+      {kind:"merge", label:"Initial merge · legacy run", groups:mergedGroups, unassigned:allParagraphKeys().filter(key => !uniqueMemberKeys(mergedGroups).has(key)), changeMap:{}, similarityLinks:state.groupLinks, previousGroups:state.groups, events:mergedGroups.filter(group => (group.parent_group_ids || []).length > 1).map(group => ({group_id:group.group_id, parent_group_ids:group.parent_group_ids})), revisions:[]},
+      ...(state.epochs?.epochs || []).filter(epoch => epoch.epoch > 0).map(epoch => ({kind:"legacy", label:`Epoch ${epoch.epoch} · legacy reassignment`, groups:epoch.groups || [], unassigned:epoch.unassigned_paragraphs || [], changeMap:epochChangeMap(epoch), similarityLinks:[], previousGroups:[], events:[], revisions:[], epoch})),
+    ];
+  }
+  state.replayIndex = Math.min(state.replayIndex, Math.max(0, state.replaySteps.length - 1));
+  $("replayStep").innerHTML = state.replaySteps.map((step, index) => `<option value="${index}">${escapeHtml(step.label)}</option>`).join("");
+}
+
+function visibleMembers(members, changeMap = {}) {
+  return (members || []).filter(member => {
+    if ($("membershipMode").value === "best" && member.rank_for_paragraph && member.rank_for_paragraph !== 1) return false;
+    if ($("shiftedOnly").checked && !isChangedParagraph(changeMap[paragraphKey(member)])) return false;
+    return true;
+  });
+}
+
+function paperLaneHtml(members, options = {}) {
+  const byPaper = Object.fromEntries(state.papers.map(paper => [paper.paper_id, []]));
+  members.forEach(member => { if (byPaper[member.paper]) byPaper[member.paper].push(member); });
+  const changeMap = options.changeMap || {};
+  const lanes = state.papers.map(paper => {
+    const dots = byPaper[paper.paper_id].map(member => {
+      const key = paragraphKey(member), unit = paragraphLookup[key] || {}, change = changeMap[key];
+      const classes = ["paragraph-dot", options.orphan ? "orphan" : "", isChangedParagraph(change) ? "newly-assigned" : ""].filter(Boolean).join(" ");
+      const transitionScope = options.transitionScope || (options.orphan ? "orphan" : "members");
+      return `<button type="button" class="${classes}" data-paragraph-key="${escapeHtml(key)}" data-transition-key="paragraph:${escapeHtml(transitionScope)}:${escapeHtml(key)}" title="${escapeHtml(unit.tag || key)}" aria-label="${escapeHtml(unit.tag || key)}"></button>`;
+    }).join("");
+    return `<div class="member-lane"><div class="member-lane-label" title="${escapeHtml(paper.title)}">${escapeHtml(shortPaperLabel(paper))}</div><div class="paragraph-dots">${dots}</div></div>`;
+  }).join("");
+  return `<div class="member-lanes" style="--paper-count:${Math.max(1, state.papers.length)}">${lanes}</div>`;
+}
+
+function replayNodeHtml(group, position, options = {}) {
+  const allMembers = group.members || [], members = visibleMembers(allMembers, options.changeMap || {});
+  const nodeId = options.nodeId || group.group_id || group.super_group_id;
+  const groupId = options.groupId || group.group_id || group.super_group_id || nodeId;
+  const labelInfo = groupLabelInfo(groupId);
+  const originDescription = labelInfo.originEpoch === 0 ? "Created in initial groups" : `Created in epoch ${labelInfo.originEpoch}`;
+  const classes = ["replay-node", options.super ? "replay-super-node" : "replay-group-node", options.updated ? "updated" : "", options.isNew ? "new-node" : ""].filter(Boolean).join(" ");
+  const badge = options.badge ? `<span class="replay-badge${options.updated || options.isNew ? " changed" : ""}">${escapeHtml(options.badge)}</span>` : "";
+  const showing = members.length !== allMembers.length ? ` · showing ${members.length}` : "";
+  const questionAttrs = options.clickable === false ? "" : `data-toggle-group="${escapeHtml(groupId)}"`;
+  const revisionAttrs = options.revision
+    ? ` data-question-revision="${escapeHtml(groupId)}" title="Click to inspect the previous question"`
+    : "";
+  return `<article class="${classes}" data-node-id="${escapeHtml(nodeId)}" data-transition-key="node:${escapeHtml(nodeId)}" data-group-id="${escapeHtml(groupId)}" data-group-label="${escapeHtml(labelInfo.label)}"${revisionAttrs} style="left:${position.x}px;top:${position.y}px;width:${position.width}px;min-height:${position.height || 118}px">
+    <div class="replay-origin-label" title="${escapeHtml(`${originDescription} · ${groupId}`)}">${escapeHtml(labelInfo.label)}</div>
+    <button type="button" class="replay-question" ${questionAttrs}>${escapeHtml(group.question || group.overarching_question || "(no question)")}</button>
+    <div class="replay-meta">${allMembers.length} paragraph${allMembers.length === 1 ? "" : "s"}${showing}${options.meta ? ` · ${escapeHtml(options.meta)}` : ""}</div><div class="replay-badge-slot">${badge}</div>
+    ${options.showMembers === false ? "" : paperLaneHtml(members, {changeMap:options.changeMap || {}, transitionScope:nodeId})}
+  </article>`;
+}
+
+function trayHtml(title, paragraphKeys, position, changeMap = {}) {
+  if (!$("showOrphans").checked) return "";
+  const allMembers = paragraphKeys.map(key => { const [paper, unit_id] = key.split(":"); return {paper, unit_id}; });
+  const shownMembers = $("shiftedOnly").checked ? allMembers.filter(member => isChangedParagraph(changeMap[paragraphKey(member)])) : allMembers;
+  const showing = shownMembers.length !== allMembers.length ? ` · showing ${shownMembers.length} changed` : "";
+  return `<section class="replay-tray" data-node-id="orphan-tray" data-transition-key="node:orphan-tray" style="left:${position.x}px;top:${position.y}px;width:${position.width}px;min-height:${position.height || 92}px">
+    <div class="replay-tray-title">${escapeHtml(title)} · ${allMembers.length}${escapeHtml(showing)}</div>${paperLaneHtml(shownMembers, {orphan:true, changeMap, transitionScope:"orphan"})}</section>`;
+}
+
+function replayDetailHtml(group, position, changeMap = {}) {
+  const allMembers = group.members || [], members = visibleMembers(allMembers, changeMap);
+  const displayLabel = groupDisplayLabel(group.group_id);
+  const byPaper = Object.fromEntries(state.papers.map(paper => [paper.paper_id, []]));
+  members.forEach(member => { if (byPaper[member.paper]) byPaper[member.paper].push(member); });
+  const columns = state.papers.map(paper => {
+    const cards = byPaper[paper.paper_id].map(member => {
+      const key = paragraphKey(member), unit = paragraphLookup[key] || {}, change = changeMap[key], changed = isChangedParagraph(change);
+      const changeLabel = change?.newly_assigned ? "newly assigned" : "changed";
+      return `<article class="section-block linkable group-paragraph-card${changed ? " highlight" : ""}" data-group-unit-id="${escapeHtml(key)}">
+        <div class="section-head"><button type="button" class="tag-badge" data-open-paragraph="${escapeHtml(key)}">${escapeHtml(unit.tag || key)}</button>${changed ? `<span class="replay-badge changed">${changeLabel}</span>` : ""}</div>
+        <div class="section-text section-text-preview">${escapeHtml(preview(unit.text))}</div><div class="section-text section-text-full">${escapeHtml(compactText(unit.text))}</div><div class="expand-hint"></div>
+      </article>`;
+    }).join("");
+    return `<section class="column" data-paper="${escapeHtml(paper.paper_id)}"><div class="paper-title" title="${escapeHtml(paper.title)}">${escapeHtml(shortPaperLabel(paper))}</div>${cards || `<div class="group-column-empty">no paragraphs in this group</div>`}</section>`;
+  }).join("");
+  const showing = members.length !== allMembers.length ? ` · showing ${members.length}` : "";
+  return `<section class="replay-detail" data-node-id="detail:${escapeHtml(group.group_id)}" style="left:${position.x}px;top:${position.y}px;width:${position.width}px">
+    <div class="replay-detail-head"><strong>${escapeHtml(`${displayLabel} · ${group.question || group.overarching_question}`)}</strong><span>${allMembers.length} paragraphs${escapeHtml(showing)}</span></div>
+    <div class="replay-detail-scroll"><div class="group-columns-wrap"><svg class="group-link-layer"></svg><div class="group-columns">${columns}</div></div></div>
+  </section>`;
+}
+
+function replayLayout(step) {
+  const allGroups = step.groups || [];
+  const openGroup = allGroups.find(group => group.group_id === state.openReplayGroupId);
+  const nodeWidth = 250, gapX = 28, gapY = 190, startX = 50;
+  const nodes = [], edges = [], positions = {};
+  const eventById = Object.fromEntries((step.events || []).map(event => [event.group_id, event]));
+  const revisionById = Object.fromEntries((step.revisions || []).filter(item => item.changed).map(item => [item.group_id, item]));
+  const previousById = Object.fromEntries((step.previousGroups || []).map(group => [group.group_id, group]));
+
+  const addGroupNode = (group, position) => {
+    positions[group.group_id] = position;
+    const event = eventById[group.group_id], revision = revisionById[group.group_id];
+    const gained = (step.epoch?.newly_assigned_paragraphs || []).some(item => (group.members || []).some(member => paragraphKey(member) === paragraphKey(item)));
+    nodes.push(replayNodeHtml(group, position, {
+      groupId:group.group_id, changeMap:step.changeMap, super:Boolean(event), isNew:Boolean(event), updated:Boolean(revision),
+      revision,
+      badge:event ? `merged from ${event.parent_group_ids.length} groups` : revision ? "question revised" : step.kind === "assignment" && gained ? "new evidence" : "",
+    }));
+  };
+
+  const addMergeParents = (event, target, parentY = 45) => {
+    const parentWidth = 180, parentGap = 12;
+    const totalWidth = event.parent_group_ids.length * parentWidth + Math.max(0, event.parent_group_ids.length - 1) * parentGap;
+    event.parent_group_ids.forEach((parentId, index) => {
+      const parent = previousById[parentId]; if (!parent) return;
+      const nodeId = `previous:${event.group_id}:${parentId}`;
+      nodes.push(replayNodeHtml(parent, {x:target.x + target.width / 2 - totalWidth / 2 + index * (parentWidth + parentGap), y:parentY, width:parentWidth, height:105}, {nodeId, groupId:parentId, showMembers:false, clickable:false, meta:"previous group"}));
+      edges.push({from:nodeId, to:event.group_id, type:"merge", similarity:1});
+    });
+  };
+
+  let nextY;
+  if (openGroup) {
+    state.worldWidth = 1200;
+    const event = step.kind === "merge" ? eventById[openGroup.group_id] : null;
+    const y = event ? 220 : 70;
+    const position = {x:(state.worldWidth - nodeWidth) / 2, y, width:nodeWidth, height:145};
+    addGroupNode(openGroup, position);
+    if (event) addMergeParents(event, position);
+    nextY = y + gapY + 25;
+  } else if (step.kind === "merge" && (step.events || []).length) {
+    const mergedGroups = (step.events || []).map(event => allGroups.find(group => group.group_id === event.group_id)).filter(Boolean);
+    const mergedIds = new Set(mergedGroups.map(group => group.group_id));
+    const carriedGroups = allGroups.filter(group => !mergedIds.has(group.group_id));
+    let mergeX = startX;
+    mergedGroups.forEach(group => {
+      const event = eventById[group.group_id];
+      const parentSpan = event.parent_group_ids.length * 180 + Math.max(0, event.parent_group_ids.length - 1) * 12;
+      const slotWidth = Math.max(nodeWidth, parentSpan);
+      const position = {x:mergeX + (slotWidth - nodeWidth) / 2, y:225, width:nodeWidth, height:145};
+      addGroupNode(group, position); addMergeParents(event, position); mergeX += slotWidth + 42;
+    });
+    const carriedColumns = Math.min(5, Math.max(2, Math.ceil(Math.sqrt(Math.max(1, carriedGroups.length)))));
+    const carriedWidth = startX * 2 + carriedColumns * nodeWidth + Math.max(0, carriedColumns - 1) * gapX;
+    state.worldWidth = Math.max(1040, mergeX + startX - 42, carriedWidth);
+    const carriedStartY = 440;
+    carriedGroups.forEach((group, index) => addGroupNode(group, {
+      x:startX + (index % carriedColumns) * (nodeWidth + gapX),
+      y:carriedStartY + Math.floor(index / carriedColumns) * gapY,
+      width:nodeWidth, height:145,
+    }));
+    nextY = carriedStartY + Math.ceil(carriedGroups.length / carriedColumns) * gapY + 25;
+  } else {
+    const columns = Math.min(5, Math.max(2, Math.ceil(Math.sqrt(Math.max(1, allGroups.length)))));
+    state.worldWidth = Math.max(1040, startX * 2 + columns * nodeWidth + (columns - 1) * gapX);
+    allGroups.forEach((group, index) => addGroupNode(group, {
+      x:startX + (index % columns) * (nodeWidth + gapX),
+      y:70 + Math.floor(index / columns) * gapY,
+      width:nodeWidth, height:145,
+    }));
+    nextY = 70 + Math.ceil(allGroups.length / columns) * gapY + 25;
+    if (step.kind === "initial") {
+      const threshold = Number(state.epochs?.config?.merge_lexical_threshold ?? state.epochs?.config?.supergroup_threshold ?? .33);
+      (step.similarityLinks || []).filter(link => Number(link.lexical_similarity ?? link.similarity) >= threshold).forEach(link => edges.push({from:link.group_a, to:link.group_b, type:"similarity", similarity:Number(link.lexical_similarity ?? link.similarity)}));
+    }
+  }
+
+  if (openGroup) {
+    nodes.push(replayDetailHtml(openGroup, {x:50, y:nextY, width:state.worldWidth - 100}, step.changeMap || {}));
+    edges.push({from:openGroup.group_id, to:`detail:${openGroup.group_id}`, type:"containment", similarity:0});
+    nextY += 495;
+  }
+  const orphanKeys = (step.unassigned || []).map(item => typeof item === "string" ? item : paragraphKey(item));
+  if (!openGroup) nodes.push(trayHtml("Unassigned paragraphs", orphanKeys, {x:50, y:nextY, width:state.worldWidth - 100}, step.changeMap || {}));
+  state.worldHeight = nextY + (!openGroup && $("showOrphans").checked ? 150 : 35);
+  return {nodes:nodes.join(""), edges, openGroup};
+}
+
+function captureReplayPositions() {
+  const positions = {byTransition:new Map(), byParagraph:new Map()};
+  stage.querySelectorAll("[data-transition-key]").forEach(element => {
+    if (!positions.byTransition.has(element.dataset.transitionKey)) positions.byTransition.set(element.dataset.transitionKey, element.getBoundingClientRect());
+    if (element.dataset.paragraphKey && !positions.byParagraph.has(element.dataset.paragraphKey)) positions.byParagraph.set(element.dataset.paragraphKey, element.getBoundingClientRect());
+  });
+  return positions;
+}
+
+function animateReplay(previousPositions, step) {
+  if (!previousPositions?.byTransition?.size) return;
+  const scale = state.replayScale || 1;
+  stage.querySelectorAll("[data-transition-key]").forEach(element => {
+    if (element.classList.contains("paragraph-dot") && step.kind !== "assignment") return;
+    let old = previousPositions.byTransition.get(element.dataset.transitionKey);
+    if (!old && step.kind === "assignment" && element.classList.contains("newly-assigned")) {
+      old = previousPositions.byParagraph.get(element.dataset.paragraphKey);
+    }
+    if (!old) return;
+    const current = element.getBoundingClientRect();
+    const dx = (old.left - current.left) / scale, dy = (old.top - current.top) / scale;
+    if (Math.abs(dx) < 2 && Math.abs(dy) < 2) return;
+    element.animate([{transform:`translate(${dx}px, ${dy}px)`, opacity:.55}, {transform:"translate(0, 0)", opacity:1}], {duration:650, easing:"cubic-bezier(.2,.75,.25,1)"});
+  });
+}
+
+function settleReplayLayout() {
+  const world = $("replayWorld"), svg = $("replayEdges"), layer = $("replayNodes");
+  if (!world || !svg || !layer) return;
+  const rows = new Map();
+  layer.querySelectorAll(":scope > .replay-node").forEach(node => {
+    const top = Number.parseFloat(node.style.top) || 0;
+    if (!rows.has(top)) rows.set(top, []);
+    rows.get(top).push(node);
+  });
+  let occupiedBottom = 0;
+  [...rows.entries()].sort(([a], [b]) => a - b).forEach(([originalTop, nodes]) => {
+    const top = Math.max(originalTop, occupiedBottom ? occupiedBottom + 28 : originalTop);
+    nodes.forEach(node => { node.style.top = `${top}px`; });
+    occupiedBottom = Math.max(...nodes.map(node => top + node.offsetHeight));
+  });
+  [...layer.querySelectorAll(":scope > .replay-detail, :scope > .replay-tray")]
+    .sort((a, b) => (Number.parseFloat(a.style.top) || 0) - (Number.parseFloat(b.style.top) || 0))
+    .forEach(element => {
+      const originalTop = Number.parseFloat(element.style.top) || 0;
+      const top = Math.max(originalTop, occupiedBottom ? occupiedBottom + 28 : originalTop);
+      element.style.top = `${top}px`;
+      occupiedBottom = top + element.offsetHeight;
+    });
+  state.worldHeight = Math.max(state.worldHeight, occupiedBottom + 35);
+  world.style.height = `${state.worldHeight}px`;
+  svg.setAttribute("height", state.worldHeight);
+}
+
+function renderReplay(animate = true) {
+  if (!state.replaySteps.length) {
+    stage.innerHTML = `<div class="empty-state">This run has no group replay data.</div>`; return;
+  }
+  const previousPositions = animate ? captureReplayPositions() : null;
+  state.replayIndex = Math.max(0, Math.min(state.replayIndex, state.replaySteps.length - 1));
+  const step = state.replaySteps[state.replayIndex];
+  const closedMissingGroup = Boolean(state.openReplayGroupId && !(step.groups || []).some(group => group.group_id === state.openReplayGroupId));
+  if (closedMissingGroup) state.openReplayGroupId = null;
+  const layout = replayLayout(step), assigned = uniqueMemberKeys(step.groups || []).size;
+  const newlyAssigned = step.epoch?.newly_assigned_paragraphs?.length || 0;
+  const changedQuestions = (step.revisions || []).filter(item => item.changed).length;
+  const metrics = `${(step.groups || []).length} groups · ${assigned} assigned · ${(step.unassigned || []).length} unassigned${step.kind === "assignment" ? ` · ${newlyAssigned} new` : ""}${step.kind === "revision" ? ` · ${changedQuestions} questions revised` : ""}`;
+  stage.innerHTML = `<div class="replay-shell"><div class="replay-summary"><strong>${escapeHtml(step.label)}</strong><span>${escapeHtml(metrics)}</span></div>
+    <div id="replayViewport"><div id="replayWorld" style="width:${state.worldWidth}px;height:${state.worldHeight}px"><svg id="replayEdges" width="${state.worldWidth}" height="${state.worldHeight}"></svg><div id="replayNodes">${layout.nodes}</div></div></div></div>`;
+  syncReplayControls();
+  settleReplayLayout();
+  applyReplayTransform();
+  drawReplayEdges(layout.edges);
+  attachReplayInteractions();
+  requestAnimationFrame(() => { drawReplayDetailLinks(layout.openGroup); animateReplay(previousPositions, step); });
+  if (!animate || closedMissingGroup) fitReplay();
+}
+
+function drawReplayEdges(edges) {
+  const svg = $("replayEdges");
+  if (!svg) return;
+  svg.innerHTML = edges.map(edge => {
+    const from = stage.querySelector(`[data-node-id="${CSS.escape(edge.from)}"]`), to = stage.querySelector(`[data-node-id="${CSS.escape(edge.to)}"]`);
+    if (!from || !to) return "";
+    const vertical = edge.type === "merge" || edge.type === "containment";
+    const x1 = from.offsetLeft + from.offsetWidth / 2, y1 = vertical ? from.offsetTop + from.offsetHeight : from.offsetTop + from.offsetHeight / 2;
+    const x2 = to.offsetLeft + to.offsetWidth / 2, y2 = vertical ? to.offsetTop : to.offsetTop + to.offsetHeight / 2;
+    const similarity = Number(edge.similarity || 0);
+    const baseWidth = edge.type === "similarity" ? 1 + 2.5 * similarity : edge.type === "merge" ? 2 : 1.5;
+    const baseOpacity = edge.type === "similarity" ? .15 + .25 * similarity : edge.type === "merge" ? .7 : .65;
+    const attributes = `data-from="${escapeHtml(edge.from)}" data-to="${escapeHtml(edge.to)}" data-base-width="${baseWidth}" data-base-opacity="${baseOpacity}" data-similarity="${similarity}" style="stroke-width:${baseWidth}px;opacity:${baseOpacity}"`;
+    if (edge.type === "similarity") {
+      const lift = Math.min(100, 25 + Math.abs(x2 - x1) * .12);
+      return `<path class="replay-edge similarity" ${attributes} d="M ${x1} ${y1} C ${x1} ${y1-lift}, ${x2} ${y2-lift}, ${x2} ${y2}"/>`;
+    }
+    const cy = (y1 + y2) / 2;
+    return `<path class="replay-edge ${edge.type}" ${attributes} d="M ${x1} ${y1} C ${x1} ${cy}, ${x2} ${cy}, ${x2} ${y2}"/>`;
+  }).join("");
+}
+
+const REPLAY_EDGE_OPACITY_BOOST = .5;
+const REPLAY_EDGE_WIDTH_BOOST = 2.5;
+
+function setReplayEdgeEmphasis(nodeId, emphasized) {
+  const svg = $("replayEdges");
+  if (!svg) return;
+  svg.querySelectorAll(".replay-edge").forEach(edge => {
+    if (edge.dataset.from !== nodeId && edge.dataset.to !== nodeId) return;
+    const baseWidth = Number(edge.dataset.baseWidth || 1.5);
+    const baseOpacity = Number(edge.dataset.baseOpacity || .35);
+    edge.style.strokeWidth = `${emphasized ? baseWidth + REPLAY_EDGE_WIDTH_BOOST : baseWidth}px`;
+    edge.style.opacity = emphasized ? Math.min(1, baseOpacity + REPLAY_EDGE_OPACITY_BOOST) : baseOpacity;
+  });
+}
+
+function applyReplayTransform() {
+  const world = $("replayWorld");
+  if (world) world.style.transform = `translate(${state.replayX}px, ${state.replayY}px) scale(${state.replayScale})`;
+}
+
+function fitReplay() {
+  const viewport = $("replayViewport");
+  if (!viewport) return;
+  const scaleX = (viewport.clientWidth - 36) / state.worldWidth;
+  const scaleY = (viewport.clientHeight - 36) / state.worldHeight;
+  state.replayScale = Math.max(.22, Math.min(1.1, scaleX, scaleY));
+  state.replayX = (viewport.clientWidth - state.worldWidth * state.replayScale) / 2;
+  state.replayY = Math.max(18, (viewport.clientHeight - state.worldHeight * state.replayScale) / 2);
+  applyReplayTransform();
+}
+
+function zoomReplay(factor) {
+  state.replayScale = Math.max(.2, Math.min(2, state.replayScale * factor)); applyReplayTransform();
+}
+
+function drawReplayDetailLinks(group) {
+  const detail = stage.querySelector(".replay-detail"), svg = detail?.querySelector(".group-link-layer"), wrap = detail?.querySelector(".group-columns-wrap"), columns = detail?.querySelector(".group-columns");
+  if (!detail || !svg || !wrap || !columns || !group) return;
+  svg.setAttribute("width", columns.scrollWidth); svg.setAttribute("height", columns.scrollHeight);
+  const origin = wrap.getBoundingClientRect(), scale = state.replayScale || 1;
+  const x = rect => (rect.left + rect.width / 2 - origin.left) / scale;
+  const top = rect => (rect.top - origin.top) / scale;
+  const bottom = rect => (rect.bottom - origin.top) / scale;
+  const treeEdges = [];
+  detail.querySelectorAll(".group-columns .column").forEach(column => {
+    const paperNode = column.querySelector(".paper-title");
+    if (!paperNode) return;
+    const paperRect = paperNode.getBoundingClientRect(), paperX = x(paperRect), paperTop = top(paperRect), paperBottom = bottom(paperRect);
+    const cy = paperTop / 2;
+    treeEdges.push(`<path class="detail-tree-edge" d="M ${columns.scrollWidth / 2} 0 C ${columns.scrollWidth / 2} ${cy}, ${paperX} ${cy}, ${paperX} ${paperTop}"/>`);
+    column.querySelectorAll(".group-paragraph-card").forEach(card => {
+      const cardRect = card.getBoundingClientRect(), cardX = x(cardRect), cardTop = top(cardRect), branchY = (paperBottom + cardTop) / 2;
+      treeEdges.push(`<path class="detail-tree-edge" d="M ${paperX} ${paperBottom} C ${paperX} ${branchY}, ${cardX} ${branchY}, ${cardX} ${cardTop}"/>`);
+    });
+  });
+  const matchEdges = (group.paragraph_links || group.links || []).map(link => {
+    const aId = `${link.paper_a}:${link.section_a}`, bId = `${link.paper_b}:${link.section_b}`;
+    const a = detail.querySelector(`[data-group-unit-id="${CSS.escape(aId)}"]`), b = detail.querySelector(`[data-group-unit-id="${CSS.escape(bId)}"]`);
+    if (!a || !b) return "";
+    const ar = a.getBoundingClientRect(), br = b.getBoundingClientRect(), left = ar.left < br.left;
+    const x1 = ((left ? ar.right : ar.left) - origin.left) / scale, y1 = (ar.top + ar.height / 2 - origin.top) / scale;
+    const x2 = ((left ? br.left : br.right) - origin.left) / scale, y2 = (br.top + br.height / 2 - origin.top) / scale, cx = (x1 + x2) / 2;
+    return `<path class="detail-link-edge" data-a="${escapeHtml(aId)}" data-b="${escapeHtml(bId)}" d="M ${x1} ${y1} C ${cx} ${y1}, ${cx} ${y2}, ${x2} ${y2}" stroke-width="${1 + 2.5 * Number(link.similarity || 0)}" opacity="${.25 + .55 * Number(link.similarity || 0)}"/>`;
+  });
+  svg.innerHTML = [...treeEdges, ...matchEdges].join("");
+}
+
+function attachReplayDetailInteractions() {
+  const detail = stage.querySelector(".replay-detail"); if (!detail) return;
+  detail.querySelectorAll("[data-open-paragraph]").forEach(button => button.addEventListener("click", event => { event.stopPropagation(); openParagraphInspector(button.dataset.openParagraph); }));
+  detail.querySelectorAll(".group-paragraph-card").forEach(card => {
+    const id = card.dataset.groupUnitId;
+    card.addEventListener("mouseenter", () => {
+      const related = new Set([id]);
+      detail.querySelectorAll(".detail-link-edge").forEach(edge => {
+        if (edge.dataset.a === id) related.add(edge.dataset.b); if (edge.dataset.b === id) related.add(edge.dataset.a);
+        edge.style.opacity = edge.dataset.a === id || edge.dataset.b === id ? ".9" : ".05";
+      });
+      detail.querySelectorAll(".group-paragraph-card").forEach(other => {
+        other.classList.toggle("highlight", related.has(other.dataset.groupUnitId)); other.classList.toggle("dim", !related.has(other.dataset.groupUnitId));
+      });
+    });
+    card.addEventListener("mouseleave", () => {
+      detail.querySelectorAll(".group-paragraph-card").forEach(other => other.classList.remove("highlight", "dim"));
+      detail.querySelectorAll(".detail-link-edge").forEach(edge => { edge.style.opacity = ""; });
+    });
+    card.querySelector(".expand-hint")?.addEventListener("click", event => { event.stopPropagation(); card.classList.toggle("expanded"); requestAnimationFrame(() => drawReplayDetailLinks(findReplayGroup(state.openReplayGroupId))); });
+  });
+  detail.querySelector(".replay-detail-scroll")?.addEventListener("wheel", event => event.stopPropagation());
+}
+
+function attachReplayInteractions() {
+  stage.querySelectorAll(".replay-node[data-node-id]").forEach(node => {
+    node.addEventListener("mouseenter", () => setReplayEdgeEmphasis(node.dataset.nodeId, true));
+    node.addEventListener("mouseleave", () => setReplayEdgeEmphasis(node.dataset.nodeId, false));
+    if (node.dataset.questionRevision) node.addEventListener("click", event => {
+      if (event.target.closest("button")) return;
+      const groupId = node.dataset.questionRevision;
+      openGroupInspector(groupId, findReplayGroup(groupId), activeQuestionRevision(groupId));
+    });
+  });
+  stage.querySelectorAll("[data-toggle-group]").forEach(button => button.addEventListener("click", event => {
+    event.stopPropagation();
+    const groupId = button.dataset.toggleGroup;
+    const revision = activeQuestionRevision(groupId);
+    state.openReplayGroupId = state.openReplayGroupId === groupId ? null : groupId;
+    renderReplay(true);
+    requestAnimationFrame(fitReplay);
+    if (revision) openGroupInspector(groupId, findReplayGroup(groupId), revision);
+  }));
+  stage.querySelectorAll("[data-paragraph-key]").forEach(button => button.addEventListener("click", event => {
+    event.stopPropagation(); openParagraphInspector(button.dataset.paragraphKey);
+  }));
+  attachReplayDetailInteractions();
+  const viewport = $("replayViewport");
+  let drag = null;
+  viewport.addEventListener("pointerdown", event => {
+    if (event.target.closest("button")) return;
+    event.preventDefault();
+    drag = {x:event.clientX, y:event.clientY, originX:state.replayX, originY:state.replayY};
+    viewport.setPointerCapture(event.pointerId); viewport.classList.add("dragging");
+  });
+  viewport.addEventListener("pointermove", event => {
+    if (!drag) return;
+    state.replayX = drag.originX + event.clientX - drag.x; state.replayY = drag.originY + event.clientY - drag.y; applyReplayTransform();
+  });
+  const end = () => { drag = null; viewport.classList.remove("dragging"); };
+  viewport.addEventListener("pointerup", end); viewport.addEventListener("pointercancel", end);
+  viewport.addEventListener("wheel", event => { if (event.target.closest(".replay-detail-scroll")) return; event.preventDefault(); zoomReplay(event.deltaY < 0 ? 1.08 : .92); }, {passive:false});
+}
+
+function syncInspectorSelection() {
+  stage.querySelectorAll("[data-paper-map-paragraph]").forEach(element => {
+    element.classList.toggle("inspected", state.inspectorSelection === `paragraph:${element.dataset.paperMapParagraph}`);
+  });
+  stage.querySelectorAll(".paper-map-legend-item").forEach(element => {
+    element.classList.toggle("inspected", state.inspectorSelection === `group:${element.dataset.paperMapGroup}`);
+  });
+}
+
+function closeInspector() {
+  state.inspectorSelection = null;
+  $("inspector").hidden = true;
+  syncInspectorSelection();
+}
+
+function openParagraphInspector(key) {
+  const unit = paragraphLookup[key]; if (!unit) return;
+  const selection = `paragraph:${key}`;
+  if (!$("inspector").hidden && state.inspectorSelection === selection) {
+    closeInspector();
     return;
   }
-  rawLinksForGranularity = allLinksByGranularity[granularity] || [];
-  applyFilterAndRender();
+  const paper = state.papers.find(item => item.paper_id === unit.paper);
+  const section = paper?.sections?.find(item => item.id === unit.parent_section_id);
+  const initialGroups = state.epochs?.initial_state?.groups || state.groups;
+  const initialMemberships = initialGroups.filter(group => (group.members || []).some(member => paragraphKey(member) === key));
+  const initialHistory = `<div class="history-row"><strong>Initial groups</strong> · ${initialMemberships.length ? initialMemberships.map(group => escapeHtml(groupDisplayLabel(group.group_id))).join(", ") : "unassigned"}</div>`;
+  const epochHistory = (state.epochs?.epochs || []).map(epoch => {
+    const groups = epoch.groups.filter(group => group.members.some(member => paragraphKey(member) === key));
+    const decision = epoch.assignment_decisions?.find(item => paragraphKey(item) === key);
+    return `<div class="history-row"><strong>Epoch ${epoch.epoch}</strong> · ${groups.length ? groups.map(group => escapeHtml(groupDisplayLabel(group.group_id))).join(", ") : "unassigned"}${decision?.reason ? `<br>${escapeHtml(decision.reason)}` : ""}</div>`;
+  }).join("");
+  $("inspectorTitle").textContent = `${shortPaperLabel(unit.paper)} · ${unit.id}`;
+  $("inspectorBody").innerHTML = `<h2>${escapeHtml(unit.tag)}</h2><div class="inspector-meta">${escapeHtml(paper?.title || unit.paper)}<br>${escapeHtml(section?.title || unit.parent_section_id)}</div><h3>Complete source paragraph</h3><p>${escapeHtml(compactText(unit.text))}</p><h3>Assignment trajectory</h3>${initialHistory}${epochHistory}`;
+  state.inspectorSelection = selection;
+  $("inspector").hidden = false;
+  syncInspectorSelection();
+}
+
+function findReplayGroup(groupId) {
+  const step = state.replaySteps[state.replayIndex];
+  return (step?.groups || []).find(group => group.group_id === groupId)
+    || [...state.replaySteps].reverse().flatMap(item => item.groups || []).find(group => group.group_id === groupId)
+    || groupLookup[groupId];
+}
+
+function activeQuestionRevision(groupId) {
+  const step = state.replaySteps[state.replayIndex];
+  const revision = (step?.revisions || []).find(item => item.group_id === groupId && item.changed);
+  return revision ? {...revision, epoch:replayStepEpoch(step)} : null;
+}
+
+function openGroupInspector(groupId, preferredGroup = null, preferredRevision = null) {
+  const group = preferredGroup || findReplayGroup(groupId); if (!group) return;
+  const selection = `group:${groupId}`;
+  if (!preferredRevision && !$("inspector").hidden && state.inspectorSelection === selection) {
+    closeInspector();
+    return;
+  }
+  const question = group.question || group.overarching_question || "(no question)";
+  const labelInfo = groupLabelInfo(groupId);
+  let members = group.members || [];
+  if (group.super_group_id) {
+    const keys = new Map();
+    group.members.forEach(child => (groupLookup[child.group_id]?.members || []).forEach(member => keys.set(paragraphKey(member), member)));
+    members = [...keys.values()];
+  }
+  const memberButtons = members.map(member => {
+    const key = paragraphKey(member), unit = paragraphLookup[key];
+    return unit ? `<button type="button" class="member-button" data-inspector-paragraph="${escapeHtml(key)}">${escapeHtml(unit.paper)} · ${escapeHtml(unit.tag)}</button>` : "";
+  }).join("");
+  const lineage = (state.epochs?.epochs || []).flatMap(epoch => epoch.groups.filter(item => item.group_id === groupId).map(item => `<div class="history-row"><strong>Epoch ${epoch.epoch} · ${escapeHtml(labelInfo.label)}</strong><br>${escapeHtml(item.question)}</div>`)).join("");
+  const parentIds = labelInfo.parentGroupIds?.length
+    ? labelInfo.parentGroupIds
+    : (group.parent_group_ids || []).filter(parentId => parentId !== groupId);
+  const parents = parentIds.map(parentId => `${groupDisplayLabel(parentId)} (${parentId})`).join(", ");
+  const origin = labelInfo.originEpoch === 0 ? "Initial group" : `Created in epoch ${labelInfo.originEpoch}`;
+  const revisionParagraphs = (preferredRevision?.new_paragraph_ids || []).map(key => {
+    const unit = paragraphLookup[key];
+    return unit ? `<button type="button" class="member-button" data-inspector-paragraph="${escapeHtml(key)}">${escapeHtml(shortPaperLabel(unit.paper))} · ${escapeHtml(unit.tag)}</button>` : "";
+  }).join("");
+  const lexicalSimilarity = Number(preferredRevision?.question_similarity);
+  const revisionMeta = preferredRevision
+    ? `<div class="inspector-meta">Epoch ${preferredRevision.epoch}${Number.isFinite(lexicalSimilarity) ? `<br>Lexical similarity: ${lexicalSimilarity.toFixed(4)}` : ""}<br>${(preferredRevision.new_paragraph_ids || []).length} newly assigned paragraph${(preferredRevision.new_paragraph_ids || []).length === 1 ? "" : "s"} considered</div>`
+    : "";
+  const revision = preferredRevision
+    ? `<h3>Question revision</h3><div class="history-row"><strong>Previous question</strong><br>${escapeHtml(preferredRevision.previous_question || "(not recorded)")}</div><div class="history-row"><strong>Revised question</strong><br>${escapeHtml(preferredRevision.question || question)}</div>${revisionMeta}${revisionParagraphs ? `<h3>New evidence considered</h3>${revisionParagraphs}` : ""}`
+    : "";
+  $("inspectorTitle").textContent = `${labelInfo.label} · ${groupId}`;
+  $("inspectorBody").innerHTML = `<h2>${escapeHtml(question)}</h2><div class="inspector-meta">${escapeHtml(origin)}<br>${members.length} paragraph memberships${parents ? `<br>Parent groups: ${escapeHtml(parents)}` : ""}</div>${revision}${lineage ? `<h3>Question lineage</h3>${lineage}` : ""}<h3>Source paragraphs</h3>${memberButtons || `<p>No paragraphs are attached in this view.</p>`}`;
+  $("inspectorBody").querySelectorAll("[data-inspector-paragraph]").forEach(button => button.addEventListener("click", () => openParagraphInspector(button.dataset.inspectorParagraph)));
+  state.inspectorSelection = selection;
+  $("inspector").hidden = false;
+  syncInspectorSelection();
+}
+
+function renderPaperPicker() {
+  const library = state.libraryPapers.map(paper => `<label class="paper-option"><input class="paper-choice" type="checkbox" data-source="library" value="${escapeHtml(paper.paper_id)}"><span title="${escapeHtml(paper.filename)}">${escapeHtml(paper.paper_id)}</span></label>`);
+  const uploads = state.uploads.map(paper => `<label class="paper-option"><input class="paper-choice" type="checkbox" data-source="upload" value="${escapeHtml(paper.upload_id)}" checked><span title="${escapeHtml(paper.filename)}">${escapeHtml(paper.paper_id)} [uploaded]</span></label>`);
+  $("paperPicker").innerHTML = [...uploads, ...library].join("") || `<span class="run-state">No papers available yet.</span>`;
+}
+
+function renderSavedRuns() {
+  const selectedRun = state.loadedRunId || $("savedRun").value;
+  const resultRuns = state.runs.filter(run => run.has_results);
+  const label = run => `${run.run_id}${run.experiment_label ? ` · ${run.experiment_label}` : ""} · ${run.status} · ${(run.papers || []).join(", ")}`;
+  $("savedRun").innerHTML = `<option value="">Select a saved run</option>` + state.runs.map(run => `<option value="${escapeHtml(run.run_id)}"${run.has_results ? "" : " disabled"}>${escapeHtml(label(run))}${run.has_results ? "" : " · no replay artifacts"}</option>`).join("");
+  if (state.runs.some(run => run.run_id === selectedRun && run.has_results)) $("savedRun").value = selectedRun;
+  const selectedSource = $("sourceRun").value;
+  $("sourceRun").innerHTML = `<option value="">Select a source run</option>` + resultRuns.map(run => `<option value="${escapeHtml(run.run_id)}">${escapeHtml(label(run))}</option>`).join("");
+  if (resultRuns.some(run => run.run_id === selectedSource)) $("sourceRun").value = selectedSource;
+}
+
+async function openSelectedRun() {
+  const runId = $("savedRun").value;
+  if (!runId || runId === state.loadedRunId) return;
+  $("runError").hidden = true;
+  try {
+    await loadRun(runId);
+  } catch (error) {
+    $("runError").hidden = false;
+    $("runError").textContent = `Could not open ${runId}: ${error.message}`;
+    $("analysisPanel").open = true;
+  }
+}
+
+function applyDefaults(defaults) {
+  const fields = {
+    experiment_label:"experimentLabel", paragraph_context:"paragraphContext", assignment_context:"assignmentContext",
+    reuse_scope:"reuseScope", source_run_id:"sourceRun",
+    model:"model", max_epochs:"maxEpochs", section_weight:"sectionWeight",
+    question_stability_threshold:"questionStability", section_context_max_chars:"sectionContext",
+    paragraph_chunk_chars:"paragraphChunk", assignment_batch_chars:"assignmentBatch",
+    representative_per_paper:"representativePerPaper", representative_max_per_group:"representativeMaxPerGroup", match_top_k:"matchTopK",
+    section_group_threshold:"sectionThreshold", paragraph_group_threshold:"paragraphThreshold", supergroup_threshold:"supergroupThreshold",
+  };
+  Object.entries(fields).forEach(([key, id]) => { if (defaults[key] !== undefined) $(id).value = defaults[key]; });
+  updateExperimentControls();
+}
+
+function updateExperimentControls() {
+  const scope = $("reuseScope").value;
+  $("sourceRun").disabled = scope === "fresh";
+  if (scope === "fresh") $("sourceRun").value = "";
+  if (scope === "pre_epoch") $("paragraphContext").value = "section";
+  $("paragraphContext").disabled = scope === "pre_epoch";
+  const representative = $("assignmentContext").value === "representative_group_paragraphs";
+  $("representativePerPaper").disabled = !representative;
+  $("representativeMaxPerGroup").disabled = !representative;
+}
+
+function applyRunStatus(status) {
+  const running = status.status === "running";
+  $("runState").textContent = status.stage?.label || status.status || "idle";
+  $("startAnalysis").disabled = running;
+  $("runLogWrap").hidden = !(status.logs || []).length;
+  $("runLog").textContent = (status.logs || []).join("\n");
+  $("runError").hidden = !status.error;
+  $("runError").textContent = status.error || "";
+}
+
+async function refreshStatus() {
+  const status = await fetchJson("/api/status"); applyRunStatus(status);
+  if (status.status === "running") { state.statusTimer = setTimeout(refreshStatus, 1000); return; }
+  state.statusTimer = null;
+  if (status.status === "complete" && status.has_results && status.run_id !== state.loadedRunId) {
+    const config = await fetchJson("/api/config");
+    state.runs = config.runs || state.runs; renderSavedRuns();
+    await loadRun(status.run_id, true);
+  }
+}
+
+async function uploadPapers() {
+  const files = [...$("paperUpload").files];
+  if (!files.length) { $("uploadState").textContent = "Choose one or more PDFs."; return; }
+  const form = new FormData(); files.forEach(file => form.append("files", file));
+  $("uploadPapers").disabled = true; $("uploadState").textContent = "uploading…";
+  try {
+    const response = await fetchJson("/api/uploads", {method:"POST", body:form});
+    state.uploads = [...response.uploads, ...state.uploads.filter(existing => !response.uploads.some(item => item.upload_id === existing.upload_id))];
+    renderPaperPicker(); $("paperUpload").value = ""; $("uploadState").textContent = `${response.uploads.length} PDF${response.uploads.length === 1 ? "" : "s"} ready`;
+  } catch (error) { $("uploadState").textContent = error.message; }
+  finally { $("uploadPapers").disabled = false; }
+}
+
+function numberValue(id) { return Number($(id).value); }
+
+async function startAnalysis() {
+  const selected = [...document.querySelectorAll(".paper-choice:checked")];
+  const paperIds = selected.filter(input => input.dataset.source === "library").map(input => input.value);
+  const uploadIds = selected.filter(input => input.dataset.source === "upload").map(input => input.value);
+  $("runError").hidden = true;
+  try {
+    const status = await fetchJson("/api/analyze", {
+      method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({
+        paper_ids:paperIds, upload_ids:uploadIds, anthropic_api_key:$("apiKey").value.trim(), experiment_label:$("experimentLabel").value.trim(), model:$("model").value.trim(),
+        paragraph_context:$("paragraphContext").value, assignment_context:$("assignmentContext").value,
+        reuse_scope:$("reuseScope").value, source_run_id:$("sourceRun").value,
+        max_epochs:numberValue("maxEpochs"), section_weight:numberValue("sectionWeight"),
+        question_stability_threshold:numberValue("questionStability"), section_context_max_chars:numberValue("sectionContext"),
+        paragraph_chunk_chars:numberValue("paragraphChunk"), assignment_batch_chars:numberValue("assignmentBatch"),
+        representative_per_paper:numberValue("representativePerPaper"), representative_max_per_group:numberValue("representativeMaxPerGroup"), match_top_k:numberValue("matchTopK"),
+        section_group_threshold:numberValue("sectionThreshold"), paragraph_group_threshold:numberValue("paragraphThreshold"), supergroup_threshold:numberValue("supergroupThreshold"),
+      }),
+    });
+    $("apiKey").value = ""; state.runId = status.run_id; applyRunStatus(status); state.statusTimer = setTimeout(refreshStatus, 500);
+  } catch (error) { $("runError").hidden = false; $("runError").textContent = error.message; }
 }
 
 async function init() {
-  const { papers, links, groups, superGroups } = await loadAll();
-  allPapers = papers;
-  allLinksByGranularity = links;
-  allGroups = groups.paragraphs || [];
-  allSuperGroups = superGroups || [];
-  buildParagraphUnitLookup();
-  buildGroupById();
-  rawLinksForGranularity = links[currentGranularity] || [];
-
-  buildGranularityTabs();
-  applyFilterAndRender();
-
-  stage.addEventListener("click", () => {
-    if (pinnedId) {
-      pinnedId = null;
-      refreshView();
+  $("runForm").addEventListener("submit", event => event.preventDefault());
+  $("previewSlider").addEventListener("input", () => { state.previewChars = numberValue("previewSlider"); $("previewValue").textContent = state.previewChars; if (state.tab === "sections" || state.tab === "paragraphs") renderAlignment(); });
+  $("similaritySlider").addEventListener("input", () => { state.similarity = numberValue("similaritySlider"); $("similarityValue").textContent = state.similarity.toFixed(2); if (state.tab === "sections" || state.tab === "paragraphs") renderAlignment(); });
+  $("showOrphans").addEventListener("change", renderCurrentView);
+  $("membershipMode").addEventListener("change", () => renderReplay(false));
+  $("shiftedOnly").addEventListener("change", () => renderReplay(false));
+  $("prevStep").addEventListener("click", () => selectReplayStep(state.replayIndex - 1));
+  $("nextStep").addEventListener("click", () => selectReplayStep(state.replayIndex + 1));
+  $("replayStep").addEventListener("change", () => selectReplayStep(numberValue("replayStep")));
+  $("fitReplay").addEventListener("click", fitReplay); $("zoomIn").addEventListener("click", () => zoomReplay(1.15)); $("zoomOut").addEventListener("click", () => zoomReplay(.87));
+  $("inspectorClose").addEventListener("click", closeInspector);
+  $("uploadPapers").addEventListener("click", uploadPapers); $("startAnalysis").addEventListener("click", startAnalysis);
+  $("reuseScope").addEventListener("change", updateExperimentControls);
+  $("assignmentContext").addEventListener("change", updateExperimentControls);
+  $("savedRun").addEventListener("change", openSelectedRun);
+  $("openRun").addEventListener("click", openSelectedRun);
+  stage.addEventListener("click", event => {
+    if (state.tab === "paper-map" && !event.target.closest("[data-paper-map-paragraph], .paper-map-legend-item, [data-paper-map-mode]")) {
+      closeInspector();
+    }
+    if ((state.tab === "sections" || state.tab === "paragraphs") && state.pinnedAlignmentId) {
+      state.pinnedAlignmentId = null;
+      refreshAlignment(activeAlignmentLinks());
     }
   });
+  document.addEventListener("keydown", event => { if (event.key === "Escape") closeInspector(); });
   window.addEventListener("resize", () => {
-    if (currentGranularity === "groups") renderGroupsTree();
-    else refreshView();
+    if (state.tab === "groups") fitReplay();
+    else if (state.tab === "paper-map") updatePaperMapHeight();
+    else requestAnimationFrame(() => refreshAlignment(activeAlignmentLinks()));
   });
-  previewSlider.addEventListener("input", () => {
-    previewChars = Number(previewSlider.value);
-    previewValueEl.textContent = String(previewChars);
-    if (currentGranularity === "groups") renderGroupsTree();
-    else updatePreviews();
-  });
-  similaritySlider.addEventListener("input", () => {
-    similarityThreshold = Number(similaritySlider.value);
-    similarityValueEl.textContent = similarityThreshold.toFixed(2);
-    if (currentGranularity === "groups") renderGroupsTree();
-    else applyFilterAndRender();
-  });
+
+  try {
+    const config = await fetchJson("/api/config");
+    state.libraryPapers = config.papers || []; state.uploads = config.uploads || []; state.runs = config.runs || [];
+    applyDefaults(config.defaults || {}); renderPaperPicker(); renderSavedRuns(); applyRunStatus(config.status || {});
+    $("apiKey").placeholder = config.has_api_key ? "Using server key unless overridden" : "Required for this run";
+    const requestedRunId = new URLSearchParams(window.location.search).get("run_id");
+    const savedRunId = state.runs.some(run => run.run_id === requestedRunId && run.has_results)
+      ? requestedRunId
+      : config.status?.has_results && config.status.run_id
+        ? config.status.run_id
+        : state.runs.find(run => run.has_results)?.run_id;
+    if (savedRunId) await loadRun(savedRunId);
+    else { renderTabs(); renderCurrentView(); $("analysisPanel").open = true; }
+    if (config.status?.status === "running") state.statusTimer = setTimeout(refreshStatus, 1000);
+  } catch (error) {
+    renderTabs(); stage.innerHTML = `<div class="empty-state">Start this viewer with <code>python analysis_server.py</code>, then open <a href="${LOCAL_SERVER_URL}">${LOCAL_SERVER_URL}</a>.<br>${escapeHtml(error.message)}</div>`;
+    $("analysisPanel").open = true; $("runError").hidden = false; $("runError").textContent = "The local analysis API is unavailable.";
+  }
 }
 
-init();
+if (!REDIRECT_FROM_FILE) init().catch(error => { stage.innerHTML = `<div class="empty-state">${escapeHtml(error.message)}</div>`; });
 </script>
 </body>
 </html>

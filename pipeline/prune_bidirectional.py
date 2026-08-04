@@ -17,9 +17,10 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from pipeline_paths import output_dir
 from section_schema import GRANULARITIES, SectionedPaper
 
-OUTPUT_DIR = Path(__file__).resolve().parent / "output" / "sections"
+OUTPUT_DIR = output_dir()
 
 
 def _load_paper(path: Path) -> SectionedPaper:

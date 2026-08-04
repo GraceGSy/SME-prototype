@@ -2,3 +2,7 @@ __pycache__/
 *.pyc
 .DS_Store
 pipeline/output/
+.playwright-cli/
+output/playwright/
+pipeline/.venv/
+tmp/

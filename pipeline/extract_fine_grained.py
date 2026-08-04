@@ -16,11 +16,14 @@ Alongside the free-text `tag`, the model also gives:
 These are section-local: adjacency is only considered within the same
 section, not across a section boundary.
 
-All of this comes from a single forced tool call per section.
+All of this comes from forced tool calls over a section. Very large sections
+can be split into deterministic text chunks rather than silently collapsed
+into one fallback paragraph.
 
 Usage:
     python3 extract_fine_grained.py
 """
+
 from __future__ import annotations
 
 import json
@@ -30,11 +33,13 @@ from pathlib import Path
 from anthropic import Anthropic
 
 from cache_utils import cached_system, log_cache_usage
+from pipeline_paths import output_dir
 from section_schema import DISCOURSE_TAGS, Section, SectionedPaper
 from text_locate import slice_by_markers
 
 DEFAULT_MODEL = os.environ.get("SME_EXTRACT_MODEL", "claude-sonnet-5")
-OUTPUT_DIR = Path(__file__).resolve().parent / "output" / "sections"
+PARAGRAPH_CHUNK_CHARS = int(os.environ.get("SME_PARAGRAPH_CHUNK_CHARS", "50000"))
+OUTPUT_DIR = output_dir()
 CACHE_DIR = OUTPUT_DIR / "_cache" / "fine_grained"
 
 SYSTEM_PROMPT = f"""You are describing the paragraphs of one section of an academic paper.
@@ -42,12 +47,12 @@ SYSTEM_PROMPT = f"""You are describing the paragraphs of one section of an acade
 You will be given the section's full text.
 
 For EVERY paragraph, give three tags:
-1. "tag" -- ask yourself: what question about the research does this paragraph answer, or what role \
-does it play in describing the research (e.g. does it explain why the work is needed, what was built, \
-how it was tested, what was found, or what it means)? Answer with a short question or phrase that \
-captures that role -- NOT a fixed category label. For example: "Why is this problem worth solving?", \
+1. "tag" -- ask yourself: what question about the research does this paragraph answer (e.g. does it \
+explain why the work is needed, what was built, how it was tested, what was found, or what it means)? \
+Answer with one grammatical, standalone question ending in a question mark -- NOT a category label or \
+noun phrase. For example: "Why is this problem worth solving?", \
 "What system was built?", "How was the system evaluated?", "What did the study find?". Keep it under \
-~10 words, and prefer phrasing it as a question when that reads naturally. A paragraph's tag can \
+~14 words. A paragraph's tag can \
 differ from its neighbors' if it plays a distinct role (e.g. a paragraph in a results-focused section \
 can still be tagged "What limitation does this reveal?" if it states a caveat).
 2. "prev_relation" -- how this paragraph relates to the one immediately before it (within this section \
@@ -76,26 +81,40 @@ def _build_tool() -> dict:
     return {
         "name": "record_fine_grained_tags",
         "description": "Record paragraph-level tags for one section.",
+        "strict": True,
         "input_schema": {
             "type": "object",
+            "additionalProperties": False,
             "properties": {
                 "paragraphs": {
                     "type": "array",
                     "items": {
                         "type": "object",
+                        "additionalProperties": False,
                         "properties": {
-                            "tag": {"type": "string", "description": "a short question or phrase (not a fixed category), e.g. 'What problem does this address?' or 'How was the system evaluated?'"},
-                            "start_text": {"type": "string", "description": "first 6-10 words of this paragraph, verbatim"},
+                            "tag": {
+                                "type": "string",
+                                "description": "one grammatical standalone question ending in '?'",
+                            },
+                            "start_text": {
+                                "type": "string",
+                                "description": "first 6-10 words of this paragraph, verbatim",
+                            },
                             "prev_relation": {
                                 "type": "string",
-                                "description": f"relation to the PREVIOUS paragraph, one of {DISCOURSE_TAGS} (or a close variant); \"\" if this is the first paragraph in the section",
+                                "description": f'relation to the PREVIOUS paragraph, one of {DISCOURSE_TAGS} (or a close variant); "" if this is the first paragraph in the section',
                             },
                             "next_relation": {
                                 "type": "string",
-                                "description": f"relation to the FOLLOWING paragraph, one of {DISCOURSE_TAGS} (or a close variant); \"\" if this is the last paragraph in the section",
+                                "description": f'relation to the FOLLOWING paragraph, one of {DISCOURSE_TAGS} (or a close variant); "" if this is the last paragraph in the section',
                             },
                         },
-                        "required": ["tag", "start_text", "prev_relation", "next_relation"],
+                        "required": [
+                            "tag",
+                            "start_text",
+                            "prev_relation",
+                            "next_relation",
+                        ],
                     },
                 },
             },
@@ -104,24 +123,101 @@ def _build_tool() -> dict:
     }
 
 
-# Sections this long (chars) usually mean a references/appendix list got swept in with no
-# following heading to bound it (e.g. "Acknowledgments" or the last content section running to
-# EOF) -- hundreds of citation-line "paragraphs" would blow past the output budget and add no
-# real signal, so these get a uniform fallback tag instead of a full LLM call.
-MAX_CHARS_FOR_LLM = 25_000
-
-
-def _fallback_result(section: Section) -> dict:
-    return {
-        "paragraphs": [{"tag": section.tag, "start_text": section.text[:60], "prev_relation": "", "next_relation": ""}],
-    }
+def split_text_chunks(text: str, max_chars: int) -> list[str]:
+    """Split at a nearby line/word boundary without dropping source text."""
+    if max_chars <= 0 or len(text) <= max_chars:
+        return [text]
+    chunks = []
+    start = 0
+    while start < len(text):
+        target = min(len(text), start + max_chars)
+        if target < len(text):
+            floor = start + max_chars // 2
+            boundary = text.rfind("\n", floor, target)
+            if boundary <= start:
+                boundary = text.rfind(" ", floor, target)
+            if boundary > start:
+                target = boundary + 1
+        chunks.append(text[start:target])
+        start = target
+    return chunks
 
 
 def _cache_path(paper_id: str, section_id: str) -> Path:
     return CACHE_DIR / f"{paper_id}__{section_id}.json"
 
 
-def extract_fine_grained(paper_id: str, section: Section, model: str = DEFAULT_MODEL) -> dict:
+def _extract_chunk(
+    client: Anthropic,
+    section: Section,
+    text: str,
+    chunk_index: int,
+    chunk_count: int,
+    model: str,
+) -> list[dict]:
+    chunk_note = ""
+    if chunk_count > 1:
+        chunk_note = (
+            f"\n\nThis is source-text chunk {chunk_index} of {chunk_count} from the same section. "
+            "Identify every paragraph represented in this chunk and copy each start_text from this chunk."
+        )
+    prompt = (
+        USER_PROMPT_TEMPLATE.format(tag=section.tag, title=section.title, text=text)
+        + chunk_note
+    )
+    last_error = "Model did not call record_fine_grained_tags"
+    for attempt in range(3):
+        repair = ""
+        if attempt:
+            repair = (
+                "\n\nYour previous tool response was invalid. Return paragraphs as a JSON array "
+                "with a complete question, verbatim start_text, prev_relation, and next_relation for every item."
+            )
+        response = client.messages.create(
+            model=model,
+            max_tokens=8000,
+            system=cached_system(SYSTEM_PROMPT),
+            messages=[{"role": "user", "content": prompt + repair}],
+            tools=[_build_tool()],
+            tool_choice={"type": "tool", "name": "record_fine_grained_tags"},
+        )
+        log_cache_usage(
+            f"{section.id} chunk {chunk_index} attempt {attempt + 1}", response
+        )
+        for block in response.content:
+            if block.type != "tool_use" or block.name != "record_fine_grained_tags":
+                continue
+            data = block.input
+            if not isinstance(data, dict):
+                last_error = f"tool input was {type(data).__name__}, not an object"
+                continue
+            if set(data.keys()) - {"paragraphs"} and len(data) == 1:
+                data = next(iter(data.values()))
+            paragraphs = data.get("paragraphs") if isinstance(data, dict) else None
+            if not isinstance(paragraphs, list) or not paragraphs:
+                last_error = "paragraphs was not a non-empty array"
+                continue
+            if any(
+                not isinstance(item, dict)
+                or not item.get("start_text")
+                or not item.get("tag")
+                for item in paragraphs
+            ):
+                last_error = "one or more paragraph records lacked tag or start_text"
+                continue
+            return paragraphs
+        print(
+            f"    section {section.id} chunk {chunk_index}: invalid tool response "
+            f"on attempt {attempt + 1}; retrying ..."
+        )
+    raise RuntimeError(
+        f"Could not extract paragraphs for section {section.id!r}, chunk {chunk_index}: {last_error}"
+    )
+
+
+def extract_fine_grained(
+    paper_id: str, section: Section, model: str = DEFAULT_MODEL
+) -> dict:
     """Raw per-section results are cached to disk under a stable (paper_id,
     section_id) key -- rerunning the script (e.g. after a crash, a rate limit,
     or running out of credit mid-batch) reuses every already-paid-for call
@@ -137,48 +233,48 @@ def extract_fine_grained(paper_id: str, section: Section, model: str = DEFAULT_M
         cache_path.write_text(json.dumps(result, indent=2))
         return result
 
-    if len(section.text) > MAX_CHARS_FOR_LLM:
-        print(f"    section {section.id} is {len(section.text):,} chars -- skipping LLM call, using a uniform fallback tag")
-        return _save(_fallback_result(section))
-
     client = Anthropic()
-    response = client.messages.create(
-        model=model,
-        max_tokens=8000,
-        system=cached_system(SYSTEM_PROMPT),
-        messages=[{
-            "role": "user",
-            "content": USER_PROMPT_TEMPLATE.format(tag=section.tag, title=section.title, text=section.text),
-        }],
-        tools=[_build_tool()],
-        tool_choice={"type": "tool", "name": "record_fine_grained_tags"},
+    chunks = split_text_chunks(section.text, PARAGRAPH_CHUNK_CHARS)
+    if len(chunks) > 1:
+        print(
+            f"    section {section.id} is {len(section.text):,} chars; "
+            f"extracting {len(chunks)} chunks without fallback"
+        )
+    paragraphs = []
+    for index, chunk in enumerate(chunks, start=1):
+        paragraphs.extend(
+            _extract_chunk(client, section, chunk, index, len(chunks), model)
+        )
+    paragraphs[0]["prev_relation"] = ""
+    paragraphs[-1]["next_relation"] = ""
+    return _save(
+        {
+            "paragraphs": paragraphs,
+            "chunk_count": len(chunks),
+            "chunk_characters": [len(chunk) for chunk in chunks],
+        }
     )
-    log_cache_usage(section.id, response)
-
-    for block in response.content:
-        if block.type == "tool_use" and block.name == "record_fine_grained_tags":
-            data = block.input
-            if set(data.keys()) - {"paragraphs"} and len(data) == 1:
-                data = next(iter(data.values()))
-            if "paragraphs" not in data:
-                print(f"    section {section.id}: incomplete tool response (got keys {list(data.keys())}) -- using a uniform fallback tag")
-                return _save(_fallback_result(section))
-            return _save(data)
-
-    raise RuntimeError(f"Model did not call record_fine_grained_tags for section {section.id!r}")
 
 
-def build_paragraphs(section: Section, result: dict, id_start: int) -> tuple[list[Section], int]:
+def build_paragraphs(
+    section: Section, result: dict, id_start: int
+) -> tuple[list[Section], int]:
     markers = [p["start_text"] for p in result["paragraphs"]]
     slices = slice_by_markers(section.text, markers)
     paragraphs = []
     next_id = id_start
     for p, sliced in zip(result["paragraphs"], slices):
         text = sliced if sliced is not None else p["start_text"]
-        paragraphs.append(Section(
-            id=f"pa{next_id}", tag=p["tag"], text=text,
-            prev_relation=p.get("prev_relation", ""), next_relation=p.get("next_relation", ""),
-        ))
+        paragraphs.append(
+            Section(
+                id=f"pa{next_id}",
+                tag=p["tag"],
+                text=text,
+                parent_section_id=section.id,
+                prev_relation=p.get("prev_relation", ""),
+                next_relation=p.get("next_relation", ""),
+            )
+        )
         next_id += 1
     return paragraphs, next_id
 
@@ -203,7 +299,9 @@ def main() -> None:
         path = OUTPUT_DIR / m["file"]
         sectioned = SectionedPaper.model_validate(json.loads(path.read_text()))
 
-        print(f"[{paper_id}] extracting paragraphs for {len(sectioned.sections)} sections ...")
+        print(
+            f"[{paper_id}] extracting paragraphs for {len(sectioned.sections)} sections ..."
+        )
         updated = process_paper(sectioned)
         path.write_text(json.dumps(updated.model_dump(), indent=2))
         print(f"[{paper_id}] wrote {len(updated.paragraphs)} paragraphs")

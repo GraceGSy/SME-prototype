@@ -47,8 +47,7 @@ def _tokens(s: str) -> set[str]:
 
 
 def text_similarity(a: str, b: str) -> float:
-    """Cheap, dependency-free lexical similarity in [0, 1]. Used only for
-    scoring/reporting -- never as a hard filter on candidate correspondences."""
+    """Cheap, dependency-free lexical similarity in [0, 1]."""
     ta, tb = _tokens(a), _tokens(b)
     jaccard = len(ta & tb) / len(ta | tb) if (ta or tb) else 0.0
     ratio = difflib.SequenceMatcher(None, a.lower(), b.lower()).ratio()

@@ -9,14 +9,17 @@ each paper's own JSON (for title/tag lookup) -- no Claude API calls.
 Usage:
     python3 group_matches.py
 """
+
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
+from pipeline_paths import output_dir
 from section_schema import GRANULARITIES, SectionedPaper
 
-OUTPUT_DIR = Path(__file__).resolve().parent / "output" / "sections"
+OUTPUT_DIR = output_dir()
 
 
 class _DSU:
@@ -40,12 +43,18 @@ def _load_paper(path: Path) -> SectionedPaper:
     return SectionedPaper.model_validate(json.loads(path.read_text()))
 
 
-def _unit_lookup(papers: dict[str, SectionedPaper], granularity: str) -> dict[tuple[str, str], dict]:
+def _unit_lookup(
+    papers: dict[str, SectionedPaper], granularity: str
+) -> dict[tuple[str, str], dict]:
     """(paper_id, unit_id) -> {"title":..., "tag":...} for every unit at this granularity."""
     lookup = {}
     for paper_id, paper in papers.items():
         for unit in getattr(paper, granularity):
-            lookup[(paper_id, unit.id)] = {"title": unit.title, "tag": unit.tag}
+            lookup[(paper_id, unit.id)] = {
+                "title": unit.title,
+                "tag": unit.tag,
+                "parent_section_id": unit.parent_section_id,
+            }
     return lookup
 
 
@@ -77,7 +86,10 @@ def group_links(links: list[dict], units: dict[tuple[str, str], dict]) -> list[d
     for i, g in enumerate(groups, start=1):
         g["group_id"] = f"group_{i}"
     # group_id first for readability
-    return [{"group_id": g["group_id"], "members": g["members"], "links": g["links"]} for g in groups]
+    return [
+        {"group_id": g["group_id"], "members": g["members"], "links": g["links"]}
+        for g in groups
+    ]
 
 
 # Grouping is transitive (A-B + B-C merges A, B, and C even with no direct A-C
@@ -86,8 +98,8 @@ def group_links(links: list[dict], units: dict[tuple[str, str], dict]) -> list[d
 # meaningfully tight. Paragraphs need a higher bar than sections since they're
 # shorter, more numerous, and more prone to generic-question false ties.
 SIMILARITY_THRESHOLDS = {
-    "sections": 0.33,
-    "paragraphs": 0.45,
+    "sections": float(os.environ.get("SME_SECTION_GROUP_THRESHOLD", "0.33")),
+    "paragraphs": float(os.environ.get("SME_PARAGRAPH_GROUP_THRESHOLD", "0.45")),
 }
 
 
@@ -105,7 +117,9 @@ def main() -> None:
         groups = group_links(links, units)
         output[granularity] = groups
         sizes = [len(g["members"]) for g in groups]
-        print(f"[{granularity}] {len(all_links)} links -> {len(links)} above {threshold} -> {len(groups)} groups (sizes: {sizes})")
+        print(
+            f"[{granularity}] {len(all_links)} links -> {len(links)} above {threshold} -> {len(groups)} groups (sizes: {sizes})"
+        )
 
     out_path = OUTPUT_DIR / "quote_groups.json"
     out_path.write_text(json.dumps(output, indent=2))
