@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ranking Matrices Heatmap</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin: 0;
+    background: #fafafa;
+    color: #212529;
+  }
+  header {
+    position: sticky; top: 0; background: #fff; border-bottom: 1px solid #dee2e6;
+    padding: 10px 16px; z-index: 20;
+  }
+  header h1 { font-size: 14px; margin: 0 0 4px; font-weight: 600; color: #495057; }
+  header p { font-size: 11.5px; color: #868e96; margin: 2px 0; line-height: 1.4; }
+  #stage { padding: 14px 16px 40px; overflow-x: auto; }
+
+  .papers-legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 11px; color: #495057; margin-bottom: 10px; }
+  .papers-legend-item { display: inline-flex; align-items: center; gap: 5px; }
+  .papers-legend-swatch { width: 9px; height: 9px; border-radius: 2px; display: inline-block; flex: none; }
+
+  .scale-legend { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #495057; margin-bottom: 10px; }
+  .scale-legend-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .scale-bar {
+    width: 140px; height: 10px; border-radius: 2px;
+    background: linear-gradient(to right, rgb(247,250,255), rgb(8,61,119));
+    border: 1px solid #dee2e6;
+  }
+  .cell-tooltip {
+    position: fixed; display: none; background: #212529; color: #fff; font-size: 11px; line-height: 1.4;
+    padding: 6px 9px; border-radius: 4px; pointer-events: none; z-index: 1000; white-space: pre-line;
+    max-width: 280px; box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  }
+
+  .heatmap-titles { display: flex; align-items: flex-end; margin-bottom: 6px; }
+  .block-title-col { width: 336px; flex: none; }
+  .block-title { font-size: 12px; font-weight: 700; color: #343a40; }
+  .block-subtitle { font-size: 10px; color: #868e96; line-height: 1.35; margin-top: 2px; }
+
+  .heatmap-header, .heatmap-row { display: flex; align-items: stretch; }
+  .heatmap-header { margin-bottom: 2px; }
+  .row-label { width: 10px; flex: none; }
+  .row-swatch { display: block; width: 6px; height: 100%; border-radius: 1px; }
+  .col-header { width: 16px; flex: none; font-size: 8px; color: #868e96; text-align: center; cursor: default; }
+  .cell { width: 16px; height: 9px; flex: none; }
+  .combo-cell { width: 16px; height: 9px; flex: none; border: 1.5px solid transparent; }
+  .heatmap-row { height: 9px; }
+  .spacer { width: 22px; flex: none; }
+  .heatmap-row:hover { background: rgba(28,126,214,0.08); }
+  .heatmap-row:hover .cell { outline: 1px solid rgba(28,126,214,0.35); outline-offset: -1px; }
+
+  .matrices-wrap { margin-top: 4px; }
+  .empty-state { padding: 40px; color: #868e96; font-size: 13px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Ranking Matrices Heatmap</h1>
+  <p>Each row is one paragraph, grouped by paper (colored stripe on the left). Hover a cell for its question,
+  paragraph, and exact rank.</p>
+</header>
+<div id="stage"><div class="empty-state">Loading...</div></div>
+<div id="cellTooltip" class="cell-tooltip"></div>
+
+<script>
+const stage = document.getElementById("stage");
+const PAPER_COLOR_PALETTE = ["#4C6EF5", "#F76707", "#37b24d", "#e64980", "#ae3ec9", "#f59f00"];
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+function lerpColor(light, dark, norm) {
+  const t = Math.max(0, Math.min(1, norm));
+  const rgb = light.map((l, i) => Math.round(l + (dark[i] - l) * t));
+  return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
+}
+
+// Single scale (blue) shared by fill (Matrix 1) and outline (Matrix 2) --
+// same encoding for both channels, just applied to fill vs. border.
+function fillColor(norm) {
+  return lerpColor([247, 250, 255], [8, 61, 119], norm);
+}
+
+async function loadAll() {
+  const base = "../output/sections/";
+  const opts = { cache: "no-store" };
+  const manifest = await (await fetch(base + "manifest.json", opts)).json();
+  const papers = [];
+  for (const m of manifest) papers.push(await (await fetch(base + m.file, opts)).json());
+  const quoteGroups = await (await fetch(base + "quote_groups.json", opts)).json();
+  const matrix1 = await (await fetch(base + "paragraph_question_ranking.json", opts)).json();
+  const matrix2 = await (await fetch(base + "question_paragraph_ranking.json", opts)).json();
+  return { papers, quoteGroups, matrix1, matrix2 };
+}
+
+function buildRows(papers, paperColorById) {
+  const rows = [];
+  papers.forEach(paper => {
+    (paper.paragraphs || []).forEach(p => {
+      rows.push({
+        paper: paper.paper_id,
+        paperTitle: paper.title,
+        color: paperColorById[paper.paper_id],
+        unitId: p.id,
+        tag: p.tag,
+      });
+    });
+  });
+  return rows;
+}
+
+function renderLegends(papers, paperColorById) {
+  const papersHtml = papers.map(p =>
+    `<span class="papers-legend-item"><span class="papers-legend-swatch" style="background:${paperColorById[p.paper_id]}"></span>${escapeHtml(p.title)}</span>`
+  ).join("");
+  return `<div class="papers-legend">${papersHtml}</div>
+    <div class="scale-legend-row"><span style="width:170px">fill = Matrix 1, outline = Matrix 2</span><span class="scale-bar"></span><span>0 &rarr; 1 (same scale)</span></div>`;
+}
+
+function renderBlockTitles() {
+  return `<div class="heatmap-titles">
+    <div class="row-label"></div>
+    <div class="block-title-col">
+      <div class="block-title">Matrix 1 — paragraph's own ranking of questions</div>
+      <div class="block-subtitle">For that paragraph, how well it ranked each question relative to all other questions.</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="block-title-col">
+      <div class="block-title">Matrix 2 — question's ranking of paragraphs</div>
+      <div class="block-subtitle">For that question, how well the paragraph ranked within its own paper's paragraphs.</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="block-title-col">
+      <div class="block-title">Matrix 3 — combined</div>
+      <div class="block-subtitle">Fill = Matrix 1 (this paragraph's rank of the question). Outline = Matrix 2 (this question's rank of the paragraph).</div>
+    </div>
+  </div>`;
+}
+
+function renderColHeader(questions) {
+  const headerCells = () => questions.map((q, i) => `<div class="col-header" title="${escapeHtml(q.overarching_question)}">${i + 1}</div>`).join("");
+  return `<div class="heatmap-header"><div class="row-label"></div>` +
+    headerCells() + `<div class="spacer"></div>` +
+    headerCells() + `<div class="spacer"></div>` +
+    headerCells() +
+    `</div>`;
+}
+
+// Looks up both matrices' normalized [0,1] fit for one (row, question) pair
+// -- shared by all three blocks so Matrix 3 doesn't redo the lookups.
+function cellStats(row, q, matrix1, matrix2, paperParagraphCounts) {
+  const m1ranking = matrix1[`${row.paper}:${row.unitId}`] || [];
+  const n1 = m1ranking.length;
+  const idx1 = m1ranking.indexOf(q.group_id);
+  const norm1 = idx1 === -1 || n1 < 2 ? null : (n1 - 1 - idx1) / (n1 - 1);
+  const rank1Text = idx1 === -1 ? "not ranked" : `paragraph ranks this question ${idx1 + 1} of ${n1}`;
+
+  const m2ranking = (matrix2[q.group_id] || {})[row.paper] || [];
+  const n2 = m2ranking.length || paperParagraphCounts[row.paper] || 1;
+  const idx2 = m2ranking.indexOf(row.unitId);
+  const norm2 = idx2 === -1 || n2 < 2 ? null : (n2 - 1 - idx2) / (n2 - 1);
+  const rank2Text = idx2 === -1 ? "not ranked" : `question ranks this paragraph ${idx2 + 1} of ${n2} (within ${row.paperTitle})`;
+
+  const tooltip = `Question: ${q.overarching_question}\nParagraph: ${row.tag}\n${rank1Text}\n${rank2Text}`;
+  return { norm1, norm2, tooltip };
+}
+
+function renderRow(row, questions, matrix1, matrix2, paperParagraphCounts) {
+  const stats = questions.map(q => cellStats(row, q, matrix1, matrix2, paperParagraphCounts));
+
+  const m1cells = stats.map(s => {
+    const color = s.norm1 === null ? "#e9ecef" : fillColor(s.norm1);
+    return `<div class="cell" style="background:${color}" data-tooltip="${escapeHtml(s.tooltip)}"></div>`;
+  }).join("");
+
+  const m2cells = stats.map(s => {
+    const color = s.norm2 === null ? "#e9ecef" : fillColor(s.norm2);
+    return `<div class="cell" style="background:${color}" data-tooltip="${escapeHtml(s.tooltip)}"></div>`;
+  }).join("");
+
+  const m3cells = stats.map(s => {
+    const fill = s.norm1 === null ? "#e9ecef" : fillColor(s.norm1);
+    const outline = s.norm2 === null ? "#ced4da" : fillColor(s.norm2);
+    return `<div class="combo-cell" style="background:${fill}; border-color:${outline}" data-tooltip="${escapeHtml(s.tooltip)}"></div>`;
+  }).join("");
+
+  const label = `${row.paperTitle} — ${row.tag}`;
+  return `<div class="heatmap-row">
+      <div class="row-label" data-tooltip="${escapeHtml(label)}"><span class="row-swatch" style="background:${row.color}"></span></div>
+      ${m1cells}
+      <div class="spacer"></div>
+      ${m2cells}
+      <div class="spacer"></div>
+      ${m3cells}
+    </div>`;
+}
+
+function attachTooltip(container) {
+  const tooltip = document.getElementById("cellTooltip");
+  container.addEventListener("mousemove", (evt) => {
+    const target = evt.target.closest("[data-tooltip]");
+    if (!target) { tooltip.style.display = "none"; return; }
+    tooltip.textContent = target.dataset.tooltip;
+    tooltip.style.display = "block";
+    const pad = 14;
+    let left = evt.clientX + pad, top = evt.clientY + pad;
+    if (left + 290 > window.innerWidth) left = evt.clientX - 290 - pad;
+    if (top + 90 > window.innerHeight) top = evt.clientY - 90 - pad;
+    tooltip.style.left = left + "px";
+    tooltip.style.top = top + "px";
+  });
+  container.addEventListener("mouseleave", () => { tooltip.style.display = "none"; });
+}
+
+async function init() {
+  const { papers, quoteGroups, matrix1, matrix2 } = await loadAll();
+
+  if (!papers.length) {
+    stage.innerHTML = `<div class="empty-state">No data available.</div>`;
+    return;
+  }
+
+  const paperColorById = {};
+  papers.forEach((p, i) => { paperColorById[p.paper_id] = PAPER_COLOR_PALETTE[i % PAPER_COLOR_PALETTE.length]; });
+  const paperParagraphCounts = {};
+  papers.forEach(p => { paperParagraphCounts[p.paper_id] = (p.paragraphs || []).length; });
+
+  const questions = (quoteGroups.paragraphs || []).map(g => ({ group_id: g.group_id, overarching_question: g.overarching_question }));
+  const rows = buildRows(papers, paperColorById);
+
+  const rowsHtml = rows.map(row => renderRow(row, questions, matrix1, matrix2, paperParagraphCounts)).join("");
+
+  stage.innerHTML = renderLegends(papers, paperColorById) + renderBlockTitles() +
+    `<div class="matrices-wrap">${renderColHeader(questions)}${rowsHtml}</div>`;
+
+  attachTooltip(stage);
+}
+
+init();
+</script>
+</body>
+</html>

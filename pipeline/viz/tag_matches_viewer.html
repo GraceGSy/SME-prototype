@@ -82,30 +82,33 @@
   .granularity-btn:not(:first-child) { border-left: none; }
   .granularity-btn.active { background: #1c7ed6; color: #fff; border-color: #1c7ed6; }
 
-  #treeLinkLayer { position: absolute; top: 0; left: 0; z-index: 0; pointer-events: none; }
-  #treeRoot { position: relative; z-index: 1; display: flex; gap: 40px; align-items: flex-start; }
-  .tree-node-wrap { display: flex; flex-direction: column; align-items: center; }
-  .tree-node {
-    background: #fff; border: 1.5px solid #ced4da; border-radius: 8px;
-    padding: 8px 12px; cursor: pointer; min-width: 170px; max-width: 230px;
-    text-align: center; transition: border-color 0.1s, box-shadow 0.1s;
+  .iteration-tabs { display: flex; gap: 2px; margin-bottom: 4px; }
+  .iteration-meta { font-size: 11px; color: #868e96; margin-bottom: 8px; }
+  .papers-legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 11px; color: #495057; margin-bottom: 14px; }
+  .papers-legend-item { display: inline-flex; align-items: center; gap: 5px; }
+  .papers-legend-swatch { width: 9px; height: 9px; border-radius: 2px; display: inline-block; flex: none; }
+
+  .group-card {
+    background: #fff; border: 1px solid #e9ecef; border-radius: 6px;
+    padding: 3px 10px; margin-bottom: 2px;
   }
-  .tree-node:hover { border-color: #1c7ed6; }
-  .tree-node.open { border-color: #1c7ed6; box-shadow: 0 0 0 2px rgba(28,126,214,0.15); }
-  .tree-node-question { font-size: 12.5px; line-height: 1.35; }
-  .super-node .tree-node-question { font-weight: 700; color: #212529; }
-  .group-node { background: #f8f9fa; }
-  .group-node .tree-node-question { font-weight: 600; color: #343a40; font-size: 12px; }
-  .tree-node-meta { font-size: 10px; color: #868e96; margin-top: 3px; font-weight: 400; }
-  .tree-children { display: flex; gap: 24px; align-items: flex-start; margin-top: 36px; }
-  /* extra headroom under super-groups specifically, so the arced sibling-group
-     links (which bulge upward up to ~110px) have room to clear without being
-     hidden behind the super-group node above them */
-  #treeRoot > .tree-node-wrap > .tree-children { margin-top: 140px; }
-  .group-detail-children { margin-top: 36px; }
-  .group-columns-wrap { position: relative; width: min(90vw, 760px); }
-  .group-link-layer { position: absolute; top: 0; left: 0; pointer-events: none; }
-  .group-columns { position: relative; display: flex; gap: 30px; align-items: flex-start; }
+  .group-card.open { padding-bottom: 8px; margin-bottom: 8px; }
+  .group-question {
+    font-size: 13px; font-weight: 700; color: #212529; cursor: pointer; display: inline-block;
+  }
+  .group-question:hover { color: #1c7ed6; }
+  .group-question::before { content: "▸ "; color: #adb5bd; }
+  .group-card.open .group-question::before { content: "▾ "; }
+  .group-balance-badge {
+    font-size: 10px; font-weight: 600; color: #495057; background: #f1f3f5;
+    border: 1px solid #dee2e6; padding: 1px 6px; border-radius: 9px; margin-left: 6px; vertical-align: middle;
+  }
+  .group-unit-vis { display: flex; flex-wrap: wrap; gap: 2px; margin-top: 2px; max-width: 100%; }
+  .unit-square { width: 7px; height: 7px; border-radius: 1.5px; flex: none; }
+  .group-card.open .group-unit-vis { display: none; }
+  .group-detail-slot { margin-top: 10px; }
+  .group-columns-wrap { position: relative; }
+  .group-columns { display: flex; gap: 30px; align-items: flex-start; }
   .group-columns .column { flex: 1 1 0; min-width: 0; text-align: left; }
   .group-columns .paper-title { font-size: 11px; }
   .group-column-empty { font-size: 11.5px; color: #adb5bd; font-style: italic; padding: 6px 2px; }
@@ -155,13 +158,22 @@ let allLinksByGranularity = { sections: [], paragraphs: [] };
 let rawLinksForGranularity = []; // all links for the current granularity, before the similarity filter
 let currentGranularity = "sections"; // matching is always within one granularity: sections<->sections, paragraphs<->paragraphs
 
-let allGroups = []; // paragraph groups only, each with an overarching_question
 let paragraphUnitLookup = {}; // "paper_id:unit_id" -> full paragraph object, for group-detail rendering
-let groupById = {}; // group_id -> full group object, for tree-node click lookups
 
-let allSuperGroups = []; // groups-of-groups, each with an overarching_question and member groups
-const openSuperGroupIds = new Set(); // super_group_id currently expanded to show member groups
-const openGroupIds = new Set(); // group_id currently expanded to show its 3-column quote detail
+const N_ITERATIONS = 5;
+let iterationGroups = {}; // iteration number -> [{group_id, members, overarching_question}, ...]
+let iterationMeta = {}; // iteration number -> {reassigned, total_assigned}
+let groupBalanceByIteration = {}; // iteration number -> {group_id: group_balance}, when available (currently iteration 1 only)
+let currentIteration = 1;
+const openGroupIds = new Set(); // group_id currently expanded to show its 3-column quote detail (within the current iteration)
+
+// Fixed per-paper colors (not tag-derived, so this isn't the hash-based tag
+// coloring that was removed earlier -- paper identity is a small, fixed,
+// meaningful set) for the collapsed-group unit vis: one small square per
+// quote, colored by which paper it's from.
+const PAPER_COLOR_PALETTE = ["#4C6EF5", "#F76707", "#37b24d", "#e64980", "#ae3ec9", "#f59f00"];
+let paperColorById = {};
+let paperTitleById = {};
 
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -190,9 +202,19 @@ async function loadAll() {
     papers.push(await (await fetch(base + m.file, opts)).json());
   }
   const links = await (await fetch(base + "bidirectional_matches.json", opts)).json();
-  const groups = await (await fetch(base + "quote_groups.json", opts)).json();
-  const superGroups = await (await fetch(base + "group_of_groups.json", opts)).json();
-  return { papers, links, groups, superGroups };
+  const iterations = {};
+  for (let i = 1; i <= N_ITERATIONS; i++) {
+    const state = await (await fetch(base + `paragraph_groups_iter${i}.json`, opts)).json();
+    iterations[i] = state;
+  }
+  // Only iteration 1 currently has a computed group-balance metric -- fetch
+  // it best-effort so older/other output directories without it don't break.
+  let groupBalanceIter1 = null;
+  try {
+    const res = await fetch(base + "group_balance_iter1.json", opts);
+    if (res.ok) groupBalanceIter1 = await res.json();
+  } catch (e) { /* no group-balance file available -- fall back to default order */ }
+  return { papers, links, iterations, groupBalanceIter1 };
 }
 
 function buildParagraphUnitLookup() {
@@ -204,9 +226,28 @@ function buildParagraphUnitLookup() {
   });
 }
 
-function buildGroupById() {
-  groupById = {};
-  allGroups.forEach(g => { groupById[g.group_id] = g; });
+function buildPaperColors() {
+  paperColorById = {};
+  paperTitleById = {};
+  allPapers.forEach((paper, i) => {
+    paperColorById[paper.paper_id] = PAPER_COLOR_PALETTE[i % PAPER_COLOR_PALETTE.length];
+    paperTitleById[paper.paper_id] = paper.title;
+  });
+}
+
+// One small square per quote, colored by its paper -- a quick visual sense
+// of a collapsed group's paper composition/size without opening it.
+function buildUnitVis(members) {
+  const squares = members.map(m =>
+    `<span class="unit-square" style="background:${paperColorById[m.paper] || "#ced4da"}" title="${escapeHtml(paperTitleById[m.paper] || m.paper)}"></span>`
+  ).join("");
+  return `<div class="group-unit-vis">${squares}</div>`;
+}
+
+function buildPapersLegend() {
+  return `<div class="papers-legend">${allPapers.map(paper =>
+    `<span class="papers-legend-item"><span class="papers-legend-swatch" style="background:${paperColorById[paper.paper_id]}"></span>${escapeHtml(paper.title)}</span>`
+  ).join("")}</div>`;
 }
 
 function linkedIdSet(links) {
@@ -432,196 +473,80 @@ function buildGranularityTabs() {
   });
 }
 
-// Renders the full super-group -> group -> quotes tree from scratch, driven
-// entirely by openSuperGroupIds/openGroupIds. Any state change (a node click,
-// a slider change, a resize) just mutates those sets (or nothing, for
-// sliders) and calls this again -- simpler than patching the DOM in place,
-// and cheap since there's no API call involved.
-function renderGroupsTree() {
-  if (!allSuperGroups.length) {
-    stage.innerHTML = `<div class="empty-state">No groups available.</div>`;
+// Renders the iteration selector plus a flat list of that iteration's group
+// cards, driven by currentIteration/openGroupIds. Any state change (an
+// iteration switch, a card click, a slider change) just mutates that state
+// and calls this again -- simpler than patching the DOM in place, and cheap
+// since there's no API call involved.
+function renderIterationGroups() {
+  const tabsHtml = Array.from({ length: N_ITERATIONS }, (_, i) => i + 1).map(n =>
+    `<button type="button" class="granularity-btn${n === currentIteration ? " active" : ""}" data-iteration="${n}">Iteration ${n}</button>`
+  ).join("");
+
+  const meta = iterationMeta[currentIteration];
+  const metaText = meta ? `${meta.reassigned} of ${meta.total_assigned} paragraphs were reassigned to a different group this iteration.` : "";
+
+  const balanceByGroupId = groupBalanceByIteration[currentIteration];
+  // Sort a copy by group-balance (highest first) when available for this
+  // iteration; otherwise keep the original (member-count-descending) order.
+  const groups = balanceByGroupId
+    ? [...(iterationGroups[currentIteration] || [])].sort((a, b) => (balanceByGroupId[b.group_id] ?? -1) - (balanceByGroupId[a.group_id] ?? -1))
+    : (iterationGroups[currentIteration] || []);
+
+  if (!groups.length) {
+    stage.innerHTML = `<div class="iteration-tabs">${tabsHtml}</div><div class="empty-state">No groups available for this iteration.</div>`;
+    attachIterationTabInteractions();
     return;
   }
 
-  const superNodesHtml = allSuperGroups.map(sg => {
-    const isOpen = openSuperGroupIds.has(sg.super_group_id);
-    let childrenHtml = "";
-    if (isOpen) {
-      const childNodesHtml = sg.members.map(m => {
-        const groupIsOpen = openGroupIds.has(m.group_id);
-        const detailHtml = groupIsOpen
-          ? `<div class="tree-children group-detail-children" data-group-detail-for="${m.group_id}"></div>`
-          : "";
-        return `<div class="tree-node-wrap">
-          <div class="tree-node group-node${groupIsOpen ? " open" : ""}" data-group-id="${m.group_id}">
-            <div class="tree-node-question">${escapeHtml(m.overarching_question)}</div>
-          </div>
-          ${detailHtml}
-        </div>`;
-      }).join("");
-      childrenHtml = `<div class="tree-children">${childNodesHtml}</div>`;
-    }
-    return `<div class="tree-node-wrap">
-      <div class="tree-node super-node${isOpen ? " open" : ""}" data-super-group-id="${sg.super_group_id}">
-        <div class="tree-node-question">${escapeHtml(sg.overarching_question || "(no summary)")}</div>
-        <div class="tree-node-meta">${sg.members.length} group${sg.members.length === 1 ? "" : "s"}</div>
-      </div>
-      ${childrenHtml}
+  const cardsHtml = groups.map(group => {
+    const balance = balanceByGroupId ? balanceByGroupId[group.group_id] : undefined;
+    const balanceHtml = balance !== undefined ? `<span class="group-balance-badge">balance ${balance}%</span>` : "";
+    return `<div class="group-card" data-group-id="${group.group_id}">
+      <div class="group-question">${escapeHtml(group.overarching_question || "(no summary)")}${balanceHtml}</div>
+      ${buildUnitVis(group.members)}
+      <div class="group-detail-slot"></div>
     </div>`;
   }).join("");
 
-  stage.innerHTML = `<svg id="treeLinkLayer"></svg><div id="treeRoot">${superNodesHtml}</div>`;
+  stage.innerHTML = `<div class="iteration-tabs">${tabsHtml}</div><div class="iteration-meta">${metaText}</div>${buildPapersLegend()}${cardsHtml}`;
 
-  openGroupIds.forEach(groupId => {
-    const slot = stage.querySelector(`.group-detail-children[data-group-detail-for="${CSS.escape(groupId)}"]`);
-    const group = groupById[groupId];
-    if (slot && group) renderGroupDetail(slot, group);
-  });
-
-  attachTreeInteractions();
-  drawTreeLinks();
-}
-
-function attachTreeInteractions() {
-  stage.querySelectorAll(".super-node").forEach(el => {
-    el.addEventListener("click", (evt) => {
-      evt.stopPropagation();
-      const id = el.dataset.superGroupId;
-      if (openSuperGroupIds.has(id)) {
-        openSuperGroupIds.delete(id);
-        // collapsing hides its member groups too, so their own expanded state no longer applies
-        const sg = allSuperGroups.find(s => s.super_group_id === id);
-        if (sg) sg.members.forEach(m => openGroupIds.delete(m.group_id));
+  stage.querySelectorAll(".group-card").forEach(card => {
+    const groupId = card.dataset.groupId;
+    const group = groups.find(g => g.group_id === groupId);
+    const slot = card.querySelector(".group-detail-slot");
+    if (openGroupIds.has(groupId)) {
+      card.classList.add("open");
+      renderGroupDetail(slot, group);
+    }
+    card.querySelector(".group-question").addEventListener("click", () => {
+      const isOpen = card.classList.toggle("open");
+      if (isOpen) {
+        openGroupIds.add(groupId);
+        renderGroupDetail(slot, group);
       } else {
-        openSuperGroupIds.add(id);
+        openGroupIds.delete(groupId);
+        slot.innerHTML = "";
       }
-      renderGroupsTree();
     });
   });
-  stage.querySelectorAll(".group-node").forEach(el => {
-    const id = el.dataset.groupId;
-    el.addEventListener("mouseenter", () => setArcEmphasis(id, true));
-    el.addEventListener("mouseleave", () => { if (!openGroupIds.has(id)) setArcEmphasis(id, false); });
 
-    el.addEventListener("click", (evt) => {
-      evt.stopPropagation();
-      if (openGroupIds.has(id)) openGroupIds.delete(id);
-      else openGroupIds.add(id);
-      renderGroupsTree();
+  attachIterationTabInteractions();
+}
+
+function attachIterationTabInteractions() {
+  stage.querySelectorAll(".iteration-tabs .granularity-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const n = Number(btn.dataset.iteration);
+      if (n !== currentIteration) switchIteration(n);
     });
   });
 }
 
-function treeLinkPath(fromEl, toEl, originRect) {
-  const fromRect = fromEl.getBoundingClientRect();
-  const toRect = toEl.getBoundingClientRect();
-  const x1 = fromRect.left + fromRect.width / 2 - originRect.left;
-  const y1 = fromRect.bottom - originRect.top;
-  const x2 = toRect.left + toRect.width / 2 - originRect.left;
-  const y2 = toRect.top - originRect.top;
-  const cy = (y1 + y2) / 2;
-  return `<path class="tree-link-edge" d="M ${x1} ${y1} C ${x1} ${cy}, ${x2} ${cy}, ${x2} ${y2}" stroke="#adb5bd" stroke-width="1.5" fill="none"/>`;
-}
-
-// Arced link between two SIBLING group nodes (a bidirectional match between
-// their overarching_questions, not a containment relation) -- drawn as a
-// hump above the node row, in the app's accent blue so it reads as a
-// different kind of edge than the neutral-gray tree containment lines.
-// Arc height scales with horizontal distance so arcs between distant
-// siblings clear the nodes in between (classic arc-diagram style).
-function groupArcPath(aEl, bEl, originRect, similarity, groupAId, groupBId) {
-  const aRect = aEl.getBoundingClientRect(), bRect = bEl.getBoundingClientRect();
-  const x1 = aRect.left + aRect.width / 2 - originRect.left;
-  const y1 = aRect.top - originRect.top;
-  const x2 = bRect.left + bRect.width / 2 - originRect.left;
-  const y2 = bRect.top - originRect.top;
-  const h = Math.min(110, 26 + Math.abs(x2 - x1) * 0.18);
-  // const opacity = 0.3 + 0.55 * similarity;
-  const opacity = 0.15 + 0.25 * similarity;
-  const width = 1 + 2.5 * similarity;
-  return `<path class="group-arc-edge" data-group-a="${groupAId}" data-group-b="${groupBId}" ` +
-    `data-base-opacity="${opacity}" data-base-width="${width}" ` +
-    `d="M ${x1} ${y1} C ${x1} ${y1 - h}, ${x2} ${y2 - h}, ${x2} ${y2}" ` +
-    `stroke="#1c7ed6" stroke-width="${width}" fill="none" opacity="${opacity}"/>`;
-}
-
-const ARC_EMPHASIS_OPACITY_BOOST = 0.5;
-const ARC_EMPHASIS_WIDTH_BOOST = 2.5;
-
-// Darkens + thickens every arc touching the given group, relative to its own
-// base (similarity-derived) opacity/width -- used on hover, and kept applied
-// for whichever group(s) are currently expanded (open).
-function setArcEmphasis(groupId, emphasized) {
-  const svg = document.getElementById("treeLinkLayer");
-  if (!svg) return;
-  svg.querySelectorAll(".group-arc-edge").forEach(edge => {
-    if (edge.dataset.groupA !== groupId && edge.dataset.groupB !== groupId) return;
-    if (emphasized) {
-      edge.style.opacity = Math.min(1, parseFloat(edge.dataset.baseOpacity) + ARC_EMPHASIS_OPACITY_BOOST);
-      edge.style.strokeWidth = (parseFloat(edge.dataset.baseWidth) + ARC_EMPHASIS_WIDTH_BOOST) + "px";
-    } else {
-      edge.style.opacity = "";
-      edge.style.strokeWidth = "";
-    }
-  });
-}
-
-// Draws the group -> quote-detail containment line, plus the arced
-// bidirectional similarity links between sibling groups. The super-group ->
-// group containment line is deliberately NOT drawn (per explicit request) --
-// expanding a super-group shows its children without gray connector lines to
-// them; only the actual similarity arcs between those children are shown.
-function drawTreeLinks() {
-  const svg = document.getElementById("treeLinkLayer");
-  const treeRoot = document.getElementById("treeRoot");
-  const stageRect = stage.getBoundingClientRect();
-  // scrollWidth/Height, not offsetWidth/Height: the tree can grow wider than
-  // its own box when expanded (nowrap flex children overflowing), and
-  // offset* clamps to that box -- sizing the SVG from it would clip any link
-  // endpoint that falls in the overflowed region instead of drawing it.
-  const width = treeRoot.scrollWidth;
-  const height = treeRoot.scrollHeight;
-  svg.setAttribute("width", width);
-  svg.setAttribute("height", height);
-  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-
-  const paths = [];
-
-  stage.querySelectorAll("#treeRoot > .tree-node-wrap").forEach(sgWrap => {
-    const sgNode = sgWrap.querySelector(":scope > .super-node");
-    const childrenContainer = sgWrap.querySelector(":scope > .tree-children");
-    if (!sgNode || !childrenContainer) return;
-
-    const nodeByGroupId = {};
-    childrenContainer.querySelectorAll(":scope > .tree-node-wrap").forEach(gWrap => {
-      const gNode = gWrap.querySelector(":scope > .group-node");
-      if (!gNode) return;
-      nodeByGroupId[gNode.dataset.groupId] = gNode;
-    });
-
-    // bidirectional similarity links between sibling groups (already
-    // similarity-thresholded once at grouping time in group_groups.py;
-    // filter again here so the slider still narrows what's drawn)
-    const sg = allSuperGroups.find(s => s.super_group_id === sgNode.dataset.superGroupId);
-    if (sg) {
-      sg.links.forEach(link => {
-        if (link.similarity < similarityThreshold) return;
-        const aNode = nodeByGroupId[link.group_a];
-        const bNode = nodeByGroupId[link.group_b];
-        if (aNode && bNode) paths.push(groupArcPath(aNode, bNode, stageRect, link.similarity, link.group_a, link.group_b));
-      });
-    }
-  });
-
-  stage.querySelectorAll(".group-detail-children").forEach(detailEl => {
-    if (!detailEl.firstElementChild) return;
-    const groupWrap = detailEl.closest(".tree-node-wrap");
-    const gNode = groupWrap ? groupWrap.querySelector(":scope > .group-node") : null;
-    if (gNode) paths.push(treeLinkPath(gNode, detailEl.firstElementChild, stageRect));
-  });
-
-  svg.innerHTML = paths.join("");
-  openGroupIds.forEach(id => setArcEmphasis(id, true)); // expanded groups stay emphasized, not just on hover
+function switchIteration(n) {
+  currentIteration = n;
+  openGroupIds.clear(); // a group_id's membership/content differs across iterations, so don't carry an "open" state over
+  renderIterationGroups();
 }
 
 function renderGroupDetail(slot, group) {
@@ -661,80 +586,23 @@ function renderGroupDetail(slot, group) {
       </div>`;
     }).join("");
 
-  slot.innerHTML = `<div class="group-columns-wrap"><svg class="group-link-layer"></svg><div class="group-columns">${cols}</div></div>`;
+  slot.innerHTML = `<div class="group-columns-wrap"><div class="group-columns">${cols}</div></div>`;
 
-  drawGroupLinks(slot, group);
-  attachGroupInteractions(slot, group);
+  attachGroupInteractions(slot);
 }
 
-function drawGroupLinks(slot, group) {
-  const svg = slot.querySelector(".group-link-layer");
-  const wrap = slot.querySelector(".group-columns-wrap");
-  const columnsEl = slot.querySelector(".group-columns");
-  const wrapRect = wrap.getBoundingClientRect();
-  const height = columnsEl.scrollHeight;
-  const width = columnsEl.scrollWidth;
-  svg.setAttribute("width", width);
-  svg.setAttribute("height", height);
-  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-
-  const links = group.links.filter(l => l.similarity >= similarityThreshold);
-  const paths = links.map(link => {
-    const aId = `${link.paper_a}:${link.section_a}`;
-    const bId = `${link.paper_b}:${link.section_b}`;
-    const aEl = slot.querySelector(`.section-block[data-group-unit-id="${CSS.escape(aId)}"]`);
-    const bEl = slot.querySelector(`.section-block[data-group-unit-id="${CSS.escape(bId)}"]`);
-    if (!aEl || !bEl) return "";
-    const aRect = aEl.getBoundingClientRect(), bRect = bEl.getBoundingClientRect();
-    const aOnLeft = aRect.left < bRect.left;
-    const x1 = (aOnLeft ? aRect.right : aRect.left) - wrapRect.left;
-    const y1 = aRect.top + aRect.height / 2 - wrapRect.top;
-    const x2 = (aOnLeft ? bRect.left : bRect.right) - wrapRect.left;
-    const y2 = bRect.top + bRect.height / 2 - wrapRect.top;
-    const cx = (x1 + x2) / 2;
-    const opacity = 0.25 + 0.55 * link.similarity;
-    const baseWidth = 1 + 2.5 * link.similarity;
-    return `<path class="link-edge" data-a="${aId}" data-b="${bId}" data-similarity="${link.similarity}" ` +
-      `d="M ${x1} ${y1} C ${cx} ${y1}, ${cx} ${y2}, ${x2} ${y2}" ` +
-      `stroke="#495057" stroke-width="${baseWidth}" fill="none" opacity="${opacity}"/>`;
-  });
-  svg.innerHTML = paths.join("");
-}
-
-function attachGroupInteractions(slot, group) {
-  const activeLinks = group.links.filter(l => l.similarity >= similarityThreshold);
-
+// Refined groups (paragraph_groups_iter<N>.json) don't carry pairwise link
+// data the way quote_groups.json's groups did -- membership here comes from
+// each paragraph's own best-fit choice, not from bidirectional matches
+// between specific pairs -- so there's nothing to draw lines between or
+// highlight by; the only interaction is expanding a quote's full text.
+function attachGroupInteractions(slot) {
   slot.querySelectorAll(".section-block").forEach(el => {
-    const id = el.dataset.groupUnitId;
-
-    el.addEventListener("mouseenter", () => {
-      const related = new Set([id]);
-      activeLinks.forEach(link => {
-        const aId = `${link.paper_a}:${link.section_a}`;
-        const bId = `${link.paper_b}:${link.section_b}`;
-        if (aId === id) related.add(bId);
-        if (bId === id) related.add(aId);
-      });
-      slot.querySelectorAll(".section-block").forEach(b => {
-        const isRelated = related.has(b.dataset.groupUnitId);
-        b.classList.toggle("highlight", isRelated && b.dataset.groupUnitId !== id);
-        b.classList.toggle("dim", !isRelated);
-      });
-      slot.querySelectorAll(".link-edge").forEach(edge => {
-        edge.style.opacity = (edge.dataset.a === id || edge.dataset.b === id) ? "0.9" : "0.05";
-      });
-    });
-    el.addEventListener("mouseleave", () => {
-      slot.querySelectorAll(".section-block").forEach(b => b.classList.remove("highlight", "dim"));
-      slot.querySelectorAll(".link-edge").forEach(edge => { edge.style.opacity = ""; });
-    });
-
     const hint = el.querySelector(".expand-hint");
     if (hint) {
       hint.addEventListener("click", (evt) => {
         evt.stopPropagation();
         el.classList.toggle("expanded");
-        drawGroupLinks(slot, group); // height changed, so link endpoints need repositioning
       });
     }
   });
@@ -756,7 +624,7 @@ function switchGranularity(granularity) {
   currentGranularity = granularity;
   buildGranularityTabs();
   if (granularity === "groups") {
-    renderGroupsTree();
+    renderIterationGroups();
     return;
   }
   rawLinksForGranularity = allLinksByGranularity[granularity] || [];
@@ -764,13 +632,19 @@ function switchGranularity(granularity) {
 }
 
 async function init() {
-  const { papers, links, groups, superGroups } = await loadAll();
+  const { papers, links, iterations, groupBalanceIter1 } = await loadAll();
   allPapers = papers;
   allLinksByGranularity = links;
-  allGroups = groups.paragraphs || [];
-  allSuperGroups = superGroups || [];
+  Object.entries(iterations).forEach(([n, state]) => {
+    iterationGroups[n] = state.groups || [];
+    iterationMeta[n] = state.meta || null;
+  });
+  if (groupBalanceIter1) {
+    groupBalanceByIteration[1] = {};
+    groupBalanceIter1.forEach(g => { groupBalanceByIteration[1][g.group_id] = g.group_balance; });
+  }
   buildParagraphUnitLookup();
-  buildGroupById();
+  buildPaperColors();
   rawLinksForGranularity = links[currentGranularity] || [];
 
   buildGranularityTabs();
@@ -783,20 +657,18 @@ async function init() {
     }
   });
   window.addEventListener("resize", () => {
-    if (currentGranularity === "groups") renderGroupsTree();
-    else refreshView();
+    if (currentGranularity !== "groups") refreshView();
   });
   previewSlider.addEventListener("input", () => {
     previewChars = Number(previewSlider.value);
     previewValueEl.textContent = String(previewChars);
-    if (currentGranularity === "groups") renderGroupsTree();
+    if (currentGranularity === "groups") renderIterationGroups();
     else updatePreviews();
   });
   similaritySlider.addEventListener("input", () => {
     similarityThreshold = Number(similaritySlider.value);
     similarityValueEl.textContent = similarityThreshold.toFixed(2);
-    if (currentGranularity === "groups") renderGroupsTree();
-    else applyFilterAndRender();
+    if (currentGranularity !== "groups") applyFilterAndRender();
   });
 }
 

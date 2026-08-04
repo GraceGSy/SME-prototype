@@ -16,6 +16,11 @@ Alongside the free-text `tag`, the model also gives:
 These are section-local: adjacency is only considered within the same
 section, not across a section boundary.
 
+Each paragraph also records `section_id`, the id of the section it was
+extracted from -- pure local bookkeeping (not part of the model's response),
+so re-running this script backfills it onto existing output using the
+existing per-section cache, with no new Claude calls.
+
 All of this comes from a single forced tool call per section.
 
 Usage:
@@ -178,6 +183,7 @@ def build_paragraphs(section: Section, result: dict, id_start: int) -> tuple[lis
         paragraphs.append(Section(
             id=f"pa{next_id}", tag=p["tag"], text=text,
             prev_relation=p.get("prev_relation", ""), next_relation=p.get("next_relation", ""),
+            section_id=section.id,
         ))
         next_id += 1
     return paragraphs, next_id

@@ -33,6 +33,7 @@ class Section(BaseModel):
     text: str = Field(default="", description="the unit's own raw text, sliced locally from the extracted PDF text (not model-generated)")
     prev_relation: str = Field(default="", description=f"paragraph only: this unit's discourse relation to the PREVIOUS unit, e.g. one of {DISCOURSE_TAGS}; empty if it's the first unit in its section")
     next_relation: str = Field(default="", description=f"paragraph only: this unit's discourse relation to the FOLLOWING unit, e.g. one of {DISCOURSE_TAGS}; empty if it's the last unit in its section")
+    section_id: str = Field(default="", description="paragraph only: the id of the section this paragraph was extracted from (empty for section-level units)")
 
 
 class SectionedPaper(BaseModel):

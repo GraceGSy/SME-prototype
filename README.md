@@ -68,7 +68,9 @@ python3 extract_sections.py
 python3 attach_section_text.py
 
 # 3. Extract paragraphs within each section, each with its own free-text tag
-#    plus prev/next discourse-relation tags. One Claude call per section.
+#    plus prev/next discourse-relation tags, plus the id of the section it
+#    came from (section_id -- local bookkeeping, not a model output). One
+#    Claude call per section.
 python3 extract_fine_grained.py
 
 # 4. For every section/paragraph, find its top-3 most similar tags in each
@@ -86,8 +88,9 @@ python3 prune_bidirectional.py
 python3 group_matches.py
 
 # 7. For each paragraph group, ask Claude what overarching research question
-#    unifies its members. One Claude call per group. Writes back onto
-#    quote_groups.json.
+#    unifies its members -- given each member's own question, its actual
+#    paragraph text, AND its parent section's question (not the section's
+#    content). One Claude call per group. Writes back onto quote_groups.json.
 python3 summarize_groups.py
 
 # 8. Match paragraph-group summary questions against each other (top-3 each),
@@ -118,13 +121,62 @@ Anthropic prompt caching (`cache_control: ephemeral` on the system prompt) is al
 used within steps 1/3/7/10 so that repeated calls in one run only pay full price for
 the first call.
 
+### Optional: iterative paragraph-group refinement
+
+After step 7, `refine_paragraph_groups.py` can be run to refine the paragraph
+groups further, independently of steps 8-10 above:
+
+```bash
+python3 refine_paragraph_groups.py
+```
+
+This is a clustering-style refinement loop, repeated `N_ITERATIONS = 5` times:
+
+1. **Reassign**: for EVERY paragraph in EVERY paper (not just ones already in a
+   group), ask Claude to pick whichever *current* group's `overarching_question` it
+   fits best -- a single Claude call per paragraph, returning one group_id directly
+   (not a score per candidate; this keeps output small and cheap, and the candidate
+   question list lives in the cached system prompt, so it's only paid for once per
+   iteration, not once per paragraph). A paragraph that started out ungrouped can
+   join a group here; a paragraph already in a group can be moved to a
+   better-fitting one. The number of paragraphs that changed group is printed each
+   iteration.
+2. **Re-summarize**: recompute `overarching_question` for each surviving group from
+   its new membership (reusing `summarize_group()` from step 7, same enriched
+   prompt), discarding the old question. Groups that lost every member are dropped.
+
+Every Claude call (both the per-paragraph assignment calls and the per-group
+resummarization calls) is cached per iteration under `output/sections/_cache/`, and
+each iteration's full result is saved to `output/sections/paragraph_groups_iter<N>.json`
+before moving to the next — resuming after a crash or a fresh credit top-up skips
+everything already done and continues from the last completed iteration; re-running
+after full completion makes no Claude calls at all. The final result is written to
+`output/sections/paragraph_groups_refined.json`.
+
+This is one of the more expensive steps by call count (`paragraphs × N_ITERATIONS`
+calls — e.g. ~236 paragraphs × 5 iterations ≈ 1,180 calls on the example papers),
+though each call's output is tiny (a single group_id, ~36 output tokens). An earlier
+design asked for a numeric fit score against every candidate group in one array
+response; that made the model occasionally degenerate into a long run of malformed
+entries (~10-15% of calls) and cost roughly 10x the output tokens per call, so it
+was replaced with this direct single-choice version. `assign_paragraph()` still
+retries up to `MAX_ASSIGN_ATTEMPTS = 2` times if a call comes back with no valid
+group_id at all, and leaves the paragraph unassigned for that iteration (printed
+clearly) if both attempts fail.
+
+`quote_groups.json` itself is left untouched by this step — it stays the step 6/7
+baseline. **Note:** the viewer's Groups tab currently reads `quote_groups.json`, not
+`paragraph_groups_refined.json`, and the refined groups don't carry a `links` field
+(the original bidirectional links no longer correspond to arbitrary post-refinement
+membership) — visualizing the refined groups would need a follow-up viewer change.
+
 ### Output files
 
 Everything lands in `output/sections/`:
 
 | File | Produced by | Contents |
 |---|---|---|
-| `<paper_id>.json` | extract_sections.py, attach_section_text.py, extract_fine_grained.py | one paper's sections + paragraphs, each with `id`, `title`, `tag`, `text`, `prev_relation`, `next_relation` |
+| `<paper_id>.json` | extract_sections.py, attach_section_text.py, extract_fine_grained.py | one paper's sections + paragraphs, each with `id`, `title`, `tag`, `text`, `prev_relation`, `next_relation`; paragraphs also have `section_id` (their parent section's id) |
 | `manifest.json` | extract_sections.py | `[{paper_id, title, file}, ...]` for every paper in `output/sections/` |
 | `tag_matches.json` | match_tags.py | directional top-3 tag candidates per unit, per granularity |
 | `bidirectional_matches.json` | prune_bidirectional.py | mutual-match links only, per granularity |
@@ -132,6 +184,8 @@ Everything lands in `output/sections/`:
 | `group_matches.json` | match_groups.py | directional top-3 similar groups per paragraph group |
 | `bidirectional_group_matches.json` | prune_group_bidirectional.py | mutual-match links between paragraph groups |
 | `group_of_groups.json` | group_groups.py, summarize_super_groups.py | super-groups of paragraph groups, each with an `overarching_question` |
+| `paragraph_groups_iter<N>.json` | refine_paragraph_groups.py | snapshot of `{meta: {reassigned, total_assigned}, groups: [...]}` after refinement iteration N |
+| `paragraph_groups_refined.json` | refine_paragraph_groups.py | final refined paragraph groups after all iterations (no `links` field — see note above) |
 
 `output/sections/_cache/` holds the raw per-item Claude responses (safe to delete to
 force a re-run; safe to commit or ignore, your call — it's just a speed/cost
