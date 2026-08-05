@@ -146,13 +146,13 @@ python3 compute_ranking_matrices.py
 # Step 10 -- script: compute_group_balance.py
 # For each of step 8's paragraph_groups_iter1.json groups specifically
 # (the first round's snapshot, not the fully-refined result -- an
-# intentional choice, not a limitation), and for each paper, checks
-# whether that paper's own #1-ranked paragraph for the group's question
-# (rank 1 in Matrix 2) is a member of the group. Each paper whose top pick
-# is present adds to the group's "balance" score, expressed as a
-# percentage of all papers (100% = every paper's own best pick for that
-# question ended up in this group). No API call -- pure local computation
-# over Matrix 2. Groups are sorted by this metric, highest first.
+# intentional choice, not a limitation), counts how many papers have at
+# least one paragraph assigned to the group's QI-Prime. Each paper counts
+# at most once regardless of how many of its paragraphs are assigned.
+# Balance is that paper count divided by the total number of papers
+# (100% = every paper has at least one paragraph assigned to the QI-Prime).
+# No API call -- pure local computation over iteration 1 assignments.
+# Groups are sorted by this metric, highest first.
 # Output: group_balance_iter1.json
 python3 compute_group_balance.py
 ```
@@ -182,7 +182,7 @@ for the first call.
 | `paragraph_groups_refined.json` | refine_paragraph_groups.py | final refined paragraph groups after all 5 rounds |
 | `paragraph_question_ranking.json` (Matrix 1) | compute_ranking_matrices.py | `{"paper_id:unit_id": [group_id, group_id, ...]}` — for each paragraph, its own best→worst ranking of all candidate questions |
 | `question_paragraph_ranking.json` (Matrix 2) | compute_ranking_matrices.py | `{group_id: {paper_id: [unit_id, unit_id, ...]}}` — for each question, that one paper's own paragraphs ranked best→worst for it |
-| `group_balance_iter1.json` | compute_group_balance.py | for each `paragraph_groups_iter1.json` group, its balance score (% of papers whose own #1-ranked paragraph, per Matrix 2, is a member) — sorted highest first |
+| `group_balance_iter1.json` | compute_group_balance.py | for each `paragraph_groups_iter1.json` group, its balance score (% of papers with at least one paragraph assigned to that group's QI-Prime) — sorted highest first |
 
 `output/sections/_cache/` holds the raw per-item Claude responses (safe to delete to
 force a re-run; checked into git alongside everything else so collaborators can skip
