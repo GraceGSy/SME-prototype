@@ -1,0 +1,76 @@
+{
+  "paragraphs": [
+    {
+      "tag": "What is the goal and research questions of the user study?",
+      "start_text": "We conducted a within-subjects user study with 20 participants",
+      "prev_relation": "",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What tasks and domains were used in the study?",
+      "start_text": "We designed two library comparison tasks: one for",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What were the two experimental conditions?",
+      "start_text": "There were two conditions in which participants performed",
+      "prev_relation": "elaboration",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "How was the study session structured over time?",
+      "start_text": "The entire study took about an hour. Each",
+      "prev_relation": "continuation",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "What data was collected after each task?",
+      "start_text": "After comparing each set of libraries, participants completed a",
+      "prev_relation": "continuation",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How were the library selection scenarios designed?",
+      "start_text": "Based on real-world use cases, we created a library selection sce-",
+      "prev_relation": "elaboration",
+      "next_relation": "example"
+    },
+    {
+      "tag": "What was the specific NLP scenario and correct answer?",
+      "start_text": "In the NLP domain, we",
+      "prev_relation": "elaboration",
+      "next_relation": "example"
+    },
+    {
+      "tag": "What was the specific visualization scenario and correct answer?",
+      "start_text": "In the visualization domain, we describe a scenario for visu-",
+      "prev_relation": "example",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "Who were the study participants and how were they recruited?",
+      "start_text": "We recruited 20 participants (11 male, 9 female) from three",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What programming experience did participants have?",
+      "start_text": "Participants had a range of prior experience in both Python",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What domain-specific proficiency did participants report?",
+      "start_text": "In order to capture the influence of participants",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How familiar were participants with the specific libraries tested?",
+      "start_text": "Participants' prior library knowledge may influence their fi-",
+      "prev_relation": "elaboration",
+      "next_relation": ""
+    }
+  ]
+}

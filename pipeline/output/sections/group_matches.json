@@ -1,0 +1,443 @@
+[
+  {
+    "group_id": "group_1",
+    "overarching_question": "What does the paper contribute and investigate?",
+    "matches": [
+      {
+        "group_id": "group_8",
+        "overarching_question": "What makes the proposed interface design effective and preferred?",
+        "similarity": 0.374
+      },
+      {
+        "group_id": "group_18",
+        "overarching_question": "What do the study's results demonstrate?",
+        "similarity": 0.336
+      },
+      {
+        "group_id": "group_21",
+        "overarching_question": "What was the experimental design of the study?",
+        "similarity": 0.331
+      }
+    ]
+  },
+  {
+    "group_id": "group_2",
+    "overarching_question": "What did user study participants report about the tool and their background?",
+    "matches": [
+      {
+        "group_id": "group_7",
+        "overarching_question": "Who were the study participants and how were they selected?",
+        "similarity": 0.384
+      },
+      {
+        "group_id": "group_10",
+        "overarching_question": "How did users evaluate the tool's usefulness and adoption?",
+        "similarity": 0.357
+      },
+      {
+        "group_id": "group_19",
+        "overarching_question": "What did post-study survey results reveal?",
+        "similarity": 0.306
+      }
+    ]
+  },
+  {
+    "group_id": "group_3",
+    "overarching_question": "What does each feature capture in the model?",
+    "matches": [
+      {
+        "group_id": "group_1",
+        "overarching_question": "What does the paper contribute and investigate?",
+        "similarity": 0.323
+      },
+      {
+        "group_id": "group_17",
+        "overarching_question": "What example illustrates this feature?",
+        "similarity": 0.31
+      },
+      {
+        "group_id": "group_16",
+        "overarching_question": "What are the key design components and features of the proposed system?",
+        "similarity": 0.294
+      }
+    ]
+  },
+  {
+    "group_id": "group_4",
+    "overarching_question": "How do theoretical frameworks inform design choices?",
+    "matches": [
+      {
+        "group_id": "group_9",
+        "overarching_question": "How does the interface design present code examples to users?",
+        "similarity": 0.288
+      },
+      {
+        "group_id": "group_21",
+        "overarching_question": "What was the experimental design of the study?",
+        "similarity": 0.273
+      },
+      {
+        "group_id": "group_14",
+        "overarching_question": "How does this work relate to and differ from prior work?",
+        "similarity": 0.244
+      }
+    ]
+  },
+  {
+    "group_id": "group_5",
+    "overarching_question": "How was the system evaluated and what were the findings?",
+    "matches": [
+      {
+        "group_id": "group_13",
+        "overarching_question": "What system is proposed to address the identified gap?",
+        "similarity": 0.355
+      },
+      {
+        "group_id": "group_21",
+        "overarching_question": "What was the experimental design of the study?",
+        "similarity": 0.331
+      },
+      {
+        "group_id": "group_10",
+        "overarching_question": "How did users evaluate the tool's usefulness and adoption?",
+        "similarity": 0.322
+      }
+    ]
+  },
+  {
+    "group_id": "group_6",
+    "overarching_question": "What are the key components/methods of the proposed system?",
+    "matches": [
+      {
+        "group_id": "group_16",
+        "overarching_question": "What are the key design components and features of the proposed system?",
+        "similarity": 0.749
+      },
+      {
+        "group_id": "group_11",
+        "overarching_question": "What are the limitations of the study's methodology?",
+        "similarity": 0.415
+      },
+      {
+        "group_id": "group_12",
+        "overarching_question": "What was the experimental procedure/methodology of the study?",
+        "similarity": 0.39
+      }
+    ]
+  },
+  {
+    "group_id": "group_7",
+    "overarching_question": "Who were the study participants and how were they selected?",
+    "matches": [
+      {
+        "group_id": "group_2",
+        "overarching_question": "What did user study participants report about the tool and their background?",
+        "similarity": 0.384
+      },
+      {
+        "group_id": "group_16",
+        "overarching_question": "What are the key design components and features of the proposed system?",
+        "similarity": 0.309
+      },
+      {
+        "group_id": "group_1",
+        "overarching_question": "What does the paper contribute and investigate?",
+        "similarity": 0.307
+      }
+    ]
+  },
+  {
+    "group_id": "group_8",
+    "overarching_question": "What makes the proposed interface design effective and preferred?",
+    "matches": [
+      {
+        "group_id": "group_21",
+        "overarching_question": "What was the experimental design of the study?",
+        "similarity": 0.404
+      },
+      {
+        "group_id": "group_1",
+        "overarching_question": "What does the paper contribute and investigate?",
+        "similarity": 0.374
+      },
+      {
+        "group_id": "group_16",
+        "overarching_question": "What are the key design components and features of the proposed system?",
+        "similarity": 0.358
+      }
+    ]
+  },
+  {
+    "group_id": "group_9",
+    "overarching_question": "How does the interface design present code examples to users?",
+    "matches": [
+      {
+        "group_id": "group_8",
+        "overarching_question": "What makes the proposed interface design effective and preferred?",
+        "similarity": 0.348
+      },
+      {
+        "group_id": "group_21",
+        "overarching_question": "What was the experimental design of the study?",
+        "similarity": 0.319
+      },
+      {
+        "group_id": "group_15",
+        "overarching_question": "How does filtering affect the visualization view?",
+        "similarity": 0.289
+      }
+    ]
+  },
+  {
+    "group_id": "group_10",
+    "overarching_question": "How did users evaluate the tool's usefulness and adoption?",
+    "matches": [
+      {
+        "group_id": "group_2",
+        "overarching_question": "What did user study participants report about the tool and their background?",
+        "similarity": 0.357
+      },
+      {
+        "group_id": "group_5",
+        "overarching_question": "How was the system evaluated and what were the findings?",
+        "similarity": 0.331
+      },
+      {
+        "group_id": "group_14",
+        "overarching_question": "How does this work relate to and differ from prior work?",
+        "similarity": 0.292
+      }
+    ]
+  },
+  {
+    "group_id": "group_11",
+    "overarching_question": "What are the limitations of the study's methodology?",
+    "matches": [
+      {
+        "group_id": "group_12",
+        "overarching_question": "What was the experimental procedure/methodology of the study?",
+        "similarity": 0.502
+      },
+      {
+        "group_id": "group_21",
+        "overarching_question": "What was the experimental design of the study?",
+        "similarity": 0.498
+      },
+      {
+        "group_id": "group_18",
+        "overarching_question": "What do the study's results demonstrate?",
+        "similarity": 0.421
+      }
+    ]
+  },
+  {
+    "group_id": "group_12",
+    "overarching_question": "What was the experimental procedure/methodology of the study?",
+    "matches": [
+      {
+        "group_id": "group_21",
+        "overarching_question": "What was the experimental design of the study?",
+        "similarity": 0.726
+      },
+      {
+        "group_id": "group_11",
+        "overarching_question": "What are the limitations of the study's methodology?",
+        "similarity": 0.493
+      },
+      {
+        "group_id": "group_6",
+        "overarching_question": "What are the key components/methods of the proposed system?",
+        "similarity": 0.39
+      }
+    ]
+  },
+  {
+    "group_id": "group_13",
+    "overarching_question": "What system is proposed to address the identified gap?",
+    "matches": [
+      {
+        "group_id": "group_5",
+        "overarching_question": "How was the system evaluated and what were the findings?",
+        "similarity": 0.345
+      },
+      {
+        "group_id": "group_6",
+        "overarching_question": "What are the key components/methods of the proposed system?",
+        "similarity": 0.338
+      },
+      {
+        "group_id": "group_8",
+        "overarching_question": "What makes the proposed interface design effective and preferred?",
+        "similarity": 0.335
+      }
+    ]
+  },
+  {
+    "group_id": "group_14",
+    "overarching_question": "How does this work relate to and differ from prior work?",
+    "matches": [
+      {
+        "group_id": "group_15",
+        "overarching_question": "How does filtering affect the visualization view?",
+        "similarity": 0.305
+      },
+      {
+        "group_id": "group_9",
+        "overarching_question": "How does the interface design present code examples to users?",
+        "similarity": 0.302
+      },
+      {
+        "group_id": "group_10",
+        "overarching_question": "How did users evaluate the tool's usefulness and adoption?",
+        "similarity": 0.292
+      }
+    ]
+  },
+  {
+    "group_id": "group_15",
+    "overarching_question": "How does filtering affect the visualization view?",
+    "matches": [
+      {
+        "group_id": "group_14",
+        "overarching_question": "How does this work relate to and differ from prior work?",
+        "similarity": 0.305
+      },
+      {
+        "group_id": "group_10",
+        "overarching_question": "How did users evaluate the tool's usefulness and adoption?",
+        "similarity": 0.3
+      },
+      {
+        "group_id": "group_3",
+        "overarching_question": "What does each feature capture in the model?",
+        "similarity": 0.292
+      }
+    ]
+  },
+  {
+    "group_id": "group_16",
+    "overarching_question": "What are the key design components and features of the proposed system?",
+    "matches": [
+      {
+        "group_id": "group_6",
+        "overarching_question": "What are the key components/methods of the proposed system?",
+        "similarity": 0.741
+      },
+      {
+        "group_id": "group_21",
+        "overarching_question": "What was the experimental design of the study?",
+        "similarity": 0.399
+      },
+      {
+        "group_id": "group_11",
+        "overarching_question": "What are the limitations of the study's methodology?",
+        "similarity": 0.377
+      }
+    ]
+  },
+  {
+    "group_id": "group_17",
+    "overarching_question": "What example illustrates this feature?",
+    "matches": [
+      {
+        "group_id": "group_20",
+        "overarching_question": "What motivates this research?",
+        "similarity": 0.456
+      },
+      {
+        "group_id": "group_3",
+        "overarching_question": "What does each feature capture in the model?",
+        "similarity": 0.31
+      },
+      {
+        "group_id": "group_13",
+        "overarching_question": "What system is proposed to address the identified gap?",
+        "similarity": 0.267
+      }
+    ]
+  },
+  {
+    "group_id": "group_18",
+    "overarching_question": "What do the study's results demonstrate?",
+    "matches": [
+      {
+        "group_id": "group_19",
+        "overarching_question": "What did post-study survey results reveal?",
+        "similarity": 0.453
+      },
+      {
+        "group_id": "group_11",
+        "overarching_question": "What are the limitations of the study's methodology?",
+        "similarity": 0.432
+      },
+      {
+        "group_id": "group_21",
+        "overarching_question": "What was the experimental design of the study?",
+        "similarity": 0.346
+      }
+    ]
+  },
+  {
+    "group_id": "group_19",
+    "overarching_question": "What did post-study survey results reveal?",
+    "matches": [
+      {
+        "group_id": "group_18",
+        "overarching_question": "What do the study's results demonstrate?",
+        "similarity": 0.453
+      },
+      {
+        "group_id": "group_2",
+        "overarching_question": "What did user study participants report about the tool and their background?",
+        "similarity": 0.306
+      },
+      {
+        "group_id": "group_11",
+        "overarching_question": "What are the limitations of the study's methodology?",
+        "similarity": 0.279
+      }
+    ]
+  },
+  {
+    "group_id": "group_20",
+    "overarching_question": "What motivates this research?",
+    "matches": [
+      {
+        "group_id": "group_17",
+        "overarching_question": "What example illustrates this feature?",
+        "similarity": 0.441
+      },
+      {
+        "group_id": "group_19",
+        "overarching_question": "What did post-study survey results reveal?",
+        "similarity": 0.304
+      },
+      {
+        "group_id": "group_18",
+        "overarching_question": "What do the study's results demonstrate?",
+        "similarity": 0.296
+      }
+    ]
+  },
+  {
+    "group_id": "group_21",
+    "overarching_question": "What was the experimental design of the study?",
+    "matches": [
+      {
+        "group_id": "group_12",
+        "overarching_question": "What was the experimental procedure/methodology of the study?",
+        "similarity": 0.735
+      },
+      {
+        "group_id": "group_11",
+        "overarching_question": "What are the limitations of the study's methodology?",
+        "similarity": 0.488
+      },
+      {
+        "group_id": "group_16",
+        "overarching_question": "What are the key design components and features of the proposed system?",
+        "similarity": 0.399
+      }
+    ]
+  }
+]

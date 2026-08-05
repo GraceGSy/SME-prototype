@@ -1,0 +1,64 @@
+{
+  "paragraphs": [
+    {
+      "tag": "Why is helping users make sense of multiple LLM responses useful?",
+      "start_text": "Large language models are capable of generating multiple different",
+      "prev_relation": "",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What problem arises when showing many responses at scale?",
+      "start_text": "However, representing LLM responses at a scale necessary to",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What did formative studies reveal about current practices?",
+      "start_text": "Based on our formative study interviews with a domain",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What is the 'mesoscale' of LLM response sensemaking?",
+      "start_text": "This scale of 10s to 100s of LLM responses,",
+      "prev_relation": "elaboration",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "What techniques were designed to support mesoscale sensemaking?",
+      "start_text": "In order to support users' sensemaking of LLM responses",
+      "prev_relation": "continuation",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What is the paper's research question?",
+      "start_text": "By evaluating these interface features, we shed light on",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How was the system evaluated?",
+      "start_text": "To understand users' sensemaking support needs and how well",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What themes emerged from the studies?",
+      "start_text": "We report on a number of themes that emerged",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What are this paper's contributions?",
+      "start_text": "The contributions of this paper are:",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What does the rest of the paper cover?",
+      "start_text": "In the discussion, we outline future design directions inspired",
+      "prev_relation": "continuation",
+      "next_relation": ""
+    }
+  ]
+}

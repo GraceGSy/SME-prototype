@@ -1,0 +1,142 @@
+{
+  "paragraphs": [
+    {
+      "tag": "How does the study measure library ranking suitability?",
+      "start_text": "7 USER STUDY RESULTS",
+      "prev_relation": "",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "Are choices more consistent with ParaLib in NLP domain?",
+      "start_text": "In both domains, participants made more consistent",
+      "prev_relation": "elaboration",
+      "next_relation": "contrast"
+    },
+    {
+      "tag": "Were choices more divergent with online search?",
+      "start_text": "Participants using online search made more divergent",
+      "prev_relation": "contrast",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "Did participants pick the correct library for scenarios?",
+      "start_text": "All 10 participants made the right choice",
+      "prev_relation": "continuation",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "Does prior familiarity correlate with library choice?",
+      "start_text": "In the NLP and Visualization domains, there were",
+      "prev_relation": "elaboration",
+      "next_relation": "qualification"
+    },
+    {
+      "tag": "Was there a difference by experience level with ParaLib?",
+      "start_text": "participants (4 or 5 on a 6-point",
+      "prev_relation": "continuation",
+      "next_relation": ""
+    },
+    {
+      "tag": "How many code examples did participants inspect?",
+      "start_text": "7.1.2 Number of code examples inspected during",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How did participants describe similarities/differences between libraries?",
+      "start_text": "7.1.3 Participants\u2019 responses to the similarities and",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "Were response length differences statistically significant?",
+      "start_text": "when using ParaLib than when using online",
+      "prev_relation": "elaboration",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "Did number of examples shared differ significantly?",
+      "start_text": "The mean differences in the number of",
+      "prev_relation": "continuation",
+      "next_relation": "example"
+    },
+    {
+      "tag": "Example of detailed syntax comment from a participant",
+      "start_text": "HTML-based (JSX-based), Chart is CSS-based, and",
+      "prev_relation": "example",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How were participant insights categorized?",
+      "start_text": "To better understand the content and quality",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What insight categories were analyzed and their results?",
+      "start_text": "Table 2 shows the distribution of different",
+      "prev_relation": "elaboration",
+      "next_relation": "summary"
+    },
+    {
+      "tag": "What does the insight analysis suggest overall?",
+      "start_text": "more insights about technical factors and fewer",
+      "prev_relation": "summary",
+      "next_relation": ""
+    },
+    {
+      "tag": "How confident were participants in their selections?",
+      "start_text": "Figure 6(a) shows participants\u2019 confidence in their",
+      "prev_relation": "",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "What did the NASA TLX results show?",
+      "start_text": "Figure 6(b) shows participants\u2019 ratings on the",
+      "prev_relation": "continuation",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How did participants describe their experience with online search vs ParaLib?",
+      "start_text": "Online search provided a less organized plethora",
+      "prev_relation": "elaboration",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "What did the post-study survey comparisons show?",
+      "start_text": "In the post-study survey, participants directly compared",
+      "prev_relation": "continuation",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What value did participants attribute to ParaLib's examples?",
+      "start_text": "Some participants, rather than calling out the",
+      "prev_relation": "elaboration",
+      "next_relation": ""
+    },
+    {
+      "tag": "How useful did participants rate the concept hierarchy feature?",
+      "start_text": "asked participants to rate the use-",
+      "prev_relation": "",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "What challenges did participants report with online search?",
+      "start_text": "Participants also commented on the challenges they",
+      "prev_relation": "continuation",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "What improvements did participants suggest for ParaLib?",
+      "start_text": "In both the post-task and post-study surveys,",
+      "prev_relation": "continuation",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "Would participants use ParaLib in the future?",
+      "start_text": "In the post-study survey, we also asked",
+      "prev_relation": "continuation",
+      "next_relation": ""
+    }
+  ]
+}

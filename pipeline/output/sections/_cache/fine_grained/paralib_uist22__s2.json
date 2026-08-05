@@ -1,0 +1,46 @@
+{
+  "paragraphs": [
+    {
+      "tag": "Why is library selection a common and difficult task?",
+      "start_text": "\u201cTensorFlow or PyTorch?\u201d Many beginner students of deep learning",
+      "prev_relation": "",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What are current tools' limitations for library comparison?",
+      "start_text": "The current de facto way programmers compare libraries is to",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What system is proposed to address this gap?",
+      "start_text": "In this work, we propose a novel interface prototype, ParaLib,",
+      "prev_relation": "contrast",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What theories inform the interface design choices?",
+      "start_text": "Key interface design choices were derived from the design im-",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What interactive features does the interface offer?",
+      "start_text": "Additional interactive features support sensemaking. For ex-",
+      "prev_relation": "elaboration",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "How was the system evaluated and what did the study find?",
+      "start_text": "We designed and implemented ParaLib as a technical probe and",
+      "prev_relation": "sequence",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What are the paper's main contributions?",
+      "start_text": "A theory-backed conceptualization of how large collections",
+      "prev_relation": "summary",
+      "next_relation": ""
+    }
+  ]
+}

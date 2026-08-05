@@ -1,0 +1,52 @@
+{
+  "paragraphs": [
+    {
+      "tag": "Why is learning to use APIs difficult and important?",
+      "start_text": "Learning how to correctly and effectively use existing APIs",
+      "prev_relation": "",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What specific learning barrier is most significant?",
+      "start_text": "One study found that the greatest obstacle to learning",
+      "prev_relation": "elaboration",
+      "next_relation": "contrast"
+    },
+    {
+      "tag": "Why can't existing code-sharing sites solve this problem?",
+      "start_text": "Code-sharing sites like GitHub hold the promise of document-",
+      "prev_relation": "contrast",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What gap exists in current API mining research?",
+      "start_text": "In the software engineering community, there is a growing",
+      "prev_relation": "elaboration",
+      "next_relation": "motivation"
+    },
+    {
+      "tag": "What system is introduced to address this gap?",
+      "start_text": "In this paper, we introduce a novel interactive visualization",
+      "prev_relation": "motivation",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How does the system represent and visualize API usage?",
+      "start_text": "instantiates a synthetic code skeleton that captures",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How was the system evaluated and what was found?",
+      "start_text": "We conducted a within-subjects lab study where we asked six-",
+      "prev_relation": "elaboration",
+      "next_relation": "summary"
+    },
+    {
+      "tag": "What are the paper's contributions?",
+      "start_text": "Our contributions are:",
+      "prev_relation": "summary",
+      "next_relation": ""
+    }
+  ]
+}

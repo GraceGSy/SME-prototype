@@ -1,0 +1,76 @@
+{
+  "paragraphs": [
+    {
+      "tag": "How were answers judged as concrete or correct?",
+      "start_text": "We manually assessed the participants\u2019 answers to Q1-8.",
+      "prev_relation": "",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What do the summary statistics table show?",
+      "start_text": "Map Activity SQLiteDatabase Overall",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What was the main quantitative accuracy result?",
+      "start_text": "Table 2 shows statistics about participants\u2019 correct answers",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "Why did tool users perform better?",
+      "start_text": "Screencasts of the user study sessions reveal that",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What example shows vague vs concrete answers?",
+      "start_text": "Participants using online search provided almost twice as many",
+      "prev_relation": "example",
+      "next_relation": ""
+    },
+    {
+      "tag": "How did participants critique Stack Overflow answers?",
+      "start_text": "Q8 asked participants to critique a code example",
+      "prev_relation": "continuation",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How did participants rate the tool in the survey?",
+      "start_text": "In the post survey, 13 participants (81%) found",
+      "prev_relation": "continuation",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What did participants say drove their confidence?",
+      "start_text": "One source of participants\u2019 accuracy, thoroughness, and con-",
+      "prev_relation": "elaboration",
+      "next_relation": "qualification"
+    },
+    {
+      "tag": "What interface features did participants value most?",
+      "start_text": "We coded participants\u2019 free responses in the post survey",
+      "prev_relation": "continuation",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What did online search lack that the tool provided?",
+      "start_text": "were highlighted by their",
+      "prev_relation": "contrast",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What interface weaknesses did participants identify?",
+      "start_text": "Participants did point out several areas where the interface",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How did participants envision using the tool going forward?",
+      "start_text": "The final question of the post survey asked participants to",
+      "prev_relation": "elaboration",
+      "next_relation": ""
+    }
+  ]
+}

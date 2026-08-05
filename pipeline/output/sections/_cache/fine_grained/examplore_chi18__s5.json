@@ -1,0 +1,40 @@
+{
+  "paragraphs": [
+    {
+      "tag": "What scenario introduces the tool's use case?",
+      "start_text": "EXAMPLORE is designed to help programmers understand the",
+      "prev_relation": "",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How does the interface visually organize code examples?",
+      "start_text": "The right half of the screen shows all mined examples, sorted",
+      "prev_relation": "elaboration",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "How does the tool show common usage patterns?",
+      "start_text": "EXAMPLORE reveals, by default, the top three most common",
+      "prev_relation": "continuation",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How does the user explore less common usage options?",
+      "start_text": "Victor is interested in exploring and better understanding",
+      "prev_relation": "elaboration",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "How does filtering update the skeleton view?",
+      "start_text": "Feature options in the skeleton view are pruned and updated",
+      "prev_relation": "elaboration",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "How does the user discover new guard patterns via filtering?",
+      "start_text": "Victor realizes that there is one place in his project where it",
+      "prev_relation": "continuation",
+      "next_relation": ""
+    }
+  ]
+}

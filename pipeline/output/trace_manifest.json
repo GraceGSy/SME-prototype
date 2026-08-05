@@ -1,0 +1,20 @@
+[
+  {
+    "paper_a": "examplore_chi18",
+    "paper_b": "mesotext",
+    "file": "trace_examplore_chi18_vs_mesotext.json",
+    "num_steps": 41
+  },
+  {
+    "paper_a": "examplore_chi18",
+    "paper_b": "paralib_uist22",
+    "file": "trace_examplore_chi18_vs_paralib_uist22.json",
+    "num_steps": 44
+  },
+  {
+    "paper_a": "mesotext",
+    "paper_b": "paralib_uist22",
+    "file": "trace_mesotext_vs_paralib_uist22.json",
+    "num_steps": 27
+  }
+]

@@ -1,0 +1,22 @@
+{
+  "paragraphs": [
+    {
+      "tag": "What limitation exists regarding the concept hierarchy used?",
+      "start_text": "There are a number of limitations to what we know so far, given",
+      "prev_relation": "",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What limitation exists regarding the choice of baseline?",
+      "start_text": "In our user study, we chose online search as the baseline, but",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What future work is suggested for automating concept annotation?",
+      "start_text": "The current process of creating concept hierarchies and concept-",
+      "prev_relation": "elaboration",
+      "next_relation": ""
+    }
+  ]
+}
