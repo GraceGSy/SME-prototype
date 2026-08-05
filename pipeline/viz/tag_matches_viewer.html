@@ -112,6 +112,100 @@
   .group-columns .column { flex: 1 1 0; min-width: 0; text-align: left; }
   .group-columns .paper-title { font-size: 11px; }
   .group-column-empty { font-size: 11.5px; color: #adb5bd; font-style: italic; padding: 6px 2px; }
+
+  .paper-map-shell {
+    display: grid; grid-template-rows: auto minmax(0, 1fr); min-height: 520px;
+    border: 1px solid #dee2e6; border-radius: 6px; background: #fff; overflow: hidden;
+  }
+  .paper-map-overview {
+    display: grid; gap: 6px; min-width: 0; padding: 7px 9px;
+    border-bottom: 1px solid #e9ecef; background: #f8f9fa;
+  }
+  .paper-map-control-row { display: flex; align-items: center; gap: 10px; min-width: 0; flex-wrap: wrap; }
+  .paper-map-control-row .iteration-tabs { margin: 0; }
+  .paper-map-summary { color: #6c757d; font-size: 10px; white-space: nowrap; }
+  .paper-map-mode-toggle { display: inline-flex; border: 1px solid #ced4da; border-radius: 5px; overflow: hidden; }
+  .paper-map-mode-button {
+    padding: 3px 7px; border: 0; border-right: 1px solid #ced4da; background: #fff;
+    color: #495057; font-size: 9.5px; cursor: pointer;
+  }
+  .paper-map-mode-button:last-child { border-right: 0; }
+  .paper-map-mode-button.active { background: #1c7ed6; color: #fff; }
+  .paper-map-sync-toggle {
+    display: inline-flex; align-items: center; gap: 5px; color: #495057;
+    font-size: 9.5px; white-space: nowrap;
+  }
+  .paper-map-legend { display: flex; gap: 5px; min-width: 0; overflow-x: auto; scrollbar-width: thin; }
+  .paper-map-legend-item {
+    display: inline-flex; align-items: center; gap: 5px; flex: 0 0 auto; max-width: 235px;
+    padding: 3px 7px; border: 1px solid #dee2e6; border-radius: 10px; background: #fff;
+    color: #495057; font-size: 9.5px; text-align: left; cursor: pointer;
+  }
+  .paper-map-legend-item:hover, .paper-map-legend-item.highlight, .paper-map-legend-item.selected {
+    border-color: var(--group-color); box-shadow: inset 0 0 0 1px var(--group-color);
+  }
+  .paper-map-legend-item.selected { background: var(--group-fill); }
+  .paper-map-swatch { flex: 0 0 auto; width: 9px; height: 9px; border-radius: 2px; background: var(--group-color); }
+  .paper-map-legend-item strong { flex: none; white-space: nowrap; }
+  .paper-map-legend-question { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .paper-map-legend-count { color: #868e96; }
+  .paper-map-columns {
+    display: grid; grid-template-columns: repeat(var(--paper-count), minmax(320px, 1fr));
+    gap: 10px; min-height: 0; padding: 10px; overflow-x: auto; background: #fafafa;
+  }
+  .paper-map-column {
+    min-width: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable;
+    border: 1px solid #dee2e6; border-radius: 6px; background: #fff;
+  }
+  .paper-map-paper-head {
+    position: sticky; top: 0; z-index: 3; padding: 8px 10px; border-bottom: 2px solid #343a40;
+    background: rgba(255,255,255,.97); color: #343a40; font-size: 13px; font-weight: 700;
+  }
+  .paper-map-section-head {
+    margin: 11px 9px 5px; padding-bottom: 4px; border-bottom: 1px solid #dee2e6;
+    color: #495057; font-size: 10.5px; font-weight: 700;
+  }
+  .paper-map-paragraph {
+    margin: 0 8px 7px; padding: 8px 9px; border: 1px solid var(--group-color);
+    border-left-width: 5px; border-radius: 5px; background: var(--group-fill); cursor: pointer;
+    transition: opacity .12s ease, box-shadow .12s ease;
+  }
+  .paper-map-paragraph:hover, .paper-map-paragraph.highlight { box-shadow: 0 0 0 2px var(--group-color); }
+  .paper-map-paragraph.dim, .paper-map-legend-item.dim { opacity: .24; }
+  .paper-map-paragraph.orphan {
+    --group-color: #adb5bd; --group-fill: #f8f9fa; border-style: dashed;
+  }
+  .paper-map-paragraph-meta { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 4px; color: #868e96; font-size: 8.5px; }
+  .paper-map-paragraph-question { margin-bottom: 4px; color: #343a40; font-size: 11px; font-weight: 650; line-height: 1.35; overflow-wrap: anywhere; }
+  .paper-map-paragraph-text { color: #495057; font-size: 10.5px; line-height: 1.45; white-space: pre-line; overflow-wrap: anywhere; }
+
+  .paper-map-skeleton-columns {
+    display: grid; grid-template-columns: repeat(var(--paper-count), minmax(220px, 1fr));
+    gap: 18px; min-height: 0; padding: 14px 22px 18px; overflow: auto; background: #fafafa;
+  }
+  .paper-map-skeleton-paper {
+    display: grid; grid-template-rows: auto minmax(0, 1fr); min-width: 0; min-height: 0;
+    border: 1px solid #dee2e6; border-radius: 6px; background: #fff; overflow: hidden;
+  }
+  .paper-map-skeleton-frame { min-height: 0; padding: 8px; background: #f8f9fa; }
+  .paper-map-skeleton-track {
+    display: flex; flex-direction: column; width: 100%; height: 100%; min-height: 380px;
+    border: 1px solid #ced4da; border-radius: 3px; background: #fff; overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  }
+  .paper-map-skeleton-block {
+    position: relative; flex: var(--paragraph-weight) 1 0; min-height: 1px; width: 100%; border: 0;
+    padding: 0; background: var(--group-color); cursor: pointer;
+    box-shadow: inset 0 -1px rgba(255,255,255,.25);
+    transition: opacity .12s ease, filter .12s ease;
+  }
+  .paper-map-skeleton-block:hover, .paper-map-skeleton-block.highlight { z-index: 1; filter: saturate(1.22) brightness(1.05); }
+  .paper-map-skeleton-block.selected { z-index: 2; box-shadow: inset 0 0 0 2px #212529; }
+  .paper-map-skeleton-block.dim { opacity: .14; filter: saturate(.45); }
+  .paper-map-skeleton-block.orphan {
+    --group-color: #ced4da;
+    background: repeating-linear-gradient(-45deg, #ced4da 0, #ced4da 3px, #f1f3f5 3px, #f1f3f5 6px);
+  }
 </style>
 </head>
 <body>
@@ -137,8 +231,8 @@
 <script>
 const GRANULARITIES = ["sections", "paragraphs"]; // matching/data granularities
 const GRANULARITY_LABELS = { sections: "Section", paragraphs: "Paragraph" };
-const TABS = ["sections", "paragraphs", "groups"]; // UI tabs -- "groups" is a display mode, not a matching granularity
-const TAB_LABELS = { sections: "Section", paragraphs: "Paragraph", groups: "Groups" };
+const TABS = ["sections", "paragraphs", "groups", "paper-map"]; // display-only views are not matching granularities
+const TAB_LABELS = { sections: "Section", paragraphs: "Paragraph", groups: "Groups", "paper-map": "Paper Map" };
 
 const stage = document.getElementById("stage");
 const granularityTabsEl = document.getElementById("granularityTabs");
@@ -167,6 +261,14 @@ let groupBalanceByIteration = {}; // iteration number -> {group_id: group_balanc
 let currentIteration = 1;
 const openGroupIds = new Set(); // group_id currently expanded to show its 3-column quote detail (within the current iteration)
 
+const PAPER_MAP_HUES = [205, 25, 145, 48, 275, 175, 350, 95, 230, 8, 160, 62, 305, 190, 330, 118];
+let paperMapMode = "reading";
+let paperMapSelectedGroupId = null;
+let paperMapSyncScroll = false;
+let paperMapLastScrolledPaper = null;
+let paperMapScrollSyncing = false;
+const paperMapScrollByPaper = {};
+
 // Fixed per-paper colors (not tag-derived, so this isn't the hash-based tag
 // coloring that was removed earlier -- paper identity is a small, fixed,
 // meaningful set) for the collapsed-group unit vis: one small square per
@@ -182,6 +284,15 @@ function escapeHtml(s) {
 function preview(text, maxChars) {
   if (maxChars <= 0) return "";
   return text.length > maxChars ? text.slice(0, maxChars) + "…" : text;
+}
+
+function compactText(value) {
+  return String(value || "").replace(/\s+/g, " ").trim();
+}
+
+function shortPaperLabel(paper) {
+  const id = paper.paper_id || "";
+  return id.replace(/_(?:[a-z]+)?\d{2,4}$/i, "").replace(/[_-]+/g, " ") || id;
 }
 
 function updatePreviews() {
@@ -546,7 +657,8 @@ function attachIterationTabInteractions() {
 function switchIteration(n) {
   currentIteration = n;
   openGroupIds.clear(); // a group_id's membership/content differs across iterations, so don't carry an "open" state over
-  renderIterationGroups();
+  if (currentGranularity === "paper-map") renderPaperMap();
+  else renderIterationGroups();
 }
 
 function renderGroupDetail(slot, group) {
@@ -608,6 +720,267 @@ function attachGroupInteractions(slot) {
   });
 }
 
+function paperMapColor(index) {
+  const hue = PAPER_MAP_HUES[index % PAPER_MAP_HUES.length] + Math.floor(index / PAPER_MAP_HUES.length) * 11;
+  return { border: `hsl(${hue % 360} 58% 38%)`, fill: `hsl(${hue % 360} 72% 95%)` };
+}
+
+function paperMapColorCatalog() {
+  const groupIds = new Set();
+  Object.values(iterationGroups).forEach(groups => {
+    (groups || []).forEach(group => groupIds.add(group.group_id));
+  });
+  return new Map(
+    [...groupIds]
+      .sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true }))
+      .map((groupId, index) => [groupId, paperMapColor(index)])
+  );
+}
+
+// Iteration artifacts already contain one best-fit group per assigned
+// paragraph. The map uses that membership directly instead of introducing a
+// second ranking or matching rule in the viewer.
+function buildPaperMapModel() {
+  const groups = iterationGroups[currentIteration] || [];
+  const colorByGroupId = paperMapColorCatalog();
+  const groupEntries = groups.map((group, index) => ({
+    group,
+    label: `I${currentIteration}-${index + 1}`,
+    color: colorByGroupId.get(group.group_id) || paperMapColor(index),
+    count: 0,
+  }));
+  const entriesById = new Map(groupEntries.map(entry => [entry.group.group_id, entry]));
+  const assignments = new Map();
+
+  groupEntries.forEach(entry => {
+    (entry.group.members || []).forEach(member => {
+      const key = `${member.paper}:${member.unit_id}`;
+      if (!paragraphUnitLookup[key] || assignments.has(key)) return;
+      assignments.set(key, entry);
+      entry.count += 1;
+    });
+  });
+
+  return { groups, groupEntries, entriesById, assignments };
+}
+
+function renderPaperMap() {
+  const model = buildPaperMapModel();
+  if (paperMapSelectedGroupId && !model.entriesById.has(paperMapSelectedGroupId)) {
+    paperMapSelectedGroupId = null;
+  }
+
+  const tabsHtml = Array.from({ length: N_ITERATIONS }, (_, i) => i + 1).map(n =>
+    `<button type="button" class="granularity-btn${n === currentIteration ? " active" : ""}" data-iteration="${n}">Iteration ${n}</button>`
+  ).join("");
+  const totalParagraphs = allPapers.reduce((sum, paper) => sum + (paper.paragraphs || []).length, 0);
+  const orphanCount = totalParagraphs - model.assignments.size;
+  const legend = model.groupEntries.map(entry => {
+    const groupId = entry.group.group_id;
+    const question = entry.group.overarching_question || "(no summary)";
+    const style = `--group-color:${entry.color.border};--group-fill:${entry.color.fill}`;
+    const selected = paperMapSelectedGroupId === groupId;
+    const title = `${entry.label} · ${question}`;
+    return `<button type="button" class="paper-map-legend-item${selected ? " selected" : ""}" data-paper-map-group="${escapeHtml(groupId)}" style="${style}" title="${escapeHtml(title)}" aria-pressed="${selected}">
+      <span class="paper-map-swatch"></span><strong>${escapeHtml(entry.label)}</strong><span class="paper-map-legend-question">${escapeHtml(question)}</span><span class="paper-map-legend-count">${entry.count}</span>
+    </button>`;
+  }).join("");
+  const modeToggle = `<div class="paper-map-mode-toggle" role="group" aria-label="Paper Map display">
+    <button type="button" class="paper-map-mode-button${paperMapMode === "reading" ? " active" : ""}" data-paper-map-mode="reading" aria-pressed="${paperMapMode === "reading"}">Read</button>
+    <button type="button" class="paper-map-mode-button${paperMapMode === "skeleton" ? " active" : ""}" data-paper-map-mode="skeleton" aria-pressed="${paperMapMode === "skeleton"}">Skeleton</button>
+  </div>`;
+  const syncToggle = paperMapMode === "reading" ? `<label class="paper-map-sync-toggle" title="Off keeps each paper independently scrollable">
+    <input type="checkbox" id="paperMapSyncScroll"${paperMapSyncScroll ? " checked" : ""}> sync paper scrolling
+  </label>` : "";
+  const content = paperMapMode === "skeleton" ? renderPaperMapSkeleton(model) : renderPaperMapReading(model);
+
+  stage.innerHTML = `<div class="paper-map-shell">
+    <div class="paper-map-overview">
+      <div class="paper-map-control-row">
+        <div class="iteration-tabs">${tabsHtml}</div>
+        <div class="paper-map-summary"><strong>Iteration ${currentIteration}</strong> · ${model.groups.length} groups · ${model.assignments.size} assigned · ${orphanCount} unassigned</div>
+        ${modeToggle}${syncToggle}
+      </div>
+      <div class="paper-map-legend" aria-label="Question groups at iteration ${currentIteration}">${legend}</div>
+    </div>
+    ${content}
+  </div>`;
+
+  attachPaperMapInteractions(model);
+  requestAnimationFrame(() => {
+    updatePaperMapHeight();
+    if (paperMapMode !== "reading") return;
+    const columns = [...stage.querySelectorAll(".paper-map-column")];
+    paperMapScrollSyncing = true;
+    columns.forEach(column => {
+      const savedTop = paperMapScrollByPaper[column.dataset.paper] || 0;
+      column.scrollTop = Math.min(savedTop, Math.max(0, column.scrollHeight - column.clientHeight));
+    });
+    if (paperMapSyncScroll && columns.length) {
+      const source = columns.find(column => column.dataset.paper === paperMapLastScrolledPaper) || columns[0];
+      const maximum = Math.max(0, source.scrollHeight - source.clientHeight);
+      const ratio = maximum ? source.scrollTop / maximum : 0;
+      columns.forEach(column => {
+        const top = ratio * Math.max(0, column.scrollHeight - column.clientHeight);
+        column.scrollTop = top;
+        paperMapScrollByPaper[column.dataset.paper] = top;
+      });
+    }
+    requestAnimationFrame(() => { paperMapScrollSyncing = false; });
+  });
+}
+
+function renderPaperMapReading(model) {
+  const columns = allPapers.map(paper => {
+    const sections = new Map((paper.sections || []).map(section => [section.id, section]));
+    let previousSectionId = null;
+    const paragraphs = (paper.paragraphs || []).map(paragraph => {
+      const key = `${paper.paper_id}:${paragraph.id}`;
+      const entry = model.assignments.get(key);
+      const groupId = entry ? entry.group.group_id : "";
+      const style = entry ? `--group-color:${entry.color.border};--group-fill:${entry.color.fill}` : "";
+      const sectionId = paragraph.section_id || paragraph.parent_section_id || "";
+      let sectionHeading = "";
+      if (sectionId !== previousSectionId) {
+        previousSectionId = sectionId;
+        const section = sections.get(sectionId);
+        sectionHeading = `<div class="paper-map-section-head">${escapeHtml(section?.title || section?.tag || sectionId || "Unsectioned")}</div>`;
+      }
+      return `${sectionHeading}<article class="paper-map-paragraph${entry ? "" : " orphan"}" data-paper-map-paragraph="${escapeHtml(key)}" data-paper-map-group="${escapeHtml(groupId)}" style="${style}">
+        <div class="paper-map-paragraph-meta"><span>${escapeHtml(paragraph.id)}</span><span>${entry ? escapeHtml(entry.label) : "Unassigned"}</span></div>
+        <div class="paper-map-paragraph-question">${escapeHtml(paragraph.tag || "(no question)")}</div>
+        <div class="paper-map-paragraph-text">${escapeHtml(compactText(paragraph.text))}</div>
+      </article>`;
+    }).join("");
+    return `<section class="paper-map-column" data-paper="${escapeHtml(paper.paper_id)}">
+      <div class="paper-map-paper-head" title="${escapeHtml(paper.title)}">${escapeHtml(shortPaperLabel(paper))} · ${(paper.paragraphs || []).length} paragraphs</div>${paragraphs}
+    </section>`;
+  }).join("");
+  return `<div class="paper-map-columns" style="--paper-count:${allPapers.length}">${columns}</div>`;
+}
+
+function renderPaperMapSkeleton(model) {
+  const papers = allPapers.map(paper => {
+    const blocks = (paper.paragraphs || []).map(paragraph => {
+      const key = `${paper.paper_id}:${paragraph.id}`;
+      const entry = model.assignments.get(key);
+      const groupId = entry ? entry.group.group_id : "";
+      const characterCount = Math.max(1, compactText(paragraph.text).length);
+      const label = entry ? entry.label : "Unassigned";
+      const style = `${entry ? `--group-color:${entry.color.border};` : ""}--paragraph-weight:${characterCount}`;
+      const title = `${paragraph.id} · ${label} · ${characterCount.toLocaleString()} characters`;
+      return `<button type="button" class="paper-map-skeleton-block${entry ? "" : " orphan"}" data-paper-map-paragraph="${escapeHtml(key)}" data-paper-map-group="${escapeHtml(groupId)}" style="${style}" title="${escapeHtml(title)}" aria-label="${escapeHtml(`${shortPaperLabel(paper)} ${title}`)}"></button>`;
+    }).join("");
+    return `<section class="paper-map-skeleton-paper" data-paper="${escapeHtml(paper.paper_id)}">
+      <div class="paper-map-paper-head" title="${escapeHtml(paper.title)}">${escapeHtml(shortPaperLabel(paper))} · ${(paper.paragraphs || []).length} paragraphs</div>
+      <div class="paper-map-skeleton-frame"><div class="paper-map-skeleton-track">${blocks}</div></div>
+    </section>`;
+  }).join("");
+  return `<div class="paper-map-skeleton-columns" style="--paper-count:${allPapers.length}">${papers}</div>`;
+}
+
+function updatePaperMapHeight() {
+  const shell = stage.querySelector(".paper-map-shell");
+  if (!shell) return;
+  shell.style.height = `${Math.max(520, window.innerHeight - shell.getBoundingClientRect().top - 10)}px`;
+}
+
+function setPaperMapGroupEmphasis(hoveredGroupId = null) {
+  const groupId = hoveredGroupId || paperMapSelectedGroupId;
+  const active = Boolean(groupId);
+  stage.querySelectorAll("[data-paper-map-group]").forEach(element => {
+    const matches = element.dataset.paperMapGroup === groupId;
+    element.classList.toggle("highlight", active && matches);
+    element.classList.toggle("dim", active && !matches);
+    if (element.classList.contains("paper-map-legend-item")) {
+      const selected = element.dataset.paperMapGroup === paperMapSelectedGroupId;
+      element.classList.toggle("selected", selected);
+      element.setAttribute("aria-pressed", String(selected));
+    }
+    if (element.classList.contains("paper-map-skeleton-block")) {
+      element.classList.toggle("selected", active && matches);
+    }
+  });
+}
+
+function syncPaperMapColumns(source, columns) {
+  if (!paperMapSyncScroll || paperMapScrollSyncing) return;
+  const maximum = Math.max(0, source.scrollHeight - source.clientHeight);
+  const ratio = maximum ? source.scrollTop / maximum : 0;
+  paperMapScrollSyncing = true;
+  columns.forEach(target => {
+    if (target === source) return;
+    const top = ratio * Math.max(0, target.scrollHeight - target.clientHeight);
+    target.scrollTop = top;
+    paperMapScrollByPaper[target.dataset.paper] = top;
+  });
+  requestAnimationFrame(() => { paperMapScrollSyncing = false; });
+}
+
+function attachPaperMapInteractions(model) {
+  const shell = stage.querySelector(".paper-map-shell");
+  if (shell) shell.addEventListener("click", event => event.stopPropagation());
+  attachIterationTabInteractions();
+  stage.querySelectorAll("[data-paper-map-mode]").forEach(button => {
+    button.addEventListener("click", event => {
+      event.stopPropagation();
+      if (paperMapMode === button.dataset.paperMapMode) return;
+      paperMapMode = button.dataset.paperMapMode;
+      renderPaperMap();
+    });
+  });
+
+  const columns = [...stage.querySelectorAll(".paper-map-column")];
+  columns.forEach(column => {
+    column.addEventListener("scroll", () => {
+      if (paperMapScrollSyncing) return;
+      paperMapLastScrolledPaper = column.dataset.paper;
+      paperMapScrollByPaper[column.dataset.paper] = column.scrollTop;
+      syncPaperMapColumns(column, columns);
+    }, { passive: true });
+  });
+  const syncToggle = document.getElementById("paperMapSyncScroll");
+  if (syncToggle) {
+    syncToggle.addEventListener("change", event => {
+      event.stopPropagation();
+      paperMapSyncScroll = syncToggle.checked;
+      if (!paperMapSyncScroll || !columns.length) return;
+      const source = columns.find(column => column.dataset.paper === paperMapLastScrolledPaper) || columns[0];
+      syncPaperMapColumns(source, columns);
+    });
+  }
+
+  stage.querySelectorAll(".paper-map-paragraph, .paper-map-skeleton-block").forEach(card => {
+    const groupId = card.dataset.paperMapGroup;
+    card.addEventListener("mouseenter", () => setPaperMapGroupEmphasis(groupId));
+    card.addEventListener("mouseleave", () => setPaperMapGroupEmphasis());
+    card.addEventListener("click", event => {
+      event.stopPropagation();
+      paperMapSelectedGroupId = groupId && paperMapSelectedGroupId !== groupId ? groupId : null;
+      setPaperMapGroupEmphasis();
+    });
+  });
+  stage.querySelectorAll(".paper-map-legend-item").forEach(button => {
+    const groupId = button.dataset.paperMapGroup;
+    button.addEventListener("mouseenter", () => setPaperMapGroupEmphasis(groupId));
+    button.addEventListener("mouseleave", () => setPaperMapGroupEmphasis());
+    button.addEventListener("click", event => {
+      event.stopPropagation();
+      paperMapSelectedGroupId = paperMapSelectedGroupId === groupId ? null : groupId;
+      setPaperMapGroupEmphasis();
+    });
+  });
+  const content = stage.querySelector(".paper-map-columns, .paper-map-skeleton-columns");
+  if (content) {
+    content.addEventListener("click", event => {
+      event.stopPropagation();
+      paperMapSelectedGroupId = null;
+      setPaperMapGroupEmphasis();
+    });
+  }
+  setPaperMapGroupEmphasis();
+}
+
 // Recomputes currentLinks from rawLinksForGranularity + similarityThreshold, then
 // fully re-renders. Shared by granularity switches and similarity-slider changes,
 // since both change which links (and therefore which units) should be visible.
@@ -625,6 +998,10 @@ function switchGranularity(granularity) {
   buildGranularityTabs();
   if (granularity === "groups") {
     renderIterationGroups();
+    return;
+  }
+  if (granularity === "paper-map") {
+    renderPaperMap();
     return;
   }
   rawLinksForGranularity = allLinksByGranularity[granularity] || [];
@@ -657,18 +1034,19 @@ async function init() {
     }
   });
   window.addEventListener("resize", () => {
-    if (currentGranularity !== "groups") refreshView();
+    if (currentGranularity === "paper-map") updatePaperMapHeight();
+    else if (currentGranularity !== "groups") refreshView();
   });
   previewSlider.addEventListener("input", () => {
     previewChars = Number(previewSlider.value);
     previewValueEl.textContent = String(previewChars);
     if (currentGranularity === "groups") renderIterationGroups();
-    else updatePreviews();
+    else if (GRANULARITIES.includes(currentGranularity)) updatePreviews();
   });
   similaritySlider.addEventListener("input", () => {
     similarityThreshold = Number(similaritySlider.value);
     similarityValueEl.textContent = similarityThreshold.toFixed(2);
-    if (currentGranularity !== "groups") applyFilterAndRender();
+    if (GRANULARITIES.includes(currentGranularity)) applyFilterAndRender();
   });
 }
 
