@@ -1050,7 +1050,13 @@ async function init() {
   });
 }
 
-init();
+init().catch(error => {
+  console.error("Failed to initialize the viewer", error);
+  const serverHint = window.location.protocol === "file:"
+    ? "This viewer must be served over HTTP. From the repository root, run: python -m http.server 8743 --directory pipeline"
+    : "Confirm that output/sections contains the manifest, paper, match, and iteration JSON files.";
+  stage.innerHTML = `<div class="empty-state"><strong>Could not load viewer data.</strong><br>${escapeHtml(serverHint)}<br><small>${escapeHtml(error.message || error)}</small></div>`;
+});
 </script>
 </body>
 </html>
