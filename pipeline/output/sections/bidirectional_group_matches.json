@@ -1,0 +1,128 @@
+[
+  {
+    "group_a": "group_1",
+    "question_a": "What does the paper contribute and investigate?",
+    "group_b": "group_8",
+    "question_b": "What makes the proposed interface design effective and preferred?",
+    "similarity": 0.374
+  },
+  {
+    "group_a": "group_2",
+    "question_a": "What did user study participants report about the tool and their background?",
+    "group_b": "group_7",
+    "question_b": "Who were the study participants and how were they selected?",
+    "similarity": 0.384
+  },
+  {
+    "group_a": "group_2",
+    "question_a": "What did user study participants report about the tool and their background?",
+    "group_b": "group_10",
+    "question_b": "How did users evaluate the tool's usefulness and adoption?",
+    "similarity": 0.357
+  },
+  {
+    "group_a": "group_2",
+    "question_a": "What did user study participants report about the tool and their background?",
+    "group_b": "group_19",
+    "question_b": "What did post-study survey results reveal?",
+    "similarity": 0.306
+  },
+  {
+    "group_a": "group_3",
+    "question_a": "What does each feature capture in the model?",
+    "group_b": "group_17",
+    "question_b": "What example illustrates this feature?",
+    "similarity": 0.31
+  },
+  {
+    "group_a": "group_5",
+    "question_a": "How was the system evaluated and what were the findings?",
+    "group_b": "group_13",
+    "question_b": "What system is proposed to address the identified gap?",
+    "similarity": 0.355
+  },
+  {
+    "group_a": "group_5",
+    "question_a": "How was the system evaluated and what were the findings?",
+    "group_b": "group_10",
+    "question_b": "How did users evaluate the tool's usefulness and adoption?",
+    "similarity": 0.322
+  },
+  {
+    "group_a": "group_6",
+    "question_a": "What are the key components/methods of the proposed system?",
+    "group_b": "group_16",
+    "question_b": "What are the key design components and features of the proposed system?",
+    "similarity": 0.749
+  },
+  {
+    "group_a": "group_6",
+    "question_a": "What are the key components/methods of the proposed system?",
+    "group_b": "group_12",
+    "question_b": "What was the experimental procedure/methodology of the study?",
+    "similarity": 0.39
+  },
+  {
+    "group_a": "group_10",
+    "question_a": "How did users evaluate the tool's usefulness and adoption?",
+    "group_b": "group_14",
+    "question_b": "How does this work relate to and differ from prior work?",
+    "similarity": 0.292
+  },
+  {
+    "group_a": "group_11",
+    "question_a": "What are the limitations of the study's methodology?",
+    "group_b": "group_12",
+    "question_b": "What was the experimental procedure/methodology of the study?",
+    "similarity": 0.502
+  },
+  {
+    "group_a": "group_11",
+    "question_a": "What are the limitations of the study's methodology?",
+    "group_b": "group_21",
+    "question_b": "What was the experimental design of the study?",
+    "similarity": 0.498
+  },
+  {
+    "group_a": "group_11",
+    "question_a": "What are the limitations of the study's methodology?",
+    "group_b": "group_18",
+    "question_b": "What do the study's results demonstrate?",
+    "similarity": 0.421
+  },
+  {
+    "group_a": "group_12",
+    "question_a": "What was the experimental procedure/methodology of the study?",
+    "group_b": "group_21",
+    "question_b": "What was the experimental design of the study?",
+    "similarity": 0.726
+  },
+  {
+    "group_a": "group_14",
+    "question_a": "How does this work relate to and differ from prior work?",
+    "group_b": "group_15",
+    "question_b": "How does filtering affect the visualization view?",
+    "similarity": 0.305
+  },
+  {
+    "group_a": "group_16",
+    "question_a": "What are the key design components and features of the proposed system?",
+    "group_b": "group_21",
+    "question_b": "What was the experimental design of the study?",
+    "similarity": 0.399
+  },
+  {
+    "group_a": "group_17",
+    "question_a": "What example illustrates this feature?",
+    "group_b": "group_20",
+    "question_b": "What motivates this research?",
+    "similarity": 0.456
+  },
+  {
+    "group_a": "group_18",
+    "question_a": "What do the study's results demonstrate?",
+    "group_b": "group_19",
+    "question_b": "What did post-study survey results reveal?",
+    "similarity": 0.453
+  }
+]

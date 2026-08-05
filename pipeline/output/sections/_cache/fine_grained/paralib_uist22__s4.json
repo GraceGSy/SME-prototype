@@ -1,0 +1,58 @@
+{
+  "paragraphs": [
+    {
+      "tag": "What factors influence library selection according to prior studies?",
+      "start_text": "Selecting the right library or API is a critical step before writing",
+      "prev_relation": "",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What learning barriers motivate a focus on functionality-level comparison?",
+      "start_text": "Our focus on supporting library comparison at the level of con-",
+      "prev_relation": "elaboration",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "What do existing library comparison websites offer and lack?",
+      "start_text": "Online library comparison websites such as StackShare [23] and",
+      "prev_relation": "contrast",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What automated tools exist for library comparison?",
+      "start_text": "The research community has also proposed several automated",
+      "prev_relation": "elaboration",
+      "next_relation": "contrast"
+    },
+    {
+      "tag": "What tools support annotation and evaluation of APIs?",
+      "start_text": "Some prior work focuses on supporting users\u2019 annotation and",
+      "prev_relation": "continuation",
+      "next_relation": "contrast"
+    },
+    {
+      "tag": "Do library authors also need comparison tools?",
+      "start_text": "While most of the existing comparison tools target API and",
+      "prev_relation": "elaboration",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "What comparison techniques exist for other domains?",
+      "start_text": "There are several comparison techniques designed for other",
+      "prev_relation": "continuation",
+      "next_relation": "generalization"
+    },
+    {
+      "tag": "How does ParaLib differ from code diff tools?",
+      "start_text": "Diff tools are a common utility in text editors and programming",
+      "prev_relation": "generalization",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What existing techniques visualize many code examples for other purposes?",
+      "start_text": "Several techniques are designed to visualize many code exam-",
+      "prev_relation": "elaboration",
+      "next_relation": ""
+    }
+  ]
+}
