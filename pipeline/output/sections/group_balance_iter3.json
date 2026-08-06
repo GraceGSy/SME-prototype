@@ -1,0 +1,122 @@
+[
+  {
+    "group_id": "group_16",
+    "overarching_question": "How were the visualization system's features and interface designed and implemented?",
+    "group_balance": 100.0,
+    "member_count": 36
+  },
+  {
+    "group_id": "group_12",
+    "overarching_question": "How was the tool's user study designed and evaluated?",
+    "group_balance": 100.0,
+    "member_count": 25
+  },
+  {
+    "group_id": "group_19",
+    "overarching_question": "What did user study participants say about the tool's usefulness?",
+    "group_balance": 100.0,
+    "member_count": 17
+  },
+  {
+    "group_id": "group_14",
+    "overarching_question": "How does this work build on and differ from prior visualization/comparison tools?",
+    "group_balance": 100.0,
+    "member_count": 12
+  },
+  {
+    "group_id": "group_11",
+    "overarching_question": "What are the limitations and future directions of the proposed tool/system?",
+    "group_balance": 100.0,
+    "member_count": 12
+  },
+  {
+    "group_id": "group_10",
+    "overarching_question": "Did the proposed interface outperform baselines in a user study?",
+    "group_balance": 100.0,
+    "member_count": 12
+  },
+  {
+    "group_id": "group_20",
+    "overarching_question": "Why is manually reviewing many code/text examples difficult, motivating better tools?",
+    "group_balance": 100.0,
+    "member_count": 11
+  },
+  {
+    "group_id": "group_1",
+    "overarching_question": "What are the paper's contributions and key findings?",
+    "group_balance": 100.0,
+    "member_count": 9
+  },
+  {
+    "group_id": "group_7",
+    "overarching_question": "Who were the study/interview participants and their relevant background?",
+    "group_balance": 100.0,
+    "member_count": 7
+  },
+  {
+    "group_id": "group_21",
+    "overarching_question": "How was the user study methodology designed and analyzed?",
+    "group_balance": 100.0,
+    "member_count": 4
+  },
+  {
+    "group_id": "group_18",
+    "overarching_question": "Does the tool outperform online search in user studies on code example understanding?",
+    "group_balance": 66.7,
+    "member_count": 21
+  },
+  {
+    "group_id": "group_15",
+    "overarching_question": "How does interactive filtering by concept/option update the tool's interface?",
+    "group_balance": 66.7,
+    "member_count": 11
+  },
+  {
+    "group_id": "group_4",
+    "overarching_question": "How do learning theories inform interface/feature design for comparison tools?",
+    "group_balance": 66.7,
+    "member_count": 9
+  },
+  {
+    "group_id": "group_17",
+    "overarching_question": "How can tools help developers learn API usage through examples?",
+    "group_balance": 66.7,
+    "member_count": 7
+  },
+  {
+    "group_id": "group_9",
+    "overarching_question": "How can mined API usage examples be visualized to aid understanding?",
+    "group_balance": 66.7,
+    "member_count": 7
+  },
+  {
+    "group_id": "group_3",
+    "overarching_question": "How does prior work visualize and compare text across document collections?",
+    "group_balance": 66.7,
+    "member_count": 5
+  },
+  {
+    "group_id": "group_6",
+    "overarching_question": "How can interfaces support sensemaking of many LLM responses at once?",
+    "group_balance": 33.3,
+    "member_count": 15
+  },
+  {
+    "group_id": "group_13",
+    "overarching_question": "How can tools better support programmers in comparing software libraries?",
+    "group_balance": 33.3,
+    "member_count": 9
+  },
+  {
+    "group_id": "group_8",
+    "overarching_question": "How to design interfaces for sensemaking of many LLM outputs?",
+    "group_balance": 33.3,
+    "member_count": 4
+  },
+  {
+    "group_id": "group_2",
+    "overarching_question": "How did participants' prior experience affect study results?",
+    "group_balance": 33.3,
+    "member_count": 3
+  }
+]

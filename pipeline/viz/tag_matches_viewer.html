@@ -259,7 +259,7 @@ let paragraphUnitLookup = {}; // "paper_id:unit_id" -> full paragraph object, fo
 const N_ITERATIONS = 5;
 let iterationGroups = {}; // iteration number -> [{group_id, members, overarching_question}, ...]
 let iterationMeta = {}; // iteration number -> {reassigned, total_assigned}
-let groupBalanceByIteration = {}; // iteration number -> {group_id: group_balance}, when available (currently iteration 1 only)
+let groupBalanceByIteration = {}; // iteration number -> {group_id: group_balance}, when available
 let currentIteration = 1;
 const openGroupIds = new Set(); // group_id currently expanded to show its 3-column quote detail (within the current iteration)
 
@@ -315,19 +315,21 @@ async function loadAll() {
     papers.push(await (await fetch(base + m.file, opts)).json());
   }
   const links = await (await fetch(base + "bidirectional_matches.json", opts)).json();
-  const iterations = {};
+  const quoteGroups = await (await fetch(base + "quote_groups.json", opts)).json();
+  const iterations = { 0: { groups: quoteGroups.paragraphs || [], meta: null } };
   for (let i = 1; i <= N_ITERATIONS; i++) {
     const state = await (await fetch(base + `paragraph_groups_iter${i}.json`, opts)).json();
     iterations[i] = state;
   }
-  // Only iteration 1 currently has a computed group-balance metric -- fetch
-  // it best-effort so older/other output directories without it don't break.
-  let groupBalanceIter1 = null;
-  try {
-    const res = await fetch(base + "group_balance_iter1.json", opts);
-    if (res.ok) groupBalanceIter1 = await res.json();
-  } catch (e) { /* no group-balance file available -- fall back to default order */ }
-  return { papers, links, iterations, groupBalanceIter1 };
+  // Balance files are optional so older output directories still load.
+  const balances = {};
+  for (let i = 1; i <= N_ITERATIONS; i++) {
+    try {
+      const response = await fetch(base + `group_balance_iter${i}.json`, opts);
+      if (response.ok) balances[i] = await response.json();
+    } catch (e) { /* no balance for this iteration -- keep the default order */ }
+  }
+  return { papers, links, iterations, balances };
 }
 
 function buildParagraphUnitLookup() {
@@ -595,18 +597,32 @@ function buildGranularityTabs() {
   });
 }
 
+function iterationTabLabel(iteration) {
+  return iteration === 0 ? "QI-Primes · Iteration 0" : `Iteration ${iteration}`;
+}
+
+function iterationHeading(iteration) {
+  return iteration === 0 ? "Iteration 0 · QI-Primes" : `Iteration ${iteration}`;
+}
+
+function buildIterationTabsHtml() {
+  return Array.from({ length: N_ITERATIONS + 1 }, (_, iteration) => iteration).map(iteration =>
+    `<button type="button" class="granularity-btn${iteration === currentIteration ? " active" : ""}" data-iteration="${iteration}">${iterationTabLabel(iteration)}</button>`
+  ).join("");
+}
+
 // Renders the iteration selector plus a flat list of that iteration's group
 // cards, driven by currentIteration/openGroupIds. Any state change (an
 // iteration switch, a card click, a slider change) just mutates that state
 // and calls this again -- simpler than patching the DOM in place, and cheap
 // since there's no API call involved.
 function renderIterationGroups() {
-  const tabsHtml = Array.from({ length: N_ITERATIONS }, (_, i) => i + 1).map(n =>
-    `<button type="button" class="granularity-btn${n === currentIteration ? " active" : ""}" data-iteration="${n}">Iteration ${n}</button>`
-  ).join("");
+  const tabsHtml = buildIterationTabsHtml();
 
   const meta = iterationMeta[currentIteration];
-  const metaText = meta ? `${meta.reassigned} of ${meta.total_assigned} paragraphs were reassigned to a different group this iteration.` : "";
+  const metaText = currentIteration === 0
+    ? "Initial QI-Primes induced from bidirectionally matched paragraph questions. Balance begins with Iteration 1, after paragraph reassignment."
+    : meta ? `${meta.reassigned} of ${meta.total_assigned} paragraphs were reassigned to a different group this iteration.` : "";
 
   const balanceByGroupId = groupBalanceByIteration[currentIteration];
   // Sort a copy by group-balance (highest first) when available for this
@@ -624,8 +640,9 @@ function renderIterationGroups() {
   const cardsHtml = groups.map(group => {
     const balance = balanceByGroupId ? balanceByGroupId[group.group_id] : undefined;
     const balanceHtml = balance !== undefined ? `<span class="group-balance-badge">balance ${balance}%</span>` : "";
+    const qiPrimeHtml = currentIteration === 0 ? `<span class="group-balance-badge">QI-Prime</span>` : "";
     return `<div class="group-card" data-group-id="${group.group_id}">
-      <div class="group-question">${escapeHtml(group.overarching_question || "(no summary)")}${balanceHtml}</div>
+      <div class="group-question">${escapeHtml(group.overarching_question || "(no summary)")}${qiPrimeHtml}${balanceHtml}</div>
       ${buildPaperCoverageVis(group.members)}
       <div class="group-detail-slot"></div>
     </div>`;
@@ -714,11 +731,9 @@ function renderGroupDetail(slot, group) {
   attachGroupInteractions(slot);
 }
 
-// Refined groups (paragraph_groups_iter<N>.json) don't carry pairwise link
-// data the way quote_groups.json's groups did -- membership here comes from
-// each paragraph's own best-fit choice, not from bidirectional matches
-// between specific pairs -- so there's nothing to draw lines between or
-// highlight by; the only interaction is expanding a quote's full text.
+// Keep group-detail interactions consistent across Iteration 0 and the
+// refinement snapshots. Later snapshots do not carry pairwise link data, so
+// this view focuses on membership and full-text inspection in every state.
 function attachGroupInteractions(slot) {
   slot.querySelectorAll(".section-block").forEach(el => {
     const hint = el.querySelector(".expand-hint");
@@ -748,9 +763,9 @@ function paperMapColorCatalog() {
   );
 }
 
-// Iteration artifacts already contain one best-fit group per assigned
-// paragraph. The map uses that membership directly instead of introducing a
-// second ranking or matching rule in the viewer.
+// Every saved state carries its own membership. Iteration 0 uses the original
+// bidirectional groups; later iterations use each paragraph's best-fit group.
+// The map displays that membership without adding another matching rule.
 function buildPaperMapModel() {
   const groups = iterationGroups[currentIteration] || [];
   const colorByGroupId = paperMapColorCatalog();
@@ -781,9 +796,7 @@ function renderPaperMap() {
     paperMapSelectedGroupId = null;
   }
 
-  const tabsHtml = Array.from({ length: N_ITERATIONS }, (_, i) => i + 1).map(n =>
-    `<button type="button" class="granularity-btn${n === currentIteration ? " active" : ""}" data-iteration="${n}">Iteration ${n}</button>`
-  ).join("");
+  const tabsHtml = buildIterationTabsHtml();
   const totalParagraphs = allPapers.reduce((sum, paper) => sum + (paper.paragraphs || []).length, 0);
   const orphanCount = totalParagraphs - model.assignments.size;
   const legend = model.groupEntries.map(entry => {
@@ -809,10 +822,10 @@ function renderPaperMap() {
     <div class="paper-map-overview">
       <div class="paper-map-control-row">
         <div class="iteration-tabs">${tabsHtml}</div>
-        <div class="paper-map-summary"><strong>Iteration ${currentIteration}</strong> · ${model.groups.length} groups · ${model.assignments.size} assigned · ${orphanCount} unassigned</div>
+        <div class="paper-map-summary"><strong>${iterationHeading(currentIteration)}</strong> · ${model.groups.length} groups · ${model.assignments.size} assigned · ${orphanCount} unassigned</div>
         ${modeToggle}${syncToggle}
       </div>
-      <div class="paper-map-legend" aria-label="Question groups at iteration ${currentIteration}">${legend}</div>
+      <div class="paper-map-legend" aria-label="Question groups at ${iterationHeading(currentIteration)}">${legend}</div>
     </div>
     ${content}
   </div>`;
@@ -1020,17 +1033,19 @@ function switchGranularity(granularity) {
 }
 
 async function init() {
-  const { papers, links, iterations, groupBalanceIter1 } = await loadAll();
+  const { papers, links, iterations, balances } = await loadAll();
   allPapers = papers;
   allLinksByGranularity = links;
   Object.entries(iterations).forEach(([n, state]) => {
     iterationGroups[n] = state.groups || [];
     iterationMeta[n] = state.meta || null;
   });
-  if (groupBalanceIter1) {
-    groupBalanceByIteration[1] = {};
-    groupBalanceIter1.forEach(g => { groupBalanceByIteration[1][g.group_id] = g.group_balance; });
-  }
+  Object.entries(balances).forEach(([iteration, groups]) => {
+    groupBalanceByIteration[iteration] = {};
+    groups.forEach(group => {
+      groupBalanceByIteration[iteration][group.group_id] = group.group_balance;
+    });
+  });
   buildParagraphUnitLookup();
   buildPaperColors();
   rawLinksForGranularity = links[currentGranularity] || [];
