@@ -292,12 +292,13 @@
   .qi-trace-paragraph-button strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .qi-trace-paragraph-button span { display: block; overflow: hidden; color: #868e96; font-size: 8.5px; text-overflow: ellipsis; white-space: nowrap; }
   .qi-trace-path-cell {
-    display: grid; gap: 2px; width: 100%; min-height: 38px; padding: 4px 5px;
+    display: grid; gap: 3px; width: 100%; min-height: 58px; padding: 5px 6px;
     border: 1px solid var(--path-color); border-radius: 4px; background: var(--path-fill); color: #343a40; font-size: 9px; text-align: left;
   }
   .qi-trace-path-cell.selected-lineage { border-width: 2px; font-weight: 700; }
   .qi-trace-path-cell.unassigned { --path-color: #adb5bd; --path-fill: #f8f9fa; border-style: dashed; color: #868e96; }
   .qi-trace-path-cell.changed { box-shadow: 0 0 0 1px #343a40; }
+  .qi-trace-path-question { color: #343a40; font-size: 8.5px; font-weight: 500; line-height: 1.3; }
   .qi-trace-path-state { color: #6c757d; font-size: 7.5px; font-weight: 500; }
   .qi-trace-empty-rows { padding: 22px; color: #868e96; font-size: 11px; text-align: center; }
   .qi-trace-paragraph-detail { padding: 10px 12px; border-top: 1px solid #e9ecef; background: #fff; }
@@ -305,7 +306,7 @@
   .qi-trace-detail-question { margin-bottom: 5px; color: #343a40; font-size: 10px; font-weight: 650; }
   .qi-trace-detail-text { max-height: 120px; overflow: auto; color: #495057; font-size: 10px; line-height: 1.45; }
   .qi-trace-detail-route { display: flex; align-items: center; gap: 3px; flex-wrap: wrap; margin-top: 7px; }
-  .qi-trace-detail-route .qi-trace-path-cell { display: inline-grid; width: auto; min-width: 70px; min-height: 0; }
+  .qi-trace-detail-route .qi-trace-path-cell { display: inline-grid; width: 220px; min-width: 0; min-height: 0; }
   .qi-trace-route-arrow { color: #adb5bd; font-size: 10px; }
 </style>
 </head>
@@ -1122,10 +1123,15 @@ function traceQiPrimeLabel(groupId) {
   return index >= 0 ? `QI-${index + 1}` : groupId;
 }
 
-function traceGroupLabel(iteration, groupId) {
+function traceIterationGroupLabel(iteration, groupId) {
   if (!groupId) return "Unassigned";
   const index = (iterationGroups[iteration] || []).findIndex(group => group.group_id === groupId);
-  return index >= 0 ? `I${iteration}-${index + 1} · ${traceQiPrimeLabel(groupId)}` : `I${iteration} · ${traceQiPrimeLabel(groupId)}`;
+  return index >= 0 ? `I${iteration}-${index + 1}` : `I${iteration}`;
+}
+
+function traceGroupLabel(iteration, groupId) {
+  if (!groupId) return "Unassigned";
+  return `${traceIterationGroupLabel(iteration, groupId)} · ${traceQiPrimeLabel(groupId)}`;
 }
 
 function traceAssignmentMap(iteration) {
@@ -1328,9 +1334,9 @@ function tracePathState(model, key, iteration) {
   const previousGroupId = model.assignmentsByIteration[iteration - 1].get(key) || null;
   const groupId = model.assignmentsByIteration[iteration].get(key) || null;
   if (previousGroupId === groupId) return groupId === model.groupId ? "retained" : "unchanged";
-  if (groupId === model.groupId) return `entered from ${traceGroupLabel(iteration - 1, previousGroupId)}`;
-  if (previousGroupId === model.groupId) return `left to ${traceGroupLabel(iteration, groupId)}`;
-  return `from ${traceGroupLabel(iteration - 1, previousGroupId)}`;
+  if (groupId === model.groupId) return `entered from ${traceIterationGroupLabel(iteration - 1, previousGroupId)}`;
+  if (previousGroupId === model.groupId) return `left to ${traceIterationGroupLabel(iteration, groupId)}`;
+  return `from ${traceIterationGroupLabel(iteration - 1, previousGroupId)}`;
 }
 
 function renderTracePathCell(model, key, iteration) {
@@ -1338,12 +1344,12 @@ function renderTracePathCell(model, key, iteration) {
   const previousGroupId = iteration ? (model.assignmentsByIteration[iteration - 1].get(key) || null) : groupId;
   const changed = iteration > 0 && groupId !== previousGroupId;
   const color = groupId ? (model.colorByGroupId.get(groupId) || paperMapColor(0)) : { border: "#adb5bd", fill: "#f8f9fa" };
-  const label = traceGroupLabel(iteration, groupId);
+  const label = traceIterationGroupLabel(iteration, groupId);
   const question = groupId ? (traceGroupForIteration(iteration, groupId)?.overarching_question || "Group not present") : "No group assignment";
   const state = tracePathState(model, key, iteration);
   const classes = ["qi-trace-path-cell", groupId === model.groupId ? "selected-lineage" : "", groupId ? "" : "unassigned", changed ? "changed" : ""].filter(Boolean).join(" ");
   return `<div class="${classes}" style="--path-color:${color.border};--path-fill:${color.fill}" title="${escapeHtml(`${label} · ${question}`)}">
-    <span>${escapeHtml(label)}</span><span class="qi-trace-path-state">${escapeHtml(state)}</span>
+    <strong>${escapeHtml(label)}</strong><span class="qi-trace-path-question">${escapeHtml(question)}</span><span class="qi-trace-path-state">${escapeHtml(state)}</span>
   </div>`;
 }
 
@@ -1372,7 +1378,7 @@ function renderTraceParagraphDetail(model) {
   const movements = model.iterations.slice(1).flatMap(iteration => {
     const previousGroupId = model.assignmentsByIteration[iteration - 1].get(traceSelectedParagraphKey) || null;
     const groupId = model.assignmentsByIteration[iteration].get(traceSelectedParagraphKey) || null;
-    return previousGroupId === groupId ? [] : [`I${iteration}: ${traceGroupLabel(iteration - 1, previousGroupId)} → ${traceGroupLabel(iteration, groupId)}`];
+    return previousGroupId === groupId ? [] : [`I${iteration}: ${traceIterationGroupLabel(iteration - 1, previousGroupId)} → ${traceIterationGroupLabel(iteration, groupId)}`];
   });
   slot.innerHTML = `<div class="qi-trace-paragraph-detail">
     <h3>${escapeHtml(shortPaperLabel(paper || { paper_id: paperId }))} · ${escapeHtml(unitId)}</h3>
