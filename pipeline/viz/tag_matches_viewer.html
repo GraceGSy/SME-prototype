@@ -308,6 +308,106 @@
   .qi-trace-detail-route { display: flex; align-items: center; gap: 3px; flex-wrap: wrap; margin-top: 7px; }
   .qi-trace-detail-route .qi-trace-path-cell { display: inline-grid; width: 220px; min-width: 0; min-height: 0; }
   .qi-trace-route-arrow { color: #adb5bd; font-size: 10px; }
+
+  .qi-flow-shell { display: grid; gap: 9px; min-width: 0; }
+  .qi-flow-toolbar {
+    display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; padding: 9px 11px;
+    border: 1px solid #dee2e6; border-radius: 6px; background: #fff;
+  }
+  .qi-flow-question-control { display: grid; gap: 4px; min-width: min(580px, 100%); }
+  .qi-flow-question-control select, .qi-flow-paper-select {
+    padding: 5px 7px; border: 1px solid #ced4da; border-radius: 4px; background: #fff; color: #212529; font-size: 11px;
+  }
+  .qi-flow-playback { display: inline-flex; align-items: center; border: 1px solid #ced4da; border-radius: 5px; overflow: hidden; }
+  .qi-flow-control-button {
+    min-height: 27px; padding: 4px 8px; border: 0; border-right: 1px solid #ced4da;
+    background: #fff; color: #495057; font-size: 10px; cursor: pointer;
+  }
+  .qi-flow-control-button:last-child { border-right: 0; }
+  .qi-flow-control-button:hover:not(:disabled), .qi-flow-control-button.active { background: #e7f5ff; color: #1864ab; }
+  .qi-flow-control-button:disabled { color: #ced4da; cursor: default; }
+  .qi-flow-stepper { display: flex; gap: 2px; flex-wrap: wrap; }
+  .qi-flow-step-button {
+    padding: 3px 7px; border: 1px solid #ced4da; border-radius: 4px; background: #fff; color: #495057; font-size: 9px; cursor: pointer;
+  }
+  .qi-flow-step-button.active { border-color: #1c7ed6; background: #1c7ed6; color: #fff; }
+  .qi-flow-provenance { flex: 1 1 300px; color: #868e96; font-size: 9.5px; line-height: 1.35; }
+
+  .qi-flow-revision {
+    display: grid; grid-template-columns: minmax(190px, .7fr) minmax(320px, 1.6fr) minmax(250px, 1fr); gap: 9px;
+    align-items: stretch; padding: 7px 9px; border: 1px solid #dee2e6; border-radius: 6px; background: #fff;
+  }
+  .qi-flow-revision-state, .qi-flow-revision-diff, .qi-flow-revision-metrics { padding: 6px 8px; border: 1px solid #e9ecef; border-radius: 4px; background: #f8f9fa; }
+  .qi-flow-revision-state strong { display: block; margin-bottom: 3px; color: #343a40; font-size: 11px; }
+  .qi-flow-revision-state span { color: #6c757d; font-size: 9px; }
+  .qi-flow-revision-diff { color: #495057; font-size: 9.5px; line-height: 1.45; }
+  .qi-flow-revision-diff.replay { animation: qi-flow-revision-reveal .28s ease .65s both; }
+  .qi-flow-revision-diff del { padding: 0 1px; background: #fff0f0; color: #c92a2a; }
+  .qi-flow-revision-diff ins { padding: 0 1px; background: #ebfbee; color: #2b8a3e; text-decoration: none; }
+  .qi-flow-revision-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+  .qi-flow-metric { min-width: 0; color: #868e96; font-size: 8px; text-transform: uppercase; }
+  .qi-flow-metric strong { display: block; margin-top: 3px; color: #343a40; font-size: 10.5px; text-transform: none; }
+  @keyframes qi-flow-revision-reveal { from { opacity: .3; } to { opacity: 1; } }
+
+  .qi-flow-canvas-scroll { overflow: auto; border: 1px solid #dee2e6; border-radius: 6px; background: #f8f9fa; }
+  .qi-flow-canvas { position: relative; width: 100%; min-width: 980px; height: var(--qi-flow-canvas-height); background: #f8f9fa; }
+  .qi-flow-svg { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; overflow: visible; }
+  .qi-flow-columns { position: absolute; inset: 14px 22px; z-index: 1; display: grid; grid-template-columns: minmax(280px, 340px) minmax(280px, 340px); justify-content: space-between; pointer-events: none; }
+  .qi-flow-column { display: grid; grid-template-rows: minmax(0, 1fr) auto minmax(0, 1fr); gap: 10px; min-width: 0; }
+  .qi-flow-stack { display: flex; flex-direction: column; justify-content: space-evenly; gap: 8px; min-height: 0; }
+  .qi-flow-column-heading { position: absolute; top: 8px; color: #868e96; font-size: 9px; font-weight: 700; text-transform: uppercase; }
+  .qi-flow-column-heading.left { left: 24px; }
+  .qi-flow-column-heading.right { right: 24px; }
+  .qi-flow-node {
+    position: relative; width: 100%; min-height: 76px; padding: 7px 9px; pointer-events: auto;
+    border: 1.5px solid var(--node-color); border-radius: 6px; background: var(--node-fill); color: #343a40;
+    box-shadow: 0 1px 2px rgba(0,0,0,.04); transition: opacity .12s ease, box-shadow .12s ease;
+  }
+  button.qi-flow-node { font-family: inherit; text-align: left; cursor: pointer; }
+  .qi-flow-node.focal { border-width: 2px; box-shadow: 0 0 0 2px color-mix(in srgb, var(--node-color) 18%, transparent); }
+  .qi-flow-node.dropped, .qi-flow-node.unassigned { --node-color: #adb5bd; --node-fill: #fff; border-style: dashed; }
+  .qi-flow-node.highlight { box-shadow: 0 0 0 3px color-mix(in srgb, var(--node-color) 28%, transparent); }
+  .qi-flow-node.dim { opacity: .28; }
+  .qi-flow-node-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 4px; }
+  .qi-flow-node-label { color: #495057; font-size: 9px; font-weight: 750; }
+  .qi-flow-node-kind { color: #868e96; font-size: 7.5px; font-weight: 700; text-transform: uppercase; }
+  .qi-flow-node-question { color: #212529; font-size: 10.5px; font-weight: 700; line-height: 1.32; overflow-wrap: anywhere; }
+  .qi-flow-node-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 6px; color: #6c757d; font-size: 8.5px; }
+  .qi-flow-node-meta strong { color: #343a40; }
+  .qi-flow-node-papers { display: inline-flex; align-items: center; gap: 3px; margin-left: auto; }
+  .qi-flow-node-papers .unit-square { width: 7px; height: 7px; }
+  .qi-flow-edge-visible { fill: none; stroke: var(--edge-color); stroke-width: var(--edge-width); opacity: .56; transition: opacity .12s ease, stroke-width .12s ease; }
+  .qi-flow-edge-visible.selected, .qi-flow-edge-visible.highlight { stroke-width: var(--edge-selected-width); opacity: .95; }
+  .qi-flow-edge-visible.dim { opacity: .1; }
+  .qi-flow-edge-hit { fill: none; stroke: transparent; stroke-width: var(--edge-hit-width); pointer-events: stroke; cursor: pointer; }
+  .qi-flow-edge-label { pointer-events: auto; cursor: pointer; }
+  .qi-flow-edge-label circle { fill: #fff; stroke: var(--edge-color); stroke-width: 1.5px; }
+  .qi-flow-edge-label text { fill: #343a40; font-size: 9px; font-weight: 750; text-anchor: middle; dominant-baseline: central; }
+  .qi-flow-edge-label.dim { opacity: .2; }
+  .qi-flow-dot { pointer-events: none; }
+
+  .qi-flow-inspector { border: 1px solid #dee2e6; border-radius: 6px; background: #fff; overflow: hidden; }
+  .qi-flow-inspector-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 8px 10px; border-bottom: 1px solid #e9ecef; background: #f8f9fa; }
+  .qi-flow-inspector-head strong { color: #343a40; font-size: 11px; }
+  .qi-flow-inspector-head span { color: #6c757d; font-size: 9.5px; }
+  .qi-flow-inspector-papers { display: flex; gap: 9px; margin-left: auto; }
+  .qi-flow-inspector-paper { display: inline-flex; align-items: center; gap: 4px; color: #495057; font-size: 9px; }
+  .qi-flow-paragraphs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; max-height: 310px; padding: 9px; overflow: auto; }
+  .qi-flow-paragraph {
+    padding: 7px 8px; border: 1px solid #dee2e6; border-left: 4px solid var(--paper-color); border-radius: 5px;
+    background: #fff; color: #343a40; text-align: left; cursor: pointer;
+  }
+  .qi-flow-paragraph:hover, .qi-flow-paragraph.open { border-color: var(--paper-color); box-shadow: 0 0 0 1px var(--paper-color); }
+  .qi-flow-paragraph-meta { margin-bottom: 3px; color: #868e96; font-size: 8px; }
+  .qi-flow-paragraph-question { color: #343a40; font-size: 9.5px; font-weight: 650; line-height: 1.35; }
+  .qi-flow-paragraph-text { display: none; margin-top: 5px; color: #495057; font-size: 9px; line-height: 1.42; }
+  .qi-flow-paragraph.open .qi-flow-paragraph-text { display: block; }
+  .qi-flow-empty { padding: 18px; color: #868e96; font-size: 10px; text-align: center; }
+  @media (max-width: 900px) {
+    .qi-flow-revision { grid-template-columns: 1fr; }
+    .qi-flow-paragraphs { grid-template-columns: 1fr; }
+    .qi-flow-question-control { min-width: 100%; }
+  }
 </style>
 </head>
 <body>
@@ -333,8 +433,9 @@
 <script>
 const GRANULARITIES = ["sections", "paragraphs"]; // matching/data granularities
 const GRANULARITY_LABELS = { sections: "Section", paragraphs: "Paragraph" };
-const TABS = ["sections", "paragraphs", "groups", "paper-map", "qi-trace"]; // display-only views are not matching granularities
-const TAB_LABELS = { sections: "Section", paragraphs: "Paragraph", groups: "Groups", "paper-map": "Paper Map", "qi-trace": "QI-Prime Trace" };
+const ENABLE_QI_FLOW_VIEW = true; // independent experimental surface; set false to hide without affecting the trace view
+const TABS = ["sections", "paragraphs", "groups", "paper-map", "qi-trace", ...(ENABLE_QI_FLOW_VIEW ? ["qi-flow"] : [])]; // display-only views are not matching granularities
+const TAB_LABELS = { sections: "Section", paragraphs: "Paragraph", groups: "Groups", "paper-map": "Paper Map", "qi-trace": "QI-Prime Trace", "qi-flow": "QI-Prime Flow" };
 
 const stage = document.getElementById("stage");
 const granularityTabsEl = document.getElementById("granularityTabs");
@@ -375,6 +476,14 @@ let traceSelectedGroupId = null;
 let tracePaperFilter = "all";
 let traceChangedOnly = false;
 let traceSelectedParagraphKey = null;
+
+let qiFlowTransition = 1;
+let qiFlowPaperFilter = "all";
+let qiFlowSelectedEdgeId = null;
+let qiFlowPlaying = false;
+let qiFlowTimer = null;
+let qiFlowCurrentModel = null;
+const qiFlowExpandedParagraphKeys = new Set();
 
 // Fixed per-paper colors (not tag-derived, so this isn't the hash-based tag
 // coloring that was removed earlier -- paper identity is a small, fixed,
@@ -1152,15 +1261,17 @@ function traceMemberSet(group) {
 }
 
 function traceFlowItems(keys, assignments, iteration) {
-  const counts = new Map();
+  const keysByGroup = new Map();
   keys.forEach(key => {
     const groupId = assignments.get(key) || null;
-    counts.set(groupId, (counts.get(groupId) || 0) + 1);
+    if (!keysByGroup.has(groupId)) keysByGroup.set(groupId, []);
+    keysByGroup.get(groupId).push(key);
   });
-  return [...counts.entries()]
-    .map(([groupId, count]) => ({
+  return [...keysByGroup.entries()]
+    .map(([groupId, paragraphKeys]) => ({
       groupId,
-      count,
+      count: paragraphKeys.length,
+      paragraphKeys,
       iteration,
       label: traceGroupLabel(iteration, groupId),
       question: groupId ? (traceGroupForIteration(iteration, groupId)?.overarching_question || "Group not present in this snapshot") : "No group assignment",
@@ -1482,6 +1593,516 @@ function attachQiPrimeTraceInteractions(model) {
   });
 }
 
+function qiFlowPaperCounts(paragraphKeys) {
+  const counts = Object.fromEntries(allPapers.map(paper => [paper.paper_id, 0]));
+  paragraphKeys.forEach(key => {
+    const paperId = key.slice(0, key.indexOf(":"));
+    counts[paperId] = (counts[paperId] || 0) + 1;
+  });
+  return counts;
+}
+
+function renderQiFlowPaperMarkers(paragraphKeys) {
+  const counts = qiFlowPaperCounts(paragraphKeys);
+  return `<span class="qi-flow-node-papers">${allPapers.map(paper => {
+    const count = counts[paper.paper_id] || 0;
+    const state = count ? "represented" : "missing";
+    const title = `${paper.title}: ${count} paragraph${count === 1 ? "" : "s"}`;
+    return `<span class="unit-square ${state}" style="--paper-color:${paperColorById[paper.paper_id] || "#ced4da"}" title="${escapeHtml(title)}"></span>`;
+  }).join("")}</span>`;
+}
+
+function qiFlowBalance(iteration, groupId, memberKeys) {
+  if (iteration === 0 || !groupId) return null;
+  const stored = groupBalanceByIteration[iteration]?.[groupId];
+  if (stored !== undefined) return stored;
+  const represented = Object.values(qiFlowPaperCounts(memberKeys)).filter(Boolean).length;
+  return allPapers.length ? (represented / allPapers.length) * 100 : 0;
+}
+
+function buildQiFlowNode(traceModel, { key, iteration, groupId, role, flowKeys = [], focal = false }) {
+  const group = groupId ? traceGroupForIteration(iteration, groupId) : null;
+  const memberKeys = [...traceMemberSet(group)];
+  const dropped = focal && !group;
+  const unassigned = !focal && !groupId;
+  const color = groupId ? (traceModel.colorByGroupId.get(groupId) || paperMapColor(0)) : { border: "#adb5bd", fill: "#fff" };
+  const roleLabels = { previous: "selected before", current: "selected after", source: "source question", destination: "destination question" };
+  return {
+    key,
+    iteration,
+    groupId,
+    group,
+    role,
+    focal,
+    dropped,
+    unassigned,
+    color,
+    flowKeys,
+    memberKeys,
+    balance: qiFlowBalance(iteration, groupId, memberKeys),
+    label: group ? traceGroupLabel(iteration, groupId) : focal ? `Iteration ${iteration}` : "Unassigned",
+    question: group ? compactText(group.overarching_question) : dropped ? "This QI-Prime is not present in this saved snapshot." : "No question group assignment",
+    kind: dropped ? "dropped" : unassigned ? "unassigned" : roleLabels[role] || role,
+    targetGroupId: groupId && traceGroupForIteration(0, groupId) ? groupId : null,
+  };
+}
+
+function buildQiPrimeFlowModel(groupId, transition) {
+  const traceModel = buildQiPrimeTraceModel(groupId);
+  const previousIteration = transition - 1;
+  const currentIteration = transition;
+  const previousStage = traceModel.stages[previousIteration];
+  const currentStage = traceModel.stages[currentIteration];
+  const previousSelected = buildQiFlowNode(traceModel, {
+    key: "selected:previous", iteration: previousIteration, groupId, role: "previous", focal: true,
+  });
+  const currentSelected = buildQiFlowNode(traceModel, {
+    key: "selected:current", iteration: currentIteration, groupId, role: "current", focal: true,
+  });
+  const sourceNodes = currentStage.sources.map(item => buildQiFlowNode(traceModel, {
+    key: `source:${item.groupId || "unassigned"}`,
+    iteration: previousIteration,
+    groupId: item.groupId,
+    role: "source",
+    flowKeys: item.paragraphKeys,
+  }));
+  const destinationNodes = currentStage.destinations.map(item => buildQiFlowNode(traceModel, {
+    key: `destination:${item.groupId || "unassigned"}`,
+    iteration: currentIteration,
+    groupId: item.groupId,
+    role: "destination",
+    flowKeys: item.paragraphKeys,
+  }));
+
+  const nodes = [previousSelected, currentSelected, ...sourceNodes, ...destinationNodes];
+  const nodesByKey = new Map(nodes.map(node => [node.key, node]));
+  const selectedColor = traceModel.colorByGroupId.get(groupId) || paperMapColor(0);
+  const edges = [];
+  if (currentStage.retained.length) {
+    edges.push({
+      id: "retained",
+      kind: "retained",
+      from: previousSelected.key,
+      to: currentSelected.key,
+      paragraphKeys: currentStage.retained,
+      color: selectedColor.border,
+      label: `${currentStage.retained.length} retained`,
+    });
+  }
+  currentStage.sources.forEach(item => {
+    const sourceKey = `source:${item.groupId || "unassigned"}`;
+    const sourceNode = nodesByKey.get(sourceKey);
+    edges.push({
+      id: `arrived:${item.groupId || "unassigned"}`,
+      kind: "arrived",
+      from: sourceKey,
+      to: currentSelected.key,
+      paragraphKeys: item.paragraphKeys,
+      color: sourceNode?.color.border || "#868e96",
+      label: `${item.count} arrived`,
+    });
+  });
+  currentStage.destinations.forEach(item => {
+    const destinationKey = `destination:${item.groupId || "unassigned"}`;
+    const destinationNode = nodesByKey.get(destinationKey);
+    edges.push({
+      id: `departed:${item.groupId || "unassigned"}`,
+      kind: "departed",
+      from: previousSelected.key,
+      to: destinationKey,
+      paragraphKeys: item.paragraphKeys,
+      color: destinationNode?.color.border || "#868e96",
+      label: `${item.count} departed`,
+    });
+  });
+  edges.forEach(edge => {
+    edge.fromNode = nodesByKey.get(edge.from);
+    edge.toNode = nodesByKey.get(edge.to);
+  });
+
+  return {
+    traceModel,
+    groupId,
+    transition,
+    previousIteration,
+    currentIteration,
+    previousStage,
+    currentStage,
+    previousSelected,
+    currentSelected,
+    sourceNodes,
+    destinationNodes,
+    nodes,
+    nodesByKey,
+    edges,
+  };
+}
+
+function splitQiFlowNodes(nodes) {
+  const top = [];
+  const bottom = [];
+  nodes.forEach((node, index) => (index % 2 ? bottom : top).push(node));
+  return { top, bottom };
+}
+
+function renderQiFlowNode(node) {
+  const classes = ["qi-flow-node", node.focal ? "focal" : "", node.dropped ? "dropped" : "", node.unassigned ? "unassigned" : ""].filter(Boolean).join(" ");
+  const balance = node.dropped || node.unassigned ? "—" : node.iteration === 0 ? "pre-assignment" : formatTraceBalance(node.balance);
+  const paragraphSummary = node.focal
+    ? `<strong>${node.memberKeys.length}</strong> total paragraphs`
+    : `<strong>${node.flowKeys.length}</strong> moving · ${node.memberKeys.length} total`;
+  const representedKeys = node.focal ? node.memberKeys : node.flowKeys;
+  const targetAttribute = node.targetGroupId && node.targetGroupId !== traceSelectedGroupId
+    ? ` data-qi-flow-target-group="${escapeHtml(node.targetGroupId)}" title="Trace this QI-Prime lineage"`
+    : "";
+  const tagName = targetAttribute ? "button" : "article";
+  const typeAttribute = targetAttribute ? ` type="button"` : "";
+  return `<${tagName}${typeAttribute} class="${classes}" data-qi-flow-node-key="${escapeHtml(node.key)}"${targetAttribute} style="--node-color:${node.color.border};--node-fill:${node.color.fill}">
+    <div class="qi-flow-node-head"><span class="qi-flow-node-label">${escapeHtml(node.label)}</span><span class="qi-flow-node-kind">${escapeHtml(node.kind)}</span></div>
+    <div class="qi-flow-node-question">${escapeHtml(node.question)}</div>
+    <div class="qi-flow-node-meta"><span>${paragraphSummary}</span><span>balance <strong>${balance}</strong></span>${renderQiFlowPaperMarkers(representedKeys)}</div>
+  </${tagName}>`;
+}
+
+function renderQiFlowColumn(selectedNode, peripheralNodes) {
+  const split = splitQiFlowNodes(peripheralNodes);
+  const renderStack = nodes => nodes.map(renderQiFlowNode).join("");
+  return `<div class="qi-flow-column"><div class="qi-flow-stack">${renderStack(split.top)}</div>${renderQiFlowNode(selectedNode)}<div class="qi-flow-stack">${renderStack(split.bottom)}</div></div>`;
+}
+
+function qiFlowStageBalanceLabel(stageState) {
+  if (stageState.iteration === 0) return "pre";
+  return stageState.group ? formatTraceBalance(stageState.balance) : "—";
+}
+
+function renderQiFlowRevision(model, animate) {
+  const before = model.previousStage;
+  const after = model.currentStage;
+  let state = "Question unchanged";
+  let description = `${traceIterationGroupLabel(before.iteration, model.groupId)} to ${traceIterationGroupLabel(after.iteration, model.groupId)}`;
+  let diff = "No wording change";
+  if (before.group && after.group && after.questionChanged) {
+    state = "Question revised";
+    diff = renderQuestionDiff(before.question, after.question);
+  } else if (before.group && !after.group) {
+    state = "QI-Prime dropped";
+    description = `The stable group ID leaves the candidate set at Iteration ${after.iteration}`;
+    diff = `<del>${escapeHtml(before.question)}</del> <ins>No revised question</ins>`;
+  } else if (!before.group && !after.group) {
+    state = "Lineage already dropped";
+    description = "No selected question exists in either saved snapshot";
+    diff = "No question revision is available";
+  } else if (!before.group && after.group) {
+    state = "QI-Prime restored";
+    diff = `<ins>${escapeHtml(after.question)}</ins>`;
+  }
+  const metric = (label, beforeValue, afterValue) => `<div class="qi-flow-metric">${escapeHtml(label)}<strong>${escapeHtml(beforeValue)} &rarr; ${escapeHtml(afterValue)}</strong></div>`;
+  return `<section class="qi-flow-revision">
+    <div class="qi-flow-revision-state"><strong>${escapeHtml(state)}</strong><span>${escapeHtml(description)}</span></div>
+    <div class="qi-flow-revision-diff${animate ? " replay" : ""}"><span class="qi-trace-question-diff-label">Question wording</span>${diff}</div>
+    <div class="qi-flow-revision-metrics">
+      ${metric("paragraphs", String(before.memberKeys.size), String(after.memberKeys.size))}
+      ${metric("paper coverage", `${before.representedPaperCount}/${allPapers.length}`, `${after.representedPaperCount}/${allPapers.length}`)}
+      ${metric("balance", qiFlowStageBalanceLabel(before), qiFlowStageBalanceLabel(after))}
+    </div>
+  </section>`;
+}
+
+function renderQiFlowCanvas(model) {
+  const largestHalfStack = Math.max(Math.ceil(model.sourceNodes.length / 2), Math.ceil(model.destinationNodes.length / 2));
+  const canvasHeight = Math.max(560, 210 + largestHalfStack * 185);
+  return `<div class="qi-flow-canvas-scroll"><div class="qi-flow-canvas" style="--qi-flow-canvas-height:${canvasHeight}px">
+    <svg class="qi-flow-svg" aria-label="Paragraph flows from Iteration ${model.previousIteration} to Iteration ${model.currentIteration}"></svg>
+    <span class="qi-flow-column-heading left">Iteration ${model.previousIteration} questions</span>
+    <span class="qi-flow-column-heading right">Iteration ${model.currentIteration} questions</span>
+    <div class="qi-flow-columns">${renderQiFlowColumn(model.previousSelected, model.sourceNodes)}${renderQiFlowColumn(model.currentSelected, model.destinationNodes)}</div>
+  </div></div>`;
+}
+
+function qiFlowEdgeWidth(count) {
+  return Math.min(18, 2.5 + Math.sqrt(Math.max(1, count)) * 2.7);
+}
+
+function qiFlowEdgePortY(edge, node, edgesForNode, nodeRects, canvasRect, endpoint) {
+  const sorted = [...edgesForNode].sort((a, b) => {
+    const otherA = nodeRects.get(endpoint === "from" ? a.to : a.from);
+    const otherB = nodeRects.get(endpoint === "from" ? b.to : b.from);
+    const centerA = otherA ? otherA.top + otherA.height / 2 : 0;
+    const centerB = otherB ? otherB.top + otherB.height / 2 : 0;
+    return centerA - centerB;
+  });
+  const index = Math.max(0, sorted.findIndex(candidate => candidate.id === edge.id));
+  const rect = nodeRects.get(node.key);
+  const padding = Math.min(18, rect.height * .22);
+  const usable = Math.max(8, rect.height - padding * 2);
+  return rect.top - canvasRect.top + padding + ((index + 1) * usable) / (sorted.length + 1);
+}
+
+function drawQiPrimeFlowLinks(model, animateDots = true) {
+  const canvas = stage.querySelector(".qi-flow-canvas");
+  const svg = stage.querySelector(".qi-flow-svg");
+  if (!canvas || !svg) return;
+  const canvasRect = canvas.getBoundingClientRect();
+  const nodeRects = new Map();
+  stage.querySelectorAll("[data-qi-flow-node-key]").forEach(node => nodeRects.set(node.dataset.qiFlowNodeKey, node.getBoundingClientRect()));
+  const drawableEdges = model.edges.filter(edge => nodeRects.has(edge.from) && nodeRects.has(edge.to));
+  const outgoing = new Map();
+  const incoming = new Map();
+  drawableEdges.forEach(edge => {
+    if (!outgoing.has(edge.from)) outgoing.set(edge.from, []);
+    if (!incoming.has(edge.to)) incoming.set(edge.to, []);
+    outgoing.get(edge.from).push(edge);
+    incoming.get(edge.to).push(edge);
+  });
+  const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  const paths = [];
+  const dots = [];
+  const labels = [];
+  const hits = [];
+  drawableEdges.forEach(edge => {
+    const fromRect = nodeRects.get(edge.from);
+    const toRect = nodeRects.get(edge.to);
+    const x1 = fromRect.right - canvasRect.left;
+    const x2 = toRect.left - canvasRect.left;
+    const y1 = qiFlowEdgePortY(edge, edge.fromNode, outgoing.get(edge.from), nodeRects, canvasRect, "from");
+    const y2 = qiFlowEdgePortY(edge, edge.toNode, incoming.get(edge.to), nodeRects, canvasRect, "to");
+    const controlOffset = Math.max(90, (x2 - x1) * .42);
+    const path = `M ${x1.toFixed(1)} ${y1.toFixed(1)} C ${(x1 + controlOffset).toFixed(1)} ${y1.toFixed(1)}, ${(x2 - controlOffset).toFixed(1)} ${y2.toFixed(1)}, ${x2.toFixed(1)} ${y2.toFixed(1)}`;
+    const width = qiFlowEdgeWidth(edge.paragraphKeys.length);
+    const selected = edge.id === qiFlowSelectedEdgeId ? " selected" : "";
+    const style = `--edge-color:${edge.color};--edge-width:${width.toFixed(1)}px;--edge-selected-width:${(width + 3).toFixed(1)}px;--edge-hit-width:${Math.max(18, width + 10).toFixed(1)}px`;
+    paths.push(`<path class="qi-flow-edge-visible${selected}" data-qi-flow-edge="${escapeHtml(edge.id)}" d="${path}" style="${style}" marker-end="url(#qiFlowArrow)"></path>`);
+    hits.push(`<path class="qi-flow-edge-hit" data-qi-flow-edge="${escapeHtml(edge.id)}" d="${path}" style="${style}"><title>${escapeHtml(edge.label)}</title></path>`);
+    const labelT = edge.kind === "arrived" ? .62 : edge.kind === "departed" ? .38 : .5;
+    const cubicPoint = (p0, p1, p2, p3, t) => ((1 - t) ** 3) * p0 + 3 * ((1 - t) ** 2) * t * p1 + 3 * (1 - t) * (t ** 2) * p2 + (t ** 3) * p3;
+    const midX = cubicPoint(x1, x1 + controlOffset, x2 - controlOffset, x2, labelT);
+    const midY = cubicPoint(y1, y1, y2, y2, labelT);
+    labels.push(`<g class="qi-flow-edge-label" data-qi-flow-edge="${escapeHtml(edge.id)}" transform="translate(${midX.toFixed(1)} ${midY.toFixed(1)})" style="--edge-color:${edge.color}"><circle r="11"></circle><text y=".5">${edge.paragraphKeys.length}</text><title>${escapeHtml(edge.label)}</title></g>`);
+    if (animateDots && !reduceMotion) {
+      edge.paragraphKeys.forEach((key, index) => {
+        const paperId = key.slice(0, key.indexOf(":"));
+        const color = paperColorById[paperId] || "#495057";
+        const emphasized = qiFlowPaperFilter === "all" || qiFlowPaperFilter === paperId;
+        const peakOpacity = emphasized ? .92 : .12;
+        const delay = (index % 14) * .035;
+        dots.push(`<circle class="qi-flow-dot" data-qi-flow-edge="${escapeHtml(edge.id)}" r="3.2" fill="${color}" opacity="0">
+          <animate attributeName="opacity" values="0;${peakOpacity};${peakOpacity};0" keyTimes="0;.08;.9;1" dur="1.25s" begin="${delay.toFixed(2)}s" fill="freeze"></animate>
+          <animateMotion path="${path}" dur="1.25s" begin="${delay.toFixed(2)}s" fill="freeze"></animateMotion>
+        </circle>`);
+      });
+    }
+  });
+  svg.setAttribute("viewBox", `0 0 ${canvas.clientWidth} ${canvas.clientHeight}`);
+  svg.innerHTML = `<defs><marker id="qiFlowArrow" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#868e96"></path></marker></defs>${paths.join("")}${dots.join("")}${hits.join("")}${labels.join("")}`;
+  attachQiFlowSvgInteractions(model);
+  setQiFlowEmphasis(model);
+}
+
+function setQiFlowEmphasis(model, hoveredEdgeId = null, hoveredNodeKey = null) {
+  const hoveredEdges = hoveredNodeKey
+    ? new Set(model.edges.filter(edge => edge.from === hoveredNodeKey || edge.to === hoveredNodeKey).map(edge => edge.id))
+    : hoveredEdgeId ? new Set([hoveredEdgeId]) : null;
+  const highlightedNodes = new Set();
+  if (hoveredEdges) {
+    model.edges.filter(edge => hoveredEdges.has(edge.id)).forEach(edge => { highlightedNodes.add(edge.from); highlightedNodes.add(edge.to); });
+  } else if (qiFlowSelectedEdgeId) {
+    const selected = model.edges.find(edge => edge.id === qiFlowSelectedEdgeId);
+    if (selected) { highlightedNodes.add(selected.from); highlightedNodes.add(selected.to); }
+  }
+  stage.querySelectorAll(".qi-flow-edge-visible").forEach(path => {
+    const selected = path.dataset.qiFlowEdge === qiFlowSelectedEdgeId;
+    const highlighted = hoveredEdges?.has(path.dataset.qiFlowEdge) || false;
+    path.classList.toggle("selected", selected);
+    path.classList.toggle("highlight", highlighted);
+    path.classList.toggle("dim", Boolean(hoveredEdges) && !highlighted);
+  });
+  stage.querySelectorAll(".qi-flow-edge-label").forEach(label => {
+    label.classList.toggle("dim", Boolean(hoveredEdges) && !hoveredEdges.has(label.dataset.qiFlowEdge));
+  });
+  stage.querySelectorAll(".qi-flow-node").forEach(node => {
+    const highlighted = highlightedNodes.has(node.dataset.qiFlowNodeKey);
+    node.classList.toggle("highlight", highlighted);
+    node.classList.toggle("dim", Boolean(hoveredEdges) && !highlighted);
+  });
+}
+
+function renderQiFlowInspector(model) {
+  const slot = document.getElementById("qiFlowInspector");
+  if (!slot) return;
+  const edge = model.edges.find(candidate => candidate.id === qiFlowSelectedEdgeId);
+  if (!edge) {
+    slot.innerHTML = `<div class="qi-flow-empty">Select a link to inspect the exact paragraphs moving along it.</div>`;
+    return;
+  }
+  const allKeys = [...edge.paragraphKeys].sort(traceParagraphSort);
+  const visibleKeys = qiFlowPaperFilter === "all" ? allKeys : allKeys.filter(key => key.startsWith(`${qiFlowPaperFilter}:`));
+  const paperCounts = qiFlowPaperCounts(allKeys);
+  const paperSummary = allPapers.map(paper => `<span class="qi-flow-inspector-paper"><span class="papers-legend-swatch" style="background:${paperColorById[paper.paper_id]}"></span>${escapeHtml(shortPaperLabel(paper))} <strong>${paperCounts[paper.paper_id] || 0}</strong></span>`).join("");
+  const direction = edge.kind === "retained" ? "Retained in the selected QI-Prime" : edge.kind === "arrived" ? "Arrived in the selected QI-Prime" : "Departed from the selected QI-Prime";
+  const route = `${edge.fromNode.label}: ${edge.fromNode.question} → ${edge.toNode.label}: ${edge.toNode.question}`;
+  const cards = visibleKeys.map(key => {
+    const delimiter = key.indexOf(":");
+    const paperId = key.slice(0, delimiter);
+    const unitId = key.slice(delimiter + 1);
+    const paper = allPapers.find(candidate => candidate.paper_id === paperId);
+    const unit = paragraphUnitLookup[key];
+    const open = qiFlowExpandedParagraphKeys.has(key);
+    return `<button type="button" class="qi-flow-paragraph${open ? " open" : ""}" data-qi-flow-paragraph="${escapeHtml(key)}" style="--paper-color:${paperColorById[paperId] || "#868e96"}">
+      <div class="qi-flow-paragraph-meta">${escapeHtml(shortPaperLabel(paper || { paper_id: paperId }))} · ${escapeHtml(unitId)}</div>
+      <div class="qi-flow-paragraph-question">${escapeHtml(unit?.tag || "(no paragraph question)")}</div>
+      <div class="qi-flow-paragraph-text">${escapeHtml(compactText(unit?.text))}</div>
+    </button>`;
+  }).join("");
+  slot.innerHTML = `<div class="qi-flow-inspector-head"><strong>${escapeHtml(direction)} · ${edge.paragraphKeys.length} paragraph${edge.paragraphKeys.length === 1 ? "" : "s"}</strong><span title="${escapeHtml(route)}">${escapeHtml(route)}</span><div class="qi-flow-inspector-papers">${paperSummary}</div></div>
+    ${cards ? `<div class="qi-flow-paragraphs">${cards}</div>` : `<div class="qi-flow-empty">No paragraphs on this link match the paper filter.</div>`}`;
+  slot.querySelectorAll("[data-qi-flow-paragraph]").forEach(button => {
+    button.addEventListener("click", () => {
+      const key = button.dataset.qiFlowParagraph;
+      if (qiFlowExpandedParagraphKeys.has(key)) qiFlowExpandedParagraphKeys.delete(key);
+      else qiFlowExpandedParagraphKeys.add(key);
+      button.classList.toggle("open", qiFlowExpandedParagraphKeys.has(key));
+    });
+  });
+}
+
+function attachQiFlowSvgInteractions(model) {
+  stage.querySelectorAll("[data-qi-flow-edge]").forEach(element => {
+    const edgeId = element.dataset.qiFlowEdge;
+    if (element.classList.contains("qi-flow-dot")) return;
+    element.addEventListener("mouseenter", () => setQiFlowEmphasis(model, edgeId));
+    element.addEventListener("mouseleave", () => setQiFlowEmphasis(model));
+    element.addEventListener("click", event => {
+      event.stopPropagation();
+      qiFlowSelectedEdgeId = edgeId;
+      setQiFlowEmphasis(model);
+      renderQiFlowInspector(model);
+    });
+  });
+}
+
+function stopQiFlowPlayback() {
+  if (qiFlowTimer) clearInterval(qiFlowTimer);
+  qiFlowTimer = null;
+  qiFlowPlaying = false;
+}
+
+function startQiFlowPlayback() {
+  stopQiFlowPlayback();
+  if (qiFlowTransition >= N_ITERATIONS) qiFlowTransition = 1;
+  qiFlowPlaying = true;
+  qiFlowSelectedEdgeId = null;
+  renderQiPrimeFlow();
+  qiFlowTimer = setInterval(() => {
+    if (qiFlowTransition >= N_ITERATIONS) {
+      stopQiFlowPlayback();
+      renderQiPrimeFlow({ animateDots: false });
+      return;
+    }
+    qiFlowTransition += 1;
+    qiFlowSelectedEdgeId = null;
+    renderQiPrimeFlow();
+  }, 2300);
+}
+
+function renderQiPrimeFlow({ animateDots = true } = {}) {
+  const qiPrimes = iterationGroups[0] || [];
+  if (!qiPrimes.length) {
+    stage.innerHTML = `<div class="empty-state">No Iteration 0 QI-Primes are available to animate.</div>`;
+    return;
+  }
+  if (!traceSelectedGroupId || !traceGroupForIteration(0, traceSelectedGroupId)) traceSelectedGroupId = qiPrimes[0].group_id;
+  qiFlowTransition = Math.max(1, Math.min(N_ITERATIONS, qiFlowTransition));
+  const model = buildQiPrimeFlowModel(traceSelectedGroupId, qiFlowTransition);
+  qiFlowCurrentModel = model;
+  if (qiFlowSelectedEdgeId && !model.edges.some(edge => edge.id === qiFlowSelectedEdgeId)) qiFlowSelectedEdgeId = null;
+  if (!qiFlowSelectedEdgeId) qiFlowSelectedEdgeId = model.edges.find(edge => edge.kind === "retained")?.id || model.edges[0]?.id || null;
+  const groupOptions = qiPrimes.map((group, index) => `<option value="${escapeHtml(group.group_id)}"${group.group_id === traceSelectedGroupId ? " selected" : ""}>QI-${index + 1} · ${escapeHtml(compactText(group.overarching_question))}</option>`).join("");
+  const paperOptions = [`<option value="all"${qiFlowPaperFilter === "all" ? " selected" : ""}>All papers</option>`]
+    .concat(allPapers.map(paper => `<option value="${escapeHtml(paper.paper_id)}"${qiFlowPaperFilter === paper.paper_id ? " selected" : ""}>${escapeHtml(shortPaperLabel(paper))}</option>`))
+    .join("");
+  const steps = Array.from({ length: N_ITERATIONS }, (_, index) => index + 1).map(transition => `<button type="button" class="qi-flow-step-button${transition === qiFlowTransition ? " active" : ""}" data-qi-flow-transition="${transition}">I${transition - 1} &rarr; I${transition}</button>`).join("");
+  stage.innerHTML = `<div class="qi-flow-shell">
+    <div class="qi-flow-toolbar">
+      <label class="qi-flow-question-control"><span class="qi-trace-control-label">Iteration 0 QI-Prime</span><select id="qiFlowGroupSelect">${groupOptions}</select></label>
+      <div class="qi-flow-playback" role="group" aria-label="Flow playback controls">
+        <button type="button" class="qi-flow-control-button" id="qiFlowPrevious"${qiFlowTransition <= 1 ? " disabled" : ""}>Previous</button>
+        <button type="button" class="qi-flow-control-button${qiFlowPlaying ? " active" : ""}" id="qiFlowPlay">${qiFlowPlaying ? "Pause" : "Play"}</button>
+        <button type="button" class="qi-flow-control-button" id="qiFlowReplay">Replay</button>
+        <button type="button" class="qi-flow-control-button" id="qiFlowNext"${qiFlowTransition >= N_ITERATIONS ? " disabled" : ""}>Next</button>
+      </div>
+      <div class="qi-flow-stepper" aria-label="Saved transitions">${steps}</div>
+      <label class="qi-trace-control-label">Paragraph dots <select id="qiFlowPaperFilter" class="qi-flow-paper-select">${paperOptions}</select></label>
+      <div class="qi-flow-provenance">Link width and numbered markers show paragraph count; moving dots use paper colors. This is a deterministic replay of differences between saved snapshots, not a claim about unrecorded ordering inside an iteration.</div>
+    </div>
+    ${renderQiFlowRevision(model, animateDots)}
+    ${renderQiFlowCanvas(model)}
+    <section class="qi-flow-inspector" id="qiFlowInspector"></section>
+  </div>`;
+  attachQiPrimeFlowInteractions(model);
+  renderQiFlowInspector(model);
+  requestAnimationFrame(() => drawQiPrimeFlowLinks(model, animateDots));
+}
+
+function attachQiPrimeFlowInteractions(model) {
+  const shell = stage.querySelector(".qi-flow-shell");
+  if (shell) shell.addEventListener("click", event => event.stopPropagation());
+  document.getElementById("qiFlowGroupSelect")?.addEventListener("change", event => {
+    stopQiFlowPlayback();
+    traceSelectedGroupId = event.target.value;
+    qiFlowSelectedEdgeId = null;
+    qiFlowExpandedParagraphKeys.clear();
+    renderQiPrimeFlow();
+  });
+  document.getElementById("qiFlowPaperFilter")?.addEventListener("change", event => {
+    qiFlowPaperFilter = event.target.value;
+    renderQiPrimeFlow();
+  });
+  document.getElementById("qiFlowPrevious")?.addEventListener("click", () => {
+    stopQiFlowPlayback();
+    qiFlowTransition = Math.max(1, qiFlowTransition - 1);
+    qiFlowSelectedEdgeId = null;
+    renderQiPrimeFlow();
+  });
+  document.getElementById("qiFlowNext")?.addEventListener("click", () => {
+    stopQiFlowPlayback();
+    qiFlowTransition = Math.min(N_ITERATIONS, qiFlowTransition + 1);
+    qiFlowSelectedEdgeId = null;
+    renderQiPrimeFlow();
+  });
+  document.getElementById("qiFlowReplay")?.addEventListener("click", () => {
+    stopQiFlowPlayback();
+    renderQiPrimeFlow();
+  });
+  document.getElementById("qiFlowPlay")?.addEventListener("click", () => {
+    if (qiFlowPlaying) {
+      stopQiFlowPlayback();
+      renderQiPrimeFlow({ animateDots: false });
+    } else startQiFlowPlayback();
+  });
+  stage.querySelectorAll("[data-qi-flow-transition]").forEach(button => {
+    button.addEventListener("click", () => {
+      stopQiFlowPlayback();
+      qiFlowTransition = Number(button.dataset.qiFlowTransition);
+      qiFlowSelectedEdgeId = null;
+      renderQiPrimeFlow();
+    });
+  });
+  stage.querySelectorAll("[data-qi-flow-node-key]").forEach(node => {
+    const nodeKey = node.dataset.qiFlowNodeKey;
+    node.addEventListener("mouseenter", () => setQiFlowEmphasis(model, null, nodeKey));
+    node.addEventListener("mouseleave", () => setQiFlowEmphasis(model));
+  });
+  stage.querySelectorAll("[data-qi-flow-target-group]").forEach(button => {
+    button.addEventListener("click", () => {
+      stopQiFlowPlayback();
+      traceSelectedGroupId = button.dataset.qiFlowTargetGroup;
+      qiFlowSelectedEdgeId = null;
+      qiFlowExpandedParagraphKeys.clear();
+      renderQiPrimeFlow();
+    });
+  });
+}
+
 // Recomputes currentLinks from rawLinksForGranularity + similarityThreshold, then
 // fully re-renders. Shared by granularity switches and similarity-slider changes,
 // since both change which links (and therefore which units) should be visible.
@@ -1495,6 +2116,7 @@ function applyFilterAndRender() {
 }
 
 function switchGranularity(granularity) {
+  if (currentGranularity === "qi-flow" && granularity !== "qi-flow") stopQiFlowPlayback();
   currentGranularity = granularity;
   buildGranularityTabs();
   if (granularity === "groups") {
@@ -1507,6 +2129,10 @@ function switchGranularity(granularity) {
   }
   if (granularity === "qi-trace") {
     renderQiPrimeTrace();
+    return;
+  }
+  if (granularity === "qi-flow") {
+    renderQiPrimeFlow();
     return;
   }
   rawLinksForGranularity = allLinksByGranularity[granularity] || [];
@@ -1543,7 +2169,8 @@ async function init() {
   });
   window.addEventListener("resize", () => {
     if (currentGranularity === "paper-map") updatePaperMapHeight();
-    else if (currentGranularity !== "groups") refreshView();
+    else if (currentGranularity === "qi-flow" && qiFlowCurrentModel) drawQiPrimeFlowLinks(qiFlowCurrentModel, false);
+    else if (GRANULARITIES.includes(currentGranularity)) refreshView();
   });
   previewSlider.addEventListener("input", () => {
     previewChars = Number(previewSlider.value);
