@@ -208,6 +208,105 @@
     --group-color: #ced4da;
     background: repeating-linear-gradient(-45deg, #ced4da 0, #ced4da 3px, #f1f3f5 3px, #f1f3f5 6px);
   }
+
+  .qi-trace-shell { display: grid; gap: 10px; min-width: 0; }
+  .qi-trace-toolbar {
+    display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; padding: 10px 12px;
+    border: 1px solid #dee2e6; border-radius: 6px; background: #fff;
+  }
+  .qi-trace-control { display: grid; gap: 4px; min-width: min(620px, 100%); }
+  .qi-trace-control-label { color: #495057; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; }
+  .qi-trace-select {
+    max-width: 760px; padding: 6px 8px; border: 1px solid #ced4da; border-radius: 4px;
+    background: #fff; color: #212529; font-size: 12px;
+  }
+  .qi-trace-summary { flex: 1 1 260px; color: #6c757d; font-size: 10.5px; line-height: 1.4; }
+  .qi-trace-summary strong { color: #343a40; }
+  .qi-trace-timeline {
+    display: grid; grid-template-columns: repeat(6, minmax(235px, 1fr)); gap: 8px;
+    min-width: 0; overflow-x: auto; padding: 1px 1px 7px;
+  }
+  .qi-trace-stage {
+    display: flex; flex-direction: column; min-height: 325px; padding: 9px;
+    border: 1px solid #dee2e6; border-top: 3px solid var(--trace-color); border-radius: 6px; background: #fff;
+  }
+  .qi-trace-stage.dropped { border-top-color: #adb5bd; background: #f8f9fa; }
+  .qi-trace-stage-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 7px; }
+  .qi-trace-stage-label { color: #343a40; font-size: 11px; font-weight: 750; }
+  .qi-trace-stage-state {
+    padding: 1px 6px; border: 1px solid #dee2e6; border-radius: 9px;
+    background: #f8f9fa; color: #6c757d; font-size: 9px; font-weight: 650;
+  }
+  .qi-trace-stage-state.revised { border-color: #74c0fc; background: #e7f5ff; color: #1864ab; }
+  .qi-trace-stage-state.dropped { border-color: #ced4da; background: #fff; color: #868e96; }
+  .qi-trace-question { min-height: 72px; color: #212529; font-size: 12px; font-weight: 700; line-height: 1.35; }
+  .qi-trace-question-diff {
+    min-height: 40px; margin: 6px 0; padding: 6px; border: 1px solid #e9ecef; border-radius: 4px;
+    background: #f8f9fa; color: #495057; font-size: 9.5px; line-height: 1.45;
+  }
+  .qi-trace-question-diff-label { display: block; margin-bottom: 2px; color: #868e96; font-size: 8.5px; font-weight: 700; text-transform: uppercase; }
+  .qi-trace-question-diff del { padding: 0 1px; background: #fff0f0; color: #c92a2a; }
+  .qi-trace-question-diff ins { padding: 0 1px; background: #ebfbee; color: #2b8a3e; text-decoration: none; }
+  .qi-trace-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin: 2px 0 7px; }
+  .qi-trace-stat { padding: 4px 5px; border: 1px solid #e9ecef; border-radius: 4px; background: #fff; }
+  .qi-trace-stat strong { display: block; color: #343a40; font-size: 11px; }
+  .qi-trace-stat span { color: #868e96; font-size: 8px; text-transform: uppercase; }
+  .qi-trace-paper-counts { display: grid; gap: 3px; margin-bottom: 7px; }
+  .qi-trace-paper-count {
+    display: grid; grid-template-columns: 9px minmax(0, 1fr) auto; align-items: center; gap: 5px;
+    color: #495057; font-size: 9.5px;
+  }
+  .qi-trace-paper-count .unit-square { width: 8px; height: 8px; }
+  .qi-trace-paper-count strong { color: #343a40; font-size: 9.5px; }
+  .qi-trace-membership-change {
+    margin-bottom: 5px; color: #6c757d; font-size: 8.5px; text-align: center;
+  }
+  .qi-trace-membership-change strong { color: #343a40; }
+  .qi-trace-flows { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: auto; }
+  .qi-trace-flow { min-width: 0; padding: 5px; border-top: 1px solid #e9ecef; }
+  .qi-trace-flow-title { display: block; margin-bottom: 3px; color: #868e96; font-size: 8px; font-weight: 700; text-transform: uppercase; }
+  .qi-trace-flow-chip {
+    display: block; width: 100%; margin: 2px 0; padding: 2px 4px; overflow: hidden; border: 1px solid #dee2e6;
+    border-radius: 3px; background: #fff; color: #495057; font-size: 8.5px; text-align: left; text-overflow: ellipsis; white-space: nowrap;
+  }
+  button.qi-trace-flow-chip { cursor: pointer; }
+  button.qi-trace-flow-chip:hover { border-color: #1c7ed6; color: #1864ab; }
+  .qi-trace-flow-empty { color: #adb5bd; font-size: 8.5px; font-style: italic; }
+  .qi-trace-dropped-note { margin: auto 0; color: #868e96; font-size: 10px; line-height: 1.45; }
+
+  .qi-trace-matrix-wrap { border: 1px solid #dee2e6; border-radius: 6px; background: #fff; overflow: hidden; }
+  .qi-trace-matrix-toolbar {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 8px 10px;
+    border-bottom: 1px solid #e9ecef; background: #f8f9fa; color: #495057; font-size: 10px;
+  }
+  .qi-trace-matrix-toolbar strong { color: #343a40; font-size: 11px; }
+  .qi-trace-matrix-toolbar select { padding: 3px 5px; border: 1px solid #ced4da; border-radius: 4px; background: #fff; color: #343a40; font-size: 10px; }
+  .qi-trace-matrix-scroller { max-height: 430px; overflow: auto; }
+  .qi-trace-matrix { width: 100%; min-width: 1120px; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
+  .qi-trace-matrix th, .qi-trace-matrix td { padding: 5px; border-right: 1px solid #e9ecef; border-bottom: 1px solid #e9ecef; vertical-align: middle; }
+  .qi-trace-matrix th { position: sticky; top: 0; z-index: 2; background: #f8f9fa; color: #495057; font-size: 9px; text-align: left; }
+  .qi-trace-matrix th:first-child { left: 0; z-index: 3; width: 250px; }
+  .qi-trace-matrix td:first-child { position: sticky; left: 0; z-index: 1; width: 250px; background: #fff; }
+  .qi-trace-matrix tr.selected td:first-child { background: #e7f5ff; }
+  .qi-trace-paragraph-button { width: 100%; padding: 0; border: 0; background: transparent; color: #343a40; font-size: 9.5px; text-align: left; cursor: pointer; }
+  .qi-trace-paragraph-button strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .qi-trace-paragraph-button span { display: block; overflow: hidden; color: #868e96; font-size: 8.5px; text-overflow: ellipsis; white-space: nowrap; }
+  .qi-trace-path-cell {
+    display: grid; gap: 2px; width: 100%; min-height: 38px; padding: 4px 5px;
+    border: 1px solid var(--path-color); border-radius: 4px; background: var(--path-fill); color: #343a40; font-size: 9px; text-align: left;
+  }
+  .qi-trace-path-cell.selected-lineage { border-width: 2px; font-weight: 700; }
+  .qi-trace-path-cell.unassigned { --path-color: #adb5bd; --path-fill: #f8f9fa; border-style: dashed; color: #868e96; }
+  .qi-trace-path-cell.changed { box-shadow: 0 0 0 1px #343a40; }
+  .qi-trace-path-state { color: #6c757d; font-size: 7.5px; font-weight: 500; }
+  .qi-trace-empty-rows { padding: 22px; color: #868e96; font-size: 11px; text-align: center; }
+  .qi-trace-paragraph-detail { padding: 10px 12px; border-top: 1px solid #e9ecef; background: #fff; }
+  .qi-trace-paragraph-detail h3 { margin: 0 0 5px; color: #343a40; font-size: 11px; }
+  .qi-trace-detail-question { margin-bottom: 5px; color: #343a40; font-size: 10px; font-weight: 650; }
+  .qi-trace-detail-text { max-height: 120px; overflow: auto; color: #495057; font-size: 10px; line-height: 1.45; }
+  .qi-trace-detail-route { display: flex; align-items: center; gap: 3px; flex-wrap: wrap; margin-top: 7px; }
+  .qi-trace-detail-route .qi-trace-path-cell { display: inline-grid; width: auto; min-width: 70px; min-height: 0; }
+  .qi-trace-route-arrow { color: #adb5bd; font-size: 10px; }
 </style>
 </head>
 <body>
@@ -233,8 +332,8 @@
 <script>
 const GRANULARITIES = ["sections", "paragraphs"]; // matching/data granularities
 const GRANULARITY_LABELS = { sections: "Section", paragraphs: "Paragraph" };
-const TABS = ["sections", "paragraphs", "groups", "paper-map"]; // display-only views are not matching granularities
-const TAB_LABELS = { sections: "Section", paragraphs: "Paragraph", groups: "Groups", "paper-map": "Paper Map" };
+const TABS = ["sections", "paragraphs", "groups", "paper-map", "qi-trace"]; // display-only views are not matching granularities
+const TAB_LABELS = { sections: "Section", paragraphs: "Paragraph", groups: "Groups", "paper-map": "Paper Map", "qi-trace": "QI-Prime Trace" };
 
 const stage = document.getElementById("stage");
 const granularityTabsEl = document.getElementById("granularityTabs");
@@ -270,6 +369,11 @@ let paperMapSyncScroll = false;
 let paperMapLastScrolledPaper = null;
 let paperMapScrollSyncing = false;
 const paperMapScrollByPaper = {};
+
+let traceSelectedGroupId = null;
+let tracePaperFilter = "all";
+let traceChangedOnly = false;
+let traceSelectedParagraphKey = null;
 
 // Fixed per-paper colors (not tag-derived, so this isn't the hash-based tag
 // coloring that was removed earlier -- paper identity is a small, fixed,
@@ -1005,6 +1109,373 @@ function attachPaperMapInteractions(model) {
   setPaperMapGroupEmphasis();
 }
 
+function traceIterationNumbers() {
+  return Array.from({ length: N_ITERATIONS + 1 }, (_, iteration) => iteration);
+}
+
+function traceGroupForIteration(iteration, groupId) {
+  return (iterationGroups[iteration] || []).find(group => group.group_id === groupId) || null;
+}
+
+function traceQiPrimeLabel(groupId) {
+  const index = (iterationGroups[0] || []).findIndex(group => group.group_id === groupId);
+  return index >= 0 ? `QI-${index + 1}` : groupId;
+}
+
+function traceGroupLabel(iteration, groupId) {
+  if (!groupId) return "Unassigned";
+  const index = (iterationGroups[iteration] || []).findIndex(group => group.group_id === groupId);
+  return index >= 0 ? `I${iteration}-${index + 1} · ${traceQiPrimeLabel(groupId)}` : `I${iteration} · ${traceQiPrimeLabel(groupId)}`;
+}
+
+function traceAssignmentMap(iteration) {
+  const assignments = new Map();
+  (iterationGroups[iteration] || []).forEach(group => {
+    (group.members || []).forEach(member => {
+      const key = `${member.paper}:${member.unit_id}`;
+      if (paragraphUnitLookup[key] && !assignments.has(key)) assignments.set(key, group.group_id);
+    });
+  });
+  return assignments;
+}
+
+function traceMemberSet(group) {
+  return new Set((group?.members || [])
+    .map(member => `${member.paper}:${member.unit_id}`)
+    .filter(key => paragraphUnitLookup[key]));
+}
+
+function traceFlowItems(keys, assignments, iteration) {
+  const counts = new Map();
+  keys.forEach(key => {
+    const groupId = assignments.get(key) || null;
+    counts.set(groupId, (counts.get(groupId) || 0) + 1);
+  });
+  return [...counts.entries()]
+    .map(([groupId, count]) => ({
+      groupId,
+      count,
+      iteration,
+      label: traceGroupLabel(iteration, groupId),
+      question: groupId ? (traceGroupForIteration(iteration, groupId)?.overarching_question || "Group not present in this snapshot") : "No group assignment",
+    }))
+    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label, undefined, { numeric: true }));
+}
+
+function buildQiPrimeTraceModel(groupId) {
+  const iterations = traceIterationNumbers();
+  const assignmentsByIteration = {};
+  iterations.forEach(iteration => { assignmentsByIteration[iteration] = traceAssignmentMap(iteration); });
+
+  const stages = iterations.map((iteration, index) => {
+    const group = traceGroupForIteration(iteration, groupId);
+    const memberKeys = traceMemberSet(group);
+    const previousMemberKeys = index ? traceMemberSet(traceGroupForIteration(iterations[index - 1], groupId)) : new Set();
+    const entered = index ? [...memberKeys].filter(key => !previousMemberKeys.has(key)) : [];
+    const left = index ? [...previousMemberKeys].filter(key => !memberKeys.has(key)) : [];
+    const retained = index ? [...memberKeys].filter(key => previousMemberKeys.has(key)) : [];
+    const paperCounts = Object.fromEntries(allPapers.map(paper => [paper.paper_id, 0]));
+    memberKeys.forEach(key => {
+      const paperId = key.slice(0, key.indexOf(":"));
+      paperCounts[paperId] = (paperCounts[paperId] || 0) + 1;
+    });
+    const representedPaperCount = Object.values(paperCounts).filter(Boolean).length;
+    const storedBalance = groupBalanceByIteration[iteration]?.[groupId];
+    const computedBalance = allPapers.length ? (representedPaperCount / allPapers.length) * 100 : 0;
+    const previousIteration = index ? iterations[index - 1] : null;
+    const previousGroup = index ? traceGroupForIteration(previousIteration, groupId) : null;
+    const question = compactText(group?.overarching_question);
+    const previousQuestion = compactText(previousGroup?.overarching_question);
+    return {
+      iteration,
+      group,
+      question,
+      previousQuestion,
+      questionChanged: Boolean(group && previousGroup && question !== previousQuestion),
+      memberKeys,
+      entered,
+      left,
+      retained,
+      paperCounts,
+      representedPaperCount,
+      balance: iteration === 0 || !group ? null : (storedBalance ?? computedBalance),
+      sources: index ? traceFlowItems(entered, assignmentsByIteration[previousIteration], previousIteration) : [],
+      destinations: index ? traceFlowItems(left, assignmentsByIteration[iteration], iteration) : [],
+    };
+  });
+
+  const paragraphKeys = [...new Set(stages.flatMap(stageState => [...stageState.memberKeys]))];
+  return { groupId, iterations, assignmentsByIteration, stages, paragraphKeys, colorByGroupId: paperMapColorCatalog() };
+}
+
+function questionDiffTokens(value) {
+  return compactText(value).match(/[A-Za-z0-9]+(?:['’][A-Za-z0-9]+)?|[^\sA-Za-z0-9]/g) || [];
+}
+
+// Word-level LCS gives a deterministic revision diff. It is only a display
+// operation; it does not infer whether two questions are conceptually equal.
+function renderQuestionDiff(previousQuestion, question) {
+  const before = questionDiffTokens(previousQuestion);
+  const after = questionDiffTokens(question);
+  const table = Array.from({ length: before.length + 1 }, () => Array(after.length + 1).fill(0));
+  for (let i = before.length - 1; i >= 0; i -= 1) {
+    for (let j = after.length - 1; j >= 0; j -= 1) {
+      table[i][j] = before[i] === after[j] ? table[i + 1][j + 1] + 1 : Math.max(table[i + 1][j], table[i][j + 1]);
+    }
+  }
+
+  const operations = [];
+  let i = 0;
+  let j = 0;
+  while (i < before.length || j < after.length) {
+    if (i < before.length && j < after.length && before[i] === after[j]) {
+      operations.push({ type: "same", token: before[i] }); i += 1; j += 1;
+    } else if (j < after.length && (i === before.length || table[i][j + 1] > table[i + 1][j])) {
+      operations.push({ type: "added", token: after[j] }); j += 1;
+    } else {
+      operations.push({ type: "removed", token: before[i] }); i += 1;
+    }
+  }
+
+  const noSpaceBefore = /^[,.;:!?%\)\]\}]$/;
+  const noSpaceAfter = /^[\(\[\{]$/;
+  return operations.map((operation, index) => {
+    const priorToken = index ? operations[index - 1].token : "";
+    const spacing = index && !noSpaceBefore.test(operation.token) && !noSpaceAfter.test(priorToken) ? " " : "";
+    const token = escapeHtml(operation.token);
+    if (operation.type === "removed") return `${spacing}<del>${token}</del>`;
+    if (operation.type === "added") return `${spacing}<ins>${token}</ins>`;
+    return `${spacing}${token}`;
+  }).join("");
+}
+
+function formatTraceBalance(balance) {
+  if (balance === null || balance === undefined) return "—";
+  const numeric = Number(balance);
+  return `${numeric.toFixed(Number.isInteger(numeric) ? 0 : 1)}%`;
+}
+
+function renderTracePaperCounts(stageState) {
+  return `<div class="qi-trace-paper-counts">${allPapers.map(paper => {
+    const count = stageState.paperCounts[paper.paper_id] || 0;
+    const state = count ? "represented" : "missing";
+    const description = count ? `${count} assigned paragraph${count === 1 ? "" : "s"}` : "not represented";
+    return `<div class="qi-trace-paper-count" title="${escapeHtml(`${paper.title}: ${description}`)}">
+      <span class="unit-square ${state}" style="--paper-color:${paperColorById[paper.paper_id] || "#ced4da"}"></span>
+      <span>${escapeHtml(shortPaperLabel(paper))}</span><strong>${count}</strong>
+    </div>`;
+  }).join("")}</div>`;
+}
+
+function renderTraceFlow(items, title) {
+  const body = items.length ? items.map(item => {
+    const text = `${item.label} · ${item.count}`;
+    const tooltip = `${text} paragraph${item.count === 1 ? "" : "s"} · ${item.question}`;
+    const canTrace = item.groupId && Boolean(traceGroupForIteration(0, item.groupId));
+    return canTrace
+      ? `<button type="button" class="qi-trace-flow-chip" data-trace-target-group="${escapeHtml(item.groupId)}" title="${escapeHtml(tooltip)}">${escapeHtml(text)}</button>`
+      : `<span class="qi-trace-flow-chip" title="${escapeHtml(tooltip)}">${escapeHtml(text)}</span>`;
+  }).join("") : `<span class="qi-trace-flow-empty">none</span>`;
+  return `<div class="qi-trace-flow"><span class="qi-trace-flow-title">${escapeHtml(title)}</span>${body}</div>`;
+}
+
+function renderTraceStage(stageState, traceColor) {
+  const groupLabel = stageState.group ? traceGroupLabel(stageState.iteration, stageState.group.group_id) : `Iteration ${stageState.iteration}`;
+  const stateLabel = stageState.iteration === 0 ? "QI-Prime" : !stageState.group ? "dropped" : stageState.questionChanged ? "revised" : "unchanged";
+  const stateClass = !stageState.group ? " dropped" : stageState.questionChanged ? " revised" : "";
+  const questionHtml = stageState.group
+    ? `<div class="qi-trace-question">${escapeHtml(stageState.question || "(no question)")}</div>`
+    : `<div class="qi-trace-question qi-trace-dropped-note">This group ID is no longer present in the saved candidate set. Its departing paragraphs remain traced below.</div>`;
+  let diffHtml = `<div class="qi-trace-question-diff"><span class="qi-trace-question-diff-label">Question history</span>Initial QI-Prime wording</div>`;
+  if (stageState.iteration > 0 && stageState.group && stageState.previousQuestion) {
+    diffHtml = `<div class="qi-trace-question-diff"><span class="qi-trace-question-diff-label">${stageState.questionChanged ? "Changes from previous iteration" : "Question history"}</span>${stageState.questionChanged ? renderQuestionDiff(stageState.previousQuestion, stageState.question) : "No wording change"}</div>`;
+  } else if (stageState.iteration > 0 && !stageState.group) {
+    diffHtml = `<div class="qi-trace-question-diff"><span class="qi-trace-question-diff-label">Question history</span>No revised question for this group ID</div>`;
+  }
+
+  const balanceValue = stageState.iteration === 0 ? "pre" : formatTraceBalance(stageState.balance);
+  const balanceLabel = stageState.iteration === 0 ? "assignment" : "balance";
+  const flowHtml = stageState.iteration === 0
+    ? `<div class="qi-trace-flows"><div class="qi-trace-flow"><span class="qi-trace-flow-title">Baseline</span><span class="qi-trace-flow-empty">bidirectional matches</span></div></div>`
+    : `<div class="qi-trace-flows">${renderTraceFlow(stageState.sources, "Arrived from")}${renderTraceFlow(stageState.destinations, "Departed to")}</div>`;
+  const membershipChangeHtml = stageState.iteration === 0 ? "" : `<div class="qi-trace-membership-change"><strong>${stageState.retained.length}</strong> retained · <strong>${stageState.entered.length}</strong> arrived · <strong>${stageState.left.length}</strong> departed</div>`;
+  return `<article class="qi-trace-stage${stageState.group ? "" : " dropped"}" style="--trace-color:${traceColor.border}">
+    <div class="qi-trace-stage-head"><span class="qi-trace-stage-label">${escapeHtml(groupLabel)}</span><span class="qi-trace-stage-state${stateClass}">${escapeHtml(stateLabel)}</span></div>
+    ${questionHtml}${diffHtml}
+    <div class="qi-trace-stats">
+      <div class="qi-trace-stat"><strong>${stageState.memberKeys.size}</strong><span>paragraphs</span></div>
+      <div class="qi-trace-stat"><strong>${stageState.representedPaperCount}/${allPapers.length}</strong><span>papers</span></div>
+      <div class="qi-trace-stat"><strong>${balanceValue}</strong><span>${balanceLabel}</span></div>
+    </div>
+    ${renderTracePaperCounts(stageState)}${membershipChangeHtml}${flowHtml}
+  </article>`;
+}
+
+function traceParagraphSort(a, b) {
+  const paperOrder = new Map(allPapers.map((paper, index) => [paper.paper_id, index]));
+  const splitKey = key => {
+    const delimiter = key.indexOf(":");
+    return [key.slice(0, delimiter), key.slice(delimiter + 1)];
+  };
+  const [paperA, unitA] = splitKey(a);
+  const [paperB, unitB] = splitKey(b);
+  const paperDifference = (paperOrder.get(paperA) ?? 999) - (paperOrder.get(paperB) ?? 999);
+  return paperDifference || unitA.localeCompare(unitB, undefined, { numeric: true });
+}
+
+function tracePathState(model, key, iteration) {
+  if (iteration === 0) return model.assignmentsByIteration[iteration].get(key) === model.groupId ? "baseline" : "initial";
+  const previousGroupId = model.assignmentsByIteration[iteration - 1].get(key) || null;
+  const groupId = model.assignmentsByIteration[iteration].get(key) || null;
+  if (previousGroupId === groupId) return groupId === model.groupId ? "retained" : "unchanged";
+  if (groupId === model.groupId) return `entered from ${traceGroupLabel(iteration - 1, previousGroupId)}`;
+  if (previousGroupId === model.groupId) return `left to ${traceGroupLabel(iteration, groupId)}`;
+  return `from ${traceGroupLabel(iteration - 1, previousGroupId)}`;
+}
+
+function renderTracePathCell(model, key, iteration) {
+  const groupId = model.assignmentsByIteration[iteration].get(key) || null;
+  const previousGroupId = iteration ? (model.assignmentsByIteration[iteration - 1].get(key) || null) : groupId;
+  const changed = iteration > 0 && groupId !== previousGroupId;
+  const color = groupId ? (model.colorByGroupId.get(groupId) || paperMapColor(0)) : { border: "#adb5bd", fill: "#f8f9fa" };
+  const label = traceGroupLabel(iteration, groupId);
+  const question = groupId ? (traceGroupForIteration(iteration, groupId)?.overarching_question || "Group not present") : "No group assignment";
+  const state = tracePathState(model, key, iteration);
+  const classes = ["qi-trace-path-cell", groupId === model.groupId ? "selected-lineage" : "", groupId ? "" : "unassigned", changed ? "changed" : ""].filter(Boolean).join(" ");
+  return `<div class="${classes}" style="--path-color:${color.border};--path-fill:${color.fill}" title="${escapeHtml(`${label} · ${question}`)}">
+    <span>${escapeHtml(label)}</span><span class="qi-trace-path-state">${escapeHtml(state)}</span>
+  </div>`;
+}
+
+function traceParagraphChanged(model, key) {
+  const path = model.iterations.map(iteration => model.assignmentsByIteration[iteration].get(key) || null);
+  return path.some((groupId, index) => index > 0 && groupId !== path[index - 1]);
+}
+
+function renderTraceParagraphDetail(model) {
+  const slot = document.getElementById("qiTraceParagraphDetail");
+  if (!slot) return;
+  stage.querySelectorAll(".qi-trace-matrix tbody tr").forEach(row => {
+    row.classList.toggle("selected", row.dataset.traceParagraph === traceSelectedParagraphKey);
+  });
+  if (!traceSelectedParagraphKey || !paragraphUnitLookup[traceSelectedParagraphKey]) {
+    slot.innerHTML = `<div class="qi-trace-paragraph-detail"><span class="qi-trace-flow-empty">Select a paragraph to inspect its text and complete assignment route.</span></div>`;
+    return;
+  }
+
+  const delimiter = traceSelectedParagraphKey.indexOf(":");
+  const paperId = traceSelectedParagraphKey.slice(0, delimiter);
+  const unitId = traceSelectedParagraphKey.slice(delimiter + 1);
+  const paper = allPapers.find(candidate => candidate.paper_id === paperId);
+  const unit = paragraphUnitLookup[traceSelectedParagraphKey];
+  const route = model.iterations.map(iteration => renderTracePathCell(model, traceSelectedParagraphKey, iteration)).join(`<span class="qi-trace-route-arrow">→</span>`);
+  const movements = model.iterations.slice(1).flatMap(iteration => {
+    const previousGroupId = model.assignmentsByIteration[iteration - 1].get(traceSelectedParagraphKey) || null;
+    const groupId = model.assignmentsByIteration[iteration].get(traceSelectedParagraphKey) || null;
+    return previousGroupId === groupId ? [] : [`I${iteration}: ${traceGroupLabel(iteration - 1, previousGroupId)} → ${traceGroupLabel(iteration, groupId)}`];
+  });
+  slot.innerHTML = `<div class="qi-trace-paragraph-detail">
+    <h3>${escapeHtml(shortPaperLabel(paper || { paper_id: paperId }))} · ${escapeHtml(unitId)}</h3>
+    <div class="qi-trace-detail-question">${escapeHtml(unit.tag || "(no paragraph question)")}</div>
+    <div class="qi-trace-detail-text">${escapeHtml(compactText(unit.text))}</div>
+    <div class="qi-trace-detail-route">${route}</div>
+    <div class="qi-trace-summary" style="margin-top:6px"><strong>Reassignments:</strong> ${movements.length ? escapeHtml(movements.join(" · ")) : "none"}</div>
+  </div>`;
+}
+
+function renderQiPrimeTraceMatrix(model) {
+  let paragraphKeys = [...model.paragraphKeys].sort(traceParagraphSort);
+  if (tracePaperFilter !== "all") paragraphKeys = paragraphKeys.filter(key => key.startsWith(`${tracePaperFilter}:`));
+  if (traceChangedOnly) paragraphKeys = paragraphKeys.filter(key => traceParagraphChanged(model, key));
+  const paperOptions = [`<option value="all"${tracePaperFilter === "all" ? " selected" : ""}>All papers</option>`]
+    .concat(allPapers.map(paper => `<option value="${escapeHtml(paper.paper_id)}"${tracePaperFilter === paper.paper_id ? " selected" : ""}>${escapeHtml(shortPaperLabel(paper))}</option>`))
+    .join("");
+  const headers = model.iterations.map(iteration => `<th scope="col">Iteration ${iteration}</th>`).join("");
+  const rows = paragraphKeys.map(key => {
+    const delimiter = key.indexOf(":");
+    const paperId = key.slice(0, delimiter);
+    const unitId = key.slice(delimiter + 1);
+    const paper = allPapers.find(candidate => candidate.paper_id === paperId);
+    const unit = paragraphUnitLookup[key];
+    const cells = model.iterations.map(iteration => `<td>${renderTracePathCell(model, key, iteration)}</td>`).join("");
+    return `<tr data-trace-paragraph="${escapeHtml(key)}"${traceSelectedParagraphKey === key ? " class=\"selected\"" : ""}>
+      <td><button type="button" class="qi-trace-paragraph-button" data-trace-paragraph-button="${escapeHtml(key)}"><strong>${escapeHtml(shortPaperLabel(paper || { paper_id: paperId }))} · ${escapeHtml(unitId)}</strong><span title="${escapeHtml(unit.tag || "")}">${escapeHtml(unit.tag || "(no paragraph question)")}</span></button></td>${cells}
+    </tr>`;
+  }).join("");
+  const body = rows || `<tr><td colspan="${model.iterations.length + 1}"><div class="qi-trace-empty-rows">No paragraphs match these filters.</div></td></tr>`;
+  return `<section class="qi-trace-matrix-wrap">
+    <div class="qi-trace-matrix-toolbar">
+      <strong>Paragraph assignment paths</strong><span>${paragraphKeys.length} of ${model.paragraphKeys.length} paragraphs shown</span>
+      <label>Paper <select id="qiTracePaperFilter">${paperOptions}</select></label>
+      <label><input type="checkbox" id="qiTraceChangedOnly"${traceChangedOnly ? " checked" : ""}> changed only</label>
+      <span>Outlined cells mark an assignment change; the heavier border marks this QI-Prime lineage.</span>
+    </div>
+    <div class="qi-trace-matrix-scroller"><table class="qi-trace-matrix"><thead><tr><th scope="col">Paragraph</th>${headers}</tr></thead><tbody>${body}</tbody></table></div>
+    <div id="qiTraceParagraphDetail"></div>
+  </section>`;
+}
+
+function renderQiPrimeTrace() {
+  const qiPrimes = iterationGroups[0] || [];
+  if (!qiPrimes.length) {
+    stage.innerHTML = `<div class="empty-state">No Iteration 0 QI-Primes are available to trace.</div>`;
+    return;
+  }
+  if (!traceSelectedGroupId || !traceGroupForIteration(0, traceSelectedGroupId)) traceSelectedGroupId = qiPrimes[0].group_id;
+  const model = buildQiPrimeTraceModel(traceSelectedGroupId);
+  const traceColor = model.colorByGroupId.get(traceSelectedGroupId) || paperMapColor(0);
+  const selectedIndex = qiPrimes.findIndex(group => group.group_id === traceSelectedGroupId);
+  const options = qiPrimes.map((group, index) => {
+    const selected = group.group_id === traceSelectedGroupId ? " selected" : "";
+    return `<option value="${escapeHtml(group.group_id)}"${selected}>QI-${index + 1} · ${escapeHtml(compactText(group.overarching_question))}</option>`;
+  }).join("");
+  const stages = model.stages.map(stageState => renderTraceStage(stageState, traceColor)).join("");
+  stage.innerHTML = `<div class="qi-trace-shell">
+    <div class="qi-trace-toolbar">
+      <label class="qi-trace-control"><span class="qi-trace-control-label">Iteration 0 QI-Prime</span><select id="qiTraceGroupSelect" class="qi-trace-select">${options}</select></label>
+      <div class="qi-trace-summary"><strong>QI-${selectedIndex + 1} · ${escapeHtml(traceSelectedGroupId)}</strong><br>Exact lineage follows the saved group ID. Questions, balance, and membership come from each saved snapshot; arrivals and departures are deterministic set differences. A dropped ID is not assigned an inferred semantic successor.</div>
+    </div>
+    <div class="qi-trace-timeline" aria-label="Question and membership history from Iteration 0 through Iteration ${N_ITERATIONS}">${stages}</div>
+    ${renderQiPrimeTraceMatrix(model)}
+  </div>`;
+  attachQiPrimeTraceInteractions(model);
+  renderTraceParagraphDetail(model);
+}
+
+function attachQiPrimeTraceInteractions(model) {
+  const shell = stage.querySelector(".qi-trace-shell");
+  if (shell) shell.addEventListener("click", event => event.stopPropagation());
+  const groupSelect = document.getElementById("qiTraceGroupSelect");
+  if (groupSelect) groupSelect.addEventListener("change", () => {
+    traceSelectedGroupId = groupSelect.value;
+    traceSelectedParagraphKey = null;
+    renderQiPrimeTrace();
+  });
+  const paperFilter = document.getElementById("qiTracePaperFilter");
+  if (paperFilter) paperFilter.addEventListener("change", () => {
+    tracePaperFilter = paperFilter.value;
+    renderQiPrimeTrace();
+  });
+  const changedOnly = document.getElementById("qiTraceChangedOnly");
+  if (changedOnly) changedOnly.addEventListener("change", () => {
+    traceChangedOnly = changedOnly.checked;
+    renderQiPrimeTrace();
+  });
+  stage.querySelectorAll("[data-trace-paragraph-button]").forEach(button => {
+    button.addEventListener("click", () => {
+      traceSelectedParagraphKey = traceSelectedParagraphKey === button.dataset.traceParagraphButton ? null : button.dataset.traceParagraphButton;
+      renderTraceParagraphDetail(model);
+    });
+  });
+  stage.querySelectorAll("[data-trace-target-group]").forEach(button => {
+    button.addEventListener("click", () => {
+      traceSelectedGroupId = button.dataset.traceTargetGroup;
+      traceSelectedParagraphKey = null;
+      renderQiPrimeTrace();
+    });
+  });
+}
+
 // Recomputes currentLinks from rawLinksForGranularity + similarityThreshold, then
 // fully re-renders. Shared by granularity switches and similarity-slider changes,
 // since both change which links (and therefore which units) should be visible.
@@ -1028,6 +1499,10 @@ function switchGranularity(granularity) {
     renderPaperMap();
     return;
   }
+  if (granularity === "qi-trace") {
+    renderQiPrimeTrace();
+    return;
+  }
   rawLinksForGranularity = allLinksByGranularity[granularity] || [];
   applyFilterAndRender();
 }
@@ -1048,6 +1523,7 @@ async function init() {
   });
   buildParagraphUnitLookup();
   buildPaperColors();
+  traceSelectedGroupId = iterationGroups[0]?.[0]?.group_id || null;
   rawLinksForGranularity = links[currentGranularity] || [];
 
   buildGranularityTabs();
