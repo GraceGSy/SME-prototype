@@ -1,0 +1,566 @@
+[
+  {
+    "group_id": "group_1",
+    "overarching_question": "What are the paper's contributions and how were they evaluated?",
+    "members": [
+      {
+        "paper": "examplore_chi18",
+        "unit_id": "pa1",
+        "title": "",
+        "tag": "What is the abstract's main contribution and findings?"
+      },
+      {
+        "paper": "examplore_chi18",
+        "unit_id": "pa46",
+        "title": "",
+        "tag": "What is the goal and design of the user study?"
+      },
+      {
+        "paper": "examplore_chi18",
+        "unit_id": "pa9",
+        "title": "",
+        "tag": "What are the paper's contributions?"
+      },
+      {
+        "paper": "mesotext",
+        "unit_id": "pa10",
+        "title": "",
+        "tag": "What are this paper's contributions?"
+      },
+      {
+        "paper": "mesotext",
+        "unit_id": "pa11",
+        "title": "",
+        "tag": "What does the rest of the paper cover?"
+      },
+      {
+        "paper": "mesotext",
+        "unit_id": "pa50",
+        "title": "",
+        "tag": "What research question does the study address?"
+      },
+      {
+        "paper": "mesotext",
+        "unit_id": "pa7",
+        "title": "",
+        "tag": "What is the paper's research question?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa44",
+        "title": "",
+        "tag": "What is the goal and research questions of the user study?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa9",
+        "title": "",
+        "tag": "What are the paper's main contributions?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_2",
+    "overarching_question": "What did user studies reveal about the tool's usability and participants' backgrounds?",
+    "members": [
+      {
+        "paper": "examplore_chi18",
+        "unit_id": "pa66",
+        "title": "",
+        "tag": "What interface features did participants value most?"
+      },
+      {
+        "paper": "examplore_chi18",
+        "unit_id": "pa68",
+        "title": "",
+        "tag": "What interface weaknesses did participants identify?"
+      },
+      {
+        "paper": "mesotext",
+        "unit_id": "pa64",
+        "title": "",
+        "tag": "What downsides did participants report for the exploratory interface?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa53",
+        "title": "",
+        "tag": "What programming experience did participants have?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa54",
+        "title": "",
+        "tag": "What domain-specific proficiency did participants report?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa76",
+        "title": "",
+        "tag": "What challenges did participants report with online search?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa77",
+        "title": "",
+        "tag": "What improvements did participants suggest for ParaLib?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_3",
+    "overarching_question": "What specific features define this analytical representation?",
+    "members": [
+      {
+        "paper": "examplore_chi18",
+        "unit_id": "pa23",
+        "title": "",
+        "tag": "What does the 'Declarations' feature capture?"
+      },
+      {
+        "paper": "examplore_chi18",
+        "unit_id": "pa25",
+        "title": "",
+        "tag": "What does the 'Guard' feature capture?"
+      },
+      {
+        "paper": "examplore_chi18",
+        "unit_id": "pa26",
+        "title": "",
+        "tag": "What does the 'Return value check' feature capture?"
+      },
+      {
+        "paper": "examplore_chi18",
+        "unit_id": "pa29",
+        "title": "",
+        "tag": "What does the 'Resource management' feature capture?"
+      },
+      {
+        "paper": "mesotext",
+        "unit_id": "pa37",
+        "title": "",
+        "tag": "What does the Exact Matches feature do?"
+      },
+      {
+        "paper": "mesotext",
+        "unit_id": "pa40",
+        "title": "",
+        "tag": "What does the Unique Words feature do?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_4",
+    "overarching_question": "How do learning theories inform system design choices?",
+    "members": [
+      {
+        "paper": "mesotext",
+        "unit_id": "pa34",
+        "title": "",
+        "tag": "What theoretical frameworks inform the design?"
+      },
+      {
+        "paper": "mesotext",
+        "unit_id": "pa35",
+        "title": "",
+        "tag": "How do these theories explain feature design choices?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa10",
+        "title": "",
+        "tag": "What learning theories inform the design?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa26",
+        "title": "",
+        "tag": "How do these design choices map to the design goals?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa6",
+        "title": "",
+        "tag": "What theories inform the interface design choices?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_5",
+    "overarching_question": "How was the tool evaluated and what did the study find?",
+    "members": [
+      {
+        "paper": "examplore_chi18",
+        "unit_id": "pa8",
+        "title": "",
+        "tag": "How was the system evaluated and what was found?"
+      },
+      {
+        "paper": "mesotext",
+        "unit_id": "pa8",
+        "title": "",
+        "tag": "How was the system evaluated?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa2",
+        "title": "",
+        "tag": "What was built and how was it evaluated, and what did the study find?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa8",
+        "title": "",
+        "tag": "How was the system evaluated and what did the study find?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_6",
+    "overarching_question": "How do interface designs visualize and organize multiple examples/outputs for exploration?",
+    "members": [
+      {
+        "paper": "examplore_chi18",
+        "unit_id": "pa20",
+        "title": "",
+        "tag": "What is the synthetic code skeleton and why is it needed?"
+      },
+      {
+        "paper": "mesotext",
+        "unit_id": "pa45",
+        "title": "",
+        "tag": "What is the Grid Layout and how does it work?"
+      },
+      {
+        "paper": "mesotext",
+        "unit_id": "pa47",
+        "title": "",
+        "tag": "What is the Interleaved Layout and how is it rendered?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa22",
+        "title": "",
+        "tag": "What is ParaLib and how was it built?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_7",
+    "overarching_question": "Who were the participants recruited for the user study?",
+    "members": [
+      {
+        "paper": "examplore_chi18",
+        "unit_id": "pa50",
+        "title": "",
+        "tag": "Who were the study participants?"
+      },
+      {
+        "paper": "mesotext",
+        "unit_id": "pa23",
+        "title": "",
+        "tag": "Who were the interview participants?"
+      },
+      {
+        "paper": "mesotext",
+        "unit_id": "pa52",
+        "title": "",
+        "tag": "Who were the study participants?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa52",
+        "title": "",
+        "tag": "Who were the study participants and how were they recruited?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_8",
+    "overarching_question": "How do interface features aid sensemaking of multiple LLM outputs?",
+    "members": [
+      {
+        "paper": "mesotext",
+        "unit_id": "pa48",
+        "title": "",
+        "tag": "What hypothesized benefits does the Interleaved Layout offer?"
+      },
+      {
+        "paper": "mesotext",
+        "unit_id": "pa63",
+        "title": "",
+        "tag": "What specific features were praised in the exploratory interface?"
+      },
+      {
+        "paper": "mesotext",
+        "unit_id": "pa69",
+        "title": "",
+        "tag": "What qualitative reasons explain the interface preference?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa7",
+        "title": "",
+        "tag": "What interactive features does the interface offer?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_9",
+    "overarching_question": "How does the tool's interface design present code examples to users?",
+    "members": [
+      {
+        "paper": "examplore_chi18",
+        "unit_id": "pa33",
+        "title": "",
+        "tag": "How does the interface visually organize code examples?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa23",
+        "title": "",
+        "tag": "How does the interface show multiple code examples side-by-side?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa24",
+        "title": "",
+        "tag": "How does the interface highlight conceptually related code across libraries?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_10",
+    "overarching_question": "How did participants perceive and rate the tool in user studies?",
+    "members": [
+      {
+        "paper": "examplore_chi18",
+        "unit_id": "pa64",
+        "title": "",
+        "tag": "How did participants rate the tool in the survey?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa75",
+        "title": "",
+        "tag": "How useful did participants rate the concept hierarchy feature?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa78",
+        "title": "",
+        "tag": "Would participants use ParaLib in the future?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_11",
+    "overarching_question": "What are the limitations of this study's design and methodology?",
+    "members": [
+      {
+        "paper": "examplore_chi18",
+        "unit_id": "pa74",
+        "title": "",
+        "tag": "What limitation exists regarding code example quality?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa84",
+        "title": "",
+        "tag": "What limitation exists regarding the concept hierarchy used?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa85",
+        "title": "",
+        "tag": "What limitation exists regarding the choice of baseline?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_12",
+    "overarching_question": "What was the design and procedure of the user study?",
+    "members": [
+      {
+        "paper": "mesotext",
+        "unit_id": "pa53",
+        "title": "",
+        "tag": "How was the study conducted logistically?"
+      },
+      {
+        "paper": "mesotext",
+        "unit_id": "pa56",
+        "title": "",
+        "tag": "How was the email task structured?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa47",
+        "title": "",
+        "tag": "How was the study session structured over time?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_13",
+    "overarching_question": "What system is proposed to help developers understand and select APIs/libraries?",
+    "members": [
+      {
+        "paper": "examplore_chi18",
+        "unit_id": "pa6",
+        "title": "",
+        "tag": "What system is introduced to address this gap?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa5",
+        "title": "",
+        "tag": "What system is proposed to address this gap?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_14",
+    "overarching_question": "How does this work build on and differ from prior systems?",
+    "members": [
+      {
+        "paper": "examplore_chi18",
+        "unit_id": "pa19",
+        "title": "",
+        "tag": "How does this paper build on and differ from the authors' prior ICSE work?"
+      },
+      {
+        "paper": "mesotext",
+        "unit_id": "pa19",
+        "title": "",
+        "tag": "How does this work's design relate to and differ from prior systems?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_15",
+    "overarching_question": "How does user selection filter and update the tool's view?",
+    "members": [
+      {
+        "paper": "examplore_chi18",
+        "unit_id": "pa36",
+        "title": "",
+        "tag": "How does filtering update the skeleton view?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa41",
+        "title": "",
+        "tag": "How does filtering by a selected concept change the view?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_16",
+    "overarching_question": "How were the system's design and implementation structured?",
+    "members": [
+      {
+        "paper": "examplore_chi18",
+        "unit_id": "pa38",
+        "title": "",
+        "tag": "What are the three phases of the system pipeline?"
+      },
+      {
+        "paper": "mesotext",
+        "unit_id": "pa46",
+        "title": "",
+        "tag": "What are the hypothesized benefits of the Grid Layout?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_17",
+    "overarching_question": "How do illustrative examples demonstrate the tool's features?",
+    "members": [
+      {
+        "paper": "examplore_chi18",
+        "unit_id": "pa40",
+        "title": "",
+        "tag": "What example illustrates the extracted usage features?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa36",
+        "title": "",
+        "tag": "What figure example illustrates the substring bolding feature?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_18",
+    "overarching_question": "What were the results of the user study evaluating the tool?",
+    "members": [
+      {
+        "paper": "examplore_chi18",
+        "unit_id": "pa49",
+        "title": "",
+        "tag": "What do the API method screenshots show?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa71",
+        "title": "",
+        "tag": "What did the NASA TLX results show?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_19",
+    "overarching_question": "What did participants report in post-study surveys about the tool?",
+    "members": [
+      {
+        "paper": "examplore_chi18",
+        "unit_id": "pa55",
+        "title": "",
+        "tag": "What happened during the post-survey?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa73",
+        "title": "",
+        "tag": "What did the post-study survey comparisons show?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_20",
+    "overarching_question": "What problem or gap motivates this research?",
+    "members": [
+      {
+        "paper": "mesotext",
+        "unit_id": "pa1",
+        "title": "",
+        "tag": "What gap motivates this research?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa1",
+        "title": "",
+        "tag": "What problem motivates this research?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_21",
+    "overarching_question": "What was the experimental design used to evaluate the system?",
+    "members": [
+      {
+        "paper": "mesotext",
+        "unit_id": "pa49",
+        "title": "",
+        "tag": "What interfaces were compared in the study?"
+      },
+      {
+        "paper": "paralib_uist22",
+        "unit_id": "pa45",
+        "title": "",
+        "tag": "What tasks and domains were used in the study?"
+      }
+    ]
+  }
+]

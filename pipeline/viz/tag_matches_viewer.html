@@ -434,8 +434,27 @@
 const GRANULARITIES = ["sections", "paragraphs"]; // matching/data granularities
 const GRANULARITY_LABELS = { sections: "Section", paragraphs: "Paragraph" };
 const ENABLE_QI_FLOW_VIEW = true; // independent experimental surface; set false to hide without affecting the trace view
-const TABS = ["sections", "paragraphs", "groups", "paper-map", "qi-trace", ...(ENABLE_QI_FLOW_VIEW ? ["qi-flow"] : [])]; // display-only views are not matching granularities
-const TAB_LABELS = { sections: "Section", paragraphs: "Paragraph", groups: "Groups", "paper-map": "Paper Map", "qi-trace": "QI-Prime Trace", "qi-flow": "QI-Prime Flow" };
+// Three MILP-reassignment variants (see reassign_via_milp_per_paper.py and
+// its no-penalty / quadratic siblings) -- each its own tab, each its own
+// output file, none overwriting another.
+const MILP_VARIANTS = [
+  { key: "milp", label: "MILP (linear)", file: "milp_reassignment_per_paper.json" },
+  { key: "milp_none", label: "MILP (no penalty)", file: "milp_reassignment_per_paper_no_penalty.json" },
+  { key: "milp_quad", label: "MILP (quadratic)", file: "milp_reassignment_per_paper_quadratic.json" },
+];
+const MILP_VARIANT_KEYS = MILP_VARIANTS.map(v => v.key);
+
+const TABS = ["sections", "paragraphs", "groups", "epoch_groups", ...MILP_VARIANT_KEYS, "paper-map", "qi-trace", ...(ENABLE_QI_FLOW_VIEW ? ["qi-flow"] : [])]; // display-only views are not matching granularities
+const TAB_LABELS = Object.assign(
+  { sections: "Section", paragraphs: "Paragraph", groups: "Groups", epoch_groups: "Epoch Groups", "paper-map": "Paper Map", "qi-trace": "QI-Prime Trace", "qi-flow": "QI-Prime Flow" },
+  Object.fromEntries(MILP_VARIANTS.map(v => [v.key, v.label]))
+);
+
+// refine_with_epoch_matrices.py's 4 phases: the pre-epoch snapshot, then 3
+// epochs. Each epoch's E-step (membership) and M-step (question) were saved
+// separately, so the viewer joins them by group_id when loading.
+const EPOCH_PHASES = ["initial", "epoch1", "epoch2", "epoch3"];
+const EPOCH_PHASE_LABELS = { initial: "Pre-epoch", epoch1: "Epoch 1", epoch2: "Epoch 2", epoch3: "Epoch 3" };
 
 const stage = document.getElementById("stage");
 const granularityTabsEl = document.getElementById("granularityTabs");
@@ -484,6 +503,16 @@ let qiFlowPlaying = false;
 let qiFlowTimer = null;
 let qiFlowCurrentModel = null;
 const qiFlowExpandedParagraphKeys = new Set();
+
+const milpGroupsByVariant = {}; // variant key -> [{group_id, overarching_question, members}, ...], each a single static assignment (no iterations)
+const openMilpGroupIdsByVariant = {}; // variant key -> Set of group_id currently expanded, independent per variant and independent of the iteration-based groups tab's openGroupIds
+MILP_VARIANT_KEYS.forEach(key => { milpGroupsByVariant[key] = []; openMilpGroupIdsByVariant[key] = new Set(); });
+
+const epochGroupsByPhase = {}; // phase key -> [{group_id, overarching_question, members}, ...]
+const epochMetaByPhase = {}; // phase key -> {reassigned, total_assigned} | null (the "initial" phase has none)
+const epochBalanceByPhase = {}; // phase key -> {group_id: group_balance}, when available (epoch1/2/3 only, from compute_epoch_group_balance.py)
+let currentEpochPhase = "initial";
+const openEpochGroupIds = new Set(); // group_id currently expanded, cleared on phase switch (membership/content differs per phase)
 
 // Fixed per-paper colors (not tag-derived, so this isn't the hash-based tag
 // coloring that was removed earlier -- paper identity is a small, fixed,
@@ -543,7 +572,44 @@ async function loadAll() {
       if (response.ok) balances[i] = await response.json();
     } catch (e) { /* no balance for this iteration -- keep the default order */ }
   }
-  return { papers, links, iterations, balances };
+  // MILP reassignment variants are separate, optional, one-shot outputs --
+  // each fetched best-effort so a missing one doesn't break the rest of the
+  // viewer. All three use the per-paper approach (reassign_via_milp_per_
+  // paper.py and its siblings): each paper's own paragraphs are assigned to
+  // groups independently, using that paper's own Matrix 2 ranking directly
+  // (no cross-paper concatenation) -- they differ only in the group-size
+  // penalty (linear / none / quadratic).
+  const milpDataByVariant = {};
+  for (const variant of MILP_VARIANTS) {
+    try {
+      const res = await fetch(base + variant.file, opts);
+      if (res.ok) milpDataByVariant[variant.key] = await res.json();
+    } catch (e) { /* this MILP variant's output isn't available */ }
+  }
+  // refine_with_epoch_matrices.py's output -- also optional/best-effort.
+  // The pre-epoch snapshot is one file; each epoch's E-step (membership)
+  // and M-step (question) were saved as two separate files and need to be
+  // joined by group_id after fetching (done in init(), not here).
+  let epochInitialGroups = null;
+  try {
+    const res = await fetch(base + "epoch_matrix_refinement/initial_groups.json", opts);
+    if (res.ok) epochInitialGroups = await res.json();
+  } catch (e) { /* no epoch refinement output available */ }
+  const epochStepData = {};
+  for (let n = 1; n <= 3; n++) {
+    epochStepData[`epoch${n}`] = { estep: null, mstep: null, balance: null };
+    try {
+      const eRes = await fetch(base + `epoch_matrix_refinement/epoch${n}/estep.json`, opts);
+      if (eRes.ok) epochStepData[`epoch${n}`].estep = await eRes.json();
+      const mRes = await fetch(base + `epoch_matrix_refinement/epoch${n}/mstep.json`, opts);
+      if (mRes.ok) epochStepData[`epoch${n}`].mstep = await mRes.json();
+      // Written by compute_epoch_group_balance.py -- optional/best-effort,
+      // like the iteration balance files above.
+      const bRes = await fetch(base + `epoch_matrix_refinement/epoch${n}/group_balance.json`, opts);
+      if (bRes.ok) epochStepData[`epoch${n}`].balance = await bRes.json();
+    } catch (e) { /* this epoch's output isn't available */ }
+  }
+  return { papers, links, iterations, balances, milpDataByVariant, epochInitialGroups, epochStepData };
 }
 
 function buildParagraphUnitLookup() {
@@ -564,8 +630,9 @@ function buildPaperColors() {
   });
 }
 
-// One marker per paper: filled when at least one of that paper's paragraphs
-// belongs to the group, dashed when the group has no paragraph from it.
+// One filled marker per paper's paragraph in the group, colored by paper --
+// count is visible at a glance from how many squares a paper has. A paper
+// with no paragraphs in the group contributes no squares at all.
 function buildPaperCoverageVis(members) {
   const memberCountByPaper = {};
   members.forEach(member => {
@@ -573,11 +640,12 @@ function buildPaperCoverageVis(members) {
   });
   const squares = allPapers.map(paper => {
     const count = memberCountByPaper[paper.paper_id] || 0;
-    const state = count ? "represented" : "missing";
-    const description = count
-      ? `${paper.title}: represented by ${count} paragraph${count === 1 ? "" : "s"}`
-      : `${paper.title}: no paragraphs assigned to this question`;
-    return `<span class="unit-square ${state}" style="--paper-color:${paperColorById[paper.paper_id] || "#ced4da"}" title="${escapeHtml(description)}"></span>`;
+    if (!count) return "";
+    const color = paperColorById[paper.paper_id] || "#ced4da";
+    const description = `${paper.title}: represented by ${count} paragraph${count === 1 ? "" : "s"}`;
+    return Array.from({ length: count }, () =>
+      `<span class="unit-square represented" style="--paper-color:${color}" title="${escapeHtml(description)}"></span>`
+    ).join("");
   }).join("");
   return `<div class="group-unit-vis">${squares}</div>`;
 }
@@ -901,6 +969,124 @@ function switchIteration(n) {
   openGroupIds.clear(); // a group_id's membership/content differs across iterations, so don't carry an "open" state over
   if (currentGranularity === "paper-map") renderPaperMap();
   else renderIterationGroups();
+}
+
+// Same card-list-with-inline-3-column-detail pattern as renderIterationGroups(),
+// but the phase selector is the 4 refine_with_epoch_matrices.py phases
+// (pre-epoch, then 3 epochs) instead of numbered iterations.
+function renderEpochGroups() {
+  const tabsHtml = EPOCH_PHASES.map(phase =>
+    `<button type="button" class="granularity-btn${phase === currentEpochPhase ? " active" : ""}" data-epoch-phase="${phase}">${EPOCH_PHASE_LABELS[phase]}</button>`
+  ).join("");
+
+  const meta = epochMetaByPhase[currentEpochPhase];
+  const metaText = meta ? `${meta.reassigned} of ${meta.total_assigned} paragraphs were reassigned to a different group this epoch.` : "";
+
+  const balanceByGroupId = epochBalanceByPhase[currentEpochPhase];
+  // Sort a copy by group-balance (highest first) when available for this
+  // phase (epoch1/2/3 only -- "initial" has no matrix-checked balance yet);
+  // otherwise keep the original (member-count-descending) order.
+  const groups = balanceByGroupId
+    ? [...(epochGroupsByPhase[currentEpochPhase] || [])].sort((a, b) => (balanceByGroupId[b.group_id] ?? -1) - (balanceByGroupId[a.group_id] ?? -1))
+    : (epochGroupsByPhase[currentEpochPhase] || []);
+
+  if (!groups.length) {
+    stage.innerHTML = `<div class="iteration-tabs">${tabsHtml}</div><div class="empty-state">No groups available for this phase.</div>`;
+    attachEpochPhaseTabInteractions();
+    return;
+  }
+
+  const cardsHtml = groups.map(group => {
+    const balance = balanceByGroupId ? balanceByGroupId[group.group_id] : undefined;
+    const balanceHtml = balance !== undefined ? `<span class="group-balance-badge">balance ${balance}%</span>` : "";
+    return `<div class="group-card" data-group-id="${group.group_id}">
+      <div class="group-question">${escapeHtml(group.overarching_question || "(no summary)")}${balanceHtml}</div>
+      ${buildPaperCoverageVis(group.members)}
+      <div class="group-detail-slot"></div>
+    </div>`;
+  }).join("");
+
+  stage.innerHTML = `<div class="iteration-tabs">${tabsHtml}</div><div class="iteration-meta">${metaText}</div>${buildPapersLegend()}${cardsHtml}`;
+
+  stage.querySelectorAll(".group-card").forEach(card => {
+    const groupId = card.dataset.groupId;
+    const group = groups.find(g => g.group_id === groupId);
+    const slot = card.querySelector(".group-detail-slot");
+    if (openEpochGroupIds.has(groupId)) {
+      card.classList.add("open");
+      renderGroupDetail(slot, group);
+    }
+    card.querySelector(".group-question").addEventListener("click", () => {
+      const isOpen = card.classList.toggle("open");
+      if (isOpen) {
+        openEpochGroupIds.add(groupId);
+        renderGroupDetail(slot, group);
+      } else {
+        openEpochGroupIds.delete(groupId);
+        slot.innerHTML = "";
+      }
+    });
+  });
+
+  attachEpochPhaseTabInteractions();
+}
+
+function attachEpochPhaseTabInteractions() {
+  stage.querySelectorAll(".iteration-tabs .granularity-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const phase = btn.dataset.epochPhase;
+      if (phase !== currentEpochPhase) switchEpochPhase(phase);
+    });
+  });
+}
+
+function switchEpochPhase(phase) {
+  currentEpochPhase = phase;
+  openEpochGroupIds.clear(); // a group_id's membership/content differs per phase, so don't carry an "open" state over
+  renderEpochGroups();
+}
+
+// Same card-list-with-inline-3-column-detail pattern as renderIterationGroups(),
+// minus the iteration selector -- each MILP variant produces one static
+// assignment, not a series of iterations. Each variant has its own
+// open-group Set, kept independent both across variants and from the
+// regular Groups tab's openGroupIds.
+function renderMilpGroups(variantKey) {
+  const groups = milpGroupsByVariant[variantKey] || [];
+  const openIds = openMilpGroupIdsByVariant[variantKey];
+
+  if (!groups.length) {
+    stage.innerHTML = `<div class="empty-state">No MILP reassignment output available for this variant yet.</div>`;
+    return;
+  }
+
+  const cardsHtml = groups.map(group => `<div class="group-card" data-group-id="${group.group_id}">
+      <div class="group-question">${escapeHtml(group.overarching_question || "(no summary)")}</div>
+      ${buildPaperCoverageVis(group.members)}
+      <div class="group-detail-slot"></div>
+    </div>`).join("");
+
+  stage.innerHTML = buildPapersLegend() + cardsHtml;
+
+  stage.querySelectorAll(".group-card").forEach(card => {
+    const groupId = card.dataset.groupId;
+    const group = groups.find(g => g.group_id === groupId);
+    const slot = card.querySelector(".group-detail-slot");
+    if (openIds.has(groupId)) {
+      card.classList.add("open");
+      renderGroupDetail(slot, group);
+    }
+    card.querySelector(".group-question").addEventListener("click", () => {
+      const isOpen = card.classList.toggle("open");
+      if (isOpen) {
+        openIds.add(groupId);
+        renderGroupDetail(slot, group);
+      } else {
+        openIds.delete(groupId);
+        slot.innerHTML = "";
+      }
+    });
+  });
 }
 
 function renderGroupDetail(slot, group) {
@@ -2123,6 +2309,14 @@ function switchGranularity(granularity) {
     renderIterationGroups();
     return;
   }
+  if (granularity === "epoch_groups") {
+    renderEpochGroups();
+    return;
+  }
+  if (MILP_VARIANT_KEYS.includes(granularity)) {
+    renderMilpGroups(granularity);
+    return;
+  }
   if (granularity === "paper-map") {
     renderPaperMap();
     return;
@@ -2140,7 +2334,7 @@ function switchGranularity(granularity) {
 }
 
 async function init() {
-  const { papers, links, iterations, balances } = await loadAll();
+  const { papers, links, iterations, balances, milpDataByVariant, epochInitialGroups, epochStepData } = await loadAll();
   allPapers = papers;
   allLinksByGranularity = links;
   Object.entries(iterations).forEach(([n, state]) => {
@@ -2153,6 +2347,27 @@ async function init() {
       groupBalanceByIteration[iteration][group.group_id] = group.group_balance;
     });
   });
+  MILP_VARIANT_KEYS.forEach(key => {
+    if (milpDataByVariant[key]) milpGroupsByVariant[key] = milpDataByVariant[key].groups || [];
+  });
+  if (epochInitialGroups) epochGroupsByPhase.initial = epochInitialGroups;
+  for (let n = 1; n <= 3; n++) {
+    const phase = `epoch${n}`;
+    const { estep, mstep, balance } = epochStepData[phase] || {};
+    if (!estep || !mstep) continue;
+    epochMetaByPhase[phase] = estep.meta || null;
+    const membersByGroupId = {};
+    (estep.groups || []).forEach(g => { membersByGroupId[g.group_id] = g.members; });
+    epochGroupsByPhase[phase] = (mstep.groups || []).map(g => ({
+      group_id: g.group_id,
+      overarching_question: g.overarching_question,
+      members: membersByGroupId[g.group_id] || [],
+    }));
+    if (balance) {
+      epochBalanceByPhase[phase] = {};
+      balance.forEach(g => { epochBalanceByPhase[phase][g.group_id] = g.group_balance; });
+    }
+  }
   buildParagraphUnitLookup();
   buildPaperColors();
   traceSelectedGroupId = iterationGroups[0]?.[0]?.group_id || null;
@@ -2176,6 +2391,8 @@ async function init() {
     previewChars = Number(previewSlider.value);
     previewValueEl.textContent = String(previewChars);
     if (currentGranularity === "groups") renderIterationGroups();
+    else if (currentGranularity === "epoch_groups") renderEpochGroups();
+    else if (MILP_VARIANT_KEYS.includes(currentGranularity)) renderMilpGroups(currentGranularity);
     else if (GRANULARITIES.includes(currentGranularity)) updatePreviews();
   });
   similaritySlider.addEventListener("input", () => {
