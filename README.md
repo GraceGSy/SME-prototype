@@ -187,6 +187,44 @@ as **Iteration 0 · QI-Primes**, followed by refinement iterations 1–5. The Gr
 Paper Map, and Skeleton views share this iteration selector; numeric balance is
 shown for every refinement iteration.
 
+The QI-Prime Trace and QI-Prime Flow views can also replay the matrix-refinement
+run saved under `epoch_matrix_refinement/`. That history is represented as seven
+auditable snapshots: pre-epoch, then a separate E-step assignment and M-step
+question revision for each of epochs 1–3. E-step links are exact paragraph-set
+differences. M-step snapshots reuse the E-step membership verbatim, so they show
+question wording changes without animating paragraph movement. Clicking a
+paragraph identifier or a paragraph card in these views opens the complete saved
+paragraph, its section context, and its full assignment path.
+
+The Paper Map and Skeleton views report a deterministic pairwise paper-similarity
+score for the selected assignment snapshot. For paper `P`, each group's proportion
+`p_P(g)` is the compacted-character share of the paper assigned to group `g`.
+Composition similarity is weighted Jaccard:
+
+```text
+C(A, B) = sum_g min(p_A(g), p_B(g)) / sum_g max(p_A(g), p_B(g))
+```
+
+Order similarity first maps each paper to 100 equal character-position bins, each
+labeled with its best-one group or `unassigned`, and then uses normalized
+Levenshtein similarity:
+
+```text
+O(A, B) = 1 - levenshtein(sequence_A, sequence_B) / 100
+```
+
+The displayed score deliberately makes group overlap primary and lets order apply
+at most a 20% penalty:
+
+```text
+similarity(A, B) = 100 * C(A, B) * (0.80 + 0.20 * O(A, B))
+```
+
+Unassigned bins participate in the order sequence but are excluded from weighted
+Jaccard, so two papers with no shared assigned group score 0 even if both contain
+unassigned regions. Identical group proportions and order score 100; identical
+proportions in a different order score between 80 and 100.
+
 `output/sections/_cache/` holds the raw per-item Claude responses (safe to delete to
 force a re-run; checked into git alongside everything else so collaborators can skip
 re-running expensive steps entirely).

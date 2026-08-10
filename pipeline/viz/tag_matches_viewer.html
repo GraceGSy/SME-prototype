@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <title>Bidirectional Tag Match Viewer</title>
+<link rel="icon" href="data:,">
 <style>
   * { box-sizing: border-box; }
   body {
@@ -125,6 +126,10 @@
   }
   .paper-map-control-row { display: flex; align-items: center; gap: 10px; min-width: 0; flex-wrap: wrap; }
   .paper-map-control-row .iteration-tabs { margin: 0; }
+  .paper-map-source-select {
+    padding: 3px 6px; border: 1px solid #ced4da; border-radius: 4px;
+    background: #fff; color: #343a40; font-size: 9.5px;
+  }
   .paper-map-summary { color: #6c757d; font-size: 10px; white-space: nowrap; }
   .paper-map-mode-toggle { display: inline-flex; border: 1px solid #ced4da; border-radius: 5px; overflow: hidden; }
   .paper-map-mode-button {
@@ -178,6 +183,11 @@
     --group-color: #adb5bd; --group-fill: #f8f9fa; border-style: dashed;
   }
   .paper-map-paragraph-meta { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 4px; color: #868e96; font-size: 8.5px; }
+  .paragraph-id-button {
+    padding: 0; border: 0; border-bottom: 1px dotted #868e96; background: transparent;
+    color: inherit; font: inherit; cursor: pointer;
+  }
+  .paragraph-id-button:hover { border-bottom-color: #1c7ed6; color: #1864ab; }
   .paper-map-paragraph-question { margin-bottom: 4px; color: #343a40; font-size: 11px; font-weight: 650; line-height: 1.35; overflow-wrap: anywhere; }
   .paper-map-paragraph-text { color: #495057; font-size: 10.5px; line-height: 1.45; white-space: pre-line; overflow-wrap: anywhere; }
 
@@ -209,6 +219,27 @@
     background: repeating-linear-gradient(-45deg, #ced4da 0, #ced4da 3px, #f1f3f5 3px, #f1f3f5 6px);
   }
 
+  .paper-similarity-panel { display: grid; gap: 5px; min-width: 0; }
+  .paper-similarity-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; color: #495057; font-size: 9.5px; }
+  .paper-similarity-head strong { color: #343a40; font-size: 10.5px; }
+  .paper-similarity-head span { color: #868e96; }
+  .paper-similarity-cards { display: flex; gap: 5px; min-width: 0; overflow-x: auto; scrollbar-width: thin; }
+  .paper-similarity-card {
+    flex: 1 1 190px; min-width: 190px; max-width: 310px; border: 1px solid #dee2e6;
+    border-radius: 5px; background: #fff; color: #495057; font-size: 9px;
+  }
+  .paper-similarity-card summary { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 2px 6px; padding: 5px 7px; cursor: pointer; list-style: none; }
+  .paper-similarity-card summary::-webkit-details-marker { display: none; }
+  .paper-similarity-card summary::before { content: "▸"; grid-column: 1; grid-row: 1 / span 2; align-self: center; color: #adb5bd; }
+  .paper-similarity-card[open] summary::before { content: "▾"; }
+  .paper-similarity-pair { grid-column: 2; grid-row: 1; overflow: hidden; color: #343a40; font-weight: 650; text-overflow: ellipsis; white-space: nowrap; }
+  .paper-similarity-score { grid-column: 3; grid-row: 1 / span 2; align-self: center; color: #1864ab; font-size: 15px; font-weight: 750; }
+  .paper-similarity-components { grid-column: 2; grid-row: 2; color: #868e96; font-size: 8px; }
+  .paper-similarity-detail { display: grid; gap: 4px; padding: 6px 7px; border-top: 1px solid #e9ecef; line-height: 1.4; }
+  .paper-similarity-formula { color: #495057; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 8px; }
+  .paper-similarity-groups { display: flex; gap: 3px; flex-wrap: wrap; }
+  .paper-similarity-group { padding: 1px 4px; border: 1px solid #dee2e6; border-radius: 8px; background: #f8f9fa; color: #6c757d; font-size: 7.5px; }
+
   .qi-trace-shell { display: grid; gap: 10px; min-width: 0; }
   .qi-trace-toolbar {
     display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; padding: 10px 12px;
@@ -223,7 +254,7 @@
   .qi-trace-summary { flex: 1 1 260px; color: #6c757d; font-size: 10.5px; line-height: 1.4; }
   .qi-trace-summary strong { color: #343a40; }
   .qi-trace-timeline {
-    display: grid; grid-template-columns: repeat(6, minmax(235px, 1fr)); gap: 8px;
+    display: grid; grid-template-columns: repeat(var(--trace-stage-count, 6), minmax(235px, 1fr)); gap: 8px;
     min-width: 0; overflow-x: auto; padding: 1px 1px 7px;
   }
   .qi-trace-stage {
@@ -238,6 +269,7 @@
     background: #f8f9fa; color: #6c757d; font-size: 9px; font-weight: 650;
   }
   .qi-trace-stage-state.revised { border-color: #74c0fc; background: #e7f5ff; color: #1864ab; }
+  .qi-trace-stage-state.assignment { border-color: #8ce99a; background: #ebfbee; color: #2b8a3e; }
   .qi-trace-stage-state.dropped { border-color: #ced4da; background: #fff; color: #868e96; }
   .qi-trace-question { min-height: 72px; color: #212529; font-size: 12px; font-weight: 700; line-height: 1.35; }
   .qi-trace-question-diff {
@@ -318,6 +350,8 @@
   .qi-flow-question-control select, .qi-flow-paper-select {
     padding: 5px 7px; border: 1px solid #ced4da; border-radius: 4px; background: #fff; color: #212529; font-size: 11px;
   }
+  .qi-history-source-control { display: grid; gap: 4px; }
+  .qi-history-source-control select { min-width: 175px; }
   .qi-flow-playback { display: inline-flex; align-items: center; border: 1px solid #ced4da; border-radius: 5px; overflow: hidden; }
   .qi-flow-control-button {
     min-height: 27px; padding: 4px 8px; border: 0; border-right: 1px solid #ced4da;
@@ -403,10 +437,51 @@
   .qi-flow-paragraph-text { display: none; margin-top: 5px; color: #495057; font-size: 9px; line-height: 1.42; }
   .qi-flow-paragraph.open .qi-flow-paragraph-text { display: block; }
   .qi-flow-empty { padding: 18px; color: #868e96; font-size: 10px; text-align: center; }
+
+  .paragraph-inspector {
+    position: fixed; top: 0; right: 0; z-index: 60; display: grid; grid-template-rows: auto minmax(0, 1fr);
+    width: min(430px, 94vw); height: 100vh; border-left: 1px solid #ced4da; background: #fff;
+    box-shadow: -8px 0 28px rgba(33,37,41,.16); transform: translateX(104%);
+    transition: transform .18s ease; visibility: hidden;
+  }
+  .paragraph-inspector.open { transform: translateX(0); visibility: visible; }
+  .paragraph-inspector-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 10px 12px; border-bottom: 1px solid #dee2e6; background: #f8f9fa;
+  }
+  .paragraph-inspector-head strong { color: #343a40; font-size: 12px; }
+  .paragraph-inspector-close { padding: 3px 7px; border: 1px solid #ced4da; border-radius: 4px; background: #fff; color: #495057; font-size: 10px; cursor: pointer; }
+  .paragraph-inspector-body { min-height: 0; padding: 12px; overflow: auto; }
+  .paragraph-inspector-kicker { margin-bottom: 3px; color: #868e96; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; }
+  .paragraph-inspector-title { margin: 0 0 10px; color: #212529; font-size: 15px; line-height: 1.35; }
+  .paragraph-inspector-section { margin-bottom: 10px; padding: 7px 8px; border: 1px solid #e9ecef; border-radius: 5px; background: #f8f9fa; color: #495057; font-size: 9.5px; line-height: 1.4; }
+  .paragraph-inspector-question { margin-bottom: 9px; color: #343a40; font-size: 11px; font-weight: 700; line-height: 1.4; }
+  .paragraph-inspector-text { color: #495057; font-size: 11px; line-height: 1.55; white-space: pre-line; }
+  .paragraph-inspector-route { display: grid; gap: 5px; margin-top: 13px; padding-top: 10px; border-top: 1px solid #e9ecef; }
+  .paragraph-inspector-route-title { color: #343a40; font-size: 10px; font-weight: 700; }
+  .paragraph-inspector-step { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 6px; align-items: start; }
+  .paragraph-inspector-step-label { color: #6c757d; font-size: 8.5px; font-weight: 700; }
+  .paragraph-inspector-step-question { padding-left: 6px; border-left: 3px solid var(--step-color); color: #495057; font-size: 9px; line-height: 1.4; }
+  .paragraph-inspector-step-question.unassigned { border-left-style: dashed; border-left-color: #adb5bd; color: #868e96; }
   @media (max-width: 900px) {
+    #granularityTabs {
+      flex: 1 1 100%;
+      max-width: 100%;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+    #stage { max-width: 100vw; }
     .qi-flow-revision { grid-template-columns: 1fr; }
     .qi-flow-paragraphs { grid-template-columns: 1fr; }
     .qi-flow-question-control { min-width: 100%; }
+    .paper-map-control-row .iteration-tabs {
+      flex: 1 1 100%;
+      max-width: 100%;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+    .paper-map-summary { white-space: normal; }
+    .paper-similarity-card { flex-basis: 175px; min-width: 175px; }
   }
 </style>
 </head>
@@ -429,6 +504,10 @@
 </header>
 <div id="legend">tags are free-text questions/phrases, not a fixed category. Only <strong>bidirectional</strong> matches (mutual top-3) are shown; use the slider above to filter out weaker matches.</div>
 <div id="stage"><div class="empty-state">Loading...</div></div>
+<aside class="paragraph-inspector" id="paragraphInspector" aria-hidden="true" aria-label="Paragraph details">
+  <div class="paragraph-inspector-head"><strong id="paragraphInspectorHeading">Paragraph</strong><button type="button" class="paragraph-inspector-close" id="paragraphInspectorClose">Close</button></div>
+  <div class="paragraph-inspector-body" id="paragraphInspectorBody"></div>
+</aside>
 
 <script>
 const GRANULARITIES = ["sections", "paragraphs"]; // matching/data granularities
@@ -455,6 +534,13 @@ const TAB_LABELS = Object.assign(
 // separately, so the viewer joins them by group_id when loading.
 const EPOCH_PHASES = ["initial", "epoch1", "epoch2", "epoch3"];
 const EPOCH_PHASE_LABELS = { initial: "Pre-epoch", epoch1: "Epoch 1", epoch2: "Epoch 2", epoch3: "Epoch 3" };
+const EPOCH_COUNT = 3;
+const QI_HISTORY_SOURCE_OPTIONS = [
+  { key: "epochs", label: "Friday matrix epochs" },
+  { key: "iterations", label: "Original refinement iterations" },
+];
+const PAPER_SIMILARITY_BINS = 100;
+const PAPER_SIMILARITY_ORDER_WEIGHT = 0.20;
 
 const stage = document.getElementById("stage");
 const granularityTabsEl = document.getElementById("granularityTabs");
@@ -462,6 +548,10 @@ const previewSlider = document.getElementById("previewSlider");
 const previewValueEl = document.getElementById("previewValue");
 const similaritySlider = document.getElementById("similaritySlider");
 const similarityValueEl = document.getElementById("similarityValue");
+const paragraphInspector = document.getElementById("paragraphInspector");
+const paragraphInspectorHeading = document.getElementById("paragraphInspectorHeading");
+const paragraphInspectorBody = document.getElementById("paragraphInspectorBody");
+const paragraphInspectorClose = document.getElementById("paragraphInspectorClose");
 let pinnedId = null;
 let currentLinks = []; // links for the current granularity AND above the current similarity threshold
 const expandedIds = new Set(); // units expanded to full text -- independent per unit, click toggles membership
@@ -486,6 +576,8 @@ const openGroupIds = new Set(); // group_id currently expanded to show its 3-col
 const PAPER_MAP_HUES = [205, 25, 145, 48, 275, 175, 350, 95, 230, 8, 160, 62, 305, 190, 330, 118];
 let paperMapMode = "reading";
 let paperMapSelectedGroupId = null;
+let paperMapHistorySource = "iterations";
+let paperMapEpochStageIndex = 0;
 let paperMapSyncScroll = false;
 let paperMapLastScrolledPaper = null;
 let paperMapScrollSyncing = false;
@@ -495,6 +587,8 @@ let traceSelectedGroupId = null;
 let tracePaperFilter = "all";
 let traceChangedOnly = false;
 let traceSelectedParagraphKey = null;
+let qiHistorySource = "epochs";
+const qiHistorySources = {};
 
 let qiFlowTransition = 1;
 let qiFlowPaperFilter = "all";
@@ -502,7 +596,6 @@ let qiFlowSelectedEdgeId = null;
 let qiFlowPlaying = false;
 let qiFlowTimer = null;
 let qiFlowCurrentModel = null;
-const qiFlowExpandedParagraphKeys = new Set();
 
 const milpGroupsByVariant = {}; // variant key -> [{group_id, overarching_question, members}, ...], each a single static assignment (no iterations)
 const openMilpGroupIdsByVariant = {}; // variant key -> Set of group_id currently expanded, independent per variant and independent of the iteration-based groups tab's openGroupIds
@@ -513,6 +606,8 @@ const epochMetaByPhase = {}; // phase key -> {reassigned, total_assigned} | null
 const epochBalanceByPhase = {}; // phase key -> {group_id: group_balance}, when available (epoch1/2/3 only, from compute_epoch_group_balance.py)
 let currentEpochPhase = "initial";
 const openEpochGroupIds = new Set(); // group_id currently expanded, cleared on phase switch (membership/content differs per phase)
+let epochStepDataByPhase = {};
+let paragraphInspectorKey = null;
 
 // Fixed per-paper colors (not tag-derived, so this isn't the hash-based tag
 // coloring that was removed earlier -- paper identity is a small, fixed,
@@ -538,6 +633,179 @@ function compactText(value) {
 function shortPaperLabel(paper) {
   const id = paper.paper_id || "";
   return id.replace(/_(?:[a-z]+)?\d{2,4}$/i, "").replace(/[_-]+/g, " ") || id;
+}
+
+function snapshotGroups(membershipGroups, questionGroups, fallbackGroups = []) {
+  const questionByGroupId = new Map((questionGroups || []).map(group => [group.group_id, group.overarching_question]));
+  const fallbackByGroupId = new Map((fallbackGroups || []).map(group => [group.group_id, group.overarching_question]));
+  return (membershipGroups || []).map(group => ({
+    group_id: group.group_id,
+    overarching_question: questionByGroupId.get(group.group_id) || fallbackByGroupId.get(group.group_id) || group.overarching_question || "",
+    members: group.members || [],
+  }));
+}
+
+function buildQiHistorySources() {
+  const iterationStages = Array.from({ length: N_ITERATIONS + 1 }, (_, index) => ({
+    key: `iteration${index}`,
+    label: `Iteration ${index}`,
+    shortLabel: `I${index}`,
+    groupPrefix: `I${index}`,
+    kind: index === 0 ? "baseline" : "assignment",
+    movementEnabled: index > 0,
+    groups: iterationGroups[index] || [],
+    balanceByGroupId: groupBalanceByIteration[index] || null,
+    meta: iterationMeta[index] || null,
+  }));
+  qiHistorySources.iterations = {
+    key: "iterations",
+    label: "Original refinement iterations",
+    baselineLabel: "Iteration 0 QI-Prime",
+    stages: iterationStages,
+  };
+
+  const initialGroups = epochGroupsByPhase.initial || [];
+  const epochStages = [{
+    key: "pre",
+    label: "Pre-epoch",
+    shortLabel: "Pre",
+    groupPrefix: "P",
+    kind: "baseline",
+    movementEnabled: false,
+    groups: initialGroups,
+    balanceByGroupId: null,
+    meta: null,
+  }];
+  let previousGroups = initialGroups;
+  for (let n = 1; n <= EPOCH_COUNT; n++) {
+    const phase = `epoch${n}`;
+    const { estep, mstep } = epochStepDataByPhase[phase] || {};
+    if (!estep || !mstep) continue;
+    const balanceByGroupId = epochBalanceByPhase[phase] || null;
+    const assignmentGroups = snapshotGroups(estep.groups, estep.candidates_used, previousGroups);
+    const revisionGroups = snapshotGroups(estep.groups, mstep.groups, assignmentGroups);
+    epochStages.push({
+      key: `epoch${n}-assign`,
+      label: `Epoch ${n} · assign paragraphs`,
+      shortLabel: `E${n} assign`,
+      groupPrefix: `E${n}A`,
+      kind: "assignment",
+      movementEnabled: true,
+      groups: assignmentGroups,
+      balanceByGroupId,
+      meta: estep.meta || null,
+    });
+    epochStages.push({
+      key: `epoch${n}-revise`,
+      label: `Epoch ${n} · revise questions`,
+      shortLabel: `E${n} revise`,
+      groupPrefix: `E${n}R`,
+      kind: "revision",
+      movementEnabled: false,
+      groups: revisionGroups,
+      balanceByGroupId,
+      meta: estep.meta || null,
+    });
+    previousGroups = revisionGroups;
+  }
+  qiHistorySources.epochs = {
+    key: "epochs",
+    label: "Friday matrix epochs",
+    baselineLabel: "Pre-epoch QI-Prime",
+    stages: epochStages,
+  };
+}
+
+function currentQiHistory() {
+  return qiHistorySources[qiHistorySource] || qiHistorySources.iterations || { stages: [] };
+}
+
+function qiHistorySourceOptions(selectedSource) {
+  return QI_HISTORY_SOURCE_OPTIONS
+    .filter(option => qiHistorySources[option.key]?.stages?.length)
+    .map(option => `<option value="${escapeHtml(option.key)}"${option.key === selectedSource ? " selected" : ""}>${escapeHtml(option.label)}</option>`)
+    .join("");
+}
+
+function paragraphInspectorHistory() {
+  if (currentGranularity === "paper-map") return paperMapHistory();
+  if (currentGranularity === "epoch_groups") return qiHistorySources.epochs;
+  if (currentGranularity === "groups") return qiHistorySources.iterations;
+  if (MILP_VARIANT_KEYS.includes(currentGranularity)) {
+    return {
+      label: TAB_LABELS[currentGranularity],
+      stages: [{
+        shortLabel: "Result",
+        groupPrefix: "MILP",
+        groups: milpGroupsByVariant[currentGranularity] || [],
+      }],
+    };
+  }
+  return currentQiHistory();
+}
+
+function paragraphAssignmentForStage(stageState, key) {
+  for (const group of stageState?.groups || []) {
+    if ((group.members || []).some(member => `${member.paper}:${member.unit_id}` === key)) return group;
+  }
+  return null;
+}
+
+function renderParagraphInspector(key) {
+  const delimiter = key.indexOf(":");
+  const paperId = delimiter >= 0 ? key.slice(0, delimiter) : "";
+  const unitId = delimiter >= 0 ? key.slice(delimiter + 1) : key;
+  const paper = allPapers.find(candidate => candidate.paper_id === paperId);
+  const unit = paragraphUnitLookup[key];
+  if (!paper || !unit) {
+    paragraphInspectorHeading.textContent = "Paragraph unavailable";
+    paragraphInspectorBody.innerHTML = `<div class="qi-flow-empty">No saved paragraph text was found for ${escapeHtml(key)}.</div>`;
+    return;
+  }
+  const sectionId = unit.section_id || unit.parent_section_id || "";
+  const section = (paper.sections || []).find(candidate => candidate.id === sectionId);
+  const history = paragraphInspectorHistory();
+  const colorByGroupId = paperMapColorCatalog();
+  const route = (history?.stages || []).map(stageState => {
+    const group = paragraphAssignmentForStage(stageState, key);
+    const groupIndex = group ? (stageState.groups || []).findIndex(candidate => candidate.group_id === group.group_id) : -1;
+    const label = group ? `${stageState.groupPrefix}-${groupIndex + 1}` : "Unassigned";
+    const question = group?.overarching_question || "No question group assignment";
+    const color = group ? (colorByGroupId.get(group.group_id) || paperMapColor(0)).border : "#adb5bd";
+    return `<div class="paragraph-inspector-step"><span class="paragraph-inspector-step-label">${escapeHtml(stageState.shortLabel)}</span><div class="paragraph-inspector-step-question${group ? "" : " unassigned"}" style="--step-color:${color}"><strong>${escapeHtml(label)}</strong><br>${escapeHtml(question)}</div></div>`;
+  }).join("");
+  const sectionDescription = section
+    ? `<strong>${escapeHtml(section.title || section.id)}</strong>${section.tag ? `<br>${escapeHtml(section.tag)}` : ""}`
+    : escapeHtml(sectionId || "No saved section");
+  paragraphInspectorHeading.textContent = `${shortPaperLabel(paper)} · ${unitId}`;
+  paragraphInspectorBody.innerHTML = `
+    <div class="paragraph-inspector-kicker">${escapeHtml(paper.title)} · ${escapeHtml(unitId)}</div>
+    <h2 class="paragraph-inspector-title">${escapeHtml(unit.tag || "Paragraph")}</h2>
+    <div class="paragraph-inspector-section">${sectionDescription}</div>
+    <div class="paragraph-inspector-question">Implicit question: ${escapeHtml(unit.tag || "(no paragraph question)")}</div>
+    <div class="paragraph-inspector-text">${escapeHtml(unit.text || "(no paragraph text)")}</div>
+    <div class="paragraph-inspector-route"><div class="paragraph-inspector-route-title">Assignment path · ${escapeHtml(history?.label || "saved history")}</div>${route}</div>`;
+}
+
+function closeParagraphInspector() {
+  paragraphInspectorKey = null;
+  paragraphInspector.classList.remove("open");
+  paragraphInspector.setAttribute("aria-hidden", "true");
+}
+
+function toggleParagraphInspector(key) {
+  if (paragraphInspectorKey === key && paragraphInspector.classList.contains("open")) {
+    closeParagraphInspector();
+    return;
+  }
+  paragraphInspectorKey = key;
+  renderParagraphInspector(key);
+  paragraphInspector.classList.add("open");
+  paragraphInspector.setAttribute("aria-hidden", "false");
+}
+
+function refreshParagraphInspector() {
+  if (paragraphInspectorKey && paragraphInspector.classList.contains("open")) renderParagraphInspector(paragraphInspectorKey);
 }
 
 function updatePreviews() {
@@ -596,7 +864,7 @@ async function loadAll() {
     if (res.ok) epochInitialGroups = await res.json();
   } catch (e) { /* no epoch refinement output available */ }
   const epochStepData = {};
-  for (let n = 1; n <= 3; n++) {
+  for (let n = 1; n <= EPOCH_COUNT; n++) {
     epochStepData[`epoch${n}`] = { estep: null, mstep: null, balance: null };
     try {
       const eRes = await fetch(base + `epoch_matrix_refinement/epoch${n}/estep.json`, opts);
@@ -1109,6 +1377,7 @@ function renderGroupDetail(slot, group) {
         const nextHtml = unit.next_relation ? `<span class="relation-badge">${escapeHtml(unit.next_relation)} →</span>` : "";
         return `<div class="section-block linkable" data-group-unit-id="${id}">
           <div class="section-head">
+            <button type="button" class="paragraph-id-button" data-paragraph-inspect="${escapeHtml(id)}">${escapeHtml(unit.id)}</button>
             <span class="tag-badge">${escapeHtml(unit.tag)}</span>
             ${titleHtml}
             ${prevHtml}
@@ -1153,8 +1422,10 @@ function paperMapColor(index) {
 
 function paperMapColorCatalog() {
   const groupIds = new Set();
-  Object.values(iterationGroups).forEach(groups => {
-    (groups || []).forEach(group => groupIds.add(group.group_id));
+  Object.values(qiHistorySources).forEach(history => {
+    (history.stages || []).forEach(stageState => {
+      (stageState.groups || []).forEach(group => groupIds.add(group.group_id));
+    });
   });
   return new Map(
     [...groupIds]
@@ -1163,15 +1434,40 @@ function paperMapColorCatalog() {
   );
 }
 
-// Every saved state carries its own membership. Iteration 0 uses the original
-// bidirectional groups; later iterations use each paragraph's best-fit group.
-// The map displays that membership without adding another matching rule.
+function paperMapHistory() {
+  return qiHistorySources[paperMapHistorySource] || qiHistorySources.iterations || { stages: [] };
+}
+
+function paperMapCurrentStageIndex() {
+  if (paperMapHistorySource === "iterations") return currentIteration;
+  return paperMapEpochStageIndex;
+}
+
+function paperMapCurrentStage() {
+  const history = paperMapHistory();
+  const requested = paperMapCurrentStageIndex();
+  return history.stages[Math.max(0, Math.min(history.stages.length - 1, requested))] || null;
+}
+
+function buildPaperMapStageTabsHtml() {
+  const history = paperMapHistory();
+  const selectedIndex = paperMapCurrentStageIndex();
+  return history.stages.map((stageState, stageIndex) =>
+    `<button type="button" class="granularity-btn${stageIndex === selectedIndex ? " active" : ""}" data-paper-map-stage-index="${stageIndex}">${escapeHtml(stageState.shortLabel)}</button>`
+  ).join("");
+}
+
+// Every saved state carries its own membership. The map displays that exact
+// membership without introducing another matching rule.
 function buildPaperMapModel() {
-  const groups = iterationGroups[currentIteration] || [];
+  const history = paperMapHistory();
+  const stageIndex = paperMapCurrentStageIndex();
+  const stageState = paperMapCurrentStage();
+  const groups = stageState?.groups || [];
   const colorByGroupId = paperMapColorCatalog();
   const groupEntries = groups.map((group, index) => ({
     group,
-    label: `I${currentIteration}-${index + 1}`,
+    label: `${stageState.groupPrefix}-${index + 1}`,
     color: colorByGroupId.get(group.group_id) || paperMapColor(index),
     count: 0,
   }));
@@ -1187,7 +1483,122 @@ function buildPaperMapModel() {
     });
   });
 
-  return { groups, groupEntries, entriesById, assignments };
+  return { history, stageIndex, stageState, groups, groupEntries, entriesById, assignments };
+}
+
+function paperSimilarityParagraphWeight(paragraph) {
+  return Math.max(1, compactText(paragraph?.text).length);
+}
+
+function buildPaperSimilarityProfile(model, paper) {
+  const paragraphs = paper.paragraphs || [];
+  const weightedParagraphs = paragraphs.map(paragraph => {
+    const key = `${paper.paper_id}:${paragraph.id}`;
+    const entry = model.assignments.get(key);
+    return { groupId: entry?.group.group_id || null, weight: paperSimilarityParagraphWeight(paragraph) };
+  });
+  const totalWeight = weightedParagraphs.reduce((sum, paragraph) => sum + paragraph.weight, 0);
+  const groupProportions = new Map();
+  weightedParagraphs.forEach(paragraph => {
+    if (!paragraph.groupId || !totalWeight) return;
+    groupProportions.set(paragraph.groupId, (groupProportions.get(paragraph.groupId) || 0) + paragraph.weight / totalWeight);
+  });
+
+  const sequence = [];
+  let paragraphIndex = 0;
+  let cumulativeWeight = weightedParagraphs[0]?.weight || 0;
+  for (let bin = 0; bin < PAPER_SIMILARITY_BINS; bin++) {
+    const position = totalWeight ? ((bin + 0.5) / PAPER_SIMILARITY_BINS) * totalWeight : 0;
+    while (paragraphIndex < weightedParagraphs.length - 1 && position > cumulativeWeight) {
+      paragraphIndex += 1;
+      cumulativeWeight += weightedParagraphs[paragraphIndex].weight;
+    }
+    sequence.push(weightedParagraphs[paragraphIndex]?.groupId || "__unassigned__");
+  }
+  return { paper, totalWeight, groupProportions, sequence };
+}
+
+function weightedJaccardSimilarity(left, right) {
+  const groupIds = new Set([...left.keys(), ...right.keys()]);
+  let intersection = 0;
+  let union = 0;
+  groupIds.forEach(groupId => {
+    const leftValue = left.get(groupId) || 0;
+    const rightValue = right.get(groupId) || 0;
+    intersection += Math.min(leftValue, rightValue);
+    union += Math.max(leftValue, rightValue);
+  });
+  return union ? intersection / union : 0;
+}
+
+function levenshteinDistance(left, right) {
+  let previous = Array.from({ length: right.length + 1 }, (_, index) => index);
+  for (let i = 1; i <= left.length; i++) {
+    const current = [i];
+    for (let j = 1; j <= right.length; j++) {
+      current[j] = Math.min(
+        current[j - 1] + 1,
+        previous[j] + 1,
+        previous[j - 1] + (left[i - 1] === right[j - 1] ? 0 : 1),
+      );
+    }
+    previous = current;
+  }
+  return previous[right.length];
+}
+
+function buildPaperSimilarityPairs(model) {
+  const profiles = allPapers.map(paper => buildPaperSimilarityProfile(model, paper));
+  const pairs = [];
+  for (let leftIndex = 0; leftIndex < profiles.length; leftIndex++) {
+    for (let rightIndex = leftIndex + 1; rightIndex < profiles.length; rightIndex++) {
+      const left = profiles[leftIndex];
+      const right = profiles[rightIndex];
+      const overlap = weightedJaccardSimilarity(left.groupProportions, right.groupProportions);
+      const denominator = Math.max(left.sequence.length, right.sequence.length, 1);
+      const order = 1 - levenshteinDistance(left.sequence, right.sequence) / denominator;
+      const overall = overlap === 0 ? 0 : overlap * ((1 - PAPER_SIMILARITY_ORDER_WEIGHT) + PAPER_SIMILARITY_ORDER_WEIGHT * order);
+      const sharedGroups = [...left.groupProportions.keys()]
+        .filter(groupId => right.groupProportions.has(groupId))
+        .map(groupId => ({
+          groupId,
+          entry: model.entriesById.get(groupId),
+          left: left.groupProportions.get(groupId),
+          right: right.groupProportions.get(groupId),
+        }))
+        .sort((a, b) => Math.min(b.left, b.right) - Math.min(a.left, a.right));
+      pairs.push({ left, right, overlap, order, overall, sharedGroups });
+    }
+  }
+  return pairs;
+}
+
+function formatSimilarityPercent(value) {
+  return `${(Math.max(0, Math.min(1, value)) * 100).toFixed(1)}%`;
+}
+
+function renderPaperSimilarity(model) {
+  const pairs = buildPaperSimilarityPairs(model);
+  if (!pairs.length) return "";
+  const cards = pairs.map(pair => {
+    const leftLabel = shortPaperLabel(pair.left.paper);
+    const rightLabel = shortPaperLabel(pair.right.paper);
+    const shared = pair.sharedGroups.length
+      ? pair.sharedGroups.map(group => `<span class="paper-similarity-group" title="${escapeHtml(group.entry?.group.overarching_question || group.groupId)}">${escapeHtml(group.entry?.label || group.groupId)} · ${formatSimilarityPercent(group.left)} / ${formatSimilarityPercent(group.right)}</span>`).join("")
+      : `<span class="qi-trace-flow-empty">No shared assigned question groups</span>`;
+    return `<details class="paper-similarity-card">
+      <summary title="Open the deterministic score breakdown"><span class="paper-similarity-pair">${escapeHtml(leftLabel)} ↔ ${escapeHtml(rightLabel)}</span><strong class="paper-similarity-score">${formatSimilarityPercent(pair.overall)}</strong><span class="paper-similarity-components">overlap ${formatSimilarityPercent(pair.overlap)} · order ${formatSimilarityPercent(pair.order)}</span></summary>
+      <div class="paper-similarity-detail">
+        <div class="paper-similarity-formula">score = weighted Jaccard × (0.80 + 0.20 × normalized Levenshtein)</div>
+        <div>Group percentages use compacted paragraph character length. Order uses ${PAPER_SIMILARITY_BINS} equal-length paper-position bins. Unassigned bins remain in the order sequence but are excluded from group overlap.</div>
+        <div class="paper-similarity-groups">${shared}</div>
+      </div>
+    </details>`;
+  }).join("");
+  return `<div class="paper-similarity-panel">
+    <div class="paper-similarity-head"><strong>Pairwise paper similarity</strong><span>Group-proportion overlap dominates; order can reduce an overlapping score by at most 20 percentage points.</span></div>
+    <div class="paper-similarity-cards">${cards}</div>
+  </div>`;
 }
 
 function renderPaperMap() {
@@ -1196,7 +1607,7 @@ function renderPaperMap() {
     paperMapSelectedGroupId = null;
   }
 
-  const tabsHtml = buildIterationTabsHtml();
+  const tabsHtml = buildPaperMapStageTabsHtml();
   const totalParagraphs = allPapers.reduce((sum, paper) => sum + (paper.paragraphs || []).length, 0);
   const orphanCount = totalParagraphs - model.assignments.size;
   const legend = model.groupEntries.map(entry => {
@@ -1217,15 +1628,19 @@ function renderPaperMap() {
     <input type="checkbox" id="paperMapSyncScroll"${paperMapSyncScroll ? " checked" : ""}> sync paper scrolling
   </label>` : "";
   const content = paperMapMode === "skeleton" ? renderPaperMapSkeleton(model) : renderPaperMapReading(model);
+  const sourceOptions = qiHistorySourceOptions(paperMapHistorySource);
+  const similarity = renderPaperSimilarity(model);
 
   stage.innerHTML = `<div class="paper-map-shell">
     <div class="paper-map-overview">
       <div class="paper-map-control-row">
+        <label class="paper-map-sync-toggle">assignment history <select id="paperMapHistorySource" class="paper-map-source-select">${sourceOptions}</select></label>
         <div class="iteration-tabs">${tabsHtml}</div>
-        <div class="paper-map-summary"><strong>${iterationHeading(currentIteration)}</strong> · ${model.groups.length} groups · ${model.assignments.size} assigned · ${orphanCount} unassigned</div>
+        <div class="paper-map-summary"><strong>${escapeHtml(model.stageState.label)}</strong> · ${model.groups.length} groups · ${model.assignments.size} assigned · ${orphanCount} unassigned</div>
         ${modeToggle}${syncToggle}
       </div>
-      <div class="paper-map-legend" aria-label="Question groups at ${iterationHeading(currentIteration)}">${legend}</div>
+      ${similarity}
+      <div class="paper-map-legend" aria-label="Question groups at ${escapeHtml(model.stageState.label)}">${legend}</div>
     </div>
     ${content}
   </div>`;
@@ -1271,7 +1686,7 @@ function renderPaperMapReading(model) {
         sectionHeading = `<div class="paper-map-section-head">${escapeHtml(section?.title || section?.tag || sectionId || "Unsectioned")}</div>`;
       }
       return `${sectionHeading}<article class="paper-map-paragraph${entry ? "" : " orphan"}" data-paper-map-paragraph="${escapeHtml(key)}" data-paper-map-group="${escapeHtml(groupId)}" style="${style}">
-        <div class="paper-map-paragraph-meta"><span>${escapeHtml(paragraph.id)}</span><span>${entry ? escapeHtml(entry.label) : "Unassigned"}</span></div>
+        <div class="paper-map-paragraph-meta"><button type="button" class="paragraph-id-button" data-paragraph-inspect="${escapeHtml(key)}">${escapeHtml(paragraph.id)}</button><span>${entry ? escapeHtml(entry.label) : "Unassigned"}</span></div>
         <div class="paper-map-paragraph-question">${escapeHtml(paragraph.tag || "(no question)")}</div>
         <div class="paper-map-paragraph-text">${escapeHtml(compactText(paragraph.text))}</div>
       </article>`;
@@ -1293,7 +1708,7 @@ function renderPaperMapSkeleton(model) {
       const label = entry ? entry.label : "Unassigned";
       const style = `${entry ? `--group-color:${entry.color.border};` : ""}--paragraph-weight:${characterCount}`;
       const title = `${paragraph.id} · ${label} · ${characterCount.toLocaleString()} characters`;
-      return `<button type="button" class="paper-map-skeleton-block${entry ? "" : " orphan"}" data-paper-map-paragraph="${escapeHtml(key)}" data-paper-map-group="${escapeHtml(groupId)}" style="${style}" title="${escapeHtml(title)}" aria-label="${escapeHtml(`${shortPaperLabel(paper)} ${title}`)}"></button>`;
+      return `<button type="button" class="paper-map-skeleton-block${entry ? "" : " orphan"}" data-paper-map-paragraph="${escapeHtml(key)}" data-paragraph-inspect="${escapeHtml(key)}" data-paper-map-group="${escapeHtml(groupId)}" style="${style}" title="${escapeHtml(title)}" aria-label="${escapeHtml(`${shortPaperLabel(paper)} ${title}`)}"></button>`;
     }).join("");
     return `<section class="paper-map-skeleton-paper" data-paper="${escapeHtml(paper.paper_id)}">
       <div class="paper-map-paper-head" title="${escapeHtml(paper.title)}">${escapeHtml(shortPaperLabel(paper))} · ${(paper.paragraphs || []).length} paragraphs</div>
@@ -1344,7 +1759,25 @@ function syncPaperMapColumns(source, columns) {
 function attachPaperMapInteractions(model) {
   const shell = stage.querySelector(".paper-map-shell");
   if (shell) shell.addEventListener("click", event => event.stopPropagation());
-  attachIterationTabInteractions();
+  document.getElementById("paperMapHistorySource")?.addEventListener("change", event => {
+    paperMapHistorySource = event.target.value;
+    paperMapSelectedGroupId = null;
+    if (paperMapHistorySource === "epochs") {
+      paperMapEpochStageIndex = Math.min(paperMapEpochStageIndex, paperMapHistory().stages.length - 1);
+    }
+    refreshParagraphInspector();
+    renderPaperMap();
+  });
+  stage.querySelectorAll("[data-paper-map-stage-index]").forEach(button => {
+    button.addEventListener("click", event => {
+      event.stopPropagation();
+      const stageIndex = Number(button.dataset.paperMapStageIndex);
+      if (paperMapHistorySource === "iterations") currentIteration = stageIndex;
+      else paperMapEpochStageIndex = stageIndex;
+      paperMapSelectedGroupId = null;
+      renderPaperMap();
+    });
+  });
   stage.querySelectorAll("[data-paper-map-mode]").forEach(button => {
     button.addEventListener("click", event => {
       event.stopPropagation();
@@ -1379,6 +1812,7 @@ function attachPaperMapInteractions(model) {
     card.addEventListener("mouseenter", () => setPaperMapGroupEmphasis(groupId));
     card.addEventListener("mouseleave", () => setPaperMapGroupEmphasis());
     card.addEventListener("click", event => {
+      if (event.target.closest("[data-paragraph-inspect]")) return;
       event.stopPropagation();
       paperMapSelectedGroupId = groupId && paperMapSelectedGroupId !== groupId ? groupId : null;
       setPaperMapGroupEmphasis();
@@ -1406,32 +1840,37 @@ function attachPaperMapInteractions(model) {
 }
 
 function traceIterationNumbers() {
-  return Array.from({ length: N_ITERATIONS + 1 }, (_, iteration) => iteration);
+  return currentQiHistory().stages.map((_, stageIndex) => stageIndex);
 }
 
-function traceGroupForIteration(iteration, groupId) {
-  return (iterationGroups[iteration] || []).find(group => group.group_id === groupId) || null;
+function traceStageDescriptor(stageIndex) {
+  return currentQiHistory().stages[stageIndex] || null;
+}
+
+function traceGroupForIteration(stageIndex, groupId) {
+  return (traceStageDescriptor(stageIndex)?.groups || []).find(group => group.group_id === groupId) || null;
 }
 
 function traceQiPrimeLabel(groupId) {
-  const index = (iterationGroups[0] || []).findIndex(group => group.group_id === groupId);
+  const index = (traceStageDescriptor(0)?.groups || []).findIndex(group => group.group_id === groupId);
   return index >= 0 ? `QI-${index + 1}` : groupId;
 }
 
-function traceIterationGroupLabel(iteration, groupId) {
+function traceIterationGroupLabel(stageIndex, groupId) {
   if (!groupId) return "Unassigned";
-  const index = (iterationGroups[iteration] || []).findIndex(group => group.group_id === groupId);
-  return index >= 0 ? `I${iteration}-${index + 1}` : `I${iteration}`;
+  const descriptor = traceStageDescriptor(stageIndex);
+  const index = (descriptor?.groups || []).findIndex(group => group.group_id === groupId);
+  return index >= 0 ? `${descriptor.groupPrefix}-${index + 1}` : descriptor?.groupPrefix || `Step ${stageIndex}`;
 }
 
-function traceGroupLabel(iteration, groupId) {
+function traceGroupLabel(stageIndex, groupId) {
   if (!groupId) return "Unassigned";
-  return `${traceIterationGroupLabel(iteration, groupId)} · ${traceQiPrimeLabel(groupId)}`;
+  return `${traceIterationGroupLabel(stageIndex, groupId)} · ${traceQiPrimeLabel(groupId)}`;
 }
 
-function traceAssignmentMap(iteration) {
+function traceAssignmentMap(stageIndex) {
   const assignments = new Map();
-  (iterationGroups[iteration] || []).forEach(group => {
+  (traceStageDescriptor(stageIndex)?.groups || []).forEach(group => {
     (group.members || []).forEach(member => {
       const key = `${member.paper}:${member.unit_id}`;
       if (paragraphUnitLookup[key] && !assignments.has(key)) assignments.set(key, group.group_id);
@@ -1446,7 +1885,7 @@ function traceMemberSet(group) {
     .filter(key => paragraphUnitLookup[key]));
 }
 
-function traceFlowItems(keys, assignments, iteration) {
+function traceFlowItems(keys, assignments, stageIndex) {
   const keysByGroup = new Map();
   keys.forEach(key => {
     const groupId = assignments.get(key) || null;
@@ -1458,19 +1897,21 @@ function traceFlowItems(keys, assignments, iteration) {
       groupId,
       count: paragraphKeys.length,
       paragraphKeys,
-      iteration,
-      label: traceGroupLabel(iteration, groupId),
-      question: groupId ? (traceGroupForIteration(iteration, groupId)?.overarching_question || "Group not present in this snapshot") : "No group assignment",
+      iteration: stageIndex,
+      label: traceGroupLabel(stageIndex, groupId),
+      question: groupId ? (traceGroupForIteration(stageIndex, groupId)?.overarching_question || "Group not present in this snapshot") : "No group assignment",
     }))
     .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label, undefined, { numeric: true }));
 }
 
 function buildQiPrimeTraceModel(groupId) {
   const iterations = traceIterationNumbers();
+  const history = currentQiHistory();
   const assignmentsByIteration = {};
   iterations.forEach(iteration => { assignmentsByIteration[iteration] = traceAssignmentMap(iteration); });
 
   const stages = iterations.map((iteration, index) => {
+    const descriptor = history.stages[iteration];
     const group = traceGroupForIteration(iteration, groupId);
     const memberKeys = traceMemberSet(group);
     const previousMemberKeys = index ? traceMemberSet(traceGroupForIteration(iterations[index - 1], groupId)) : new Set();
@@ -1483,7 +1924,7 @@ function buildQiPrimeTraceModel(groupId) {
       paperCounts[paperId] = (paperCounts[paperId] || 0) + 1;
     });
     const representedPaperCount = Object.values(paperCounts).filter(Boolean).length;
-    const storedBalance = groupBalanceByIteration[iteration]?.[groupId];
+    const storedBalance = descriptor?.balanceByGroupId?.[groupId];
     const computedBalance = allPapers.length ? (representedPaperCount / allPapers.length) * 100 : 0;
     const previousIteration = index ? iterations[index - 1] : null;
     const previousGroup = index ? traceGroupForIteration(previousIteration, groupId) : null;
@@ -1491,6 +1932,7 @@ function buildQiPrimeTraceModel(groupId) {
     const previousQuestion = compactText(previousGroup?.overarching_question);
     return {
       iteration,
+      descriptor,
       group,
       question,
       previousQuestion,
@@ -1501,14 +1943,14 @@ function buildQiPrimeTraceModel(groupId) {
       retained,
       paperCounts,
       representedPaperCount,
-      balance: iteration === 0 || !group ? null : (storedBalance ?? computedBalance),
+      balance: descriptor?.kind === "baseline" || !group ? null : (storedBalance ?? computedBalance),
       sources: index ? traceFlowItems(entered, assignmentsByIteration[previousIteration], previousIteration) : [],
       destinations: index ? traceFlowItems(left, assignmentsByIteration[iteration], iteration) : [],
     };
   });
 
   const paragraphKeys = [...new Set(stages.flatMap(stageState => [...stageState.memberKeys]))];
-  return { groupId, iterations, assignmentsByIteration, stages, paragraphKeys, colorByGroupId: paperMapColorCatalog() };
+  return { history, groupId, iterations, assignmentsByIteration, stages, paragraphKeys, colorByGroupId: paperMapColorCatalog() };
 }
 
 function questionDiffTokens(value) {
@@ -1583,25 +2025,41 @@ function renderTraceFlow(items, title) {
 }
 
 function renderTraceStage(stageState, traceColor) {
-  const groupLabel = stageState.group ? traceGroupLabel(stageState.iteration, stageState.group.group_id) : `Iteration ${stageState.iteration}`;
-  const stateLabel = stageState.iteration === 0 ? "QI-Prime" : !stageState.group ? "dropped" : stageState.questionChanged ? "revised" : "unchanged";
-  const stateClass = !stageState.group ? " dropped" : stageState.questionChanged ? " revised" : "";
+  const descriptor = stageState.descriptor;
+  const isBaseline = descriptor.kind === "baseline";
+  const isRevision = descriptor.kind === "revision";
+  const membershipChanged = stageState.entered.length > 0 || stageState.left.length > 0;
+  const groupLabel = stageState.group ? traceGroupLabel(stageState.iteration, stageState.group.group_id) : descriptor.label;
+  const stateLabel = isBaseline
+    ? "QI-Prime"
+    : !stageState.group
+      ? "dropped"
+      : isRevision
+        ? (stageState.questionChanged ? "question revised" : "question unchanged")
+        : (membershipChanged ? "assignment updated" : "assignment unchanged");
+  const stateClass = !stageState.group ? " dropped" : isRevision && stageState.questionChanged ? " revised" : !isRevision && membershipChanged ? " assignment" : "";
   const questionHtml = stageState.group
     ? `<div class="qi-trace-question">${escapeHtml(stageState.question || "(no question)")}</div>`
     : `<div class="qi-trace-question qi-trace-dropped-note">This group ID is no longer present in the saved candidate set. Its departing paragraphs remain traced below.</div>`;
   let diffHtml = `<div class="qi-trace-question-diff"><span class="qi-trace-question-diff-label">Question history</span>Initial QI-Prime wording</div>`;
-  if (stageState.iteration > 0 && stageState.group && stageState.previousQuestion) {
-    diffHtml = `<div class="qi-trace-question-diff"><span class="qi-trace-question-diff-label">${stageState.questionChanged ? "Changes from previous iteration" : "Question history"}</span>${stageState.questionChanged ? renderQuestionDiff(stageState.previousQuestion, stageState.question) : "No wording change"}</div>`;
-  } else if (stageState.iteration > 0 && !stageState.group) {
+  if (!isBaseline && stageState.group && stageState.previousQuestion) {
+    const label = stageState.questionChanged ? "Changes from previous step" : isRevision ? "M-step question history" : "Question used for assignment";
+    const value = stageState.questionChanged ? renderQuestionDiff(stageState.previousQuestion, stageState.question) : "No wording change";
+    diffHtml = `<div class="qi-trace-question-diff"><span class="qi-trace-question-diff-label">${label}</span>${value}</div>`;
+  } else if (!isBaseline && !stageState.group) {
     diffHtml = `<div class="qi-trace-question-diff"><span class="qi-trace-question-diff-label">Question history</span>No revised question for this group ID</div>`;
   }
 
-  const balanceValue = stageState.iteration === 0 ? "pre" : formatTraceBalance(stageState.balance);
-  const balanceLabel = stageState.iteration === 0 ? "assignment" : "balance";
-  const flowHtml = stageState.iteration === 0
+  const balanceValue = isBaseline ? "pre" : formatTraceBalance(stageState.balance);
+  const balanceLabel = isBaseline ? "assignment" : "balance";
+  const flowHtml = isBaseline
     ? `<div class="qi-trace-flows"><div class="qi-trace-flow"><span class="qi-trace-flow-title">Baseline</span><span class="qi-trace-flow-empty">bidirectional matches</span></div></div>`
-    : `<div class="qi-trace-flows">${renderTraceFlow(stageState.sources, "Arrived from")}${renderTraceFlow(stageState.destinations, "Departed to")}</div>`;
-  const membershipChangeHtml = stageState.iteration === 0 ? "" : `<div class="qi-trace-membership-change"><strong>${stageState.retained.length}</strong> retained · <strong>${stageState.entered.length}</strong> arrived · <strong>${stageState.left.length}</strong> departed</div>`;
+    : isRevision
+      ? `<div class="qi-trace-flows"><div class="qi-trace-flow"><span class="qi-trace-flow-title">M-step</span><span class="qi-trace-flow-empty">membership held constant while the question is revised</span></div></div>`
+      : `<div class="qi-trace-flows">${renderTraceFlow(stageState.sources, "Arrived from")}${renderTraceFlow(stageState.destinations, "Departed to")}</div>`;
+  const membershipChangeHtml = isBaseline ? "" : isRevision
+    ? `<div class="qi-trace-membership-change"><strong>${stageState.memberKeys.size}</strong> paragraphs remain fixed during this question revision</div>`
+    : `<div class="qi-trace-membership-change"><strong>${stageState.retained.length}</strong> retained · <strong>${stageState.entered.length}</strong> arrived · <strong>${stageState.left.length}</strong> departed</div>`;
   return `<article class="qi-trace-stage${stageState.group ? "" : " dropped"}" style="--trace-color:${traceColor.border}">
     <div class="qi-trace-stage-head"><span class="qi-trace-stage-label">${escapeHtml(groupLabel)}</span><span class="qi-trace-stage-state${stateClass}">${escapeHtml(stateLabel)}</span></div>
     ${questionHtml}${diffHtml}
@@ -1627,10 +2085,15 @@ function traceParagraphSort(a, b) {
 }
 
 function tracePathState(model, key, iteration) {
-  if (iteration === 0) return model.assignmentsByIteration[iteration].get(key) === model.groupId ? "baseline" : "initial";
+  const descriptor = model.history.stages[iteration];
+  if (descriptor.kind === "baseline") return model.assignmentsByIteration[iteration].get(key) === model.groupId ? "baseline" : "initial";
   const previousGroupId = model.assignmentsByIteration[iteration - 1].get(key) || null;
   const groupId = model.assignmentsByIteration[iteration].get(key) || null;
-  if (previousGroupId === groupId) return groupId === model.groupId ? "retained" : "unchanged";
+  if (previousGroupId === groupId) {
+    const stageState = model.stages[iteration];
+    if (descriptor.kind === "revision") return stageState.questionChanged && groupId === model.groupId ? "question revised; assignment unchanged" : "assignment unchanged";
+    return groupId === model.groupId ? "retained" : "unchanged";
+  }
   if (groupId === model.groupId) return `entered from ${traceIterationGroupLabel(iteration - 1, previousGroupId)}`;
   if (previousGroupId === model.groupId) return `left to ${traceIterationGroupLabel(iteration, groupId)}`;
   return `from ${traceIterationGroupLabel(iteration - 1, previousGroupId)}`;
@@ -1675,7 +2138,7 @@ function renderTraceParagraphDetail(model) {
   const movements = model.iterations.slice(1).flatMap(iteration => {
     const previousGroupId = model.assignmentsByIteration[iteration - 1].get(traceSelectedParagraphKey) || null;
     const groupId = model.assignmentsByIteration[iteration].get(traceSelectedParagraphKey) || null;
-    return previousGroupId === groupId ? [] : [`I${iteration}: ${traceIterationGroupLabel(iteration - 1, previousGroupId)} → ${traceIterationGroupLabel(iteration, groupId)}`];
+    return previousGroupId === groupId ? [] : [`${model.history.stages[iteration].shortLabel}: ${traceIterationGroupLabel(iteration - 1, previousGroupId)} → ${traceIterationGroupLabel(iteration, groupId)}`];
   });
   slot.innerHTML = `<div class="qi-trace-paragraph-detail">
     <h3>${escapeHtml(shortPaperLabel(paper || { paper_id: paperId }))} · ${escapeHtml(unitId)}</h3>
@@ -1693,7 +2156,7 @@ function renderQiPrimeTraceMatrix(model) {
   const paperOptions = [`<option value="all"${tracePaperFilter === "all" ? " selected" : ""}>All papers</option>`]
     .concat(allPapers.map(paper => `<option value="${escapeHtml(paper.paper_id)}"${tracePaperFilter === paper.paper_id ? " selected" : ""}>${escapeHtml(shortPaperLabel(paper))}</option>`))
     .join("");
-  const headers = model.iterations.map(iteration => `<th scope="col">Iteration ${iteration}</th>`).join("");
+  const headers = model.iterations.map(iteration => `<th scope="col">${escapeHtml(model.history.stages[iteration].shortLabel)}</th>`).join("");
   const rows = paragraphKeys.map(key => {
     const delimiter = key.indexOf(":");
     const paperId = key.slice(0, delimiter);
@@ -1719,9 +2182,10 @@ function renderQiPrimeTraceMatrix(model) {
 }
 
 function renderQiPrimeTrace() {
-  const qiPrimes = iterationGroups[0] || [];
+  const history = currentQiHistory();
+  const qiPrimes = history.stages[0]?.groups || [];
   if (!qiPrimes.length) {
-    stage.innerHTML = `<div class="empty-state">No Iteration 0 QI-Primes are available to trace.</div>`;
+    stage.innerHTML = `<div class="empty-state">No baseline QI-Primes are available to trace for this history source.</div>`;
     return;
   }
   if (!traceSelectedGroupId || !traceGroupForIteration(0, traceSelectedGroupId)) traceSelectedGroupId = qiPrimes[0].group_id;
@@ -1733,12 +2197,16 @@ function renderQiPrimeTrace() {
     return `<option value="${escapeHtml(group.group_id)}"${selected}>QI-${index + 1} · ${escapeHtml(compactText(group.overarching_question))}</option>`;
   }).join("");
   const stages = model.stages.map(stageState => renderTraceStage(stageState, traceColor)).join("");
+  const provenance = history.key === "epochs"
+    ? "E-steps change membership; M-steps reuse that exact membership and only revise wording."
+    : "Each iteration is a saved combined reassignment and question-revision snapshot.";
   stage.innerHTML = `<div class="qi-trace-shell">
     <div class="qi-trace-toolbar">
-      <label class="qi-trace-control"><span class="qi-trace-control-label">Iteration 0 QI-Prime</span><select id="qiTraceGroupSelect" class="qi-trace-select">${options}</select></label>
-      <div class="qi-trace-summary"><strong>QI-${selectedIndex + 1} · ${escapeHtml(traceSelectedGroupId)}</strong><br>Exact lineage follows the saved group ID. Questions, balance, and membership come from each saved snapshot; arrivals and departures are deterministic set differences. A dropped ID is not assigned an inferred semantic successor.</div>
+      <label class="qi-history-source-control"><span class="qi-trace-control-label">History source</span><select id="qiTraceHistorySource" class="qi-trace-select">${qiHistorySourceOptions(qiHistorySource)}</select></label>
+      <label class="qi-trace-control"><span class="qi-trace-control-label">${escapeHtml(history.baselineLabel)}</span><select id="qiTraceGroupSelect" class="qi-trace-select">${options}</select></label>
+      <div class="qi-trace-summary"><strong>QI-${selectedIndex + 1} · ${escapeHtml(traceSelectedGroupId)}</strong><br>Exact lineage follows the saved group ID. ${escapeHtml(provenance)} Arrivals and departures are deterministic set differences, and dropped IDs are never assigned inferred successors.</div>
     </div>
-    <div class="qi-trace-timeline" aria-label="Question and membership history from Iteration 0 through Iteration ${N_ITERATIONS}">${stages}</div>
+    <div class="qi-trace-timeline" style="--trace-stage-count:${model.stages.length}" aria-label="Question and membership history across ${model.stages.length} saved stages">${stages}</div>
     ${renderQiPrimeTraceMatrix(model)}
   </div>`;
   attachQiPrimeTraceInteractions(model);
@@ -1748,6 +2216,13 @@ function renderQiPrimeTrace() {
 function attachQiPrimeTraceInteractions(model) {
   const shell = stage.querySelector(".qi-trace-shell");
   if (shell) shell.addEventListener("click", event => event.stopPropagation());
+  document.getElementById("qiTraceHistorySource")?.addEventListener("change", event => {
+    qiHistorySource = event.target.value;
+    traceSelectedGroupId = currentQiHistory().stages[0]?.groups?.[0]?.group_id || null;
+    traceSelectedParagraphKey = null;
+    refreshParagraphInspector();
+    renderQiPrimeTrace();
+  });
   const groupSelect = document.getElementById("qiTraceGroupSelect");
   if (groupSelect) groupSelect.addEventListener("change", () => {
     traceSelectedGroupId = groupSelect.value;
@@ -1799,8 +2274,9 @@ function renderQiFlowPaperMarkers(paragraphKeys) {
 }
 
 function qiFlowBalance(iteration, groupId, memberKeys) {
-  if (iteration === 0 || !groupId) return null;
-  const stored = groupBalanceByIteration[iteration]?.[groupId];
+  const descriptor = traceStageDescriptor(iteration);
+  if (descriptor?.kind === "baseline" || !groupId) return null;
+  const stored = descriptor?.balanceByGroupId?.[groupId];
   if (stored !== undefined) return stored;
   const represented = Object.values(qiFlowPaperCounts(memberKeys)).filter(Boolean).length;
   return allPapers.length ? (represented / allPapers.length) * 100 : 0;
@@ -1816,6 +2292,7 @@ function buildQiFlowNode(traceModel, { key, iteration, groupId, role, flowKeys =
   return {
     key,
     iteration,
+    descriptor: traceStageDescriptor(iteration),
     groupId,
     group,
     role,
@@ -1826,7 +2303,7 @@ function buildQiFlowNode(traceModel, { key, iteration, groupId, role, flowKeys =
     flowKeys,
     memberKeys,
     balance: qiFlowBalance(iteration, groupId, memberKeys),
-    label: group ? traceGroupLabel(iteration, groupId) : focal ? `Iteration ${iteration}` : "Unassigned",
+    label: group ? traceGroupLabel(iteration, groupId) : focal ? (traceStageDescriptor(iteration)?.label || `Step ${iteration}`) : "Unassigned",
     question: group ? compactText(group.overarching_question) : dropped ? "This QI-Prime is not present in this saved snapshot." : "No question group assignment",
     kind: dropped ? "dropped" : unassigned ? "unassigned" : roleLabels[role] || role,
     targetGroupId: groupId && traceGroupForIteration(0, groupId) ? groupId : null,
@@ -1933,7 +2410,7 @@ function splitQiFlowNodes(nodes) {
 
 function renderQiFlowNode(node) {
   const classes = ["qi-flow-node", node.focal ? "focal" : "", node.dropped ? "dropped" : "", node.unassigned ? "unassigned" : ""].filter(Boolean).join(" ");
-  const balance = node.dropped || node.unassigned ? "—" : node.iteration === 0 ? "pre-assignment" : formatTraceBalance(node.balance);
+  const balance = node.dropped || node.unassigned ? "—" : node.descriptor?.kind === "baseline" ? "pre-assignment" : formatTraceBalance(node.balance);
   const paragraphSummary = node.focal
     ? `<strong>${node.memberKeys.length}</strong> total paragraphs`
     : `<strong>${node.flowKeys.length}</strong> moving · ${node.memberKeys.length} total`;
@@ -1957,22 +2434,24 @@ function renderQiFlowColumn(selectedNode, peripheralNodes) {
 }
 
 function qiFlowStageBalanceLabel(stageState) {
-  if (stageState.iteration === 0) return "pre";
+  if (stageState.descriptor?.kind === "baseline") return "pre";
   return stageState.group ? formatTraceBalance(stageState.balance) : "—";
 }
 
 function renderQiFlowRevision(model, animate) {
   const before = model.previousStage;
   const after = model.currentStage;
-  let state = "Question unchanged";
-  let description = `${traceIterationGroupLabel(before.iteration, model.groupId)} to ${traceIterationGroupLabel(after.iteration, model.groupId)}`;
-  let diff = "No wording change";
+  const membershipChanged = after.entered.length > 0 || after.left.length > 0;
+  const isRevision = after.descriptor?.kind === "revision";
+  let state = isRevision ? "Question unchanged" : membershipChanged ? "Paragraph assignments updated" : "Assignments unchanged";
+  let description = `${before.descriptor.label} to ${after.descriptor.label}`;
+  let diff = isRevision ? "No wording change" : "Question held fixed while paragraph assignments were recomputed";
   if (before.group && after.group && after.questionChanged) {
     state = "Question revised";
     diff = renderQuestionDiff(before.question, after.question);
   } else if (before.group && !after.group) {
     state = "QI-Prime dropped";
-    description = `The stable group ID leaves the candidate set at Iteration ${after.iteration}`;
+    description = `The stable group ID leaves the candidate set at ${after.descriptor.label}`;
     diff = `<del>${escapeHtml(before.question)}</del> <ins>No revised question</ins>`;
   } else if (!before.group && !after.group) {
     state = "Lineage already dropped";
@@ -1998,9 +2477,9 @@ function renderQiFlowCanvas(model) {
   const largestHalfStack = Math.max(Math.ceil(model.sourceNodes.length / 2), Math.ceil(model.destinationNodes.length / 2));
   const canvasHeight = Math.max(560, 210 + largestHalfStack * 185);
   return `<div class="qi-flow-canvas-scroll"><div class="qi-flow-canvas" style="--qi-flow-canvas-height:${canvasHeight}px">
-    <svg class="qi-flow-svg" aria-label="Paragraph flows from Iteration ${model.previousIteration} to Iteration ${model.currentIteration}"></svg>
-    <span class="qi-flow-column-heading left">Iteration ${model.previousIteration} questions</span>
-    <span class="qi-flow-column-heading right">Iteration ${model.currentIteration} questions</span>
+    <svg class="qi-flow-svg" aria-label="Paragraph flows from ${escapeHtml(model.previousStage.descriptor.label)} to ${escapeHtml(model.currentStage.descriptor.label)}"></svg>
+    <span class="qi-flow-column-heading left">${escapeHtml(model.previousStage.descriptor.label)}</span>
+    <span class="qi-flow-column-heading right">${escapeHtml(model.currentStage.descriptor.label)}</span>
     <div class="qi-flow-columns">${renderQiFlowColumn(model.previousSelected, model.sourceNodes)}${renderQiFlowColumn(model.currentSelected, model.destinationNodes)}</div>
   </div></div>`;
 }
@@ -2124,7 +2603,9 @@ function renderQiFlowInspector(model) {
   const visibleKeys = qiFlowPaperFilter === "all" ? allKeys : allKeys.filter(key => key.startsWith(`${qiFlowPaperFilter}:`));
   const paperCounts = qiFlowPaperCounts(allKeys);
   const paperSummary = allPapers.map(paper => `<span class="qi-flow-inspector-paper"><span class="papers-legend-swatch" style="background:${paperColorById[paper.paper_id]}"></span>${escapeHtml(shortPaperLabel(paper))} <strong>${paperCounts[paper.paper_id] || 0}</strong></span>`).join("");
-  const direction = edge.kind === "retained" ? "Retained in the selected QI-Prime" : edge.kind === "arrived" ? "Arrived in the selected QI-Prime" : "Departed from the selected QI-Prime";
+  const direction = edge.kind === "retained"
+    ? model.currentStage.descriptor.kind === "revision" ? "Membership held constant during question revision" : "Retained in the selected QI-Prime"
+    : edge.kind === "arrived" ? "Arrived in the selected QI-Prime" : "Departed from the selected QI-Prime";
   const route = `${edge.fromNode.label}: ${edge.fromNode.question} → ${edge.toNode.label}: ${edge.toNode.question}`;
   const cards = visibleKeys.map(key => {
     const delimiter = key.indexOf(":");
@@ -2132,8 +2613,7 @@ function renderQiFlowInspector(model) {
     const unitId = key.slice(delimiter + 1);
     const paper = allPapers.find(candidate => candidate.paper_id === paperId);
     const unit = paragraphUnitLookup[key];
-    const open = qiFlowExpandedParagraphKeys.has(key);
-    return `<button type="button" class="qi-flow-paragraph${open ? " open" : ""}" data-qi-flow-paragraph="${escapeHtml(key)}" style="--paper-color:${paperColorById[paperId] || "#868e96"}">
+    return `<button type="button" class="qi-flow-paragraph" data-qi-flow-paragraph="${escapeHtml(key)}" data-paragraph-inspect="${escapeHtml(key)}" style="--paper-color:${paperColorById[paperId] || "#868e96"}">
       <div class="qi-flow-paragraph-meta">${escapeHtml(shortPaperLabel(paper || { paper_id: paperId }))} · ${escapeHtml(unitId)}</div>
       <div class="qi-flow-paragraph-question">${escapeHtml(unit?.tag || "(no paragraph question)")}</div>
       <div class="qi-flow-paragraph-text">${escapeHtml(compactText(unit?.text))}</div>
@@ -2141,14 +2621,6 @@ function renderQiFlowInspector(model) {
   }).join("");
   slot.innerHTML = `<div class="qi-flow-inspector-head"><strong>${escapeHtml(direction)} · ${edge.paragraphKeys.length} paragraph${edge.paragraphKeys.length === 1 ? "" : "s"}</strong><span title="${escapeHtml(route)}">${escapeHtml(route)}</span><div class="qi-flow-inspector-papers">${paperSummary}</div></div>
     ${cards ? `<div class="qi-flow-paragraphs">${cards}</div>` : `<div class="qi-flow-empty">No paragraphs on this link match the paper filter.</div>`}`;
-  slot.querySelectorAll("[data-qi-flow-paragraph]").forEach(button => {
-    button.addEventListener("click", () => {
-      const key = button.dataset.qiFlowParagraph;
-      if (qiFlowExpandedParagraphKeys.has(key)) qiFlowExpandedParagraphKeys.delete(key);
-      else qiFlowExpandedParagraphKeys.add(key);
-      button.classList.toggle("open", qiFlowExpandedParagraphKeys.has(key));
-    });
-  });
 }
 
 function attachQiFlowSvgInteractions(model) {
@@ -2172,14 +2644,19 @@ function stopQiFlowPlayback() {
   qiFlowPlaying = false;
 }
 
+function qiFlowTransitionCount() {
+  return Math.max(0, currentQiHistory().stages.length - 1);
+}
+
 function startQiFlowPlayback() {
   stopQiFlowPlayback();
-  if (qiFlowTransition >= N_ITERATIONS) qiFlowTransition = 1;
+  const transitionCount = qiFlowTransitionCount();
+  if (qiFlowTransition >= transitionCount) qiFlowTransition = 1;
   qiFlowPlaying = true;
   qiFlowSelectedEdgeId = null;
   renderQiPrimeFlow();
   qiFlowTimer = setInterval(() => {
-    if (qiFlowTransition >= N_ITERATIONS) {
+    if (qiFlowTransition >= transitionCount) {
       stopQiFlowPlayback();
       renderQiPrimeFlow({ animateDots: false });
       return;
@@ -2191,13 +2668,15 @@ function startQiFlowPlayback() {
 }
 
 function renderQiPrimeFlow({ animateDots = true } = {}) {
-  const qiPrimes = iterationGroups[0] || [];
+  const history = currentQiHistory();
+  const qiPrimes = history.stages[0]?.groups || [];
   if (!qiPrimes.length) {
-    stage.innerHTML = `<div class="empty-state">No Iteration 0 QI-Primes are available to animate.</div>`;
+    stage.innerHTML = `<div class="empty-state">No baseline QI-Primes are available to animate for this history source.</div>`;
     return;
   }
   if (!traceSelectedGroupId || !traceGroupForIteration(0, traceSelectedGroupId)) traceSelectedGroupId = qiPrimes[0].group_id;
-  qiFlowTransition = Math.max(1, Math.min(N_ITERATIONS, qiFlowTransition));
+  const transitionCount = qiFlowTransitionCount();
+  qiFlowTransition = Math.max(1, Math.min(transitionCount, qiFlowTransition));
   const model = buildQiPrimeFlowModel(traceSelectedGroupId, qiFlowTransition);
   qiFlowCurrentModel = model;
   if (qiFlowSelectedEdgeId && !model.edges.some(edge => edge.id === qiFlowSelectedEdgeId)) qiFlowSelectedEdgeId = null;
@@ -2206,19 +2685,27 @@ function renderQiPrimeFlow({ animateDots = true } = {}) {
   const paperOptions = [`<option value="all"${qiFlowPaperFilter === "all" ? " selected" : ""}>All papers</option>`]
     .concat(allPapers.map(paper => `<option value="${escapeHtml(paper.paper_id)}"${qiFlowPaperFilter === paper.paper_id ? " selected" : ""}>${escapeHtml(shortPaperLabel(paper))}</option>`))
     .join("");
-  const steps = Array.from({ length: N_ITERATIONS }, (_, index) => index + 1).map(transition => `<button type="button" class="qi-flow-step-button${transition === qiFlowTransition ? " active" : ""}" data-qi-flow-transition="${transition}">I${transition - 1} &rarr; I${transition}</button>`).join("");
+  const steps = Array.from({ length: transitionCount }, (_, index) => index + 1).map(transition => {
+    const before = history.stages[transition - 1];
+    const after = history.stages[transition];
+    return `<button type="button" class="qi-flow-step-button${transition === qiFlowTransition ? " active" : ""}" data-qi-flow-transition="${transition}">${escapeHtml(before.shortLabel)} &rarr; ${escapeHtml(after.shortLabel)}</button>`;
+  }).join("");
+  const provenance = history.key === "epochs"
+    ? "Moving dots appear during E-step assignment changes. M-step question revisions hold paragraph membership fixed and do not animate movement."
+    : "These snapshots combine reassignment and question revision, so moving dots represent only the deterministic membership difference.";
   stage.innerHTML = `<div class="qi-flow-shell">
     <div class="qi-flow-toolbar">
-      <label class="qi-flow-question-control"><span class="qi-trace-control-label">Iteration 0 QI-Prime</span><select id="qiFlowGroupSelect">${groupOptions}</select></label>
+      <label class="qi-history-source-control"><span class="qi-trace-control-label">History source</span><select id="qiFlowHistorySource">${qiHistorySourceOptions(qiHistorySource)}</select></label>
+      <label class="qi-flow-question-control"><span class="qi-trace-control-label">${escapeHtml(history.baselineLabel)}</span><select id="qiFlowGroupSelect">${groupOptions}</select></label>
       <div class="qi-flow-playback" role="group" aria-label="Flow playback controls">
         <button type="button" class="qi-flow-control-button" id="qiFlowPrevious"${qiFlowTransition <= 1 ? " disabled" : ""}>Previous</button>
         <button type="button" class="qi-flow-control-button${qiFlowPlaying ? " active" : ""}" id="qiFlowPlay">${qiFlowPlaying ? "Pause" : "Play"}</button>
         <button type="button" class="qi-flow-control-button" id="qiFlowReplay">Replay</button>
-        <button type="button" class="qi-flow-control-button" id="qiFlowNext"${qiFlowTransition >= N_ITERATIONS ? " disabled" : ""}>Next</button>
+        <button type="button" class="qi-flow-control-button" id="qiFlowNext"${qiFlowTransition >= transitionCount ? " disabled" : ""}>Next</button>
       </div>
       <div class="qi-flow-stepper" aria-label="Saved transitions">${steps}</div>
       <label class="qi-trace-control-label">Paragraph dots <select id="qiFlowPaperFilter" class="qi-flow-paper-select">${paperOptions}</select></label>
-      <div class="qi-flow-provenance">Link width and numbered markers show paragraph count; moving dots use paper colors. This is a deterministic replay of differences between saved snapshots, not a claim about unrecorded ordering inside an iteration.</div>
+      <div class="qi-flow-provenance">Link width and numbered markers show paragraph count; moving dots use paper colors. ${escapeHtml(provenance)} Every link is a deterministic set difference between saved snapshots.</div>
     </div>
     ${renderQiFlowRevision(model, animateDots)}
     ${renderQiFlowCanvas(model)}
@@ -2226,17 +2713,25 @@ function renderQiPrimeFlow({ animateDots = true } = {}) {
   </div>`;
   attachQiPrimeFlowInteractions(model);
   renderQiFlowInspector(model);
-  requestAnimationFrame(() => drawQiPrimeFlowLinks(model, animateDots));
+  requestAnimationFrame(() => drawQiPrimeFlowLinks(model, animateDots && model.currentStage.descriptor.movementEnabled));
 }
 
 function attachQiPrimeFlowInteractions(model) {
   const shell = stage.querySelector(".qi-flow-shell");
   if (shell) shell.addEventListener("click", event => event.stopPropagation());
+  document.getElementById("qiFlowHistorySource")?.addEventListener("change", event => {
+    stopQiFlowPlayback();
+    qiHistorySource = event.target.value;
+    traceSelectedGroupId = currentQiHistory().stages[0]?.groups?.[0]?.group_id || null;
+    qiFlowTransition = 1;
+    qiFlowSelectedEdgeId = null;
+    refreshParagraphInspector();
+    renderQiPrimeFlow();
+  });
   document.getElementById("qiFlowGroupSelect")?.addEventListener("change", event => {
     stopQiFlowPlayback();
     traceSelectedGroupId = event.target.value;
     qiFlowSelectedEdgeId = null;
-    qiFlowExpandedParagraphKeys.clear();
     renderQiPrimeFlow();
   });
   document.getElementById("qiFlowPaperFilter")?.addEventListener("change", event => {
@@ -2251,7 +2746,7 @@ function attachQiPrimeFlowInteractions(model) {
   });
   document.getElementById("qiFlowNext")?.addEventListener("click", () => {
     stopQiFlowPlayback();
-    qiFlowTransition = Math.min(N_ITERATIONS, qiFlowTransition + 1);
+    qiFlowTransition = Math.min(qiFlowTransitionCount(), qiFlowTransition + 1);
     qiFlowSelectedEdgeId = null;
     renderQiPrimeFlow();
   });
@@ -2283,7 +2778,6 @@ function attachQiPrimeFlowInteractions(model) {
       stopQiFlowPlayback();
       traceSelectedGroupId = button.dataset.qiFlowTargetGroup;
       qiFlowSelectedEdgeId = null;
-      qiFlowExpandedParagraphKeys.clear();
       renderQiPrimeFlow();
     });
   });
@@ -2304,6 +2798,7 @@ function applyFilterAndRender() {
 function switchGranularity(granularity) {
   if (currentGranularity === "qi-flow" && granularity !== "qi-flow") stopQiFlowPlayback();
   currentGranularity = granularity;
+  refreshParagraphInspector();
   buildGranularityTabs();
   if (granularity === "groups") {
     renderIterationGroups();
@@ -2351,7 +2846,8 @@ async function init() {
     if (milpDataByVariant[key]) milpGroupsByVariant[key] = milpDataByVariant[key].groups || [];
   });
   if (epochInitialGroups) epochGroupsByPhase.initial = epochInitialGroups;
-  for (let n = 1; n <= 3; n++) {
+  epochStepDataByPhase = epochStepData || {};
+  for (let n = 1; n <= EPOCH_COUNT; n++) {
     const phase = `epoch${n}`;
     const { estep, mstep, balance } = epochStepData[phase] || {};
     if (!estep || !mstep) continue;
@@ -2370,11 +2866,24 @@ async function init() {
   }
   buildParagraphUnitLookup();
   buildPaperColors();
-  traceSelectedGroupId = iterationGroups[0]?.[0]?.group_id || null;
+  buildQiHistorySources();
+  traceSelectedGroupId = currentQiHistory().stages[0]?.groups?.[0]?.group_id || null;
   rawLinksForGranularity = links[currentGranularity] || [];
 
   buildGranularityTabs();
   applyFilterAndRender();
+
+  document.addEventListener("click", event => {
+    const trigger = event.target.closest?.("[data-paragraph-inspect]");
+    if (!trigger) return;
+    event.preventDefault();
+    event.stopPropagation();
+    toggleParagraphInspector(trigger.dataset.paragraphInspect);
+  }, true);
+  paragraphInspectorClose.addEventListener("click", closeParagraphInspector);
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && paragraphInspector.classList.contains("open")) closeParagraphInspector();
+  });
 
   stage.addEventListener("click", () => {
     if (pinnedId) {
