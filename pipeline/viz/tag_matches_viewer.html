@@ -547,9 +547,12 @@ const TAB_LABELS = Object.assign(
 // refine_with_epoch_matrices.py's 4 phases: the pre-epoch snapshot, then 3
 // epochs. Each epoch's E-step (membership) and M-step (question) were saved
 // separately, so the viewer joins them by group_id when loading.
-const EPOCH_PHASES = ["initial", "epoch1", "epoch2", "epoch3"];
-const EPOCH_PHASE_LABELS = { initial: "Pre-epoch", epoch1: "Epoch 1", epoch2: "Epoch 2", epoch3: "Epoch 3" };
-const EPOCH_COUNT = 3;
+const N_EPOCH_PHASES = 5;
+const EPOCH_PHASES = ["initial", ...Array.from({ length: N_EPOCH_PHASES }, (_, index) => `epoch${index + 1}`)];
+const EPOCH_PHASE_LABELS = Object.assign(
+  { initial: "Pre-epoch" },
+  Object.fromEntries(Array.from({ length: N_EPOCH_PHASES }, (_, index) => [`epoch${index + 1}`, `Epoch ${index + 1}`]))
+);
 const MAX_EPOCH_HISTORY_STEPS = 100;
 const EPOCH_HISTORY_CONFIGS = [
   { key: "epochs", label: "Friday matrix epochs", directory: "epoch_matrix_refinement" },
@@ -789,7 +792,7 @@ function qiHistorySourceOptions(selectedSource) {
 
 function paragraphInspectorHistory() {
   if (currentGranularity === "paper-map") return paperMapHistory();
-  if (currentGranularity === "epoch_groups") return qiHistorySources.epochs;
+  if (currentGranularity === "epoch_groups") return qiHistorySources.matrix1_reassign || qiHistorySources.epochs;
   if (currentGranularity === "groups") return qiHistorySources.iterations;
   if (MILP_VARIANT_KEYS.includes(currentGranularity)) {
     return {
@@ -3051,11 +3054,13 @@ async function init() {
     if (milpDataByVariant[key]) milpGroupsByVariant[key] = milpDataByVariant[key].groups || [];
   });
   epochHistoryDataBySource = epochHistories || {};
-  const originalEpochHistory = epochHistoryDataBySource.epochs || { initialGroups: null, steps: {} };
-  const originalInitialGroups = epochInitialGroups(originalEpochHistory.initialGroups);
-  if (originalInitialGroups.length) epochGroupsByPhase.initial = originalInitialGroups;
-  epochStepDataByPhase = originalEpochHistory.steps || {};
-  for (let n = 1; n <= EPOCH_COUNT; n++) {
+  const primaryEpochHistory = epochHistoryDataBySource.matrix1_reassign
+    || epochHistoryDataBySource.epochs
+    || { initialGroups: null, steps: {} };
+  const primaryInitialGroups = epochInitialGroups(primaryEpochHistory.initialGroups);
+  if (primaryInitialGroups.length) epochGroupsByPhase.initial = primaryInitialGroups;
+  epochStepDataByPhase = primaryEpochHistory.steps || {};
+  for (let n = 1; n <= N_EPOCH_PHASES; n++) {
     const phase = `epoch${n}`;
     const { estep, mstep, balance } = epochStepDataByPhase[phase] || {};
     if (!estep || !mstep) continue;
