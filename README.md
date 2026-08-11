@@ -199,35 +199,31 @@ paragraph, its section context, and its full assignment path.
 The Paper Map and Skeleton views report a deterministic pairwise paper-similarity
 score for the selected assignment snapshot. For paper `P`, each group's proportion
 `p_P(g)` is the compacted-character share of the paper assigned to group `g`.
-Shared mass is the full-paper proportion that both papers assign to the same
-QI-Primes:
+Composition similarity is weighted Jaccard (the Ružička index):
 
 ```text
-M(A, B) = sum_g min(p_A(g), p_B(g))
+C(A, B) = sum_g min(p_A(g), p_B(g)) / sum_g max(p_A(g), p_B(g))
 ```
 
-Order is calculated only when the papers share at least two distinct QI-Primes.
-For each shared pair `(g, h)`, `r_P(g, h)` is the character-weighted probability
-that a paragraph in `g` precedes a paragraph in `h` within paper `P`. The pair's
-agreement is `1 - abs(r_A(g, h) - r_B(g, h))`, weighted by the shared mass of both
-groups:
+Order similarity maps each paper to `B = 100` equal character-position bins,
+each labelled with its best-one group or `unassigned`, and then uses normalized
+Levenshtein similarity:
 
 ```text
-w(g, h) = min(p_A(g), p_B(g)) * min(p_A(h), p_B(h))
-O(A, B) = sum_(g,h) w(g,h) * (1 - abs(r_A(g,h) - r_B(g,h))) / sum_(g,h) w(g,h)
+O(A, B) = 1 - levenshtein(sequence_A, sequence_B) / B
 ```
 
-The displayed score makes shared conceptual mass primary and lets relative order
-apply at most a 20% penalty:
+The displayed score makes conceptual composition primary and lets order apply at
+most a 20% penalty:
 
 ```text
-similarity(A, B) = 100 * M(A, B) * (0.80 + 0.20 * O(A, B))
+similarity(A, B) = 100 * C(A, B) * (0.80 + 0.20 * O(A, B))
 ```
 
-If fewer than two QI-Primes are shared, order is displayed as `N/A` and no order
-penalty is applied, so the score equals shared mass. Unassigned and nonshared
-groups never contribute to order. With no shared conceptual mass, order is `N/A`
-and the overall score is 0.
+Unassigned bins participate in the order sequence but are excluded from weighted
+Jaccard. When weighted Jaccard is zero, order is reported as zero and the overall
+score is zero. Identical group proportions and order score 100; identical
+proportions in a different order score between 80 and 100.
 
 `output/sections/_cache/` holds the raw per-item Claude responses (safe to delete to
 force a re-run; checked into git alongside everything else so collaborators can skip

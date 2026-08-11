@@ -539,6 +539,7 @@ const QI_HISTORY_SOURCE_OPTIONS = [
   { key: "epochs", label: "Friday matrix epochs" },
   { key: "iterations", label: "Original refinement iterations" },
 ];
+const PAPER_SIMILARITY_BINS = 100;
 const PAPER_SIMILARITY_ORDER_WEIGHT = 0.20;
 
 const stage = document.getElementById("stage");
@@ -1491,65 +1492,61 @@ function paperSimilarityParagraphWeight(paragraph) {
 
 function buildPaperSimilarityProfile(model, paper) {
   const paragraphs = paper.paragraphs || [];
-  let cursor = 0;
   const weightedParagraphs = paragraphs.map(paragraph => {
     const key = `${paper.paper_id}:${paragraph.id}`;
     const entry = model.assignments.get(key);
-    const weight = paperSimilarityParagraphWeight(paragraph);
-    const position = cursor + weight / 2;
-    cursor += weight;
-    return { groupId: entry?.group.group_id || null, weight, position };
+    return { groupId: entry?.group.group_id || null, weight: paperSimilarityParagraphWeight(paragraph) };
   });
-  const totalWeight = cursor;
+  const totalWeight = weightedParagraphs.reduce((sum, paragraph) => sum + paragraph.weight, 0);
   let totalAssignedWeight = 0;
   const groupProportions = new Map();
-  const paragraphsByGroup = new Map();
   weightedParagraphs.forEach(paragraph => {
     if (!paragraph.groupId || !totalWeight) return;
     totalAssignedWeight += paragraph.weight;
     groupProportions.set(paragraph.groupId, (groupProportions.get(paragraph.groupId) || 0) + paragraph.weight / totalWeight);
-    if (!paragraphsByGroup.has(paragraph.groupId)) paragraphsByGroup.set(paragraph.groupId, []);
-    paragraphsByGroup.get(paragraph.groupId).push(paragraph);
   });
   const assignedCoverage = totalWeight ? totalAssignedWeight / totalWeight : 0;
-  return { paper, totalWeight, assignedCoverage, groupProportions, paragraphsByGroup };
-}
-
-function groupPrecedenceProbability(profile, firstGroupId, secondGroupId) {
-  const firstParagraphs = profile.paragraphsByGroup.get(firstGroupId) || [];
-  const secondParagraphs = profile.paragraphsByGroup.get(secondGroupId) || [];
-  let pairWeight = 0;
-  let precedingWeight = 0;
-  firstParagraphs.forEach(first => {
-    secondParagraphs.forEach(second => {
-      const weight = first.weight * second.weight;
-      pairWeight += weight;
-      if (first.position < second.position) precedingWeight += weight;
-      else if (first.position === second.position) precedingWeight += weight / 2;
-    });
-  });
-  return pairWeight ? precedingWeight / pairWeight : null;
-}
-
-// Compare only shared concepts. Each pair is weighted by the paper mass that
-// both papers assign to its two groups, so large shared groups matter more.
-function sharedGroupOrderAgreement(left, right, sharedGroups) {
-  if (sharedGroups.length < 2) return null;
-  let totalPairWeight = 0;
-  let weightedAgreement = 0;
-  for (let firstIndex = 0; firstIndex < sharedGroups.length; firstIndex++) {
-    for (let secondIndex = firstIndex + 1; secondIndex < sharedGroups.length; secondIndex++) {
-      const first = sharedGroups[firstIndex];
-      const second = sharedGroups[secondIndex];
-      const leftPrecedence = groupPrecedenceProbability(left, first.groupId, second.groupId);
-      const rightPrecedence = groupPrecedenceProbability(right, first.groupId, second.groupId);
-      if (leftPrecedence === null || rightPrecedence === null) continue;
-      const pairWeight = first.shared * second.shared;
-      totalPairWeight += pairWeight;
-      weightedAgreement += pairWeight * (1 - Math.abs(leftPrecedence - rightPrecedence));
+  const sequence = [];
+  let paragraphIndex = 0;
+  let cumulativeWeight = weightedParagraphs[0]?.weight || 0;
+  for (let bin = 0; bin < PAPER_SIMILARITY_BINS; bin++) {
+    const position = totalWeight ? ((bin + 0.5) / PAPER_SIMILARITY_BINS) * totalWeight : 0;
+    while (paragraphIndex < weightedParagraphs.length - 1 && position > cumulativeWeight) {
+      paragraphIndex += 1;
+      cumulativeWeight += weightedParagraphs[paragraphIndex].weight;
     }
+    sequence.push(weightedParagraphs[paragraphIndex]?.groupId || "__unassigned__");
   }
-  return totalPairWeight ? weightedAgreement / totalPairWeight : null;
+  return { paper, totalWeight, assignedCoverage, groupProportions, sequence };
+}
+
+function weightedJaccardSimilarity(left, right) {
+  const groupIds = new Set([...left.keys(), ...right.keys()]);
+  let intersection = 0;
+  let union = 0;
+  groupIds.forEach(groupId => {
+    const leftValue = left.get(groupId) || 0;
+    const rightValue = right.get(groupId) || 0;
+    intersection += Math.min(leftValue, rightValue);
+    union += Math.max(leftValue, rightValue);
+  });
+  return union ? intersection / union : 0;
+}
+
+function levenshteinDistance(left, right) {
+  let previous = Array.from({ length: right.length + 1 }, (_, index) => index);
+  for (let leftIndex = 1; leftIndex <= left.length; leftIndex++) {
+    const current = [leftIndex];
+    for (let rightIndex = 1; rightIndex <= right.length; rightIndex++) {
+      current[rightIndex] = Math.min(
+        current[rightIndex - 1] + 1,
+        previous[rightIndex] + 1,
+        previous[rightIndex - 1] + (left[leftIndex - 1] === right[rightIndex - 1] ? 0 : 1),
+      );
+    }
+    previous = current;
+  }
+  return previous[right.length];
 }
 
 function buildPaperSimilarityPairs(model) {
@@ -1559,6 +1556,12 @@ function buildPaperSimilarityPairs(model) {
     for (let rightIndex = leftIndex + 1; rightIndex < profiles.length; rightIndex++) {
       const left = profiles[leftIndex];
       const right = profiles[rightIndex];
+      const overlap = weightedJaccardSimilarity(left.groupProportions, right.groupProportions);
+      const denominator = Math.max(left.sequence.length, right.sequence.length, 1);
+      const rawOrder = 1 - levenshteinDistance(left.sequence, right.sequence) / denominator;
+      // With no shared assigned group, there is no meaningful shared order.
+      const order = overlap === 0 ? 0 : rawOrder;
+      const overall = overlap * ((1 - PAPER_SIMILARITY_ORDER_WEIGHT) + PAPER_SIMILARITY_ORDER_WEIGHT * order);
       const sharedGroups = [...left.groupProportions.keys()]
         .filter(groupId => right.groupProportions.has(groupId))
         .map(groupId => ({
@@ -1566,16 +1569,9 @@ function buildPaperSimilarityPairs(model) {
           entry: model.entriesById.get(groupId),
           left: left.groupProportions.get(groupId),
           right: right.groupProportions.get(groupId),
-          shared: Math.min(left.groupProportions.get(groupId), right.groupProportions.get(groupId)),
         }))
-        .sort((a, b) => b.shared - a.shared);
-      const sharedMass = sharedGroups.reduce((sum, group) => sum + group.shared, 0);
-      const order = sharedGroupOrderAgreement(left, right, sharedGroups);
-      const orderModifier = order === null
-        ? 1
-        : (1 - PAPER_SIMILARITY_ORDER_WEIGHT) + PAPER_SIMILARITY_ORDER_WEIGHT * order;
-      const overall = sharedMass * orderModifier;
-      pairs.push({ left, right, sharedMass, order, overall, sharedGroups });
+        .sort((a, b) => Math.min(b.left, b.right) - Math.min(a.left, a.right));
+      pairs.push({ left, right, overlap, order, overall, sharedGroups });
     }
   }
   return pairs;
@@ -1591,25 +1587,21 @@ function renderPaperSimilarity(model) {
   const cards = pairs.map(pair => {
     const leftLabel = shortPaperLabel(pair.left.paper);
     const rightLabel = shortPaperLabel(pair.right.paper);
-    const orderLabel = pair.order === null ? "N/A" : formatSimilarityPercent(pair.order);
-    const orderDetail = pair.order === null
-      ? "Order is not defined because fewer than two distinct QI-Primes are shared. No order penalty is applied."
-      : "Order compares weighted pairwise precedence among shared QI-Primes only; unassigned and nonshared groups are excluded.";
     const shared = pair.sharedGroups.length
       ? pair.sharedGroups.map(group => `<span class="paper-similarity-group" title="${escapeHtml(group.entry?.group.overarching_question || group.groupId)}">${escapeHtml(group.entry?.label || group.groupId)} · ${formatSimilarityPercent(group.left)} / ${formatSimilarityPercent(group.right)}</span>`).join("")
       : `<span class="qi-trace-flow-empty">No shared assigned question groups</span>`;
     return `<details class="paper-similarity-card">
-      <summary title="Open the deterministic score breakdown"><span class="paper-similarity-pair">${escapeHtml(leftLabel)} ↔ ${escapeHtml(rightLabel)}</span><strong class="paper-similarity-score">${formatSimilarityPercent(pair.overall)}</strong><span class="paper-similarity-components">shared mass ${formatSimilarityPercent(pair.sharedMass)} · order agreement ${orderLabel}</span></summary>
+      <summary title="Open the deterministic score breakdown"><span class="paper-similarity-pair">${escapeHtml(leftLabel)} ↔ ${escapeHtml(rightLabel)}</span><strong class="paper-similarity-score">${formatSimilarityPercent(pair.overall)}</strong><span class="paper-similarity-components">weighted Jaccard ${formatSimilarityPercent(pair.overlap)} · normalized Levenshtein ${formatSimilarityPercent(pair.order)}</span></summary>
       <div class="paper-similarity-detail">
-        <div class="paper-similarity-formula">score = shared mass × (0.80 + 0.20 × shared-group order)</div>
-        <div>Shared mass is the sum, over QI-Primes, of the smaller full-paper character proportion. Assignment coverage: ${escapeHtml(leftLabel)} ${formatSimilarityPercent(pair.left.assignedCoverage)} · ${escapeHtml(rightLabel)} ${formatSimilarityPercent(pair.right.assignedCoverage)}.</div>
-        <div>${escapeHtml(orderDetail)}</div>
+        <div class="paper-similarity-formula">score = weighted Jaccard × (0.80 + 0.20 × normalized Levenshtein)</div>
+        <div>Weighted Jaccard compares exact compacted-character proportions assigned to each QI-Prime. Assignment coverage: ${escapeHtml(leftLabel)} ${formatSimilarityPercent(pair.left.assignedCoverage)} · ${escapeHtml(rightLabel)} ${formatSimilarityPercent(pair.right.assignedCoverage)}.</div>
+        <div>Normalized Levenshtein compares ${PAPER_SIMILARITY_BINS} equal-character paper-position bins. Unassigned bins remain in the order sequence but are excluded from weighted Jaccard; order is reported as zero when weighted Jaccard is zero.</div>
         <div class="paper-similarity-groups">${shared}</div>
       </div>
     </details>`;
   }).join("");
   return `<div class="paper-similarity-panel">
-    <div class="paper-similarity-head"><strong>Pairwise paper similarity</strong><span>Shared assigned paper mass is primary; order compares only QI-Primes shared by both papers.</span></div>
+    <div class="paper-similarity-head"><strong>Pairwise paper similarity</strong><span>Weighted Jaccard measures group composition; normalized Levenshtein measures order and can adjust the score by at most 20%.</span></div>
     <div class="paper-similarity-cards">${cards}</div>
   </div>`;
 }
