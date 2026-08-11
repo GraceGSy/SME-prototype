@@ -196,6 +196,15 @@ question wording changes without animating paragraph movement. Clicking a
 paragraph identifier or a paragraph card in these views opens the complete saved
 paragraph, its section context, and its full assignment path.
 
+The Paper Map run dropdown uses the same saved histories and discovers every
+sequential `epoch<N>/estep.json` and `mstep.json` snapshot in each available run
+directory. It recognizes both `epoch_matrix_refinement/` and
+`epoch_matrix1_reassign_refinement/`; a run is omitted when its output directory
+is absent. Selecting a question scrolls each reading column to that question's
+first paragraph in the paper. **Hide unselected** removes the other paragraphs,
+while **sync scroll** remains optional so the three papers can still be navigated
+independently.
+
 The Paper Map and Skeleton views report a deterministic pairwise paper-similarity
 score for the selected assignment snapshot. For paper `P`, each group's proportion
 `p_P(g)` is the compacted-character share of the paper assigned to group `g`.

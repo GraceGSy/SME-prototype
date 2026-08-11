@@ -121,16 +121,19 @@
     border: 1px solid #dee2e6; border-radius: 6px; background: #fff; overflow: hidden;
   }
   .paper-map-overview {
-    display: grid; gap: 6px; min-width: 0; padding: 7px 9px;
+    display: grid; gap: 5px; min-width: 0; padding: 6px 8px;
     border-bottom: 1px solid #e9ecef; background: #f8f9fa;
   }
-  .paper-map-control-row { display: flex; align-items: center; gap: 10px; min-width: 0; flex-wrap: wrap; }
-  .paper-map-control-row .iteration-tabs { margin: 0; }
+  .paper-map-control-row { display: flex; align-items: center; gap: 7px; min-width: 0; flex-wrap: wrap; }
+  .paper-map-control-row .iteration-tabs {
+    min-width: 0; max-width: min(100%, 620px); margin: 0; overflow-x: auto;
+    flex-wrap: nowrap; scrollbar-width: thin;
+  }
   .paper-map-source-select {
     padding: 3px 6px; border: 1px solid #ced4da; border-radius: 4px;
     background: #fff; color: #343a40; font-size: 9.5px;
   }
-  .paper-map-summary { color: #6c757d; font-size: 10px; white-space: nowrap; }
+  .paper-map-summary { margin-left: auto; color: #6c757d; font-size: 10px; white-space: nowrap; }
   .paper-map-mode-toggle { display: inline-flex; border: 1px solid #ced4da; border-radius: 5px; overflow: hidden; }
   .paper-map-mode-button {
     padding: 3px 7px; border: 0; border-right: 1px solid #ced4da; background: #fff;
@@ -142,6 +145,7 @@
     display: inline-flex; align-items: center; gap: 5px; color: #495057;
     font-size: 9.5px; white-space: nowrap;
   }
+  .paper-map-sync-toggle input { margin: 0; }
   .paper-map-legend { display: flex; gap: 5px; min-width: 0; overflow-x: auto; scrollbar-width: thin; }
   .paper-map-legend-item {
     display: inline-flex; align-items: center; gap: 5px; flex: 0 0 auto; max-width: 235px;
@@ -190,6 +194,11 @@
   .paragraph-id-button:hover { border-bottom-color: #1c7ed6; color: #1864ab; }
   .paper-map-paragraph-question { margin-bottom: 4px; color: #343a40; font-size: 11px; font-weight: 650; line-height: 1.35; overflow-wrap: anywhere; }
   .paper-map-paragraph-text { color: #495057; font-size: 10.5px; line-height: 1.45; white-space: pre-line; overflow-wrap: anywhere; }
+  .paper-map-section[hidden], .paper-map-paragraph[hidden], .paper-map-filter-empty[hidden] { display: none !important; }
+  .paper-map-filter-empty {
+    margin: 18px 10px; padding: 14px; border: 1px dashed #ced4da; border-radius: 5px;
+    color: #868e96; font-size: 10px; text-align: center;
+  }
 
   .paper-map-skeleton-columns {
     display: grid; grid-template-columns: repeat(var(--paper-count), minmax(220px, 1fr));
@@ -214,6 +223,7 @@
   .paper-map-skeleton-block:hover, .paper-map-skeleton-block.highlight { z-index: 1; filter: saturate(1.22) brightness(1.05); }
   .paper-map-skeleton-block.selected { z-index: 2; box-shadow: inset 0 0 0 2px #212529; }
   .paper-map-skeleton-block.dim { opacity: .14; filter: saturate(.45); }
+  .paper-map-skeleton-block.filter-hidden { visibility: hidden; }
   .paper-map-skeleton-block.orphan {
     --group-color: #ced4da;
     background: repeating-linear-gradient(-45deg, #ced4da 0, #ced4da 3px, #f1f3f5 3px, #f1f3f5 6px);
@@ -239,6 +249,11 @@
   .paper-similarity-formula { color: #495057; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 8px; }
   .paper-similarity-groups { display: flex; gap: 3px; flex-wrap: wrap; }
   .paper-similarity-group { padding: 1px 4px; border: 1px solid #dee2e6; border-radius: 8px; background: #f8f9fa; color: #6c757d; font-size: 7.5px; }
+
+  body.paper-map-active .global-preview-control,
+  body.paper-map-active .global-similarity-control,
+  body.paper-map-active .global-interaction-hint,
+  body.paper-map-active #legend { display: none !important; }
 
   .qi-trace-shell { display: grid; gap: 10px; min-width: 0; }
   .qi-trace-toolbar {
@@ -490,17 +505,17 @@
 <header>
   <h1>Bidirectional Tag Match Viewer</h1>
   <div id="granularityTabs" style="display:flex;gap:2px;"></div>
-  <label style="font-size:11px;color:#495057;display:flex;align-items:center;gap:6px;">
+  <label class="global-preview-control" style="font-size:11px;color:#495057;display:flex;align-items:center;gap:6px;">
     preview length
     <input type="range" id="previewSlider" min="0" max="200" step="10" value="200">
     <span id="previewValue">200</span>
   </label>
-  <label style="font-size:11px;color:#495057;display:flex;align-items:center;gap:6px;">
+  <label class="global-similarity-control" style="font-size:11px;color:#495057;display:flex;align-items:center;gap:6px;">
     min similarity
     <input type="range" id="similaritySlider" min="0" max="1" step="0.01" value="0">
     <span id="similarityValue">0.00</span>
   </label>
-  <span style="font-size:11px;color:#868e96;">hover a unit to preview its links; click to pin and expand full text</span>
+  <span class="global-interaction-hint" style="font-size:11px;color:#868e96;">hover a unit to preview its links; click to pin and expand full text</span>
 </header>
 <div id="legend">tags are free-text questions/phrases, not a fixed category. Only <strong>bidirectional</strong> matches (mutual top-3) are shown; use the slider above to filter out weaker matches.</div>
 <div id="stage"><div class="empty-state">Loading...</div></div>
@@ -523,7 +538,7 @@ const MILP_VARIANTS = [
 ];
 const MILP_VARIANT_KEYS = MILP_VARIANTS.map(v => v.key);
 
-const TABS = ["sections", "paragraphs", "groups", "epoch_groups", ...MILP_VARIANT_KEYS, "paper-map", "qi-trace", ...(ENABLE_QI_FLOW_VIEW ? ["qi-flow"] : [])]; // display-only views are not matching granularities
+const TABS = ["sections", "paragraphs", "groups", "epoch_groups", "paper-map", "qi-trace", ...(ENABLE_QI_FLOW_VIEW ? ["qi-flow"] : [])]; // display-only views are not matching granularities
 const TAB_LABELS = Object.assign(
   { sections: "Section", paragraphs: "Paragraph", groups: "Groups", epoch_groups: "Epoch Groups", "paper-map": "Paper Map", "qi-trace": "QI-Prime Trace", "qi-flow": "QI-Prime Flow" },
   Object.fromEntries(MILP_VARIANTS.map(v => [v.key, v.label]))
@@ -535,9 +550,14 @@ const TAB_LABELS = Object.assign(
 const EPOCH_PHASES = ["initial", "epoch1", "epoch2", "epoch3"];
 const EPOCH_PHASE_LABELS = { initial: "Pre-epoch", epoch1: "Epoch 1", epoch2: "Epoch 2", epoch3: "Epoch 3" };
 const EPOCH_COUNT = 3;
+const MAX_EPOCH_HISTORY_STEPS = 100;
+const EPOCH_HISTORY_CONFIGS = [
+  { key: "epochs", label: "Friday matrix epochs", directory: "epoch_matrix_refinement" },
+  { key: "matrix1_reassign", label: "Matrix 1 reassignment refinement", directory: "epoch_matrix1_reassign_refinement" },
+];
 const QI_HISTORY_SOURCE_OPTIONS = [
-  { key: "epochs", label: "Friday matrix epochs" },
   { key: "iterations", label: "Original refinement iterations" },
+  ...EPOCH_HISTORY_CONFIGS.map(({ key, label }) => ({ key, label })),
 ];
 const PAPER_SIMILARITY_BINS = 100;
 const PAPER_SIMILARITY_ORDER_WEIGHT = 0.20;
@@ -579,8 +599,10 @@ let paperMapSelectedGroupId = null;
 let paperMapHistorySource = "iterations";
 let paperMapEpochStageIndex = 0;
 let paperMapSyncScroll = false;
+let paperMapHideUnselected = false;
 let paperMapLastScrolledPaper = null;
 let paperMapScrollSyncing = false;
+let paperMapScrollReleaseTimer = null;
 const paperMapScrollByPaper = {};
 
 let traceSelectedGroupId = null;
@@ -607,6 +629,7 @@ const epochBalanceByPhase = {}; // phase key -> {group_id: group_balance}, when 
 let currentEpochPhase = "initial";
 const openEpochGroupIds = new Set(); // group_id currently expanded, cleared on phase switch (membership/content differs per phase)
 let epochStepDataByPhase = {};
+let epochHistoryDataBySource = {};
 let paragraphInspectorKey = null;
 
 // Fixed per-paper colors (not tag-derived, so this isn't the hash-based tag
@@ -645,7 +668,85 @@ function snapshotGroups(membershipGroups, questionGroups, fallbackGroups = []) {
   }));
 }
 
+function epochInitialGroups(data) {
+  if (Array.isArray(data)) return data;
+  return data?.groups || [];
+}
+
+function epochBalanceMap(balance) {
+  if (!balance) return null;
+  const groups = Array.isArray(balance) ? balance : balance.groups;
+  if (!Array.isArray(groups)) return balance;
+  return Object.fromEntries(groups.map(group => [group.group_id, group.group_balance]));
+}
+
+function buildEpochHistorySource(config, data) {
+  const initialGroups = epochInitialGroups(data?.initialGroups);
+  const stages = initialGroups.length ? [{
+    key: "pre",
+    label: "Pre-epoch",
+    shortLabel: "Pre",
+    groupPrefix: "P",
+    kind: "baseline",
+    movementEnabled: false,
+    groups: initialGroups,
+    balanceByGroupId: null,
+    meta: null,
+  }] : [];
+  let previousGroups = initialGroups;
+  const steps = Object.entries(data?.steps || {})
+    .map(([phase, step]) => ({ phase, step, number: Number(phase.match(/\d+/)?.[0]) }))
+    .filter(({ number }) => Number.isFinite(number))
+    .sort((left, right) => left.number - right.number);
+
+  steps.forEach(({ step, number }) => {
+    const { estep, mstep, balance } = step || {};
+    const balanceByGroupId = epochBalanceMap(balance);
+    let assignmentGroups = previousGroups;
+    if (estep) {
+      assignmentGroups = snapshotGroups(estep.groups, estep.candidates_used, previousGroups);
+      stages.push({
+        key: `epoch${number}-assign`,
+        label: `Epoch ${number} · assign paragraphs`,
+        shortLabel: `E${number} assign`,
+        groupPrefix: `E${number}A`,
+        kind: "assignment",
+        movementEnabled: true,
+        groups: assignmentGroups,
+        balanceByGroupId,
+        meta: estep.meta || null,
+      });
+    }
+    if (mstep) {
+      const membershipGroups = estep?.groups || previousGroups;
+      const revisionGroups = snapshotGroups(membershipGroups, mstep.groups, assignmentGroups);
+      stages.push({
+        key: `epoch${number}-revise`,
+        label: `Epoch ${number} · revise questions`,
+        shortLabel: `E${number} revise`,
+        groupPrefix: `E${number}R`,
+        kind: "revision",
+        movementEnabled: false,
+        groups: revisionGroups,
+        balanceByGroupId,
+        meta: estep?.meta || mstep.meta || null,
+      });
+      previousGroups = revisionGroups;
+    } else if (estep) {
+      previousGroups = assignmentGroups;
+    }
+  });
+
+  return {
+    key: config.key,
+    label: config.label,
+    baselineLabel: "Pre-epoch QI-Prime",
+    stages,
+  };
+}
+
 function buildQiHistorySources() {
+  Object.keys(qiHistorySources).forEach(key => delete qiHistorySources[key]);
   const iterationStages = Array.from({ length: N_ITERATIONS + 1 }, (_, index) => ({
     key: `iteration${index}`,
     label: `Iteration ${index}`,
@@ -664,56 +765,15 @@ function buildQiHistorySources() {
     stages: iterationStages,
   };
 
-  const initialGroups = epochGroupsByPhase.initial || [];
-  const epochStages = [{
-    key: "pre",
-    label: "Pre-epoch",
-    shortLabel: "Pre",
-    groupPrefix: "P",
-    kind: "baseline",
-    movementEnabled: false,
-    groups: initialGroups,
-    balanceByGroupId: null,
-    meta: null,
-  }];
-  let previousGroups = initialGroups;
-  for (let n = 1; n <= EPOCH_COUNT; n++) {
-    const phase = `epoch${n}`;
-    const { estep, mstep } = epochStepDataByPhase[phase] || {};
-    if (!estep || !mstep) continue;
-    const balanceByGroupId = epochBalanceByPhase[phase] || null;
-    const assignmentGroups = snapshotGroups(estep.groups, estep.candidates_used, previousGroups);
-    const revisionGroups = snapshotGroups(estep.groups, mstep.groups, assignmentGroups);
-    epochStages.push({
-      key: `epoch${n}-assign`,
-      label: `Epoch ${n} · assign paragraphs`,
-      shortLabel: `E${n} assign`,
-      groupPrefix: `E${n}A`,
-      kind: "assignment",
-      movementEnabled: true,
-      groups: assignmentGroups,
-      balanceByGroupId,
-      meta: estep.meta || null,
-    });
-    epochStages.push({
-      key: `epoch${n}-revise`,
-      label: `Epoch ${n} · revise questions`,
-      shortLabel: `E${n} revise`,
-      groupPrefix: `E${n}R`,
-      kind: "revision",
-      movementEnabled: false,
-      groups: revisionGroups,
-      balanceByGroupId,
-      meta: estep.meta || null,
-    });
-    previousGroups = revisionGroups;
-  }
-  qiHistorySources.epochs = {
-    key: "epochs",
-    label: "Friday matrix epochs",
-    baselineLabel: "Pre-epoch QI-Prime",
-    stages: epochStages,
-  };
+  EPOCH_HISTORY_CONFIGS.forEach(config => {
+    const data = epochHistoryDataBySource[config.key];
+    if (!data) return;
+    const history = buildEpochHistorySource(config, data);
+    if (history.stages.length) qiHistorySources[config.key] = history;
+  });
+
+  if (!qiHistorySources[qiHistorySource]) qiHistorySource = qiHistorySources.epochs ? "epochs" : "iterations";
+  if (!qiHistorySources[paperMapHistorySource]) paperMapHistorySource = "iterations";
 }
 
 function currentQiHistory() {
@@ -817,6 +877,61 @@ function updatePreviews() {
   refreshView(); // preview height changed, so link endpoints moved
 }
 
+async function fetchOptionalJson(url, opts) {
+  try {
+    const response = await fetch(url, opts);
+    return response.ok ? await response.json() : null;
+  } catch (error) {
+    return null;
+  }
+}
+
+async function fetchDirectoryListing(url, opts) {
+  try {
+    const response = await fetch(url, opts);
+    const contentType = response.headers.get("content-type") || "";
+    return response.ok && contentType.includes("text/html") ? await response.text() : null;
+  } catch (error) {
+    return null;
+  }
+}
+
+async function loadEpochHistory(base, config, opts) {
+  const directory = `${base}${config.directory}/`;
+  const listing = await fetchDirectoryListing(directory, opts);
+  const initialGroups = !listing || listing.includes("initial_groups.json")
+    ? await fetchOptionalJson(`${directory}initial_groups.json`, opts)
+    : null;
+  const steps = {};
+  let foundOutput = Boolean(initialGroups);
+  const listedEpochs = listing
+    ? [...listing.matchAll(/href=["'][^"']*epoch(\d+)\/?["']/gi)]
+        .map(match => Number(match[1]))
+        .filter(Number.isFinite)
+        .sort((left, right) => left - right)
+    : null;
+  const epochNumbers = listedEpochs?.length
+    ? [...new Set(listedEpochs)]
+    : Array.from({ length: MAX_EPOCH_HISTORY_STEPS }, (_, index) => index + 1);
+
+  for (const number of epochNumbers) {
+    const epochDirectory = `${directory}epoch${number}/`;
+    const [estep, mstep, balance] = await Promise.all([
+      fetchOptionalJson(`${epochDirectory}estep.json`, opts),
+      fetchOptionalJson(`${epochDirectory}mstep.json`, opts),
+      fetchOptionalJson(`${epochDirectory}group_balance.json`, opts),
+    ]);
+    if (!estep && !mstep && !balance) {
+      if (!listing) break;
+      continue;
+    }
+    foundOutput = true;
+    steps[`epoch${number}`] = { estep, mstep, balance };
+  }
+
+  return foundOutput ? { initialGroups, steps } : null;
+}
+
 async function loadAll() {
   const base = "../output/sections/";
   const opts = { cache: "no-store" }; // these files change often during development; never serve a stale cached copy
@@ -854,30 +969,20 @@ async function loadAll() {
       if (res.ok) milpDataByVariant[variant.key] = await res.json();
     } catch (e) { /* this MILP variant's output isn't available */ }
   }
-  // refine_with_epoch_matrices.py's output -- also optional/best-effort.
-  // The pre-epoch snapshot is one file; each epoch's E-step (membership)
-  // and M-step (question) were saved as two separate files and need to be
-  // joined by group_id after fetching (done in init(), not here).
-  let epochInitialGroups = null;
-  try {
-    const res = await fetch(base + "epoch_matrix_refinement/initial_groups.json", opts);
-    if (res.ok) epochInitialGroups = await res.json();
-  } catch (e) { /* no epoch refinement output available */ }
-  const epochStepData = {};
-  for (let n = 1; n <= EPOCH_COUNT; n++) {
-    epochStepData[`epoch${n}`] = { estep: null, mstep: null, balance: null };
-    try {
-      const eRes = await fetch(base + `epoch_matrix_refinement/epoch${n}/estep.json`, opts);
-      if (eRes.ok) epochStepData[`epoch${n}`].estep = await eRes.json();
-      const mRes = await fetch(base + `epoch_matrix_refinement/epoch${n}/mstep.json`, opts);
-      if (mRes.ok) epochStepData[`epoch${n}`].mstep = await mRes.json();
-      // Written by compute_epoch_group_balance.py -- optional/best-effort,
-      // like the iteration balance files above.
-      const bRes = await fetch(base + `epoch_matrix_refinement/epoch${n}/group_balance.json`, opts);
-      if (bRes.ok) epochStepData[`epoch${n}`].balance = await bRes.json();
-    } catch (e) { /* this epoch's output isn't available */ }
-  }
-  return { papers, links, iterations, balances, milpDataByVariant, epochInitialGroups, epochStepData };
+  // Epoch histories are optional and independently selectable. Discover every
+  // sequential epoch present in each configured output directory.
+  const epochHistories = {};
+  const outputDirectoryListing = await fetchDirectoryListing(base, opts);
+  const availableHistoryConfigs = outputDirectoryListing
+    ? EPOCH_HISTORY_CONFIGS.filter(config => outputDirectoryListing.includes(`${config.directory}/`))
+    : EPOCH_HISTORY_CONFIGS;
+  const loadedHistories = await Promise.all(
+    availableHistoryConfigs.map(config => loadEpochHistory(base, config, opts))
+  );
+  loadedHistories.forEach((history, index) => {
+    if (history) epochHistories[availableHistoryConfigs[index].key] = history;
+  });
+  return { papers, links, iterations, balances, milpDataByVariant, epochHistories };
 }
 
 function buildParagraphUnitLookup() {
@@ -1137,6 +1242,7 @@ function attachInteractions() {
 }
 
 function buildGranularityTabs() {
+  document.body.classList.toggle("paper-map-active", currentGranularity === "paper-map");
   granularityTabsEl.innerHTML = TABS.map(g =>
     `<button type="button" class="granularity-btn${g === currentGranularity ? " active" : ""}" data-granularity="${g}">${TAB_LABELS[g]}</button>`
   ).join("");
@@ -1601,7 +1707,7 @@ function renderPaperSimilarity(model) {
     </details>`;
   }).join("");
   return `<div class="paper-similarity-panel">
-    <div class="paper-similarity-head"><strong>Pairwise paper similarity</strong><span>Weighted Jaccard measures group composition; normalized Levenshtein measures order and can adjust the score by at most 20%.</span></div>
+    <div class="paper-similarity-head"><strong>Paper similarity</strong><span>weighted Jaccard overlap with a 20% normalized Levenshtein order adjustment</span></div>
     <div class="paper-similarity-cards">${cards}</div>
   </div>`;
 }
@@ -1610,6 +1716,7 @@ function renderPaperMap() {
   const model = buildPaperMapModel();
   if (paperMapSelectedGroupId && !model.entriesById.has(paperMapSelectedGroupId)) {
     paperMapSelectedGroupId = null;
+    paperMapHideUnselected = false;
   }
 
   const tabsHtml = buildPaperMapStageTabsHtml();
@@ -1630,8 +1737,11 @@ function renderPaperMap() {
     <button type="button" class="paper-map-mode-button${paperMapMode === "skeleton" ? " active" : ""}" data-paper-map-mode="skeleton" aria-pressed="${paperMapMode === "skeleton"}">Skeleton</button>
   </div>`;
   const syncToggle = paperMapMode === "reading" ? `<label class="paper-map-sync-toggle" title="Off keeps each paper independently scrollable">
-    <input type="checkbox" id="paperMapSyncScroll"${paperMapSyncScroll ? " checked" : ""}> sync paper scrolling
+    <input type="checkbox" id="paperMapSyncScroll"${paperMapSyncScroll ? " checked" : ""}> sync scroll
   </label>` : "";
+  const filterToggle = `<label class="paper-map-sync-toggle" title="Show only paragraphs assigned to the selected question">
+    <input type="checkbox" id="paperMapHideUnselected"${paperMapHideUnselected ? " checked" : ""}${paperMapSelectedGroupId ? "" : " disabled"}> hide unselected
+  </label>`;
   const content = paperMapMode === "skeleton" ? renderPaperMapSkeleton(model) : renderPaperMapReading(model);
   const sourceOptions = qiHistorySourceOptions(paperMapHistorySource);
   const similarity = renderPaperSimilarity(model);
@@ -1639,10 +1749,10 @@ function renderPaperMap() {
   stage.innerHTML = `<div class="paper-map-shell">
     <div class="paper-map-overview">
       <div class="paper-map-control-row">
-        <label class="paper-map-sync-toggle">assignment history <select id="paperMapHistorySource" class="paper-map-source-select">${sourceOptions}</select></label>
+        <label class="paper-map-sync-toggle">run <select id="paperMapHistorySource" class="paper-map-source-select">${sourceOptions}</select></label>
         <div class="iteration-tabs">${tabsHtml}</div>
+        ${modeToggle}${filterToggle}${syncToggle}
         <div class="paper-map-summary"><strong>${escapeHtml(model.stageState.label)}</strong> · ${model.groups.length} groups · ${model.assignments.size} assigned · ${orphanCount} unassigned</div>
-        ${modeToggle}${syncToggle}
       </div>
       ${similarity}
       <div class="paper-map-legend" aria-label="Question groups at ${escapeHtml(model.stageState.label)}">${legend}</div>
@@ -1677,27 +1787,35 @@ function renderPaperMap() {
 function renderPaperMapReading(model) {
   const columns = allPapers.map(paper => {
     const sections = new Map((paper.sections || []).map(section => [section.id, section]));
-    let previousSectionId = null;
-    const paragraphs = (paper.paragraphs || []).map(paragraph => {
+    const renderedSections = [];
+    let currentSection = null;
+    (paper.paragraphs || []).forEach(paragraph => {
       const key = `${paper.paper_id}:${paragraph.id}`;
       const entry = model.assignments.get(key);
       const groupId = entry ? entry.group.group_id : "";
       const style = entry ? `--group-color:${entry.color.border};--group-fill:${entry.color.fill}` : "";
       const sectionId = paragraph.section_id || paragraph.parent_section_id || "";
-      let sectionHeading = "";
-      if (sectionId !== previousSectionId) {
-        previousSectionId = sectionId;
+      if (!currentSection || currentSection.id !== sectionId) {
         const section = sections.get(sectionId);
-        sectionHeading = `<div class="paper-map-section-head">${escapeHtml(section?.title || section?.tag || sectionId || "Unsectioned")}</div>`;
+        currentSection = {
+          id: sectionId,
+          heading: section?.title || section?.tag || sectionId || "Unsectioned",
+          paragraphs: [],
+        };
+        renderedSections.push(currentSection);
       }
-      return `${sectionHeading}<article class="paper-map-paragraph${entry ? "" : " orphan"}" data-paper-map-paragraph="${escapeHtml(key)}" data-paper-map-group="${escapeHtml(groupId)}" style="${style}">
+      currentSection.paragraphs.push(`<article class="paper-map-paragraph${entry ? "" : " orphan"}" data-paper-map-paragraph="${escapeHtml(key)}" data-paper-map-group="${escapeHtml(groupId)}" style="${style}">
         <div class="paper-map-paragraph-meta"><button type="button" class="paragraph-id-button" data-paragraph-inspect="${escapeHtml(key)}">${escapeHtml(paragraph.id)}</button><span>${entry ? escapeHtml(entry.label) : "Unassigned"}</span></div>
         <div class="paper-map-paragraph-question">${escapeHtml(paragraph.tag || "(no question)")}</div>
         <div class="paper-map-paragraph-text">${escapeHtml(compactText(paragraph.text))}</div>
-      </article>`;
-    }).join("");
+      </article>`);
+    });
+    const sectionHtml = renderedSections.map(section => `<section class="paper-map-section" data-paper-map-section="${escapeHtml(section.id)}">
+      <div class="paper-map-section-head">${escapeHtml(section.heading)}</div>${section.paragraphs.join("")}
+    </section>`).join("");
     return `<section class="paper-map-column" data-paper="${escapeHtml(paper.paper_id)}">
-      <div class="paper-map-paper-head" title="${escapeHtml(paper.title)}">${escapeHtml(shortPaperLabel(paper))} · ${(paper.paragraphs || []).length} paragraphs</div>${paragraphs}
+      <div class="paper-map-paper-head" title="${escapeHtml(paper.title)}">${escapeHtml(shortPaperLabel(paper))} · ${(paper.paragraphs || []).length} paragraphs</div>
+      <div class="paper-map-filter-empty" hidden>No paragraphs in this paper answer the selected question.</div>${sectionHtml}
     </section>`;
   }).join("");
   return `<div class="paper-map-columns" style="--paper-count:${allPapers.length}">${columns}</div>`;
@@ -1747,6 +1865,75 @@ function setPaperMapGroupEmphasis(hoveredGroupId = null) {
   });
 }
 
+function applyPaperMapSelectionFilter() {
+  const selectedGroupId = paperMapSelectedGroupId;
+  const active = Boolean(selectedGroupId && paperMapHideUnselected);
+  const filterToggle = document.getElementById("paperMapHideUnselected");
+  if (filterToggle) {
+    filterToggle.checked = paperMapHideUnselected;
+    filterToggle.disabled = !selectedGroupId;
+  }
+
+  stage.querySelectorAll(".paper-map-paragraph").forEach(paragraph => {
+    paragraph.hidden = active && paragraph.dataset.paperMapGroup !== selectedGroupId;
+  });
+  stage.querySelectorAll(".paper-map-section").forEach(section => {
+    const hasMatch = [...section.querySelectorAll(".paper-map-paragraph")]
+      .some(paragraph => paragraph.dataset.paperMapGroup === selectedGroupId);
+    section.hidden = active && !hasMatch;
+  });
+  stage.querySelectorAll(".paper-map-column").forEach(column => {
+    const hasMatch = [...column.querySelectorAll(".paper-map-paragraph")]
+      .some(paragraph => paragraph.dataset.paperMapGroup === selectedGroupId);
+    const emptyState = column.querySelector(".paper-map-filter-empty");
+    if (emptyState) emptyState.hidden = !active || hasMatch;
+  });
+  stage.querySelectorAll(".paper-map-skeleton-block").forEach(block => {
+    const hidden = active && block.dataset.paperMapGroup !== selectedGroupId;
+    block.classList.toggle("filter-hidden", hidden);
+    block.setAttribute("aria-hidden", String(hidden));
+  });
+}
+
+function updatePaperMapSelectionDisplay() {
+  setPaperMapGroupEmphasis();
+  applyPaperMapSelectionFilter();
+}
+
+function scrollPaperMapToFirstOccurrence(groupId) {
+  if (!groupId || paperMapMode !== "reading") return;
+  const columns = [...stage.querySelectorAll(".paper-map-column")];
+  if (!columns.length) return;
+  if (paperMapScrollReleaseTimer) clearTimeout(paperMapScrollReleaseTimer);
+  paperMapScrollSyncing = true;
+  const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+
+  columns.forEach(column => {
+    const target = [...column.querySelectorAll(".paper-map-paragraph")]
+      .find(paragraph => paragraph.dataset.paperMapGroup === groupId);
+    const paperHead = column.querySelector(".paper-map-paper-head");
+    const top = target
+      ? column.scrollTop + target.getBoundingClientRect().top - column.getBoundingClientRect().top - (paperHead?.offsetHeight || 0) - 7
+      : 0;
+    const boundedTop = Math.max(0, Math.min(top, column.scrollHeight - column.clientHeight));
+    column.scrollTo({ top: boundedTop, behavior: reduceMotion ? "auto" : "smooth" });
+    paperMapScrollByPaper[column.dataset.paper] = boundedTop;
+  });
+
+  paperMapScrollReleaseTimer = setTimeout(() => {
+    paperMapScrollSyncing = false;
+    paperMapScrollReleaseTimer = null;
+  }, reduceMotion ? 0 : 500);
+}
+
+function selectPaperMapGroup(groupId, { scroll = true } = {}) {
+  const nextGroupId = groupId && paperMapSelectedGroupId !== groupId ? groupId : null;
+  paperMapSelectedGroupId = nextGroupId;
+  if (!nextGroupId) paperMapHideUnselected = false;
+  updatePaperMapSelectionDisplay();
+  if (nextGroupId && scroll) scrollPaperMapToFirstOccurrence(nextGroupId);
+}
+
 function syncPaperMapColumns(source, columns) {
   if (!paperMapSyncScroll || paperMapScrollSyncing) return;
   const maximum = Math.max(0, source.scrollHeight - source.clientHeight);
@@ -1767,8 +1954,9 @@ function attachPaperMapInteractions(model) {
   document.getElementById("paperMapHistorySource")?.addEventListener("change", event => {
     paperMapHistorySource = event.target.value;
     paperMapSelectedGroupId = null;
-    if (paperMapHistorySource === "epochs") {
-      paperMapEpochStageIndex = Math.min(paperMapEpochStageIndex, paperMapHistory().stages.length - 1);
+    paperMapHideUnselected = false;
+    if (paperMapHistorySource !== "iterations") {
+      paperMapEpochStageIndex = Math.max(0, Math.min(paperMapEpochStageIndex, paperMapHistory().stages.length - 1));
     }
     refreshParagraphInspector();
     renderPaperMap();
@@ -1780,6 +1968,7 @@ function attachPaperMapInteractions(model) {
       if (paperMapHistorySource === "iterations") currentIteration = stageIndex;
       else paperMapEpochStageIndex = stageIndex;
       paperMapSelectedGroupId = null;
+      paperMapHideUnselected = false;
       renderPaperMap();
     });
   });
@@ -1789,6 +1978,9 @@ function attachPaperMapInteractions(model) {
       if (paperMapMode === button.dataset.paperMapMode) return;
       paperMapMode = button.dataset.paperMapMode;
       renderPaperMap();
+      if (paperMapSelectedGroupId && paperMapMode === "reading") {
+        requestAnimationFrame(() => scrollPaperMapToFirstOccurrence(paperMapSelectedGroupId));
+      }
     });
   });
 
@@ -1811,6 +2003,17 @@ function attachPaperMapInteractions(model) {
       syncPaperMapColumns(source, columns);
     });
   }
+  const filterToggle = document.getElementById("paperMapHideUnselected");
+  if (filterToggle) {
+    filterToggle.addEventListener("change", event => {
+      event.stopPropagation();
+      paperMapHideUnselected = filterToggle.checked;
+      applyPaperMapSelectionFilter();
+      if (paperMapHideUnselected && paperMapSelectedGroupId) {
+        scrollPaperMapToFirstOccurrence(paperMapSelectedGroupId);
+      }
+    });
+  }
 
   stage.querySelectorAll(".paper-map-paragraph, .paper-map-skeleton-block").forEach(card => {
     const groupId = card.dataset.paperMapGroup;
@@ -1819,8 +2022,7 @@ function attachPaperMapInteractions(model) {
     card.addEventListener("click", event => {
       if (event.target.closest("[data-paragraph-inspect]")) return;
       event.stopPropagation();
-      paperMapSelectedGroupId = groupId && paperMapSelectedGroupId !== groupId ? groupId : null;
-      setPaperMapGroupEmphasis();
+      selectPaperMapGroup(groupId);
     });
   });
   stage.querySelectorAll(".paper-map-legend-item").forEach(button => {
@@ -1829,19 +2031,17 @@ function attachPaperMapInteractions(model) {
     button.addEventListener("mouseleave", () => setPaperMapGroupEmphasis());
     button.addEventListener("click", event => {
       event.stopPropagation();
-      paperMapSelectedGroupId = paperMapSelectedGroupId === groupId ? null : groupId;
-      setPaperMapGroupEmphasis();
+      selectPaperMapGroup(groupId);
     });
   });
   const content = stage.querySelector(".paper-map-columns, .paper-map-skeleton-columns");
   if (content) {
     content.addEventListener("click", event => {
       event.stopPropagation();
-      paperMapSelectedGroupId = null;
-      setPaperMapGroupEmphasis();
+      selectPaperMapGroup(null, { scroll: false });
     });
   }
-  setPaperMapGroupEmphasis();
+  updatePaperMapSelectionDisplay();
 }
 
 function traceIterationNumbers() {
@@ -2834,7 +3034,7 @@ function switchGranularity(granularity) {
 }
 
 async function init() {
-  const { papers, links, iterations, balances, milpDataByVariant, epochInitialGroups, epochStepData } = await loadAll();
+  const { papers, links, iterations, balances, milpDataByVariant, epochHistories } = await loadAll();
   allPapers = papers;
   allLinksByGranularity = links;
   Object.entries(iterations).forEach(([n, state]) => {
@@ -2850,11 +3050,14 @@ async function init() {
   MILP_VARIANT_KEYS.forEach(key => {
     if (milpDataByVariant[key]) milpGroupsByVariant[key] = milpDataByVariant[key].groups || [];
   });
-  if (epochInitialGroups) epochGroupsByPhase.initial = epochInitialGroups;
-  epochStepDataByPhase = epochStepData || {};
+  epochHistoryDataBySource = epochHistories || {};
+  const originalEpochHistory = epochHistoryDataBySource.epochs || { initialGroups: null, steps: {} };
+  const originalInitialGroups = epochInitialGroups(originalEpochHistory.initialGroups);
+  if (originalInitialGroups.length) epochGroupsByPhase.initial = originalInitialGroups;
+  epochStepDataByPhase = originalEpochHistory.steps || {};
   for (let n = 1; n <= EPOCH_COUNT; n++) {
     const phase = `epoch${n}`;
-    const { estep, mstep, balance } = epochStepData[phase] || {};
+    const { estep, mstep, balance } = epochStepDataByPhase[phase] || {};
     if (!estep || !mstep) continue;
     epochMetaByPhase[phase] = estep.meta || null;
     const membersByGroupId = {};
