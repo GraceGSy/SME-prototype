@@ -1,0 +1,382 @@
+{
+  "groups": [
+    {
+      "group_id": "group_1",
+      "overarching_question": "What are the paper's contributions?",
+      "representative_members": [
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa9",
+          "tag": "What are the paper's contributions?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa10",
+          "tag": "What are this paper's contributions?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa9",
+          "tag": "What are the paper's main contributions?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_2",
+      "overarching_question": "Did the tool improve user performance compared to a baseline in the study?",
+      "representative_members": [
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa60",
+          "tag": "What was the main quantitative accuracy result?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa66",
+          "tag": "Did the interfaces differ quantitatively on the model comparison task?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa2",
+          "tag": "What was built and how was it evaluated, and what did the study find?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_3",
+      "overarching_question": "What interface or representation was designed to help users make sense of large information collections?",
+      "representative_members": [
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa20",
+          "tag": "What is the synthetic code skeleton and why is it needed?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa28",
+          "tag": "What was designed and prototyped in this work?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa22",
+          "tag": "What is ParaLib and how was it built?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_6",
+      "overarching_question": "How is color-coded highlighting used to reveal related content?",
+      "representative_members": [
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa33",
+          "tag": "How does the interface visually organize code examples?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa44",
+          "tag": "How is the PDC algorithm computed?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa24",
+          "tag": "How does the interface highlight conceptually related code across libraries?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_7",
+      "overarching_question": "Who were the participants recruited for the user study?",
+      "representative_members": [
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa50",
+          "tag": "Who were the study participants?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa52",
+          "tag": "Who were the study participants?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa52",
+          "tag": "Who were the study participants and how were they recruited?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_8",
+      "overarching_question": "How do interactive visualization features support user sensemaking of code/data examples?",
+      "representative_members": [
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa7",
+          "tag": "How does the system represent and visualize API usage?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa9",
+          "tag": "What themes emerged from the studies?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa7",
+          "tag": "What interactive features does the interface offer?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_9",
+      "overarching_question": "How can multiple code examples be visualized to aid API usage understanding?",
+      "representative_members": [
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa7",
+          "tag": "How does the system represent and visualize API usage?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa18",
+          "tag": "How does this work compare to code-corpus visualization tools?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa23",
+          "tag": "How does the interface show multiple code examples side-by-side?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_10",
+      "overarching_question": "How did user survey ratings compare the tool to baseline methods?",
+      "representative_members": [
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa64",
+          "tag": "How did participants rate the tool in the survey?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa66",
+          "tag": "Did the interfaces differ quantitatively on the model comparison task?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa73",
+          "tag": "What did the post-study survey comparisons show?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_11",
+      "overarching_question": "Did the new tool improve user performance compared to baseline in the study?",
+      "representative_members": [
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa60",
+          "tag": "What was the main quantitative accuracy result?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa66",
+          "tag": "Did the interfaces differ quantitatively on the model comparison task?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa2",
+          "tag": "What was built and how was it evaluated, and what did the study find?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_12",
+      "overarching_question": "How was the tool's usability and effectiveness assessed via user study?",
+      "representative_members": [
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa46",
+          "tag": "What is the goal and design of the user study?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa51",
+          "tag": "What scenarios and scales were tested?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa44",
+          "tag": "What is the goal and research questions of the user study?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_13",
+      "overarching_question": "What tool is proposed to help developers understand and compare code/API usage?",
+      "representative_members": [
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa6",
+          "tag": "What system is introduced to address this gap?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa18",
+          "tag": "How does this work compare to code-corpus visualization tools?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa5",
+          "tag": "What system is proposed to address this gap?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_14",
+      "overarching_question": "How does this system compare to and differ from prior related tools?",
+      "representative_members": [
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa13",
+          "tag": "How does OverCode compare and what are its limitations for this problem?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa19",
+          "tag": "How does this work's design relate to and differ from prior systems?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa15",
+          "tag": "What tools support annotation and evaluation of APIs?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_15",
+      "overarching_question": "Which interface features did users find most useful and why?",
+      "representative_members": [
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa66",
+          "tag": "What interface features did participants value most?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa70",
+          "tag": "How does task scale affect interface utility?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa75",
+          "tag": "How useful did participants rate the concept hierarchy feature?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_16",
+      "overarching_question": "How was the system/tool implemented and structured?",
+      "representative_members": [
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa38",
+          "tag": "What are the three phases of the system pipeline?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa36",
+          "tag": "What platform and feature types were implemented?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa22",
+          "tag": "What is ParaLib and how was it built?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_17",
+      "overarching_question": "How do users interact with the tool in real usage scenarios?",
+      "representative_members": [
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa37",
+          "tag": "How does the user discover new guard patterns via filtering?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa74",
+          "tag": "How did real users apply the tool to their own tasks?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa38",
+          "tag": "What is the setup for this usage scenario?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_18",
+      "overarching_question": "Did the tool improve user task performance in evaluation studies?",
+      "representative_members": [
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa60",
+          "tag": "What was the main quantitative accuracy result?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa67",
+          "tag": "Did participants actually find more differences, statistically?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa59",
+          "tag": "Did participants pick the correct library for scenarios?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_20",
+      "overarching_question": "Why do developers struggle to learn and compare code/API usage from existing resources?",
+      "representative_members": [
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa4",
+          "tag": "Why can't existing code-sharing sites solve this problem?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa3",
+          "tag": "What problem arises when showing many responses at scale?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa12",
+          "tag": "What learning barriers motivate a focus on functionality-level comparison?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_21",
+      "overarching_question": "How were user studies designed to evaluate the tool's effectiveness?",
+      "representative_members": [
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa46",
+          "tag": "What is the goal and design of the user study?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa51",
+          "tag": "What scenarios and scales were tested?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa44",
+          "tag": "What is the goal and research questions of the user study?"
+        }
+      ]
+    }
+  ]
+}

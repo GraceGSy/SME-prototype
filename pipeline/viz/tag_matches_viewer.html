@@ -453,8 +453,12 @@ const TAB_LABELS = Object.assign(
 // refine_with_epoch_matrices.py's 4 phases: the pre-epoch snapshot, then 3
 // epochs. Each epoch's E-step (membership) and M-step (question) were saved
 // separately, so the viewer joins them by group_id when loading.
-const EPOCH_PHASES = ["initial", "epoch1", "epoch2", "epoch3"];
-const EPOCH_PHASE_LABELS = { initial: "Pre-epoch", epoch1: "Epoch 1", epoch2: "Epoch 2", epoch3: "Epoch 3" };
+const N_EPOCH_PHASES = 5; // max across all epoch-refinement variants; a run with fewer epochs just has no data for the rest, handled as best-effort below
+const EPOCH_PHASES = ["initial", ...Array.from({ length: N_EPOCH_PHASES }, (_, i) => `epoch${i + 1}`)];
+const EPOCH_PHASE_LABELS = Object.assign(
+  { initial: "Pre-epoch" },
+  Object.fromEntries(Array.from({ length: N_EPOCH_PHASES }, (_, i) => [`epoch${i + 1}`, `Epoch ${i + 1}`]))
+);
 
 const stage = document.getElementById("stage");
 const granularityTabsEl = document.getElementById("granularityTabs");
@@ -592,20 +596,20 @@ async function loadAll() {
   // joined by group_id after fetching (done in init(), not here).
   let epochInitialGroups = null;
   try {
-    const res = await fetch(base + "epoch_matrix_refinement/initial_groups.json", opts);
+    const res = await fetch(base + "epoch_matrix1_reassign_refinement/initial_groups.json", opts);
     if (res.ok) epochInitialGroups = await res.json();
   } catch (e) { /* no epoch refinement output available */ }
   const epochStepData = {};
-  for (let n = 1; n <= 3; n++) {
+  for (let n = 1; n <= N_EPOCH_PHASES; n++) {
     epochStepData[`epoch${n}`] = { estep: null, mstep: null, balance: null };
     try {
-      const eRes = await fetch(base + `epoch_matrix_refinement/epoch${n}/estep.json`, opts);
+      const eRes = await fetch(base + `epoch_matrix1_reassign_refinement/epoch${n}/estep.json`, opts);
       if (eRes.ok) epochStepData[`epoch${n}`].estep = await eRes.json();
-      const mRes = await fetch(base + `epoch_matrix_refinement/epoch${n}/mstep.json`, opts);
+      const mRes = await fetch(base + `epoch_matrix1_reassign_refinement/epoch${n}/mstep.json`, opts);
       if (mRes.ok) epochStepData[`epoch${n}`].mstep = await mRes.json();
       // Written by compute_epoch_group_balance.py -- optional/best-effort,
       // like the iteration balance files above.
-      const bRes = await fetch(base + `epoch_matrix_refinement/epoch${n}/group_balance.json`, opts);
+      const bRes = await fetch(base + `epoch_matrix1_reassign_refinement/epoch${n}/group_balance.json`, opts);
       if (bRes.ok) epochStepData[`epoch${n}`].balance = await bRes.json();
     } catch (e) { /* this epoch's output isn't available */ }
   }
@@ -2351,7 +2355,7 @@ async function init() {
     if (milpDataByVariant[key]) milpGroupsByVariant[key] = milpDataByVariant[key].groups || [];
   });
   if (epochInitialGroups) epochGroupsByPhase.initial = epochInitialGroups;
-  for (let n = 1; n <= 3; n++) {
+  for (let n = 1; n <= N_EPOCH_PHASES; n++) {
     const phase = `epoch${n}`;
     const { estep, mstep, balance } = epochStepData[phase] || {};
     if (!estep || !mstep) continue;

@@ -8,8 +8,10 @@ questions.
 
 This README covers the pipeline from raw PDFs through generating those two ranking
 matrices, plus the iterative paragraph-group refinement and group-balance metric
-built on top of them. (Further, more exploratory steps beyond that are in the
-codebase too — balanced MILP reassignment, etc. — not documented here.)
+built on top of them, and a separate epoch-based refinement track built directly on
+the bidirectional-link groups. (Further, more exploratory steps beyond that are in
+the codebase too — balanced MILP reassignment, earlier epoch-refinement variants,
+etc. — not documented here.)
 
 Loosely inspired by Gentner's Structure-Mapping Engine (structural alignment between
 papers), but implemented as a much simpler tag-matching pipeline rather than a full
@@ -202,6 +204,82 @@ then open `http://localhost:8743/viz/ranking_heatmap.html` — one row per parag
 side: Matrix 1 alone, Matrix 2 alone, and a combined view (Matrix 1 = fill color,
 Matrix 2 = outline color, same scale). Hover any cell for the exact question,
 paragraph, and rank.
+
+## Epoch-based refinement
+
+`refine_with_epoch_matrix1_reassign.py` is a separate refinement track, an
+alternative to step 8's `refine_paragraph_groups.py`. It only depends on step 6's
+`quote_groups.json` (the bidirectional-link connected components) — it does NOT
+need step 7's precomputed `overarching_question`, or steps 8–10's output, since it
+recomputes its own starting question from scratch (see "Pre-epoch" below). It
+writes its own output directory, `output/sections/epoch_matrix1_reassign_refinement/`,
+without touching anything from the main pipeline above.
+
+```bash
+# Pre-epoch -- script: refine_with_epoch_matrix1_reassign.py
+# For each of step 6's connected-component paragraph groups, randomly pick
+# ONE paragraph per paper (not all members), then ask Claude for an
+# overarching_question from just those representatives (reusing
+# summarize_group()'s enriched prompt from step 7). The random pick is
+# seeded (RANDOM_SEED = 42) so re-runs select the same representatives and
+# don't invalidate the per-group_id response cache.
+# Output: epoch_matrix1_reassign_refinement/initial_groups.json
+
+# Each epoch (repeated N_EPOCHS = 5 times):
+#
+# 1. Matrix 1 -- one Claude call per paragraph (236 total), ranking every
+#    current candidate group's question best -> worst for that paragraph.
+# 2. E-step (reassign) -- every paragraph is assigned directly to its
+#    Matrix 1 #1-ranked group_id. No additional Claude call. Tallies how
+#    many paragraphs changed group vs. the previous epoch. Any candidate
+#    group left with zero members is dropped.
+# 3. Matrix 2 -- one Claude call per (surviving question, paper) pair,
+#    ranking that paper's own paragraphs best -> worst for the question.
+# 4. M-step (re-summarize) -- for each surviving group, each paper's
+#    Matrix-2 #1-ranked paragraph becomes that paper's representative (up
+#    to 3 per group); summarize_group() recomputes the overarching_question
+#    from just those representatives, discarding the old one.
+#
+# Output: epoch_matrix1_reassign_refinement/epoch<N>/matrix1.json,
+#         epoch_matrix1_reassign_refinement/epoch<N>/estep.json,
+#         epoch_matrix1_reassign_refinement/epoch<N>/matrix2.json,
+#         epoch_matrix1_reassign_refinement/epoch<N>/mstep.json
+#         for N = 1..5
+python3 refine_with_epoch_matrix1_reassign.py
+
+# script: compute_epoch_group_balance.py [run_dir_name]
+# For each epoch<N>/estep.json in a given run directory (defaults to
+# epoch_matrix_refinement; pass epoch_matrix1_reassign_refinement to match
+# the current run above), counts how many papers have at least one
+# paragraph in each surviving group -- same formula as step 10's
+# compute_group_balance.py (paper count / total papers). No API call. The
+# number of epochs is auto-detected from however many epoch<N>
+# subdirectories exist, so this works unmodified on any epoch-refinement
+# run directory.
+# Output: epoch<N>/group_balance.json for every available epoch
+python3 compute_epoch_group_balance.py epoch_matrix1_reassign_refinement
+```
+
+Every Claude call above is cached per item under
+`output/sections/_cache/epoch_matrix1_reassign_refinement/`, distinct from the main
+pipeline's cache and from earlier epoch-refinement variants still in the codebase
+(`refine_with_epoch_matrices.py`, `refine_with_epoch_random_seed.py` — not
+documented here).
+
+### Epoch output files
+
+| File | Produced by | Contents |
+|---|---|---|
+| `initial_groups.json` | refine_with_epoch_matrix1_reassign.py | pre-epoch groups: `{group_id, overarching_question, members, representative_members}` |
+| `epoch<N>/matrix1.json` | refine_with_epoch_matrix1_reassign.py | `{"paper_id:unit_id": [group_id, ...]}` — that epoch's paragraph→question ranking |
+| `epoch<N>/estep.json` | refine_with_epoch_matrix1_reassign.py | `{meta: {reassigned, total_assigned, dropped_groups}, candidates_used, groups: [{group_id, members}]}` |
+| `epoch<N>/matrix2.json` | refine_with_epoch_matrix1_reassign.py | `{group_id: {paper_id: [unit_id, ...]}}` — that epoch's question→paragraph ranking |
+| `epoch<N>/mstep.json` | refine_with_epoch_matrix1_reassign.py | `{groups: [{group_id, overarching_question, representative_members}]}` |
+| `epoch<N>/group_balance.json` | compute_epoch_group_balance.py | for each group, its balance score (% of papers represented) — sorted highest first |
+
+`viz/tag_matches_viewer.html`'s **Epoch Groups** tab visualizes this run — Pre-epoch
+through Epoch 5, each group card showing its balance badge (sorted highest first)
+and one filled square per paragraph, per paper.
 
 ## Tuning knobs
 
