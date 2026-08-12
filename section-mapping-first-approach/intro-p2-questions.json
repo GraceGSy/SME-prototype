@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "question_answered": "What problem do junior researchers face, and why don't existing writing guides solve it?"
+  },
+  {
+    "id": 2,
+    "question_answered": "If examples are the answer, what's the catch — what tension does showing examples introduce?"
+  },
+  {
+    "id": 3,
+    "question_answered": "How have prior tools tried to teach writing through modeled examples, and what limits that approach?"
+  },
+  {
+    "id": 4,
+    "question_answered": "What does the language-learning literature suggest about learning from corpora, and how does this paper's approach differ from generating new text?"
+  },
+  {
+    "id": 5,
+    "question_answered": "What is CorpusStudio, and how do its two writing-support concepts work?"
+  },
+  {
+    "id": 6,
+    "question_answered": "How was CorpusStudio evaluated, and what did the study find?"
+  },
+  {
+    "id": "contributions_list",
+    "question_answered": "Concretely, what does this paper contribute?"
+  }
+]

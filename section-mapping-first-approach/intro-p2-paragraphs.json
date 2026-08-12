@@ -1,0 +1,30 @@
+[
+    {
+      "id": 1,
+      "content": "Inexperienced researchers often lack knowledge of the implicit writing conventions and structural expectations of particular communities. While existing writing guides offer general advice, they are often too abstract and high-level, making it challenging for junior researchers to apply this guidance in their own work."
+    },
+    {
+      "id": 2,
+      "content": "Given that people commonly learn through examples, providing access to relevant examples can help bridge this gap. However, there are obstacles: viewing too few examples may lead to overfitting and unintentional plagiarism, while viewing too many examples—without sufficient cognitive supports within the interface—may overwhelm the writer."
+    },
+    {
+      "id": 3,
+      "content": "Prior work motivated the design of writing support tools with social cognitive theories and cognitive apprenticeship theory [18, 19] to help writers learn complex writing skills in a professional setting. While this approach allows novices to learn by mimicking model examples, it also requires expert knowledge to create and annotate these examples, which is often time-consuming and not readily available for many communities."
+    },
+    {
+      "id": 4,
+      "content": "Learning from examples has also been extensively covered in the language learning literature. Non-native English speakers (NNES) may hesitate to choose from AI-suggested content because they struggle to evaluate the content's fluency and naturalness [21, 24, 25]. To address this problem, researchers proposed that novices learn by inspecting sentences from a curated corpus such as the Corpus of Contemporary American English (COCA) or English dictionaries [4] to help students learn the correct use of collocations and phrases [35]. To this end, LangSmith proposed a writing support tool for drafting academic NLP papers [20] by generating grammatically correct phrases given the user's current draft along with prior section and paper titles. In contrast, our work surfaces existing text from a relevant peer-reviewed text corpus. Furthermore, by avoiding automatically generated text that may—without the writer's knowledge—cross the line into plagiarism if used verbatim, the writer only sees previously published example sentences and their provenance, retaining informed control."
+    },
+    {
+      "id": 5,
+      "content": "To this end, we implemented CorpusStudio, a writing environment with two novel writing support concepts, one at the document level and one at the sentence level, that help writers learn about the writing styles and expectations of particular audiences. These writing supports are designed to expose writers to as many examples as possible to increase the variety of examples shown to the users—with the cognitive support necessary to help them see the emergent patterns that capture otherwise implicit community-specific writing content and style expectations. Specifically, at the document level, CorpusStudio computes and renders an ordered distribution [15] over section title sequences in prior papers from the community the writer wishes to write for. This gives the writer a sense of common and uncommon section titles and in what relative order they appear in prior papers (Figure 1A). At the sentence level, CorpusStudio retrieves many example sentences from the corpus given the user's draft-in-progress and their current cursor location within it (Figure 1C). Words across these many example sentences are algorithmically highlighted or de-emphasized to help users see any emergent norms and outliers. We also allow authors to capture their thoughts and deductions from viewing these examples with bookmarks and notes."
+    },
+    {
+      "id": 6,
+      "content": "We conducted a user study with N=16 participants from the academic community who were actively writing their manuscripts. They used CorpusStudio to draft their paper outline, wrote one to two sections of their manuscript, and answered questionnaires eliciting their overall experience writing within CorpusStudio. Our results reveal that users felt more confident in their writing when they discovered that other people in their target community have written in a similar way. Inspecting many examples at once was useful for identifying broad structural patterns, especially for sections that typically have more common structure, such as the description of the system implementation details or participants' demographics."
+    },
+    {
+      "id": "contributions_list",
+      "content": "In summary, we contribute the following: • We designed two novel writing support concepts that make visible emergent patterns at the document-level and sentence-level of a given paper corpus. • We implemented these writing support concepts within CorpusStudio, an interactive writing environment that helps writers retrieve, inspect, generalize from, and reflect on many examples from their target venue • We found that users' writing goals guided their perception of relevance and how they adapted content from the corpus."
+    }
+]

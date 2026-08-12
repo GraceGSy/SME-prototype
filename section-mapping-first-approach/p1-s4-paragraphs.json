@@ -1,0 +1,106 @@
+[
+  {
+    "id": 1,
+    "content": "Given the challenges and opportunities of supporting skimming and comparing papers at scale revealed in the formative study, AbstractExplorer is designed to help researchers (1) skim, read, and better familiarize themselves with the contents and composition style of a large corpus of abstracts and (2) reason about cross-paper relationships at scale without abstracting away the author-written sentences about their own work. To do this, AbstractExplorer is designed to support close-reading purpose-defined slices through a large collection—1,057 in our studies—of paper abstracts."
+  },
+  {
+    "id": 2,
+    "content": "4.1.1 Slicing abstracts for sentence-level aspect reading and comparison (same-role sentences). To keep details at the forefront of the interface, we designed a mechanism to slice abstracts for viewing them from specific angles, allowing for comparative close reading at scale at the sentence level. We chose the sentence as our unit for cross-document alignment because: (1) it preserves complete propositional content (unlike phrases or words), (2) maintains grammatical coherence when isolated (unlike arbitrary text spans), and (3) serves as the minimal self-contained unit where aspects can be meaningfully compared. \"Aspects\" are either pre-defined or user-defined on the fly; they are collections of sentences across abstracts that serve the same or similar purposes within their abstract."
+  },
+  {
+    "id": 3,
+    "content": "Pre-defined aspects. AbstractExplorer classifies sentences into five pre-defined aspects common in CHI abstracts: Problem Domain, Gaps in Prior Work, Methodology/Contribution, Results/Findings, and Discussion/Conclusion. These were developed to suit the context of CHI based on the authors' manual annotation of ∼100 CHI abstracts. Viewing one aspect at a time enables users to closely read and compare just the analogous sentences of abstracts, which may be cognitively easier than the comparative close reading of many abstracts in their entirety, especially if cross-sentence relationships are pre-computed and reified in the interface. Clicking an aspect in the list (Figure 1A) displays corresponding sentences from all abstracts in the \"Cross-Sentence Relationship\" panel (Figure 1B). Each sentence is displayed with a matching origin paper ID for provenance and paper author information for context."
+  },
+  {
+    "id": 4,
+    "content": "User-defined (custom) aspects. Motivated by formative study feedback on alternative search and document grouping, AbstractExplorer allows users to define custom aspects in addition to the five pre-defined ones. To create a custom aspect, users provide a name, description, and an optional exact-match filter (like Figure 1D) to limit results to relevant abstracts. The interface then displays matching sentences in the \"Cross-Sentence Relationship\" panel (Figure 1B), highlighting only the chunk most relevant to the aspect definition, as determined by the system backend (e.g., Figure 4). See Section 4.3 for this and other implementation details."
+  },
+  {
+    "id": 5,
+    "content": "4.1.2 Grammar-preserving sentence segmentation and role highlighting. Inspired by GP-TSM [24], AbstractExplorer first segments sentences into grammar-preserving chunks—segments that respect grammatical boundaries, i.e., an LLM judges that the sentence can be truncated at that chunk boundary without breaking the grammatical integrity of the preceding text. Each chunk is then classified by an LLM as having one of nine pre-defined roles, each of which has its own assigned color."
+  },
+  {
+    "id": 6,
+    "content": "To define these roles, we used a human-LLM collaboration approach. An LLM produced initial annotations, which we iteratively refined via comparison with the authors' manual annotations on our sample of ∼100 CHI 2024 abstracts. Formative study feedback supported the use of role-related color highlights, so we planned to visually indicate the role of each chunk with a unique color. We balanced role specificity with the possible visual indistinguishability of too many roles if each is assigned a unique color, ultimately defining nine roles: Context/Status Quo, Challenge/Problem, Contribution, Goal/Focus, Methodology, Participants, System Characteristics, Finding, and Enumeration for the CHI 2024 corpus. An LLM was used to classify sentence chunks into each of these roles. We adopt the color palette of Tableau 10, which was carefully designed to be clearly distinguishable."
+  },
+  {
+    "id": 7,
+    "content": "Each role label has a corresponding unique color shown at the top of the \"Cross-Sentence Relationship\" panel (Figure 1B and Figure 3B). By default, all highlights are turned on. Users can toggle individual role highlights by clicking on the corresponding role label or toggle all highlights via the \"Highlight All\" button. These role-based color highlights enable quick identification of analogous chunks and visual pattern matching over sequences of chunks across sentences."
+  },
+  {
+    "id": 8,
+    "content": "4.1.3 Organizing sentences into structure groups. We consider common sequences of chunk roles to be alignable structures that could be used to support users in identifying structural similarities and differences across sentences in different abstracts, in line with Structure-Mapping Theory [17]. In SMT terminology, rendering and arranging according to corresponding chunks reify \"commonalities in structure,\" while variation within corresponding chunks are \"alignable differences\" that users are predicted to notice."
+  },
+  {
+    "id": 9,
+    "content": "In AbstractExplorer, sentences are grouped by this definition of sentence structure. For example, Figure 5 displays sentences that all start with a description of the paper's Contribution, followed by System Characteristics. Likewise, Figure 28 in Appendix F shows all the sentences that contain a description of a study Methodology, followed by information about the Participants who are involved in the study. To navigate to a group of sentences within the same aspect that share a different structure, users can either use the left and right buttons at the top of the Cross-Sentence Relationships pane to step to the next most or next least common structure, or through the \"global view\" described next."
+  },
+  {
+    "id": 10,
+    "content": "Structure Global View. In this view (Figure 3B), the sentences with the most common sentence structure are listed together first, followed by the sentences with the next most common structure, and so on. The total number of sentences with each structure in the (possibly filtered) corpus is shown in parentheses and visualized as a histogram. An example sentence is also shown alongside each structure. This allows users to first understand the different structure patterns and their commonality, before diving into close reading at scale of the sentences that share a particular structure by clicking any of the \"Expand\" toggles."
+  },
+  {
+    "id": 11,
+    "content": "4.1.4 Ordering and Alignment of Sentences within Structure Groups. Structural mappings between objects are part of the cognitive process of comparison according to the Structure-Mapping Theory [17], and juxtaposition can facilitate humans in recognizing particular possible structural mappings between objects [75]. We design and implement two types of juxtapositions:"
+  },
+  {
+    "id": 12,
+    "content": "Within-structure ordering. The structure groups are defined by tuples of chunk roles, e.g., (Contribution, Participants), but within the group they may have longer common sequences of chunk roles. AbstractExplorer orders sentences within each structure group based on the sequential pattern of chunk roles (vertical juxtapositions). Sentences are recursively grouped by sequences of three chunk roles, with groups ordered by decreasing size. Within each of those groups, sentences are arranged by increasing length. This ordering prioritizes dominant structural patterns (largest groups first) while exposing fine-grained variations (via length-sorted triplets), mirroring how humans compare sentences, if SMT is an accurate description in this domain of comparative close reading."
+  },
+  {
+    "id": 13,
+    "content": "Within-structure alignment. AbstractExplorer also aligns the sentences in three different ways, as illustrated in Figure 5: vertical alignment by the middle of the structure tuple (second element), vertical alignment by the left of the structure tuple (first element), and left-justified alignment (horizontal juxtapositions). By default, sentences are vertically aligned by the middle of their shared structure tuple, but users can freely switch between the three alignment options using the button group atop the Cross-Sentence Relationship pane (Figure 1B). For instance, when examining sentences with the Contribution + System Characteristics structure, users may choose to align by middle of the structure, starting with System Characteristics, to easily focus on the systems being built as they form a contiguous visual block (Figure 5a). Within the same aspect, when switching to examine sentences with another structure, e.g., the Methodology + Participants structure, they may choose to align by the left of the shared structure, starting with Methodology, to focus on the methodology being used (Figure 28 in Appendix F). These alignment options are intended to enable users to more easily read analogous chunks across sentences from different abstracts, ignoring details serving other roles within the sentence. This may effectively decrease context switching and lead to more robust mental models without requiring more cognitive load. If users prefer, sentences can be toggled to a left-justified view to facilitate conventional reading and skimming. Together, the vertical and horizontal juxtapositions are designed to help users identify both high-level commonalities and nuanced variations across structurally similar sentences."
+  },
+  {
+    "id": 14,
+    "content": "Abstract and TLDR panel. Sentence-level reading may be new to readers. To allow users to contextualize individual sentences within their respective abstracts, we link the Cross-Sentence Relationship and Abstract panels (Figure 1B and C): when users click on any sentence in the Cross-Sentence Relationships pane (Figure 1B), the corresponding full abstract is automatically highlighted and scrolled into view in the Abstracts panel (Figure 1C), offering additional context when needed. It also includes paper metadata such as the full author list and the session name. The Abstracts panel can be customized by users to display the full abstract text, an abstract \"TLDR\" (a shorter abstractive summary generated by an LLM), or both at the same time."
+  },
+  {
+    "id": 15,
+    "content": "Keyword filtering (search). Filtering (Figure 1D) enables users to narrow their focus to a subset of the corpus while still benefiting from features that help them recognize cross-sentence relationships within the remaining abstracts. Users can enter a search term into the search bar and only papers that include that exact term will appear in the Cross-Sentence Relationships pane (Figure 1B). Users can remove the filter by deleting text from the search bar."
+  },
+  {
+    "id": 16,
+    "content": "Sentence bookmarking. Sentence bookmarking helps users keep track of papers to revisit later. When users click on a bookmark icon to the left of any specific sentence in the Cross-Sentences Relationships Pane (Figure 1B), that sentence is added to a bookmark list that can be viewed in the Bookmarked Sentences alternate pane. From this pane, users can toggle and view highlighted sentence chunks, click to scroll to the relevant abstract for each sentence, or remove bookmarks from the list."
+  },
+  {
+    "id": 17,
+    "content": "Alice wants to learn more about the papers published in CHI 2024 and decides to use AbstractExplorer to explore them. Upon opening AbstractExplorer, Alice sees the Methodology/Contribution aspect selected by default and a list of Contribution + System Characteristics sentences—the most common sentence pattern of that aspect. After scanning a few sentences, Alice realizes that Contribution mostly consists of system names, while the variation lies in System Characteristics. She shifts her focus to System Characteristics, quickly skimming the vertically aligned list to discover a wide variety of systems. Intrigued by a system involving 3D-printable ceramic materials, Alice clicks on the sentence to view more details about the paper in the Abstract panel, gaining insight into a previously unfamiliar area."
+  },
+  {
+    "id": 18,
+    "content": "Alice then navigates to a different group of sentences about evaluation methodologies. She becomes curious about the number of participants typically involved in CHI studies. She selects the Contribution + Participants group to explore the distribution of participants across studies. The green spans representing Participants make it easy for her to locate mentions of participant information in different abstracts. Alice notices a wide range in participant numbers, with some studies involving as many as 1,500 participants. However, by looking at Methodology spans that identify study types, she observes that these large numbers are primarily from survey-based research. She then refines her working set of abstracts by typing \"qualitative\" into the search bar, filtering the underlying abstracts accordingly, and notes that most qualitative studies involve around 12 participants."
+  },
+  {
+    "id": 19,
+    "content": "In addition to participant numbers, Alice also explores study populations by creating a custom aspect, which she describes as \"description of qualitative study population,\" with a filter for \"health\" papers. The interface returns a dozen highly relevant papers, with key descriptors of study populations—such as queer women, visually impaired developers, and older adults involved in care provision—automatically highlighted for quick identification."
+  },
+  {
+    "id": 20,
+    "content": "Finally, Alice explores research involving large language models (LLMs). She types \"LLM\" into the search bar and selects \"Gaps in Prior Work\" from the predefined aspects panel. The largest structure group is Challenge/Problem + Contribution, and Alice skims these sentences with a focus on Challenge/Problem, quickly identifying recurring themes such as addressing hallucination risks, improving prompting, and examining the impact of LLMs on marginalized groups. This exploration gives her a clearer view of the key challenges and research directions related to LLMs discussed at CHI 2024."
+  },
+  {
+    "id": 21,
+    "content": "The AbstractExplorer interface is a React app loaded with CHI 2024 abstract data from the CHI 2024 Papers Explorer's open-source repository. The dataset consists of paper abstracts and metadata including title, author names, and session. We select only full papers from the dataset, which results in 1057 paper abstracts."
+  },
+  {
+    "id": 22,
+    "content": "We process this data in a three-stage pipeline (Figure 6). In the first stage, Sentence Segmentation and Categorization, abstracts are split into individual sentences using the NLTK package, and each sentence is classified into one of the five pre-defined aspects as listed in Section 4.1.1. Classification is performed by prompting an LLM (see prompt used in Appendix D.1) with the sentence and its full abstract. Note that an abstract may contain multiple sentences along the same aspect."
+  },
+  {
+    "id": 23,
+    "content": "Then, we segment sentences within each aspect into grammar-preserving chunks (see prompt used in Appendix D.2). This results in grammatically coherent chunks that are the basis of structure patterns. After identifying chunk boundaries, we again prompt an LLM to generate labels for chunks in a human-in-the-loop approach: starting from an initial set of labels for chunk roles, when a new label is generated, a researcher from the research team examines the new label and merges it with existing labels if appropriate, controlling for the total number of labels."
+  },
+  {
+    "id": 24,
+    "content": "After obtaining an expanded set of high-level chunk labels, we assign them to each of the sentence chunks by using LLMs in a multi-class classification few-shot learning task, with the initial labels and assignment as examples (see prompt used in Appendix D.3)."
+  },
+  {
+    "id": 25,
+    "content": "All the chunks and corresponding labels are pre-computed and stored as JSON files, ensuring responsiveness and low latency of the web application. All keyword searches are computed dynamically in the React app and have low latency."
+  },
+  {
+    "id": 26,
+    "content": "Custom aspects are generated dynamically via API calls to a FastAPI back-end, which prompts an LLM to check whether each sentence in the filtered subset matches the aspect description—either in terms of overall content or a matching token—and extracts the most relevant chunk of that sentence to highlight (see prompts used in Appendix D.4). The front-end React app allows users to view partially loaded custom aspects while they are being generated."
+  }
+]

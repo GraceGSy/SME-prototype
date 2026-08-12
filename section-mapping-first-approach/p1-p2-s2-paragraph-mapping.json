@@ -1,0 +1,67 @@
+[
+    {
+      "abstractexplorer_paragraph_id": 1,
+      "corpusstudio_paragraph_id": 1,
+      "rationale": "Both are the section's opening scope/roadmap sentence, stating what the related-work section will cover"
+    },
+    {
+      "abstractexplorer_paragraph_id": 2,
+      "corpusstudio_paragraph_id": 2,
+      "rationale": "Both are the first substantive paragraph, defining and motivating the core concept underlying the first subsection"
+    },
+    {
+      "abstractexplorer_paragraph_id": 3,
+      "corpusstudio_paragraph_id": 3,
+      "rationale": "Both elaborate on the real-world complexity/manifestations of the core concept before differentiation"
+    },
+    {
+      "abstractexplorer_paragraph_id": 4,
+      "corpusstudio_paragraph_id": 4,
+      "rationale": "Both close the first subsection by differentiating or building on the just-cited prior work/theory"
+    },
+    {
+      "abstractexplorer_paragraph_id": 5,
+      "corpusstudio_paragraph_id": 5,
+      "rationale": "Both open the second subsection by defining the second core concept and surveying prior methods"
+    },
+    {
+      "abstractexplorer_paragraph_id": 6,
+      "corpusstudio_paragraph_id": 5,
+      "rationale": "Continues the same survey of prior approaches within the second subsection"
+    },
+    {
+      "abstractexplorer_paragraph_id": 7,
+      "corpusstudio_paragraph_id": 6,
+      "rationale": "Both discuss the most directly comparable prior system (PDC / checklist-based tool) and its limitations"
+    },
+    {
+      "abstractexplorer_paragraph_id": 8,
+      "corpusstudio_paragraph_id": 6,
+      "rationale": "Both close the second subsection with a differentiation statement contrasting their own approach with the closest prior work"
+    },
+    {
+      "abstractexplorer_paragraph_id": 9,
+      "corpusstudio_paragraph_id": 7,
+      "rationale": "Both open the third subsection by surveying/critiquing existing tools in this area"
+    },
+    {
+      "abstractexplorer_paragraph_id": 10,
+      "corpusstudio_paragraph_id": 8,
+      "rationale": "Both differentiate the paper's own system from the just-surveyed prior tools"
+    },
+    {
+      "abstractexplorer_paragraph_id": 11,
+      "corpusstudio_paragraph_id": 9,
+      "rationale": "Both are the final paragraph of their subsection, giving the concluding rationale for why the paper's approach fits its domain"
+    },
+    {
+      "abstractexplorer_paragraph_id": 12,
+      "corpusstudio_paragraph_id": 9,
+      "rationale": "Both serve as a closing critique/transition paragraph near the end of the related-work section, framing the gap the paper's own contribution addresses"
+    },
+    {
+      "abstractexplorer_paragraph_id": 13,
+      "corpusstudio_paragraph_id": 4,
+      "rationale": "Both are the explicit theoretical-grounding paragraph — SMT/Variation Theory versus cognitive apprenticeship theory — cited as the cognitive-science basis for the paper's design"
+    }
+  ]

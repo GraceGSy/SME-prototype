@@ -1,0 +1,26 @@
+[
+  {
+    "abstractexplorer_section_name": "Formative Interview Study",
+    "corpusstudio_section_name": "CorpusStudio (§3.1 Design Goals)",
+    "abstractexplorer_section_number": "3",
+    "corpusstudio_section_number": "3",
+    "basis": "No dedicated formative-study section exists in CorpusStudio. AbstractExplorer's formative interviews (12 researchers, mock-up feedback) directly motivated its design; CorpusStudio's closest analog is its Design Goals subsection, which states motivating goals without a separate empirical formative study",
+    "question_the_sections_both_answer": "What need or design goal motivated the system's design?"
+  },
+  {
+    "abstractexplorer_section_name": "Ablation Study",
+    "corpusstudio_section_name": "User Study",
+    "abstractexplorer_section_number": "5",
+    "corpusstudio_section_number": "5",
+    "basis": "Weak match. AbstractExplorer runs a distinct controlled ablation (isolating highlighting/ordering/alignment, eye-tracking, NFC) before the summative study; CorpusStudio has no ablation study, so its single empirical evaluation section (User Study) is the nearest analog by function",
+    "question_the_sections_both_answer": "How was the system's design empirically evaluated before or as part of the main study?"
+  },
+  {
+    "abstractexplorer_section_name": "AbstractExplorer (§4.3 Implementation Details)",
+    "corpusstudio_section_name": "Data & Processing",
+    "abstractexplorer_section_number": "4",
+    "corpusstudio_section_number": "4",
+    "basis": "AbstractExplorer has no standalone data/processing section; its closest analog is the Implementation Details subsection, which likewise covers the dataset (1,057 vs. 478 papers), the pre-processing/segmentation pipeline, and the LLM-based classification steps",
+    "question_the_sections_both_answer": "What dataset was used, and how was it processed to build the system's underlying content?"
+  }
+]

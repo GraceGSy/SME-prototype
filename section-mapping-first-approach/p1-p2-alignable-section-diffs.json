@@ -1,0 +1,18 @@
+[
+  {
+    "abstractexplorer_section_name": "Formative Interview Study",
+    "corpusstudio_section_name": "CorpusStudio (§3.1 Design Goals)",
+    "abstractexplorer_section_number": "3",
+    "corpusstudio_section_number": "3",
+    "basis": "No dedicated formative-study section exists in CorpusStudio. AbstractExplorer's formative interviews (12 researchers, mock-up feedback) directly motivated its design; CorpusStudio's closest analog is its Design Goals subsection, which states motivating goals without a separate empirical formative study",
+    "question_the_sections_both_answer": "What need or design goal motivated the system's design?"
+  },
+  {
+    "abstractexplorer_section_name": "Ablation Study",
+    "corpusstudio_section_name": "User Study",
+    "abstractexplorer_section_number": "5",
+    "corpusstudio_section_number": "5",
+    "basis": "Weak match. AbstractExplorer runs a distinct controlled ablation (isolating highlighting/ordering/alignment, eye-tracking, NFC) before the summative study; CorpusStudio has no ablation study, so its single empirical evaluation section (User Study) is the nearest analog by function",
+    "question_the_sections_both_answer": "How was the system's design empirically evaluated before or as part of the main study?"
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "question_answered": "How do people currently reason across a corpus of documents, absent any tool support?"
+  },
+  {
+    "id": 2,
+    "question_answered": "What's wrong with existing non-linguistic (lossy) approaches to augmenting corpus reasoning?"
+  },
+  {
+    "id": 3,
+    "question_answered": "What's wrong with lossy linguistic (text-based) representations specifically?"
+  },
+  {
+    "id": 4,
+    "question_answered": "Has anyone shown it's possible to support corpus reasoning without lossy representations, and what theory explains why it works?"
+  },
+  {
+    "id": 5,
+    "question_answered": "Why does this SMT-informed approach actually help human cognition, and what is 'comparative close reading'?"
+  },
+  {
+    "id": 6,
+    "question_answered": "Where has this lossless, SMT-informed approach not yet been applied — what's the open gap?"
+  },
+  {
+    "id": 7,
+    "question_answered": "What is AbstractExplorer, and how does it fill that gap?"
+  },
+  {
+    "id": 8,
+    "question_answered": "How was AbstractExplorer's design validated — what studies were run and what did each find?"
+  },
+  {
+    "id": "contributions_list",
+    "question_answered": "Concretely, what does this paper contribute?"
+  }
+]

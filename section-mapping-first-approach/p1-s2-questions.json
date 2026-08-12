@@ -1,0 +1,54 @@
+[
+    {
+      "id": 1,
+      "question_answered": "What two areas of prior work does this related-work section cover?"
+    },
+    {
+      "id": 2,
+      "question_answered": "What is close reading, how does it differ from distant reading, and what are the shortcomings of distant reading tools?"
+    },
+    {
+      "id": 3,
+      "question_answered": "What tools exist to support reading within or anchored to a single document, and how do they fall short of true cross-document support?"
+    },
+    {
+      "id": 4,
+      "question_answered": "How does AbstractExplorer differ from these prior single-document reading tools in how it supports readers' limited working memory across a corpus?"
+    },
+    {
+      "id": 5,
+      "question_answered": "What is text alignment, and what methods have prior work used to perform it?"
+    },
+    {
+      "id": 6,
+      "question_answered": "Has text alignment been applied to larger pieces of text, and for what purpose — machine processing or human consumption?"
+    },
+    {
+      "id": 7,
+      "question_answered": "What prior work has scaled the alignment process to more texts, and where does it fall short (e.g., PDC ignoring purpose)?"
+    },
+    {
+      "id": 8,
+      "question_answered": "How does AbstractExplorer's approach to text alignment differ from prior alignment methods, given the linguistic variability of scientific abstracts?"
+    },
+    {
+      "id": 9,
+      "question_answered": "What prior text-centric tools exist for sensemaking over document corpora via shared structure?"
+    },
+    {
+      "id": 10,
+      "question_answered": "How is AbstractExplorer similar to, and different from, these prior text-centric sensemaking tools?"
+    },
+    {
+      "id": 11,
+      "question_answered": "Why is a shared-structure approach feasible specifically for scientific abstracts?"
+    },
+    {
+      "id": 12,
+      "question_answered": "What is the typical goal of prior sensemaking systems for corpora, and how does it differ from close comparison at scale?"
+    },
+    {
+      "id": 13,
+      "question_answered": "What cognitive theories underlie these prior systems, and what do they predict about how humans compare texts?"
+    }
+  ]

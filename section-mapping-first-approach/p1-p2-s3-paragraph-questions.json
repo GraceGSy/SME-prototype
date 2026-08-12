@@ -1,0 +1,42 @@
+[
+    {
+      "abstractexplorer_paragraph_id": 1,
+      "corpusstudio_paragraph_id": 1,
+      "shared_question": "What need or goal motivated the design work behind the system?"
+    },
+    {
+      "abstractexplorer_paragraph_id": 2,
+      "corpusstudio_paragraph_id": 1,
+      "shared_question": "What gaps in existing practices (finding venues, synthesizing information, writing) does the system's design aim to address?"
+    },
+    {
+      "abstractexplorer_paragraph_id": 3,
+      "corpusstudio_paragraph_id": 1,
+      "shared_question": "What kind of cross-document evidence is the system meant to surface for users?"
+    },
+    {
+      "abstractexplorer_paragraph_id": 4,
+      "corpusstudio_paragraph_id": 1,
+      "shared_question": "How was the design goal of surfacing this evidence shaped or validated through user input?"
+    },
+    {
+      "abstractexplorer_paragraph_id": 5,
+      "corpusstudio_paragraph_id": 1,
+      "shared_question": "What shortcomings of current tools/practices does the system's design goal aim to overcome?"
+    },
+    {
+      "abstractexplorer_paragraph_id": 6,
+      "corpusstudio_paragraph_id": 1,
+      "shared_question": "Why is a more systematic, evidence-based approach needed instead of ad hoc manual comparison?"
+    },
+    {
+      "abstractexplorer_paragraph_id": 7,
+      "corpusstudio_paragraph_id": 1,
+      "shared_question": "What concerns about trusting algorithmically-surfaced content does the design need to account for?"
+    },
+    {
+      "abstractexplorer_paragraph_id": 8,
+      "corpusstudio_paragraph_id": 1,
+      "shared_question": "What concerns about relying on AI-generated or unverifiable content does the design goal address?"
+    }
+  ]

@@ -1,0 +1,142 @@
+[
+  {
+    "corpusstudio_paragraph_id": 1,
+    "abstractexplorer_paragraph_id": 1,
+    "shared_question": "What is the system designed to help users do, and how does it approach that goal?"
+  },
+  {
+    "corpusstudio_paragraph_id": 2,
+    "abstractexplorer_paragraph_id": 2,
+    "shared_question": "What underlying design goal shapes the system's core comparison approach?"
+  },
+  {
+    "corpusstudio_paragraph_id": 3,
+    "abstractexplorer_paragraph_id": 17,
+    "shared_question": "How does the walkthrough introduce the example user and her starting point in the interface?"
+  },
+  {
+    "corpusstudio_paragraph_id": 4,
+    "abstractexplorer_paragraph_id": 18,
+    "shared_question": "How does the example user use a core browsing feature to investigate a specific question?"
+  },
+  {
+    "corpusstudio_paragraph_id": 5,
+    "abstractexplorer_paragraph_id": 19,
+    "shared_question": "How does the example user use a feature in a targeted way to get inspiration or confirm a specific detail while working?"
+  },
+  {
+    "corpusstudio_paragraph_id": 6,
+    "abstractexplorer_paragraph_id": 16,
+    "shared_question": "How can users bookmark an item of interest to revisit or annotate later?"
+  },
+  {
+    "corpusstudio_paragraph_id": 7,
+    "abstractexplorer_paragraph_id": 20,
+    "shared_question": "How does the walkthrough conclude by showing the user continuing to explore or write with the tool?"
+  },
+  {
+    "corpusstudio_paragraph_id": 8,
+    "abstractexplorer_paragraph_id": 11,
+    "shared_question": "What theories of human cognition motivate the complementary techniques the system uses to support comparison?"
+  },
+  {
+    "corpusstudio_paragraph_id": 9,
+    "abstractexplorer_paragraph_id": 1,
+    "shared_question": "Why does showing many examples across a large corpus help users avoid narrow or biased conclusions?"
+  },
+  {
+    "corpusstudio_paragraph_id": 10,
+    "abstractexplorer_paragraph_id": 8,
+    "shared_question": "What cognitive-science theory specifically justifies visually rendering shared structure so users notice commonalities and differences?"
+  },
+  {
+    "corpusstudio_paragraph_id": 11,
+    "abstractexplorer_paragraph_id": 3,
+    "shared_question": "What is the main interface surface where users view and interact with categorized content?"
+  },
+  {
+    "corpusstudio_paragraph_id": 12,
+    "abstractexplorer_paragraph_id": 4,
+    "shared_question": "What basic authoring or definition convention lets users create or specify their own structural elements?"
+  },
+  {
+    "corpusstudio_paragraph_id": 13,
+    "abstractexplorer_paragraph_id": 3,
+    "shared_question": "What pre-computed, corpus-wide categorization helps users browse common patterns at a glance?"
+  },
+  {
+    "corpusstudio_paragraph_id": 14,
+    "abstractexplorer_paragraph_id": 6,
+    "shared_question": "What process determines how the categorization or ordering shown to users is computed?"
+  },
+  {
+    "corpusstudio_paragraph_id": 15,
+    "abstractexplorer_paragraph_id": 10,
+    "shared_question": "How does the system visually summarize how common each pattern or cluster is (e.g., with counts) before a user dives into specifics?"
+  },
+  {
+    "corpusstudio_paragraph_id": 16,
+    "abstractexplorer_paragraph_id": 12,
+    "shared_question": "What specific ordering approach minimizes difference between adjacent items so variation is more visible?"
+  },
+  {
+    "corpusstudio_paragraph_id": 17,
+    "abstractexplorer_paragraph_id": 5,
+    "shared_question": "What is the core sentence-level mechanism for revealing patterns across many examples?"
+  },
+  {
+    "corpusstudio_paragraph_id": 18,
+    "abstractexplorer_paragraph_id": 4,
+    "shared_question": "How can users get relevant content tailored to their own in-progress work, beyond the fixed categories?"
+  },
+  {
+    "corpusstudio_paragraph_id": 19,
+    "abstractexplorer_paragraph_id": 9,
+    "shared_question": "How can users step forward or backward through a sequence of related items to explore further?"
+  },
+  {
+    "corpusstudio_paragraph_id": 20,
+    "abstractexplorer_paragraph_id": 15,
+    "shared_question": "How does the system let users manage the amount or scope of content shown, to avoid overwhelming them?"
+  },
+  {
+    "corpusstudio_paragraph_id": 21,
+    "abstractexplorer_paragraph_id": 6,
+    "shared_question": "What color-coding scheme helps users visually recognize recurring or analogous content?"
+  },
+  {
+    "corpusstudio_paragraph_id": 22,
+    "abstractexplorer_paragraph_id": 7,
+    "shared_question": "What interactive control lets users change how retrieved or highlighted content is arranged or displayed?"
+  },
+  {
+    "corpusstudio_paragraph_id": 23,
+    "abstractexplorer_paragraph_id": 16,
+    "shared_question": "How can users bookmark and annotate items of interest for later reference?"
+  },
+  {
+    "corpusstudio_paragraph_id": 24,
+    "abstractexplorer_paragraph_id": 14,
+    "shared_question": "How can users see more surrounding context for an individual retrieved item on demand?"
+  },
+  {
+    "corpusstudio_paragraph_id": 25,
+    "abstractexplorer_paragraph_id": 2,
+    "shared_question": "How does the system's approach preserve the integrity of the original author-written content rather than substituting something synthetic?"
+  },
+  {
+    "corpusstudio_paragraph_id": 26,
+    "abstractexplorer_paragraph_id": 16,
+    "shared_question": "What feature encourages saving or annotating insights rather than directly copying content verbatim?"
+  },
+  {
+    "corpusstudio_paragraph_id": 27,
+    "abstractexplorer_paragraph_id": 21,
+    "shared_question": "What technology stack and infrastructure was used to build the system?"
+  },
+  {
+    "corpusstudio_paragraph_id": 28,
+    "abstractexplorer_paragraph_id": 24,
+    "shared_question": "What specific technique was ultimately chosen for classifying or matching content, and why?"
+  }
+]

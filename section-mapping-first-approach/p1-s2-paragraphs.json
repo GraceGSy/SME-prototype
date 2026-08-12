@@ -1,0 +1,54 @@
+[
+    {
+      "id": 1,
+      "content": "AbstractExplorer extends prior work on tools that support reading and sensemaking at scale as well as text alignment."
+    },
+    {
+      "id": 2,
+      "content": "Close reading refers to the \"conscientious analyzation and interpretation\" of text [32], while distant reading [49] avoids serially reading documents by looking at alternative summaries such as counting, graphing, and mapping of text [61]. Distant reading tools often employ very lossy approaches, e.g., visualizations of documents that abstract text into topics, such as Hierarchical Topic Maps [63], and do not preserve entire sentences, such as displaying word pairs in a word cloud [11, 70]. Distant reading tools do not support comparing documents at the textual level one needs during close reading. They are also not necessarily superior in terms of cognitive load or more 'unbiased' in their presentation of data, either: large network graphs and scatterplots are known to impose significant cognitive demands [39, 71] and can introduce perceptual biases [66]."
+    },
+    {
+      "id": 3,
+      "content": "Close reading is an important yet cognitively demanding task in scholarly activities [60] and beyond [55]. Close reading requires reasoning about context; for example, ClioQuery [26] assists historians with investigating queries in context through linked views and text highlighting. While not specifically designed for close reading, many tools have been designed to support reading activities within or anchored by a single document, e.g., supporting comprehension, information foraging, and reading efficiency. For example, GP-TSM [24] helps readers read more efficiently by modulating text saliency while preserving grammar. VarifocalReader [36] supports skimming by presenting abstract summaries alongside the source document, with machine-learned annotations highlighting key sentence segments in different colors. Scim [15] helps readers skim academic papers by using colored highlights to guide attention to predefined content types, such as \"Objective\" and \"Method.\" Qlarify [14] allows scholars to specify additional information needs while reading an abstract, dynamically expanding it with relevant content from the full paper. While still anchored on a single document, the Semantic Reader project [43] supports features that bring information from related papers into the focal paper's reading environment. For example, Relatedly [54], part of the Semantic Reader project, highlights unexplored dissimilar information in related work sections of unread papers while low-lighting previously seen information. As such, while the Semantic Reader can reason over document collections, we still consider it a document-centric [23] reading tool."
+    },
+    {
+      "id": 4,
+      "content": "When working with document corpora, these prior reading systems leave users to manually organize documents using their limited working memory; AbstractExplorer instead lays out the contents of the corpus in a way that, given its cognitive-theory-informed design, may work with humans' limited working memory while reading."
+    },
+    {
+      "id": 5,
+      "content": "Text alignment refers to the process of finding correspondences—similar and diverging patterns—among two or more pieces of text [72]. Methods often segment text into smaller, comparable units and align segments to highlight shared patterns and individual divergences. The alignment step is often cast as a sequence alignment problem, using methods such as edit distances [10] or common grammatical pattern identification [59]. Cross-sentence relationships are often rendered using matrices [48, 76], trees [65], and graphs [25]. However, these approaches can only handle sentences with at least some closely matched structure and overlapping diction."
+    },
+    {
+      "id": 6,
+      "content": "Some work has explored aligning larger pieces of text, including websites [3], books [56], and passages [13]. However, given that the typical purpose of this work is for machine-powered functions, e.g., obtaining parallel corpora for machine translation or plagiarism detection, renderings for human consumption are not a focal point."
+    },
+    {
+      "id": 7,
+      "content": "Some alignment strategies aim to scale up the alignment process to more (but not necessarily long) texts. For instance, Tempura [68] employs \"structural templates\" based on linguistic features to organize short diverse search queries into representative groups. Gero et al. [18] addresses the challenge of aligning a large set of similar yet varying multi-sentence LLM responses with Positional Diction Clustering (PDC), an algorithm that identifies analogous sentences across documents based on shared diction and position within their respective documents. However, the PDC approach ignores purpose at both the sentence and sub-sentence level; by leveraging purpose, AbstractExplorer, can handle more diverse short documents, i.e., abstracts written by different authors about very different topics."
+    },
+    {
+      "id": 8,
+      "content": "In summary, while scientific abstracts, especially within the same community, lack the linguistic consistency required by previous methods, they make up for it in the common purposes that sentences and phrases within sentences fulfill. AbstractExplorer reframes text alignment as a semantic role labeling task, using spatial alignment, color, and proximity to help humans perceive simultaneous text alignment across hundreds of diverse abstracts."
+    },
+    {
+      "id": 9,
+      "content": "Prior systems have employed structure to facilitate inductive sensemaking across various domains. For example, Hope et al. [29] segments product descriptions into fine-grained functional aspects to support analogical reasoning. In the space of text-centric [57] sensemaking tools for text and code document corpora, these systems include WordSeer [50, 51, 59], OverCode [20], Foobaz [19], Examplore [22], SOLVENT [6], Paralib [69], Positional Diction Clustering (PDC) [18], and CorpusStudio [9]. Some of these systems exploit shared structure by creating templates, skeletons, or schemas to reveal variation across corresponding parts."
+    },
+    {
+      "id": 10,
+      "content": "Like many of these prior systems, AbstractExplorer is a text-centric system that exploits shared structure to support lateral reading across short document corpora at scale. Unlike prior systems, it leverages common structures in purpose, not lexical or grammatical features, at both the sentence and phrasal level in natural language documents. AbstractExplorer specifically leverages the shared structure in scientific abstracts to facilitate abstract corpus skimming and comparative reading at scale."
+    },
+    {
+      "id": 11,
+      "content": "This is feasible for scientific abstracts because, as prior work has identified, there are common structures in academic writing [40, 41, 52], particularly in abstracts [12, 30]. Datasets of paper abstracts have been annotated with research aspects by experts [35] and crowds of non-experts [30]. For instance, a large-scale study on medical journal abstracts [12] found that the predominant structure is Background, Methods, Results, and Conclusions; similarly, for a different abstract corpus, Chan et al. [6] used Background, Purpose, Mechanism, and Findings when building Solvent to support users finding analogies between research papers."
+    },
+    {
+      "id": 12,
+      "content": "Most sensemaking systems for corpora are built for serial exploration and reading of document corpora, e.g., by improving information scent as in Paper Forager [46]'s scaled down paper images or the mixed-initiaive Serendyze [33]'s recommendations of what to read next, not close reading and comparison at scale."
+    },
+    {
+      "id": 13,
+      "content": "But many of the systems in Section 2.3 explicitly reference, as design inspiration or justification, two theories of human cognition, i.e., Variation Theory [45] and/or Structural Mapping Theory (SMT) [17]. SMT provides a framework for understanding how humans compare two or more objects by finding common structural alignments between objects. SMT posits that visual alignment helps people perceive relational similarities and differences more clearly, thereby improving their ability to make meaningful comparisons and understand underlying patterns [28, 38, 47]. The prior SMT-informed tools in Section 2.3 for both code and natural language corpora suggest that the cognitive process of comparing texts may be no exception to the cognitive processes SMT predicts."
+    }
+  ]

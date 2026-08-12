@@ -1,0 +1,67 @@
+[
+    {
+      "abstractexplorer_paragraph_id": 1,
+      "corpusstudio_paragraph_id": 1,
+      "shared_question": "What areas of prior work does this related-work section build on, and how is it organized?"
+    },
+    {
+      "abstractexplorer_paragraph_id": 2,
+      "corpusstudio_paragraph_id": 2,
+      "shared_question": "What core concept motivates this subsection, and why does it matter for the domain/community being addressed?"
+    },
+    {
+      "abstractexplorer_paragraph_id": 3,
+      "corpusstudio_paragraph_id": 3,
+      "shared_question": "What makes this core concept difficult to fully address with existing guidance or tools?"
+    },
+    {
+      "abstractexplorer_paragraph_id": 4,
+      "corpusstudio_paragraph_id": 4,
+      "shared_question": "How does this paper's own approach build on or diverge from the prior work/theory just described?"
+    },
+    {
+      "abstractexplorer_paragraph_id": 5,
+      "corpusstudio_paragraph_id": 5,
+      "shared_question": "What established techniques or tools address this second core task, and what limitation constrains them?"
+    },
+    {
+      "abstractexplorer_paragraph_id": 6,
+      "corpusstudio_paragraph_id": 5,
+      "shared_question": "What limits how well existing large-scale prior approaches serve this paper's intended human audience?"
+    },
+    {
+      "abstractexplorer_paragraph_id": 7,
+      "corpusstudio_paragraph_id": 6,
+      "shared_question": "What is the closest prior system to this paper's own approach, and what key limitation does it have?"
+    },
+    {
+      "abstractexplorer_paragraph_id": 8,
+      "corpusstudio_paragraph_id": 6,
+      "shared_question": "How does this paper's own approach concretely improve on that closest prior system?"
+    },
+    {
+      "abstractexplorer_paragraph_id": 9,
+      "corpusstudio_paragraph_id": 7,
+      "shared_question": "What existing tools do people currently use for this task, and what do they fail to provide?"
+    },
+    {
+      "abstractexplorer_paragraph_id": 10,
+      "corpusstudio_paragraph_id": 8,
+      "shared_question": "How does this paper's own system differ in purpose or focus from the existing tools just described?"
+    },
+    {
+      "abstractexplorer_paragraph_id": 11,
+      "corpusstudio_paragraph_id": 9,
+      "shared_question": "What final consideration justifies this paper's approach as well-suited to its domain?"
+    },
+    {
+      "abstractexplorer_paragraph_id": 12,
+      "corpusstudio_paragraph_id": 9,
+      "shared_question": "What workflow limitation do prior systems in this space have, and how does this paper's integrated approach address it?"
+    },
+    {
+      "abstractexplorer_paragraph_id": 13,
+      "corpusstudio_paragraph_id": 4,
+      "shared_question": "What cognitive-science theory grounds this paper's design, and what does it suggest about how people learn or compare information?"
+    }
+  ]

@@ -1,0 +1,50 @@
+[
+  {
+    "abstractexplorer_section": "1. Introduction",
+    "corpusstudio_section": "1. Introduction",
+    "basis": "Direct match — problem framing and contribution overview",
+    "enumerate": 0
+  },
+  {
+    "abstractexplorer_section": "2. Related Work",
+    "corpusstudio_section": "2. Background and Related Work",
+    "basis": "Direct match — prior tools/theory review",
+    "enumerate": 1
+  },
+  {
+    "abstractexplorer_section": "3. Formative Interview Study",
+    "corpusstudio_section": "3. CorpusStudio (§3.1 Design Goals)",
+    "basis": "No dedicated formative-study section exists in CorpusStudio. AbstractExplorer's formative interviews (12 researchers, mock-up feedback) directly motivated its design; CorpusStudio's closest analog is its Design Goals subsection, which states motivating goals without a separate empirical formative study",
+    "enumerate": 2
+  },
+  {
+    "abstractexplorer_section": "4. AbstractExplorer",
+    "corpusstudio_section": "3. CorpusStudio",
+    "basis": "Direct match — both are the core system-description sections (components, interaction design, implementation)",
+    "enumerate": 3
+  },
+  {
+    "abstractexplorer_section": "5. Ablation Study",
+    "corpusstudio_section": "5. User Study",
+    "basis": "Weak match. AbstractExplorer runs a distinct controlled ablation (isolating highlighting/ordering/alignment, eye-tracking, NFC) before the summative study; CorpusStudio has no ablation study, so its single empirical evaluation section (User Study) is the nearest analog by function",
+    "enumerate": 4
+  },
+  {
+    "abstractexplorer_section": "6. Summative User Study",
+    "corpusstudio_section": "5. User Study",
+    "basis": "Direct match — both describe participants, procedure, and study design for the main evaluation",
+    "enumerate": 5
+  },
+  {
+    "abstractexplorer_section": "7. Results",
+    "corpusstudio_section": "6. Qualitative Results + 7. Quantitative Results",
+    "basis": "AbstractExplorer merges quant + qual findings into one Results section; CorpusStudio splits the same content into two consecutive sections",
+    "enumerate": 6
+  },
+  {
+    "abstractexplorer_section": "8. Discussion",
+    "corpusstudio_section": "8. Discussion",
+    "basis": "Direct match — both reflect on findings, implications, and limitations",
+    "enumerate": 7
+  }
+]

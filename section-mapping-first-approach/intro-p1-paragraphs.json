@@ -1,0 +1,38 @@
+[
+    {
+      "id": 1,
+      "content": "The only existing ground-truth mechanism for reasoning about a corpus of documents is to read every document in the corpus. Unaugmented reading is a serial process, where connections within and across documents are made because the reader remembers text they have previously read in the corpus and, based on that memory, recognizes a relationship to the current portion of text before them."
+    },
+    {
+      "id": 2,
+      "content": "Many existing approaches to augmenting humans' reasoning about document corpora are lossy, and therefore risk omitting important context. Non-linguistic lossy representations of documents are typically designed to preserve what the system creators believe is most useful for the intended user task(s), e.g., a network of document-representing dots that preserve citation relationships across documents while omitting most other content. Zooming into the otherwise hidden details often means narrowing one's view to a small subset of the corpus at a time, replacing a focus on cross-document relationships with a focus on individual documents."
+    },
+    {
+      "id": 3,
+      "content": "Lossy linguistic representations can introduce semantic ambiguities and misrepresentations [24], such as reducing a definitive factual statement to a topic. Lossy approaches limit how many unanticipated user questions the system can help answer, and make it harder for users to recognize objectively wrong or contextually inappropriate choices made about the document or its representation on their behalf [24]."
+    },
+    {
+      "id": 4,
+      "content": "Recent prior work has shown that it is possible to help people read and reason about a corpus of short documents without employing lossy document representations. For example, for collections of code examples written with similar purposes but using different libraries, ParaLib [69] used color-coordinated role highlights to reveal cross-example commonalities and distinctions. The Positional Diction Clustering (PDC) algorithm identified analogous sentences across many LLM responses, which were reified both as color-coordinated cross-document analogous text highlighting (like ParaLib) and in a novel 'interleaved' view where analogous sentences across documents were rendered in adjacent rows to enable more easy comparison [18]. These examples of text-centric lossless techniques do not abstract away or summarize; they strategically re-organize and re-render the existing text to help enhance readers' own perceptual cognition, informed by Structural Mapping Theory (SMT) [17]. The human perceptual, comparative mental machinery that SMT describes is part of what enables humans to form more abstract structured mental models from concrete examples, among other critical knowledge tasks."
+    },
+    {
+      "id": 5,
+      "content": "This SMT-informed approach, which AbstractExplorer shares, tries to give this mental machinery \"a leg up,\" letting users perhaps skip some steps by accepting reified cross-document relationships identified by the computer. The revealed variation within these analogous cross-document relationships can invite the user's engagement. This is the essence of comparative close reading, a dialectical activity [73] that requires repeated deep engagement with the texts to reveal new insights."
+    },
+    {
+      "id": 6,
+      "content": "Lossless SMT-informed techniques have yet to be brought to bear in the context of researchers familiarizing themselves with a corpus of existing literature, e.g., all (> 1000) paper abstracts at recent CHI. Most tools assist researchers in this pursuit by helping them narrow their attention to a manageable set of papers they can sit down with and serially engage with. These tools often rely on lossy representations of the entire corpus and give researchers search affordances to navigate serially through papers of potential interest in a more informed way."
+    },
+    {
+      "id": 7,
+      "content": "AbstractExplorer instantiates new minimally lossy SMT-informed techniques for skimming, reading, and reasoning about a corpus of similarly structured short documents: phrase-level role classification that drives sentence ordering, highlighting, and spatial alignment. We demonstrate these features' utility in the context of helping researchers' skim and read closely and laterally [67] across a corpus of scientific abstracts."
+    },
+    {
+      "id": 8,
+      "content": "Three studies inform and validate AbstractExplorer's design: First, a formative study (Section 3) suggested unmet needs and interest in our approach to supporting cross-document reasoning. Second, an ablation study with eye-tracking (Section 5) revealed that the three key features of AbstractExplorer's central cross-sentence relationships pane—sentence order, role-coordinated highlighting, and alignment—work best in concert, not alone. Finally, a summative study (Section 6) describes how researchers used AbstractExplorer to familiarize themselves with a corpus of ∼1000 CHI paper abstracts—reading across a larger and more diverse collection of abstracts and more easily discerning relationships and distributions across prior work."
+    },
+    {
+      "id": "contributions_list",
+      "content": "In summary, we contribute: • Novel SMT theory-informed text analysis and rendering techniques for enabling cross-document skimming and comparative close reading at scale • AbstractExplorer, which instantiates these techniques for familiarizing oneself with a corpus of ∼1000 CHI paper abstracts. • Three studies informing and evalutaing the benefits, challenges, and interactions between these techniques."
+    }
+  ]

@@ -1,0 +1,58 @@
+[
+  {
+    "abstractexplorer_section_name": "Introduction",
+    "corpusstudio_section_name": "Introduction",
+    "abstractexplorer_section_number": "1",
+    "corpusstudio_section_number": "1",
+    "basis": "Direct match — problem framing and contribution overview",
+    "question_the_sections_both_answer": "What problem motivates this work, and what does the paper contribute?"
+  },
+  {
+    "abstractexplorer_section_name": "Related Work",
+    "corpusstudio_section_name": "Background and Related Work",
+    "abstractexplorer_section_number": "2",
+    "corpusstudio_section_number": "2",
+    "basis": "Direct match — prior tools/theory review",
+    "question_the_sections_both_answer": "What prior work and theory does this paper build on or differentiate itself from?"
+  },
+  {
+    "abstractexplorer_section_name": "AbstractExplorer",
+    "corpusstudio_section_name": "CorpusStudio",
+    "abstractexplorer_section_number": "4",
+    "corpusstudio_section_number": "3",
+    "basis": "Direct match — both are the core system-description sections (components, interaction design, implementation)",
+    "question_the_sections_both_answer": "What is the system, and how does it work?"
+  },
+  {
+    "abstractexplorer_section_name": "Summative User Study",
+    "corpusstudio_section_name": "User Study",
+    "abstractexplorer_section_number": "6",
+    "corpusstudio_section_number": "5",
+    "basis": "Direct match — both describe participants, procedure, and study design for the main evaluation",
+    "question_the_sections_both_answer": "Who participated in the main evaluation study, and what was its procedure?"
+  },
+  {
+    "abstractexplorer_section_name": "Results",
+    "corpusstudio_section_name": "Qualitative Results",
+    "abstractexplorer_section_number": "7",
+    "corpusstudio_section_number": "6",
+    "basis": "AbstractExplorer merges quant + qual findings into one Results section; this entry covers the qualitative half of what CorpusStudio splits into its own section",
+    "question_the_sections_both_answer": "What did participants' qualitative feedback reveal about the system's value?"
+  },
+  {
+    "abstractexplorer_section_name": "Results",
+    "corpusstudio_section_name": "Quantitative Results",
+    "abstractexplorer_section_number": "7",
+    "corpusstudio_section_number": "7",
+    "basis": "AbstractExplorer merges quant + qual findings into one Results section; this entry covers the quantitative half of what CorpusStudio splits into its own section",
+    "question_the_sections_both_answer": "What did the quantitative data show about the system's effectiveness?"
+  },
+  {
+    "abstractexplorer_section_name": "Discussion",
+    "corpusstudio_section_name": "Discussion",
+    "abstractexplorer_section_number": "8",
+    "corpusstudio_section_number": "8",
+    "basis": "Direct match — both reflect on findings, implications, and limitations",
+    "question_the_sections_both_answer": "What do the findings mean, and what are the paper's broader implications and limitations?"
+  }
+]

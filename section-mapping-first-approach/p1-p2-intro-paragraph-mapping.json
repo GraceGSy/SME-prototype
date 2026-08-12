@@ -1,0 +1,47 @@
+[
+    {
+      "abstractexplorer_paragraph": 1,
+      "corpusstudio_paragraph": 1,
+      "rationale": "Both open by establishing the status quo problem that motivates everything that follows"
+    },
+    {
+      "abstractexplorer_paragraph": 2,
+      "corpusstudio_paragraph": 2,
+      "rationale": "Both articulate a core weakness in the general solution space before the paper's own approach is introduced"
+    },
+    {
+      "abstractexplorer_paragraph": 3,
+      "corpusstudio_paragraph": 3,
+      "rationale": "Both elaborate a second, related shortcoming of prior approaches (still setup, not yet their own solution)"
+    },
+    {
+      "abstractexplorer_paragraph": 4,
+      "corpusstudio_paragraph": 4,
+      "rationale": "Both survey the specific prior work closest to their own approach and begin distinguishing from it"
+    },
+    {
+      "abstractexplorer_paragraph": 5,
+      "corpusstudio_paragraph": 4,
+      "rationale": "CorpusStudio has no standalone mechanism paragraph; the closest analog is the differentiation clause at the end of paragraph 4"
+    },
+    {
+      "abstractexplorer_paragraph": 6,
+      "corpusstudio_paragraph": 4,
+      "rationale": "CorpusStudio similarly lacks a distinct 'gap' paragraph; the same differentiation passage doubles as its gap-framing"
+    },
+    {
+      "abstractexplorer_paragraph": 7,
+      "corpusstudio_paragraph": 5,
+      "rationale": "Direct match — both are the explicit system-introduction paragraph"
+    },
+    {
+      "abstractexplorer_paragraph": 8,
+      "corpusstudio_paragraph": 6,
+      "rationale": "Both preview/describe the evaluation studies and their results in a single paragraph (now that AbstractExplorer's 8 is correctly merged into one paragraph, this is a cleaner one-to-one match)"
+    },
+    {
+      "abstractexplorer_paragraph": "contributions_list",
+      "corpusstudio_paragraph": "contributions_list",
+      "rationale": "Direct match — both explicitly enumerate the paper's contributions"
+    }
+]

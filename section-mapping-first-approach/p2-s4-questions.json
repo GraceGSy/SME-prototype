@@ -1,0 +1,114 @@
+[
+  {
+    "id": 1,
+    "question_answered": "What is CorpusStudio designed to do, and how?"
+  },
+  {
+    "id": 2,
+    "question_answered": "What are CorpusStudio's design goals?"
+  },
+  {
+    "id": 3,
+    "question_answered": "Who is the example user in the usage scenario, and what is her writing situation?"
+  },
+  {
+    "id": 4,
+    "question_answered": "How does the example user use the ordered distribution of section titles to plan her outline?"
+  },
+  {
+    "id": 5,
+    "question_answered": "How does the example user use retrieved sentences to help draft a specific section?"
+  },
+  {
+    "id": 6,
+    "question_answered": "How does the example user bookmark and annotate an example for later reference?"
+  },
+  {
+    "id": 7,
+    "question_answered": "How does the example user continue to use the system as she keeps writing?"
+  },
+  {
+    "id": 8,
+    "question_answered": "What theories of human concept learning inform how CorpusStudio presents examples to writers?"
+  },
+  {
+    "id": 9,
+    "question_answered": "How does Variation Theory justify showing many examples instead of just a few?"
+  },
+  {
+    "id": 10,
+    "question_answered": "How does Structural Alignment Theory inform the visual rendering of retrieved examples?"
+  },
+  {
+    "id": 11,
+    "question_answered": "What is the central text editor, and what content types does it support?"
+  },
+  {
+    "id": 12,
+    "question_answered": "How do users create section titles in the editor?"
+  },
+  {
+    "id": 13,
+    "question_answered": "How does CorpusStudio surface document-level emergent norms via section title clusters?"
+  },
+  {
+    "id": 14,
+    "question_answered": "How does the PDC algorithm compute and order the section title clusters?"
+  },
+  {
+    "id": 15,
+    "question_answered": "How are section title clusters visually represented, and how do users expand them?"
+  },
+  {
+    "id": 16,
+    "question_answered": "What visual cues help users perceive commonalities and variations within a cluster?"
+  },
+  {
+    "id": 17,
+    "question_answered": "What does the sentence-level writing support reveal about conventions and variation?"
+  },
+  {
+    "id": 18,
+    "question_answered": "How does the 'analogous spatial retrieval' mechanism work, and what triggers it?"
+  },
+  {
+    "id": 19,
+    "question_answered": "How can writers retrieve sentences that appear later in a section, using offset cells?"
+  },
+  {
+    "id": 20,
+    "question_answered": "How many example sentences does CorpusStudio show at once, and why was that number chosen?"
+  },
+  {
+    "id": 21,
+    "question_answered": "What rendering modes help writers visually compare retrieved sentences?"
+  },
+  {
+    "id": 22,
+    "question_answered": "How can users re-rank retrieved sentences to explore relationships from a different anchor sentence?"
+  },
+  {
+    "id": 23,
+    "question_answered": "How can users bookmark and annotate sentences, and share their notes?"
+  },
+  {
+    "id": 24,
+    "question_answered": "How can writers see more context around a retrieved sentence?"
+  },
+  {
+    "id": 25,
+    "question_answered": "How do CorpusStudio's features work together to promote learning over plagiarism?"
+  },
+  {
+    "id": 26,
+    "question_answered": "What two additional design choices discourage plagiarism beyond showing many examples?"
+  },
+  {
+    "id": 27,
+    "question_answered": "What technology stack and infrastructure was used to build CorpusStudio?"
+  },
+  {
+    "id": 28,
+    "question_answered": "Why was pure vector-based search chosen over hybrid search for retrieval?"
+  }
+]

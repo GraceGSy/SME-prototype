@@ -1,0 +1,114 @@
+[
+  {
+    "id": 1,
+    "content": "We designed CorpusStudio to support writers in learning about and applying community-specific writing norms. This is achieved primarily through novel mechanisms for the retrieval and rendering of content from a corpus of existing documents written by and for that community."
+  },
+  {
+    "id": 2,
+    "content": "Our overarching design goal is to empower users with evidence of community-specific emergent norms and outliers at the document and sentence level as they write their own document for the same audience. In the process of fulfilling this overarching goal, our goal is to reduce, not facilitate, unintentional human- or AI-generated plagiarism."
+  },
+  {
+    "id": 3,
+    "content": "Alice has been working on a new interactive writing support system and is drafting her manuscript for submission to an HCI venue. She has some prior experience writing academic papers but is unfamiliar with writing papers with a focus on a system contribution. She opens CorpusStudio to learn more about her target venue's writing expectations while working on her draft."
+  },
+  {
+    "id": 4,
+    "content": "Inspecting the section titles. She looks at the ordered distribution over section titles. As shown in Figure 1A, she expands the cluster named Implementation, which typically comes after System Design and around the same location as Methods (when those sections exist in a given paper). In the expanded cluster, she observes how other authors have phrased this typical section's title, i.e., more commonly Implementation and less commonly Implementation Details or Implementation of <System Name>. Although she likes the idea of adding a system name to the title, she decides to stick with the more generic commonly chosen option for now, and finishes her paper outline of section titles in the text editor beside it."
+  },
+  {
+    "id": 5,
+    "content": "Inspecting the retrieved sentences. In the text editor, she starts drafting the implementation section immediately under the Implementation section title, but she does not know how she should introduce it. She writes a few words and, without moving the cursor, hits the TAB key to retrieve related sentences from other work to get a sense of what (and how) other people wrote the beginnings of their implementation sections. She notices that many authors start with \"We implemented <name of the system> to do/test <some hypothesis>\" while some also state their design rationale."
+  },
+  {
+    "id": 6,
+    "content": "Developing a personal style sheet. She bookmarks one of the retrieved sentences to remind herself of this observation and adds the note: \"The first paragraph of the implementation is often formulaic and with this recognizable structure.\" She concludes that it is probably well accepted in the community if she starts her paragraph in a similar way."
+  },
+  {
+    "id": 7,
+    "content": "Continuing Writing. Alice continues to write down her ideas in the text editor and occasionally retrieves example sentences given where her cursor is when she needs inspiration or wants to confirm how other authors have written their manuscripts."
+  },
+  {
+    "id": 8,
+    "content": "In this work, the evidence of community-specific emergent norms and outliers at both the document and sentence level is provided to writers in the form of extracted examples from a corpus of documents written for and by their intended audience. To facilitate the writer's recognition of these emergent norms from examples without facilitating the writer's anchoring on any one example too much, we look to theories of human concept learning:"
+  },
+  {
+    "id": 9,
+    "content": "Variation Theory. Regardless of whether a human or a machine is learning from examples, any learning process can fall victim to overfitting, i.e., learn a rule that does not generalize to the rest of the corpus, when trained on too little data. For example, the Variation Theory of Learning [32] was explicitly designed to minimize human overfitting when learning from examples. With only a few examples or suggestions, previous systems may cause users to anchor [46] on just one of them. By instead showing many examples, we hope the user may be (1) less likely to anchor to one of the retrieved examples (or even unintentionally plagiarize from it) and (2) more likely to observe community writing norms and possibilities without overfitting to the retrieved examples."
+  },
+  {
+    "id": 10,
+    "content": "Structural Alignment Theory. While the many retrieved examples in our work are not algorithmically selected on the basis of Variation Theory, the textual examples are ordered and rendered with visual attributes (e.g., grayed-out repeated words or color-coordinated highlights) designed to support the recognition of emergent commonalities and outliers, based on the human cognitive processes of pattern recognition described by Structural Alignment Theory [13]."
+  },
+  {
+    "id": 11,
+    "content": "3.3.1 Text Editor. Users outline their paper and draft their prose in the central text editor (Figure 1B). The editor supports two text cell types: section title and paragraph."
+  },
+  {
+    "id": 12,
+    "content": "Borrowing from the syntax of Markdown editors, the editor allows users to create section titles by pre-pending text with #'s where the number of #'s indicate the level of the section title."
+  },
+  {
+    "id": 13,
+    "content": "3.3.2 Surfacing Document-level Community-specific Emergent Norms and Outliers. Inspecting outlines from other papers in the target community can help writers develop their own. To help writers understand how papers are commonly (and uncommonly) structured within their target community at the document level, we show an ordered distribution of section title clusters from the entire corpus immediately to the left of the central text editor (Figure 1A Section Titles From Other Papers). This ordered distribution is computed by applying Positional Diction Clustering (PDC) [15] to the ordered lists of top-level section titles extracted from each paper in the corpus."
+  },
+  {
+    "id": 14,
+    "content": "PDC is a structural mapping engine [11] designed to algorithmically emulate at scale the analogical matching process humans do when comparing two or more structurally similar objects, as described by Structural Alignment Theory [13]. In CorpusStudio, the objects are papers, and the resulting order of section title clusters that PDC generates preserves the section titles' approximate relative positions in their respective papers. For example, in Figure 1A, Introduction is the ubiquitous starting point and, in approximately 80% of papers, it is followed by Related Work. The user can also see outliers like the two papers that have a section titled An Interactive Walkthrough soon after."
+  },
+  {
+    "id": 15,
+    "content": "Section title clusters are shown with a count and a proportionally long bar indicating the total number of section titles in that cluster found across the entire corpus. The most frequent section title in each cluster is chosen as the cluster name. Clicking on a cluster name expands (or closes) a cluster, showing (or hiding) all its members."
+  },
+  {
+    "id": 16,
+    "content": "We also provide cognitive support for perceiving the commonalities and variations within each cluster of section titles: The underlined words within each cluster name appear in every section title within it (a strict commonality), serving as information scent about the cluster contents when it is closed. Within each cluster, the PDC algorithm dictates the order of section titles to minimize diction differences between section titles in adjacent rows; words that appeared previously in the ordered list of cluster members are greyed out so that variations might be more visible. This text graying strategy is based on the interleaved view of PDC results in Gero et al. [15]."
+  },
+  {
+    "id": 17,
+    "content": "3.3.3 Surfacing Sentence-level Community-specific Emergent Norms and Outliers. This writing support is intended to provide insights into both established conventions and areas where variation is common at the sentence level. By retrieving and displaying many relevant sentences simultaneously, users can observe how similar content is expressed across different papers. These distributions can reveal both rigid conventions (narrow distributions) and areas of flexibility (wide distributions). For instance, participant descriptions in user studies often follow stereotypical patterns, while discussion sections typically show more variation to accommodate novel findings."
+  },
+  {
+    "id": 18,
+    "content": "Spatial Retrieval. At the core of our approach is a novel retrieval mechanism we call analogous spatial retrieval, which integrates context, content, and spatial information. Users can request this retrieval of sentences from other papers by hitting the TAB key as they are drafting their text. Given where the user's cursor is placed in the text editor at the moment of retrieval (i.e., the text of the currently focused paragraph cell and the title of the section containing it), we retrieve and display many potentially analogous sentences from similarly titled sections of papers in the corpus (Figure 1C What others wrote column) as well as the subsequent sentence in each paper (Figure 1C What they wrote next column). See Section 3.4 and Section 4.2 for more spatial retrieval implementation details."
+  },
+  {
+    "id": 19,
+    "content": "To further help writers \"peek into the future,\" that is, explore what other authors wrote later in a given section, users can insert empty paragraph cells after a non-empty paragraph cell and then trigger sentence retrieval. The number of empty cells corresponds to the offset o (in sentences) to be retrieved from the corpus. Retrieving content with an offset works by first retrieving all sentences that would have been retrieved if the cursor had been in the nearest preceding non-empty paragraph cell but then retrieving and displaying the o-th subsequent sentences."
+  },
+  {
+    "id": 20,
+    "content": "Scale of Retrieval. Following Gentner's work on analogical learning theory [13], the comparison of many example sentences promotes the extraction of common principles or abstract schemas, which may be more likely to be transferred to future writing tasks. We experimented with displaying 10, 25 and 50 sentences at once and found that 25 sentences provided enough content for writers to explore and potentially recognize common principles and abstract schemas while not overwhelming them."
+  },
+  {
+    "id": 21,
+    "content": "Sentence Rendering. However, what writers learn from these examples depends not only on their scale and variety, but also on how the writer mentally processes and compares them [13]. To aid in this mental sentence comparison process, the sentence examples can be rendered with algorithmically assigned visual variables (e.g., color-coordinated highlights) designed to support the recognition of emergent commonalities and outliers (and possibly support the mental cross-sentence alignment process necessary for developing abstract sentence schemas). Figure 2 shows a comparison of the two available but optional rendering modes: (1) Distinctly Colorize Recurring Words — a color map based on the twenty most-frequently occurring words across all retrieved sentences and columns (excluding stop-words), with other occurrences of those words colorized accordingly; this mode is the default. (2) Grey Out Repeated Words — this mode de-emphasizes previously seen words by greying out words that have appeared in any of the previous sentences in the result list."
+  },
+  {
+    "id": 22,
+    "content": "Re-ranking is another way for users to explore relationships across sentences. When users click on the re-ranking icon (arrow below bookmark icon next to each sentence), the selected sentence moves to the top of its column in Figure 1C. CorpusStudio then sorts the other sentences in ascending cosine-distance from that new top sentence. This triggers the system to recompute the greyed-out words to account for the new sorted column."
+  },
+  {
+    "id": 23,
+    "content": "3.3.4 User Notes. As shown in Figure 3 and the top right callout in Figure 1C, users can bookmark a sentence and then comment on it in the User Notes section, e.g., with a reminder of why it fulfills its purpose particularly well or poorly. These annotated sentence examples can be exported as a csv file to facilitate sharing observations, preferences, and insights with others."
+  },
+  {
+    "id": 24,
+    "content": "3.3.5 Contextual Tooltips. Writers may want to know more of the context surrounding a retrieved sentence, e.g., to avoid misinterpreting it. As shown in Figure 1D, users can hover over a retrieved sentence to view a floating window showing the paper's title, the hierarchical section title path, and the sentences immediately before and after. The paper title links to the full paper in the ACM Digital Library. Additionally, if any retrieved sentence includes a citation, users can hover over it to display the full citation information, including the authors and the referenced paper title."
+  },
+  {
+    "id": 25,
+    "content": "3.3.6 Features for Promoting Learning, not Plagiarism. A combination of features are intended to work together to support users in actively engaging with many examples, rather than anchoring on and copying any one. More specifically, showing multiple examples at once may help novice writers make more informed decisions about plagiarism: when sentences are highly similar across papers, this often indicates accepted community writing norms (like in methodology sections), while sections with more varied writing styles suggest areas where similar phrasing should be avoided."
+  },
+  {
+    "id": 26,
+    "content": "In concert with showing many examples, two additional design choices are intended to further facilitate learning over plagiarism: First, we disable the user's ability to copy and paste retrieved sentences into their own draft. Second, by providing visible affordances for saving and annotating their insights, we may promote deeper reflection on the writing patterns they observe."
+  },
+  {
+    "id": 27,
+    "content": "We implemented our system as a web application using SvelteKit. For sentence retrieval, we used WeaviateDB as our vector database, using its built-in text embedding capabilities and approximate k-Nearest Neighbor (kNN) search implementation [34]. The system was deployed on a workstation with 12 GB of GPU memory and made remotely accessible to study participants."
+  },
+  {
+    "id": 28,
+    "content": "While determining relevance in retrieval systems is inherently complex and depends on users' dynamic writing objectives, querying based on semantic similarity in text vector space is an established approach in retrieval-based systems [47]. Our initial implementation explored hybrid search techniques, following prior work that used Reciprocal Rank Fusion [41] to combine keyword-based and vector-based retrieval results. However, through initial experiments, we found pure vector-based search provided more contextually relevant matches."
+  }
+]

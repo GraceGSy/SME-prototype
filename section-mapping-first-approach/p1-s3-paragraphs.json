@@ -1,0 +1,34 @@
+[
+    {
+      "id": 1,
+      "content": "In order to determine (1) the context in which we might offer novel views of scientific abstracts and (2) the intelligibility of various novel prototype designs for reifying cross-abstract relationships, we conducted a formative interview study with 12 active researchers (see Appendix A for participant information). The interview sessions were divided into two parts: an open-ended semi-structured interview about their backgrounds and practices, followed by feedback on a range of mock-ups, including novel reified relationships between analogous sentences in different abstracts (Figure 2). Sessions, which were held on Zoom, lasted 55 minutes on average. Participants were compensated with $15 USD."
+    },
+    {
+      "id": 2,
+      "content": "In the first part of the session, we asked participants about their strategies for selecting publication venues for their manuscript submissions, how they identify and synthesize information from venues, their approaches to writing manuscripts, and finally, the technology they have used to help with these processes, current technology shortcomings, and ideas for addressing these challenges."
+    },
+    {
+      "id": 3,
+      "content": "In the second part of the session, we provided participants with mock-ups of possible reifications of cross-document relationships that might help them synthesize information across abstracts. These mock-ups were inspired by prior work. For example, Figure 2(a) shows analogous adjacent sentences rendered with the grayscale skimming support of GP-TSM [24] and the alignment of analogous alternatives inspired by Examplore [22], a code corpora sensemaking tool. Figure 2(b) shows the alignment of a single set of analogous alternatives across the sentences, and Figure 2(c) shows role-reifying color-coordinated highlights inspired by ParaLib [69], another code corpora sensemaking tool. We also presented participants with mock-ups of potential approaches to identifying relevant information types, including custom search or LLM-powered text annotation. See Appendix C for the complete set of mock-ups."
+    },
+    {
+      "id": 4,
+      "content": "We used these mock-ups as design probes [31] to inspire ideation and elicit creative responses. Specifically, we asked participants to compare and contrast alternative mock-ups and reflect on how they could be used or improved to support their known or emerging synthesis and information-foraging goals. After the interviews, we analyzed the data using the process described in Appendix B."
+    },
+    {
+      "id": 5,
+      "content": "3.2.1 Existing Challenges to Sensemaking. Participants' approaches to reading and gathering information from papers varied significantly, and despite leveraging some tools, these tools were often less helpful than hoped for. Participants frequently mentioned difficulties with search, e.g., needing to try searching \"at least 10 times with different keywords to find the initial set of relevant papers\" (P8). Some participants also mentioned using generative AI tools to \"help [them] figure out ... the key points of a specific piece\" (P12) but may find it unhelpful if \"they often miss some of the key information\" (P8)."
+    },
+    {
+      "id": 6,
+      "content": "In contrast, many participants described their paper comparison process to be manual, with minimal tool usage."
+    },
+    {
+      "id": 7,
+      "content": "3.2.2 Feedback on Mock-ups. Participants commented that alignment and/or highlighting were useful for identifying and comparing information: \"this... helps to recognize the differences or similarities\" (P7). However, some thought that this would require some amount of trust in the algorithm performing the highlighting, especially if judgments of importance were being delegated to the system designer or an AI: \"I don't know if I would agree with whoever's classification of what's important\" (P2). Visually, participants commented that color highlights made it easier for them to read \"important\" parts of the sentences. However, they were divided on alignment formatting: while some participants disliked seeing extra spacing necessary to create vertical alignments because it \"[causes] a little bit of annoyance... why is the gap there?\" (P3), others said that it was helpful if the \"user wants to look at [a particular common component]... instead of looking at the whole sentence\" (P4)."
+    },
+    {
+      "id": 8,
+      "content": "Participants particularly liked a presented mock-up that let them build and review custom search queries by highlighting desired portions of text in one or more papers as example-based specifications for retrieving analogous text from other papers, describing it as \"a smarter Ctrl-F\" (P2) or a way to augment keyword-based search with richer semantic context. One participant described that this \"would be useful just because it gets at what the researcher thinks they want to know ... and it highlights that information for them\" (P12). However, some raised concerns about implementing this \"query from a text highlight\" affordance using an LLM: \"if I cannot verify [it] myself, there's no way for me to know what I have missed\" (P5). Similar to the discussion about cross-document relationships, participants generally appreciated color highlights."
+    }
+  ]

@@ -1,0 +1,38 @@
+[
+    {
+      "id": 1,
+      "question_answered": "What does this related-work section cover, and how is it organized?"
+    },
+    {
+      "id": 2,
+      "question_answered": "Why does writing for a specific community's implicit expectations matter, and what happens when writers fail to meet them?"
+    },
+    {
+      "id": 3,
+      "question_answered": "What aspects make up a community's writing norms, and why is it hard for novices to apply high-level guidance about them?"
+    },
+    {
+      "id": 4,
+      "question_answered": "What theoretical approach has prior work proposed for learning a community's writing norms, and how does this paper build on it?"
+    },
+    {
+      "id": 5,
+      "question_answered": "How have prior tools supported writing with retrieved or generated text, and how does this paper's approach differ in scale and method?"
+    },
+    {
+      "id": 6,
+      "question_answered": "How has prior work used text from a corpus (e.g., annotated checklists and model texts) to support writing, and how does this paper's approach extend it?"
+    },
+    {
+      "id": 7,
+      "question_answered": "Why is finding relevant writing examples difficult with existing search tools, which surface results by topical similarity rather than by writing-support needs?"
+    },
+    {
+      "id": 8,
+      "question_answered": "How do current tools help researchers relate their work to prior work, and how does this paper's design goal differ from theirs?"
+    },
+    {
+      "id": 9,
+      "question_answered": "Why do existing workflows for searching related work while writing cause context switches, and how does this paper's integrated environment address that?"
+    }
+  ]

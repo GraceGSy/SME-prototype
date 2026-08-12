@@ -1,0 +1,106 @@
+[
+  {
+    "id": 1,
+    "question_answered": "What is AbstractExplorer designed to help researchers do, and at what scale?"
+  },
+  {
+    "id": 2,
+    "question_answered": "Why did the authors choose the sentence as the unit for cross-document alignment, and what are 'aspects'?"
+  },
+  {
+    "id": 3,
+    "question_answered": "What are AbstractExplorer's five pre-defined aspects, and how do users interact with them?"
+  },
+  {
+    "id": 4,
+    "question_answered": "How can users define their own custom aspects beyond the five pre-defined ones?"
+  },
+  {
+    "id": 5,
+    "question_answered": "How does AbstractExplorer segment sentences into chunks and classify them into roles?"
+  },
+  {
+    "id": 6,
+    "question_answered": "How were the nine chunk roles defined, and what color scheme represents them?"
+  },
+  {
+    "id": 7,
+    "question_answered": "How are role colors displayed and controlled by users in the interface?"
+  },
+  {
+    "id": 8,
+    "question_answered": "What are 'structure groups,' and how do they relate to Structure-Mapping Theory's concepts of commonalities and alignable differences?"
+  },
+  {
+    "id": 9,
+    "question_answered": "How are sentences grouped by structure in practice, and how can users navigate between different structure groups?"
+  },
+  {
+    "id": 10,
+    "question_answered": "What does the Structure Global View show, and how does it help users understand structure patterns before diving into a specific one?"
+  },
+  {
+    "id": 11,
+    "question_answered": "What two types of juxtapositions does AbstractExplorer implement to support structural comparison?"
+  },
+  {
+    "id": 12,
+    "question_answered": "How does AbstractExplorer order sentences within a structure group?"
+  },
+  {
+    "id": 13,
+    "question_answered": "How does AbstractExplorer align sentences within a structure group, and what are the three alignment options?"
+  },
+  {
+    "id": 14,
+    "question_answered": "How does AbstractExplorer let users see a sentence's surrounding context within its original abstract?"
+  },
+  {
+    "id": 15,
+    "question_answered": "How can users narrow the corpus to a relevant subset using search?"
+  },
+  {
+    "id": 16,
+    "question_answered": "How can users save sentences to revisit later?"
+  },
+  {
+    "id": 17,
+    "question_answered": "How might a user begin exploring the corpus using the default aspect and structure group?"
+  },
+  {
+    "id": 18,
+    "question_answered": "How might a user use structure groups and search filtering to investigate a specific question, like typical participant counts?"
+  },
+  {
+    "id": 19,
+    "question_answered": "How might a user use a custom aspect to investigate a more specific research question?"
+  },
+  {
+    "id": 20,
+    "question_answered": "How might a user combine search and pre-defined aspects to explore a topic like LLM research challenges?"
+  },
+  {
+    "id": 21,
+    "question_answered": "What is AbstractExplorer built with, and what dataset does it use?"
+  },
+  {
+    "id": 22,
+    "question_answered": "What is the first stage of AbstractExplorer's data processing pipeline, and how does it classify sentences into aspects?"
+  },
+  {
+    "id": 23,
+    "question_answered": "How are sentences segmented into chunks, and how are chunk role labels generated and refined?"
+  },
+  {
+    "id": 24,
+    "question_answered": "How are the final chunk role labels assigned to each chunk?"
+  },
+  {
+    "id": 25,
+    "question_answered": "How does AbstractExplorer ensure responsiveness given the scale of pre-computed data?"
+  },
+  {
+    "id": 26,
+    "question_answered": "How are custom aspects generated dynamically on the backend?"
+  }
+]

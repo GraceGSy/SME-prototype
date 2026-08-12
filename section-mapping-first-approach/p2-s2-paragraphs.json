@@ -1,0 +1,38 @@
+[
+    {
+      "id": 1,
+      "content": "In this section we provide a background on writing norms in different communities and how members learn about these norms. We then give an overview of interactive tools that support writing and tools for finding related work."
+    },
+    {
+      "id": 2,
+      "content": "2.1.1 The Importance of Understanding Writing Norms. Flower [12] highlights the difference between writer-based and reader-based prose, arguing that the former represents the writers' unrefined thoughts while the latter requires their careful transformation with the reader goals in mind while ensuring a shared language and shared context. Prior writing literature emphasizes the importance of writing for an audience [1, 16, 45], but writing for academic or professional communities can be especially difficult because they have implicit writing expectations and failing to address them may confuse its members or waste their time with \"unfocused and pointless discussions\" [12]."
+    },
+    {
+      "id": 3,
+      "content": "2.1.2 Aspects of Writing Norms. Writing norms are comprised of many aspects, including the language, content, organization of information, and scope of the written document. Although academic venues may provide a high-level overview of the expected content and style of writing such as encouraging authors to write \"clearly and concisely, avoid jargon, organize the submission to flow logically and smoothly, provide the right level of detail,\" it can be challenging for novice writers to apply these suggestions in their own writing, e.g., What is the expected level of detail for that audience?"
+    },
+    {
+      "id": 4,
+      "content": "2.1.3 Learning about a Community's Writing Norms. To support writing in an academic context, prior research has proposed the cognitive apprenticeship theoretic approach to teach novices complex cognitive tasks by mimicking experienced members of the community [8]. Drawing from these ideas, our work instantiates two strategies of cognitive apprenticeship, namely modeling and reflection."
+    },
+    {
+      "id": 5,
+      "content": "2.2.1 Writing with Retrieved or Generated Additional Text. Many writing support tools facilitate writing by suggesting content that users did not write themselves. Sentence completions are a frequent form of writing assistance [2, 28]. However, direct content generation can have negative impacts such as diminishing the author's self-expression and ownership over the final text outcome [30]. Related work has also looked into providing writing inspirations [6, 14, 43]. We build on this line of research by surfacing prior text as the user writes new text (e.g., Naeem et al. [37] and IntroAssist [18]). A critical difference is the much larger scale of prior text surfaced to the user and post-processed for emergent patterns in our work. For example, IntroAssist [18] presents expert-curated email examples to help users draft their help-seeking message in a professional context, while our approach uses computational methods to show many examples drawn from a large text corpus of previously published papers."
+    },
+    {
+      "id": 6,
+      "content": "2.2.2 Writing with Text from a Corpus. Hui and Sprouse [19] proposed a writing support tool to help college students write in a professional context assisted by scaffolded annotations. The authors proposed a checklist with multiple annotations that provide cues about the content to include in the professional email. This checklist is complemented with model texts where sections of that text have been annotated with the elements of the checklist. This approach helps users understand the overall structure and expected content while also demonstrating concrete instantiations of the high-level guidelines. Our concepts help users plan the structure and content of their writing by showing many concrete examples of how other members of their target community have written similar texts."
+    },
+    {
+      "id": 7,
+      "content": "As previously described, writers learn from inspecting examples, but finding related work with the purpose of writing support is challenging. Search engines such as Google Scholar, the ACM Digital Library, Mendeley, and Semantic Scholar typically surface documents based on topical similarity while writers need specific analogous snippets of text from the manuscript to inform their writing."
+    },
+    {
+      "id": 8,
+      "content": "Current tools also help researchers understand how their own work relates to other work [29] by contextualizing embedded citations [5], drawing connections to follow-on work directly in the paper document [40], and making recommendations based on a paper's metadata such as citations and authorship [7, 23, 39, 42] or its semantic similarity [3, 17, 23]. In contrast, our design focuses on finding related work for the purpose of writing support, i.e., that helps writers identify existing writing conventions from a specific community."
+    },
+    {
+      "id": 9,
+      "content": "Most interactive research tools either support analyzing related work [26, 29, 33, 38] or writing with computational help [9, 28]. In existing contexts, writers often need to navigate away from their writing environment to search for related work, scroll through the target document, select and process relevant text structures and draw conclusions about the implicit writing conventions encoded in the target document. Performing all of these steps leads to abrupt context switches and breaks the writing flow. Our approach proposes an integrated environment to support writing and searching for model text in the same interface, thereby minimizing the number of context switches and streamlining the writing and research process."
+    }
+  ]

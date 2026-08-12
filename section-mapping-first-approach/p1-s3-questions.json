@@ -1,0 +1,34 @@
+[
+    {
+      "id": 1,
+      "question_answered": "Why was this formative study conducted, and how was it structured?"
+    },
+    {
+      "id": 2,
+      "question_answered": "What did participants discuss in the first, background-interview part of the session?"
+    },
+    {
+      "id": 3,
+      "question_answered": "What mock-ups were shown to participants in the second part of the session, and what prior work inspired them?"
+    },
+    {
+      "id": 4,
+      "question_answered": "How were the mock-ups used methodologically, and how was the resulting data analyzed?"
+    },
+    {
+      "id": 5,
+      "question_answered": "What challenges did participants report with existing tools for reading and gathering information from papers?"
+    },
+    {
+      "id": 6,
+      "question_answered": "How did participants typically compare papers in practice, absent tool support?"
+    },
+    {
+      "id": 7,
+      "question_answered": "How did participants react to the alignment and highlighting mock-ups?"
+    },
+    {
+      "id": 8,
+      "question_answered": "What feedback did participants give on the custom search/highlight-based query mock-up, and what concerns did they raise?"
+    }
+  ]

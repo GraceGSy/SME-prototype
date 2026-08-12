@@ -1,0 +1,47 @@
+[
+    {
+      "abstractexplorer_paragraph_id": 1,
+      "corpusstudio_paragraph_id": 1,
+      "shared_question": "What is the core problem that existing practices fail to solve, motivating this work?"
+    },
+    {
+      "abstractexplorer_paragraph_id": 2,
+      "corpusstudio_paragraph_id": 2,
+      "shared_question": "What is the fundamental limitation of the straightforward solution to this problem?"
+    },
+    {
+      "abstractexplorer_paragraph_id": 3,
+      "corpusstudio_paragraph_id": 3,
+      "shared_question": "What further limits the most closely related existing approaches?"
+    },
+    {
+      "abstractexplorer_paragraph_id": 4,
+      "corpusstudio_paragraph_id": 4,
+      "shared_question": "What specific prior work or theory does this paper build directly on, and how?"
+    },
+    {
+      "abstractexplorer_paragraph_id": 5,
+      "corpusstudio_paragraph_id": 4,
+      "shared_question": "Why is this approach conceptually preferable — what mechanism makes it work better than alternatives?"
+    },
+    {
+      "abstractexplorer_paragraph_id": 6,
+      "corpusstudio_paragraph_id": 4,
+      "shared_question": "What specifically distinguishes this approach from the closest prior work, and what gap does that leave for this paper to fill?"
+    },
+    {
+      "abstractexplorer_paragraph_id": 7,
+      "corpusstudio_paragraph_id": 5,
+      "shared_question": "What is the proposed system, and how does it work?"
+    },
+    {
+      "abstractexplorer_paragraph_id": 8,
+      "corpusstudio_paragraph_id": 6,
+      "shared_question": "How was the system evaluated, and what did the evaluation show?"
+    },
+    {
+      "abstractexplorer_paragraph_id": "contributions_list",
+      "corpusstudio_paragraph_id": "contributions_list",
+      "shared_question": "What does this paper contribute?"
+    }
+  ]

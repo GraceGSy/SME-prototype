@@ -1,0 +1,47 @@
+[
+    {
+      "corpusstudio_section": "1. Introduction",
+      "abstractexplorer_section": "1. Introduction",
+      "basis": "Direct match — problem framing and contribution overview"
+    },
+    {
+      "corpusstudio_section": "2. Background and Related Work",
+      "abstractexplorer_section": "2. Related Work",
+      "basis": "Direct match — prior tools/theory review"
+    },
+    {
+      "corpusstudio_section": "3. CorpusStudio",
+      "abstractexplorer_section": "4. AbstractExplorer",
+      "basis": "Direct match — both are the core system-description sections (design goals, usage scenario, components/interaction design)"
+    },
+    {
+      "corpusstudio_section": "4. Data & Processing",
+      "abstractexplorer_section": "4. AbstractExplorer (§4.3 Implementation Details)",
+      "basis": "AbstractExplorer has no standalone data/processing section; its closest analog is the Implementation Details subsection, which likewise covers the dataset (1,057 vs. 478 papers), the pre-processing/segmentation pipeline, and the LLM-based classification steps"
+    },
+    {
+      "corpusstudio_section": "5. User Study",
+      "abstractexplorer_section": "6. Summative User Study",
+      "basis": "Direct match — both describe participants, procedure, and design for the paper's main evaluation. AbstractExplorer's separate Ablation Study has no CorpusStudio counterpart, since CorpusStudio ran only one study"
+    },
+    {
+      "corpusstudio_section": "6. Qualitative Results",
+      "abstractexplorer_section": "7. Results",
+      "basis": "AbstractExplorer merges quant + qual findings into one Results section; CorpusStudio's qualitative half is the more content-aligned of the two split sections"
+    },
+    {
+      "corpusstudio_section": "7. Quantitative Results",
+      "abstractexplorer_section": "7. Results",
+      "basis": "Same Results section — covers the quantitative half of what CorpusStudio splits out separately"
+    },
+    {
+      "corpusstudio_section": "8. Discussion",
+      "abstractexplorer_section": "8. Discussion",
+      "basis": "Direct match — both reflect on findings, implications, and limitations"
+    },
+    {
+      "corpusstudio_section": "9. Conclusion",
+      "abstractexplorer_section": null,
+      "basis": "AbstractExplorer has no standalone Conclusion section; its Discussion section absorbs the wrap-up/limitations-and-future-work role that CorpusStudio splits into a separate Conclusion. Closest counterpart is the tail of 8. Discussion"
+    }
+  ]
