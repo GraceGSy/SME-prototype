@@ -1,0 +1,42 @@
+[
+  {
+    "corpusstudio_paragraph_id": 6,
+    "abstractexplorer_paragraph_id": 16,
+    "shared_question": "How can users bookmark an item of interest to revisit or annotate later?"
+  },
+  {
+    "corpusstudio_paragraph_id": 9,
+    "abstractexplorer_paragraph_id": 1,
+    "shared_question": "Why does showing many examples across a large corpus help users avoid narrow or biased conclusions?"
+  },
+  {
+    "corpusstudio_paragraph_id": 11,
+    "abstractexplorer_paragraph_id": 3,
+    "shared_question": "What is the main interface surface where users view and interact with categorized content?"
+  },
+  {
+    "corpusstudio_paragraph_id": 12,
+    "abstractexplorer_paragraph_id": 4,
+    "shared_question": "What basic authoring or definition convention lets users create or specify their own structural elements?"
+  },
+  {
+    "corpusstudio_paragraph_id": 19,
+    "abstractexplorer_paragraph_id": 9,
+    "shared_question": "How can users step forward or backward through a sequence of related items to explore further?"
+  },
+  {
+    "corpusstudio_paragraph_id": 21,
+    "abstractexplorer_paragraph_id": 6,
+    "shared_question": "What color-coding scheme helps users visually recognize recurring or analogous content?"
+  },
+  {
+    "corpusstudio_paragraph_id": 25,
+    "abstractexplorer_paragraph_id": 2,
+    "shared_question": "How does the system's approach preserve the integrity of the original author-written content rather than substituting something synthetic?"
+  },
+  {
+    "corpusstudio_paragraph_id": 26,
+    "abstractexplorer_paragraph_id": 16,
+    "shared_question": "What feature encourages saving or annotating insights rather than directly copying content verbatim?"
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "abstractexplorer_paragraph_id": 9,
+    "corpusstudio_paragraph_id": 4,
+    "shared_question": "How does a user drill into a specific group or cluster of related items to examine it more closely?"
+  },
+  {
+    "abstractexplorer_paragraph_id": 13,
+    "corpusstudio_paragraph_id": 21,
+    "shared_question": "What rendering or alignment options can users choose between to help them visually compare examples?"
+  },
+  {
+    "abstractexplorer_paragraph_id": 22,
+    "corpusstudio_paragraph_id": 27,
+    "shared_question": "What technical approach underlies how the system processes and prepares its underlying data?"
+  },
+  {
+    "abstractexplorer_paragraph_id": 23,
+    "corpusstudio_paragraph_id": 28,
+    "shared_question": "What iterative or experimental process shaped the specific technical method used for labeling or matching content?"
+  },
+  {
+    "abstractexplorer_paragraph_id": 25,
+    "corpusstudio_paragraph_id": 27,
+    "shared_question": "What infrastructure or design choices ensure the system remains responsive at scale?"
+  },
+  {
+    "abstractexplorer_paragraph_id": 26,
+    "corpusstudio_paragraph_id": 27,
+    "shared_question": "What backend architecture supports the system's more dynamic, on-demand features?"
+  }
+]

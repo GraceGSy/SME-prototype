@@ -1,0 +1,72 @@
+[
+  {
+    "abstractexplorer_paragraph_id": 9,
+    "corpusstudio_paragraph_id": 4,
+    "shared_question": "How does a user drill into a specific group or cluster of related items to examine it more closely?"
+  },
+  {
+    "abstractexplorer_paragraph_id": 13,
+    "corpusstudio_paragraph_id": 21,
+    "shared_question": "What rendering or alignment options can users choose between to help them visually compare examples?"
+  },
+  {
+    "abstractexplorer_paragraph_id": 22,
+    "corpusstudio_paragraph_id": 27,
+    "shared_question": "What technical approach underlies how the system processes and prepares its underlying data?"
+  },
+  {
+    "abstractexplorer_paragraph_id": 23,
+    "corpusstudio_paragraph_id": 28,
+    "shared_question": "What iterative or experimental process shaped the specific technical method used for labeling or matching content?"
+  },
+  {
+    "abstractexplorer_paragraph_id": 25,
+    "corpusstudio_paragraph_id": 27,
+    "shared_question": "What infrastructure or design choices ensure the system remains responsive at scale?"
+  },
+  {
+    "abstractexplorer_paragraph_id": 26,
+    "corpusstudio_paragraph_id": 27,
+    "shared_question": "What backend architecture supports the system's more dynamic, on-demand features?"
+  },
+  {
+    "corpusstudio_paragraph_id": 6,
+    "abstractexplorer_paragraph_id": 16,
+    "shared_question": "How can users bookmark an item of interest to revisit or annotate later?"
+  },
+  {
+    "corpusstudio_paragraph_id": 9,
+    "abstractexplorer_paragraph_id": 1,
+    "shared_question": "Why does showing many examples across a large corpus help users avoid narrow or biased conclusions?"
+  },
+  {
+    "corpusstudio_paragraph_id": 11,
+    "abstractexplorer_paragraph_id": 3,
+    "shared_question": "What is the main interface surface where users view and interact with categorized content?"
+  },
+  {
+    "corpusstudio_paragraph_id": 12,
+    "abstractexplorer_paragraph_id": 4,
+    "shared_question": "What basic authoring or definition convention lets users create or specify their own structural elements?"
+  },
+  {
+    "corpusstudio_paragraph_id": 19,
+    "abstractexplorer_paragraph_id": 9,
+    "shared_question": "How can users step forward or backward through a sequence of related items to explore further?"
+  },
+  {
+    "corpusstudio_paragraph_id": 21,
+    "abstractexplorer_paragraph_id": 6,
+    "shared_question": "What color-coding scheme helps users visually recognize recurring or analogous content?"
+  },
+  {
+    "corpusstudio_paragraph_id": 25,
+    "abstractexplorer_paragraph_id": 2,
+    "shared_question": "How does the system's approach preserve the integrity of the original author-written content rather than substituting something synthetic?"
+  },
+  {
+    "corpusstudio_paragraph_id": 26,
+    "abstractexplorer_paragraph_id": 16,
+    "shared_question": "What feature encourages saving or annotating insights rather than directly copying content verbatim?"
+  }
+]

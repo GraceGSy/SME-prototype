@@ -29,6 +29,8 @@ What section pairings in p2-p1-section-mapping-try2.json are not present in p1-p
 "abstractexplorer_section_name", "corpusstudio_section_name", "abstractexplorer_section_number", "corpusstudio_section_number", "basis", "question_the_sections_both_answer"
 Save as p2-p1-alignable-section-diffs.json.
 
+Iterate through all the pairings in p1-p2-alignable-section-diffs.json and p2-p1-alignable-section-diffs.json and sort them into two new JSON files: p1p2-non-alignable-section-diffs.json for pairings where there is a 'null' or similar empty value instead of a section name for one of the papers and p1p2-alignable-section-diffs.json for all the remaining pairings that name a section/subsection in both papers.
+
 ## Paragraph mapping within a section (Intros in this case) that are mapped to each other
 
 ### Extract paragraphs within each paper's introductions (which were mapped to each other)
@@ -113,7 +115,7 @@ Saved p1-p2-s4-paragraph-mapping.json — all 26 AbstractExplorer paragraphs map
 
 Worth flagging: this section has real structural asymmetry. AbstractExplorer devotes 6 detailed paragraphs to its implementation pipeline (22–26), while CorpusStudio's Implementation Details is just 2 paragraphs (27–28) — so those get reused repeatedly as the closest available anchor. Similarly, CorpusStudio's document/sentence-level mechanisms (section title clustering vs. spatial retrieval) don't map one-to-one onto AbstractExplorer's aspects/roles/structure-groups scheme, so some pairings (e.g., AE4↔CS18, AE15↔CS20) are functional analogies rather than tight content matches.
 
-### For testing, reverse base and target
+### Reverse base and target
 Can you iterate through the paragraphs in corpusstudio.pdf as defined in p2-s4-paragraphs.json and described in the question_answered field of p2-s4-questions.json and suggest the closest corresponding paragraph in abstractexplorer.pdf as defined in p1-s4-paragraphs.json and as described in the question_answered field of p1-s4-questions.json? For each pair of corresponding paragraphs, include the question that both paragraphs answer. Output as a JSON and save as p2-p1-s4-paragraph-questions.json.
 
 ### Claude warning
@@ -121,11 +123,19 @@ Saved p2-p1-s4-paragraph-questions.json — all 28 CorpusStudio paragraphs mappe
 
 A few notable differences from the earlier direction: since CorpusStudio has more, finer-grained paragraphs in this section (28 vs. 26), several AbstractExplorer paragraphs now get reused as the closest anchor for multiple CorpusStudio paragraphs — e.g., AE16 (sentence bookmarking) anchors three CorpusStudio paragraphs (6, 23, 26) that separately cover bookmarking, annotation, and anti-plagiarism design, and AE1/AE3/AE6 each get reused once. This asymmetry mirrors the same underlying imbalance flagged in the forward mapping.
 
+### Find bidirection, alignable, and non-alignable paragraph pairs
+Look at the section matches in p1-p2-s4-paragraph-questions.json and check whether the same section match is found in p2-p1-s4-paragraph-questions.json; output a JSON of just those bidirectional matches called p1-p2-common-s4-structure.json. Include "question_the_paragraphs_both_answer" as a field too.
+
+What section pairings in p1-p2-s4-paragraph-questions.json are not present in p1-p2-common-s4-structure.json? Add them to a new JSON and save as p1-p2-alignable-s4-diffs.json.
+
+What section pairings in p2-p1-s4-paragraph-questions.json are not present in p1-p2-common-s4-structure.json? Add them to a new JSON and save as p2-p1-alignable-s4-diffs.json.
+
+Iterate through all the pairings in p1-p2-alignable-s4-diffs.json and p2-p1-alignable-s4-diffs.json and sort them into two new JSON files: p1p2-non-alignable-s4-diffs.json for pairings where there is a 'null' or similar empty value instead of a section name for one of the papers and p1p2-alignable-s4-diffs.json for all the remaining pairings that name a section/subsection in both papers.
+
 ## Create a program that filters paragraph mappings by bidirectionality (p1->p2 and p2<-p1)
-Q: What to do with orphans?
-Q: Re-assignment? 
-Q: Re-representation?
-Q: how to scale up to N+1 paper?
+Q: how to scale up to N+1 paper? Match to existing pairings, as well as orphans
+Q: Re-assignment? Not this time.
+Q: Re-representation? Recompute the question with the new matched paragraph/section added
 
 ## Questions
 1. Do we need to reverse the implicit base and target to confirm we're not missing mappings?
