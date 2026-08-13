@@ -1,0 +1,40 @@
+{
+  "paragraphs": [
+    {
+      "tag": "What was the interview study's purpose and method?",
+      "start_text": "We interviewed eight people working with or developing systems",
+      "prev_relation": "",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "Who were the interview participants?",
+      "start_text": "Participants were recruited through the authors\u2019 professional net-",
+      "prev_relation": "elaboration",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "What overall pattern did the interviews reveal?",
+      "start_text": "Overall, we found that everyone we interviewed engaged in man-",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "Why do practitioners distrust automatic evaluation?",
+      "start_text": "All interviewees said that",
+      "prev_relation": "elaboration",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "How do practitioners make sense of LLM outputs?",
+      "start_text": "Interviewees discussed a",
+      "prev_relation": "continuation",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "How do practitioners perform complex manual annotation?",
+      "start_text": "The third start-up founder",
+      "prev_relation": "continuation",
+      "next_relation": ""
+    }
+  ]
+}

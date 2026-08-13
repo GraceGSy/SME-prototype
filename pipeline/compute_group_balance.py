@@ -15,10 +15,11 @@ Usage:
 from __future__ import annotations
 
 import json
+import os
 import re
 from pathlib import Path
 
-OUTPUT_DIR = Path(__file__).resolve().parent / "output" / "sections"
+OUTPUT_DIR = Path(os.environ.get("SME_OUTPUT_DIR", str(Path(__file__).resolve().parent / "output" / "sections")))
 ITERATION_FILE_RE = re.compile(r"paragraph_groups_iter(\d+)\.json")
 
 

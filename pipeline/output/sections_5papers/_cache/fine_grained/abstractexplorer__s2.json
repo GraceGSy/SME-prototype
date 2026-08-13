@@ -1,0 +1,88 @@
+{
+  "paragraphs": [
+    {
+      "tag": "What prior research areas does this work build on?",
+      "start_text": "AbstractExplorer extends prior work on tools",
+      "prev_relation": "",
+      "next_relation": "background"
+    },
+    {
+      "tag": "How does distant reading differ from close reading and what are its limits?",
+      "start_text": "Close reading refers to the \u201cconscientious analyzation",
+      "prev_relation": "background",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What existing tools support close reading of single documents?",
+      "start_text": "Close reading is an important yet cognitively demanding",
+      "prev_relation": "elaboration",
+      "next_relation": "contrast"
+    },
+    {
+      "tag": "What gap remains when reading across document corpora?",
+      "start_text": "When working with document corpora, these prior reading",
+      "prev_relation": "contrast",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What is text alignment and how is it typically done?",
+      "start_text": "Text alignment refers to the process of finding",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How has alignment been applied to larger texts?",
+      "start_text": "Some work has explored aligning larger pieces of",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How have prior methods scaled alignment to many diverse texts?",
+      "start_text": "Some alignment strategies aim to scale up the",
+      "prev_relation": "elaboration",
+      "next_relation": "contrast"
+    },
+    {
+      "tag": "How does AbstractExplorer's approach to alignment differ from prior work?",
+      "start_text": "In summary, while scientific abstracts, especially within",
+      "prev_relation": "contrast",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "What prior systems use shared structure for sensemaking across document corpora?",
+      "start_text": "Prior systems have employed structure to facilitate inductive",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How does AbstractExplorer compare to these structure-based sensemaking systems?",
+      "start_text": "Like many of these prior systems, AbstractExplorer",
+      "prev_relation": "comparison",
+      "next_relation": "cause"
+    },
+    {
+      "tag": "Why is structural analysis feasible for scientific abstracts?",
+      "start_text": "This is feasible for scientific abstracts because, as",
+      "prev_relation": "cause",
+      "next_relation": "example"
+    },
+    {
+      "tag": "What cognitive theories motivate serial exploration sensemaking tools, and what's missing?",
+      "start_text": "Most sensemaking systems for corpora are built for",
+      "prev_relation": "elaboration",
+      "next_relation": "contrast"
+    },
+    {
+      "tag": "What cognitive theories underpin structure-based comparison tools?",
+      "start_text": "But many of the systems in Section 2.3",
+      "prev_relation": "contrast",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What does Structural Mapping Theory say about comparison?",
+      "start_text": "(SMT) SMT provides a framework for understanding how",
+      "prev_relation": "elaboration",
+      "next_relation": ""
+    }
+  ]
+}

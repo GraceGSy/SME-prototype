@@ -1,0 +1,34 @@
+{
+  "paragraphs": [
+    {
+      "tag": "Which design goals did ParaLib successfully fulfill?",
+      "start_text": "This data suggests that ParaLib clearly fulfilled four",
+      "prev_relation": "",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What does the mixed result on usability assessment mean?",
+      "start_text": "The study results relevant to ParaLib\u2019s utility",
+      "prev_relation": "qualification",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What design changes would help clarify ParaLib's key contributing features?",
+      "start_text": "Future studies with different baselines would be necessary",
+      "prev_relation": "elaboration",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "What factors does ParaLib fail to address?",
+      "start_text": "does not address the need to consider",
+      "prev_relation": "contrast",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How might future tools building on ParaLib support programmers?",
+      "start_text": "We described participants\u2019 future library selection workflows",
+      "prev_relation": "elaboration",
+      "next_relation": ""
+    }
+  ]
+}

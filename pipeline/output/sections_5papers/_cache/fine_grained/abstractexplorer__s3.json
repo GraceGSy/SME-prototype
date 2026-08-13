@@ -1,0 +1,58 @@
+{
+  "paragraphs": [
+    {
+      "tag": "What was the goal and setup of the formative study?",
+      "start_text": "In order to determine (1) the context",
+      "prev_relation": "",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What mock-up designs were shown to participants?",
+      "start_text": "3SMT is sometimes referred to by",
+      "prev_relation": "elaboration",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "What did the first part of the interview cover?",
+      "start_text": "In the first part of the session",
+      "prev_relation": "elaboration",
+      "next_relation": "sequence"
+    },
+    {
+      "tag": "What mock-ups were presented and what inspired them?",
+      "start_text": "In the second part of the session",
+      "prev_relation": "sequence",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How were the mock-ups used to elicit feedback?",
+      "start_text": "We used these mock-ups as design probes",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What sensemaking challenges do researchers currently face?",
+      "start_text": "Participants\u2019 approaches to reading and gathering",
+      "prev_relation": "elaboration",
+      "next_relation": "contrast"
+    },
+    {
+      "tag": "How do researchers currently compare papers without tools?",
+      "start_text": "In contrast, many participants described their paper",
+      "prev_relation": "contrast",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What feedback did participants give on the mock-up designs?",
+      "start_text": "Participants commented that align- ment and/or highlighting",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What feature did participants especially favor and why?",
+      "start_text": "Participants particularly liked a presented mock-up",
+      "prev_relation": "elaboration",
+      "next_relation": "qualification"
+    }
+  ]
+}

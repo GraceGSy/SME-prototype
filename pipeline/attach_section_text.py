@@ -8,6 +8,7 @@ Usage:
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 from pdf_text import extract_pdf_text
@@ -16,7 +17,7 @@ from text_locate import slice_by_markers
 
 SME_DIR = Path(__file__).resolve().parent.parent
 PAPERS_DIR = SME_DIR / "papers"
-OUTPUT_DIR = Path(__file__).resolve().parent / "output" / "sections"
+OUTPUT_DIR = Path(os.environ.get("SME_OUTPUT_DIR", str(Path(__file__).resolve().parent / "output" / "sections")))
 
 MISSING_PLACEHOLDER = "(could not automatically locate this section's text -- likely a column-layout edge case in PDF extraction)"
 

@@ -1,0 +1,40 @@
+{
+  "paragraphs": [
+    {
+      "tag": "What is a synthetic code skeleton and why is it needed?",
+      "start_text": "To visualize and navigate a collection",
+      "prev_relation": "",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What prior research informs the skeleton's design?",
+      "start_text": "argue that a user must understand",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What features make up the skeleton?",
+      "start_text": "The skeleton is composed of the following",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What does this figure illustrate?",
+      "start_text": "As revealed by EXAMPLORE, programmers most often",
+      "prev_relation": "example",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What is the scope and grounding of the skeleton design?",
+      "start_text": "This skeleton design targets API usage in Java",
+      "prev_relation": "elaboration",
+      "next_relation": "qualification"
+    },
+    {
+      "tag": "How generalizable is the skeleton to other languages?",
+      "start_text": "This skeleton can be generalized to similar languages",
+      "prev_relation": "qualification",
+      "next_relation": ""
+    }
+  ]
+}

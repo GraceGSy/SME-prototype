@@ -60,10 +60,6 @@
     line-height: 1.3;
   }
   .section-title { font-size: 12.5px; font-weight: 600; color: #212529; }
-  .relation-badge {
-    font-size: 9.5px; font-style: italic; color: #495057; background: #f1f3f5;
-    border: 1px solid #dee2e6; padding: 1px 6px; border-radius: 9px; white-space: nowrap;
-  }
   .section-text { font-size: 12px; line-height: 1.35; color: #495057; white-space: normal; }
   .section-text-preview:empty { display: none; }
   .section-text-full { display: none; }
@@ -99,6 +95,7 @@
   .group-question:hover { color: #1c7ed6; }
   .group-question::before { content: "▸ "; color: #adb5bd; }
   .group-card.open .group-question::before { content: "▾ "; }
+  .group-id-label { font-weight: 600; color: #868e96; margin-right: 5px; }
   .group-balance-badge {
     font-size: 10px; font-weight: 600; color: #495057; background: #f1f3f5;
     border: 1px solid #dee2e6; padding: 1px 6px; border-radius: 9px; margin-left: 6px; vertical-align: middle;
@@ -109,6 +106,13 @@
   .unit-square.missing { background: transparent; border: 1px dashed var(--paper-color); }
   .group-card.open .group-unit-vis { display: none; }
   .group-detail-slot { margin-top: 10px; }
+  .expand-all-btn {
+    font-family: inherit; font-size: 10px; font-weight: 600; color: #495057; background: #fff;
+    border: 1px solid #dee2e6; padding: 1px 6px; border-radius: 9px; margin-left: 6px; vertical-align: middle;
+    cursor: pointer; display: none;
+  }
+  .expand-all-btn:hover { border-color: #1c7ed6; color: #1864ab; }
+  .group-card.open .expand-all-btn { display: inline-block; }
   .group-columns-wrap { position: relative; }
   .group-columns { display: flex; gap: 30px; align-items: flex-start; }
   .group-columns .column { flex: 1 1 0; min-width: 0; text-align: left; }
@@ -137,7 +141,7 @@
     display: inline-flex; align-items: center; gap: 5px; color: #495057;
     font-size: 9.5px; white-space: nowrap;
   }
-  .paper-map-legend { display: flex; gap: 5px; min-width: 0; overflow-x: auto; scrollbar-width: thin; }
+  .paper-map-legend { display: flex; align-items: flex-start; gap: 5px; min-width: 0; overflow-x: auto; scrollbar-width: thin; padding: 3px 2px 12px; }
   .paper-map-legend-item {
     display: inline-flex; align-items: center; gap: 5px; flex: 0 0 auto; max-width: 235px;
     padding: 3px 7px; border: 1px solid #dee2e6; border-radius: 10px; background: #fff;
@@ -146,23 +150,40 @@
   .paper-map-legend-item:hover, .paper-map-legend-item.highlight, .paper-map-legend-item.selected {
     border-color: var(--group-color); box-shadow: inset 0 0 0 1px var(--group-color);
   }
-  .paper-map-legend-item.selected { background: var(--group-fill); }
-  .paper-map-swatch { flex: 0 0 auto; width: 9px; height: 9px; border-radius: 2px; background: var(--group-color); }
+  .paper-map-legend-item.selected { background: var(--group-fill); max-width: 380px; align-items: flex-start; }
+  .paper-map-swatch { flex: 0 0 auto; width: 9px; height: 9px; border-radius: 2px; background: var(--group-color); margin-top: 2px; }
   .paper-map-legend-item strong { flex: none; white-space: nowrap; }
+  .paper-map-legend-item.selected strong { margin-top: 1px; }
   .paper-map-legend-question { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .paper-map-legend-item.selected .paper-map-legend-question { overflow: visible; text-overflow: unset; white-space: normal; }
   .paper-map-legend-count { color: #868e96; }
+  .paper-map-legend-item.selected .paper-map-legend-count { margin-top: 1px; }
   .paper-map-columns {
     display: grid; grid-template-columns: repeat(var(--paper-count), minmax(320px, 1fr));
     gap: 10px; min-height: 0; padding: 10px; overflow-x: auto; background: #fafafa;
   }
   .paper-map-column {
-    min-width: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable;
+    position: relative; min-width: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable;
     border: 1px solid #dee2e6; border-radius: 6px; background: #fff;
   }
   .paper-map-paper-head {
     position: sticky; top: 0; z-index: 3; padding: 8px 10px; border-bottom: 2px solid #343a40;
     background: rgba(255,255,255,.97); color: #343a40; font-size: 13px; font-weight: 700;
   }
+  /* Floating "N more paragraphs of the selected group are above/below" badges.
+     position:sticky (not absolute -- an absolute child of an overflow:auto
+     ancestor still scrolls away with the content; sticky is the mechanism
+     that actually stays pinned within ITS OWN scrolling container as that
+     container scrolls) within the column's own scroll area. Non-interactive
+     by design. */
+  .paper-map-column-indicator {
+    display: none; position: sticky; left: 0; right: 0; z-index: 4; pointer-events: none;
+    padding: 3px 10px; font-size: 9.5px; font-weight: 700; text-align: center;
+    color: #fff; background: var(--group-color, #1c7ed6); opacity: .94;
+  }
+  .paper-map-column-indicator.visible { display: block; }
+  .paper-map-column-indicator-top { top: 0; box-shadow: 0 1px 3px rgba(0,0,0,.15); }
+  .paper-map-column-indicator-bottom { bottom: 0; box-shadow: 0 -1px 3px rgba(0,0,0,.15); }
   .paper-map-section-head {
     margin: 11px 9px 5px; padding-bottom: 4px; border-bottom: 1px solid #dee2e6;
     color: #495057; font-size: 10.5px; font-weight: 700;
@@ -415,12 +436,12 @@
 <header>
   <h1>Bidirectional Tag Match Viewer</h1>
   <div id="granularityTabs" style="display:flex;gap:2px;"></div>
-  <label style="font-size:11px;color:#495057;display:flex;align-items:center;gap:6px;">
+  <label id="previewLengthControl" style="font-size:11px;color:#495057;display:flex;align-items:center;gap:6px;">
     preview length
     <input type="range" id="previewSlider" min="0" max="200" step="10" value="200">
     <span id="previewValue">200</span>
   </label>
-  <label style="font-size:11px;color:#495057;display:flex;align-items:center;gap:6px;">
+  <label id="minSimilarityControl" style="font-size:11px;color:#495057;display:flex;align-items:center;gap:6px;">
     min similarity
     <input type="range" id="similaritySlider" min="0" max="1" step="0.01" value="0">
     <span id="similarityValue">0.00</span>
@@ -433,6 +454,11 @@
 <script>
 const GRANULARITIES = ["sections", "paragraphs"]; // matching/data granularities
 const GRANULARITY_LABELS = { sections: "Section", paragraphs: "Paragraph" };
+// Header sliders only make sense for some tabs -- preview length applies to
+// any tab rendering section/paragraph/group quote text; min similarity only
+// applies to the two tabs that actually filter links by it.
+const PREVIEW_LENGTH_GRANULARITIES = ["sections", "paragraphs", "groups", "epoch_groups"];
+const MIN_SIMILARITY_GRANULARITIES = ["sections", "paragraphs"];
 const ENABLE_QI_FLOW_VIEW = true; // independent experimental surface; set false to hide without affecting the trace view
 // Three MILP-reassignment variants (see reassign_via_milp_per_paper.py and
 // its no-penalty / quadratic siblings) -- each its own tab, each its own
@@ -444,7 +470,7 @@ const MILP_VARIANTS = [
 ];
 const MILP_VARIANT_KEYS = MILP_VARIANTS.map(v => v.key);
 
-const TABS = ["sections", "paragraphs", "groups", "epoch_groups", ...MILP_VARIANT_KEYS, "paper-map", "qi-trace", ...(ENABLE_QI_FLOW_VIEW ? ["qi-flow"] : [])]; // display-only views are not matching granularities
+const TABS = ["sections", "paragraphs", "groups", "epoch_groups", "paper-map", "qi-trace", ...(ENABLE_QI_FLOW_VIEW ? ["qi-flow"] : [])]; // display-only views are not matching granularities -- MILP_VARIANT_KEYS omitted here to hide those tabs; the rendering/dispatch code is untouched, so re-adding them (e.g. ...MILP_VARIANT_KEYS) brings the tabs straight back
 const TAB_LABELS = Object.assign(
   { sections: "Section", paragraphs: "Paragraph", groups: "Groups", epoch_groups: "Epoch Groups", "paper-map": "Paper Map", "qi-trace": "QI-Prime Trace", "qi-flow": "QI-Prime Flow" },
   Object.fromEntries(MILP_VARIANTS.map(v => [v.key, v.label]))
@@ -554,7 +580,7 @@ function updatePreviews() {
 }
 
 async function loadAll() {
-  const base = "../output/sections/";
+  const base = "../output/sections_5papers/";
   const opts = { cache: "no-store" }; // these files change often during development; never serve a stale cached copy
   const manifest = await (await fetch(base + "manifest.json", opts)).json();
   const papers = [];
@@ -681,15 +707,10 @@ function renderColumns(papers, granularity) {
       sectionTextById[id] = text;
       const previewText = preview(text, previewChars);
       const titleHtml = sec.title ? `<span class="section-title">${escapeHtml(sec.title)}</span>` : "";
-      // prev_relation/next_relation only exist at paragraph granularity (always "" for sections)
-      const prevHtml = sec.prev_relation ? `<span class="relation-badge">← ${escapeHtml(sec.prev_relation)}</span>` : "";
-      const nextHtml = sec.next_relation ? `<span class="relation-badge">${escapeHtml(sec.next_relation)} →</span>` : "";
       return `<div class="section-block linkable" data-id="${id}">
         <div class="section-head">
           <span class="tag-badge">${escapeHtml(sec.tag)}</span>
           ${titleHtml}
-          ${prevHtml}
-          ${nextHtml}
         </div>
         <div class="section-text section-text-preview">${escapeHtml(previewText)}</div>
         <div class="section-text section-text-full">${escapeHtml(text)}</div>
@@ -928,7 +949,7 @@ function renderIterationGroups() {
     const balanceHtml = balance !== undefined ? `<span class="group-balance-badge">balance ${balance}%</span>` : "";
     const qiPrimeHtml = currentIteration === 0 ? `<span class="group-balance-badge">QI-Prime</span>` : "";
     return `<div class="group-card" data-group-id="${group.group_id}">
-      <div class="group-question">${escapeHtml(group.overarching_question || "(no summary)")}${qiPrimeHtml}${balanceHtml}</div>
+      <div class="group-question">${escapeHtml(group.overarching_question || "(no summary)")}<button type="button" class="expand-all-btn">▾ Expand all</button>${qiPrimeHtml}${balanceHtml}</div>
       ${buildPaperCoverageVis(group.members)}
       <div class="group-detail-slot"></div>
     </div>`;
@@ -954,6 +975,7 @@ function renderIterationGroups() {
         slot.innerHTML = "";
       }
     });
+    attachExpandAllButton(card, slot);
   });
 
   attachIterationTabInteractions();
@@ -971,17 +993,31 @@ function attachIterationTabInteractions() {
 function switchIteration(n) {
   currentIteration = n;
   openGroupIds.clear(); // a group_id's membership/content differs across iterations, so don't carry an "open" state over
-  if (currentGranularity === "paper-map") renderPaperMap();
-  else renderIterationGroups();
+  renderIterationGroups();
+}
+
+function epochPhaseShortLabel(phase) {
+  return phase === "initial" ? "Pre" : phase.replace("epoch", "E");
+}
+
+// Only phases this run actually produced data for -- a run with fewer than
+// N_EPOCH_PHASES epochs (e.g. 3) leaves the rest unpopulated. Shared by
+// renderEpochGroups() and renderPaperMap(), which both use epoch phases as
+// their selector; also clamps currentEpochPhase to a real phase as a
+// side effect, same way switching data sources elsewhere in this file does.
+function buildEpochPhaseTabsHtml() {
+  const availablePhases = EPOCH_PHASES.filter(phase => (epochGroupsByPhase[phase] || []).length);
+  if (!availablePhases.includes(currentEpochPhase)) currentEpochPhase = availablePhases[0] || "initial";
+  return availablePhases.map(phase =>
+    `<button type="button" class="granularity-btn${phase === currentEpochPhase ? " active" : ""}" data-epoch-phase="${phase}">${EPOCH_PHASE_LABELS[phase]}</button>`
+  ).join("");
 }
 
 // Same card-list-with-inline-3-column-detail pattern as renderIterationGroups(),
 // but the phase selector is the 4 refine_with_epoch_matrices.py phases
 // (pre-epoch, then 3 epochs) instead of numbered iterations.
 function renderEpochGroups() {
-  const tabsHtml = EPOCH_PHASES.map(phase =>
-    `<button type="button" class="granularity-btn${phase === currentEpochPhase ? " active" : ""}" data-epoch-phase="${phase}">${EPOCH_PHASE_LABELS[phase]}</button>`
-  ).join("");
+  const tabsHtml = buildEpochPhaseTabsHtml();
 
   const meta = epochMetaByPhase[currentEpochPhase];
   const metaText = meta ? `${meta.reassigned} of ${meta.total_assigned} paragraphs were reassigned to a different group this epoch.` : "";
@@ -989,10 +1025,11 @@ function renderEpochGroups() {
   const balanceByGroupId = epochBalanceByPhase[currentEpochPhase];
   // Sort a copy by group-balance (highest first) when available for this
   // phase (epoch1/2/3 only -- "initial" has no matrix-checked balance yet);
-  // otherwise keep the original (member-count-descending) order.
+  // otherwise sort by paragraph count (highest first), since the "initial"
+  // phase's saved order is neither balance- nor count-sorted.
   const groups = balanceByGroupId
     ? [...(epochGroupsByPhase[currentEpochPhase] || [])].sort((a, b) => (balanceByGroupId[b.group_id] ?? -1) - (balanceByGroupId[a.group_id] ?? -1))
-    : (epochGroupsByPhase[currentEpochPhase] || []);
+    : [...(epochGroupsByPhase[currentEpochPhase] || [])].sort((a, b) => (b.members?.length || 0) - (a.members?.length || 0));
 
   if (!groups.length) {
     stage.innerHTML = `<div class="iteration-tabs">${tabsHtml}</div><div class="empty-state">No groups available for this phase.</div>`;
@@ -1000,11 +1037,12 @@ function renderEpochGroups() {
     return;
   }
 
-  const cardsHtml = groups.map(group => {
+  const cardsHtml = groups.map((group, index) => {
     const balance = balanceByGroupId ? balanceByGroupId[group.group_id] : undefined;
     const balanceHtml = balance !== undefined ? `<span class="group-balance-badge">balance ${balance}%</span>` : "";
+    const idLabel = `${epochPhaseShortLabel(currentEpochPhase)}-${index + 1}`;
     return `<div class="group-card" data-group-id="${group.group_id}">
-      <div class="group-question">${escapeHtml(group.overarching_question || "(no summary)")}${balanceHtml}</div>
+      <div class="group-question"><span class="group-id-label">${escapeHtml(idLabel)}</span>${escapeHtml(group.overarching_question || "(no summary)")}<button type="button" class="expand-all-btn">▾ Expand all</button>${balanceHtml}</div>
       ${buildPaperCoverageVis(group.members)}
       <div class="group-detail-slot"></div>
     </div>`;
@@ -1030,6 +1068,7 @@ function renderEpochGroups() {
         slot.innerHTML = "";
       }
     });
+    attachExpandAllButton(card, slot);
   });
 
   attachEpochPhaseTabInteractions();
@@ -1047,7 +1086,8 @@ function attachEpochPhaseTabInteractions() {
 function switchEpochPhase(phase) {
   currentEpochPhase = phase;
   openEpochGroupIds.clear(); // a group_id's membership/content differs per phase, so don't carry an "open" state over
-  renderEpochGroups();
+  if (currentGranularity === "paper-map") renderPaperMap();
+  else renderEpochGroups();
 }
 
 // Same card-list-with-inline-3-column-detail pattern as renderIterationGroups(),
@@ -1065,7 +1105,7 @@ function renderMilpGroups(variantKey) {
   }
 
   const cardsHtml = groups.map(group => `<div class="group-card" data-group-id="${group.group_id}">
-      <div class="group-question">${escapeHtml(group.overarching_question || "(no summary)")}</div>
+      <div class="group-question">${escapeHtml(group.overarching_question || "(no summary)")}<button type="button" class="expand-all-btn">▾ Expand all</button></div>
       ${buildPaperCoverageVis(group.members)}
       <div class="group-detail-slot"></div>
     </div>`).join("");
@@ -1090,6 +1130,7 @@ function renderMilpGroups(variantKey) {
         slot.innerHTML = "";
       }
     });
+    attachExpandAllButton(card, slot);
   });
 }
 
@@ -1109,14 +1150,10 @@ function renderGroupDetail(slot, group) {
         const id = `${paper.paper_id}:${unit.id}`;
         const previewText = preview(text, previewChars);
         const titleHtml = unit.title ? `<span class="section-title">${escapeHtml(unit.title)}</span>` : "";
-        const prevHtml = unit.prev_relation ? `<span class="relation-badge">← ${escapeHtml(unit.prev_relation)}</span>` : "";
-        const nextHtml = unit.next_relation ? `<span class="relation-badge">${escapeHtml(unit.next_relation)} →</span>` : "";
         return `<div class="section-block linkable" data-group-unit-id="${id}">
           <div class="section-head">
             <span class="tag-badge">${escapeHtml(unit.tag)}</span>
             ${titleHtml}
-            ${prevHtml}
-            ${nextHtml}
           </div>
           <div class="section-text section-text-preview">${escapeHtml(previewText)}</div>
           <div class="section-text section-text-full">${escapeHtml(text)}</div>
@@ -1150,6 +1187,23 @@ function attachGroupInteractions(slot) {
   });
 }
 
+// Wires the header's Expand all/Collapse all badge for one group card --
+// shared by renderIterationGroups/renderEpochGroups/renderMilpGroups, called
+// once per card alongside its .group-question click handler. Operates on
+// whatever .section-block elements are in the slot at click time (populated
+// lazily by renderGroupDetail the first time the card opens).
+function attachExpandAllButton(card, slot) {
+  const expandAllBtn = card.querySelector(".expand-all-btn");
+  if (!expandAllBtn) return;
+  expandAllBtn.addEventListener("click", (evt) => {
+    evt.stopPropagation();
+    const blocks = [...slot.querySelectorAll(".section-block")];
+    const allExpanded = blocks.length > 0 && blocks.every(el => el.classList.contains("expanded"));
+    blocks.forEach(el => el.classList.toggle("expanded", !allExpanded));
+    expandAllBtn.textContent = allExpanded ? "▾ Expand all" : "▴ Collapse all";
+  });
+}
+
 function paperMapColor(index) {
   const hue = PAPER_MAP_HUES[index % PAPER_MAP_HUES.length] + Math.floor(index / PAPER_MAP_HUES.length) * 11;
   return { border: `hsl(${hue % 360} 58% 38%)`, fill: `hsl(${hue % 360} 72% 95%)` };
@@ -1167,15 +1221,31 @@ function paperMapColorCatalog() {
   );
 }
 
-// Every saved state carries its own membership. Iteration 0 uses the original
-// bidirectional groups; later iterations use each paragraph's best-fit group.
-// The map displays that membership without adding another matching rule.
+// Separate from paperMapColorCatalog() (still used by QI-Prime Trace/Flow,
+// which remain iteration-based) -- Paper Map itself now sources its groups
+// from epochGroupsByPhase, a disjoint set of group_ids from iterationGroups.
+function epochColorCatalog() {
+  const groupIds = new Set();
+  Object.values(epochGroupsByPhase).forEach(groups => {
+    (groups || []).forEach(group => groupIds.add(group.group_id));
+  });
+  return new Map(
+    [...groupIds]
+      .sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true }))
+      .map((groupId, index) => [groupId, paperMapColor(index)])
+  );
+}
+
+// Every saved epoch phase carries its own membership -- Pre-epoch uses the
+// random-seeded initial groups, later phases use each paragraph's Matrix-1
+// best-fit group. The map displays that membership without adding another
+// matching rule.
 function buildPaperMapModel() {
-  const groups = iterationGroups[currentIteration] || [];
-  const colorByGroupId = paperMapColorCatalog();
+  const groups = epochGroupsByPhase[currentEpochPhase] || [];
+  const colorByGroupId = epochColorCatalog();
   const groupEntries = groups.map((group, index) => ({
     group,
-    label: `I${currentIteration}-${index + 1}`,
+    label: `${epochPhaseShortLabel(currentEpochPhase)}-${index + 1}`,
     color: colorByGroupId.get(group.group_id) || paperMapColor(index),
     count: 0,
   }));
@@ -1194,16 +1264,17 @@ function buildPaperMapModel() {
   return { groups, groupEntries, entriesById, assignments };
 }
 
-function renderPaperMap() {
-  const model = buildPaperMapModel();
-  if (paperMapSelectedGroupId && !model.entriesById.has(paperMapSelectedGroupId)) {
-    paperMapSelectedGroupId = null;
-  }
-
-  const tabsHtml = buildIterationTabsHtml();
-  const totalParagraphs = allPapers.reduce((sum, paper) => sum + (paper.paragraphs || []).length, 0);
-  const orphanCount = totalParagraphs - model.assignments.size;
-  const legend = model.groupEntries.map(entry => {
+// Most-represented groups first; the selected group (if any) is bumped to
+// the front regardless of its own count, and rendered expanded (full
+// question text, not truncated) so it's immediately visible and readable
+// without needing to scroll the legend row or hover for the title tooltip.
+// A pure function (given a model) so it can rebuild just the legend's own
+// HTML on a selection change, without re-rendering the whole paper map.
+function buildPaperMapLegendHtml(model) {
+  const legendEntries = [...model.groupEntries].sort((a, b) => b.count - a.count);
+  const selectedPos = paperMapSelectedGroupId ? legendEntries.findIndex(entry => entry.group.group_id === paperMapSelectedGroupId) : -1;
+  if (selectedPos > 0) legendEntries.unshift(legendEntries.splice(selectedPos, 1)[0]);
+  return legendEntries.map(entry => {
     const groupId = entry.group.group_id;
     const question = entry.group.overarching_question || "(no summary)";
     const style = `--group-color:${entry.color.border};--group-fill:${entry.color.fill}`;
@@ -1213,6 +1284,47 @@ function renderPaperMap() {
       <span class="paper-map-swatch"></span><strong>${escapeHtml(entry.label)}</strong><span class="paper-map-legend-question">${escapeHtml(question)}</span><span class="paper-map-legend-count">${entry.count}</span>
     </button>`;
   }).join("");
+}
+
+// Rebuilds just the legend row (reorder + expand/collapse the selected
+// entry) and re-wires its own interactions -- called on every selection
+// change instead of a full renderPaperMap(), since setPaperMapGroupEmphasis()
+// alone only toggles classes on already-rendered buttons and can't reorder
+// or resize them.
+function refreshPaperMapLegend(model) {
+  const legendEl = stage.querySelector(".paper-map-legend");
+  if (!legendEl) return;
+  legendEl.innerHTML = buildPaperMapLegendHtml(model);
+  attachPaperMapLegendInteractions(model);
+  setPaperMapGroupEmphasis();
+}
+
+function attachPaperMapLegendInteractions(model) {
+  stage.querySelectorAll(".paper-map-legend-item").forEach(button => {
+    const groupId = button.dataset.paperMapGroup;
+    button.addEventListener("mouseenter", () => setPaperMapGroupEmphasis(groupId));
+    button.addEventListener("mouseleave", () => setPaperMapGroupEmphasis());
+    button.addEventListener("click", event => {
+      event.stopPropagation();
+      const wasSelected = paperMapSelectedGroupId === groupId;
+      paperMapSelectedGroupId = wasSelected ? null : groupId;
+      if (!wasSelected) scrollColumnsToGroup(groupId);
+      updateColumnGroupIndicators();
+      refreshPaperMapLegend(model);
+    });
+  });
+}
+
+function renderPaperMap() {
+  const model = buildPaperMapModel();
+  if (paperMapSelectedGroupId && !model.entriesById.has(paperMapSelectedGroupId)) {
+    paperMapSelectedGroupId = null;
+  }
+
+  const tabsHtml = buildEpochPhaseTabsHtml();
+  const totalParagraphs = allPapers.reduce((sum, paper) => sum + (paper.paragraphs || []).length, 0);
+  const orphanCount = totalParagraphs - model.assignments.size;
+  const legend = buildPaperMapLegendHtml(model);
   const modeToggle = `<div class="paper-map-mode-toggle" role="group" aria-label="Paper Map display">
     <button type="button" class="paper-map-mode-button${paperMapMode === "reading" ? " active" : ""}" data-paper-map-mode="reading" aria-pressed="${paperMapMode === "reading"}">Read</button>
     <button type="button" class="paper-map-mode-button${paperMapMode === "skeleton" ? " active" : ""}" data-paper-map-mode="skeleton" aria-pressed="${paperMapMode === "skeleton"}">Skeleton</button>
@@ -1226,10 +1338,10 @@ function renderPaperMap() {
     <div class="paper-map-overview">
       <div class="paper-map-control-row">
         <div class="iteration-tabs">${tabsHtml}</div>
-        <div class="paper-map-summary"><strong>${iterationHeading(currentIteration)}</strong> · ${model.groups.length} groups · ${model.assignments.size} assigned · ${orphanCount} unassigned</div>
+        <div class="paper-map-summary"><strong>${EPOCH_PHASE_LABELS[currentEpochPhase]}</strong> · ${model.groups.length} groups · ${model.assignments.size} assigned · ${orphanCount} unassigned</div>
         ${modeToggle}${syncToggle}
       </div>
-      <div class="paper-map-legend" aria-label="Question groups at ${iterationHeading(currentIteration)}">${legend}</div>
+      <div class="paper-map-legend" aria-label="Question groups at ${EPOCH_PHASE_LABELS[currentEpochPhase]}">${legend}</div>
     </div>
     ${content}
   </div>`;
@@ -1281,7 +1393,10 @@ function renderPaperMapReading(model) {
       </article>`;
     }).join("");
     return `<section class="paper-map-column" data-paper="${escapeHtml(paper.paper_id)}">
-      <div class="paper-map-paper-head" title="${escapeHtml(paper.title)}">${escapeHtml(shortPaperLabel(paper))} · ${(paper.paragraphs || []).length} paragraphs</div>${paragraphs}
+      <div class="paper-map-paper-head" title="${escapeHtml(paper.title)}">${escapeHtml(shortPaperLabel(paper))} · ${(paper.paragraphs || []).length} paragraphs</div>
+      <div class="paper-map-column-indicator paper-map-column-indicator-top" aria-hidden="true"></div>
+      ${paragraphs}
+      <div class="paper-map-column-indicator paper-map-column-indicator-bottom" aria-hidden="true"></div>
     </section>`;
   }).join("");
   return `<div class="paper-map-columns" style="--paper-count:${allPapers.length}">${columns}</div>`;
@@ -1345,10 +1460,73 @@ function syncPaperMapColumns(source, columns) {
   requestAnimationFrame(() => { paperMapScrollSyncing = false; });
 }
 
+// Selecting a group from the legend scrolls each paper's own column so that
+// paper's FIRST paragraph belonging to that group is in view -- only
+// meaningful in reading mode, since skeleton mode's track doesn't scroll.
+function scrollColumnsToGroup(groupId) {
+  if (paperMapMode !== "reading" || !groupId) return;
+  stage.querySelectorAll(".paper-map-column").forEach(column => {
+    const target = column.querySelector(`.paper-map-paragraph[data-paper-map-group="${CSS.escape(groupId)}"]`);
+    if (!target) return;
+    // getBoundingClientRect deltas (not offsetTop) so this is correct regardless of
+    // which element ends up as the offsetParent -- same technique as computeAndApplyAlignment().
+    const columnRect = column.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+    const offset = targetRect.top - columnRect.top + column.scrollTop - 12; // small gap so it isn't flush against the column edge
+    column.scrollTop = Math.max(0, offset);
+    paperMapScrollByPaper[column.dataset.paper] = column.scrollTop;
+  });
+}
+
+// Updates each column's top/bottom floating badges to reflect how many of
+// the CURRENTLY SELECTED group's paragraphs are scrolled out of view above
+// or below that column's own visible area -- called after selecting a
+// group, and again on every manual scroll so the counts stay live. Hides
+// both badges (no group selected, or a paper has none of that group) rather
+// than showing a "0 more" badge.
+function updateColumnGroupIndicators() {
+  const groupId = paperMapSelectedGroupId;
+  stage.querySelectorAll(".paper-map-column").forEach(column => {
+    const topEl = column.querySelector(".paper-map-column-indicator-top");
+    const bottomEl = column.querySelector(".paper-map-column-indicator-bottom");
+    if (!topEl || !bottomEl) return;
+
+    if (paperMapMode !== "reading" || !groupId) {
+      topEl.classList.remove("visible");
+      bottomEl.classList.remove("visible");
+      return;
+    }
+
+    const paragraphs = [...column.querySelectorAll(`.paper-map-paragraph[data-paper-map-group="${CSS.escape(groupId)}"]`)];
+    // Sibling elements don't inherit a paragraph's own inline --group-color,
+    // so pull it from any matching paragraph and set it explicitly.
+    const color = paragraphs.length ? paragraphs[0].style.getPropertyValue("--group-color") : "";
+    if (color) { topEl.style.setProperty("--group-color", color); bottomEl.style.setProperty("--group-color", color); }
+    const columnRect = column.getBoundingClientRect();
+    const headEl = column.querySelector(".paper-map-paper-head");
+    const visibleTop = columnRect.top + (headEl ? headEl.offsetHeight : 0); // sticky header covers the column's own top edge
+    let above = 0, below = 0;
+    paragraphs.forEach(p => {
+      const r = p.getBoundingClientRect();
+      if (r.bottom < visibleTop) above += 1;
+      else if (r.top > columnRect.bottom) below += 1;
+    });
+
+    if (above > 0) {
+      topEl.style.top = `${headEl ? headEl.offsetHeight : 0}px`;
+      topEl.textContent = `▴ ${above} more above`;
+    }
+    topEl.classList.toggle("visible", above > 0);
+
+    if (below > 0) bottomEl.textContent = `▾ ${below} more below`;
+    bottomEl.classList.toggle("visible", below > 0);
+  });
+}
+
 function attachPaperMapInteractions(model) {
   const shell = stage.querySelector(".paper-map-shell");
   if (shell) shell.addEventListener("click", event => event.stopPropagation());
-  attachIterationTabInteractions();
+  attachEpochPhaseTabInteractions();
   stage.querySelectorAll("[data-paper-map-mode]").forEach(button => {
     button.addEventListener("click", event => {
       event.stopPropagation();
@@ -1365,6 +1543,7 @@ function attachPaperMapInteractions(model) {
       paperMapLastScrolledPaper = column.dataset.paper;
       paperMapScrollByPaper[column.dataset.paper] = column.scrollTop;
       syncPaperMapColumns(column, columns);
+      updateColumnGroupIndicators();
     }, { passive: true });
   });
   const syncToggle = document.getElementById("paperMapSyncScroll");
@@ -1385,28 +1564,22 @@ function attachPaperMapInteractions(model) {
     card.addEventListener("click", event => {
       event.stopPropagation();
       paperMapSelectedGroupId = groupId && paperMapSelectedGroupId !== groupId ? groupId : null;
-      setPaperMapGroupEmphasis();
+      updateColumnGroupIndicators();
+      refreshPaperMapLegend(model);
     });
   });
-  stage.querySelectorAll(".paper-map-legend-item").forEach(button => {
-    const groupId = button.dataset.paperMapGroup;
-    button.addEventListener("mouseenter", () => setPaperMapGroupEmphasis(groupId));
-    button.addEventListener("mouseleave", () => setPaperMapGroupEmphasis());
-    button.addEventListener("click", event => {
-      event.stopPropagation();
-      paperMapSelectedGroupId = paperMapSelectedGroupId === groupId ? null : groupId;
-      setPaperMapGroupEmphasis();
-    });
-  });
+  attachPaperMapLegendInteractions(model);
   const content = stage.querySelector(".paper-map-columns, .paper-map-skeleton-columns");
   if (content) {
     content.addEventListener("click", event => {
       event.stopPropagation();
       paperMapSelectedGroupId = null;
-      setPaperMapGroupEmphasis();
+      updateColumnGroupIndicators();
+      refreshPaperMapLegend(model);
     });
   }
   setPaperMapGroupEmphasis();
+  updateColumnGroupIndicators();
 }
 
 function traceIterationNumbers() {
@@ -2305,9 +2478,17 @@ function applyFilterAndRender() {
   attachInteractions();
 }
 
+function updateSliderVisibility() {
+  const previewControl = document.getElementById("previewLengthControl");
+  const similarityControl = document.getElementById("minSimilarityControl");
+  if (previewControl) previewControl.style.display = PREVIEW_LENGTH_GRANULARITIES.includes(currentGranularity) ? "flex" : "none";
+  if (similarityControl) similarityControl.style.display = MIN_SIMILARITY_GRANULARITIES.includes(currentGranularity) ? "flex" : "none";
+}
+
 function switchGranularity(granularity) {
   if (currentGranularity === "qi-flow" && granularity !== "qi-flow") stopQiFlowPlayback();
   currentGranularity = granularity;
+  updateSliderVisibility();
   buildGranularityTabs();
   if (granularity === "groups") {
     renderIterationGroups();
@@ -2377,6 +2558,7 @@ async function init() {
   traceSelectedGroupId = iterationGroups[0]?.[0]?.group_id || null;
   rawLinksForGranularity = links[currentGranularity] || [];
 
+  updateSliderVisibility();
   buildGranularityTabs();
   applyFilterAndRender();
 

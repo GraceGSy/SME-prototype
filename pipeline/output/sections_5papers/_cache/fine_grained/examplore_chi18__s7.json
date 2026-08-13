@@ -1,0 +1,82 @@
+{
+  "paragraphs": [
+    {
+      "tag": "What is the overall goal and design of the user study?",
+      "start_text": "We conducted a within-subjects study with sixteen Java pro-",
+      "prev_relation": "",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What API usage questions were used in the study?",
+      "start_text": "Q1. How do I create or initialize the receiver object",
+      "prev_relation": "elaboration",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "Why were these three API methods chosen?",
+      "start_text": "Programmers often behave differently when searching online",
+      "prev_relation": "elaboration",
+      "next_relation": "example"
+    },
+    {
+      "tag": "What are the specific API methods used in the study?",
+      "start_text": "1. Map.get is a commonly used Java method that retrieves the",
+      "prev_relation": "example",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How did EXAMPLORE render these APIs?",
+      "start_text": "Figure 8 shows cropped screenshots of how EXAMPLORE ren-",
+      "prev_relation": "elaboration",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "Who were the study participants?",
+      "start_text": "We recruited sixteen Computer Science students from UC",
+      "prev_relation": "continuation",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "What was the overall study procedure structure?",
+      "start_text": "We conducted a 50-min user study with each participant. Note",
+      "prev_relation": "continuation",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What happened during the training session?",
+      "start_text": "1. Training session (15 min) We first walked the participant",
+      "prev_relation": "elaboration",
+      "next_relation": "sequence"
+    },
+    {
+      "tag": "What happened during the first code exploration task?",
+      "start_text": "2. Code exploration task 1 (15 min) The participant was",
+      "prev_relation": "sequence",
+      "next_relation": "sequence"
+    },
+    {
+      "tag": "What happened during the second code exploration task?",
+      "start_text": "3. Code exploration task 2 (15 min) The participant was",
+      "prev_relation": "sequence",
+      "next_relation": "sequence"
+    },
+    {
+      "tag": "What happened during the post survey?",
+      "start_text": "4. Post survey (5 min) At the end of the session, participants",
+      "prev_relation": "sequence",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What did participants use in the control condition?",
+      "start_text": "In the control condition, participants were allowed to search",
+      "prev_relation": "elaboration",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "What guidance were participants given about answering questions?",
+      "start_text": "Some of the API usage questions have multiple possible cor-",
+      "prev_relation": "continuation",
+      "next_relation": ""
+    }
+  ]
+}

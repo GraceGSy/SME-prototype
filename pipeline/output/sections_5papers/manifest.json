@@ -1,0 +1,27 @@
+[
+  {
+    "paper_id": "abstractexplorer",
+    "title": "abstractexplorer",
+    "file": "abstractexplorer.json"
+  },
+  {
+    "paper_id": "corpusstudio",
+    "title": "corpusstudio",
+    "file": "corpusstudio.json"
+  },
+  {
+    "paper_id": "examplore_chi18",
+    "title": "Visualizing API Usage Examples at Scale",
+    "file": "examplore_chi18.json"
+  },
+  {
+    "paper_id": "mesotext",
+    "title": "Supporting Sensemaking of Large Language Model Outputs at Scale",
+    "file": "mesotext.json"
+  },
+  {
+    "paper_id": "paralib_uist22",
+    "title": "Concept-Annotated Examples for Library Comparison",
+    "file": "paralib_uist22.json"
+  }
+]

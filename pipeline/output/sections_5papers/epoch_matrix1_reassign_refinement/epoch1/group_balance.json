@@ -1,0 +1,134 @@
+[
+  {
+    "group_id": "group_3",
+    "overarching_question": "Who were the recruited participants in the user study?",
+    "group_balance": 100.0,
+    "member_count": 12
+  },
+  {
+    "group_id": "group_4",
+    "overarching_question": "What do user studies reveal about the effectiveness and usability of the proposed tool?",
+    "group_balance": 100.0,
+    "member_count": 38
+  },
+  {
+    "group_id": "group_5",
+    "overarching_question": "How does the interface visually organize examples to support comparison?",
+    "group_balance": 100.0,
+    "member_count": 25
+  },
+  {
+    "group_id": "group_6",
+    "overarching_question": "How do prior tools support exploring and comparing document/example collections?",
+    "group_balance": 100.0,
+    "member_count": 26
+  },
+  {
+    "group_id": "group_7",
+    "overarching_question": "How does this system's approach differ from prior related work?",
+    "group_balance": 100.0,
+    "member_count": 10
+  },
+  {
+    "group_id": "group_8",
+    "overarching_question": "How do interface design features support user comprehension of content?",
+    "group_balance": 100.0,
+    "member_count": 31
+  },
+  {
+    "group_id": "group_9",
+    "overarching_question": "How do users experience and use the proposed interface/tool in practice, and what are its benefits and limitations?",
+    "group_balance": 100.0,
+    "member_count": 17
+  },
+  {
+    "group_id": "group_10",
+    "overarching_question": "What system and techniques help users make sense of large document/example corpora?",
+    "group_balance": 100.0,
+    "member_count": 43
+  },
+  {
+    "group_id": "group_12",
+    "overarching_question": "How was the tool's user study designed and conducted?",
+    "group_balance": 100.0,
+    "member_count": 40
+  },
+  {
+    "group_id": "group_13",
+    "overarching_question": "What did user studies reveal about the tool's effectiveness and usage?",
+    "group_balance": 100.0,
+    "member_count": 30
+  },
+  {
+    "group_id": "group_21",
+    "overarching_question": "What gaps in existing tools/approaches motivate this new system?",
+    "group_balance": 100.0,
+    "member_count": 19
+  },
+  {
+    "group_id": "group_2",
+    "overarching_question": "How do users interact with and benefit from the system's features?",
+    "group_balance": 80.0,
+    "member_count": 15
+  },
+  {
+    "group_id": "group_11",
+    "overarching_question": "What implementation details and data underlie the built system?",
+    "group_balance": 80.0,
+    "member_count": 10
+  },
+  {
+    "group_id": "group_14",
+    "overarching_question": "Which system features did users find most useful and how did they use them?",
+    "group_balance": 80.0,
+    "member_count": 7
+  },
+  {
+    "group_id": "group_15",
+    "overarching_question": "How can interfaces help people learn from and make sense of many examples?",
+    "group_balance": 80.0,
+    "member_count": 16
+  },
+  {
+    "group_id": "group_18",
+    "overarching_question": "How can interactive systems help users make sense of many text/code examples at scale?",
+    "group_balance": 80.0,
+    "member_count": 13
+  },
+  {
+    "group_id": "group_19",
+    "overarching_question": "What data, methods, and usage evidence support the built system?",
+    "group_balance": 80.0,
+    "member_count": 10
+  },
+  {
+    "group_id": "group_1",
+    "overarching_question": "How can systems help users make sense of large example/response corpora by surfacing shared structure and variation?",
+    "group_balance": 60.0,
+    "member_count": 13
+  },
+  {
+    "group_id": "group_20",
+    "overarching_question": "How does this system compare to prior related tools?",
+    "group_balance": 60.0,
+    "member_count": 4
+  },
+  {
+    "group_id": "group_16",
+    "overarching_question": "What are the paper's publication and citation details?",
+    "group_balance": 40.0,
+    "member_count": 2
+  },
+  {
+    "group_id": "group_17",
+    "overarching_question": "How does this system's approach differ from prior related tools?",
+    "group_balance": 40.0,
+    "member_count": 2
+  },
+  {
+    "group_id": "group_22",
+    "overarching_question": "How is the tool used, evaluated, and positioned relative to prior systems?",
+    "group_balance": 40.0,
+    "member_count": 3
+  }
+]

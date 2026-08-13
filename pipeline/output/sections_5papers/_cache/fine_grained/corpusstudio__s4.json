@@ -1,0 +1,184 @@
+{
+  "paragraphs": [
+    {
+      "tag": "What is CorpusStudio's main design purpose?",
+      "start_text": "We designed CorpusStudio to support writers",
+      "prev_relation": "",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What are the overarching design goals?",
+      "start_text": "Our overarching design goal is to empower",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How does a user first explore the system?",
+      "start_text": "Alice has been working on a new",
+      "prev_relation": "elaboration",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "How does the user inspect section titles?",
+      "start_text": "Inspecting the section titles. She looks at",
+      "prev_relation": "continuation",
+      "next_relation": "sequence"
+    },
+    {
+      "tag": "How does the user retrieve example sentences?",
+      "start_text": "Inspecting the retrieved sentences. In the text",
+      "prev_relation": "sequence",
+      "next_relation": "sequence"
+    },
+    {
+      "tag": "How does the user build a personal style sheet?",
+      "start_text": "Developing a personal style sheet. She bookmarks",
+      "prev_relation": "sequence",
+      "next_relation": "sequence"
+    },
+    {
+      "tag": "How does the user continue using the system while writing?",
+      "start_text": "Continuing Writing. Alice continues to write down",
+      "prev_relation": "sequence",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What theoretical basis informs the system's design?",
+      "start_text": "In this work, the evidence of community-specific",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What is Variation Theory and how does it inform design?",
+      "start_text": "Variation Theory. Regardless of whether a human",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What is Structural Alignment Theory and how does it inform rendering?",
+      "start_text": "Structural Alignment Theory. While the many retrieved",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What is the central text editor's design?",
+      "start_text": "3.3.1 Text Editor. Users outline their paper",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How is section title syntax created?",
+      "start_text": "Borrowing from the syntax of Markdown editors",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How does the system surface document-level norms?",
+      "start_text": "3.3.2 Surfacing Document-levelCommunity-specificEmergentNorms",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How does PDC algorithm work to order section titles?",
+      "start_text": "PDC is a structural mapping engine [11]",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How are section title clusters visually presented?",
+      "start_text": "Section title clusters are shown with a count",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How does the interface highlight commonalities and variations in clusters?",
+      "start_text": "We also provide cognitive support for perceiving",
+      "prev_relation": "elaboration",
+      "next_relation": ""
+    },
+    {
+      "tag": "How does the system surface sentence-level norms?",
+      "start_text": "3.3.3 Surfacing Sentence-level Community-specific Emergent Norms",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What is the spatial retrieval mechanism?",
+      "start_text": "Spatial Retrieval. At the core of our",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How can users preview future content via offset retrieval?",
+      "start_text": "To further help writers \u201cpeek into the future,\u201d",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How was the number of retrieved sentences determined?",
+      "start_text": "Scale of Retrieval. Following Gentner\u2019s work on",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How are retrieved sentences visually rendered?",
+      "start_text": "Sentence Rendering. However, what writers learn from",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What is the first rendering mode option?",
+      "start_text": "Distinctly Colorize Recurring Words. We created a",
+      "prev_relation": "example",
+      "next_relation": "contrast"
+    },
+    {
+      "tag": "What is the second rendering mode option?",
+      "start_text": "Grey Out Repeated Words. This mode de-emphasizes",
+      "prev_relation": "contrast",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How does re-ranking let users explore relationships?",
+      "start_text": "Re-ranking is another way for users to",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What is the user notes/bookmarking feature?",
+      "start_text": "3.3.4 User Notes. As shown in Figure",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What are contextual tooltips for?",
+      "start_text": "3.3.5 Contextual Tooltips. Writers may want to",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How do design features promote learning over plagiarism?",
+      "start_text": "3.3.6 Features for Promoting Learning, not Plagiarism.",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What additional design choices discourage plagiarism?",
+      "start_text": "In concert with showing many examples, two",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What technology stack was used to implement the system?",
+      "start_text": "SvelteKit.4",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "Why was vector-based search chosen over hybrid search?",
+      "start_text": "While determining relevance in retrieval systems is",
+      "prev_relation": "elaboration",
+      "next_relation": ""
+    }
+  ]
+}

@@ -22,12 +22,13 @@ time, per the current instructions.
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 from align_graphs import text_similarity
 from section_schema import GRANULARITIES, SectionedPaper
 
-OUTPUT_DIR = Path(__file__).resolve().parent / "output" / "sections"
+OUTPUT_DIR = Path(os.environ.get("SME_OUTPUT_DIR", str(Path(__file__).resolve().parent / "output" / "sections")))
 TOP_K = 3
 
 

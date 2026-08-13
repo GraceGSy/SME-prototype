@@ -39,7 +39,7 @@ from section_schema import DISCOURSE_TAGS, Section, SectionedPaper
 from text_locate import slice_by_markers
 
 DEFAULT_MODEL = os.environ.get("SME_EXTRACT_MODEL", "claude-sonnet-5")
-OUTPUT_DIR = Path(__file__).resolve().parent / "output" / "sections"
+OUTPUT_DIR = Path(os.environ.get("SME_OUTPUT_DIR", str(Path(__file__).resolve().parent / "output" / "sections")))
 CACHE_DIR = OUTPUT_DIR / "_cache" / "fine_grained"
 
 SYSTEM_PROMPT = f"""You are describing the paragraphs of one section of an academic paper.

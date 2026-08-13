@@ -1,0 +1,28 @@
+{
+  "paragraphs": [
+    {
+      "tag": "What problem motivates this work and what was built and found?",
+      "start_text": "Many communities, including the scientific",
+      "prev_relation": "",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "What are the classification concepts covered by this work?",
+      "start_text": "CCS Concepts",
+      "prev_relation": "elaboration",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "What are the keywords describing this work?",
+      "start_text": "Keywords",
+      "prev_relation": "continuation",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "How should this paper be cited?",
+      "start_text": "ACM Reference Format:",
+      "prev_relation": "continuation",
+      "next_relation": ""
+    }
+  ]
+}

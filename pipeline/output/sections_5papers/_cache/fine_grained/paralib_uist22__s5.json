@@ -1,0 +1,106 @@
+{
+  "paragraphs": [
+    {
+      "tag": "What design goals were set for the interface?",
+      "start_text": "We set out five design goals for ParaLib",
+      "prev_relation": "",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How do the design goals translate into user benefits?",
+      "start_text": "In other words, ParaLib is designed with",
+      "prev_relation": "elaboration",
+      "next_relation": "summary"
+    },
+    {
+      "tag": "What is ParaLib and how was it built?",
+      "start_text": "Based on these five design goals, we designed",
+      "prev_relation": "summary",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How does the interface show multiple code examples side-by-side?",
+      "start_text": "ManyParallelCodeExamples. Thecodeexampleview(Figure1",
+      "prev_relation": "elaboration",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "How can users see more examples?",
+      "start_text": "Users can scroll downward in any library column",
+      "prev_relation": "continuation",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How does the interface highlight analogous concepts across libraries?",
+      "start_text": "Concept Annotations. Using concept labels with uniquely as-",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How do users disambiguate overlapping colors?",
+      "start_text": "Due to the large number of colors necessary",
+      "prev_relation": "elaboration",
+      "next_relation": "summary"
+    },
+    {
+      "tag": "How do these design choices satisfy the design goals?",
+      "start_text": "Already, with these theory-derived design choices combined, users",
+      "prev_relation": "summary",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How is the concept hierarchy organized?",
+      "start_text": "Concept Hierarchy. The concepts listed in the side panel",
+      "prev_relation": "elaboration",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "How do concept distribution bars convey typicality?",
+      "start_text": "Concept Distributions. Three columns of bars (Figure 1",
+      "prev_relation": "continuation",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "How do example length distributions help compare libraries?",
+      "start_text": "Example Length Distributions. The distribution over the number",
+      "prev_relation": "continuation",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "How does concept selection filter examples?",
+      "start_text": "Concept Selection. When a user selects one or more concepts",
+      "prev_relation": "continuation",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What updates occur elsewhere in the interface upon selection?",
+      "start_text": "As illustrated in Figure 2, in addition to filtering",
+      "prev_relation": "elaboration",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "What additional buttons reveal cross-library correspondences?",
+      "start_text": "Revealing Additional Within- and Across-Library Correspondences",
+      "prev_relation": "continuation",
+      "next_relation": "example"
+    },
+    {
+      "tag": "What example illustrates the concept selection update?",
+      "start_text": "tionalities. As a result, three components updated: example-length-representing bars corresponding to filtered examples were",
+      "prev_relation": "example",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "What limitation exists regarding the concept hierarchy's construction?",
+      "start_text": "The hierarchy is currently designed by hand, in this case",
+      "prev_relation": "continuation",
+      "next_relation": "qualification"
+    },
+    {
+      "tag": "What limitation exists regarding the example collection and distribution data?",
+      "start_text": "Similarly, the information carried by the relative lengths of the",
+      "prev_relation": "qualification",
+      "next_relation": ""
+    }
+  ]
+}

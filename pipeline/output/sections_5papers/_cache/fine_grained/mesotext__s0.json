@@ -1,0 +1,22 @@
+{
+  "paragraphs": [
+    {
+      "tag": "What problem and approach does this paper address?",
+      "start_text": "help end-users or system designers make use of this capability. In",
+      "prev_relation": "",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What are the CCS concepts and keywords for this paper?",
+      "start_text": "CHI '24, May 11\u201316, 2024, Honolulu, HI, USA Katy Ilonka Gero,",
+      "prev_relation": "elaboration",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "How should this paper be cited?",
+      "start_text": "ACM Reference Format:",
+      "prev_relation": "continuation",
+      "next_relation": ""
+    }
+  ]
+}

@@ -34,6 +34,7 @@ Usage:
 from __future__ import annotations
 
 import json
+import os
 import random
 from pathlib import Path
 
@@ -50,11 +51,11 @@ from compute_ranking_matrices import (
     _rank_with_retry,
 )
 
-OUTPUT_DIR = Path(__file__).resolve().parent / "output" / "sections"
+OUTPUT_DIR = Path(os.environ.get("SME_OUTPUT_DIR", str(Path(__file__).resolve().parent / "output" / "sections")))
 RUN_DIR = OUTPUT_DIR / "epoch_matrix1_reassign_refinement"
 CACHE_DIR = OUTPUT_DIR / "_cache" / "epoch_matrix1_reassign_refinement"
 
-N_EPOCHS = 5
+N_EPOCHS = int(os.environ.get("SME_N_EPOCHS", "5"))  # defaults to the documented 5; override per-run
 RANDOM_SEED = 42  # fixed so the pre-epoch random pick -- and therefore its
                   # cached overarching_question -- stays stable across re-runs
 

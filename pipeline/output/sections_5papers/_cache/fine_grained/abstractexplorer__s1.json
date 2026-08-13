@@ -1,0 +1,58 @@
+{
+  "paragraphs": [
+    {
+      "tag": "What is the baseline for reasoning about a document corpus?",
+      "start_text": "The only existing ground-truth mechanism for reasoning about",
+      "prev_relation": "",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "Why are existing lossy approaches to augmenting reading problematic?",
+      "start_text": "Many existing approaches to augmenting humans' reasoning",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What further problems do lossy linguistic representations cause?",
+      "start_text": "Lossy linguistic representations can introduce semantic ambi-",
+      "prev_relation": "elaboration",
+      "next_relation": "contrast"
+    },
+    {
+      "tag": "What prior lossless techniques exist for reading document collections?",
+      "start_text": "Recent prior work has shown that it is possible",
+      "prev_relation": "contrast",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How does this SMT-informed approach work and why does it help?",
+      "start_text": "This SMT-informed approach, which AbstractExplorer shares,",
+      "prev_relation": "elaboration",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "Why hasn't this approach been applied to literature review corpora yet?",
+      "start_text": "Lossless SMT-informed techniques have yet to be brought to",
+      "prev_relation": "continuation",
+      "next_relation": "contrast"
+    },
+    {
+      "tag": "What system and techniques does this paper introduce?",
+      "start_text": "AbstractExplorer instantiates new minimally lossy2 SMT-",
+      "prev_relation": "contrast",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How was the system's design informed and validated?",
+      "start_text": "Three studies inform and validate AbstractExplorer's design:",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What are the paper's contributions?",
+      "start_text": "CHI paper abstracts\u2014reading across a larger and more diverse col-",
+      "prev_relation": "elaboration",
+      "next_relation": ""
+    }
+  ]
+}

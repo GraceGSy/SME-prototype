@@ -1,0 +1,16 @@
+{
+  "paragraphs": [
+    {
+      "tag": "Why is reviewing large paper corpora hard, and what approach does this build on?",
+      "start_text": "Individual flagship conferences today can have over a thousand",
+      "prev_relation": "",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What system was built and how was it evaluated?",
+      "start_text": "Theory (SMT) to facilitate seeing both the overview and the details",
+      "prev_relation": "elaboration",
+      "next_relation": ""
+    }
+  ]
+}

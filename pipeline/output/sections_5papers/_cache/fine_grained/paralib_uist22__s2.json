@@ -1,0 +1,40 @@
+{
+  "paragraphs": [
+    {
+      "tag": "Why is library selection difficult for programmers?",
+      "start_text": "\u201cTensorFlow or PyTorch?\u201d Many beginner students of deep",
+      "prev_relation": "",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What existing solutions do programmers use and what are their limits?",
+      "start_text": "The current de facto way programmers compare libraries",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What is the proposed solution?",
+      "start_text": "In this work, we propose a novel interface",
+      "prev_relation": "contrast",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What theoretical basis informs the interface design?",
+      "start_text": "Key interface design choices were derived from the",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What other interactive features does the interface include?",
+      "start_text": "Additional interactive features support sensemaking. For ex-",
+      "prev_relation": "elaboration",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "How was the interface evaluated and what did the study find?",
+      "start_text": "We designed and implemented ParaLib as a technical",
+      "prev_relation": "sequence",
+      "next_relation": "summary"
+    }
+  ]
+}

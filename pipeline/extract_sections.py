@@ -24,7 +24,7 @@ MAX_CHARS = 60_000
 
 SME_DIR = Path(__file__).resolve().parent.parent
 PAPERS_DIR = SME_DIR / "papers"
-OUTPUT_DIR = Path(__file__).resolve().parent / "output" / "sections"
+OUTPUT_DIR = Path(os.environ.get("SME_OUTPUT_DIR", str(Path(__file__).resolve().parent / "output" / "sections")))
 
 DEFAULT_PAPERS = [
     PAPERS_DIR / "examplore_chi18.pdf",

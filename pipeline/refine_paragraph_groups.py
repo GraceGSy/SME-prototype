@@ -54,7 +54,7 @@ from section_schema import SectionedPaper
 from summarize_groups import build_paragraph_lookup, build_section_tag_lookup, summarize_group
 
 DEFAULT_MODEL = os.environ.get("SME_EXTRACT_MODEL", "claude-sonnet-5")
-OUTPUT_DIR = Path(__file__).resolve().parent / "output" / "sections"
+OUTPUT_DIR = Path(os.environ.get("SME_OUTPUT_DIR", str(Path(__file__).resolve().parent / "output" / "sections")))
 CACHE_DIR = OUTPUT_DIR / "_cache"
 
 N_ITERATIONS = 5

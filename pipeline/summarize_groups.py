@@ -30,7 +30,7 @@ from cache_utils import cached_system, log_cache_usage
 from section_schema import Section, SectionedPaper
 
 DEFAULT_MODEL = os.environ.get("SME_EXTRACT_MODEL", "claude-sonnet-5")
-OUTPUT_DIR = Path(__file__).resolve().parent / "output" / "sections"
+OUTPUT_DIR = Path(os.environ.get("SME_OUTPUT_DIR", str(Path(__file__).resolve().parent / "output" / "sections")))
 # "iter0" -- the very first summarization pass, before any reassignment
 # (see refine_paragraph_groups.py for iter1..N). Also intentionally distinct
 # from this script's old flat cache path, since the enriched prompt below

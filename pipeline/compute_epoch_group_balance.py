@@ -25,10 +25,11 @@ Usage:
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 
-OUTPUT_DIR = Path(__file__).resolve().parent / "output" / "sections"
+OUTPUT_DIR = Path(os.environ.get("SME_OUTPUT_DIR", str(Path(__file__).resolve().parent / "output" / "sections")))
 RUN_DIR_NAME = sys.argv[1] if len(sys.argv) > 1 else "epoch_matrix_refinement"
 RUN_DIR = OUTPUT_DIR / RUN_DIR_NAME
 

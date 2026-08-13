@@ -1,0 +1,130 @@
+{
+  "paragraphs": [
+    {
+      "tag": "What is the overall approach to feature design?",
+      "start_text": "We designed and prototyped instantiations of several existing and",
+      "prev_relation": "",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "Why aim for 10s-100s of LLM outputs?",
+      "start_text": "4.1.1 Scale up the number of LLM outputs a human can consume.",
+      "prev_relation": "elaboration",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "Why show raw text rather than abstractions?",
+      "start_text": "4.1.2 Show the entire collection of LLM outputs as text\u2014not abstrac-",
+      "prev_relation": "continuation",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "Why avoid requiring users to select text lenses?",
+      "start_text": "4.1.3 Do not require users to select text \u201clenses\u201d with which to see",
+      "prev_relation": "continuation",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "Why embed pre-computed relationships in the text rendering?",
+      "start_text": "4.1.4 Show pre-computed relationships within the rendering of the",
+      "prev_relation": "continuation",
+      "next_relation": "continuation"
+    },
+    {
+      "tag": "Why support diverse sensemaking sub-tasks?",
+      "start_text": "4.1.5 Support a variety of sensemaking sub-tasks for both system",
+      "prev_relation": "continuation",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What theoretical background informs feature design?",
+      "start_text": "By interacting with a system, users may develop a mental model",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How do the theories explain learning from variation and analogy?",
+      "start_text": "Variation Theory describes how helping people perceive the",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What platform and general feature set were implemented?",
+      "start_text": "We implemented our LLM response sensemaking features within a",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What is the Exact Matches feature and its purpose?",
+      "start_text": "4.3.1 Exact Matches. This conceptually straight-forward feature",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How is the Exact Matches algorithm implemented?",
+      "start_text": "Algorithm and Rendering. We identify substrings to highlight",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How are exact matches visually rendered?",
+      "start_text": "Each set of exact matches is highlighted in its own color; examples",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What is the Unique Words feature and its purpose?",
+      "start_text": "4.3.2 Unique Words. This feature allows users to see what is dis-",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How is the Unique Words algorithm implemented?",
+      "start_text": "Algorithm and Rendering. We calculate TF-IDF values using the",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What is the novel Positional Diction Clustering algorithm designed to do?",
+      "start_text": "4.3.3 Positional Diction Clustering (PDC). This novel algorithm is",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How does PDC connect to learning theories?",
+      "start_text": "Theories of human concept learning suggest that a key step in",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "How is the PDC algorithm implemented and rendered?",
+      "start_text": "Algorithm and Rendering. We create groups of sentences using",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What is the Grid Layout and how does it work?",
+      "start_text": "4.3.4 Grid Layout. LLM responses are laid out in a grid, with user-",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What benefits does the Grid Layout provide?",
+      "start_text": "There are two hypothesized benefits of this view. One is based on",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What is the Interleaved Layout and how is it rendered?",
+      "start_text": "4.3.5 Interleaved Layout (enabled by PDC). Sentences from dif-",
+      "prev_relation": "elaboration",
+      "next_relation": "elaboration"
+    },
+    {
+      "tag": "What benefits are hypothesized for the Interleaved Layout?",
+      "start_text": "We hypothesise that this rendering will (1) be particularly use-",
+      "prev_relation": "elaboration",
+      "next_relation": ""
+    }
+  ]
+}

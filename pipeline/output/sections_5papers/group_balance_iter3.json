@@ -1,0 +1,134 @@
+[
+  {
+    "group_id": "group_4",
+    "overarching_question": "What did the user study evaluation reveal about the tool's effectiveness?",
+    "group_balance": 100.0,
+    "member_count": 43
+  },
+  {
+    "group_id": "group_19",
+    "overarching_question": "What was the procedure and design of the user study evaluating the tool?",
+    "group_balance": 100.0,
+    "member_count": 39
+  },
+  {
+    "group_id": "group_13",
+    "overarching_question": "How do users experience and evaluate the prototype system's features?",
+    "group_balance": 100.0,
+    "member_count": 37
+  },
+  {
+    "group_id": "group_6",
+    "overarching_question": "How does this work relate to and extend prior research?",
+    "group_balance": 100.0,
+    "member_count": 34
+  },
+  {
+    "group_id": "group_18",
+    "overarching_question": "What system was built to support sensemaking across many documents/examples, and how was it evaluated?",
+    "group_balance": 100.0,
+    "member_count": 31
+  },
+  {
+    "group_id": "group_12",
+    "overarching_question": "How were these systems designed and evaluated with users?",
+    "group_balance": 100.0,
+    "member_count": 20
+  },
+  {
+    "group_id": "group_21",
+    "overarching_question": "Why do existing tools/resources fail to support users navigating large information corpora?",
+    "group_balance": 100.0,
+    "member_count": 17
+  },
+  {
+    "group_id": "group_2",
+    "overarching_question": "What interface features help users compare and identify patterns across texts?",
+    "group_balance": 100.0,
+    "member_count": 17
+  },
+  {
+    "group_id": "group_3",
+    "overarching_question": "Who were the study participants and what was their relevant background?",
+    "group_balance": 100.0,
+    "member_count": 13
+  },
+  {
+    "group_id": "group_7",
+    "overarching_question": "How does this system differ from prior related tools?",
+    "group_balance": 100.0,
+    "member_count": 6
+  },
+  {
+    "group_id": "group_11",
+    "overarching_question": "How were the system's data processing pipeline and algorithms implemented?",
+    "group_balance": 80.0,
+    "member_count": 31
+  },
+  {
+    "group_id": "group_5",
+    "overarching_question": "How do cognitive theories of comparison/learning justify system designs for cross-example analysis?",
+    "group_balance": 80.0,
+    "member_count": 15
+  },
+  {
+    "group_id": "group_15",
+    "overarching_question": "What unmet user needs motivate this tool's design?",
+    "group_balance": 80.0,
+    "member_count": 13
+  },
+  {
+    "group_id": "group_16",
+    "overarching_question": "What are the paper's front-matter metadata (classification, keywords, citation, venue)?",
+    "group_balance": 60.0,
+    "member_count": 11
+  },
+  {
+    "group_id": "group_14",
+    "overarching_question": "What features and design elements make up the system's interface?",
+    "group_balance": 60.0,
+    "member_count": 10
+  },
+  {
+    "group_id": "group_20",
+    "overarching_question": "How does this tool relate to prior code/text visualization work?",
+    "group_balance": 60.0,
+    "member_count": 7
+  },
+  {
+    "group_id": "group_22",
+    "overarching_question": "How do visualization tools help users explore and filter code examples?",
+    "group_balance": 40.0,
+    "member_count": 12
+  },
+  {
+    "group_id": "group_9",
+    "overarching_question": "What are the limitations and future directions of these API/library exploration tools?",
+    "group_balance": 40.0,
+    "member_count": 12
+  },
+  {
+    "group_id": "group_8",
+    "overarching_question": "How do interface design features help users compare and interpret multiple text examples?",
+    "group_balance": 40.0,
+    "member_count": 4
+  },
+  {
+    "group_id": "group_10",
+    "overarching_question": "What design rationale underlies the system's comparison mechanisms?",
+    "group_balance": 40.0,
+    "member_count": 3
+  },
+  {
+    "group_id": "group_1",
+    "overarching_question": "How can interface design support sensemaking of many LLM responses?",
+    "group_balance": 20.0,
+    "member_count": 10
+  },
+  {
+    "group_id": "group_17",
+    "overarching_question": "How does this system's approach differ from prior related work?",
+    "group_balance": 20.0,
+    "member_count": 1
+  }
+]

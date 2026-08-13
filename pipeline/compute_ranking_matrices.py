@@ -46,7 +46,7 @@ from cache_utils import cached_system, log_cache_usage
 from section_schema import Section, SectionedPaper
 
 DEFAULT_MODEL = os.environ.get("SME_EXTRACT_MODEL", "claude-sonnet-5")
-OUTPUT_DIR = Path(__file__).resolve().parent / "output" / "sections"
+OUTPUT_DIR = Path(os.environ.get("SME_OUTPUT_DIR", str(Path(__file__).resolve().parent / "output" / "sections")))
 CACHE_DIR = OUTPUT_DIR / "_cache"
 
 MAX_ATTEMPTS = 3

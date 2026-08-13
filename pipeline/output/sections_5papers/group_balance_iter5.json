@@ -1,0 +1,122 @@
+[
+  {
+    "group_id": "group_13",
+    "overarching_question": "How do users experience and evaluate corpus-exploration/writing-support tools?",
+    "group_balance": 100.0,
+    "member_count": 57
+  },
+  {
+    "group_id": "group_19",
+    "overarching_question": "How was the tool's user study designed and conducted to evaluate it?",
+    "group_balance": 100.0,
+    "member_count": 54
+  },
+  {
+    "group_id": "group_11",
+    "overarching_question": "How was the system's data pipeline and algorithms implemented?",
+    "group_balance": 100.0,
+    "member_count": 33
+  },
+  {
+    "group_id": "group_3",
+    "overarching_question": "Who were the study participants and what backgrounds did they have?",
+    "group_balance": 100.0,
+    "member_count": 13
+  },
+  {
+    "group_id": "group_10",
+    "overarching_question": "How are these comparison-support systems designed and structured?",
+    "group_balance": 80.0,
+    "member_count": 18
+  },
+  {
+    "group_id": "group_15",
+    "overarching_question": "How can tools help people read, compare, and learn from large document corpora?",
+    "group_balance": 80.0,
+    "member_count": 17
+  },
+  {
+    "group_id": "group_5",
+    "overarching_question": "How do cognitive theories of comparison and learning inform system design?",
+    "group_balance": 80.0,
+    "member_count": 17
+  },
+  {
+    "group_id": "group_2",
+    "overarching_question": "How can text alignment and highlighting support cross-document comparison and sensemaking?",
+    "group_balance": 80.0,
+    "member_count": 17
+  },
+  {
+    "group_id": "group_4",
+    "overarching_question": "Does the proposed interface/tool outperform baselines in user studies?",
+    "group_balance": 80.0,
+    "member_count": 17
+  },
+  {
+    "group_id": "group_16",
+    "overarching_question": "What are the paper's metadata: classification, keywords, and citation details?",
+    "group_balance": 80.0,
+    "member_count": 12
+  },
+  {
+    "group_id": "group_9",
+    "overarching_question": "How does this work relate to and improve upon prior related work?",
+    "group_balance": 80.0,
+    "member_count": 11
+  },
+  {
+    "group_id": "group_18",
+    "overarching_question": "How can tools leverage document structure to support reading and writing across text corpora?",
+    "group_balance": 60.0,
+    "member_count": 18
+  },
+  {
+    "group_id": "group_21",
+    "overarching_question": "Why is exploring large, complex information corpora at scale difficult, and what's lacking in existing tools?",
+    "group_balance": 60.0,
+    "member_count": 10
+  },
+  {
+    "group_id": "group_6",
+    "overarching_question": "How does this work build on prior related research?",
+    "group_balance": 60.0,
+    "member_count": 7
+  },
+  {
+    "group_id": "group_20",
+    "overarching_question": "How does this tool differ from prior related work?",
+    "group_balance": 60.0,
+    "member_count": 7
+  },
+  {
+    "group_id": "group_22",
+    "overarching_question": "How can visualizing large collections of code examples help programmers learn and compare APIs/libraries?",
+    "group_balance": 40.0,
+    "member_count": 46
+  },
+  {
+    "group_id": "group_12",
+    "overarching_question": "How was this cross-document sensemaking tool designed, informed, and validated?",
+    "group_balance": 40.0,
+    "member_count": 5
+  },
+  {
+    "group_id": "group_1",
+    "overarching_question": "How can interfaces support sensemaking of many LLM responses at the mesoscale?",
+    "group_balance": 20.0,
+    "member_count": 25
+  },
+  {
+    "group_id": "group_14",
+    "overarching_question": "Which combination of system features best supports task performance?",
+    "group_balance": 20.0,
+    "member_count": 1
+  },
+  {
+    "group_id": "group_17",
+    "overarching_question": "How does this work relate to and differ from prior research?",
+    "group_balance": 20.0,
+    "member_count": 1
+  }
+]
