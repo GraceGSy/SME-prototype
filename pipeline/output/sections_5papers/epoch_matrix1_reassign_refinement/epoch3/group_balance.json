@@ -3,7 +3,7 @@
     "group_id": "group_2",
     "overarching_question": "How do users interact with and benefit from the tool in practice?",
     "group_balance": 100.0,
-    "member_count": 22
+    "member_count": 20
   },
   {
     "group_id": "group_3",
@@ -39,7 +39,7 @@
     "group_id": "group_11",
     "overarching_question": "What data, architecture, and algorithms were used to implement the system?",
     "group_balance": 100.0,
-    "member_count": 29
+    "member_count": 28
   },
   {
     "group_id": "group_12",
@@ -54,12 +54,6 @@
     "member_count": 36
   },
   {
-    "group_id": "group_14",
-    "overarching_question": "How did users experience and use the system's features in evaluation?",
-    "group_balance": 100.0,
-    "member_count": 22
-  },
-  {
     "group_id": "group_15",
     "overarching_question": "How do cognitive learning theories inform example-based tool design?",
     "group_balance": 100.0,
@@ -70,6 +64,12 @@
     "overarching_question": "Why do existing methods fail to help users explore and compare multiple text/code sources effectively?",
     "group_balance": 100.0,
     "member_count": 52
+  },
+  {
+    "group_id": "group_14",
+    "overarching_question": "How did users experience and use the system's features in evaluation?",
+    "group_balance": 80.0,
+    "member_count": 21
   },
   {
     "group_id": "group_1",
@@ -87,7 +87,7 @@
     "group_id": "group_16",
     "overarching_question": "What are the paper's publication and citation details?",
     "group_balance": 60.0,
-    "member_count": 12
+    "member_count": 11
   },
   {
     "group_id": "group_18",

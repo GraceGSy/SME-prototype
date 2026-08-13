@@ -3,7 +3,7 @@
     "group_id": "group_1",
     "overarching_question": "What are the paper's main contributions?",
     "group_balance": 100.0,
-    "member_count": 8
+    "member_count": 7
   },
   {
     "group_id": "group_3",
@@ -39,7 +39,7 @@
     "group_id": "group_18",
     "overarching_question": "Does the proposed tool improve user performance versus baseline in user studies?",
     "group_balance": 100.0,
-    "member_count": 43
+    "member_count": 42
   },
   {
     "group_id": "group_19",
@@ -51,7 +51,7 @@
     "group_id": "group_20",
     "overarching_question": "How can we present large sets of related examples to support understanding and comparison?",
     "group_balance": 100.0,
-    "member_count": 23
+    "member_count": 22
   },
   {
     "group_id": "group_2",

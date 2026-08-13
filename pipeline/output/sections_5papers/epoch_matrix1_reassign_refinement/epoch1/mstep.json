@@ -41,19 +41,9 @@
           "tag": "How does a user explore the system in practice?"
         },
         {
-          "paper": "corpusstudio",
-          "unit_id": "pa72",
-          "tag": "What did participants experience using the tool?"
-        },
-        {
           "paper": "examplore_chi18",
           "unit_id": "pa38",
           "tag": "How does the user investigate guard conditions for an alternative usage?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa76",
-          "tag": "How did real users apply the interface to their own tasks?"
         },
         {
           "paper": "paralib_uist22",
@@ -97,16 +87,6 @@
       "group_id": "group_4",
       "overarching_question": "What do user studies reveal about the effectiveness and usability of the proposed tool?",
       "representative_members": [
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa80",
-          "tag": "How do users actually use the full system to explore a corpus?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa72",
-          "tag": "What did participants experience using the tool?"
-        },
         {
           "paper": "examplore_chi18",
           "unit_id": "pa62",
@@ -253,24 +233,9 @@
       "overarching_question": "How do users experience and use the proposed interface/tool in practice, and what are its benefits and limitations?",
       "representative_members": [
         {
-          "paper": "abstractexplorer",
-          "unit_id": "pa80",
-          "tag": "How do users actually use the full system to explore a corpus?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa72",
-          "tag": "What did participants experience using the tool?"
-        },
-        {
           "paper": "examplore_chi18",
           "unit_id": "pa76",
           "tag": "What is the tradeoff between expressiveness and visual complexity?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa76",
-          "tag": "How did real users apply the interface to their own tasks?"
         },
         {
           "paper": "paralib_uist22",
@@ -333,11 +298,6 @@
           "paper": "mesotext",
           "unit_id": "pa38",
           "tag": "What platform and general feature set were implemented?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa79",
-          "tag": "What future tooling improvement is suggested for authoring concept hierarchies?"
         }
       ]
     },
@@ -345,11 +305,6 @@
       "group_id": "group_12",
       "overarching_question": "How was the tool's user study designed and conducted?",
       "representative_members": [
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa80",
-          "tag": "How do users actually use the full system to explore a corpus?"
-        },
         {
           "paper": "corpusstudio",
           "unit_id": "pa56",
@@ -377,16 +332,6 @@
       "overarching_question": "What did user studies reveal about the tool's effectiveness and usage?",
       "representative_members": [
         {
-          "paper": "abstractexplorer",
-          "unit_id": "pa80",
-          "tag": "How do users actually use the full system to explore a corpus?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa72",
-          "tag": "What did participants experience using the tool?"
-        },
-        {
           "paper": "examplore_chi18",
           "unit_id": "pa62",
           "tag": "What do the quantitative results show about correctness?"
@@ -413,19 +358,9 @@
           "tag": "What did eye tracking reveal about NFC-based reading patterns?"
         },
         {
-          "paper": "corpusstudio",
-          "unit_id": "pa72",
-          "tag": "What did participants experience using the tool?"
-        },
-        {
           "paper": "examplore_chi18",
           "unit_id": "pa68",
           "tag": "What interface features did participants value most?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa76",
-          "tag": "How did real users apply the interface to their own tasks?"
         },
         {
           "paper": "paralib_uist22",
@@ -578,11 +513,6 @@
           "tag": "What are the three phases of the EXAMPLORE system?"
         },
         {
-          "paper": "mesotext",
-          "unit_id": "pa76",
-          "tag": "How did real users apply the interface to their own tasks?"
-        },
-        {
           "paper": "paralib_uist22",
           "unit_id": "pa58",
           "tag": "How many code examples did participants inspect?"
@@ -659,11 +589,6 @@
           "paper": "abstractexplorer",
           "unit_id": "pa52",
           "tag": "How does a user explore the system in practice?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa72",
-          "tag": "What did participants experience using the tool?"
         },
         {
           "paper": "examplore_chi18",

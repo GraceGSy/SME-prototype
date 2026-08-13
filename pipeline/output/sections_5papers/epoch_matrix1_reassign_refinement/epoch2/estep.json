@@ -938,11 +938,6 @@
           "tag": "What overall frustration did higher NFC participants express?"
         },
         {
-          "paper": "abstractexplorer",
-          "unit_id": "pa80",
-          "tag": "How do users actually use the full system to explore a corpus?"
-        },
-        {
           "paper": "corpusstudio",
           "unit_id": "pa23",
           "tag": "How does a user first explore the system?"
@@ -951,11 +946,6 @@
           "paper": "corpusstudio",
           "unit_id": "pa27",
           "tag": "How does the user continue using the system while writing?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa72",
-          "tag": "What did participants experience using the tool?"
         },
         {
           "paper": "examplore_chi18",
@@ -986,11 +976,6 @@
           "paper": "mesotext",
           "unit_id": "pa65",
           "tag": "What did participants like about the exploratory interface?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa76",
-          "tag": "How did real users apply the interface to their own tasks?"
         },
         {
           "paper": "paralib_uist22",
@@ -1848,11 +1833,6 @@
           "tag": "What are the copyright and venue details?"
         },
         {
-          "paper": "examplore_chi18",
-          "unit_id": "pa79",
-          "tag": "Who contributed to and funded this work?"
-        },
-        {
           "paper": "mesotext",
           "unit_id": "pa2",
           "tag": "What are the CCS concepts and keywords for this paper?"
@@ -2116,11 +2096,6 @@
           "paper": "paralib_uist22",
           "unit_id": "pa75",
           "tag": "What factors does ParaLib fail to address?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa79",
-          "tag": "What future tooling improvement is suggested for authoring concept hierarchies?"
         }
       ]
     }

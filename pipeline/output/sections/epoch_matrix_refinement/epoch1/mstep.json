@@ -199,11 +199,6 @@
           "tag": "What does the overall pattern of results suggest, and what tradeoff exists?"
         },
         {
-          "paper": "mesotext",
-          "unit_id": "pa74",
-          "tag": "How did real users apply the tool to their own tasks?"
-        },
-        {
           "paper": "paralib_uist22",
           "unit_id": "pa84",
           "tag": "What limitation exists regarding the concept hierarchy used?"

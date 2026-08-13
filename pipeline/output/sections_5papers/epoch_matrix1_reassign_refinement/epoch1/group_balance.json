@@ -39,7 +39,7 @@
     "group_id": "group_9",
     "overarching_question": "How do users experience and use the proposed interface/tool in practice, and what are its benefits and limitations?",
     "group_balance": 100.0,
-    "member_count": 17
+    "member_count": 16
   },
   {
     "group_id": "group_10",
@@ -52,12 +52,6 @@
     "overarching_question": "How was the tool's user study designed and conducted?",
     "group_balance": 100.0,
     "member_count": 40
-  },
-  {
-    "group_id": "group_13",
-    "overarching_question": "What did user studies reveal about the tool's effectiveness and usage?",
-    "group_balance": 100.0,
-    "member_count": 30
   },
   {
     "group_id": "group_21",
@@ -78,6 +72,12 @@
     "member_count": 10
   },
   {
+    "group_id": "group_13",
+    "overarching_question": "What did user studies reveal about the tool's effectiveness and usage?",
+    "group_balance": 80.0,
+    "member_count": 27
+  },
+  {
     "group_id": "group_14",
     "overarching_question": "Which system features did users find most useful and how did they use them?",
     "group_balance": 80.0,
@@ -93,7 +93,7 @@
     "group_id": "group_18",
     "overarching_question": "How can interactive systems help users make sense of many text/code examples at scale?",
     "group_balance": 80.0,
-    "member_count": 13
+    "member_count": 12
   },
   {
     "group_id": "group_19",

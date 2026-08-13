@@ -110,11 +110,6 @@
           "tag": "What is the overall contribution and future direction?"
         },
         {
-          "paper": "examplore_chi18",
-          "unit_id": "pa76",
-          "tag": "Who provided support and funding for this work?"
-        },
-        {
           "paper": "mesotext",
           "unit_id": "pa10",
           "tag": "What are this paper's contributions?"
@@ -138,11 +133,6 @@
           "paper": "mesotext",
           "unit_id": "pa62",
           "tag": "What qualitative preferences emerged for the email task?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa74",
-          "tag": "How did real users apply the tool to their own tasks?"
         },
         {
           "paper": "paralib_uist22",
@@ -808,11 +798,6 @@
           "paper": "paralib_uist22",
           "unit_id": "pa85",
           "tag": "What limitation exists regarding the choice of baseline?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa86",
-          "tag": "What future work is suggested for automating concept annotation?"
         }
       ]
     },

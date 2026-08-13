@@ -80,6 +80,7 @@
 
   .iteration-tabs { display: flex; gap: 2px; margin-bottom: 4px; }
   .iteration-meta { font-size: 11px; color: #868e96; margin-bottom: 8px; }
+  .epoch-groups-preview-control { font-size: 11px; color: #495057; display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
   .papers-legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 11px; color: #495057; margin-bottom: 14px; }
   .papers-legend-item { display: inline-flex; align-items: center; gap: 5px; }
   .papers-legend-swatch { width: 9px; height: 9px; border-radius: 2px; display: inline-block; flex: none; }
@@ -95,7 +96,6 @@
   .group-question:hover { color: #1c7ed6; }
   .group-question::before { content: "▸ "; color: #adb5bd; }
   .group-card.open .group-question::before { content: "▾ "; }
-  .group-id-label { font-weight: 600; color: #868e96; margin-right: 5px; }
   .group-balance-badge {
     font-size: 10px; font-weight: 600; color: #495057; background: #f1f3f5;
     border: 1px solid #dee2e6; padding: 1px 6px; border-radius: 9px; margin-left: 6px; vertical-align: middle;
@@ -128,7 +128,6 @@
     border-bottom: 1px solid #e9ecef; background: #f8f9fa;
   }
   .paper-map-control-row { display: flex; align-items: center; gap: 10px; min-width: 0; flex-wrap: wrap; }
-  .paper-map-control-row .iteration-tabs { margin: 0; }
   .paper-map-summary { color: #6c757d; font-size: 10px; white-space: nowrap; }
   .paper-map-mode-toggle { display: inline-flex; border: 1px solid #ced4da; border-radius: 5px; overflow: hidden; }
   .paper-map-mode-button {
@@ -137,29 +136,28 @@
   }
   .paper-map-mode-button:last-child { border-right: 0; }
   .paper-map-mode-button.active { background: #1c7ed6; color: #fff; }
-  .paper-map-sync-toggle {
+  .paper-map-sync-toggle, .paper-map-hide-unselected-toggle {
     display: inline-flex; align-items: center; gap: 5px; color: #495057;
     font-size: 9.5px; white-space: nowrap;
   }
-  .paper-map-legend { display: flex; align-items: flex-start; gap: 5px; min-width: 0; overflow-x: auto; scrollbar-width: thin; padding: 3px 2px 12px; }
+  .paper-map-hide-unselected-toggle input:disabled { cursor: not-allowed; }
+  .paper-map-hide-unselected-toggle:has(input:disabled) { opacity: .5; }
+  .paper-map-paragraph.hidden, .paper-map-skeleton-block.hidden { display: none; }
+  .paper-map-legend { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 5px; min-width: 0; padding: 3px 2px 8px; }
   .paper-map-legend-item {
-    display: inline-flex; align-items: center; gap: 5px; flex: 0 0 auto; max-width: 235px;
+    display: inline-flex; align-items: flex-start; gap: 5px; flex: 0 0 auto; max-width: 380px;
     padding: 3px 7px; border: 1px solid #dee2e6; border-radius: 10px; background: #fff;
     color: #495057; font-size: 9.5px; text-align: left; cursor: pointer;
   }
   .paper-map-legend-item:hover, .paper-map-legend-item.highlight, .paper-map-legend-item.selected {
     border-color: var(--group-color); box-shadow: inset 0 0 0 1px var(--group-color);
   }
-  .paper-map-legend-item.selected { background: var(--group-fill); max-width: 380px; align-items: flex-start; }
+  .paper-map-legend-item.selected { background: var(--group-fill); }
   .paper-map-swatch { flex: 0 0 auto; width: 9px; height: 9px; border-radius: 2px; background: var(--group-color); margin-top: 2px; }
-  .paper-map-legend-item strong { flex: none; white-space: nowrap; }
-  .paper-map-legend-item.selected strong { margin-top: 1px; }
-  .paper-map-legend-question { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .paper-map-legend-item.selected .paper-map-legend-question { overflow: visible; text-overflow: unset; white-space: normal; }
-  .paper-map-legend-count { color: #868e96; }
-  .paper-map-legend-item.selected .paper-map-legend-count { margin-top: 1px; }
+  .paper-map-legend-question { white-space: normal; }
+  .paper-map-legend-count { color: #868e96; margin-top: 1px; }
   .paper-map-columns {
-    display: grid; grid-template-columns: repeat(var(--paper-count), minmax(320px, 1fr));
+    display: grid; grid-template-columns: repeat(var(--paper-count), minmax(150px, 1fr));
     gap: 10px; min-height: 0; padding: 10px; overflow-x: auto; background: #fafafa;
   }
   .paper-map-column {
@@ -203,7 +201,7 @@
   .paper-map-paragraph-text { color: #495057; font-size: 10.5px; line-height: 1.45; white-space: pre-line; overflow-wrap: anywhere; }
 
   .paper-map-skeleton-columns {
-    display: grid; grid-template-columns: repeat(var(--paper-count), minmax(220px, 1fr));
+    display: grid; grid-template-columns: repeat(var(--paper-count), minmax(150px, 1fr));
     gap: 18px; min-height: 0; padding: 14px 22px 18px; overflow: auto; background: #fafafa;
   }
   .paper-map-skeleton-paper {
@@ -436,11 +434,6 @@
 <header>
   <h1>Bidirectional Tag Match Viewer</h1>
   <div id="granularityTabs" style="display:flex;gap:2px;"></div>
-  <label id="previewLengthControl" style="font-size:11px;color:#495057;display:flex;align-items:center;gap:6px;">
-    preview length
-    <input type="range" id="previewSlider" min="0" max="200" step="10" value="200">
-    <span id="previewValue">200</span>
-  </label>
   <label id="minSimilarityControl" style="font-size:11px;color:#495057;display:flex;align-items:center;gap:6px;">
     min similarity
     <input type="range" id="similaritySlider" min="0" max="1" step="0.01" value="0">
@@ -454,10 +447,9 @@
 <script>
 const GRANULARITIES = ["sections", "paragraphs"]; // matching/data granularities
 const GRANULARITY_LABELS = { sections: "Section", paragraphs: "Paragraph" };
-// Header sliders only make sense for some tabs -- preview length applies to
-// any tab rendering section/paragraph/group quote text; min similarity only
-// applies to the two tabs that actually filter links by it.
-const PREVIEW_LENGTH_GRANULARITIES = ["sections", "paragraphs", "groups", "epoch_groups"];
+// The header's min-similarity slider only makes sense for the two tabs that
+// actually filter links by it. (Preview length lives inside Epoch Groups'
+// own tab content -- see renderEpochGroups() -- not in the header.)
 const MIN_SIMILARITY_GRANULARITIES = ["sections", "paragraphs"];
 const ENABLE_QI_FLOW_VIEW = true; // independent experimental surface; set false to hide without affecting the trace view
 // Three MILP-reassignment variants (see reassign_via_milp_per_paper.py and
@@ -470,7 +462,7 @@ const MILP_VARIANTS = [
 ];
 const MILP_VARIANT_KEYS = MILP_VARIANTS.map(v => v.key);
 
-const TABS = ["sections", "paragraphs", "groups", "epoch_groups", "paper-map", "qi-trace", ...(ENABLE_QI_FLOW_VIEW ? ["qi-flow"] : [])]; // display-only views are not matching granularities -- MILP_VARIANT_KEYS omitted here to hide those tabs; the rendering/dispatch code is untouched, so re-adding them (e.g. ...MILP_VARIANT_KEYS) brings the tabs straight back
+const TABS = ["epoch_groups", "paper-map"]; // only these two tabs are shown -- the rendering/dispatch code for the rest (sections, paragraphs, groups, qi-trace, qi-flow, MILP_VARIANT_KEYS) is untouched, so re-adding any of them here brings the tab straight back
 const TAB_LABELS = Object.assign(
   { sections: "Section", paragraphs: "Paragraph", groups: "Groups", epoch_groups: "Epoch Groups", "paper-map": "Paper Map", "qi-trace": "QI-Prime Trace", "qi-flow": "QI-Prime Flow" },
   Object.fromEntries(MILP_VARIANTS.map(v => [v.key, v.label]))
@@ -480,29 +472,22 @@ const TAB_LABELS = Object.assign(
 // epochs. Each epoch's E-step (membership) and M-step (question) were saved
 // separately, so the viewer joins them by group_id when loading.
 const N_EPOCH_PHASES = 5; // max across all epoch-refinement variants; a run with fewer epochs just has no data for the rest, handled as best-effort below
-const EPOCH_PHASES = ["initial", ...Array.from({ length: N_EPOCH_PHASES }, (_, i) => `epoch${i + 1}`)];
-const EPOCH_PHASE_LABELS = Object.assign(
-  { initial: "Pre-epoch" },
-  Object.fromEntries(Array.from({ length: N_EPOCH_PHASES }, (_, i) => [`epoch${i + 1}`, `Epoch ${i + 1}`]))
-);
 
 const stage = document.getElementById("stage");
 const granularityTabsEl = document.getElementById("granularityTabs");
-const previewSlider = document.getElementById("previewSlider");
-const previewValueEl = document.getElementById("previewValue");
 const similaritySlider = document.getElementById("similaritySlider");
 const similarityValueEl = document.getElementById("similarityValue");
 let pinnedId = null;
 let currentLinks = []; // links for the current granularity AND above the current similarity threshold
 const expandedIds = new Set(); // units expanded to full text -- independent per unit, click toggles membership
-let previewChars = Number(previewSlider.value);
+let previewChars = 200; // lives in Epoch Groups' own tab content now, not a header control -- see renderEpochGroups()
 let similarityThreshold = Number(similaritySlider.value);
 const sectionTextById = {}; // id -> normalized full text, for live preview-length updates
 
 let allPapers = [];
 let allLinksByGranularity = { sections: [], paragraphs: [] };
 let rawLinksForGranularity = []; // all links for the current granularity, before the similarity filter
-let currentGranularity = "sections"; // matching is always within one granularity: sections<->sections, paragraphs<->paragraphs
+let currentGranularity = "epoch_groups"; // default tab on load -- must be one of TABS
 
 let paragraphUnitLookup = {}; // "paper_id:unit_id" -> full paragraph object, for group-detail rendering
 
@@ -516,7 +501,8 @@ const openGroupIds = new Set(); // group_id currently expanded to show its 3-col
 const PAPER_MAP_HUES = [205, 25, 145, 48, 275, 175, 350, 95, 230, 8, 160, 62, 305, 190, 330, 118];
 let paperMapMode = "reading";
 let paperMapSelectedGroupId = null;
-let paperMapSyncScroll = false;
+let paperMapSyncScroll = true;
+let paperMapHideUnselected = false; // only meaningful with a group selected -- forced back to false whenever selection clears
 let paperMapLastScrolledPaper = null;
 let paperMapScrollSyncing = false;
 const paperMapScrollByPaper = {};
@@ -541,7 +527,7 @@ MILP_VARIANT_KEYS.forEach(key => { milpGroupsByVariant[key] = []; openMilpGroupI
 const epochGroupsByPhase = {}; // phase key -> [{group_id, overarching_question, members}, ...]
 const epochMetaByPhase = {}; // phase key -> {reassigned, total_assigned} | null (the "initial" phase has none)
 const epochBalanceByPhase = {}; // phase key -> {group_id: group_balance}, when available (epoch1/2/3 only, from compute_epoch_group_balance.py)
-let currentEpochPhase = "initial";
+const currentEpochPhase = "epoch3"; // fixed -- no phase-switcher UI, always show the final epoch
 const openEpochGroupIds = new Set(); // group_id currently expanded, cleared on phase switch (membership/content differs per phase)
 
 // Fixed per-paper colors (not tag-derived, so this isn't the hash-based tag
@@ -1000,55 +986,63 @@ function epochPhaseShortLabel(phase) {
   return phase === "initial" ? "Pre" : phase.replace("epoch", "E");
 }
 
-// Only phases this run actually produced data for -- a run with fewer than
-// N_EPOCH_PHASES epochs (e.g. 3) leaves the rest unpopulated. Shared by
-// renderEpochGroups() and renderPaperMap(), which both use epoch phases as
-// their selector; also clamps currentEpochPhase to a real phase as a
-// side effect, same way switching data sources elsewhere in this file does.
-function buildEpochPhaseTabsHtml() {
-  const availablePhases = EPOCH_PHASES.filter(phase => (epochGroupsByPhase[phase] || []).length);
-  if (!availablePhases.includes(currentEpochPhase)) currentEpochPhase = availablePhases[0] || "initial";
-  return availablePhases.map(phase =>
-    `<button type="button" class="granularity-btn${phase === currentEpochPhase ? " active" : ""}" data-epoch-phase="${phase}">${EPOCH_PHASE_LABELS[phase]}</button>`
-  ).join("");
+// Lives inside Epoch Groups' own tab content (not the header) since this is
+// the only reachable tab that still uses previewChars.
+function buildPreviewLengthControlHtml() {
+  return `<label class="epoch-groups-preview-control">
+    preview length
+    <input type="range" id="previewSlider" min="0" max="200" step="10" value="${previewChars}">
+    <span id="previewValue">${previewChars}</span>
+  </label>`;
 }
 
-// Same card-list-with-inline-3-column-detail pattern as renderIterationGroups(),
-// but the phase selector is the 4 refine_with_epoch_matrices.py phases
-// (pre-epoch, then 3 epochs) instead of numbered iterations.
-function renderEpochGroups() {
-  const tabsHtml = buildEpochPhaseTabsHtml();
+function attachPreviewLengthControl(onChange) {
+  const slider = stage.querySelector("#previewSlider");
+  const valueEl = stage.querySelector("#previewValue");
+  if (!slider) return;
+  slider.addEventListener("input", () => {
+    previewChars = Number(slider.value);
+    valueEl.textContent = String(previewChars);
+    onChange();
+  });
+}
 
+// Updates only the already-open cards' detail panes in place, instead of a
+// full renderEpochGroups() -- a full re-render would destroy and recreate
+// the slider itself (it now lives inside this same stage content), breaking
+// mouse capture mid-drag.
+function refreshOpenEpochGroupDetails(groups) {
+  stage.querySelectorAll(".group-card.open").forEach(card => {
+    const group = groups.find(g => g.group_id === card.dataset.groupId);
+    const slot = card.querySelector(".group-detail-slot");
+    if (group && slot) renderGroupDetail(slot, group);
+  });
+}
+
+// Same card-list-with-inline-3-column-detail pattern as renderIterationGroups().
+// currentEpochPhase is fixed to "epoch3" -- this always renders that phase's groups.
+function renderEpochGroups() {
   const meta = epochMetaByPhase[currentEpochPhase];
   const metaText = meta ? `${meta.reassigned} of ${meta.total_assigned} paragraphs were reassigned to a different group this epoch.` : "";
 
-  const balanceByGroupId = epochBalanceByPhase[currentEpochPhase];
-  // Sort a copy by group-balance (highest first) when available for this
-  // phase (epoch1/2/3 only -- "initial" has no matrix-checked balance yet);
-  // otherwise sort by paragraph count (highest first), since the "initial"
-  // phase's saved order is neither balance- nor count-sorted.
-  const groups = balanceByGroupId
-    ? [...(epochGroupsByPhase[currentEpochPhase] || [])].sort((a, b) => (balanceByGroupId[b.group_id] ?? -1) - (balanceByGroupId[a.group_id] ?? -1))
-    : [...(epochGroupsByPhase[currentEpochPhase] || [])].sort((a, b) => (b.members?.length || 0) - (a.members?.length || 0));
+  const groups = [...(epochGroupsByPhase[currentEpochPhase] || [])].sort((a, b) => (b.members?.length || 0) - (a.members?.length || 0));
 
   if (!groups.length) {
-    stage.innerHTML = `<div class="iteration-tabs">${tabsHtml}</div><div class="empty-state">No groups available for this phase.</div>`;
-    attachEpochPhaseTabInteractions();
+    stage.innerHTML = `${buildPreviewLengthControlHtml()}<div class="empty-state">No groups available for this phase.</div>`;
+    attachPreviewLengthControl(() => {});
     return;
   }
 
-  const cardsHtml = groups.map((group, index) => {
-    const balance = balanceByGroupId ? balanceByGroupId[group.group_id] : undefined;
-    const balanceHtml = balance !== undefined ? `<span class="group-balance-badge">balance ${balance}%</span>` : "";
-    const idLabel = `${epochPhaseShortLabel(currentEpochPhase)}-${index + 1}`;
+  const cardsHtml = groups.map(group => {
     return `<div class="group-card" data-group-id="${group.group_id}">
-      <div class="group-question"><span class="group-id-label">${escapeHtml(idLabel)}</span>${escapeHtml(group.overarching_question || "(no summary)")}<button type="button" class="expand-all-btn">▾ Expand all</button>${balanceHtml}</div>
+      <div class="group-question">${escapeHtml(group.overarching_question || "(no summary)")}<button type="button" class="expand-all-btn">▾ Expand all</button></div>
       ${buildPaperCoverageVis(group.members)}
       <div class="group-detail-slot"></div>
     </div>`;
   }).join("");
 
-  stage.innerHTML = `<div class="iteration-tabs">${tabsHtml}</div><div class="iteration-meta">${metaText}</div>${buildPapersLegend()}${cardsHtml}`;
+  stage.innerHTML = `${buildPreviewLengthControlHtml()}<div class="iteration-meta">${metaText}</div>${buildPapersLegend()}${cardsHtml}`;
+  attachPreviewLengthControl(() => refreshOpenEpochGroupDetails(groups));
 
   stage.querySelectorAll(".group-card").forEach(card => {
     const groupId = card.dataset.groupId;
@@ -1070,24 +1064,6 @@ function renderEpochGroups() {
     });
     attachExpandAllButton(card, slot);
   });
-
-  attachEpochPhaseTabInteractions();
-}
-
-function attachEpochPhaseTabInteractions() {
-  stage.querySelectorAll(".iteration-tabs .granularity-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const phase = btn.dataset.epochPhase;
-      if (phase !== currentEpochPhase) switchEpochPhase(phase);
-    });
-  });
-}
-
-function switchEpochPhase(phase) {
-  currentEpochPhase = phase;
-  openEpochGroupIds.clear(); // a group_id's membership/content differs per phase, so don't carry an "open" state over
-  if (currentGranularity === "paper-map") renderPaperMap();
-  else renderEpochGroups();
 }
 
 // Same card-list-with-inline-3-column-detail pattern as renderIterationGroups(),
@@ -1236,6 +1212,25 @@ function epochColorCatalog() {
   );
 }
 
+// Paper Map-only: each paper's LAST extracted paragraph is a known
+// segmentation artifact -- when the extractor can't find where the next
+// paragraph starts, it dumps all remaining text (often tens of thousands of
+// characters) into one oversized final "paragraph" instead. It's still a
+// real assigned unit elsewhere (Epoch Groups, group membership counts), but
+// not something worth showing as a quote here, so this view excludes it from
+// every list, count, and assignment tally.
+function paperMapExcludedKeys() {
+  return new Set(allPapers.map(paper => {
+    const paragraphs = paper.paragraphs || [];
+    return paragraphs.length ? `${paper.paper_id}:${paragraphs[paragraphs.length - 1].id}` : null;
+  }).filter(Boolean));
+}
+
+function paperMapVisibleParagraphs(paper) {
+  const paragraphs = paper.paragraphs || [];
+  return paragraphs.length ? paragraphs.slice(0, -1) : paragraphs;
+}
+
 // Every saved epoch phase carries its own membership -- Pre-epoch uses the
 // random-seeded initial groups, later phases use each paragraph's Matrix-1
 // best-fit group. The map displays that membership without adding another
@@ -1243,6 +1238,7 @@ function epochColorCatalog() {
 function buildPaperMapModel() {
   const groups = epochGroupsByPhase[currentEpochPhase] || [];
   const colorByGroupId = epochColorCatalog();
+  const excludedKeys = paperMapExcludedKeys();
   const groupEntries = groups.map((group, index) => ({
     group,
     label: `${epochPhaseShortLabel(currentEpochPhase)}-${index + 1}`,
@@ -1255,7 +1251,7 @@ function buildPaperMapModel() {
   groupEntries.forEach(entry => {
     (entry.group.members || []).forEach(member => {
       const key = `${member.paper}:${member.unit_id}`;
-      if (!paragraphUnitLookup[key] || assignments.has(key)) return;
+      if (excludedKeys.has(key) || !paragraphUnitLookup[key] || assignments.has(key)) return;
       assignments.set(key, entry);
       entry.count += 1;
     });
@@ -1264,24 +1260,20 @@ function buildPaperMapModel() {
   return { groups, groupEntries, entriesById, assignments };
 }
 
-// Most-represented groups first; the selected group (if any) is bumped to
-// the front regardless of its own count, and rendered expanded (full
-// question text, not truncated) so it's immediately visible and readable
-// without needing to scroll the legend row or hover for the title tooltip.
-// A pure function (given a model) so it can rebuild just the legend's own
+// Most-represented groups first. The selected group (if any) stays in its
+// count-sorted position but renders expanded (full question text, not
+// truncated) so it's readable without hovering for the title tooltip. A
+// pure function (given a model) so it can rebuild just the legend's own
 // HTML on a selection change, without re-rendering the whole paper map.
 function buildPaperMapLegendHtml(model) {
   const legendEntries = [...model.groupEntries].sort((a, b) => b.count - a.count);
-  const selectedPos = paperMapSelectedGroupId ? legendEntries.findIndex(entry => entry.group.group_id === paperMapSelectedGroupId) : -1;
-  if (selectedPos > 0) legendEntries.unshift(legendEntries.splice(selectedPos, 1)[0]);
   return legendEntries.map(entry => {
     const groupId = entry.group.group_id;
     const question = entry.group.overarching_question || "(no summary)";
     const style = `--group-color:${entry.color.border};--group-fill:${entry.color.fill}`;
     const selected = paperMapSelectedGroupId === groupId;
-    const title = `${entry.label} · ${question}`;
-    return `<button type="button" class="paper-map-legend-item${selected ? " selected" : ""}" data-paper-map-group="${escapeHtml(groupId)}" style="${style}" title="${escapeHtml(title)}" aria-pressed="${selected}">
-      <span class="paper-map-swatch"></span><strong>${escapeHtml(entry.label)}</strong><span class="paper-map-legend-question">${escapeHtml(question)}</span><span class="paper-map-legend-count">${entry.count}</span>
+    return `<button type="button" class="paper-map-legend-item${selected ? " selected" : ""}" data-paper-map-group="${escapeHtml(groupId)}" style="${style}" title="${escapeHtml(question)}" aria-pressed="${selected}">
+      <span class="paper-map-swatch"></span><span class="paper-map-legend-question">${escapeHtml(question)}</span><span class="paper-map-legend-count">${entry.count}</span>
     </button>`;
   }).join("");
 }
@@ -1309,8 +1301,7 @@ function attachPaperMapLegendInteractions(model) {
       const wasSelected = paperMapSelectedGroupId === groupId;
       paperMapSelectedGroupId = wasSelected ? null : groupId;
       if (!wasSelected) scrollColumnsToGroup(groupId);
-      updateColumnGroupIndicators();
-      refreshPaperMapLegend(model);
+      finalizePaperMapSelectionChange(model);
     });
   });
 }
@@ -1319,10 +1310,10 @@ function renderPaperMap() {
   const model = buildPaperMapModel();
   if (paperMapSelectedGroupId && !model.entriesById.has(paperMapSelectedGroupId)) {
     paperMapSelectedGroupId = null;
+    paperMapHideUnselected = false;
   }
 
-  const tabsHtml = buildEpochPhaseTabsHtml();
-  const totalParagraphs = allPapers.reduce((sum, paper) => sum + (paper.paragraphs || []).length, 0);
+  const totalParagraphs = allPapers.reduce((sum, paper) => sum + paperMapVisibleParagraphs(paper).length, 0);
   const orphanCount = totalParagraphs - model.assignments.size;
   const legend = buildPaperMapLegendHtml(model);
   const modeToggle = `<div class="paper-map-mode-toggle" role="group" aria-label="Paper Map display">
@@ -1332,16 +1323,18 @@ function renderPaperMap() {
   const syncToggle = paperMapMode === "reading" ? `<label class="paper-map-sync-toggle" title="Off keeps each paper independently scrollable">
     <input type="checkbox" id="paperMapSyncScroll"${paperMapSyncScroll ? " checked" : ""}> sync paper scrolling
   </label>` : "";
+  const hideUnselectedToggle = `<label class="paper-map-hide-unselected-toggle" title="${paperMapSelectedGroupId ? "" : "Select a group in the legend or map first"}">
+    <input type="checkbox" id="paperMapHideUnselected"${paperMapHideUnselected ? " checked" : ""}${paperMapSelectedGroupId ? "" : " disabled"}> Hide unselected
+  </label>`;
   const content = paperMapMode === "skeleton" ? renderPaperMapSkeleton(model) : renderPaperMapReading(model);
 
   stage.innerHTML = `<div class="paper-map-shell">
     <div class="paper-map-overview">
       <div class="paper-map-control-row">
-        <div class="iteration-tabs">${tabsHtml}</div>
-        <div class="paper-map-summary"><strong>${EPOCH_PHASE_LABELS[currentEpochPhase]}</strong> · ${model.groups.length} groups · ${model.assignments.size} assigned · ${orphanCount} unassigned</div>
-        ${modeToggle}${syncToggle}
+        <div class="paper-map-summary">${model.groups.length} groups · ${model.assignments.size} assigned · ${orphanCount} unassigned</div>
+        ${modeToggle}${syncToggle}${hideUnselectedToggle}
       </div>
-      <div class="paper-map-legend" aria-label="Question groups at ${EPOCH_PHASE_LABELS[currentEpochPhase]}">${legend}</div>
+      <div class="paper-map-legend" aria-label="Question groups">${legend}</div>
     </div>
     ${content}
   </div>`;
@@ -1374,7 +1367,7 @@ function renderPaperMapReading(model) {
   const columns = allPapers.map(paper => {
     const sections = new Map((paper.sections || []).map(section => [section.id, section]));
     let previousSectionId = null;
-    const paragraphs = (paper.paragraphs || []).map(paragraph => {
+    const paragraphs = paperMapVisibleParagraphs(paper).map(paragraph => {
       const key = `${paper.paper_id}:${paragraph.id}`;
       const entry = model.assignments.get(key);
       const groupId = entry ? entry.group.group_id : "";
@@ -1387,13 +1380,13 @@ function renderPaperMapReading(model) {
         sectionHeading = `<div class="paper-map-section-head">${escapeHtml(section?.title || section?.tag || sectionId || "Unsectioned")}</div>`;
       }
       return `${sectionHeading}<article class="paper-map-paragraph${entry ? "" : " orphan"}" data-paper-map-paragraph="${escapeHtml(key)}" data-paper-map-group="${escapeHtml(groupId)}" style="${style}">
-        <div class="paper-map-paragraph-meta"><span>${escapeHtml(paragraph.id)}</span><span>${entry ? escapeHtml(entry.label) : "Unassigned"}</span></div>
+        <div class="paper-map-paragraph-meta">${entry ? "" : "<span>Unassigned</span>"}</div>
         <div class="paper-map-paragraph-question">${escapeHtml(paragraph.tag || "(no question)")}</div>
         <div class="paper-map-paragraph-text">${escapeHtml(compactText(paragraph.text))}</div>
       </article>`;
     }).join("");
     return `<section class="paper-map-column" data-paper="${escapeHtml(paper.paper_id)}">
-      <div class="paper-map-paper-head" title="${escapeHtml(paper.title)}">${escapeHtml(shortPaperLabel(paper))} · ${(paper.paragraphs || []).length} paragraphs</div>
+      <div class="paper-map-paper-head" title="${escapeHtml(paper.title)}">${escapeHtml(shortPaperLabel(paper))} · ${paperMapVisibleParagraphs(paper).length} paragraphs</div>
       <div class="paper-map-column-indicator paper-map-column-indicator-top" aria-hidden="true"></div>
       ${paragraphs}
       <div class="paper-map-column-indicator paper-map-column-indicator-bottom" aria-hidden="true"></div>
@@ -1404,18 +1397,17 @@ function renderPaperMapReading(model) {
 
 function renderPaperMapSkeleton(model) {
   const papers = allPapers.map(paper => {
-    const blocks = (paper.paragraphs || []).map(paragraph => {
+    const blocks = paperMapVisibleParagraphs(paper).map(paragraph => {
       const key = `${paper.paper_id}:${paragraph.id}`;
       const entry = model.assignments.get(key);
       const groupId = entry ? entry.group.group_id : "";
       const characterCount = Math.max(1, compactText(paragraph.text).length);
-      const label = entry ? entry.label : "Unassigned";
       const style = `${entry ? `--group-color:${entry.color.border};` : ""}--paragraph-weight:${characterCount}`;
-      const title = `${paragraph.id} · ${label} · ${characterCount.toLocaleString()} characters`;
+      const title = `${entry ? "" : "Unassigned · "}${characterCount.toLocaleString()} characters`;
       return `<button type="button" class="paper-map-skeleton-block${entry ? "" : " orphan"}" data-paper-map-paragraph="${escapeHtml(key)}" data-paper-map-group="${escapeHtml(groupId)}" style="${style}" title="${escapeHtml(title)}" aria-label="${escapeHtml(`${shortPaperLabel(paper)} ${title}`)}"></button>`;
     }).join("");
     return `<section class="paper-map-skeleton-paper" data-paper="${escapeHtml(paper.paper_id)}">
-      <div class="paper-map-paper-head" title="${escapeHtml(paper.title)}">${escapeHtml(shortPaperLabel(paper))} · ${(paper.paragraphs || []).length} paragraphs</div>
+      <div class="paper-map-paper-head" title="${escapeHtml(paper.title)}">${escapeHtml(shortPaperLabel(paper))} · ${paperMapVisibleParagraphs(paper).length} paragraphs</div>
       <div class="paper-map-skeleton-frame"><div class="paper-map-skeleton-track">${blocks}</div></div>
     </section>`;
   }).join("");
@@ -1523,10 +1515,38 @@ function updateColumnGroupIndicators() {
   });
 }
 
+// Only hides paragraphs/blocks when both a group is selected AND the
+// checkbox is on -- the checkbox itself is disabled with nothing selected,
+// but this guards the actual hide effect the same way in case state drifts.
+function updatePaperMapHiddenState() {
+  const shouldHide = paperMapHideUnselected && Boolean(paperMapSelectedGroupId);
+  stage.querySelectorAll(".paper-map-paragraph, .paper-map-skeleton-block").forEach(element => {
+    element.classList.toggle("hidden", shouldHide && element.dataset.paperMapGroup !== paperMapSelectedGroupId);
+  });
+}
+
+function syncHideUnselectedToggle() {
+  const toggle = document.getElementById("paperMapHideUnselected");
+  if (!toggle) return;
+  toggle.disabled = !paperMapSelectedGroupId;
+  toggle.checked = paperMapHideUnselected;
+}
+
+// Shared cleanup after any change to paperMapSelectedGroupId (paragraph
+// click, legend click, or clicking empty space to clear it) -- hide-unselected
+// is meaningless with nothing selected, so it's forced off right along with
+// every other selection-dependent UI piece.
+function finalizePaperMapSelectionChange(model) {
+  if (!paperMapSelectedGroupId) paperMapHideUnselected = false;
+  updateColumnGroupIndicators();
+  refreshPaperMapLegend(model);
+  updatePaperMapHiddenState();
+  syncHideUnselectedToggle();
+}
+
 function attachPaperMapInteractions(model) {
   const shell = stage.querySelector(".paper-map-shell");
   if (shell) shell.addEventListener("click", event => event.stopPropagation());
-  attachEpochPhaseTabInteractions();
   stage.querySelectorAll("[data-paper-map-mode]").forEach(button => {
     button.addEventListener("click", event => {
       event.stopPropagation();
@@ -1556,16 +1576,26 @@ function attachPaperMapInteractions(model) {
       syncPaperMapColumns(source, columns);
     });
   }
+  const hideUnselectedToggle = document.getElementById("paperMapHideUnselected");
+  if (hideUnselectedToggle) {
+    hideUnselectedToggle.addEventListener("change", event => {
+      event.stopPropagation();
+      if (hideUnselectedToggle.disabled) return;
+      paperMapHideUnselected = hideUnselectedToggle.checked;
+      updatePaperMapHiddenState();
+    });
+  }
 
   stage.querySelectorAll(".paper-map-paragraph, .paper-map-skeleton-block").forEach(card => {
     const groupId = card.dataset.paperMapGroup;
-    card.addEventListener("mouseenter", () => setPaperMapGroupEmphasis(groupId));
-    card.addEventListener("mouseleave", () => setPaperMapGroupEmphasis());
+    // Hovering a paragraph is just a preview -- once a group is pinned via
+    // click, that selection's emphasis should stay put regardless of hover.
+    card.addEventListener("mouseenter", () => { if (!paperMapSelectedGroupId) setPaperMapGroupEmphasis(groupId); });
+    card.addEventListener("mouseleave", () => { if (!paperMapSelectedGroupId) setPaperMapGroupEmphasis(); });
     card.addEventListener("click", event => {
       event.stopPropagation();
       paperMapSelectedGroupId = groupId && paperMapSelectedGroupId !== groupId ? groupId : null;
-      updateColumnGroupIndicators();
-      refreshPaperMapLegend(model);
+      finalizePaperMapSelectionChange(model);
     });
   });
   attachPaperMapLegendInteractions(model);
@@ -1574,12 +1604,13 @@ function attachPaperMapInteractions(model) {
     content.addEventListener("click", event => {
       event.stopPropagation();
       paperMapSelectedGroupId = null;
-      updateColumnGroupIndicators();
-      refreshPaperMapLegend(model);
+      finalizePaperMapSelectionChange(model);
     });
   }
   setPaperMapGroupEmphasis();
   updateColumnGroupIndicators();
+  updatePaperMapHiddenState();
+  syncHideUnselectedToggle();
 }
 
 function traceIterationNumbers() {
@@ -2479,9 +2510,7 @@ function applyFilterAndRender() {
 }
 
 function updateSliderVisibility() {
-  const previewControl = document.getElementById("previewLengthControl");
   const similarityControl = document.getElementById("minSimilarityControl");
-  if (previewControl) previewControl.style.display = PREVIEW_LENGTH_GRANULARITIES.includes(currentGranularity) ? "flex" : "none";
   if (similarityControl) similarityControl.style.display = MIN_SIMILARITY_GRANULARITIES.includes(currentGranularity) ? "flex" : "none";
 }
 
@@ -2556,11 +2585,7 @@ async function init() {
   buildParagraphUnitLookup();
   buildPaperColors();
   traceSelectedGroupId = iterationGroups[0]?.[0]?.group_id || null;
-  rawLinksForGranularity = links[currentGranularity] || [];
-
-  updateSliderVisibility();
-  buildGranularityTabs();
-  applyFilterAndRender();
+  switchGranularity(currentGranularity);
 
   stage.addEventListener("click", () => {
     if (pinnedId) {
@@ -2572,14 +2597,6 @@ async function init() {
     if (currentGranularity === "paper-map") updatePaperMapHeight();
     else if (currentGranularity === "qi-flow" && qiFlowCurrentModel) drawQiPrimeFlowLinks(qiFlowCurrentModel, false);
     else if (GRANULARITIES.includes(currentGranularity)) refreshView();
-  });
-  previewSlider.addEventListener("input", () => {
-    previewChars = Number(previewSlider.value);
-    previewValueEl.textContent = String(previewChars);
-    if (currentGranularity === "groups") renderIterationGroups();
-    else if (currentGranularity === "epoch_groups") renderEpochGroups();
-    else if (MILP_VARIANT_KEYS.includes(currentGranularity)) renderMilpGroups(currentGranularity);
-    else if (GRANULARITIES.includes(currentGranularity)) updatePreviews();
   });
   similaritySlider.addEventListener("input", () => {
     similarityThreshold = Number(similaritySlider.value);

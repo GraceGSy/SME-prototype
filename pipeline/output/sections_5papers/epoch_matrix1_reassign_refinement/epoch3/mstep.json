@@ -36,24 +36,9 @@
       "overarching_question": "How do users interact with and benefit from the tool in practice?",
       "representative_members": [
         {
-          "paper": "abstractexplorer",
-          "unit_id": "pa80",
-          "tag": "How do users actually use the full system to explore a corpus?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa72",
-          "tag": "What did participants experience using the tool?"
-        },
-        {
           "paper": "examplore_chi18",
           "unit_id": "pa38",
           "tag": "How does the user investigate guard conditions for an alternative usage?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa76",
-          "tag": "How did real users apply the interface to their own tasks?"
         },
         {
           "paper": "paralib_uist22",
@@ -97,16 +82,6 @@
       "group_id": "group_4",
       "overarching_question": "How do user studies show the tool improves task performance and experience?",
       "representative_members": [
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa80",
-          "tag": "How do users actually use the full system to explore a corpus?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa72",
-          "tag": "What did participants experience using the tool?"
-        },
         {
           "paper": "examplore_chi18",
           "unit_id": "pa73",
@@ -253,16 +228,6 @@
       "overarching_question": "What do user studies reveal about the tool's effectiveness and usability?",
       "representative_members": [
         {
-          "paper": "abstractexplorer",
-          "unit_id": "pa80",
-          "tag": "How do users actually use the full system to explore a corpus?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa72",
-          "tag": "What did participants experience using the tool?"
-        },
-        {
           "paper": "examplore_chi18",
           "unit_id": "pa62",
           "tag": "What do the quantitative results show about correctness?"
@@ -333,11 +298,6 @@
           "paper": "mesotext",
           "unit_id": "pa40",
           "tag": "How is the Exact Matches algorithm implemented?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa79",
-          "tag": "What future tooling improvement is suggested for authoring concept hierarchies?"
         }
       ]
     },
@@ -345,11 +305,6 @@
       "group_id": "group_12",
       "overarching_question": "How was the tool's user study designed and conducted to evaluate it?",
       "representative_members": [
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa80",
-          "tag": "How do users actually use the full system to explore a corpus?"
-        },
         {
           "paper": "corpusstudio",
           "unit_id": "pa56",
@@ -377,16 +332,6 @@
       "overarching_question": "What evidence shows the tool improves user task performance and experience?",
       "representative_members": [
         {
-          "paper": "abstractexplorer",
-          "unit_id": "pa80",
-          "tag": "How do users actually use the full system to explore a corpus?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa72",
-          "tag": "What did participants experience using the tool?"
-        },
-        {
           "paper": "examplore_chi18",
           "unit_id": "pa62",
           "tag": "What do the quantitative results show about correctness?"
@@ -408,24 +353,9 @@
       "overarching_question": "How did users experience and use the system's features in evaluation?",
       "representative_members": [
         {
-          "paper": "abstractexplorer",
-          "unit_id": "pa80",
-          "tag": "How do users actually use the full system to explore a corpus?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa72",
-          "tag": "What did participants experience using the tool?"
-        },
-        {
           "paper": "examplore_chi18",
           "unit_id": "pa68",
           "tag": "What interface features did participants value most?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa76",
-          "tag": "How did real users apply the interface to their own tasks?"
         },
         {
           "paper": "paralib_uist22",

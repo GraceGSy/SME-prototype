@@ -199,11 +199,6 @@
           "tag": "What was the main quantitative accuracy result?"
         },
         {
-          "paper": "mesotext",
-          "unit_id": "pa74",
-          "tag": "How did real users apply the tool to their own tasks?"
-        },
-        {
           "paper": "paralib_uist22",
           "unit_id": "pa2",
           "tag": "What was built and how was it evaluated, and what did the study find?"

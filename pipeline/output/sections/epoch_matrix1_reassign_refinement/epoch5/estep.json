@@ -103,11 +103,6 @@
           "tag": "What is the overall contribution and future direction?"
         },
         {
-          "paper": "examplore_chi18",
-          "unit_id": "pa76",
-          "tag": "Who provided support and funding for this work?"
-        },
-        {
           "paper": "mesotext",
           "unit_id": "pa10",
           "tag": "What are this paper's contributions?"
@@ -1296,11 +1291,6 @@
           "paper": "paralib_uist22",
           "unit_id": "pa43",
           "tag": "How does Jane make her final library choice and use the examples to guide coding?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa86",
-          "tag": "What future work is suggested for automating concept annotation?"
         }
       ]
     },
@@ -1321,11 +1311,6 @@
           "paper": "mesotext",
           "unit_id": "pa8",
           "tag": "How was the system evaluated?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa74",
-          "tag": "How did real users apply the tool to their own tasks?"
         },
         {
           "paper": "paralib_uist22",

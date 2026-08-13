@@ -3,7 +3,7 @@
     "group_id": "group_1",
     "overarching_question": "What are the paper's contributions?",
     "group_balance": 100.0,
-    "member_count": 8
+    "member_count": 7
   },
   {
     "group_id": "group_2",
@@ -51,13 +51,7 @@
     "group_id": "group_16",
     "overarching_question": "How was the system/tool implemented and structured?",
     "group_balance": 100.0,
-    "member_count": 7
-  },
-  {
-    "group_id": "group_17",
-    "overarching_question": "How do users interact with the tool in real usage scenarios?",
-    "group_balance": 100.0,
-    "member_count": 10
+    "member_count": 6
   },
   {
     "group_id": "group_18",
@@ -106,5 +100,11 @@
     "overarching_question": "What tool is proposed to help developers understand and compare code/API usage?",
     "group_balance": 66.7,
     "member_count": 2
+  },
+  {
+    "group_id": "group_17",
+    "overarching_question": "How do users interact with the tool in real usage scenarios?",
+    "group_balance": 66.7,
+    "member_count": 9
   }
 ]

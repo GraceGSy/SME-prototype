@@ -245,12 +245,6 @@
       },
       {
         "paper": "corpusstudio",
-        "unit_id": "pa72",
-        "title": "",
-        "tag": "What did participants experience using the tool?"
-      },
-      {
-        "paper": "corpusstudio",
         "unit_id": "pa8",
         "title": "",
         "tag": "What system was built to address these gaps?"
@@ -750,12 +744,6 @@
         "tag": "How does filtering update the skeleton and example list?"
       },
       {
-        "paper": "mesotext",
-        "unit_id": "pa76",
-        "title": "",
-        "tag": "How did real users apply the interface to their own tasks?"
-      },
-      {
         "paper": "paralib_uist22",
         "unit_id": "pa23",
         "title": "",
@@ -792,12 +780,6 @@
         "unit_id": "pa14",
         "title": "",
         "tag": "How does the visualization let users explore examples?"
-      },
-      {
-        "paper": "mesotext",
-        "unit_id": "pa76",
-        "title": "",
-        "tag": "How did real users apply the interface to their own tasks?"
       },
       {
         "paper": "paralib_uist22",

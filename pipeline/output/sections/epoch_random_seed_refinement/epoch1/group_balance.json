@@ -3,7 +3,7 @@
     "group_id": "group_1",
     "overarching_question": "What are the paper's key contributions?",
     "group_balance": 100.0,
-    "member_count": 8
+    "member_count": 7
   },
   {
     "group_id": "group_2",
@@ -39,7 +39,7 @@
     "group_id": "group_12",
     "overarching_question": "How was the user study designed and conducted to evaluate the tool?",
     "group_balance": 100.0,
-    "member_count": 25
+    "member_count": 24
   },
   {
     "group_id": "group_14",
@@ -93,7 +93,7 @@
     "group_id": "group_11",
     "overarching_question": "How effective and limited is the tool in supporting user tasks, per study findings?",
     "group_balance": 66.7,
-    "member_count": 7
+    "member_count": 6
   },
   {
     "group_id": "group_13",

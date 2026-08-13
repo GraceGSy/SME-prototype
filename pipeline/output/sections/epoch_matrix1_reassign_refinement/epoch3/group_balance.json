@@ -3,7 +3,7 @@
     "group_id": "group_1",
     "overarching_question": "What are the paper's contributions?",
     "group_balance": 100.0,
-    "member_count": 7
+    "member_count": 6
   },
   {
     "group_id": "group_5",
@@ -36,12 +36,6 @@
     "member_count": 12
   },
   {
-    "group_id": "group_11",
-    "overarching_question": "What evidence shows the tool improves user task performance and utility?",
-    "group_balance": 100.0,
-    "member_count": 6
-  },
-  {
     "group_id": "group_12",
     "overarching_question": "What tasks and design were used to evaluate the tool in a user study?",
     "group_balance": 100.0,
@@ -69,7 +63,7 @@
     "group_id": "group_16",
     "overarching_question": "How was the system/tool implemented and structured?",
     "group_balance": 100.0,
-    "member_count": 10
+    "member_count": 9
   },
   {
     "group_id": "group_18",
@@ -100,6 +94,12 @@
     "overarching_question": "How can large code corpora be visualized to reveal API usage patterns?",
     "group_balance": 66.7,
     "member_count": 18
+  },
+  {
+    "group_id": "group_11",
+    "overarching_question": "What evidence shows the tool improves user task performance and utility?",
+    "group_balance": 66.7,
+    "member_count": 5
   },
   {
     "group_id": "group_17",

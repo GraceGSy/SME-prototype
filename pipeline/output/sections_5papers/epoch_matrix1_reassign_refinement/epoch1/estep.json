@@ -1067,11 +1067,6 @@
           "paper": "paralib_uist22",
           "unit_id": "pa78",
           "tag": "Why might the choice of baseline limit the conclusions?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa79",
-          "tag": "What future tooling improvement is suggested for authoring concept hierarchies?"
         }
       ]
     },
@@ -1604,16 +1599,6 @@
           "tag": "What overall frustration did higher NFC participants express?"
         },
         {
-          "paper": "abstractexplorer",
-          "unit_id": "pa80",
-          "tag": "How do users actually use the full system to explore a corpus?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa72",
-          "tag": "What did participants experience using the tool?"
-        },
-        {
           "paper": "examplore_chi18",
           "unit_id": "pa63",
           "tag": "Why did EXAMPLORE users answer more questions correctly?"
@@ -1682,11 +1667,6 @@
           "paper": "mesotext",
           "unit_id": "pa75",
           "tag": "How did participants use Exact Matches and Unique Words?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa76",
-          "tag": "How did real users apply the interface to their own tasks?"
         },
         {
           "paper": "paralib_uist22",
@@ -1907,11 +1887,6 @@
           "paper": "examplore_chi18",
           "unit_id": "pa7",
           "tag": "What are the copyright and venue details?"
-        },
-        {
-          "paper": "examplore_chi18",
-          "unit_id": "pa79",
-          "tag": "Who contributed to and funded this work?"
         },
         {
           "paper": "mesotext",

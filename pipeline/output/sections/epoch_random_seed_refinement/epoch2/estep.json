@@ -112,11 +112,6 @@
           "tag": "What is the overall contribution and future direction?"
         },
         {
-          "paper": "examplore_chi18",
-          "unit_id": "pa76",
-          "tag": "Who provided support and funding for this work?"
-        },
-        {
           "paper": "mesotext",
           "unit_id": "pa10",
           "tag": "What are this paper's contributions?"
@@ -627,11 +622,6 @@
           "tag": "How were Exact Matches and Unique Words used?"
         },
         {
-          "paper": "mesotext",
-          "unit_id": "pa74",
-          "tag": "How did real users apply the tool to their own tasks?"
-        },
-        {
           "paper": "paralib_uist22",
           "unit_id": "pa37",
           "tag": "What assumption underlies the distribution bar interpretation?"
@@ -1040,11 +1030,6 @@
           "paper": "mesotext",
           "unit_id": "pa41",
           "tag": "How is the Unique Words algorithm implemented?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa86",
-          "tag": "What future work is suggested for automating concept annotation?"
         }
       ]
     },

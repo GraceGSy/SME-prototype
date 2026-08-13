@@ -3,7 +3,7 @@
     "group_id": "group_1",
     "overarching_question": "What are the paper's key contributions?",
     "group_balance": 100.0,
-    "member_count": 7
+    "member_count": 6
   },
   {
     "group_id": "group_3",
@@ -27,7 +27,7 @@
     "group_id": "group_11",
     "overarching_question": "How effective was the tool in supporting users' real-world sensemaking tasks?",
     "group_balance": 100.0,
-    "member_count": 21
+    "member_count": 20
   },
   {
     "group_id": "group_12",
@@ -63,7 +63,7 @@
     "group_id": "group_2",
     "overarching_question": "How effective and useful was the tool for users in evaluation studies?",
     "group_balance": 66.7,
-    "member_count": 6
+    "member_count": 5
   },
   {
     "group_id": "group_4",

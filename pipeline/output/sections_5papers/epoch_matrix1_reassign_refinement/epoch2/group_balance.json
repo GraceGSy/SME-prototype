@@ -33,7 +33,7 @@
     "group_id": "group_9",
     "overarching_question": "How do user studies show these tools help users in practice?",
     "group_balance": 100.0,
-    "member_count": 19
+    "member_count": 16
   },
   {
     "group_id": "group_11",
@@ -57,7 +57,7 @@
     "group_id": "group_21",
     "overarching_question": "Why are current methods for exploring large text/code corpora insufficient, motivating new tools?",
     "group_balance": 100.0,
-    "member_count": 38
+    "member_count": 37
   },
   {
     "group_id": "group_2",
@@ -111,6 +111,6 @@
     "group_id": "group_16",
     "overarching_question": "What are the publication and citation details of this paper?",
     "group_balance": 60.0,
-    "member_count": 11
+    "member_count": 10
   }
 ]

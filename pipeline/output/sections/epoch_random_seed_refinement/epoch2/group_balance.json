@@ -3,7 +3,7 @@
     "group_id": "group_1",
     "overarching_question": "What are the paper's contributions?",
     "group_balance": 100.0,
-    "member_count": 8
+    "member_count": 7
   },
   {
     "group_id": "group_2",
@@ -45,7 +45,7 @@
     "group_id": "group_11",
     "overarching_question": "How does the proposed tool improve user outcomes over baseline methods?",
     "group_balance": 100.0,
-    "member_count": 44
+    "member_count": 43
   },
   {
     "group_id": "group_12",
@@ -64,12 +64,6 @@
     "overarching_question": "How does this work compare to and differ from prior related systems?",
     "group_balance": 100.0,
     "member_count": 14
-  },
-  {
-    "group_id": "group_16",
-    "overarching_question": "How was the system/tool implemented and structured?",
-    "group_balance": 100.0,
-    "member_count": 8
   },
   {
     "group_id": "group_18",
@@ -100,6 +94,12 @@
     "overarching_question": "How do users interact with and evaluate the tool's features in practice?",
     "group_balance": 66.7,
     "member_count": 4
+  },
+  {
+    "group_id": "group_16",
+    "overarching_question": "How was the system/tool implemented and structured?",
+    "group_balance": 66.7,
+    "member_count": 7
   },
   {
     "group_id": "group_17",

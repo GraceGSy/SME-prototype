@@ -112,11 +112,6 @@
           "tag": "What is the overall contribution and future direction?"
         },
         {
-          "paper": "examplore_chi18",
-          "unit_id": "pa76",
-          "tag": "Who provided support and funding for this work?"
-        },
-        {
           "paper": "mesotext",
           "unit_id": "pa10",
           "tag": "What are this paper's contributions?"
@@ -1042,11 +1037,6 @@
           "tag": "How were Exact Matches and Unique Words used?"
         },
         {
-          "paper": "mesotext",
-          "unit_id": "pa74",
-          "tag": "How did real users apply the tool to their own tasks?"
-        },
-        {
           "paper": "paralib_uist22",
           "unit_id": "pa56",
           "tag": "How does the study measure library ranking suitability?"
@@ -1335,11 +1325,6 @@
           "paper": "paralib_uist22",
           "unit_id": "pa16",
           "tag": "Do library authors also need comparison tools?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa86",
-          "tag": "What future work is suggested for automating concept annotation?"
         }
       ]
     },

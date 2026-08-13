@@ -283,11 +283,6 @@
           "tag": "How does filtering update the skeleton view?"
         },
         {
-          "paper": "mesotext",
-          "unit_id": "pa74",
-          "tag": "How did real users apply the tool to their own tasks?"
-        },
-        {
           "paper": "paralib_uist22",
           "unit_id": "pa30",
           "tag": "How can users filter examples by selecting concepts?"
@@ -323,11 +318,6 @@
           "paper": "examplore_chi18",
           "unit_id": "pa37",
           "tag": "How does the user discover new guard patterns via filtering?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa74",
-          "tag": "How did real users apply the tool to their own tasks?"
         },
         {
           "paper": "paralib_uist22",

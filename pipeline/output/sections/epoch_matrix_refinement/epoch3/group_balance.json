@@ -3,7 +3,7 @@
     "group_id": "group_1",
     "overarching_question": "What are the paper's contributions?",
     "group_balance": 100.0,
-    "member_count": 10
+    "member_count": 9
   },
   {
     "group_id": "group_4",
@@ -51,7 +51,7 @@
     "group_id": "group_16",
     "overarching_question": "How was the example-based visualization/tool system designed and implemented?",
     "group_balance": 100.0,
-    "member_count": 26
+    "member_count": 25
   },
   {
     "group_id": "group_18",
@@ -75,7 +75,7 @@
     "group_id": "group_21",
     "overarching_question": "What tasks and design were used to evaluate the tool in the user study?",
     "group_balance": 100.0,
-    "member_count": 16
+    "member_count": 15
   },
   {
     "group_id": "group_8",
