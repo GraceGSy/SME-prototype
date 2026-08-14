@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <title>Bidirectional Tag Match Viewer</title>
+<link rel="icon" href="data:,">
 <style>
   * { box-sizing: border-box; }
   body {
@@ -427,9 +428,96 @@
     .qi-flow-paragraphs { grid-template-columns: 1fr; }
     .qi-flow-question-control { min-width: 100%; }
   }
+
+  .tutorial-launch-button {
+    margin-left: auto; padding: 3px 9px; border: 1px solid #ced4da; border-radius: 4px;
+    background: #fff; color: #495057; font: inherit; font-size: 10.5px; cursor: pointer;
+  }
+  .tutorial-launch-button:hover, .tutorial-launch-button:focus-visible {
+    border-color: #1c7ed6; color: #1864ab; outline: none;
+  }
+  .tutorial-welcome {
+    position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 24px;
+    background: rgba(33, 37, 41, .48);
+  }
+  .tutorial-welcome[hidden], .tutorial-layer[hidden] { display: none; }
+  .tutorial-welcome-card {
+    width: min(520px, 100%); padding: 28px 30px 26px; border: 1px solid #dee2e6;
+    border-radius: 8px; background: #fff; box-shadow: 0 18px 54px rgba(33, 37, 41, .2);
+  }
+  .tutorial-welcome-eyebrow {
+    margin-bottom: 7px; color: #1c7ed6; font-size: 10px; font-weight: 750;
+    letter-spacing: .08em; text-transform: uppercase;
+  }
+  .tutorial-welcome-card h2 { margin: 0 0 10px; color: #212529; font-size: 22px; line-height: 1.2; }
+  .tutorial-welcome-card p { margin: 0; color: #495057; font-size: 13px; line-height: 1.55; }
+  .tutorial-welcome-features {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin: 20px 0;
+  }
+  .tutorial-welcome-feature {
+    padding: 10px 11px; border: 1px solid #e9ecef; border-radius: 6px; background: #f8f9fa;
+    color: #495057; font-size: 11px; line-height: 1.4;
+  }
+  .tutorial-welcome-feature strong { display: block; margin-bottom: 2px; color: #343a40; font-size: 11.5px; }
+  .tutorial-welcome-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 22px; }
+  .tutorial-button {
+    min-height: 31px; padding: 6px 12px; border: 1px solid #ced4da; border-radius: 4px;
+    background: #fff; color: #495057; font: inherit; font-size: 11px; font-weight: 650; cursor: pointer;
+  }
+  .tutorial-button:hover:not(:disabled), .tutorial-button:focus-visible {
+    border-color: #1c7ed6; color: #1864ab; outline: none;
+  }
+  .tutorial-button.primary { border-color: #1c7ed6; background: #1c7ed6; color: #fff; }
+  .tutorial-button.primary:hover:not(:disabled), .tutorial-button.primary:focus-visible {
+    border-color: #1864ab; background: #1864ab; color: #fff;
+  }
+  .tutorial-button:disabled { cursor: not-allowed; opacity: .5; }
+  .tutorial-loading { min-height: 16px; margin-top: 10px; color: #868e96; font-size: 10px; text-align: right; }
+
+  .tutorial-layer { position: fixed; inset: 0; z-index: 1001; pointer-events: none; }
+  .tutorial-spotlight {
+    position: fixed; z-index: 1001; border: 2px solid #1c7ed6; border-radius: 8px;
+    box-shadow: 0 0 0 9999px rgba(33, 37, 41, .52), 0 0 0 4px rgba(28, 126, 214, .2);
+    pointer-events: none; transition: top .18s ease, left .18s ease, width .18s ease, height .18s ease;
+  }
+  .tutorial-card {
+    position: fixed; z-index: 1002; width: min(350px, calc(100vw - 24px)); padding: 14px;
+    border: 1px solid #ced4da; border-top: 3px solid #1c7ed6; border-radius: 7px;
+    background: #fff; box-shadow: 0 12px 32px rgba(33, 37, 41, .22); pointer-events: auto;
+  }
+  .tutorial-card-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+  .tutorial-progress { color: #868e96; font-size: 9.5px; font-weight: 650; letter-spacing: .02em; }
+  .tutorial-exit {
+    padding: 1px 3px; border: 0; background: transparent; color: #868e96;
+    font: inherit; font-size: 10px; cursor: pointer;
+  }
+  .tutorial-exit:hover, .tutorial-exit:focus-visible { color: #343a40; outline: none; }
+  .tutorial-card h2 { margin: 0 0 6px; color: #212529; font-size: 15px; line-height: 1.3; }
+  .tutorial-card p { margin: 0; color: #495057; font-size: 11.5px; line-height: 1.5; }
+  .tutorial-action-hint {
+    display: none; margin-top: 9px; padding: 7px 8px; border: 1px solid #a5d8ff;
+    border-radius: 4px; background: #e7f5ff; color: #1864ab; font-size: 10.5px; font-weight: 650;
+  }
+  .tutorial-card.action-step .tutorial-action-hint { display: block; }
+  .tutorial-card-actions { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 13px; }
+  .tutorial-card-actions-right { display: flex; gap: 6px; margin-left: auto; }
+  .tutorial-target-pulse { animation: tutorial-target-pulse 1.5s ease-in-out infinite; }
+  @keyframes tutorial-target-pulse {
+    0%, 100% { filter: none; }
+    50% { filter: brightness(1.04); }
+  }
+  @media (max-width: 640px) {
+    .tutorial-welcome-card { padding: 22px; }
+    .tutorial-welcome-features { grid-template-columns: 1fr; }
+    .tutorial-launch-button { margin-left: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tutorial-spotlight { transition: none; }
+    .tutorial-target-pulse { animation: none; }
+  }
 </style>
 </head>
-<body>
+<body class="tutorial-welcome-open">
 
 <header>
   <h1>Bidirectional Tag Match Viewer</h1>
@@ -440,9 +528,46 @@
     <span id="similarityValue">0.00</span>
   </label>
   <span style="font-size:11px;color:#868e96;">hover a unit to preview its links; click to pin and expand full text</span>
+  <button type="button" class="tutorial-launch-button" id="restartTutorial">Tutorial</button>
 </header>
 <div id="legend">tags are free-text questions/phrases, not a fixed category. Only <strong>bidirectional</strong> matches (mutual top-3) are shown; use the slider above to filter out weaker matches.</div>
 <div id="stage"><div class="empty-state">Loading...</div></div>
+
+<div class="tutorial-welcome" id="tutorialWelcome" role="dialog" aria-modal="true" aria-labelledby="tutorialWelcomeTitle">
+  <section class="tutorial-welcome-card">
+    <div class="tutorial-welcome-eyebrow">Question Atlas</div>
+    <h2 id="tutorialWelcomeTitle">Explore connections across papers</h2>
+    <p>Take a short guided tour of the two complementary views, or open the tool directly if you already know your way around.</p>
+    <div class="tutorial-welcome-features">
+      <div class="tutorial-welcome-feature"><strong>Question Groups</strong>Inspect paragraphs from different papers that answer a shared question.</div>
+      <div class="tutorial-welcome-feature"><strong>Paper Map</strong>See where each question appears within the structure of every paper.</div>
+    </div>
+    <div class="tutorial-welcome-actions">
+      <button type="button" class="tutorial-button" id="useToolButton">Use Tool</button>
+      <button type="button" class="tutorial-button primary" id="startTutorialButton" disabled>Start Tutorial</button>
+    </div>
+    <div class="tutorial-loading" id="tutorialLoading" role="status">Loading paper data…</div>
+  </section>
+</div>
+
+<div class="tutorial-layer" id="tutorialLayer" aria-hidden="true" hidden>
+  <div class="tutorial-spotlight" id="tutorialSpotlight" aria-hidden="true"></div>
+  <section class="tutorial-card" id="tutorialCard" role="dialog" aria-labelledby="tutorialStepTitle">
+    <div class="tutorial-card-top">
+      <span class="tutorial-progress" id="tutorialProgress"></span>
+      <button type="button" class="tutorial-exit" id="tutorialExit">Exit tutorial</button>
+    </div>
+    <h2 id="tutorialStepTitle"></h2>
+    <p id="tutorialStepBody"></p>
+    <div class="tutorial-action-hint" id="tutorialActionHint"></div>
+    <div class="tutorial-card-actions">
+      <button type="button" class="tutorial-button" id="tutorialPrevious">Previous Step</button>
+      <div class="tutorial-card-actions-right">
+        <button type="button" class="tutorial-button primary" id="tutorialNext">Next Step</button>
+      </div>
+    </div>
+  </section>
+</div>
 
 <script>
 const GRANULARITIES = ["sections", "paragraphs"]; // matching/data granularities
@@ -452,14 +577,8 @@ const GRANULARITY_LABELS = { sections: "Section", paragraphs: "Paragraph" };
 // own tab content -- see renderEpochGroups() -- not in the header.)
 const MIN_SIMILARITY_GRANULARITIES = ["sections", "paragraphs"];
 const ENABLE_QI_FLOW_VIEW = true; // independent experimental surface; set false to hide without affecting the trace view
-// Three MILP-reassignment variants (see reassign_via_milp_per_paper.py and
-// its no-penalty / quadratic siblings) -- each its own tab, each its own
-// output file, none overwriting another.
-const MILP_VARIANTS = [
-  { key: "milp", label: "MILP (linear)", file: "milp_reassignment_per_paper.json" },
-  { key: "milp_none", label: "MILP (no penalty)", file: "milp_reassignment_per_paper_no_penalty.json" },
-  { key: "milp_quad", label: "MILP (quadratic)", file: "milp_reassignment_per_paper_quadratic.json" },
-];
+// The user-study surface does not expose or load the experimental MILP views.
+const MILP_VARIANTS = [];
 const MILP_VARIANT_KEYS = MILP_VARIANTS.map(v => v.key);
 
 const TABS = ["epoch_groups", "paper-map"]; // only these two tabs are shown -- the rendering/dispatch code for the rest (sections, paragraphs, groups, qi-trace, qi-flow, MILP_VARIANT_KEYS) is untouched, so re-adding any of them here brings the tab straight back
@@ -471,7 +590,7 @@ const TAB_LABELS = Object.assign(
 // refine_with_epoch_matrices.py's 4 phases: the pre-epoch snapshot, then 3
 // epochs. Each epoch's E-step (membership) and M-step (question) were saved
 // separately, so the viewer joins them by group_id when loading.
-const N_EPOCH_PHASES = 5; // max across all epoch-refinement variants; a run with fewer epochs just has no data for the rest, handled as best-effort below
+const N_EPOCH_PHASES = 3;
 
 const stage = document.getElementById("stage");
 const granularityTabsEl = document.getElementById("granularityTabs");
@@ -537,6 +656,380 @@ const openEpochGroupIds = new Set(); // group_id currently expanded, cleared on 
 const PAPER_COLOR_PALETTE = ["#4C6EF5", "#F76707", "#37b24d", "#e64980", "#ae3ec9", "#f59f00"];
 let paperColorById = {};
 let paperTitleById = {};
+
+const tutorialWelcome = document.getElementById("tutorialWelcome");
+const tutorialLayer = document.getElementById("tutorialLayer");
+const tutorialSpotlight = document.getElementById("tutorialSpotlight");
+const tutorialCard = document.getElementById("tutorialCard");
+const tutorialProgress = document.getElementById("tutorialProgress");
+const tutorialStepTitle = document.getElementById("tutorialStepTitle");
+const tutorialStepBody = document.getElementById("tutorialStepBody");
+const tutorialActionHint = document.getElementById("tutorialActionHint");
+const tutorialPrevious = document.getElementById("tutorialPrevious");
+const tutorialNext = document.getElementById("tutorialNext");
+const startTutorialButton = document.getElementById("startTutorialButton");
+const tutorialLoading = document.getElementById("tutorialLoading");
+let tutorialReady = false;
+let tutorialActive = false;
+let tutorialStepIndex = 0;
+let tutorialTarget = null;
+let tutorialRenderToken = 0;
+let tutorialActionTimer = null;
+let tutorialReturnState = null;
+
+function ensureTutorialView(view) {
+  if (currentGranularity !== view) switchGranularity(view);
+}
+
+function firstEpochGroup() {
+  return [...(epochGroupsByPhase[currentEpochPhase] || [])]
+    .sort((a, b) => (b.members?.length || 0) - (a.members?.length || 0))[0] || null;
+}
+
+function firstPaperMapGroupId() {
+  const model = buildPaperMapModel();
+  return [...model.groupEntries].sort((a, b) => b.count - a.count)[0]?.group.group_id || null;
+}
+
+function prepareQuestionGroups({ openFirst = false } = {}) {
+  ensureTutorialView("epoch_groups");
+  if (!openFirst) return;
+  const group = firstEpochGroup();
+  if (group && !openEpochGroupIds.has(group.group_id)) {
+    openEpochGroupIds.add(group.group_id);
+    renderEpochGroups();
+  }
+}
+
+function preparePaperMap({ mode = "reading", selected = undefined, hide = undefined } = {}) {
+  let changed = currentGranularity !== "paper-map";
+  if (changed) switchGranularity("paper-map");
+  if (paperMapMode !== mode) { paperMapMode = mode; changed = true; }
+  if (selected !== undefined && paperMapSelectedGroupId !== selected) {
+    paperMapSelectedGroupId = selected;
+    changed = true;
+  }
+  if (hide !== undefined && paperMapHideUnselected !== hide) {
+    paperMapHideUnselected = hide;
+    changed = true;
+  }
+  if (currentGranularity === "paper-map" && changed) renderPaperMap();
+}
+
+const TUTORIAL_STEPS = [
+  {
+    title: "Two complementary views",
+    body: "Use Question Groups to inspect shared questions and their evidence. Use Paper Map to see where those questions occur within each paper.",
+    selector: "#granularityTabs",
+    placement: "bottom",
+    prepare: () => prepareQuestionGroups(),
+  },
+  {
+    title: "Start from a shared question",
+    body: "Each row is a question group. Its colored squares show which papers contribute paragraphs; repeated squares indicate multiple paragraphs from the same paper.",
+    selector: ".group-card .group-question",
+    placement: "bottom",
+    prepare: () => prepareQuestionGroups(),
+  },
+  {
+    title: "Adjust how much text you preview",
+    body: "This slider changes the amount of paragraph text shown inside expanded groups. It does not change any assignments or analysis results.",
+    selector: "#previewSlider",
+    placement: "bottom",
+    actionSelector: "#previewSlider",
+    actionEvent: "input",
+    autoAdvance: false,
+    actionHint: "Try it: drag the highlighted slider, then use Next Step when you are ready.",
+    completedHint: "Preview updated. Use Next Step when you are ready.",
+    prepare: () => prepareQuestionGroups(),
+  },
+  {
+    title: "Open a question group",
+    body: "Expanding a group reveals the exact source paragraphs assigned to its question, arranged by paper.",
+    selector: ".group-card .group-question",
+    placement: "bottom",
+    actionSelector: ".group-card .group-question",
+    actionEvent: "click",
+    actionHint: "Click the highlighted question to expand it.",
+    prepare: () => prepareQuestionGroups(),
+  },
+  {
+    title: "Expand all supporting paragraphs",
+    body: "Each column is one paper. Expand all reveals the complete source text for every paragraph in this question group so you can inspect the evidence closely.",
+    selector: ".group-card.open .expand-all-btn",
+    placement: "bottom",
+    actionSelector: ".group-card.open .expand-all-btn",
+    actionEvent: "click",
+    requireAction: true,
+    actionHint: "Click the highlighted Expand all button to continue.",
+    prepare: () => prepareQuestionGroups({ openFirst: true }),
+  },
+  {
+    title: "Move to the Paper Map",
+    body: "The Paper Map preserves each paper's reading order so you can compare where shared questions appear, not just which paragraphs belong together.",
+    selector: "button[data-granularity='paper-map']",
+    placement: "bottom",
+    actionSelector: "button[data-granularity='paper-map']",
+    actionEvent: "click",
+    actionHint: "Click Paper Map to continue.",
+    prepare: () => prepareQuestionGroups(),
+  },
+  {
+    title: "Use the question color key",
+    body: "Use the bar to filter across papers. The number next to the question is the total number of paragraphs across all papers assigned to that question group.",
+    selector: ".paper-map-legend",
+    placement: "bottom",
+    prepare: () => preparePaperMap({ mode: "reading", selected: null, hide: false }),
+  },
+  {
+    title: "Select one question",
+    body: "Selecting a question highlights its paragraphs and jumps each paper to that question's first occurrence. Select it again to clear the focus.",
+    selector: ".paper-map-legend-item",
+    placement: "bottom",
+    actionSelector: ".paper-map-legend-item",
+    actionEvent: "click",
+    actionHint: "Click the highlighted question group.",
+    prepare: () => preparePaperMap({ mode: "reading", selected: null, hide: false }),
+  },
+  {
+    title: "Trace the question through the papers",
+    body: "Selections stay highlighted while you scroll through the paper. Clicking another paragraph deselects this question and selects that paragraph's question instead.",
+    selector: ".paper-map-column:first-child",
+    placement: "right",
+    prepare: () => preparePaperMap({ mode: "reading", selected: paperMapSelectedGroupId || firstPaperMapGroupId(), hide: false }),
+  },
+  {
+    title: "Hide everything else",
+    body: "Hide unselected removes unrelated paragraphs from the current view. This is only a display filter; it does not change group membership.",
+    selector: ".paper-map-hide-unselected-toggle",
+    placement: "bottom",
+    actionSelector: "#paperMapHideUnselected",
+    actionEvent: "change",
+    advanceDelay: 2200,
+    actionHint: "Check Hide unselected to try the focused view.",
+    prepare: () => preparePaperMap({ mode: "reading", selected: paperMapSelectedGroupId || firstPaperMapGroupId(), hide: false }),
+  },
+  {
+    title: "Scroll together or independently",
+    body: "Synchronized scrolling moves every paper by the same relative amount. Turn it off when you want to inspect each paper at a different position.",
+    selector: ".paper-map-sync-toggle",
+    placement: "bottom",
+    prepare: () => preparePaperMap({ mode: "reading", selected: paperMapSelectedGroupId || firstPaperMapGroupId() }),
+  },
+  {
+    title: "You are ready to explore",
+    body: "Start with a question group, trace it through the Paper Map, and return to the original paragraphs whenever you need to verify an emerging insight. You can restart this tutorial from the header at any time.",
+    selector: "#granularityTabs",
+    placement: "bottom",
+    prepare: () => preparePaperMap({ mode: "reading", selected: null, hide: false }),
+  },
+];
+
+function closeTutorialWelcome() {
+  tutorialWelcome.hidden = true;
+  document.body.classList.remove("tutorial-welcome-open");
+}
+
+function markTutorialReady() {
+  tutorialReady = true;
+  startTutorialButton.disabled = false;
+  tutorialLoading.textContent = "The guided tour takes about 3 minutes.";
+  if (!tutorialWelcome.hidden) startTutorialButton.focus();
+}
+
+function markTutorialUnavailable() {
+  tutorialLoading.textContent = "The tutorial is unavailable until the viewer data loads.";
+}
+
+function clearTutorialTarget() {
+  if (tutorialTarget) tutorialTarget.classList.remove("tutorial-target-pulse");
+  tutorialTarget = null;
+}
+
+function tutorialCardPosition(rect, placement) {
+  const margin = 12;
+  const gap = 14;
+  const width = tutorialCard.offsetWidth;
+  const height = tutorialCard.offsetHeight;
+  const clamp = (value, min, max) => Math.max(min, Math.min(value, Math.max(min, max)));
+  const candidates = {
+    bottom: { left: rect.left + rect.width / 2 - width / 2, top: rect.bottom + gap },
+    top: { left: rect.left + rect.width / 2 - width / 2, top: rect.top - height - gap },
+    right: { left: rect.right + gap, top: rect.top + rect.height / 2 - height / 2 },
+    left: { left: rect.left - width - gap, top: rect.top + rect.height / 2 - height / 2 },
+  };
+  const order = [placement, "bottom", "right", "left", "top"].filter((value, index, list) => value && list.indexOf(value) === index);
+  const fits = position => position.left >= margin && position.top >= margin
+    && position.left + width <= window.innerWidth - margin
+    && position.top + height <= window.innerHeight - margin;
+  const selected = order.map(key => candidates[key]).find(fits) || candidates[placement] || candidates.bottom;
+  return {
+    left: clamp(selected.left, margin, window.innerWidth - width - margin),
+    top: clamp(selected.top, margin, window.innerHeight - height - margin),
+  };
+}
+
+function positionTutorial() {
+  if (!tutorialActive || !tutorialTarget) return;
+  const step = TUTORIAL_STEPS[tutorialStepIndex];
+  const rect = tutorialTarget.getBoundingClientRect();
+  const padding = 6;
+  tutorialSpotlight.style.left = `${Math.max(4, rect.left - padding)}px`;
+  tutorialSpotlight.style.top = `${Math.max(4, rect.top - padding)}px`;
+  tutorialSpotlight.style.width = `${Math.min(window.innerWidth - 8, rect.width + padding * 2)}px`;
+  tutorialSpotlight.style.height = `${Math.min(window.innerHeight - 8, rect.height + padding * 2)}px`;
+  const cardPosition = tutorialCardPosition(rect, step.placement || "bottom");
+  tutorialCard.style.left = `${cardPosition.left}px`;
+  tutorialCard.style.top = `${cardPosition.top}px`;
+}
+
+function revealTutorialTarget(target) {
+  const rect = target.getBoundingClientRect();
+  const headerBottom = document.querySelector("header")?.getBoundingClientRect().bottom || 0;
+  const isMostlyVisible = rect.bottom > headerBottom + 8 && rect.top < window.innerHeight - 8;
+  if (!isMostlyVisible && rect.height < window.innerHeight * .9) {
+    target.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+  }
+}
+
+function waitForTutorialTarget(token, attempt = 0) {
+  if (!tutorialActive || token !== tutorialRenderToken) return;
+  const step = TUTORIAL_STEPS[tutorialStepIndex];
+  const target = document.querySelector(step.selector);
+  if (!target && attempt < 40) {
+    setTimeout(() => waitForTutorialTarget(token, attempt + 1), 50);
+    return;
+  }
+  clearTutorialTarget();
+  if (!target) {
+    tutorialSpotlight.style.left = "12px";
+    tutorialSpotlight.style.top = "12px";
+    tutorialSpotlight.style.width = "calc(100vw - 24px)";
+    tutorialSpotlight.style.height = "calc(100vh - 24px)";
+    tutorialCard.style.left = `${Math.max(12, (window.innerWidth - tutorialCard.offsetWidth) / 2)}px`;
+    tutorialCard.style.top = `${Math.max(12, (window.innerHeight - tutorialCard.offsetHeight) / 2)}px`;
+    return;
+  }
+  tutorialTarget = target;
+  tutorialTarget.classList.add("tutorial-target-pulse");
+  revealTutorialTarget(target);
+  requestAnimationFrame(() => requestAnimationFrame(positionTutorial));
+}
+
+function showTutorialStep(index) {
+  tutorialStepIndex = Math.max(0, Math.min(index, TUTORIAL_STEPS.length - 1));
+  const step = TUTORIAL_STEPS[tutorialStepIndex];
+  tutorialRenderToken += 1;
+  const token = tutorialRenderToken;
+  clearTimeout(tutorialActionTimer);
+  step.prepare?.();
+  tutorialProgress.textContent = `Step ${tutorialStepIndex + 1} of ${TUTORIAL_STEPS.length}`;
+  tutorialStepTitle.textContent = step.title;
+  tutorialStepBody.textContent = step.body;
+  tutorialActionHint.textContent = step.actionHint || "";
+  tutorialCard.classList.toggle("action-step", Boolean(step.actionSelector));
+  tutorialPrevious.disabled = tutorialStepIndex === 0;
+  tutorialNext.textContent = tutorialStepIndex === TUTORIAL_STEPS.length - 1 ? "Finish Tutorial" : "Next Step";
+  tutorialNext.disabled = Boolean(step.requireAction);
+  tutorialLayer.hidden = false;
+  tutorialLayer.setAttribute("aria-hidden", "false");
+  waitForTutorialTarget(token);
+  tutorialNext.focus();
+}
+
+function startTutorial() {
+  if (!tutorialReady) return;
+  tutorialReturnState = {
+    granularity: currentGranularity,
+    previewChars,
+    currentIteration,
+    openEpochGroupIds: [...openEpochGroupIds],
+    paperMapMode,
+    paperMapSelectedGroupId,
+    paperMapSyncScroll,
+    paperMapHideUnselected,
+    paperMapLastScrolledPaper,
+    paperMapScrollByPaper: { ...paperMapScrollByPaper },
+    scrollX: window.scrollX,
+    scrollY: window.scrollY,
+  };
+  closeTutorialWelcome();
+  tutorialActive = true;
+  tutorialLayer.hidden = false;
+  tutorialLayer.setAttribute("aria-hidden", "false");
+  showTutorialStep(0);
+}
+
+function endTutorial() {
+  tutorialActive = false;
+  tutorialRenderToken += 1;
+  clearTimeout(tutorialActionTimer);
+  clearTutorialTarget();
+  tutorialLayer.hidden = true;
+  tutorialLayer.setAttribute("aria-hidden", "true");
+  if (tutorialReturnState) {
+    const state = tutorialReturnState;
+    tutorialReturnState = null;
+    previewChars = state.previewChars;
+    currentIteration = state.currentIteration;
+    openEpochGroupIds.clear();
+    state.openEpochGroupIds.forEach(groupId => openEpochGroupIds.add(groupId));
+    paperMapMode = state.paperMapMode;
+    paperMapSelectedGroupId = state.paperMapSelectedGroupId;
+    paperMapSyncScroll = state.paperMapSyncScroll;
+    paperMapHideUnselected = state.paperMapHideUnselected;
+    paperMapLastScrolledPaper = state.paperMapLastScrolledPaper;
+    Object.keys(paperMapScrollByPaper).forEach(paperId => delete paperMapScrollByPaper[paperId]);
+    Object.assign(paperMapScrollByPaper, state.paperMapScrollByPaper);
+    switchGranularity(state.granularity);
+    requestAnimationFrame(() => window.scrollTo(state.scrollX, state.scrollY));
+  }
+  document.getElementById("restartTutorial").focus();
+}
+
+function advanceTutorial() {
+  if (tutorialStepIndex >= TUTORIAL_STEPS.length - 1) endTutorial();
+  else showTutorialStep(tutorialStepIndex + 1);
+}
+
+function handleTutorialAction(event) {
+  if (!tutorialActive) return;
+  const step = TUTORIAL_STEPS[tutorialStepIndex];
+  if (!step.actionSelector || step.actionEvent !== event.type) return;
+  const actionTarget = event.target.closest?.(step.actionSelector);
+  if (!actionTarget) return;
+  clearTimeout(tutorialActionTimer);
+  if (step.autoAdvance === false) {
+    tutorialActionHint.textContent = step.completedHint || step.actionHint || "Use Next Step when you are ready.";
+    return;
+  }
+  tutorialActionTimer = setTimeout(() => {
+    if (tutorialActive && TUTORIAL_STEPS[tutorialStepIndex] === step) advanceTutorial();
+  }, step.advanceDelay ?? 140);
+}
+
+document.getElementById("useToolButton").addEventListener("click", closeTutorialWelcome);
+startTutorialButton.addEventListener("click", startTutorial);
+document.getElementById("restartTutorial").addEventListener("click", startTutorial);
+document.getElementById("tutorialExit").addEventListener("click", endTutorial);
+tutorialPrevious.addEventListener("click", () => showTutorialStep(tutorialStepIndex - 1));
+tutorialNext.addEventListener("click", advanceTutorial);
+document.addEventListener("click", handleTutorialAction, true);
+document.addEventListener("change", handleTutorialAction, true);
+document.addEventListener("input", handleTutorialAction, true);
+document.addEventListener("keydown", event => {
+  if (!tutorialActive) return;
+  if (event.key === "Escape") { event.preventDefault(); endTutorial(); return; }
+  const editing = /^(INPUT|SELECT|TEXTAREA)$/.test(event.target.tagName);
+  if (editing) return;
+  if (event.key === "ArrowRight") {
+    event.preventDefault();
+    if (!TUTORIAL_STEPS[tutorialStepIndex].requireAction) advanceTutorial();
+  }
+  if (event.key === "ArrowLeft" && tutorialStepIndex > 0) { event.preventDefault(); showTutorialStep(tutorialStepIndex - 1); }
+});
+window.addEventListener("resize", positionTutorial);
+window.addEventListener("scroll", positionTutorial, true);
 
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -1307,6 +1800,10 @@ function attachPaperMapLegendInteractions(model) {
 }
 
 function renderPaperMap() {
+  // The user-study surface currently exposes only the full-text reading map.
+  // Keep the skeleton implementation available for later experiments without
+  // presenting its control or allowing stale state to activate it here.
+  paperMapMode = "reading";
   const model = buildPaperMapModel();
   if (paperMapSelectedGroupId && !model.entriesById.has(paperMapSelectedGroupId)) {
     paperMapSelectedGroupId = null;
@@ -1316,23 +1813,19 @@ function renderPaperMap() {
   const totalParagraphs = allPapers.reduce((sum, paper) => sum + paperMapVisibleParagraphs(paper).length, 0);
   const orphanCount = totalParagraphs - model.assignments.size;
   const legend = buildPaperMapLegendHtml(model);
-  const modeToggle = `<div class="paper-map-mode-toggle" role="group" aria-label="Paper Map display">
-    <button type="button" class="paper-map-mode-button${paperMapMode === "reading" ? " active" : ""}" data-paper-map-mode="reading" aria-pressed="${paperMapMode === "reading"}">Read</button>
-    <button type="button" class="paper-map-mode-button${paperMapMode === "skeleton" ? " active" : ""}" data-paper-map-mode="skeleton" aria-pressed="${paperMapMode === "skeleton"}">Skeleton</button>
-  </div>`;
   const syncToggle = paperMapMode === "reading" ? `<label class="paper-map-sync-toggle" title="Off keeps each paper independently scrollable">
     <input type="checkbox" id="paperMapSyncScroll"${paperMapSyncScroll ? " checked" : ""}> sync paper scrolling
   </label>` : "";
   const hideUnselectedToggle = `<label class="paper-map-hide-unselected-toggle" title="${paperMapSelectedGroupId ? "" : "Select a group in the legend or map first"}">
     <input type="checkbox" id="paperMapHideUnselected"${paperMapHideUnselected ? " checked" : ""}${paperMapSelectedGroupId ? "" : " disabled"}> Hide unselected
   </label>`;
-  const content = paperMapMode === "skeleton" ? renderPaperMapSkeleton(model) : renderPaperMapReading(model);
+  const content = renderPaperMapReading(model);
 
   stage.innerHTML = `<div class="paper-map-shell">
     <div class="paper-map-overview">
       <div class="paper-map-control-row">
         <div class="paper-map-summary">${model.groups.length} groups · ${model.assignments.size} assigned · ${orphanCount} unassigned</div>
-        ${modeToggle}${syncToggle}${hideUnselectedToggle}
+        ${syncToggle}${hideUnselectedToggle}
       </div>
       <div class="paper-map-legend" aria-label="Question groups">${legend}</div>
     </div>
@@ -2603,10 +3096,12 @@ async function init() {
     similarityValueEl.textContent = similarityThreshold.toFixed(2);
     if (GRANULARITIES.includes(currentGranularity)) applyFilterAndRender();
   });
+  markTutorialReady();
 }
 
 init().catch(error => {
   console.error("Failed to initialize the viewer", error);
+  markTutorialUnavailable();
   const serverHint = window.location.protocol === "file:"
     ? "This viewer must be served over HTTP. From the repository root, run: python -m http.server 8743 --directory pipeline"
     : "Confirm that output/sections contains the manifest, paper, match, and iteration JSON files.";
