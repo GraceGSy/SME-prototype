@@ -732,18 +732,6 @@ const TUTORIAL_STEPS = [
     prepare: () => prepareQuestionGroups(),
   },
   {
-    title: "Adjust how much text you preview",
-    body: "This slider changes the amount of paragraph text shown inside expanded groups. It does not change any assignments or analysis results.",
-    selector: "#previewSlider",
-    placement: "bottom",
-    actionSelector: "#previewSlider",
-    actionEvent: "input",
-    autoAdvance: false,
-    actionHint: "Try it: drag the highlighted slider, then use Next Step when you are ready.",
-    completedHint: "Preview updated. Use Next Step when you are ready.",
-    prepare: () => prepareQuestionGroups(),
-  },
-  {
     title: "Open a question group",
     body: "Expanding a group reveals the exact source paragraphs assigned to its question, arranged by paper.",
     selector: ".group-card .group-question",
@@ -762,6 +750,18 @@ const TUTORIAL_STEPS = [
     actionEvent: "click",
     requireAction: true,
     actionHint: "Click the highlighted Expand all button to continue.",
+    prepare: () => prepareQuestionGroups({ openFirst: true }),
+  },
+  {
+    title: "Adjust how much text you preview",
+    body: "This slider changes the amount of paragraph text shown inside expanded groups. It does not change any assignments or analysis results.",
+    selector: "#previewSlider",
+    placement: "bottom",
+    actionSelector: "#previewSlider",
+    actionEvent: "input",
+    autoAdvance: false,
+    actionHint: "Try it: drag the highlighted slider, then use Next Step when you are ready.",
+    completedHint: "Preview updated. Use Next Step when you are ready.",
     prepare: () => prepareQuestionGroups({ openFirst: true }),
   },
   {
@@ -788,6 +788,7 @@ const TUTORIAL_STEPS = [
     placement: "bottom",
     actionSelector: ".paper-map-legend-item",
     actionEvent: "click",
+    requireAction: true,
     actionHint: "Click the highlighted question group.",
     prepare: () => preparePaperMap({ mode: "reading", selected: null, hide: false }),
   },
@@ -1005,7 +1006,7 @@ function handleTutorialAction(event) {
   }
   tutorialActionTimer = setTimeout(() => {
     if (tutorialActive && TUTORIAL_STEPS[tutorialStepIndex] === step) advanceTutorial();
-  }, step.advanceDelay ?? 140);
+  }, step.advanceDelay ?? 1000);
 }
 
 document.getElementById("useToolButton").addEventListener("click", closeTutorialWelcome);
