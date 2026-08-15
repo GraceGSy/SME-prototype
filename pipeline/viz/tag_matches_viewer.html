@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Bidirectional Tag Match Viewer</title>
+<title>SME Viewer</title>
 <link rel="icon" href="data:,">
 <style>
   * { box-sizing: border-box; }
@@ -524,7 +524,7 @@
 <body class="tutorial-welcome-open">
 
 <header>
-  <h1>Bidirectional Tag Match Viewer</h1>
+  <h1 id="viewerTitle">SME Viewer</h1>
   <div id="granularityTabs" style="display:flex;gap:2px;"></div>
   <label id="minSimilarityControl" style="font-size:11px;color:#495057;display:flex;align-items:center;gap:6px;">
     min similarity
@@ -3014,6 +3014,9 @@ function switchGranularity(granularity) {
 
 async function init() {
   const { dataset, papers, links, iterations, balances, milpDataByVariant, epochInitialGroups, epochStepData } = await loadAll();
+  const viewerTitle = dataset.label || "SME Viewer";
+  document.title = viewerTitle;
+  document.getElementById("viewerTitle").textContent = viewerTitle;
   currentEpochPhase = `epoch${dataset.default_epoch}`;
   document.documentElement.dataset.datasetId = dataset.dataset_id || "dataset";
   allPapers = papers;

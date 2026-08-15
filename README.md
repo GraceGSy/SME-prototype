@@ -205,12 +205,13 @@ the frontend:
 python pipeline/viewer_dataset.py \
   pipeline/output/sections_skills_hybrid_core \
   tmp/question-atlas-hci \
-  --dataset-id hci --label "HCI Papers"
+  --dataset-id hci --label "HCI SME Viewer"
 
 python -m http.server 8743 --directory tmp/question-atlas-hci/public
 ```
 
-The packager validates paper/unit references and epoch completeness, copies only
+The `--label` value sets the browser-tab and visible viewer title. The packager
+validates paper/unit references and epoch completeness, copies only
 runtime files (not PDFs, matrices, or model caches), and writes the generated
 `data/dataset.json` contract used by the unchanged viewer.
 
