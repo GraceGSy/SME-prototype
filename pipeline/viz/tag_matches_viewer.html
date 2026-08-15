@@ -142,7 +142,7 @@
     font-size: 9.5px; white-space: nowrap;
   }
   .paper-map-hide-unselected-toggle input:disabled { cursor: not-allowed; }
-  .paper-map-hide-unselected-toggle:has(input:disabled), .paper-map-sync-toggle:has(input:disabled) { opacity: .5; }
+  .paper-map-hide-unselected-toggle:has(input:disabled) { opacity: .5; }
   .paper-map-paragraph.hidden, .paper-map-skeleton-block.hidden { display: none; }
   .paper-map-legend { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 5px; min-width: 0; padding: 3px 2px 8px; }
   .paper-map-legend-item {
@@ -587,10 +587,9 @@ const TAB_LABELS = Object.assign(
   Object.fromEntries(MILP_VARIANTS.map(v => [v.key, v.label]))
 );
 
-// refine_with_epoch_matrices.py's 4 phases: the pre-epoch snapshot, then 3
-// epochs. Each epoch's E-step (membership) and M-step (question) were saved
-// separately, so the viewer joins them by group_id when loading.
-const N_EPOCH_PHASES = 3;
+// Every deployment serves one normalized dataset package at /data. The
+// packager decides which pipeline output directory is mounted there.
+const DATA_BASE = new URL("../data/", window.location.href);
 
 const stage = document.getElementById("stage");
 const granularityTabsEl = document.getElementById("granularityTabs");
@@ -621,7 +620,6 @@ const PAPER_MAP_HUES = [205, 25, 145, 48, 275, 175, 350, 95, 230, 8, 160, 62, 30
 let paperMapMode = "reading";
 let paperMapSelectedGroupId = null;
 let paperMapSyncScroll = true;
-let paperMapSyncScrollBeforeSelection = null; // null = not currently overridden; remembers the checkbox's value from just before a group got selected, so deselecting restores it
 let paperMapHideUnselected = false; // only meaningful with a group selected -- forced back to false whenever selection clears
 let paperMapLastScrolledPaper = null;
 let paperMapScrollSyncing = false;
@@ -647,7 +645,7 @@ MILP_VARIANT_KEYS.forEach(key => { milpGroupsByVariant[key] = []; openMilpGroupI
 const epochGroupsByPhase = {}; // phase key -> [{group_id, overarching_question, members}, ...]
 const epochMetaByPhase = {}; // phase key -> {reassigned, total_assigned} | null (the "initial" phase has none)
 const epochBalanceByPhase = {}; // phase key -> {group_id: group_balance}, when available (epoch1/2/3 only, from compute_epoch_group_balance.py)
-const currentEpochPhase = "epoch3"; // fixed -- no phase-switcher UI, always show the final epoch
+let currentEpochPhase = "initial"; // set from dataset.json; defaults to the package's last epoch
 const openEpochGroupIds = new Set(); // group_id currently expanded, cleared on phase switch (membership/content differs per phase)
 
 // Fixed per-paper colors (not tag-derived, so this isn't the hash-based tag
@@ -1060,73 +1058,51 @@ function updatePreviews() {
   refreshView(); // preview height changed, so link endpoints moved
 }
 
+async function fetchDatasetJson(path) {
+  const response = await fetch(new URL(path, DATA_BASE), { cache: "no-store" });
+  if (!response.ok) throw new Error(`Could not load data/${path} (${response.status})`);
+  return response.json();
+}
+
 async function loadAll() {
-  const base = "../output/sections_skills_hybrid_papers3_core/";
-  const opts = { cache: "no-store" }; // these files change often during development; never serve a stale cached copy
-  const manifest = await (await fetch(base + "manifest.json", opts)).json();
-  const papers = [];
-  for (const m of manifest) {
-    papers.push(await (await fetch(base + m.file, opts)).json());
+  const descriptor = await fetchDatasetJson("dataset.json");
+  const epochs = (descriptor.epochs || []).map(Number);
+  if (descriptor.schema_version !== 1 || !epochs.length || epochs.some(n => !Number.isInteger(n) || n < 1)) {
+    throw new Error("data/dataset.json does not match the Question Atlas dataset contract");
   }
-  const links = await (await fetch(base + "bidirectional_matches.json", opts)).json();
-  const quoteGroups = await (await fetch(base + "quote_groups.json", opts)).json();
-  const iterations = { 0: { groups: quoteGroups.paragraphs || [], meta: null } };
-  // Iteration-track output is optional -- a directory that only ran the
-  // epoch-refinement track (refine_with_epoch_matrix1_reassign.py) never
-  // produces these, same best-effort handling as the balance/MILP/epoch
-  // fetches below.
-  for (let i = 1; i <= N_ITERATIONS; i++) {
-    try {
-      const response = await fetch(base + `paragraph_groups_iter${i}.json`, opts);
-      if (response.ok) iterations[i] = await response.json();
-    } catch (e) { /* no iteration-track output available */ }
-  }
-  // Balance files are optional so older output directories still load.
-  const balances = {};
-  for (let i = 1; i <= N_ITERATIONS; i++) {
-    try {
-      const response = await fetch(base + `group_balance_iter${i}.json`, opts);
-      if (response.ok) balances[i] = await response.json();
-    } catch (e) { /* no balance for this iteration -- keep the default order */ }
-  }
-  // MILP reassignment variants are separate, optional, one-shot outputs --
-  // each fetched best-effort so a missing one doesn't break the rest of the
-  // viewer. All three use the per-paper approach (reassign_via_milp_per_
-  // paper.py and its siblings): each paper's own paragraphs are assigned to
-  // groups independently, using that paper's own Matrix 2 ranking directly
-  // (no cross-paper concatenation) -- they differ only in the group-size
-  // penalty (linear / none / quadratic).
-  const milpDataByVariant = {};
-  for (const variant of MILP_VARIANTS) {
-    try {
-      const res = await fetch(base + variant.file, opts);
-      if (res.ok) milpDataByVariant[variant.key] = await res.json();
-    } catch (e) { /* this MILP variant's output isn't available */ }
-  }
-  // refine_with_epoch_matrices.py's output -- also optional/best-effort.
-  // The pre-epoch snapshot is one file; each epoch's E-step (membership)
-  // and M-step (question) were saved as two separate files and need to be
-  // joined by group_id after fetching (done in init(), not here).
-  let epochInitialGroups = null;
-  try {
-    const res = await fetch(base + "epoch_matrix1_reassign_refinement/initial_groups.json", opts);
-    if (res.ok) epochInitialGroups = await res.json();
-  } catch (e) { /* no epoch refinement output available */ }
-  const epochStepData = {};
-  for (let n = 1; n <= N_EPOCH_PHASES; n++) {
-    epochStepData[`epoch${n}`] = { estep: null, mstep: null, balance: null };
-    try {
-      const eRes = await fetch(base + `epoch_matrix1_reassign_refinement/epoch${n}/estep.json`, opts);
-      if (eRes.ok) epochStepData[`epoch${n}`].estep = await eRes.json();
-      const mRes = await fetch(base + `epoch_matrix1_reassign_refinement/epoch${n}/mstep.json`, opts);
-      if (mRes.ok) epochStepData[`epoch${n}`].mstep = await mRes.json();
-      // Written by compute_epoch_group_balance.py -- optional/best-effort,
-      // like the iteration balance files above.
-      const bRes = await fetch(base + `epoch_matrix1_reassign_refinement/epoch${n}/group_balance.json`, opts);
-      if (bRes.ok) epochStepData[`epoch${n}`].balance = await bRes.json();
-    } catch (e) { /* this epoch's output isn't available */ }
-  }
-  return { papers, links, iterations, balances, milpDataByVariant, epochInitialGroups, epochStepData };
+  const defaultEpoch = Number(descriptor.default_epoch ?? epochs[epochs.length - 1]);
+  if (!epochs.includes(defaultEpoch)) throw new Error("data/dataset.json names an unavailable default epoch");
+  const dataset = { ...descriptor, epochs, default_epoch: defaultEpoch };
+
+  const manifest = await fetchDatasetJson("manifest.json");
+  if (!Array.isArray(manifest) || !manifest.length) throw new Error("data/manifest.json has no papers");
+  const papers = await Promise.all(manifest.map(entry => fetchDatasetJson(entry.file)));
+  const [links, quoteGroups, epochInitialGroups] = await Promise.all([
+    fetchDatasetJson("bidirectional_matches.json"),
+    fetchDatasetJson("quote_groups.json"),
+    fetchDatasetJson("epoch_matrix1_reassign_refinement/initial_groups.json"),
+  ]);
+
+  const epochEntries = await Promise.all(epochs.map(async n => {
+    const prefix = `epoch_matrix1_reassign_refinement/epoch${n}/`;
+    const [estep, mstep, balance] = await Promise.all([
+      fetchDatasetJson(prefix + "estep.json"),
+      fetchDatasetJson(prefix + "mstep.json"),
+      fetchDatasetJson(prefix + "group_balance.json"),
+    ]);
+    return [`epoch${n}`, { estep, mstep, balance }];
+  }));
+
+  return {
+    dataset,
+    papers,
+    links,
+    iterations: { 0: { groups: quoteGroups.paragraphs || [], meta: null } },
+    balances: {},
+    milpDataByVariant: {},
+    epochInitialGroups,
+    epochStepData: Object.fromEntries(epochEntries),
+  };
 }
 
 function buildParagraphUnitLookup() {
@@ -1521,7 +1497,7 @@ function refreshOpenEpochGroupDetails(groups) {
 }
 
 // Same card-list-with-inline-3-column-detail pattern as renderIterationGroups().
-// currentEpochPhase is fixed to "epoch3" -- this always renders that phase's groups.
+// The packaged dataset selects its final/default epoch; the UI remains unchanged.
 function renderEpochGroups() {
   const meta = epochMetaByPhase[currentEpochPhase];
   const metaText = meta ? `${meta.reassigned} of ${meta.total_assigned} paragraphs were reassigned to a different group this epoch.` : "";
@@ -1713,23 +1689,8 @@ function epochColorCatalog() {
   );
 }
 
-// Paper Map-only: each paper's LAST extracted paragraph is a known
-// segmentation artifact -- when the extractor can't find where the next
-// paragraph starts, it dumps all remaining text (often tens of thousands of
-// characters) into one oversized final "paragraph" instead. It's still a
-// real assigned unit elsewhere (Epoch Groups, group membership counts), but
-// not something worth showing as a quote here, so this view excludes it from
-// every list, count, and assignment tally.
-function paperMapExcludedKeys() {
-  return new Set(allPapers.map(paper => {
-    const paragraphs = paper.paragraphs || [];
-    return paragraphs.length ? `${paper.paper_id}:${paragraphs[paragraphs.length - 1].id}` : null;
-  }).filter(Boolean));
-}
-
 function paperMapVisibleParagraphs(paper) {
-  const paragraphs = paper.paragraphs || [];
-  return paragraphs.length ? paragraphs.slice(0, -1) : paragraphs;
+  return paper.paragraphs || [];
 }
 
 // Every saved epoch phase carries its own membership -- Pre-epoch uses the
@@ -1739,7 +1700,6 @@ function paperMapVisibleParagraphs(paper) {
 function buildPaperMapModel() {
   const groups = epochGroupsByPhase[currentEpochPhase] || [];
   const colorByGroupId = epochColorCatalog();
-  const excludedKeys = paperMapExcludedKeys();
   const groupEntries = groups.map((group, index) => ({
     group,
     label: `${epochPhaseShortLabel(currentEpochPhase)}-${index + 1}`,
@@ -1752,7 +1712,7 @@ function buildPaperMapModel() {
   groupEntries.forEach(entry => {
     (entry.group.members || []).forEach(member => {
       const key = `${member.paper}:${member.unit_id}`;
-      if (excludedKeys.has(key) || !paragraphUnitLookup[key] || assignments.has(key)) return;
+      if (!paragraphUnitLookup[key] || assignments.has(key)) return;
       assignments.set(key, entry);
       entry.count += 1;
     });
@@ -1816,10 +1776,6 @@ function renderPaperMap() {
   if (paperMapSelectedGroupId && !model.entriesById.has(paperMapSelectedGroupId)) {
     paperMapSelectedGroupId = null;
     paperMapHideUnselected = false;
-    if (paperMapSyncScrollBeforeSelection !== null) {
-      paperMapSyncScroll = paperMapSyncScrollBeforeSelection;
-      paperMapSyncScrollBeforeSelection = null;
-    }
   }
 
   const totalParagraphs = allPapers.reduce((sum, paper) => sum + paperMapVisibleParagraphs(paper).length, 0);
@@ -2037,38 +1993,16 @@ function syncHideUnselectedToggle() {
   toggle.checked = paperMapHideUnselected;
 }
 
-function syncSyncScrollToggle() {
-  const toggle = document.getElementById("paperMapSyncScroll");
-  if (!toggle) return;
-  toggle.disabled = Boolean(paperMapSelectedGroupId);
-  toggle.checked = paperMapSyncScroll;
-}
-
 // Shared cleanup after any change to paperMapSelectedGroupId (paragraph
-// click, legend click, or clicking empty space to clear it). Hide-unselected
-// is meaningless with nothing selected, so it's forced off; conversely, sync
-// scrolling is forced off (and locked) for as long as a group stays selected,
-// since jumping every column to follow the synced scroll position would
-// fight with staying put to read the selected group's paragraphs.
+// click, legend click, or clicking empty space to clear it) -- hide-unselected
+// is meaningless with nothing selected, so it's forced off right along with
+// every other selection-dependent UI piece.
 function finalizePaperMapSelectionChange(model) {
-  if (paperMapSelectedGroupId) {
-    // Only remember it on the null -> selected transition -- switching
-    // between two selected groups shouldn't overwrite the remembered value
-    // with the already-forced "false".
-    if (paperMapSyncScrollBeforeSelection === null) paperMapSyncScrollBeforeSelection = paperMapSyncScroll;
-    paperMapSyncScroll = false;
-  } else {
-    paperMapHideUnselected = false;
-    if (paperMapSyncScrollBeforeSelection !== null) {
-      paperMapSyncScroll = paperMapSyncScrollBeforeSelection;
-      paperMapSyncScrollBeforeSelection = null;
-    }
-  }
+  if (!paperMapSelectedGroupId) paperMapHideUnselected = false;
   updateColumnGroupIndicators();
   refreshPaperMapLegend(model);
   updatePaperMapHiddenState();
   syncHideUnselectedToggle();
-  syncSyncScrollToggle();
 }
 
 function attachPaperMapInteractions(model) {
@@ -2097,7 +2031,6 @@ function attachPaperMapInteractions(model) {
   if (syncToggle) {
     syncToggle.addEventListener("change", event => {
       event.stopPropagation();
-      if (syncToggle.disabled) return;
       paperMapSyncScroll = syncToggle.checked;
       if (!paperMapSyncScroll || !columns.length) return;
       const source = columns.find(column => column.dataset.paper === paperMapLastScrolledPaper) || columns[0];
@@ -2139,7 +2072,6 @@ function attachPaperMapInteractions(model) {
   updateColumnGroupIndicators();
   updatePaperMapHiddenState();
   syncHideUnselectedToggle();
-  syncSyncScrollToggle();
 }
 
 function traceIterationNumbers() {
@@ -3077,7 +3009,9 @@ function switchGranularity(granularity) {
 }
 
 async function init() {
-  const { papers, links, iterations, balances, milpDataByVariant, epochInitialGroups, epochStepData } = await loadAll();
+  const { dataset, papers, links, iterations, balances, milpDataByVariant, epochInitialGroups, epochStepData } = await loadAll();
+  currentEpochPhase = `epoch${dataset.default_epoch}`;
+  document.documentElement.dataset.datasetId = dataset.dataset_id || "dataset";
   allPapers = papers;
   allLinksByGranularity = links;
   Object.entries(iterations).forEach(([n, state]) => {
@@ -3094,7 +3028,7 @@ async function init() {
     if (milpDataByVariant[key]) milpGroupsByVariant[key] = milpDataByVariant[key].groups || [];
   });
   if (epochInitialGroups) epochGroupsByPhase.initial = epochInitialGroups;
-  for (let n = 1; n <= N_EPOCH_PHASES; n++) {
+  for (const n of dataset.epochs) {
     const phase = `epoch${n}`;
     const { estep, mstep, balance } = epochStepData[phase] || {};
     if (!estep || !mstep) continue;
@@ -3111,6 +3045,7 @@ async function init() {
       balance.forEach(g => { epochBalanceByPhase[phase][g.group_id] = g.group_balance; });
     }
   }
+  if (!epochGroupsByPhase[currentEpochPhase]) throw new Error(`Default phase ${currentEpochPhase} was not loaded`);
   buildParagraphUnitLookup();
   buildPaperColors();
   traceSelectedGroupId = iterationGroups[0]?.[0]?.group_id || null;
@@ -3139,8 +3074,8 @@ init().catch(error => {
   console.error("Failed to initialize the viewer", error);
   markTutorialUnavailable();
   const serverHint = window.location.protocol === "file:"
-    ? "This viewer must be served over HTTP. From the repository root, run: python -m http.server 8743 --directory pipeline"
-    : "Confirm that output/sections contains the manifest, paper, match, and iteration JSON files.";
+    ? "This viewer must be served over HTTP from a packaged Question Atlas site."
+    : "Confirm that data/ contains dataset.json, the manifest, paper JSON, matches, and epoch files.";
   stage.innerHTML = `<div class="empty-state"><strong>Could not load viewer data.</strong><br>${escapeHtml(serverHint)}<br><small>${escapeHtml(error.message || error)}</small></div>`;
 });
 </script>

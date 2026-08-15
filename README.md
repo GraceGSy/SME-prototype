@@ -189,6 +189,31 @@ as **Iteration 0 · QI-Primes**, followed by refinement iterations 1–5. The Gr
 Paper Map, and Skeleton views share this iteration selector; numeric balance is
 shown for every refinement iteration.
 
+### Swappable viewer datasets
+
+The user-study viewer loads one normalized static package from `/data`; it does
+not contain a paper-set-specific path. `manifest.json` controls paper order, and
+the package descriptor selects the available epochs and defaults to the last
+one. A compatible source directory contains the ordered manifest, its listed
+paper JSON files, `bidirectional_matches.json`, `quote_groups.json`, and the
+`epoch_matrix1_reassign_refinement/` outputs.
+
+Build a standalone site from any compatible output directory without changing
+the frontend:
+
+```bash
+python pipeline/viewer_dataset.py \
+  pipeline/output/sections_skills_hybrid_core \
+  tmp/question-atlas-hci \
+  --dataset-id hci --label "HCI Papers"
+
+python -m http.server 8743 --directory tmp/question-atlas-hci/public
+```
+
+The packager validates paper/unit references and epoch completeness, copies only
+runtime files (not PDFs, matrices, or model caches), and writes the generated
+`data/dataset.json` contract used by the unchanged viewer.
+
 `output/sections/_cache/` holds the raw per-item Claude responses (safe to delete to
 force a re-run; checked into git alongside everything else so collaborators can skip
 re-running expensive steps entirely).
