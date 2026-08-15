@@ -144,7 +144,11 @@
   .paper-map-hide-unselected-toggle input:disabled { cursor: not-allowed; }
   .paper-map-hide-unselected-toggle:has(input:disabled) { opacity: .5; }
   .paper-map-paragraph.hidden, .paper-map-skeleton-block.hidden { display: none; }
-  .paper-map-legend { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 5px; min-width: 0; padding: 3px 2px 8px; }
+  .paper-map-legend {
+    display: flex; flex-wrap: wrap; align-content: flex-start; align-items: flex-start; gap: 5px; min-width: 0;
+    max-height: 84px; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable;
+    padding: 3px 6px 5px 2px;
+  }
   .paper-map-legend-item {
     display: inline-flex; align-items: flex-start; gap: 5px; flex: 0 0 auto; max-width: 380px;
     padding: 3px 7px; border: 1px solid #dee2e6; border-radius: 10px; background: #fff;
@@ -619,7 +623,7 @@ const openGroupIds = new Set(); // group_id currently expanded to show its 3-col
 const PAPER_MAP_HUES = [205, 25, 145, 48, 275, 175, 350, 95, 230, 8, 160, 62, 305, 190, 330, 118];
 let paperMapMode = "reading";
 let paperMapSelectedGroupId = null;
-let paperMapSyncScroll = true;
+let paperMapSyncScroll = false;
 let paperMapHideUnselected = false; // only meaningful with a group selected -- forced back to false whenever selection clears
 let paperMapLastScrolledPaper = null;
 let paperMapScrollSyncing = false;
