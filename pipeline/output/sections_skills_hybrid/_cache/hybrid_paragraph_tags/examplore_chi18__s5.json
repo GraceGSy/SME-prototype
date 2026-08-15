@@ -1,0 +1,8 @@
+{
+  "pa23": "What scenario introduces the interface's use?",
+  "pa24": "How are code examples displayed and color-coded for clarity?",
+  "pa25": "How does the interface show common usage options and their frequency?",
+  "pa26": "How does a user filter examples by selecting an option?",
+  "pa27": "How do skeleton options update after applying a filter?",
+  "pa28": "How does drilling into filters help discover unfamiliar patterns?"
+}

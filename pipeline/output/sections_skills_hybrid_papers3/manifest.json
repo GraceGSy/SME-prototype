@@ -1,0 +1,27 @@
+[
+  {
+    "paper_id": "crowdsourcinggraphical",
+    "title": "Crowdsourcing Graphical Perception: Using Mechanical Turk to Assess Visualization Design",
+    "file": "crowdsourcinggraphical.json"
+  },
+  {
+    "paper_id": "illusionofcausality",
+    "title": "Illusion of Causality in Visualized Data",
+    "file": "illusionofcausality.json"
+  },
+  {
+    "paper_id": "measuringseparability",
+    "title": "Measuring the Separability of Shape, Size, and Color in Scatterplots",
+    "file": "measuringseparability.json"
+  },
+  {
+    "paper_id": "seeingbelieve",
+    "title": "Seeing What You Believe or Believing What You See? Belief Biases Correlation Estimation",
+    "file": "seeingbelieve.json"
+  },
+  {
+    "paper_id": "visualarrangements",
+    "title": "Visual Arrangements of Bar Charts Influence Comparisons in Viewer Takeaways",
+    "file": "visualarrangements.json"
+  }
+]

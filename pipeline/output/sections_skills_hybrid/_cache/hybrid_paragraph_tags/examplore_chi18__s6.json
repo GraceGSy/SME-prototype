@@ -1,0 +1,9 @@
+{
+  "pa29": "What are the three phases of Examplore's pipeline?",
+  "pa30": "How does the underlying API usage mining process extract code examples?",
+  "pa31": "How is normalized code data stored and used for the interface?",
+  "pa32": "How does Examplore rewrite chained method calls?",
+  "pa33": "How does Examplore canonicalize variable names?",
+  "pa34": "What is a concrete example of extracted API usage features?",
+  "pa35": "How is the visualization rendered and updated from the database?"
+}

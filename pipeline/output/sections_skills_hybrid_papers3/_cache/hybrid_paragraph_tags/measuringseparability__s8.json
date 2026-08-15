@@ -1,0 +1,17 @@
+{
+  "pa65": "What are the summarized key findings across all experiments?",
+  "pa66": "How does shape affect color discriminability, and does density explain it?",
+  "pa67": "What alternative mechanism might explain the unexpected mQTon color results?",
+  "pa68": "What did Experiment Two reveal about color's effect on shape perception?",
+  "pa69": "How does shape influence perceived size, and does size explain Experiment One's results?",
+  "pa70": "What did Experiment Three reveal about size's effect on shape perception?",
+  "pa71": "How might these perceptual biases affect higher-level visualization tasks?",
+  "pa72": "What is the broader significance of these findings for channel separability guidelines?",
+  "pa73": "What limitations arise from using crowdsourcing (hardware/screen variability)?",
+  "pa74": "How was anti-aliasing/rendering variability addressed as a limitation?",
+  "pa75": "What sampling limitations exist and what future work could address them?",
+  "pa76": "Why was diameter rather than area used to encode size?",
+  "pa77": "What trade-off exists between using filled vs unfilled shapes?",
+  "pa78": "How can these models help correct for perceptual biases in practice?",
+  "pa79": "What practical tool was implemented to apply these findings?"
+}

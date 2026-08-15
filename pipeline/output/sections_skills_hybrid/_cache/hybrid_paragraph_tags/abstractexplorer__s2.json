@@ -1,0 +1,9 @@
+{
+  "pa2": "What is the baseline method for reasoning across documents?",
+  "pa3": "What limitations do existing lossy corpus-reasoning approaches have?",
+  "pa4": "What prior lossless text-centric techniques exist and what theory informs them?",
+  "pa5": "How does this SMT-informed approach support comparative close reading?",
+  "pa6": "What gap exists in tools for literature familiarization?",
+  "pa7": "What system and techniques does this paper introduce?",
+  "pa8": "How was the system validated, and what are the contributions?"
+}

@@ -1,0 +1,15 @@
+{
+  "pa106": "What is the purpose of this discussion section?",
+  "pa107": "What determined relevance of retrieved sentences to users?",
+  "pa108": "How does relevance depend on writing goals versus semantic similarity?",
+  "pa109": "What does this reveal about query-document relevance assumptions?",
+  "pa110": "How did lack of retrieval results affect participants' behavior and interpretations?",
+  "pa111": "Why did the design present many examples instead of aggregated results?",
+  "pa112": "What trade-off exists between showing many examples and cognitive load?",
+  "pa113": "What design recommendation follows from varied visual preferences?",
+  "pa114": "How does using real corpus examples instead of AI-generated text support communities?",
+  "pa115": "How might this retrieval approach improve discoverability of lesser-known work?",
+  "pa116": "How does the design address metacognitive challenges via interface features?",
+  "pa117": "How did seeing community examples affect writers' confidence?",
+  "pa118": "What are the limitations and generalizability caveats of the study?"
+}

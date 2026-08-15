@@ -1,0 +1,23 @@
+{
+  "pa28": "What was designed and how is it framed conceptually?",
+  "pa29": "Why aim to scale up the number of viewable LLM outputs?",
+  "pa30": "Why show full text rather than abstracted summaries?",
+  "pa31": "Why avoid requiring users to pick analytic lenses?",
+  "pa32": "Why embed pre-computed relationships directly in the text rendering?",
+  "pa33": "Why support diverse sensemaking sub-tasks for different users?",
+  "pa34": "What theories of mental model formation motivate feature design?",
+  "pa35": "How do the two learning theories jointly inform feature design?",
+  "pa36": "What implementation platform and overall feature structure was used?",
+  "pa37": "What is the Exact Matches feature and its purpose?",
+  "pa38": "How is the Exact Matches algorithm computed?",
+  "pa39": "How are exact matches visually rendered?",
+  "pa40": "What is the Unique Words feature and its metric?",
+  "pa41": "How is the Unique Words algorithm implemented and displayed?",
+  "pa42": "What is the novel Positional Diction Clustering algorithm meant to find?",
+  "pa43": "How does PDC theoretically support mental model formation?",
+  "pa44": "How is the PDC clustering algorithm computed and rendered?",
+  "pa45": "How does the Grid Layout organize responses for comparison?",
+  "pa46": "Why is the grid layout hypothesized to aid perception?",
+  "pa47": "How does the Interleaved Layout render PDC groups?",
+  "pa48": "What benefits are hypothesized for the interleaved rendering?"
+}

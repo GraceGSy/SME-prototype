@@ -1,0 +1,2548 @@
+{
+  "sections": [
+    {
+      "group_id": "group_1",
+      "members": [
+        {
+          "paper": "interaction",
+          "unit_id": "s1",
+          "title": "Abstract",
+          "tag": "What gap in existing understanding of interaction motivates this paper, and what does it set out to deliver in response?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "s10",
+          "title": "Conclusions",
+          "tag": "What did this paper's methodology and comparison of visualization and HCI ultimately accomplish, and what is its overall contribution to the field?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "s11",
+          "title": "Acknowledgments",
+          "tag": "Who contributed input to this work, and what kind of contribution are the authors acknowledging?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "s2",
+          "title": "Introduction",
+          "tag": "What is the current state of interaction research in visualization and HCI that motivates this paper, and what approach does the paper take to address it?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "s8",
+          "title": "Research Opportunities & Challenges",
+          "tag": "What research opportunities and challenges does broadening the scope of interaction, as classified in this paper, raise for the visualization community?"
+        },
+        {
+          "paper": "multileveltypology",
+          "unit_id": "s1",
+          "title": "Abstract",
+          "tag": "What gap in prior visualization-task characterizations motivates this paper, and what does the proposed typology contribute and demonstrate to address it?"
+        },
+        {
+          "paper": "multileveltypology",
+          "unit_id": "s2",
+          "title": "Introduction",
+          "tag": "What gap motivates the need for a multi-level task typology, and how is the rest of the paper organized to introduce, demonstrate, and situate it?"
+        },
+        {
+          "paper": "multileveltypology",
+          "unit_id": "s7",
+          "title": "Discussion",
+          "tag": "What descriptive, generative, and evaluative value does the typology offer, and what limitations and future validation does the paper acknowledge for each?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "s2",
+          "title": "Introduction",
+          "tag": "What motivates this study of data-driven storytelling, and what does the paper set out to contribute?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "s3",
+          "title": "Related Work",
+          "tag": "What prior research and existing authoring tools inform this paper's approach to studying and supporting data-driven storytelling?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "s8",
+          "title": "Conclusion",
+          "tag": "What does this paper conclude about the current state and future direction of data-driven storytelling research?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "s1",
+          "title": "Abstract",
+          "tag": "What overall approach does this paper take to using superpowers as inspiration for visualization, and what does it contribute?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "s10",
+          "title": "Acknowledgments",
+          "tag": "Who funded and supported this work, and whom do the authors thank for contributing to it?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "s2",
+          "title": "Introduction",
+          "tag": "What motivates connecting fictional superpowers to visualization, and what contributions does this paper make to address that connection?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "s3",
+          "title": "Related Work",
+          "tag": "What prior work on human abilities, visualization, and fiction-inspired design does this paper build on and position itself relative to?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "s9",
+          "title": "Conclusion",
+          "tag": "What does this paper conclude about the value of a superpowers lens for visualization research, and what future directions does it encourage?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "s1",
+          "title": "Abstract",
+          "tag": "What problem motivates this paper, and what does it contribute and validate to address it?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "s2",
+          "title": "Introduction",
+          "tag": "What gap in timeline design guidance motivates this paper, and what two contributions does it make to address it?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "s3",
+          "title": "Background and Related Work",
+          "tag": "What prior work on timeline forms, storytelling visualization research, and animated transitions does this paper build on and position itself against?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "s7",
+          "title": "Conclusion and Future Work",
+          "tag": "What did this paper accomplish, and what future work and applications does it point toward?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "s8",
+          "title": "Acknowledgments",
+          "tag": "Who assisted with this research and in what ways, beyond the authors themselves?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "s1",
+          "title_a": "Abstract",
+          "tag_a": "What gap in prior visualization-task characterizations motivates this paper, and what does the proposed typology contribute and demonstrate to address it?",
+          "paper_b": "superpowers",
+          "section_b": "s2",
+          "title_b": "Introduction",
+          "tag_b": "What motivates connecting fictional superpowers to visualization, and what contributions does this paper make to address that connection?",
+          "similarity": 0.407
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "s1",
+          "title_a": "Abstract",
+          "tag_a": "What gap in prior visualization-task characterizations motivates this paper, and what does the proposed typology contribute and demonstrate to address it?",
+          "paper_b": "superpowers",
+          "section_b": "s3",
+          "title_b": "Related Work",
+          "tag_b": "What prior work on human abilities, visualization, and fiction-inspired design does this paper build on and position itself relative to?",
+          "similarity": 0.364
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "s1",
+          "title_a": "Abstract",
+          "tag_a": "What gap in prior visualization-task characterizations motivates this paper, and what does the proposed typology contribute and demonstrate to address it?",
+          "paper_b": "superpowers",
+          "section_b": "s1",
+          "title_b": "Abstract",
+          "tag_b": "What overall approach does this paper take to using superpowers as inspiration for visualization, and what does it contribute?",
+          "similarity": 0.361
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "s1",
+          "title_a": "Abstract",
+          "tag_a": "What gap in prior visualization-task characterizations motivates this paper, and what does the proposed typology contribute and demonstrate to address it?",
+          "paper_b": "timelines",
+          "section_b": "s1",
+          "title_b": "Abstract",
+          "tag_b": "What problem motivates this paper, and what does it contribute and validate to address it?",
+          "similarity": 0.567
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "s1",
+          "title_a": "Abstract",
+          "tag_a": "What gap in prior visualization-task characterizations motivates this paper, and what does the proposed typology contribute and demonstrate to address it?",
+          "paper_b": "timelines",
+          "section_b": "s2",
+          "title_b": "Introduction",
+          "tag_b": "What gap in timeline design guidance motivates this paper, and what two contributions does it make to address it?",
+          "similarity": 0.522
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "s1",
+          "title_a": "Abstract",
+          "tag_a": "What gap in prior visualization-task characterizations motivates this paper, and what does the proposed typology contribute and demonstrate to address it?",
+          "paper_b": "timelines",
+          "section_b": "s3",
+          "title_b": "Background and Related Work",
+          "tag_b": "What prior work on timeline forms, storytelling visualization research, and animated transitions does this paper build on and position itself against?",
+          "similarity": 0.34
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "s1",
+          "title_a": "Abstract",
+          "tag_a": "What gap in prior visualization-task characterizations motivates this paper, and what does the proposed typology contribute and demonstrate to address it?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "s2",
+          "title_b": "Introduction",
+          "tag_b": "What motivates this study of data-driven storytelling, and what does the paper set out to contribute?",
+          "similarity": 0.41
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "s1",
+          "title_a": "Abstract",
+          "tag_a": "What gap in prior visualization-task characterizations motivates this paper, and what does the proposed typology contribute and demonstrate to address it?",
+          "paper_b": "interaction",
+          "section_b": "s2",
+          "title_b": "Introduction",
+          "tag_b": "What is the current state of interaction research in visualization and HCI that motivates this paper, and what approach does the paper take to address it?",
+          "similarity": 0.502
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "s1",
+          "title_a": "Abstract",
+          "tag_a": "What gap in prior visualization-task characterizations motivates this paper, and what does the proposed typology contribute and demonstrate to address it?",
+          "paper_b": "interaction",
+          "section_b": "s1",
+          "title_b": "Abstract",
+          "tag_b": "What gap in existing understanding of interaction motivates this paper, and what does it set out to deliver in response?",
+          "similarity": 0.46
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "s1",
+          "title_a": "Abstract",
+          "tag_a": "What gap in prior visualization-task characterizations motivates this paper, and what does the proposed typology contribute and demonstrate to address it?",
+          "paper_b": "interaction",
+          "section_b": "s10",
+          "title_b": "Conclusions",
+          "tag_b": "What did this paper's methodology and comparison of visualization and HCI ultimately accomplish, and what is its overall contribution to the field?",
+          "similarity": 0.352
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "s2",
+          "title_a": "Introduction",
+          "tag_a": "What gap motivates the need for a multi-level task typology, and how is the rest of the paper organized to introduce, demonstrate, and situate it?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "s2",
+          "title_b": "Introduction",
+          "tag_b": "What motivates this study of data-driven storytelling, and what does the paper set out to contribute?",
+          "similarity": 0.348
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "s7",
+          "title_a": "Discussion",
+          "tag_a": "What descriptive, generative, and evaluative value does the typology offer, and what limitations and future validation does the paper acknowledge for each?",
+          "paper_b": "superpowers",
+          "section_b": "s9",
+          "title_b": "Conclusion",
+          "tag_b": "What does this paper conclude about the value of a superpowers lens for visualization research, and what future directions does it encourage?",
+          "similarity": 0.354
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "s1",
+          "title_a": "Abstract",
+          "tag_a": "What overall approach does this paper take to using superpowers as inspiration for visualization, and what does it contribute?",
+          "paper_b": "timelines",
+          "section_b": "s1",
+          "title_b": "Abstract",
+          "tag_b": "What problem motivates this paper, and what does it contribute and validate to address it?",
+          "similarity": 0.431
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "s1",
+          "title_a": "Abstract",
+          "tag_a": "What overall approach does this paper take to using superpowers as inspiration for visualization, and what does it contribute?",
+          "paper_b": "timelines",
+          "section_b": "s7",
+          "title_b": "Conclusion and Future Work",
+          "tag_b": "What did this paper accomplish, and what future work and applications does it point toward?",
+          "similarity": 0.342
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "s1",
+          "title_a": "Abstract",
+          "tag_a": "What overall approach does this paper take to using superpowers as inspiration for visualization, and what does it contribute?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "s2",
+          "title_b": "Introduction",
+          "tag_b": "What motivates this study of data-driven storytelling, and what does the paper set out to contribute?",
+          "similarity": 0.377
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "s1",
+          "title_a": "Abstract",
+          "tag_a": "What overall approach does this paper take to using superpowers as inspiration for visualization, and what does it contribute?",
+          "paper_b": "interaction",
+          "section_b": "s10",
+          "title_b": "Conclusions",
+          "tag_b": "What did this paper's methodology and comparison of visualization and HCI ultimately accomplish, and what is its overall contribution to the field?",
+          "similarity": 0.358
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "s1",
+          "title_a": "Abstract",
+          "tag_a": "What overall approach does this paper take to using superpowers as inspiration for visualization, and what does it contribute?",
+          "paper_b": "interaction",
+          "section_b": "s2",
+          "title_b": "Introduction",
+          "tag_b": "What is the current state of interaction research in visualization and HCI that motivates this paper, and what approach does the paper take to address it?",
+          "similarity": 0.344
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "s1",
+          "title_a": "Abstract",
+          "tag_a": "What overall approach does this paper take to using superpowers as inspiration for visualization, and what does it contribute?",
+          "paper_b": "interaction",
+          "section_b": "s8",
+          "title_b": "Research Opportunities & Challenges",
+          "tag_b": "What research opportunities and challenges does broadening the scope of interaction, as classified in this paper, raise for the visualization community?",
+          "similarity": 0.332
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "s2",
+          "title_a": "Introduction",
+          "tag_a": "What motivates connecting fictional superpowers to visualization, and what contributions does this paper make to address that connection?",
+          "paper_b": "timelines",
+          "section_b": "s2",
+          "title_b": "Introduction",
+          "tag_b": "What gap in timeline design guidance motivates this paper, and what two contributions does it make to address it?",
+          "similarity": 0.505
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "s2",
+          "title_a": "Introduction",
+          "tag_a": "What motivates connecting fictional superpowers to visualization, and what contributions does this paper make to address that connection?",
+          "paper_b": "timelines",
+          "section_b": "s1",
+          "title_b": "Abstract",
+          "tag_b": "What problem motivates this paper, and what does it contribute and validate to address it?",
+          "similarity": 0.385
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "s2",
+          "title_a": "Introduction",
+          "tag_a": "What motivates connecting fictional superpowers to visualization, and what contributions does this paper make to address that connection?",
+          "paper_b": "timelines",
+          "section_b": "s3",
+          "title_b": "Background and Related Work",
+          "tag_b": "What prior work on timeline forms, storytelling visualization research, and animated transitions does this paper build on and position itself against?",
+          "similarity": 0.354
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "s2",
+          "title_a": "Introduction",
+          "tag_a": "What motivates connecting fictional superpowers to visualization, and what contributions does this paper make to address that connection?",
+          "paper_b": "interaction",
+          "section_b": "s2",
+          "title_b": "Introduction",
+          "tag_b": "What is the current state of interaction research in visualization and HCI that motivates this paper, and what approach does the paper take to address it?",
+          "similarity": 0.405
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "s3",
+          "title_a": "Related Work",
+          "tag_a": "What prior work on human abilities, visualization, and fiction-inspired design does this paper build on and position itself relative to?",
+          "paper_b": "timelines",
+          "section_b": "s3",
+          "title_b": "Background and Related Work",
+          "tag_b": "What prior work on timeline forms, storytelling visualization research, and animated transitions does this paper build on and position itself against?",
+          "similarity": 0.58
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "s3",
+          "title_a": "Related Work",
+          "tag_a": "What prior work on human abilities, visualization, and fiction-inspired design does this paper build on and position itself relative to?",
+          "paper_b": "timelines",
+          "section_b": "s2",
+          "title_b": "Introduction",
+          "tag_b": "What gap in timeline design guidance motivates this paper, and what two contributions does it make to address it?",
+          "similarity": 0.35
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "s3",
+          "title_a": "Related Work",
+          "tag_a": "What prior work on human abilities, visualization, and fiction-inspired design does this paper build on and position itself relative to?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "s3",
+          "title_b": "Related Work",
+          "tag_b": "What prior research and existing authoring tools inform this paper's approach to studying and supporting data-driven storytelling?",
+          "similarity": 0.337
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "s9",
+          "title_a": "Conclusion",
+          "tag_a": "What does this paper conclude about the value of a superpowers lens for visualization research, and what future directions does it encourage?",
+          "paper_b": "timelines",
+          "section_b": "s7",
+          "title_b": "Conclusion and Future Work",
+          "tag_b": "What did this paper accomplish, and what future work and applications does it point toward?",
+          "similarity": 0.406
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "s9",
+          "title_a": "Conclusion",
+          "tag_a": "What does this paper conclude about the value of a superpowers lens for visualization research, and what future directions does it encourage?",
+          "paper_b": "timelines",
+          "section_b": "s3",
+          "title_b": "Background and Related Work",
+          "tag_b": "What prior work on timeline forms, storytelling visualization research, and animated transitions does this paper build on and position itself against?",
+          "similarity": 0.346
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "s9",
+          "title_a": "Conclusion",
+          "tag_a": "What does this paper conclude about the value of a superpowers lens for visualization research, and what future directions does it encourage?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "s8",
+          "title_b": "Conclusion",
+          "tag_b": "What does this paper conclude about the current state and future direction of data-driven storytelling research?",
+          "similarity": 0.512
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "s9",
+          "title_a": "Conclusion",
+          "tag_a": "What does this paper conclude about the value of a superpowers lens for visualization research, and what future directions does it encourage?",
+          "paper_b": "interaction",
+          "section_b": "s2",
+          "title_b": "Introduction",
+          "tag_b": "What is the current state of interaction research in visualization and HCI that motivates this paper, and what approach does the paper take to address it?",
+          "similarity": 0.38
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "s9",
+          "title_a": "Conclusion",
+          "tag_a": "What does this paper conclude about the value of a superpowers lens for visualization research, and what future directions does it encourage?",
+          "paper_b": "interaction",
+          "section_b": "s8",
+          "title_b": "Research Opportunities & Challenges",
+          "tag_b": "What research opportunities and challenges does broadening the scope of interaction, as classified in this paper, raise for the visualization community?",
+          "similarity": 0.33
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "s10",
+          "title_a": "Acknowledgments",
+          "tag_a": "Who funded and supported this work, and whom do the authors thank for contributing to it?",
+          "paper_b": "timelines",
+          "section_b": "s1",
+          "title_b": "Abstract",
+          "tag_b": "What problem motivates this paper, and what does it contribute and validate to address it?",
+          "similarity": 0.35
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "s10",
+          "title_a": "Acknowledgments",
+          "tag_a": "Who funded and supported this work, and whom do the authors thank for contributing to it?",
+          "paper_b": "timelines",
+          "section_b": "s8",
+          "title_b": "Acknowledgments",
+          "tag_b": "Who assisted with this research and in what ways, beyond the authors themselves?",
+          "similarity": 0.345
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "s10",
+          "title_a": "Acknowledgments",
+          "tag_a": "Who funded and supported this work, and whom do the authors thank for contributing to it?",
+          "paper_b": "interaction",
+          "section_b": "s11",
+          "title_b": "Acknowledgments",
+          "tag_b": "Who contributed input to this work, and what kind of contribution are the authors acknowledging?",
+          "similarity": 0.433
+        },
+        {
+          "paper_a": "timelines",
+          "section_a": "s1",
+          "title_a": "Abstract",
+          "tag_a": "What problem motivates this paper, and what does it contribute and validate to address it?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "s2",
+          "title_b": "Introduction",
+          "tag_b": "What motivates this study of data-driven storytelling, and what does the paper set out to contribute?",
+          "similarity": 0.472
+        },
+        {
+          "paper_a": "timelines",
+          "section_a": "s1",
+          "title_a": "Abstract",
+          "tag_a": "What problem motivates this paper, and what does it contribute and validate to address it?",
+          "paper_b": "interaction",
+          "section_b": "s1",
+          "title_b": "Abstract",
+          "tag_b": "What gap in existing understanding of interaction motivates this paper, and what does it set out to deliver in response?",
+          "similarity": 0.477
+        },
+        {
+          "paper_a": "timelines",
+          "section_a": "s1",
+          "title_a": "Abstract",
+          "tag_a": "What problem motivates this paper, and what does it contribute and validate to address it?",
+          "paper_b": "interaction",
+          "section_b": "s2",
+          "title_b": "Introduction",
+          "tag_b": "What is the current state of interaction research in visualization and HCI that motivates this paper, and what approach does the paper take to address it?",
+          "similarity": 0.455
+        },
+        {
+          "paper_a": "timelines",
+          "section_a": "s2",
+          "title_a": "Introduction",
+          "tag_a": "What gap in timeline design guidance motivates this paper, and what two contributions does it make to address it?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "s2",
+          "title_b": "Introduction",
+          "tag_b": "What motivates this study of data-driven storytelling, and what does the paper set out to contribute?",
+          "similarity": 0.359
+        },
+        {
+          "paper_a": "timelines",
+          "section_a": "s2",
+          "title_a": "Introduction",
+          "tag_a": "What gap in timeline design guidance motivates this paper, and what two contributions does it make to address it?",
+          "paper_b": "interaction",
+          "section_b": "s1",
+          "title_b": "Abstract",
+          "tag_b": "What gap in existing understanding of interaction motivates this paper, and what does it set out to deliver in response?",
+          "similarity": 0.505
+        },
+        {
+          "paper_a": "timelines",
+          "section_a": "s2",
+          "title_a": "Introduction",
+          "tag_a": "What gap in timeline design guidance motivates this paper, and what two contributions does it make to address it?",
+          "paper_b": "interaction",
+          "section_b": "s2",
+          "title_b": "Introduction",
+          "tag_b": "What is the current state of interaction research in visualization and HCI that motivates this paper, and what approach does the paper take to address it?",
+          "similarity": 0.461
+        },
+        {
+          "paper_a": "timelines",
+          "section_a": "s7",
+          "title_a": "Conclusion and Future Work",
+          "tag_a": "What did this paper accomplish, and what future work and applications does it point toward?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "s8",
+          "title_b": "Conclusion",
+          "tag_b": "What does this paper conclude about the current state and future direction of data-driven storytelling research?",
+          "similarity": 0.361
+        },
+        {
+          "paper_a": "timelines",
+          "section_a": "s8",
+          "title_a": "Acknowledgments",
+          "tag_a": "Who assisted with this research and in what ways, beyond the authors themselves?",
+          "paper_b": "interaction",
+          "section_b": "s11",
+          "title_b": "Acknowledgments",
+          "tag_b": "Who contributed input to this work, and what kind of contribution are the authors acknowledging?",
+          "similarity": 0.398
+        },
+        {
+          "paper_a": "storytellingtechniques",
+          "section_a": "s2",
+          "title_a": "Introduction",
+          "tag_a": "What motivates this study of data-driven storytelling, and what does the paper set out to contribute?",
+          "paper_b": "interaction",
+          "section_b": "s1",
+          "title_b": "Abstract",
+          "tag_b": "What gap in existing understanding of interaction motivates this paper, and what does it set out to deliver in response?",
+          "similarity": 0.457
+        },
+        {
+          "paper_a": "storytellingtechniques",
+          "section_a": "s2",
+          "title_a": "Introduction",
+          "tag_a": "What motivates this study of data-driven storytelling, and what does the paper set out to contribute?",
+          "paper_b": "interaction",
+          "section_b": "s2",
+          "title_b": "Introduction",
+          "tag_b": "What is the current state of interaction research in visualization and HCI that motivates this paper, and what approach does the paper take to address it?",
+          "similarity": 0.371
+        },
+        {
+          "paper_a": "storytellingtechniques",
+          "section_a": "s2",
+          "title_a": "Introduction",
+          "tag_a": "What motivates this study of data-driven storytelling, and what does the paper set out to contribute?",
+          "paper_b": "interaction",
+          "section_b": "s10",
+          "title_b": "Conclusions",
+          "tag_b": "What did this paper's methodology and comparison of visualization and HCI ultimately accomplish, and what is its overall contribution to the field?",
+          "similarity": 0.363
+        },
+        {
+          "paper_a": "storytellingtechniques",
+          "section_a": "s3",
+          "title_a": "Related Work",
+          "tag_a": "What prior research and existing authoring tools inform this paper's approach to studying and supporting data-driven storytelling?",
+          "paper_b": "interaction",
+          "section_b": "s1",
+          "title_b": "Abstract",
+          "tag_b": "What gap in existing understanding of interaction motivates this paper, and what does it set out to deliver in response?",
+          "similarity": 0.336
+        },
+        {
+          "paper_a": "storytellingtechniques",
+          "section_a": "s8",
+          "title_a": "Conclusion",
+          "tag_a": "What does this paper conclude about the current state and future direction of data-driven storytelling research?",
+          "paper_b": "interaction",
+          "section_b": "s2",
+          "title_b": "Introduction",
+          "tag_b": "What is the current state of interaction research in visualization and HCI that motivates this paper, and what approach does the paper take to address it?",
+          "similarity": 0.33
+        }
+      ]
+    },
+    {
+      "group_id": "group_2",
+      "members": [
+        {
+          "paper": "interaction",
+          "unit_id": "s12",
+          "title": "References",
+          "tag": ""
+        },
+        {
+          "paper": "multileveltypology",
+          "unit_id": "s10",
+          "title": "References",
+          "tag": ""
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "s10",
+          "title": "References",
+          "tag": ""
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "s11",
+          "title": "Appendix A: Stories Analyzed",
+          "tag": ""
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "s12",
+          "title": "Appendix B: Recent Additional Stories",
+          "tag": ""
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "s11",
+          "title": "References",
+          "tag": ""
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "s9",
+          "title": "References",
+          "tag": ""
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "s10",
+          "title_a": "References",
+          "tag_a": "",
+          "paper_b": "superpowers",
+          "section_b": "s11",
+          "title_b": "References",
+          "tag_b": "",
+          "similarity": 0.5
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "s10",
+          "title_a": "References",
+          "tag_a": "",
+          "paper_b": "timelines",
+          "section_b": "s9",
+          "title_b": "References",
+          "tag_b": "",
+          "similarity": 0.5
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "s10",
+          "title_a": "References",
+          "tag_a": "",
+          "paper_b": "storytellingtechniques",
+          "section_b": "s10",
+          "title_b": "References",
+          "tag_b": "",
+          "similarity": 0.5
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "s10",
+          "title_a": "References",
+          "tag_a": "",
+          "paper_b": "storytellingtechniques",
+          "section_b": "s11",
+          "title_b": "Appendix A: Stories Analyzed",
+          "tag_b": "",
+          "similarity": 0.5
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "s10",
+          "title_a": "References",
+          "tag_a": "",
+          "paper_b": "storytellingtechniques",
+          "section_b": "s12",
+          "title_b": "Appendix B: Recent Additional Stories",
+          "tag_b": "",
+          "similarity": 0.5
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "s10",
+          "title_a": "References",
+          "tag_a": "",
+          "paper_b": "interaction",
+          "section_b": "s12",
+          "title_b": "References",
+          "tag_b": "",
+          "similarity": 0.5
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "s11",
+          "title_a": "References",
+          "tag_a": "",
+          "paper_b": "timelines",
+          "section_b": "s9",
+          "title_b": "References",
+          "tag_b": "",
+          "similarity": 0.5
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "s11",
+          "title_a": "References",
+          "tag_a": "",
+          "paper_b": "storytellingtechniques",
+          "section_b": "s10",
+          "title_b": "References",
+          "tag_b": "",
+          "similarity": 0.5
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "s11",
+          "title_a": "References",
+          "tag_a": "",
+          "paper_b": "storytellingtechniques",
+          "section_b": "s11",
+          "title_b": "Appendix A: Stories Analyzed",
+          "tag_b": "",
+          "similarity": 0.5
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "s11",
+          "title_a": "References",
+          "tag_a": "",
+          "paper_b": "storytellingtechniques",
+          "section_b": "s12",
+          "title_b": "Appendix B: Recent Additional Stories",
+          "tag_b": "",
+          "similarity": 0.5
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "s11",
+          "title_a": "References",
+          "tag_a": "",
+          "paper_b": "interaction",
+          "section_b": "s12",
+          "title_b": "References",
+          "tag_b": "",
+          "similarity": 0.5
+        },
+        {
+          "paper_a": "timelines",
+          "section_a": "s9",
+          "title_a": "References",
+          "tag_a": "",
+          "paper_b": "storytellingtechniques",
+          "section_b": "s10",
+          "title_b": "References",
+          "tag_b": "",
+          "similarity": 0.5
+        },
+        {
+          "paper_a": "timelines",
+          "section_a": "s9",
+          "title_a": "References",
+          "tag_a": "",
+          "paper_b": "storytellingtechniques",
+          "section_b": "s11",
+          "title_b": "Appendix A: Stories Analyzed",
+          "tag_b": "",
+          "similarity": 0.5
+        },
+        {
+          "paper_a": "timelines",
+          "section_a": "s9",
+          "title_a": "References",
+          "tag_a": "",
+          "paper_b": "storytellingtechniques",
+          "section_b": "s12",
+          "title_b": "Appendix B: Recent Additional Stories",
+          "tag_b": "",
+          "similarity": 0.5
+        },
+        {
+          "paper_a": "timelines",
+          "section_a": "s9",
+          "title_a": "References",
+          "tag_a": "",
+          "paper_b": "interaction",
+          "section_b": "s12",
+          "title_b": "References",
+          "tag_b": "",
+          "similarity": 0.5
+        },
+        {
+          "paper_a": "storytellingtechniques",
+          "section_a": "s10",
+          "title_a": "References",
+          "tag_a": "",
+          "paper_b": "interaction",
+          "section_b": "s12",
+          "title_b": "References",
+          "tag_b": "",
+          "similarity": 0.5
+        },
+        {
+          "paper_a": "storytellingtechniques",
+          "section_a": "s11",
+          "title_a": "Appendix A: Stories Analyzed",
+          "tag_a": "",
+          "paper_b": "interaction",
+          "section_b": "s12",
+          "title_b": "References",
+          "tag_b": "",
+          "similarity": 0.5
+        },
+        {
+          "paper_a": "storytellingtechniques",
+          "section_a": "s12",
+          "title_a": "Appendix B: Recent Additional Stories",
+          "tag_a": "",
+          "paper_b": "interaction",
+          "section_b": "s12",
+          "title_b": "References",
+          "tag_b": "",
+          "similarity": 0.5
+        }
+      ]
+    },
+    {
+      "group_id": "group_3",
+      "members": [
+        {
+          "paper": "interaction",
+          "unit_id": "s5",
+          "title": "The HCI View of Interaction",
+          "tag": "What does the HCI literature say interaction is, and how do those concepts extend or apply to the view of interaction in visualization?"
+        },
+        {
+          "paper": "multileveltypology",
+          "unit_id": "s4",
+          "title": "Typology of Abstract Visualization Tasks",
+          "tag": "What are the why, how, and what parts of the typology, and how do their component terms combine to support concise, comparable descriptions of visualization tasks?"
+        },
+        {
+          "paper": "multileveltypology",
+          "unit_id": "s8",
+          "title": "Conclusion",
+          "tag": "What is the paper's central contribution, and how does it summarize the typology's advance over prior task-classification work?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "s1",
+          "title": "Abstract",
+          "tag": "What is the paper's overall approach and contribution in studying data-driven storytelling techniques?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "s4",
+          "title_a": "Typology of Abstract Visualization Tasks",
+          "tag_a": "What are the why, how, and what parts of the typology, and how do their component terms combine to support concise, comparable descriptions of visualization tasks?",
+          "paper_b": "interaction",
+          "section_b": "s5",
+          "title_b": "The HCI View of Interaction",
+          "tag_b": "What does the HCI literature say interaction is, and how do those concepts extend or apply to the view of interaction in visualization?",
+          "similarity": 0.346
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "s8",
+          "title_a": "Conclusion",
+          "tag_a": "What is the paper's central contribution, and how does it summarize the typology's advance over prior task-classification work?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "s1",
+          "title_b": "Abstract",
+          "tag_b": "What is the paper's overall approach and contribution in studying data-driven storytelling techniques?",
+          "similarity": 0.331
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "s8",
+          "title_a": "Conclusion",
+          "tag_a": "What is the paper's central contribution, and how does it summarize the typology's advance over prior task-classification work?",
+          "paper_b": "interaction",
+          "section_b": "s5",
+          "title_b": "The HCI View of Interaction",
+          "tag_b": "What does the HCI literature say interaction is, and how do those concepts extend or apply to the view of interaction in visualization?",
+          "similarity": 0.336
+        }
+      ]
+    },
+    {
+      "group_id": "group_4",
+      "members": [
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "s4",
+          "title": "Analysis Method and Process",
+          "tag": "How did the authors assemble and analyze their corpus of data-driven stories to derive their set of techniques and categories?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "s4",
+          "title": "Methodology",
+          "tag": "What process did the authors follow to develop their frameworks, and how do they define the key terms and scope used throughout the paper?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "s4",
+          "title": "Methodology",
+          "tag": "How did the authors assemble and analyze their corpus of timelines to arrive at the design space and its viable designs?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "superpowers",
+          "section_a": "s4",
+          "title_a": "Methodology",
+          "tag_a": "What process did the authors follow to develop their frameworks, and how do they define the key terms and scope used throughout the paper?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "s4",
+          "title_b": "Analysis Method and Process",
+          "tag_b": "How did the authors assemble and analyze their corpus of data-driven stories to derive their set of techniques and categories?",
+          "similarity": 0.337
+        },
+        {
+          "paper_a": "timelines",
+          "section_a": "s4",
+          "title_a": "Methodology",
+          "tag_a": "How did the authors assemble and analyze their corpus of timelines to arrive at the design space and its viable designs?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "s4",
+          "title_b": "Analysis Method and Process",
+          "tag_b": "How did the authors assemble and analyze their corpus of data-driven stories to derive their set of techniques and categories?",
+          "similarity": 0.565
+        }
+      ]
+    },
+    {
+      "group_id": "group_5",
+      "members": [
+        {
+          "paper": "interaction",
+          "unit_id": "s9",
+          "title": "Limitations",
+          "tag": "What are the boundaries and limitations of the paper's definition and of the review methodology behind it?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "s5",
+          "title": "Design Space",
+          "tag": "What dimensions and design choices make up the paper's design space, and which combinations of them are viable, redundant, or open for future work?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "timelines",
+          "section_a": "s5",
+          "title_a": "Design Space",
+          "tag_a": "What dimensions and design choices make up the paper's design space, and which combinations of them are viable, redundant, or open for future work?",
+          "paper_b": "interaction",
+          "section_b": "s9",
+          "title_b": "Limitations",
+          "tag_b": "What are the boundaries and limitations of the paper's definition and of the review methodology behind it?",
+          "similarity": 0.33
+        }
+      ]
+    }
+  ],
+  "paragraphs": [
+    {
+      "group_id": "group_1",
+      "members": [
+        {
+          "paper": "interaction",
+          "unit_id": "pa26",
+          "title": "",
+          "tag": "What is the scope and method of this synthesis?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa58",
+          "title": "",
+          "tag": "What is the Dialogue concept of interaction?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa59",
+          "title": "",
+          "tag": "What is the Transmission concept of interaction?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa60",
+          "title": "",
+          "tag": "What is the Control concept of interaction?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa61",
+          "title": "",
+          "tag": "What is the Tool Use concept of interaction?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa63",
+          "title": "",
+          "tag": "What is the Embodiment concept of interaction?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa64",
+          "title": "",
+          "tag": "What is the Experience concept of interaction?"
+        },
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa21",
+          "title": "",
+          "tag": "What is the overall structure of the typology?"
+        },
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa30",
+          "title": "",
+          "tag": "What does 'search' mean and how is it categorized?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa20",
+          "title": "",
+          "tag": "What is the purpose and future use of this analysis?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa22",
+          "title": "",
+          "tag": "How is this section organized and what does it cover?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa54",
+          "title": "",
+          "tag": "What will this reflection section cover?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa17",
+          "title": "",
+          "tag": "What does this section cover?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa34",
+          "title": "",
+          "tag": "What is enhanced numeracy and how is it depicted in fiction?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa37",
+          "title": "",
+          "tag": "What is enhanced comparison ability and how does it manifest?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa43",
+          "title": "",
+          "tag": "What is the 'scope' dimension and how does it manifest?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa45",
+          "title": "",
+          "tag": "What is the 'access' dimension of empowerment?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa47",
+          "title": "",
+          "tag": "What is the 'spatial relevance' dimension?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa50",
+          "title": "",
+          "tag": "What is the 'temporal relevance' dimension?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa55",
+          "title": "",
+          "tag": "What is the 'degree of control' dimension?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa69",
+          "title": "",
+          "tag": "What discussion threads does this section cover?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa25",
+          "title": "",
+          "tag": "What is the resulting design space structure?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa36",
+          "title": "",
+          "tag": "What were the overall results of the viability analysis?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa8",
+          "title": "",
+          "tag": "What does this section cover?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "pa21",
+          "title_a": "",
+          "tag_a": "What is the overall structure of the typology?",
+          "paper_b": "superpowers",
+          "section_b": "pa55",
+          "title_b": "",
+          "tag_b": "What is the 'degree of control' dimension?",
+          "similarity": 0.473
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "pa21",
+          "title_a": "",
+          "tag_a": "What is the overall structure of the typology?",
+          "paper_b": "timelines",
+          "section_b": "pa36",
+          "title_b": "",
+          "tag_b": "What were the overall results of the viability analysis?",
+          "similarity": 0.505
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "pa21",
+          "title_a": "",
+          "tag_a": "What is the overall structure of the typology?",
+          "paper_b": "timelines",
+          "section_b": "pa25",
+          "title_b": "",
+          "tag_b": "What is the resulting design space structure?",
+          "similarity": 0.475
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "pa21",
+          "title_a": "",
+          "tag_a": "What is the overall structure of the typology?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "pa20",
+          "title_b": "",
+          "tag_b": "What is the purpose and future use of this analysis?",
+          "similarity": 0.46
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "pa21",
+          "title_a": "",
+          "tag_a": "What is the overall structure of the typology?",
+          "paper_b": "interaction",
+          "section_b": "pa60",
+          "title_b": "",
+          "tag_b": "What is the Control concept of interaction?",
+          "similarity": 0.492
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "pa21",
+          "title_a": "",
+          "tag_a": "What is the overall structure of the typology?",
+          "paper_b": "interaction",
+          "section_b": "pa58",
+          "title_b": "",
+          "tag_b": "What is the Dialogue concept of interaction?",
+          "similarity": 0.478
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "pa21",
+          "title_a": "",
+          "tag_a": "What is the overall structure of the typology?",
+          "paper_b": "interaction",
+          "section_b": "pa63",
+          "title_b": "",
+          "tag_b": "What is the Embodiment concept of interaction?",
+          "similarity": 0.472
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "pa30",
+          "title_a": "",
+          "tag_a": "What does 'search' mean and how is it categorized?",
+          "paper_b": "superpowers",
+          "section_b": "pa43",
+          "title_b": "",
+          "tag_b": "What is the 'scope' dimension and how does it manifest?",
+          "similarity": 0.536
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "pa30",
+          "title_a": "",
+          "tag_a": "What does 'search' mean and how is it categorized?",
+          "paper_b": "superpowers",
+          "section_b": "pa37",
+          "title_b": "",
+          "tag_b": "What is enhanced comparison ability and how does it manifest?",
+          "similarity": 0.492
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "pa30",
+          "title_a": "",
+          "tag_a": "What does 'search' mean and how is it categorized?",
+          "paper_b": "superpowers",
+          "section_b": "pa34",
+          "title_b": "",
+          "tag_b": "What is enhanced numeracy and how is it depicted in fiction?",
+          "similarity": 0.488
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa17",
+          "title_a": "",
+          "tag_a": "What does this section cover?",
+          "paper_b": "timelines",
+          "section_b": "pa8",
+          "title_b": "",
+          "tag_b": "What does this section cover?",
+          "similarity": 1.0
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa17",
+          "title_a": "",
+          "tag_a": "What does this section cover?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "pa54",
+          "title_b": "",
+          "tag_b": "What will this reflection section cover?",
+          "similarity": 0.648
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa17",
+          "title_a": "",
+          "tag_a": "What does this section cover?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "pa22",
+          "title_b": "",
+          "tag_b": "How is this section organized and what does it cover?",
+          "similarity": 0.53
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa37",
+          "title_a": "",
+          "tag_a": "What is enhanced comparison ability and how does it manifest?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "pa22",
+          "title_b": "",
+          "tag_b": "How is this section organized and what does it cover?",
+          "similarity": 0.477
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa43",
+          "title_a": "",
+          "tag_a": "What is the 'scope' dimension and how does it manifest?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "pa22",
+          "title_b": "",
+          "tag_b": "How is this section organized and what does it cover?",
+          "similarity": 0.483
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa43",
+          "title_a": "",
+          "tag_a": "What is the 'scope' dimension and how does it manifest?",
+          "paper_b": "interaction",
+          "section_b": "pa26",
+          "title_b": "",
+          "tag_b": "What is the scope and method of this synthesis?",
+          "similarity": 0.482
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa45",
+          "title_a": "",
+          "tag_a": "What is the 'access' dimension of empowerment?",
+          "paper_b": "interaction",
+          "section_b": "pa63",
+          "title_b": "",
+          "tag_b": "What is the Embodiment concept of interaction?",
+          "similarity": 0.504
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa45",
+          "title_a": "",
+          "tag_a": "What is the 'access' dimension of empowerment?",
+          "paper_b": "interaction",
+          "section_b": "pa59",
+          "title_b": "",
+          "tag_b": "What is the Transmission concept of interaction?",
+          "similarity": 0.487
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa45",
+          "title_a": "",
+          "tag_a": "What is the 'access' dimension of empowerment?",
+          "paper_b": "interaction",
+          "section_b": "pa64",
+          "title_b": "",
+          "tag_b": "What is the Experience concept of interaction?",
+          "similarity": 0.472
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa47",
+          "title_a": "",
+          "tag_a": "What is the 'spatial relevance' dimension?",
+          "paper_b": "interaction",
+          "section_b": "pa58",
+          "title_b": "",
+          "tag_b": "What is the Dialogue concept of interaction?",
+          "similarity": 0.452
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa50",
+          "title_a": "",
+          "tag_a": "What is the 'temporal relevance' dimension?",
+          "paper_b": "interaction",
+          "section_b": "pa60",
+          "title_b": "",
+          "tag_b": "What is the Control concept of interaction?",
+          "similarity": 0.452
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa55",
+          "title_a": "",
+          "tag_a": "What is the 'degree of control' dimension?",
+          "paper_b": "interaction",
+          "section_b": "pa60",
+          "title_b": "",
+          "tag_b": "What is the Control concept of interaction?",
+          "similarity": 0.584
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa55",
+          "title_a": "",
+          "tag_a": "What is the 'degree of control' dimension?",
+          "paper_b": "interaction",
+          "section_b": "pa64",
+          "title_b": "",
+          "tag_b": "What is the Experience concept of interaction?",
+          "similarity": 0.507
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa55",
+          "title_a": "",
+          "tag_a": "What is the 'degree of control' dimension?",
+          "paper_b": "interaction",
+          "section_b": "pa58",
+          "title_b": "",
+          "tag_b": "What is the Dialogue concept of interaction?",
+          "similarity": 0.502
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa69",
+          "title_a": "",
+          "tag_a": "What discussion threads does this section cover?",
+          "paper_b": "timelines",
+          "section_b": "pa8",
+          "title_b": "",
+          "tag_b": "What does this section cover?",
+          "similarity": 0.734
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa69",
+          "title_a": "",
+          "tag_a": "What discussion threads does this section cover?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "pa54",
+          "title_b": "",
+          "tag_b": "What will this reflection section cover?",
+          "similarity": 0.518
+        },
+        {
+          "paper_a": "timelines",
+          "section_a": "pa8",
+          "title_a": "",
+          "tag_a": "What does this section cover?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "pa54",
+          "title_b": "",
+          "tag_b": "What will this reflection section cover?",
+          "similarity": 0.648
+        },
+        {
+          "paper_a": "timelines",
+          "section_a": "pa8",
+          "title_a": "",
+          "tag_a": "What does this section cover?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "pa22",
+          "title_b": "",
+          "tag_b": "How is this section organized and what does it cover?",
+          "similarity": 0.53
+        },
+        {
+          "paper_a": "timelines",
+          "section_a": "pa36",
+          "title_a": "",
+          "tag_a": "What were the overall results of the viability analysis?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "pa20",
+          "title_b": "",
+          "tag_b": "What is the purpose and future use of this analysis?",
+          "similarity": 0.458
+        },
+        {
+          "paper_a": "storytellingtechniques",
+          "section_a": "pa20",
+          "title_a": "",
+          "tag_a": "What is the purpose and future use of this analysis?",
+          "paper_b": "interaction",
+          "section_b": "pa26",
+          "title_b": "",
+          "tag_b": "What is the scope and method of this synthesis?",
+          "similarity": 0.574
+        },
+        {
+          "paper_a": "storytellingtechniques",
+          "section_a": "pa20",
+          "title_a": "",
+          "tag_a": "What is the purpose and future use of this analysis?",
+          "paper_b": "interaction",
+          "section_b": "pa61",
+          "title_b": "",
+          "tag_b": "What is the Tool Use concept of interaction?",
+          "similarity": 0.453
+        }
+      ]
+    },
+    {
+      "group_id": "group_2",
+      "members": [
+        {
+          "paper": "interaction",
+          "unit_id": "pa5",
+          "title": "",
+          "tag": "What approach does the paper take to address this gap?"
+        },
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa85",
+          "title": "",
+          "tag": "What is the paper's central contribution and its advance over prior work?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa1",
+          "title": "",
+          "tag": "What approach and contribution does the paper make in narrative visualization?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa3",
+          "title": "",
+          "tag": "What is the paper's goal in studying storytelling techniques?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa5",
+          "title": "",
+          "tag": "What are the paper's specific contributions?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa1",
+          "title": "",
+          "tag": "What is the paper's approach and contribution?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa11",
+          "title": "",
+          "tag": "What is the paper's aim in using fiction to reconsider visualization design?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa73",
+          "title": "",
+          "tag": "What theoretical gap does the empowerment framework address?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa7",
+          "title": "",
+          "tag": "What are the paper's two main contributions?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "pa85",
+          "title_a": "",
+          "tag_a": "What is the paper's central contribution and its advance over prior work?",
+          "paper_b": "superpowers",
+          "section_b": "pa1",
+          "title_b": "",
+          "tag_b": "What is the paper's approach and contribution?",
+          "similarity": 0.553
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa1",
+          "title_a": "",
+          "tag_a": "What is the paper's approach and contribution?",
+          "paper_b": "timelines",
+          "section_b": "pa7",
+          "title_b": "",
+          "tag_b": "What are the paper's two main contributions?",
+          "similarity": 0.544
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa1",
+          "title_a": "",
+          "tag_a": "What is the paper's approach and contribution?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "pa5",
+          "title_b": "",
+          "tag_b": "What are the paper's specific contributions?",
+          "similarity": 0.56
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa1",
+          "title_a": "",
+          "tag_a": "What is the paper's approach and contribution?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "pa1",
+          "title_b": "",
+          "tag_b": "What approach and contribution does the paper make in narrative visualization?",
+          "similarity": 0.481
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa1",
+          "title_a": "",
+          "tag_a": "What is the paper's approach and contribution?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "pa3",
+          "title_b": "",
+          "tag_b": "What is the paper's goal in studying storytelling techniques?",
+          "similarity": 0.454
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa11",
+          "title_a": "",
+          "tag_a": "What is the paper's aim in using fiction to reconsider visualization design?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "pa3",
+          "title_b": "",
+          "tag_b": "What is the paper's goal in studying storytelling techniques?",
+          "similarity": 0.483
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa73",
+          "title_a": "",
+          "tag_a": "What theoretical gap does the empowerment framework address?",
+          "paper_b": "interaction",
+          "section_b": "pa5",
+          "title_b": "",
+          "tag_b": "What approach does the paper take to address this gap?",
+          "similarity": 0.473
+        },
+        {
+          "paper_a": "timelines",
+          "section_a": "pa7",
+          "title_a": "",
+          "tag_a": "What are the paper's two main contributions?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "pa5",
+          "title_b": "",
+          "tag_b": "What are the paper's specific contributions?",
+          "similarity": 0.754
+        },
+        {
+          "paper_a": "storytellingtechniques",
+          "section_a": "pa1",
+          "title_a": "",
+          "tag_a": "What approach and contribution does the paper make in narrative visualization?",
+          "paper_b": "interaction",
+          "section_b": "pa5",
+          "title_b": "",
+          "tag_b": "What approach does the paper take to address this gap?",
+          "similarity": 0.467
+        }
+      ]
+    },
+    {
+      "group_id": "group_3",
+      "members": [
+        {
+          "paper": "interaction",
+          "unit_id": "pa15",
+          "title": "",
+          "tag": "How is the 'Definition of Interaction' tag defined?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa17",
+          "title": "",
+          "tag": "How is the 'Benefits of Interaction' tag defined?"
+        },
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa7",
+          "title": "",
+          "tag": "How is the rest of the paper organized?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa15",
+          "title": "",
+          "tag": "How was the initial story corpus gathered?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa16",
+          "title": "",
+          "tag": "How representative is the corpus of the field?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa23",
+          "title": "",
+          "tag": "How was the initial corpus of timelines gathered?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "pa7",
+          "title_a": "",
+          "tag_a": "How is the rest of the paper organized?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "pa16",
+          "title_b": "",
+          "tag_b": "How representative is the corpus of the field?",
+          "similarity": 0.482
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "pa7",
+          "title_a": "",
+          "tag_a": "How is the rest of the paper organized?",
+          "paper_b": "interaction",
+          "section_b": "pa17",
+          "title_b": "",
+          "tag_b": "How is the 'Benefits of Interaction' tag defined?",
+          "similarity": 0.477
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "pa7",
+          "title_a": "",
+          "tag_a": "How is the rest of the paper organized?",
+          "paper_b": "interaction",
+          "section_b": "pa15",
+          "title_b": "",
+          "tag_b": "How is the 'Definition of Interaction' tag defined?",
+          "similarity": 0.471
+        },
+        {
+          "paper_a": "timelines",
+          "section_a": "pa23",
+          "title_a": "",
+          "tag_a": "How was the initial corpus of timelines gathered?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "pa15",
+          "title_b": "",
+          "tag_b": "How was the initial story corpus gathered?",
+          "similarity": 0.729
+        },
+        {
+          "paper_a": "timelines",
+          "section_a": "pa23",
+          "title_a": "",
+          "tag_a": "How was the initial corpus of timelines gathered?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "pa16",
+          "title_b": "",
+          "tag_b": "How representative is the corpus of the field?",
+          "similarity": 0.466
+        }
+      ]
+    },
+    {
+      "group_id": "group_4",
+      "members": [
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa52",
+          "title": "",
+          "tag": "How does this description compare to Chuah and Roth's classification?"
+        },
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa53",
+          "title": "",
+          "tag": "How does this description compare to Chi and Riedl's framework?"
+        },
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa58",
+          "title": "",
+          "tag": "How does the typology's description compare favorably to prior frameworks?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa33",
+          "title": "",
+          "tag": "How does this design space compare to prior classifications?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "pa52",
+          "title_a": "",
+          "tag_a": "How does this description compare to Chuah and Roth's classification?",
+          "paper_b": "timelines",
+          "section_b": "pa33",
+          "title_b": "",
+          "tag_b": "How does this design space compare to prior classifications?",
+          "similarity": 0.539
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "pa53",
+          "title_a": "",
+          "tag_a": "How does this description compare to Chi and Riedl's framework?",
+          "paper_b": "timelines",
+          "section_b": "pa33",
+          "title_b": "",
+          "tag_b": "How does this design space compare to prior classifications?",
+          "similarity": 0.451
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "pa58",
+          "title_a": "",
+          "tag_a": "How does the typology's description compare favorably to prior frameworks?",
+          "paper_b": "timelines",
+          "section_b": "pa33",
+          "title_b": "",
+          "tag_b": "How does this design space compare to prior classifications?",
+          "similarity": 0.465
+        }
+      ]
+    },
+    {
+      "group_id": "group_5",
+      "members": [
+        {
+          "paper": "interaction",
+          "unit_id": "pa111",
+          "title": "",
+          "tag": "What does comparing HomeFinder and Token reveal about missing interactions?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa117",
+          "title": "",
+          "tag": "What did the methodology and comparison reveal?"
+        },
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa60",
+          "title": "",
+          "tag": "What does the comparison table reveal about the literature?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa58",
+          "title": "",
+          "tag": "What does technique combination reveal about field maturity?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "pa60",
+          "title_a": "",
+          "tag_a": "What does the comparison table reveal about the literature?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "pa58",
+          "title_b": "",
+          "tag_b": "What does technique combination reveal about field maturity?",
+          "similarity": 0.52
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "pa60",
+          "title_a": "",
+          "tag_a": "What does the comparison table reveal about the literature?",
+          "paper_b": "interaction",
+          "section_b": "pa111",
+          "title_b": "",
+          "tag_b": "What does comparing HomeFinder and Token reveal about missing interactions?",
+          "similarity": 0.471
+        },
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "pa60",
+          "title_a": "",
+          "tag_a": "What does the comparison table reveal about the literature?",
+          "paper_b": "interaction",
+          "section_b": "pa117",
+          "title_b": "",
+          "tag_b": "What did the methodology and comparison reveal?",
+          "similarity": 0.455
+        }
+      ]
+    },
+    {
+      "group_id": "group_6",
+      "members": [
+        {
+          "paper": "interaction",
+          "unit_id": "pa118",
+          "title": "",
+          "tag": "What definition of interaction does this work propose?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa120",
+          "title": "",
+          "tag": "What is the hoped-for broader impact of this work?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa6",
+          "title": "",
+          "tag": "What broader research goal motivates this work?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa58",
+          "title": "",
+          "tag": "What broader impact does this work aim for?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa6",
+          "title_a": "",
+          "tag_a": "What broader research goal motivates this work?",
+          "paper_b": "timelines",
+          "section_b": "pa58",
+          "title_b": "",
+          "tag_b": "What broader impact does this work aim for?",
+          "similarity": 0.515
+        },
+        {
+          "paper_a": "timelines",
+          "section_a": "pa58",
+          "title_a": "",
+          "tag_a": "What broader impact does this work aim for?",
+          "paper_b": "interaction",
+          "section_b": "pa120",
+          "title_b": "",
+          "tag_b": "What is the hoped-for broader impact of this work?",
+          "similarity": 0.594
+        },
+        {
+          "paper_a": "timelines",
+          "section_a": "pa58",
+          "title_a": "",
+          "tag_a": "What broader impact does this work aim for?",
+          "paper_b": "interaction",
+          "section_b": "pa118",
+          "title_b": "",
+          "tag_b": "What definition of interaction does this work propose?",
+          "similarity": 0.476
+        }
+      ]
+    },
+    {
+      "group_id": "group_7",
+      "members": [
+        {
+          "paper": "interaction",
+          "unit_id": "pa67",
+          "title": "",
+          "tag": "How does visualization's emphasis on user intent differ from HCI's?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa75",
+          "title": "",
+          "tag": "How does visualization's entity set differ from HCI's?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa76",
+          "title": "",
+          "tag": "How does visualization's performance goal differ from HCI's?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa76",
+          "title": "",
+          "tag": "How does visualization's goal of widespread empowerment differ from superhero fiction?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa76",
+          "title_a": "",
+          "tag_a": "How does visualization's goal of widespread empowerment differ from superhero fiction?",
+          "paper_b": "interaction",
+          "section_b": "pa76",
+          "title_b": "",
+          "tag_b": "How does visualization's performance goal differ from HCI's?",
+          "similarity": 0.551
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa76",
+          "title_a": "",
+          "tag_a": "How does visualization's goal of widespread empowerment differ from superhero fiction?",
+          "paper_b": "interaction",
+          "section_b": "pa75",
+          "title_b": "",
+          "tag_b": "How does visualization's entity set differ from HCI's?",
+          "similarity": 0.507
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa76",
+          "title_a": "",
+          "tag_a": "How does visualization's goal of widespread empowerment differ from superhero fiction?",
+          "paper_b": "interaction",
+          "section_b": "pa67",
+          "title_b": "",
+          "tag_b": "How does visualization's emphasis on user intent differ from HCI's?",
+          "similarity": 0.497
+        }
+      ]
+    },
+    {
+      "group_id": "group_8",
+      "members": [
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa13",
+          "title": "",
+          "tag": "What tools support infographic creation for storytelling?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa9",
+          "title": "",
+          "tag": "Why review existing storytelling authoring tools?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa13",
+          "title": "",
+          "tag": "What existing timeline authoring tools support interactive storytelling?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa14",
+          "title": "",
+          "tag": "What gap remains in existing timeline authoring tools?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "timelines",
+          "section_a": "pa13",
+          "title_a": "",
+          "tag_a": "What existing timeline authoring tools support interactive storytelling?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "pa13",
+          "title_b": "",
+          "tag_b": "What tools support infographic creation for storytelling?",
+          "similarity": 0.492
+        },
+        {
+          "paper_a": "timelines",
+          "section_a": "pa13",
+          "title_a": "",
+          "tag_a": "What existing timeline authoring tools support interactive storytelling?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "pa9",
+          "title_b": "",
+          "tag_b": "Why review existing storytelling authoring tools?",
+          "similarity": 0.481
+        },
+        {
+          "paper_a": "timelines",
+          "section_a": "pa14",
+          "title_a": "",
+          "tag_a": "What gap remains in existing timeline authoring tools?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "pa9",
+          "title_b": "",
+          "tag_b": "Why review existing storytelling authoring tools?",
+          "similarity": 0.505
+        }
+      ]
+    },
+    {
+      "group_id": "group_9",
+      "members": [
+        {
+          "paper": "interaction",
+          "unit_id": "pa78",
+          "title": "",
+          "tag": "How does intent formation differ between visualization and HCI?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa79",
+          "title": "",
+          "tag": "How does flexibility differ between visualization and HCI interaction?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa35",
+          "title": "",
+          "tag": "How does interaction link narrative text and visualization?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa16",
+          "title": "",
+          "tag": "How does dataset size differ between exploratory and storytelling timelines?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "timelines",
+          "section_a": "pa16",
+          "title_a": "",
+          "tag_a": "How does dataset size differ between exploratory and storytelling timelines?",
+          "paper_b": "interaction",
+          "section_b": "pa79",
+          "title_b": "",
+          "tag_b": "How does flexibility differ between visualization and HCI interaction?",
+          "similarity": 0.459
+        },
+        {
+          "paper_a": "timelines",
+          "section_a": "pa16",
+          "title_a": "",
+          "tag_a": "How does dataset size differ between exploratory and storytelling timelines?",
+          "paper_b": "interaction",
+          "section_b": "pa78",
+          "title_b": "",
+          "tag_b": "How does intent formation differ between visualization and HCI?",
+          "similarity": 0.459
+        },
+        {
+          "paper_a": "storytellingtechniques",
+          "section_a": "pa35",
+          "title_a": "",
+          "tag_a": "How does interaction link narrative text and visualization?",
+          "paper_b": "interaction",
+          "section_b": "pa78",
+          "title_b": "",
+          "tag_b": "How does intent formation differ between visualization and HCI?",
+          "similarity": 0.457
+        }
+      ]
+    },
+    {
+      "group_id": "group_10",
+      "members": [
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa79",
+          "title": "",
+          "tag": "What did this study do and find overall?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa4",
+          "title": "",
+          "tag": "What frameworks and process did this paper develop?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa54",
+          "title": "",
+          "tag": "What did this paper contribute overall?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa4",
+          "title_a": "",
+          "tag_a": "What frameworks and process did this paper develop?",
+          "paper_b": "timelines",
+          "section_b": "pa54",
+          "title_b": "",
+          "tag_b": "What did this paper contribute overall?",
+          "similarity": 0.478
+        },
+        {
+          "paper_a": "timelines",
+          "section_a": "pa54",
+          "title_a": "",
+          "tag_a": "What did this paper contribute overall?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "pa79",
+          "title_b": "",
+          "tag_b": "What did this study do and find overall?",
+          "similarity": 0.529
+        }
+      ]
+    },
+    {
+      "group_id": "group_11",
+      "members": [
+        {
+          "paper": "interaction",
+          "unit_id": "pa77",
+          "title": "",
+          "tag": "How does intent in visualization differ from HCI intent?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa42",
+          "title": "",
+          "tag": "How does a persistent visualization interact with scrolling?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa46",
+          "title": "",
+          "tag": "How does access manifest in visualization technologies?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa46",
+          "title_a": "",
+          "tag_a": "How does access manifest in visualization technologies?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "pa42",
+          "title_b": "",
+          "tag_b": "How does a persistent visualization interact with scrolling?",
+          "similarity": 0.464
+        },
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa46",
+          "title_a": "",
+          "tag_a": "How does access manifest in visualization technologies?",
+          "paper_b": "interaction",
+          "section_b": "pa77",
+          "title_b": "",
+          "tag_b": "How does intent in visualization differ from HCI intent?",
+          "similarity": 0.488
+        }
+      ]
+    },
+    {
+      "group_id": "group_12",
+      "members": [
+        {
+          "paper": "interaction",
+          "unit_id": "pa28",
+          "title": "",
+          "tag": "What are the mandatory components of interaction definitions?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa57",
+          "title": "",
+          "tag": "What are the seven HCI concepts of interaction?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa34",
+          "title": "",
+          "tag": "What are examples of interaction-linked visualizations?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "storytellingtechniques",
+          "section_a": "pa34",
+          "title_a": "",
+          "tag_a": "What are examples of interaction-linked visualizations?",
+          "paper_b": "interaction",
+          "section_b": "pa28",
+          "title_b": "",
+          "tag_b": "What are the mandatory components of interaction definitions?",
+          "similarity": 0.518
+        },
+        {
+          "paper_a": "storytellingtechniques",
+          "section_a": "pa34",
+          "title_a": "",
+          "tag_a": "What are examples of interaction-linked visualizations?",
+          "paper_b": "interaction",
+          "section_b": "pa57",
+          "title_b": "",
+          "tag_b": "What are the seven HCI concepts of interaction?",
+          "similarity": 0.456
+        }
+      ]
+    },
+    {
+      "group_id": "group_13",
+      "members": [
+        {
+          "paper": "interaction",
+          "unit_id": "pa68",
+          "title": "",
+          "tag": "How do HCI and visualization differ in defining user profiles?"
+        },
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa33",
+          "title": "",
+          "tag": "How do identify, compare, and summarize differ in scope?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "pa33",
+          "title_a": "",
+          "tag_a": "How do identify, compare, and summarize differ in scope?",
+          "paper_b": "interaction",
+          "section_b": "pa68",
+          "title_b": "",
+          "tag_b": "How do HCI and visualization differ in defining user profiles?",
+          "similarity": 0.458
+        }
+      ]
+    },
+    {
+      "group_id": "group_14",
+      "members": [
+        {
+          "paper": "interaction",
+          "unit_id": "pa84",
+          "title": "",
+          "tag": "Why use 'person' instead of 'user'?"
+        },
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa54",
+          "title": "",
+          "tag": "Why use a visual notation instead of a formal grammar?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "pa54",
+          "title_a": "",
+          "tag_a": "Why use a visual notation instead of a formal grammar?",
+          "paper_b": "interaction",
+          "section_b": "pa84",
+          "title_b": "",
+          "tag_b": "Why use 'person' instead of 'user'?",
+          "similarity": 0.463
+        }
+      ]
+    },
+    {
+      "group_id": "group_15",
+      "members": [
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa86",
+          "title": "",
+          "tag": "Who provided funding, feedback, or early ideas for this work?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa59",
+          "title": "",
+          "tag": "Who gave feedback or resources to support this work?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "multileveltypology",
+          "section_a": "pa86",
+          "title_a": "",
+          "tag_a": "Who provided funding, feedback, or early ideas for this work?",
+          "paper_b": "timelines",
+          "section_b": "pa59",
+          "title_b": "",
+          "tag_b": "Who gave feedback or resources to support this work?",
+          "similarity": 0.506
+        }
+      ]
+    },
+    {
+      "group_id": "group_16",
+      "members": [
+        {
+          "paper": "interaction",
+          "unit_id": "pa69",
+          "title": "",
+          "tag": "How does visualization characterize its user population versus HCI?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa2",
+          "title": "",
+          "tag": "How does visualization research describe its value to users?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa2",
+          "title_a": "",
+          "tag_a": "How does visualization research describe its value to users?",
+          "paper_b": "interaction",
+          "section_b": "pa69",
+          "title_b": "",
+          "tag_b": "How does visualization characterize its user population versus HCI?",
+          "similarity": 0.466
+        }
+      ]
+    },
+    {
+      "group_id": "group_17",
+      "members": [
+        {
+          "paper": "superpowers",
+          "unit_id": "pa16",
+          "title": "",
+          "tag": "How does this paper's focus differ from prior superpower-technology work?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa19",
+          "title": "",
+          "tag": "How does this paper's focus differ from prior storytelling research?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa16",
+          "title_a": "",
+          "tag_a": "How does this paper's focus differ from prior superpower-technology work?",
+          "paper_b": "timelines",
+          "section_b": "pa19",
+          "title_b": "",
+          "tag_b": "How does this paper's focus differ from prior storytelling research?",
+          "similarity": 0.697
+        }
+      ]
+    },
+    {
+      "group_id": "group_18",
+      "members": [
+        {
+          "paper": "interaction",
+          "unit_id": "pa104",
+          "title": "",
+          "tag": "Which properties of allowable actions will be examined?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa42",
+          "title": "",
+          "tag": "What seven dimensions of empowerment will be examined?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa42",
+          "title_a": "",
+          "tag_a": "What seven dimensions of empowerment will be examined?",
+          "paper_b": "interaction",
+          "section_b": "pa104",
+          "title_b": "",
+          "tag_b": "Which properties of allowable actions will be examined?",
+          "similarity": 0.451
+        }
+      ]
+    },
+    {
+      "group_id": "group_19",
+      "members": [
+        {
+          "paper": "interaction",
+          "unit_id": "pa81",
+          "title": "",
+          "tag": "What is the proposed definition of interaction for visualization?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa60",
+          "title": "",
+          "tag": "What is the purpose of proposing these new visualization designs?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa60",
+          "title_a": "",
+          "tag_a": "What is the purpose of proposing these new visualization designs?",
+          "paper_b": "interaction",
+          "section_b": "pa81",
+          "title_b": "",
+          "tag_b": "What is the proposed definition of interaction for visualization?",
+          "similarity": 0.479
+        }
+      ]
+    },
+    {
+      "group_id": "group_20",
+      "members": [
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa81",
+          "title": "",
+          "tag": "Who funded this research?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa79",
+          "title": "",
+          "tag": "Who funded and supported this work?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "superpowers",
+          "section_a": "pa79",
+          "title_a": "",
+          "tag_a": "Who funded and supported this work?",
+          "paper_b": "storytellingtechniques",
+          "section_b": "pa81",
+          "title_b": "",
+          "tag_b": "Who funded this research?",
+          "similarity": 0.514
+        }
+      ]
+    }
+  ]
+}

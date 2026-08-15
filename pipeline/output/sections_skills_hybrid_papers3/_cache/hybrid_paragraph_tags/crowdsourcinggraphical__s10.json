@@ -1,0 +1,15 @@
+{
+  "pa48": "What aspects of MTurk performance and cost will be analyzed?",
+  "pa49": "How many subjects participated and how were experiments deployed?",
+  "pa50": "How much did subject participation overlap across experiments?",
+  "pa51": "Do Turkers complete tasks in batches or sample randomly?",
+  "pa52": "What pattern describes how many HITs Turkers complete?",
+  "pa53": "What do completion patterns imply for study design?",
+  "pa54": "How does response quality vary with completion rate?",
+  "pa55": "How reliable is MTurk timing data for trials?",
+  "pa56": "Can meaningful timing effects still be detected despite limitations?",
+  "pa57": "How does reward level affect study completion speed?",
+  "pa58": "What statistical evidence shows reward's effect on time and accuracy?",
+  "pa59": "How much cost savings did crowdsourcing provide over lab studies?",
+  "pa60": "What non-monetary benefits does crowdsourcing offer researchers?"
+}

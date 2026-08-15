@@ -1,0 +1,16 @@
+{
+  "pa19": "What design goals guided ParaLib's development?",
+  "pa20": "How do the design goals translate into user benefits?",
+  "pa21": "How were the design goals implemented into an interface?",
+  "pa22": "What does the parallel code examples feature show?",
+  "pa23": "How do concept annotations highlight analogous code across libraries?",
+  "pa24": "How do these design choices jointly address the design goals?",
+  "pa25": "How is the concept hierarchy organized in the side panel?",
+  "pa26": "How do concept distribution bars convey functionality typicality?",
+  "pa27": "What does the example length distribution visualize?",
+  "pa28": "How does concept selection filter code examples?",
+  "pa29": "How do other interface components update after concept selection?",
+  "pa30": "What features reveal additional cross-library code correspondences?",
+  "pa31": "What limitation exists in how the concept hierarchy was built?",
+  "pa32": "What caveat applies to the distribution bars and example sampling?"
+}

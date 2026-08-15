@@ -1,0 +1,926 @@
+{
+  "paper_id": "seeingbelieve",
+  "title": "Seeing What You Believe or Believing What You See? Belief Biases Correlation Estimation",
+  "sections": [
+    {
+      "id": "s1",
+      "title": "Abstract",
+      "tag": "What does this paper investigate, and what did the experiments find about how belief affects the accuracy of correlation estimation from scatterplots?",
+      "text": "When an analyst or scientist has a belief about how the world works, their thinking can be biased in favor of that belief. Therefore, one bedrock principle of science is to minimize that bias by testing the predictions of one\u2019s belief against objective data. But interpreting visualized data is a complex perceptual and cognitive process. Through two crowdsourced experiments, we demonstrate that supposedly objective assessments of the strength of a correlational relationship can be influenced by how strongly a viewer believes in the existence of that relationship. Participants viewed scatterplots depicting a relationship between meaningful variable pairs (e.g., number of environmental regulations and air quality) and estimated their correlations. They also estimated the correlation of the same scatterplots labeled instead with generic \u2019X\u2019 and \u2019Y\u2019 axes. In a separate section, they also reported how strongly they believed there to be a correlation between the meaningful variable pairs. Participants estimated correlations more accurately when they viewed scatterplots labeled with generic axes compared to scatterplots labeled with meaningful variable pairs. Furthermore, when viewers believed that two variables should have a strong relationship, they overestimated correlations between those variables by an r-value of about 0.1. When they believed that the variables should be unrelated, they underestimated the correlations by an r-value of about 0.1. While data visualizations are typically thought to present objective truths to the viewer, these results suggest that existing personal beliefs can bias even objective statistical values people extract from data.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": ""
+    },
+    {
+      "id": "s2",
+      "title": "Introduction",
+      "tag": "What phenomenon and motivating example set up this work, and what hypotheses and contributions do the two experiments introduced here aim to establish?",
+      "text": "Your new data have arrived. With the intent of showing a relationship between the strength of environmental regulations in a region and that region\u2019s air quality, you plot your data values in a scatterplot. At first, the correlation is barely noticeable. But you then notice a small set of outliers. If you ignore those, the correlation looks as strong as you expected, as illustrated in Figure 1. This hypothetical example may be more common than one would hope. This type of data analysis is intended to proceed in a purely \u2018bottom-up\u2019 fashion, driven only by the data itself. However, motivation, belief, and experience can bias us across a complex set of \u2018top-down\u2019 interactions [50,53]. When people viewed an ambiguous figure which was carefully balanced to be interpreted either as the letter B or the number 13, those who expected letters were more likely to see \u2018B\u2019, while those who expected to see numbers were more likely to see \u201813\u2019 [4].\n\nSimilar top-down biases also seem to appear in data analysis. When viewing a visualization depicting global temperature trends, liberals focused more on the increasing trend, confirming their worries about climate change. Conservatives focused more on the overall flatness of the line and the small effect size of the increase, which were more consistent with doubts about those concerns [50].\n\nIn another study, participants were told a \u2018top-down\u2019 story explaining a pattern present across randomly chosen data values in a visualization and were then explicitly told to ignore that story. Yet, later ratings of the \u2018bottom-up\u2019 salience of those values were higher for that subset of values than for others. The same participants even predicted that other people, naive to the top-down story, would also find those values more salient [87].\n\nThese past studies of top-down influences in data visualizations focus on how top-down information can bias the visual salience of certain values or attributes. In contrast, the present studies provide a quantitative estimate of how powerful this type of influence can be, providing a measurement of how a belief can change an \u2018objective\u2019 correlation estimate. We use scatterplots to show those correlations, as those plots are among the most commonly used visualizations and are especially valuable for depicting correlation [27,41,68], which is a critical attribute that impacts data-driven decisions [19]. Additionally, the perception of correlation has been relatively well-studied. People are fairly accurate at determining the Pearson\u2019s r correlation in scatterplots [68], and recent work has begun to explore the underlying visual features that people use as proxies when estimating correlations (e.g., the shape of the ellipse that encloses the scattered dots) [88].\n\nHypothesis: We hypothesize that people will estimate correlations more accurately when they see scatterplots labeled with a neutral pair of variables that are not associated with existing beliefs or abstracted data labels (e.g., X vs. Y). We also hypothesize that the amount of deviation in people\u2019s correlation estimation would be associated with the strength of their belief, such that they would report a higher correlation for the same scatterplot when it depicts something that they strongly believe to be correlated and a lower correlation when the plot depicts something that they do not strongly believe to be correlated.\n\nWe are careful to state these hypotheses as beliefs affecting what people report, as opposed to them affecting what people see. Beliefs might affect various stages of processing on the road to a correlation estimate, including what people perceive, what values they preferentially attend, or what values they weigh most heavily when deciding what numeric estimate to report. Depending on a researcher\u2019s perspective, these stages can have boundaries that are firm, as some have argued that top-down beliefs and motivations do not directly impact perception [17], or on a continuum, as others have argued for a \u2018cognitive penetrability of perception\u2019 suggesting that top-down effects can directly influence what we see [66, 76].\n\nExperiment Overview: We present two empirical experiments in which participants estimated correlations for identical data sets in scatterplots. The scatterplots have axes either labeled with meaningful variable pairs (e.g., environmental regulation and air quality) or labeled with abstracted variables \u2018X\u2019 and \u2018Y\u2019 (separated by a distractor task). In a separate section, participants reported how strongly they believed there to be a correlation between the variable pairs, either after they saw the scatterplots (Experiment 1a) or before (Experiment 2). In both studies, we found that people who believed the meaningful variable pairs to be correlated overestimated their correlation values significantly, while people who did not hold those beliefs underestimated the correlations significantly, in comparison to the scatterplots labeled with abstracted variables. We additionally conducted a control experiment (Experiment 1b) to test whether the differences in correlation estimate were due to repeated exposure to the same scatterplots (i.e., having seen the same dataset in a scatterplot twice, one with meaningful labels and one with abstracted labels). Our results rule out this possibility, strengthening our argument that belief is the key factor driving estimation bias.\n\nContribution: These findings shed light on the difficulty that data communicators face when persuading people with data: as definitive and objective as the data is believed to be, our interpretation is often biased by our expectations and beliefs. These findings also have implications for how researchers and data analysts should approach the data analysis process. When approaching an analysis with existing hypotheses, an analyst may put themselves at risk of seeing what they want to see in their data. This relatively low-level bias may become compounded by higher-level ones, such as confirmation bias, which might lead to overly confirmatory follow-up studies or analyses ([60]).",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": ""
+    },
+    {
+      "id": "s3",
+      "title": "Related Work",
+      "tag": "What prior research on motivated perception, belief updating, and correlation perception in scatterplots does this work build on and extend?",
+      "text": "Although the ideal visual analytic workflow is bias-free, in reality, people can fall victim to a variety of cognitive and perceptual biases when making sense of data [14, 75, 77, 84, 85]. Visualization readers can latch on to salient features when interpreting visualizations and gravitate toward unique colors [1], larger fonts [30, 83], and patterns that are aligned with their beliefs and agendas [7, 87], giving in to letting their intuition drive decision making [35, 62].\n\nPredictive models of perception suggest that what we see is determined by the visual input and prior knowledge [20] and that existing knowledge and beliefs can bias judgments even when there is less ambiguity. For example, in a study where people were asked to report the size of real-world objects in an otherwise dark field of view, their past knowledge of the typical size of those objects affects their perceived size and inferred distance from those objects [22]. Our knowledge of real-world object size can similarly affect the perceived speed of that object in motion [57]. In another example, afterimages that conform to expectations are perceived as more vivid, while those that contradict expectations are less vivid [52].\n\nMore recently, data visualization researchers have begun exploring the extent to which existing beliefs or background knowledge can impact how people view data. A visualization contains many patterns to perceive [71, 86, 87], and viewers can perceive the patterns that are more aligned with their existing knowledge to be more salient. For example, when participants were primed with backstories before seeing a visualization, the features mentioned in the backstories were perceived as more visually salient [87]. People can also be biased by their beliefs when looking at visualizations [50, 51]. Those who do not believe in climate change tend to look more at the flat sections, confirming their thoughts on climate change.\n\nWhile these effects corroborate findings in basic human perception, it is not clear whether objective, low-level visual properties can also be biased by our beliefs. Low-level visual properties, such as brightness, follow Weber\u2019s law, where the just-noticeable difference is a fixed proportion of its magnitude [11]. Among these properties, correlation perception is a key property relevant to visual analytics [2, 67]. Thus, as an initial step, we empirically examined how prior beliefs may influence correlation estimations.\n\nWhen we interpret visualized data, our internal representations of relevant knowledge play a critical role [29, 47, 49, 62, 73]. When people encounter new information, they may struggle to properly incorporate past knowledge and existing beliefs to make judgments with regard to the new information, leading to biases in data interpretation [13]. For example, failed belief updating can drive people to be overconfident in their judgment [18, 74], as can confirmation bias [35, 74]. People who are subject to confirmation bias often attend and search only for information that supports prior beliefs and do not consider alternative explanations [46, 61, 81]. They may also over-weigh information congruent with their beliefs while under-weighing information incongruent with their beliefs [45].\n\nVisualization researchers have identified visualization techniques to facilitate adequate belief-updating [54]. For example, effectively showing uncertainty in data, such as using hypothetical outcome plots [33,37], gradient plots [12], and quantile dot plots [9,36,40], has been found to help people properly update their beliefs [42]. However, most visualization practitioners hesitate to incorporate uncertainty information in their designs due to concerns about their ability to precisely represent the uncertainty in a way readers can understand [32]. This motivates us to investigate and model the effect of beliefs with more commonly used scatterplots.\n\nCurrent taxonomies in visualizations systematically abstract visual analytic tasks into granular operations (e.g., [8, 23]). To our knowledge, the lowest levels to date include: Retrieve Value, Filter, Compute Derived Value, Find Extremum, Sort, Determine Range, Characterize Distribution, Find Anomalies, Cluster, Correlate [2].\n\nFinding correlation is a commonly used low-level task in visual analytics [48] that has been well-studied in the visualization community [27,39,68]. Scatterplots are shown to especially facilitate correlation extraction in visualization [69]. Human participants are sensitive to correlation values and can generally read correlations from scatterplots accurately with little training [68].\n\nCorrelation perception is, of course, imperfect and is likely perceived using cues other than correlation per se [67]. Recent work argues such perceptual shortcuts might include using the aspect ratio of the probability density function generated by the dots as a proxy for correlation (usually in the form of an ellipse that describes a constant probability of encountering a dot) [27, 39, 88].\n\nChanges to the design of the visualization can also impact how people extract key statistics [21]. For example, the shape and orientation of the visual encoding marks can impact correlation perception in scatterplots, such that participants are more accurate if the direction of the shapes aligns with the regression line [48]. The size and lightness of the scattered dots can distort visual summaries of data and lead to misjudgments in their weighted average [31]. These findings suggest that although accurate, there is room for bias to nudge correlation estimations when people read scatterplots. Together with the prevalence of scatterplots and correlation tasks in visual analytics, they make the correlation estimating in scatterplots an ideal test bed to model the potentially biasing effect of belief.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": ""
+    },
+    {
+      "id": "s4",
+      "title": "General Method",
+      "tag": "What stimuli, participant pool, and survey procedure are shared across the experiments described in the sections that follow?",
+      "text": "The stimulus, data, and analysis script are available at the Open Science Framework website: https://osf.io/3cnza/.\n\nStimuli for these experiments consisted of four scatterplots, with values randomly generated to fit a given correlation. In order to provide participants with ample space to over- or under-estimate the correlation, we chose intermediate correlation values of 0.6 and 0.4. Among the four, two scatterplots had a correlation of 0.4, and the other two had a correlation of 0.6. The axes titles on each scatterplot varied within experiments, but the datasets were identical across control and experimental stimuli (see Figure 3). The survey was hosted by Qualtrics [65], and the survey flow for each experiment can be seen in Figure 2. Neither exact stimuli nor the correlation values were shown in the training portion of the surveys.\n\nAmong all experiments, 748 adults were recruited from an online crowdsourcing site, Amazon\u2019s Mechanical Turk (MTurk) [28]. Of these 748, 435 were men, 306 were women, 5 were non-binary, and 2 chose not to disclose their gender. The average age of all participants was 40 years old (SD = 10.62 years). To be included in the analysis, responses had to have the correct answer to all attention check questions and participants must not have seen any of the questions besides demographics in any previous survey. Specific attention check questions are described in Section 3.3.\n\nThis led to 27 exclusions in Experiment 1a, 200 exclusions in Experiment 1b, and 32 exclusions in Experiment 2. We recruited \u2018Master\u2019 workers for Experiment 1a and Experiment 2, but due to difficulty collecting responses with \u2018Master\u2019 respondents for Experiment 1b (responses came in at an extremely slow pace), we removed this requirement for Experiment 1b. An additional attention check was used for Experiment 1b to ensure that participants\u2019 response and attention quality remained comparable to \u2018Master\u2019 workers. For this reason, the number of exclusions in Experiment 1b was notably high.\n\nParticipants completed a Qualtrics survey and were paid between $1.35 and $2.00, depending on the number of sections in the survey, at a rate of $9.47 an hour. This research adhered to ethical guidelines including the legal requirements of the United States as well as the Institutional Review Board.\n\nAs shown in Figure 2, in all experiments, participants completed a similarly structured survey.\n\nThe first attention check question occurred prior to the training block. The page read \u201cThank you for participating in our survey. We will ask you to answer short questions about graphs. Please read all questions and answers carefully before responding.\u201d Participants then moved to the next page and were asked to fill in the sentence \u201cWe will ask you to answer short questions about ___.\u201d\n\nFollowing this check, all participants were trained to extract correlation from scatterplots through an explanation of correlation, followed by seven examples, ranging from -0.9 to 0.9, labeled with the correct correlation value. They then completed three practice estimations during which they received feedback about any error in estimation.\n\nThe second attention check came just before viewing the first experimental stimuli. Participants were informed on the previous page, \u201cPlease estimate the correlation of the following graphs. This is different from the previous section, as you will not receive feedback upon selecting your answer.\u201d They were then asked, \u201cWill you receive feedback after selecting your answer?\u201d and given options of \u2018yes\u2019 and \u2018no\u2019.\n\nAfter this attention check, participants estimated the correlation of four scatterplots, all labeled with \u2018X\u2019 and \u2018Y\u2019, using a sliding scale from 0 to 1. Two of the scatterplots contained different datasets, both depicting a correlation of 0.4, and the other two depicted a correlation of 0.6. The same four scatterplots were viewed by all participants in a randomized order of display.\n\nAfter completing the correlation estimations on the first set of four scatterplots, participants completed a distractor task. In Experiment 1a and Experiment 2, participants then went on to complete estimations of the same four scatterplots as the previous estimations, but with real-world variables instead of \u2018X\u2019 and \u2018Y\u2019 on the axes, as shown in Figure 3. The participants always viewed the \u2018X\u2019 and \u2018Y\u2019 labeled scatterplots first, to ensure that they were not primed by real-world variables. This allowed us to treat their estimation in the \u2018X\u2019 and \u2018Y\u2019 labeled scatterplots as an unbiased baseline.\n\nTwo of these pairs were topics that were more likely to trigger beliefs (gun ownership and violent crimes; environmental regulations and air quality), and two were neutral topics not usually associated with strong beliefs (the number of trees and people whose names start with \u2018T;\u2019 the number of lawyers and annual rainfall). Including both belief-triggering and neutral topics provided us the ability to examine the effect of belief not only on topics that are belief-triggering but also on those that seem less plausible.\n\nWe also counterbalanced the correlation values with the real-world variable labels through two conditions to ensure the chart topic and its correlation values were not confounded. In condition 1, the plot depicting gun ownership and the plot depicting the number of trees had correlations of 0.6. The other two topics were depicted with correlations of 0.4. In condition 2, the correlation values were swapped between the topic pairs.\n\nIn Experiment 1a and Experiment 2, participants also rated their level of agreement with statements representing a belief in relationships between the variables depicted in the scatterplots, noted as \u201cBelief Statements\u201d in Figure 2. For example, participants rated the statement, \u201cI believe that as the number of households with guns increases, the number of violent crimes increases,\u201d on a 7-point Likert scale. A rating of 1 indicated that the participant strongly disagreed with the statement, while a rating of 7 indicated that the participant strongly agreed with the statement. Similar Likert scales have been used to measure attitudes and beliefs [25, 34, 82]. We were specifically interested in their belief in a correlation between the two variables shown and thus used the same phrasing as the scatterplot axes labels. The plots all presented positive correlations to maximize the comparability of results across examples.\n\nParticipants in Experiment 1a made these ratings after completing a second distractor task following the correlation ratings of all scatterplots, not shown in Figure 2, to further the distance between seeing a visual depiction of the scatterplots and reporting their belief on the topic. All participants in Experiment 2 made these ratings in the beginning, after completing the correlation training section but before estimating the correlations for any scatterplots. A subset of participants in Experiment 2 also completed the same ratings at the end of the survey, as a measure of personal belief for each participant.\n\nIn Experiment 1b, participants completed the distractor task after rating the correlation of the first four scatterplots labeled with \u2018X\u2019 and \u2018Y\u2019. After the distractor task, instead of seeing the same scatterplots with real-world labels, they saw them with a different set of abstracted letter labels, such as \u2018M\u2019 and \u2018N\u2019. Participants in this experiment did not complete any ratings of belief. There was only one condition of this experiment, with each set of scatterplots shown in a randomized order.\n\nOverall, Experiment 1a and Experiment 2 examined the effect of belief on correlation estimations. Experiment 1b served as a control condition for Experiment 1a, to account for the possibility that differences in correlation ratings between the two sets of scatterplots were a result of time delay.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": ""
+    },
+    {
+      "id": "s5",
+      "title": "Experiment 1a Measuring Belief Last (Posterior)",
+      "tag": "In Experiment 1a, how accurately did participants estimate scatterplot correlations, how did their self-reported beliefs relate to their estimation bias, and what alternative explanation does this raise that later experiments need to rule out?",
+      "text": "In this experiment, as shown in Figure 2, participants completed training on estimating correlation, and then estimated the correlation for four scatterplots with \u2018X\u2019 and \u2018Y\u2019 labels on the axes (correlations of 0.4 and 0.6), as shown in Figure 3. Next, they completed a distractor task before rating the same four scatterplots, this time with real-world variables on the axes. After a second distractor task, participants rated their level of agreement with statements depicting belief in the relationship between variables in the scatterplots. In the end, participants reported demographic information such as their age and level of education.\n\nAssuming a medium effect size (a \u03c1 = 0.21 correlation based on pilot studies) for the effects of belief, power analysis with G*Power [16] suggests that a target sample of 291 participants would give us 95% power to detect an overall effect of the belief factor at an alpha level of 0.05. After applying the exclusion criteria specified previously, we ended up with 295 participants (172 men, 120 women, and three non-binary people) with an average age of 41 years (SD = 9.66 years).\n\nWe first examine how accurately participants estimated the correlation values in the scatterplots without considering the effects of belief. Overall, participants were quite accurate at estimating correlations in scatterplots, corroborating existing findings.\n\nWe compared participant estimations of the XY labeled scatterplot correlations with the ground truth correlations (which is either 0.4 or 0.6). Participants\u2019 correlation estimates for the two versions of the 0.4 and 0.6 correlation scatterplots slightly differ from ground truth, but generally, they were quite accurate. They reported an average correlation of 0.415 (SD = 0.19, CI = [0.394, 0.437]) and 0.401 (SD = 0.21, CI = [0.377, 0.425]) for the two versions of scatterplots with a 0.4 correlation. For scatterplots with a 0.6 correlation, participants reported an average correlation of 0.558 (SD = 0.19, CI = [0.537, 0.579]) and 0.625 (SD = 0.18, CI = [0.604, 0.646]).\n\nWe compared the correlation estimates of the same scatterplots with and without real-world labels to identify potential bias resulting from labeling the axes with real-world variable pairs. Participants reported significantly different correlation values for the same scatterplot in the presence of real-world variable pair labels. On average, they estimated the correlation for the scatterplots with a 0.4 correlation with real-world variable labels to be 0.385 (SD = 0.19, CI = [0.363, 0.407]) and 0.287 (SD = 0.22, CI = [0.262, 0.312]). They estimated the correlation for the scatterplots with a 0.6 correlation with real-world labels to be 0.561 (SD = 0.19, CI = [0.539, 0.583]) and 0.546 (SD = 0.23, CI = [0.520, 0.572]).\n\nTo examine the effect of participant belief on their correlation estimates, we showed them two plots with belief-triggering variable pairs (gun ownership and violent crimes; environmental regulations and air quality), and two with neutral variable pairs not usually associated with strong beliefs (the number of trees and people whose names start with \u201cT;\u201d the number of lawyers and annual rainfall).\n\nThis analysis verifies that participants more strongly believed that there exists a positive correlation between gun ownership and violent crimes (M = 5.72, SE = 0.07) and between environmental regulations and air quality (M = 4.57, SE = 0.11). They less strongly believed that there exists a positive correlation between the number of trees and people whose names start with \u201cT\u201d (M = 2.19, SE = 0.088) and between the number of lawyers and annual rainfall (M = 2.21, SE = 0.089). Post-hoc pair-wise comparisons between their belief on the four topics suggest that participants most strongly believed in the gun relationship, followed by the environment relationship, followed by the trees/names, and the lawyers/rainfall relationship (their beliefs of which are not statistically different, p = 0.998). Figure 4 shows the belief distributions for the four topics.\n\nTo investigate whether labeling the scatterplot with real-world variables biases participants\u2019 correlation estimations, we compare the differences between their estimation for the same scatterplot labeled with \u2018X\u2019 and \u2018Y\u2019 and with real-world variables. We demonstrate this difference to be correlated with how strongly they believe the real-world variables are positively correlated.\n\nWe constructed a mixed-effect linear model predicting the difference between estimates in the scatterplots labeled with \u2018X\u2019 and \u2018Y\u2019 and with real-world variables using the lmer function in R [6]. We used experiment versions (counterbalanced conditions), topics (the two belief-triggering and two neutral topics), the strength of belief (the degree of agreement with the correlation statements), and the interaction between topics and the strength of belief as predictors, and included a random effect of participants. We also added demographic variables including age, gender, political orientation, level of education, experience with statistics, and experience with doing research as fixed effects to explore potential differences.\n\nWe found a significant main effect of belief (\u03c72 = 18.39, Est = 0.024, SE = 0.011, t = 2.23, p = 0.023), such that the stronger the participant believes in the variables\u2019 correlation, the more they overestimated the correlation when the scatterplot was labeled with that variable pair, as shown in Figure 5. Similarly, the more they disagreed with the variable correlation, the more they underestimated the correlation.\n\nThere was no significant main effect of condition (\u03c72 = 0.022, p = 0.88), suggesting that the two counterbalanced conditions were not different from one another. There was also no significant main effect of topic (\u03c72 = 4.28, p = 0.23), nor a significant interaction between topic and belief (\u03c72 = 1.84, p = 0.61). This suggests that regardless of whether the topic was belief-triggering or neutral, the under/overestimation of the correlation was driven by the participants\u2019 own beliefs. Figure 6 shows a comparison of the relationship of correlation estimation error and belief strength, between belief-triggering topics and less plausible topics. The two look extremely similar.\n\nWe also found no significant effect of any demographic variables. Details can be found in the supplementary materials.\n\nDespite accurately estimating scatterplot correlations when the plots were labeled with \u2018X\u2019 and \u2018Y\u2019, participants became less accurate when estimating the correlation for the same scatterplots but with real-world variable labels. Our model suggests that the deviation in correlation estimation is associated with the strength of participant beliefs, such that strong beliefs predict overestimation and strong disbeliefs predict underestimation.\n\nHowever, one possible alternative explanation for the over/underestimation could be the factor of time. Participants always saw the real-world labeled scatterplots after they had seen the \u2018X\u2019 and \u2018Y\u2019 labeled scatterplots, at which point they could have become habituated or anchored by previously seen scatterplots. Further, more time has lapsed between training and estimating correlations for the real-world variable labeled scatterplots, compared to the time between training and estimating correlation for the \u2018X\u2019 and \u2018Y\u2019 labeled scatterplots. So it is possible that the effect of training has deteriorated, and thus participants provided less accurate correlation estimations. This motivated us to conduct Experiment 1b, a control experiment where, instead of showing participants the \u2018X\u2019 and \u2018Y\u2019 labeled scatterplots followed by the same plots labeled with real-world variables, we showed them the same \u2018X\u2019 and \u2018Y\u2019 labeled scatterplots twice to account for the potential effect of time.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": ""
+    },
+    {
+      "id": "s6",
+      "title": "Experiment 1b Controlling for the Effect of Time",
+      "tag": "How does Experiment 1b test and rule out passage of time (rather than real-world labels) as the explanation for the estimation bias observed in Experiment 1a?",
+      "text": "We observed a significant difference in the correlation values participants reported for the scatterplots labeled with \u2018X\u2019 and \u2018Y\u2019, compared to the same scatterplots labeled with real-world variables. We investigate whether the difference is driven by the real-world labels, or simply by the passage of time in this experiment.\n\nParticipants completed training on rating correlation, then rated four scatterplots with alphabetic labels (e.g., X, Y), with correlation values of either 0.4 or 0.6. They then completed a distractor task before rating the same four scatterplots, also with alphabetic labels on each axis. The alphabetic labels are used to strip context away from the scatterplots to ensure that belief does not play a role in our results. Participants then reported demographic information.\n\nBecause Experiment 1b is intended as a control version of Experiment 1a with no manipulation before and after the distractor task, we recruited participants to match the number of participants in one condition of Experiment 1a, which is equivalent to half the number of participants from Experiment 1a. After applying the exclusion criteria specified previously, we ended up with 153 participants (86 men, 64 women, 1 non-binary person, and 2 who chose not to disclose), with an average age of 38 years (SD = 11.49 years).\n\nParticipants estimated the correlation of scatterplot with alphabetic labels twice (e.g., \u2018X\u2019 and \u2018Y\u2019) in Experiment 1b, which we will refer to as Phase 1 and Phase 2 estimates. In Phase 1, the average correlation they reported for the two versions of the 0.4 correlation scatterplots were 0.423 (CI = [0.395, 0.451]) and 0.354 (CI = [0.395, 0.451]). The average correlation they reported for the two versions of the 0.6 correlation scatterplots were 0.541 (CI = [0.509, 0.572]) and 0.599 (CI = [0.570, 0.628]). In Phase 2 the average correlation they reported for the two versions of the 0.4 correlation scatterplots are 0.442 (CI = [0.413, 0.472]) and 0.372 (CI = [0.339, 0.406]). The average correlation they reported for the two versions of the 0.6 correlation scatterplots are 0.513 (CI = [0.482, 0.545]) and 0.629 (CI = [0.600, 0.656]).\n\nWe compared participants\u2019 correlation estimates for the real-world variable labeled scatterplots in Experiment 1a to the Phase 2 estimations in Experiment 1b (labeled with alphabetical letters). Between these two sets of estimates, the only difference is how the scatterplots were labeled. If the two sets are similar, that suggests that timing is likely the factor driving any deviation from their estimation of the first set of scatterplots labeled with \u2018X\u2019 and \u2018Y\u2019 (phase 1). If the two are different, it likely suggests that the real-world variable labels, which trigger either belief or disbelief in a positive correlation, affected correlation estimations, rather than it being an effect of time.\n\nWe found there to be a significant difference between them. Pairwise comparisons with Bonferroni corrections suggest that the correlation estimates for the two versions of 0.4 correlation plots were significantly different (pv1 = 0.002, pv2 < 0.001), and that of the two versions of the 0.6 correlation plots were also significantly different (pv1 = 0.016, pv2 < 0.001). We can infer from these comparisons that the deviations in correlation estimates with the scatterplots labeled with real-world variables in Experiment 1a are not caused by time delays, but rather by the real-world labels and their associated beliefs.\n\nIn both Experiment 1a, participants viewed the real-world variable labeled scatterplots before reporting their belief (level of agreement with a positive correlation between the depicted variables). It is possible that these beliefs that people reported are posterior in nature such that they were not their true beliefs, but rather updated beliefs affected by the scatterplots they saw. To demonstrate that participants\u2019 prior beliefs have an influence on how they estimate correlations in scatterplots, we conduct Experiment 2 where we elicited their level of agreement on the depicted topics prior to them seeing the real-world variable labeled correlations.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": ""
+    },
+    {
+      "id": "s7",
+      "title": "Experiment 2 Measuring Beliefs First (Prior)",
+      "tag": "In Experiment 2, where beliefs were elicited before participants saw the real-world-labeled scatterplots, how accurate were correlation estimates and how did participants' prior beliefs relate to their estimation bias?",
+      "text": "In Experiment 1a, we measured participants\u2019 beliefs on relevant real-world variable pairs at the end of the experiment, after they had seen scatterplots depicting potential relationships between those variables. To account for the potential effect of these visualizations on participants\u2019 beliefs, we conducted Experiment 2 and measured their beliefs on these real-world variable pairs at the very beginning of the experiment.\n\nSimilar to both previous experiments, participants first completed training on correlation estimation. Immediately following training, they rated their level of agreement with belief statements regarding the variables previously viewed in the scatterplots. They then rated the correlation of four scatterplots with \u2018X\u2019 and \u2018Y\u2019 labels on the axes (correlations of 0.4 and 0.6). Next, they completed a distractor task before rating the same four scatterplots, this time with real-world variables on the axes. Finally, participants reported demographic information such as their age and level of education.\n\nAssuming a medium effect size (a \u03c1 = 0.21 correlation based on pilot studies) for the effects of belief, power analysis with G*Power [16] suggested a target sample of 291 participants for 95% power to detect an overall effect of the belief factor at an alpha level of 0.05. After applying the exclusion criteria specified previously, we ended up with 300 participants, with an average age of 40 years (SD = 11.01 years).\n\nTo gauge how accurate participants were in estimating of \u2018X\u2019 and \u2018Y\u2019 labeled scatterplot correlation, we compared their response with the ground truth correlations. As in Experiment 1a, the correct answers were either 0.4 or 0.6. We observed that participants overall performed well on estimating the correlation. On average, participants reported 0.381 (SD = 0.18, CI = [0.36, 0.40]) for the first 0.4 stimuli, and 0.38 (SD = 0.21, CI = [0.35, 0.40]) for the second. For the stimuli depicting 0.6, participants reported 0.530 (SD = 0.19, CI=[0.51, 0.55]) and 0.62 (SD = 0.18, CI = [0.60, 0.64]), respectively. This was similar to the results of Experiment 1a.\n\nNext, we compared the participants\u2019 estimations from when they saw the plots with and without real-world labels. We found that the responses were significantly different. Participants estimated the correlation for the scatterplots with a 0.4 correlation with real-world variable labels to be 0.407 (SD = 0.21, CI = [0.38, 0.43]) and 0.255 (SD = 0.22, CI = [0.23, 0.28]). They reported the correlation for the scatterplots with a 0.6 correlation with real-world labels to be 0.546 (SD = 0.20, CI = [0.52, 0.57]) and 0.546 (SD = 0.25, CI = [0.52, 0.57]).\n\nSimilar to Experiment 1a, we analyzed the influence of the beliefs on estimating correlation. We found that participants more strongly believed in a positive correlation between environmental regulations and air quality (M = 5.66, SE = 1.20) and between gun ownership and violent crimes (M = 4.45, SE = 1.80). They less strongly believed a positive correlation between the number of lawyers and annual rainfall (M = 1.55, SE = 1.03), and between the number of trees and people whose names start with \u201cT\u201d (M = 1.38, SE = 0.92). We ran post-hoc pair-wise comparisons with corrections between their beliefs on the four topics, and the result shows that belief ratings in the four conditions were reliably different (p < 0.0001). Figure 4 shows the belief distributions.\n\nTo understand the influence of the beliefs on the correlation estimation, we ran a mixed effect linear model with the difference between their estimation on the scatterplots with and without the real-world label as a dependent variable, beliefs and the topic of the chart and their interaction as fixed effects, and participants as a random effect. We also added demographic variables including age, gender, political orientation, level of education, experience with statistics, and experience with doing research as fixed effects to explore potential differences.\n\nWe found that the beliefs had a reliable impact on the difference (Est = 0.025, SE = 0.011, t = 2.28, p = 0.023), as shown in Figure 5. As the average participant\u2019s beliefs were 1 unit stronger in a positive relationship of the two variables, they saw 0.02 units of additional correlation compared to when they examined the chart without the real-world labels. There was no reliable effect of the topic nor the interaction. Additionally, consistent with the results from Experiment 1a, there is no significant effect of topic (p = 0.085), condition (p = 0.51), nor the interactions between topic and belief (p = 0.21), as shown in Figure 6. We also found no significant effect of any demographic variables. Details can be found in the supplementary materials.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": ""
+    },
+    {
+      "id": "s8",
+      "title": "Comparing Experiment 1a and Experiment 2",
+      "tag": "Does the belief-driven estimation bias replicate across Experiment 1a and Experiment 2, and does eliciting belief before versus after viewing the scatterplots change participants' reported beliefs or estimates?",
+      "text": "We compared our results from Experiment 1a and 2 to examine whether the effect of labeling scatterplots on correlation estimates replicates, and whether asking the belief questions before or after the participants see the scatterplots made a difference.\n\nAbility to Estimate Correlations: We did not observe a difference between participants\u2019 ability to estimate the correlation of scatterplots with \u2018X\u2019 and \u2018Y\u2019 labels. Since this step was shown before seeing the scatterplots with the real-world labels, we did not expect the result to differ.\n\nBelief Distributions We compared the participants\u2019 beliefs when they were prompted before and after seeing the scatterplots with the real-world labels. We found no difference of their beliefs on environmental regulations and air quality (t = \u22120.654, p = 0.512) nor gun ownership and violent crimes (t = \u22120.862, p = 0.389). However, there was a difference between belief ratings for the number of trees and people whose names start with \u201cT\u201d (t = \u22128.051, p < 0.001) and for the number of lawyers and annual rainfall (t = \u22125.997, p < 0.001).\n\nFigure 4 shows the belief distributions of participants in Experiments 1a and 2. For the belief triggering topics, there were no differences between people in Experiment 1a and 2 (Environment prior: M = 5.66, SD = 1.201, posterior: M = 5.722, SD = 1.233, Gun prior: M = 4.450, SD = 1.800, posterior M = 4.579, SD = 1.864). However, for the non-belief triggering topics, we observed a difference in people\u2019s belief distributions (Rain prior: M = 1.553, SD = 1.035, posterior: M = 2.190, SD = 1.507, Tree prior: M = 1.383, SD = 0.916, posterior: M = 2.214, SD = 1.520).\n\nFigure 5 shows the relationship between the belief strength and the correlation estimation difference. We compared the effect of prior and posterior beliefs on participants\u2019 correlation estimations when they viewed scatterplots with \u2018X\u2019 and \u2018Y\u2019 labels versus real-world variable pairs. The results are very similar between Experiments 1a and 2. The coefficient of the prior belief factor is 0.022, and the posterior belief factor is 0.023.\n\nIn the case of non-belief triggering topics, we observed a slight difference in beliefs distribution when participants were asked to indicate their beliefs before and after seeing the scatterplots. This may imply that seeing the correlated scatterplots led them to believe that there might be a correlation between two variables.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": ""
+    },
+    {
+      "id": "s9",
+      "title": "General Discussion",
+      "tag": "What do the combined experimental results say about the size of belief's bias on correlation estimation, and what mechanisms might explain why XY-labeled and real-world-labeled estimates of the same scatterplot differ?",
+      "text": "People were biased by their existing beliefs when estimating correlations in scatterplots, and we were able to quantify how much those beliefs can influence the estimates. As shown in Figure 7, people tend to underestimate the correlation of a scatterplot, by approximately 0.1 in Pearson\u2019s correlation value, when it depicts a relationship between two variables that they don\u2019t believe to be correlated. They tend to overestimate the correlation by approximately 0.1 when it depicts a relationship that they do believe to be correlated. This may explain the difficulty frequently faced when persuading people with data - as objective as the data is believed to be, our interpretations of it are often riddled with bias from our expectations and beliefs.\n\nHowever, it remains unclear why participants gave differing correlation estimates for the same scatterplot when it was labeled with \u2018X\u2019 and \u2018Y\u2019 compared to when it was labeled with real-world variables. One explanation might be that perceived correlation strength could be impacted by \u2018top-down\u2019 effects such that they paid more attention to scattered dots that would make the correlation look higher or lower (in accordance with their belief), discounting outliers that would strengthen or weaken the correlation against their beliefs [3]. This possibility would be consistent with previous work showing that darker colored dots are weighted more when viewers estimate means in scatterplots [31], and from Luo & Zhao, where viewer decisions and actions can be manipulated by making certain patterns in a visualization more visually salient [50]. In this case, participants may be weighing dots that support their belief more heavily, such as weighing the dots near the regression line more heavily when they more firmly believe in the correlation.\n\nAnother possibility is that correlation estimates come with uncertainty intervals around a best guess value. When the scatterplot was labeled with \u2018X\u2019 and \u2018Y\u2019, viewers may be more likely to report the midpoint value in that uncertainty range. But for belief-triggering relationships, they might report a correlation either in the upper or lower range depending on the direction of their belief. Existing work in uncertainty demonstrates that people are more biased when the data shows more uncertainty, supporting this possibility [13, 42]. We discuss potential future research opportunities in Section 10.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": ""
+    },
+    {
+      "id": "s10",
+      "title": "Design Implications",
+      "tag": "What practical implications do these belief-bias findings have for how people should read visualizations and how data analysts should approach data filtering and analysis decisions?",
+      "text": "When an analyst or scientist has a belief about how the world works, their thinking can be biased in favor of that belief. Therefore, one bedrock principle of science is to minimize that bias by testing the predictions of one\u2019s belief against objective data. However, we have demonstrated that when people look at scatterplots, their beliefs can interact with the objective data to bias judgments of the objective strength of the relationship between two variables. The stronger the belief (and disbelief), the stronger the bias. Based on this result, when reading visualizations, if readers can first form an impression of the strength of the relationship based on only the data values (without letting the labels alone drive that impression), they might become less susceptible to belief-driven biases when interpreting the visualization. Similarly, data analysts should thoroughly consider their data filtering and manipulation decisions and proceed with caution once they have already seen the data. If the data is aligned with their beliefs, except for a couple of outliers, as shown in Figure 1, the analysts might be motivated to adjust the exclusion criteria to exclude them or to collect additional data to \u2018drown the outliers out\u2019, which likely will skew the results and introduce biases in their analysis.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": ""
+    },
+    {
+      "id": "s11",
+      "title": "Limitation and Future Directions",
+      "tag": "What limitations in this study's ability to isolate perception from cognition, elicit beliefs, and generalize its findings are acknowledged, and what future research directions do they motivate?",
+      "text": "We discuss several limitations in our study that provide promising future research directions.\n\nCognition versus Perception: We did not try to tease apart effects on perception and cognition. Making sense of data, even through a visualization, is a complex process that involves both mechanisms [71]. We demonstrated that belief impacts how data gets interpreted by a viewer, and quantified the extent to which it does.\n\nThere is debate in the psychology research community on the extent to which \u2018top-down\u2019 effects (e.g., belief or motivation) affect perception [17, 64]. Some researchers have argued that cognition has the ability to \u2018penetrate\u2019 perception [10, 53, 58], such that existing beliefs or personal goals affect how we perceive the natural world. For example, Balcetis & Dunning demonstrated that wishful thinking could make desirable objects appear closer [5]. For example, a water bottle appears closer to a thirsty person. As mentioned in Section 2, familiarity and prior knowledge can affect size and speed perception [22, 57].\n\nHowever, some researchers have argued against such an interpretation of these effects, suggesting that although our knowledge and beliefs can affect what we look at or what we pay attention to, the lower-level stages of visual perception are impenetrable to existing beliefs [63,64]. Recent support for this idea includes a study that demonstrates the influence of object familiarity on perceived distance found in [57] could not be conceptually replicated [59]. Two manipulations differed between the studies: 1) instead of using an adjustment task with unlimited viewing duration, Mischenko et al. used brief presentations to minimize the potential effect of deeper thinking during task completion, and 2) instead of showing participants objects that varied significantly in size (e.g., tennis balls and golf balls), they showed participants different types of coins with similar sizes [59]. Firestone and Scholl, in [17], also note that some experimental designs in traditional \u2018motivated perception\u2019 type studies make the studies less convincing in support of \u2018top-down\u2019 effects. For example, some of these studies capture what participants recognize rather than examining what they actually see, which makes the study more about semantic priming than perception. They also point out the risk of experimenter demands (participants reporting what they believe the experimenter expects them to report) and other forms of response bias. Additionally, researchers do not always show people the same visual stimuli to compare their perception with and without the motivation or additional beliefs. The low-level visual differences between the experimental stimuli can weaken the results [17].\n\nTo account for some of the concerns listed by Firestone and Scholl [17], in the current experiment, we tried to detect potential experimenter demands by explicitly asking participants what they thought the study was about and conveying that their answers will not affect their compensation. We also used the same stimuli and compared participants\u2019 correlation estimation with or without the belief component. Our participants viewed scatterplots labeled with \u2018X\u2019 and \u2018Y\u2019, and later viewed the same scatterplots again but labeled with real-world variable pairs. They are the same stimuli, so there are no low-level differences, and the differences in correlation estimation we observed should be driven by their attitudes towards the labels alone.\n\nFuture research could find stronger evidence for a perceptual root of the present bias by seeking evidence of biases on Just Noticeable Differences (JND) between pairs of correlations, which might be less potentially influenced by cognitive factors compared to the individual ratings used here [68]. For example, if the bias effect is driven by participants reporting estimations on either side in the range of possible correlations due to uncertainty, such that they opt to report correlations in the upper range when they think the variables should be more strongly correlated and vice versa, then experiments that leverage JND comparisons should be far less influenced by this form of bias that does not require the production of correlation estimates.\n\nMitigating Biases in Data Interpretation: The current results cannot specify why participants gave differing correlation estimates for the same scatterplot when it was labeled with \u2018X\u2019 and \u2018Y\u2019 compared to when it was labeled with real-world variables. We discussed some potential explanations in Section 8, and future work can further test the mechanisms driving participants to misestimate the correlations depending on their beliefs. Understanding these mechanisms can help us design tools to potentially mitigate these biases in correlation estimation. For example, a visual analysis tool can monitor patterns of exploration or request objective decision criteria during analysis to mitigate biases [79]. If the effect is driven by participants overweighing points that are more congruent with their beliefs, a visual analytic system might first survey a user\u2019s existing beliefs, and then highlight data points that might be under weighed to increase their visual salience. Existing work has shown promising results in this area [78], and future work can test similar mitigation techniques in real-world contexts with more complex data sets and tasks.\n\nEliciting Beliefs: We elicited beliefs via self-reporting, a survey technique commonly used in existing work to capture people\u2019s state of mind [34], following a similar approach in measuring belief in correlations as introduced in [85]. We intentionally asked participants to report their beliefs on a verbal scale instead of the same numerical scale they used to report their correlation estimates to reduce potential carryover effects and experimenter demand. Future work should investigate the effects of reporting beliefs on a verbal versus numerical scale, which can lead to more refined quantitative models of belief elicitation.\n\nThere exists a variety of methods to elicit beliefs from multiple disciplines (for a design space on these methods, see [54]). In behavioral economics, researchers often infer belief from a choice tasks where participants indicate their preferences [70], though more recent work has argued against its effectiveness [55]. In visualization work, researchers have experimented with capturing belief through having participants manipulate the slope of a line in a chart [38, 44], specialized elicitation visual interfaces [43, 56], or using a Likert scale where participants rate their agreement with a statement [85]. Griffiths and Tenenbaum [24] demonstrated that we could approximate people\u2019s prior beliefs by asking them to make predictions. More recently, Suchow, Pacer, & Griffiths [72] demonstrated that we can also estimate people\u2019s priors through transmission chains, such as a game of telephone. Future work should explore how our results might generalize (or not) to other belief elicitation methods, in addition to exploring and evaluating alternative methods to capture people\u2019s beliefs.\n\nBelief Updating: Our work also has implications for how people update their beliefs. When participants reported their level of agreement with statements describing the correlation between two variables, when the variables were belief-triggering (gun/violent crime, air quality/environmental regulations), participants\u2019 prior and posterior beliefs did not significantly differ. But when the variables were not belief-triggering (tree/names, rain/lawyers), there was a significant difference in participants\u2019 prior and posterior beliefs.\n\nThis may suggest that when participants hold strong existing beliefs (priors), seeing additional evidence does not change their beliefs. They stick to their strong priors, as it was built on a great deal of data from their past experiences. However, when participants do not have strong existing beliefs about how two variables could be correlated, just seeing one instance of a scatterplot depicting a correlation pushed them to update their beliefs, even though the scatterplot they saw was not designed to be persuasive. The amount of change between prior and posterior beliefs can likely be used as a proxy to determine how much people are persuaded by the new data they saw, which will allow us to reverse engineer the correlation people see in data by comparing the deltas between their prior and posterior beliefs (see [15] for more discussions). Future work can further examine how much seeing a correlation impacts belief, and how much stating a belief impacts subsequent correlation estimation, using a wider range of topics, belief elicitation methods, and correlation values. Additionally, for instances where participants viewed data depicting variables for which they do not have strong priors, future researchers can also examine how that data could influence participants\u2019 belief updating through exposure effects [26].\n\nGeneralizability: We only tested two levels of correlation in the current experiment using one scatterplot design and elicited participants\u2019 correlation estimations through Pearson\u2019s r. These decisions were made based on methodologies from prior work to control for the effect of these design-based factors and prevent the combinatorial explosion of having too many conditions [80]. Future work can extend this space of investigation and examine the generalizability of our effects by testing additional levels of correlation, different shapes of the data (e.g., varying the dispersion, the number of outliers, or the range of R-values), and various scatterplot designs (e.g., aspect ratios of the plot area or with regression lines).\n\nFurthermore, future work can test other methods of eliciting participant estimations. For example, instead of asking for an r-value, they could ask participants to indicate which points they think are \u2019important\u2019 or indicate the perceived correlation by drawing an ellipse or regression line. Such measures may be more or less sensitive to bias and may provide a more precise indication of the influence of outliers or other salient points on a trial-to-trial basis. These follow-up experiments can build towards a comprehensive model mapping each component of a scatterplot to its impact on viewer interpretation, potentially pinpointing the factors or mechanisms behind belief-driven misestimation of correlations.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": ""
+    },
+    {
+      "id": "s12",
+      "title": "Acknowledgments",
+      "tag": "Whom do the authors credit with making this research possible?",
+      "text": "We thank the online participants who made this study possible. We also thank our reviewers and Akira Wada for their helpful feedback.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": ""
+    },
+    {
+      "id": "s13",
+      "title": "References",
+      "tag": "",
+      "text": "",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": ""
+    }
+  ],
+  "paragraphs": [
+    {
+      "id": "pa1",
+      "title": "",
+      "tag": "What did the experiments find about belief bias in correlation estimation?",
+      "text": "When an analyst or scientist has a belief about how the world works, their thinking can be biased in favor of that belief. Therefore, one bedrock principle of science is to minimize that bias by testing the predictions of one\u2019s belief against objective data. But interpreting visualized data is a complex perceptual and cognitive process. Through two crowdsourced experiments, we demonstrate that supposedly objective assessments of the strength of a correlational relationship can be influenced by how strongly a viewer believes in the existence of that relationship. Participants viewed scatterplots depicting a relationship between meaningful variable pairs (e.g., number of environmental regulations and air quality) and estimated their correlations. They also estimated the correlation of the same scatterplots labeled instead with generic \u2019X\u2019 and \u2019Y\u2019 axes. In a separate section, they also reported how strongly they believed there to be a correlation between the meaningful variable pairs. Participants estimated correlations more accurately when they viewed scatterplots labeled with generic axes compared to scatterplots labeled with meaningful variable pairs. Furthermore, when viewers believed that two variables should have a strong relationship, they overestimated correlations between those variables by an r-value of about 0.1. When they believed that the variables should be unrelated, they underestimated the correlations by an r-value of about 0.1. While data visualizations are typically thought to present objective truths to the viewer, these results suggest that existing personal beliefs can bias even objective statistical values people extract from data.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s1"
+    },
+    {
+      "id": "pa2",
+      "title": "",
+      "tag": "What motivating scenario illustrates top-down bias in data analysis?",
+      "text": "Your new data have arrived. With the intent of showing a relationship between the strength of environmental regulations in a region and that region\u2019s air quality, you plot your data values in a scatterplot. At first, the correlation is barely noticeable. But you then notice a small set of outliers. If you ignore those, the correlation looks as strong as you expected, as illustrated in Figure 1. This hypothetical example may be more common than one would hope. This type of data analysis is intended to proceed in a purely \u2018bottom-up\u2019 fashion, driven only by the data itself. However, motivation, belief, and experience can bias us across a complex set of \u2018top-down\u2019 interactions [50,53]. When people viewed an ambiguous figure which was carefully balanced to be interpreted either as the letter B or the number 13, those who expected letters were more likely to see \u2018B\u2019, while those who expected to see numbers were more likely to see \u201813\u2019 [4].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s2"
+    },
+    {
+      "id": "pa3",
+      "title": "",
+      "tag": "What prior example shows belief biasing visualization interpretation?",
+      "text": "Similar top-down biases also seem to appear in data analysis. When viewing a visualization depicting global temperature trends, liberals focused more on the increasing trend, confirming their worries about climate change. Conservatives focused more on the overall flatness of the line and the small effect size of the increase, which were more consistent with doubts about those concerns [50].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s2"
+    },
+    {
+      "id": "pa4",
+      "title": "",
+      "tag": "What study shows lingering top-down bias even after correction?",
+      "text": "In another study, participants were told a \u2018top-down\u2019 story explaining a pattern present across randomly chosen data values in a visualization and were then explicitly told to ignore that story. Yet, later ratings of the \u2018bottom-up\u2019 salience of those values were higher for that subset of values than for others. The same participants even predicted that other people, naive to the top-down story, would also find those values more salient [87].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s2"
+    },
+    {
+      "id": "pa5",
+      "title": "",
+      "tag": "How does this work extend prior research on top-down bias?",
+      "text": "These past studies of top-down influences in data visualizations focus on how top-down information can bias the visual salience of certain values or attributes. In contrast, the present studies provide a quantitative estimate of how powerful this type of influence can be, providing a measurement of how a belief can change an \u2018objective\u2019 correlation estimate. We use scatterplots to show those correlations, as those plots are among the most commonly used visualizations and are especially valuable for depicting correlation [27,41,68], which is a critical attribute that impacts data-driven decisions [19]. Additionally, the perception of correlation has been relatively well-studied. People are fairly accurate at determining the Pearson\u2019s r correlation in scatterplots [68], and recent work has begun to explore the underlying visual features that people use as proxies when estimating correlations (e.g., the shape of the ellipse that encloses the scattered dots) [88].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s2"
+    },
+    {
+      "id": "pa6",
+      "title": "",
+      "tag": "What hypotheses does the study propose about belief and correlation estimation?",
+      "text": "Hypothesis: We hypothesize that people will estimate correlations more accurately when they see scatterplots labeled with a neutral pair of variables that are not associated with existing beliefs or abstracted data labels (e.g., X vs. Y). We also hypothesize that the amount of deviation in people\u2019s correlation estimation would be associated with the strength of their belief, such that they would report a higher correlation for the same scatterplot when it depicts something that they strongly believe to be correlated and a lower correlation when the plot depicts something that they do not strongly believe to be correlated.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s2"
+    },
+    {
+      "id": "pa7",
+      "title": "",
+      "tag": "What theoretical distinction is drawn about where belief acts in processing?",
+      "text": "We are careful to state these hypotheses as beliefs affecting what people report, as opposed to them affecting what people see. Beliefs might affect various stages of processing on the road to a correlation estimate, including what people perceive, what values they preferentially attend, or what values they weigh most heavily when deciding what numeric estimate to report. Depending on a researcher\u2019s perspective, these stages can have boundaries that are firm, as some have argued that top-down beliefs and motivations do not directly impact perception [17], or on a continuum, as others have argued for a \u2018cognitive penetrability of perception\u2019 suggesting that top-down effects can directly influence what we see [66, 76].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s2"
+    },
+    {
+      "id": "pa8",
+      "title": "",
+      "tag": "What experiments were run and what did they find?",
+      "text": "Experiment Overview: We present two empirical experiments in which participants estimated correlations for identical data sets in scatterplots. The scatterplots have axes either labeled with meaningful variable pairs (e.g., environmental regulation and air quality) or labeled with abstracted variables \u2018X\u2019 and \u2018Y\u2019 (separated by a distractor task). In a separate section, participants reported how strongly they believed there to be a correlation between the variable pairs, either after they saw the scatterplots (Experiment 1a) or before (Experiment 2). In both studies, we found that people who believed the meaningful variable pairs to be correlated overestimated their correlation values significantly, while people who did not hold those beliefs underestimated the correlations significantly, in comparison to the scatterplots labeled with abstracted variables. We additionally conducted a control experiment (Experiment 1b) to test whether the differences in correlation estimate were due to repeated exposure to the same scatterplots (i.e., having seen the same dataset in a scatterplot twice, one with meaningful labels and one with abstracted labels). Our results rule out this possibility, strengthening our argument that belief is the key factor driving estimation bias.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s2"
+    },
+    {
+      "id": "pa9",
+      "title": "",
+      "tag": "What is the broader significance of these findings?",
+      "text": "Contribution: These findings shed light on the difficulty that data communicators face when persuading people with data: as definitive and objective as the data is believed to be, our interpretation is often biased by our expectations and beliefs. These findings also have implications for how researchers and data analysts should approach the data analysis process. When approaching an analysis with existing hypotheses, an analyst may put themselves at risk of seeing what they want to see in their data. This relatively low-level bias may become compounded by higher-level ones, such as confirmation bias, which might lead to overly confirmatory follow-up studies or analyses ([60]).",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s2"
+    },
+    {
+      "id": "pa10",
+      "title": "",
+      "tag": "What cognitive/perceptual biases affect data interpretation?",
+      "text": "Although the ideal visual analytic workflow is bias-free, in reality, people can fall victim to a variety of cognitive and perceptual biases when making sense of data [14, 75, 77, 84, 85]. Visualization readers can latch on to salient features when interpreting visualizations and gravitate toward unique colors [1], larger fonts [30, 83], and patterns that are aligned with their beliefs and agendas [7, 87], giving in to letting their intuition drive decision making [35, 62].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s3"
+    },
+    {
+      "id": "pa11",
+      "title": "",
+      "tag": "How does prior knowledge bias basic perceptual judgments?",
+      "text": "Predictive models of perception suggest that what we see is determined by the visual input and prior knowledge [20] and that existing knowledge and beliefs can bias judgments even when there is less ambiguity. For example, in a study where people were asked to report the size of real-world objects in an otherwise dark field of view, their past knowledge of the typical size of those objects affects their perceived size and inferred distance from those objects [22]. Our knowledge of real-world object size can similarly affect the perceived speed of that object in motion [57]. In another example, afterimages that conform to expectations are perceived as more vivid, while those that contradict expectations are less vivid [52].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s3"
+    },
+    {
+      "id": "pa12",
+      "title": "",
+      "tag": "How do beliefs bias perception of visualized data?",
+      "text": "More recently, data visualization researchers have begun exploring the extent to which existing beliefs or background knowledge can impact how people view data. A visualization contains many patterns to perceive [71, 86, 87], and viewers can perceive the patterns that are more aligned with their existing knowledge to be more salient. For example, when participants were primed with backstories before seeing a visualization, the features mentioned in the backstories were perceived as more visually salient [87]. People can also be biased by their beliefs when looking at visualizations [50, 51]. Those who do not believe in climate change tend to look more at the flat sections, confirming their thoughts on climate change.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s3"
+    },
+    {
+      "id": "pa13",
+      "title": "",
+      "tag": "Can beliefs bias low-level visual properties like correlation perception?",
+      "text": "While these effects corroborate findings in basic human perception, it is not clear whether objective, low-level visual properties can also be biased by our beliefs. Low-level visual properties, such as brightness, follow Weber\u2019s law, where the just-noticeable difference is a fixed proportion of its magnitude [11]. Among these properties, correlation perception is a key property relevant to visual analytics [2, 67]. Thus, as an initial step, we empirically examined how prior beliefs may influence correlation estimations.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s3"
+    },
+    {
+      "id": "pa14",
+      "title": "",
+      "tag": "How does failed belief updating cause biased data interpretation?",
+      "text": "When we interpret visualized data, our internal representations of relevant knowledge play a critical role [29, 47, 49, 62, 73]. When people encounter new information, they may struggle to properly incorporate past knowledge and existing beliefs to make judgments with regard to the new information, leading to biases in data interpretation [13]. For example, failed belief updating can drive people to be overconfident in their judgment [18, 74], as can confirmation bias [35, 74]. People who are subject to confirmation bias often attend and search only for information that supports prior beliefs and do not consider alternative explanations [46, 61, 81]. They may also over-weigh information congruent with their beliefs while under-weighing information incongruent with their beliefs [45].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s3"
+    },
+    {
+      "id": "pa15",
+      "title": "",
+      "tag": "What visualization techniques help correct belief updating?",
+      "text": "Visualization researchers have identified visualization techniques to facilitate adequate belief-updating [54]. For example, effectively showing uncertainty in data, such as using hypothetical outcome plots [33,37], gradient plots [12], and quantile dot plots [9,36,40], has been found to help people properly update their beliefs [42]. However, most visualization practitioners hesitate to incorporate uncertainty information in their designs due to concerns about their ability to precisely represent the uncertainty in a way readers can understand [32]. This motivates us to investigate and model the effect of beliefs with more commonly used scatterplots.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s3"
+    },
+    {
+      "id": "pa16",
+      "title": "",
+      "tag": "How are visual analytic tasks categorized in taxonomies?",
+      "text": "Current taxonomies in visualizations systematically abstract visual analytic tasks into granular operations (e.g., [8, 23]). To our knowledge, the lowest levels to date include: Retrieve Value, Filter, Compute Derived Value, Find Extremum, Sort, Determine Range, Characterize Distribution, Find Anomalies, Cluster, Correlate [2].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s3"
+    },
+    {
+      "id": "pa17",
+      "title": "",
+      "tag": "How well do people perceive correlation in scatterplots?",
+      "text": "Finding correlation is a commonly used low-level task in visual analytics [48] that has been well-studied in the visualization community [27,39,68]. Scatterplots are shown to especially facilitate correlation extraction in visualization [69]. Human participants are sensitive to correlation values and can generally read correlations from scatterplots accurately with little training [68].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s3"
+    },
+    {
+      "id": "pa18",
+      "title": "",
+      "tag": "What perceptual cues underlie correlation judgments?",
+      "text": "Correlation perception is, of course, imperfect and is likely perceived using cues other than correlation per se [67]. Recent work argues such perceptual shortcuts might include using the aspect ratio of the probability density function generated by the dots as a proxy for correlation (usually in the form of an ellipse that describes a constant probability of encountering a dot) [27, 39, 88].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s3"
+    },
+    {
+      "id": "pa19",
+      "title": "",
+      "tag": "How do visual design choices affect correlation perception accuracy?",
+      "text": "Changes to the design of the visualization can also impact how people extract key statistics [21]. For example, the shape and orientation of the visual encoding marks can impact correlation perception in scatterplots, such that participants are more accurate if the direction of the shapes aligns with the regression line [48]. The size and lightness of the scattered dots can distort visual summaries of data and lead to misjudgments in their weighted average [31]. These findings suggest that although accurate, there is room for bias to nudge correlation estimations when people read scatterplots. Together with the prevalence of scatterplots and correlation tasks in visual analytics, they make the correlation estimating in scatterplots an ideal test bed to model the potentially biasing effect of belief.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s3"
+    },
+    {
+      "id": "pa20",
+      "title": "",
+      "tag": "Where are materials and data available?",
+      "text": "The stimulus, data, and analysis script are available at the Open Science Framework website: https://osf.io/3cnza/.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa21",
+      "title": "",
+      "tag": "What stimuli were used across experiments?",
+      "text": "Stimuli for these experiments consisted of four scatterplots, with values randomly generated to fit a given correlation. In order to provide participants with ample space to over- or under-estimate the correlation, we chose intermediate correlation values of 0.6 and 0.4. Among the four, two scatterplots had a correlation of 0.4, and the other two had a correlation of 0.6. The axes titles on each scatterplot varied within experiments, but the datasets were identical across control and experimental stimuli (see Figure 3). The survey was hosted by Qualtrics [65], and the survey flow for each experiment can be seen in Figure 2. Neither exact stimuli nor the correlation values were shown in the training portion of the surveys.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa22",
+      "title": "",
+      "tag": "Who were the participants recruited?",
+      "text": "Among all experiments, 748 adults were recruited from an online crowdsourcing site, Amazon\u2019s Mechanical Turk (MTurk) [28]. Of these 748, 435 were men, 306 were women, 5 were non-binary, and 2 chose not to disclose their gender. The average age of all participants was 40 years old (SD = 10.62 years). To be included in the analysis, responses had to have the correct answer to all attention check questions and participants must not have seen any of the questions besides demographics in any previous survey. Specific attention check questions are described in Section 3.3.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa23",
+      "title": "",
+      "tag": "How many participants were excluded and why?",
+      "text": "This led to 27 exclusions in Experiment 1a, 200 exclusions in Experiment 1b, and 32 exclusions in Experiment 2. We recruited \u2018Master\u2019 workers for Experiment 1a and Experiment 2, but due to difficulty collecting responses with \u2018Master\u2019 respondents for Experiment 1b (responses came in at an extremely slow pace), we removed this requirement for Experiment 1b. An additional attention check was used for Experiment 1b to ensure that participants\u2019 response and attention quality remained comparable to \u2018Master\u2019 workers. For this reason, the number of exclusions in Experiment 1b was notably high.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa24",
+      "title": "",
+      "tag": "How were participants compensated and treated ethically?",
+      "text": "Participants completed a Qualtrics survey and were paid between $1.35 and $2.00, depending on the number of sections in the survey, at a rate of $9.47 an hour. This research adhered to ethical guidelines including the legal requirements of the United States as well as the Institutional Review Board.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa25",
+      "title": "",
+      "tag": "What is the overall survey structure?",
+      "text": "As shown in Figure 2, in all experiments, participants completed a similarly structured survey.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa26",
+      "title": "",
+      "tag": "What was the first attention check?",
+      "text": "The first attention check question occurred prior to the training block. The page read \u201cThank you for participating in our survey. We will ask you to answer short questions about graphs. Please read all questions and answers carefully before responding.\u201d Participants then moved to the next page and were asked to fill in the sentence \u201cWe will ask you to answer short questions about ___.\u201d",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa27",
+      "title": "",
+      "tag": "How were participants trained to estimate correlation?",
+      "text": "Following this check, all participants were trained to extract correlation from scatterplots through an explanation of correlation, followed by seven examples, ranging from -0.9 to 0.9, labeled with the correct correlation value. They then completed three practice estimations during which they received feedback about any error in estimation.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa28",
+      "title": "",
+      "tag": "What was the second attention check?",
+      "text": "The second attention check came just before viewing the first experimental stimuli. Participants were informed on the previous page, \u201cPlease estimate the correlation of the following graphs. This is different from the previous section, as you will not receive feedback upon selecting your answer.\u201d They were then asked, \u201cWill you receive feedback after selecting your answer?\u201d and given options of \u2018yes\u2019 and \u2018no\u2019.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa29",
+      "title": "",
+      "tag": "How did participants estimate correlations in the baseline task?",
+      "text": "After this attention check, participants estimated the correlation of four scatterplots, all labeled with \u2018X\u2019 and \u2018Y\u2019, using a sliding scale from 0 to 1. Two of the scatterplots contained different datasets, both depicting a correlation of 0.4, and the other two depicted a correlation of 0.6. The same four scatterplots were viewed by all participants in a randomized order of display.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa30",
+      "title": "",
+      "tag": "How did the real-world variable phase differ from baseline?",
+      "text": "After completing the correlation estimations on the first set of four scatterplots, participants completed a distractor task. In Experiment 1a and Experiment 2, participants then went on to complete estimations of the same four scatterplots as the previous estimations, but with real-world variables instead of \u2018X\u2019 and \u2018Y\u2019 on the axes, as shown in Figure 3. The participants always viewed the \u2018X\u2019 and \u2018Y\u2019 labeled scatterplots first, to ensure that they were not primed by real-world variables. This allowed us to treat their estimation in the \u2018X\u2019 and \u2018Y\u2019 labeled scatterplots as an unbiased baseline.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa31",
+      "title": "",
+      "tag": "What topic pairs were chosen and why?",
+      "text": "Two of these pairs were topics that were more likely to trigger beliefs (gun ownership and violent crimes; environmental regulations and air quality), and two were neutral topics not usually associated with strong beliefs (the number of trees and people whose names start with \u2018T;\u2019 the number of lawyers and annual rainfall). Including both belief-triggering and neutral topics provided us the ability to examine the effect of belief not only on topics that are belief-triggering but also on those that seem less plausible.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa32",
+      "title": "",
+      "tag": "How was correlation value confounding with topic controlled?",
+      "text": "We also counterbalanced the correlation values with the real-world variable labels through two conditions to ensure the chart topic and its correlation values were not confounded. In condition 1, the plot depicting gun ownership and the plot depicting the number of trees had correlations of 0.6. The other two topics were depicted with correlations of 0.4. In condition 2, the correlation values were swapped between the topic pairs.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa33",
+      "title": "",
+      "tag": "How was belief in variable relationships measured?",
+      "text": "In Experiment 1a and Experiment 2, participants also rated their level of agreement with statements representing a belief in relationships between the variables depicted in the scatterplots, noted as \u201cBelief Statements\u201d in Figure 2. For example, participants rated the statement, \u201cI believe that as the number of households with guns increases, the number of violent crimes increases,\u201d on a 7-point Likert scale. A rating of 1 indicated that the participant strongly disagreed with the statement, while a rating of 7 indicated that the participant strongly agreed with the statement. Similar Likert scales have been used to measure attitudes and beliefs [25, 34, 82]. We were specifically interested in their belief in a correlation between the two variables shown and thus used the same phrasing as the scatterplot axes labels. The plots all presented positive correlations to maximize the comparability of results across examples.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa34",
+      "title": "",
+      "tag": "When were belief ratings collected in each experiment?",
+      "text": "Participants in Experiment 1a made these ratings after completing a second distractor task following the correlation ratings of all scatterplots, not shown in Figure 2, to further the distance between seeing a visual depiction of the scatterplots and reporting their belief on the topic. All participants in Experiment 2 made these ratings in the beginning, after completing the correlation training section but before estimating the correlations for any scatterplots. A subset of participants in Experiment 2 also completed the same ratings at the end of the survey, as a measure of personal belief for each participant.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa35",
+      "title": "",
+      "tag": "How did Experiment 1b's procedure differ as a control?",
+      "text": "In Experiment 1b, participants completed the distractor task after rating the correlation of the first four scatterplots labeled with \u2018X\u2019 and \u2018Y\u2019. After the distractor task, instead of seeing the same scatterplots with real-world labels, they saw them with a different set of abstracted letter labels, such as \u2018M\u2019 and \u2018N\u2019. Participants in this experiment did not complete any ratings of belief. There was only one condition of this experiment, with each set of scatterplots shown in a randomized order.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa36",
+      "title": "",
+      "tag": "What is the overall purpose of each experiment?",
+      "text": "Overall, Experiment 1a and Experiment 2 examined the effect of belief on correlation estimations. Experiment 1b served as a control condition for Experiment 1a, to account for the possibility that differences in correlation ratings between the two sets of scatterplots were a result of time delay.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa37",
+      "title": "",
+      "tag": "What was the procedure/design of Experiment 1a?",
+      "text": "In this experiment, as shown in Figure 2, participants completed training on estimating correlation, and then estimated the correlation for four scatterplots with \u2018X\u2019 and \u2018Y\u2019 labels on the axes (correlations of 0.4 and 0.6), as shown in Figure 3. Next, they completed a distractor task before rating the same four scatterplots, this time with real-world variables on the axes. After a second distractor task, participants rated their level of agreement with statements depicting belief in the relationship between variables in the scatterplots. In the end, participants reported demographic information such as their age and level of education.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s5"
+    },
+    {
+      "id": "pa38",
+      "title": "",
+      "tag": "What sample size and power analysis were used?",
+      "text": "Assuming a medium effect size (a \u03c1 = 0.21 correlation based on pilot studies) for the effects of belief, power analysis with G*Power [16] suggests that a target sample of 291 participants would give us 95% power to detect an overall effect of the belief factor at an alpha level of 0.05. After applying the exclusion criteria specified previously, we ended up with 295 participants (172 men, 120 women, and three non-binary people) with an average age of 41 years (SD = 9.66 years).",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s5"
+    },
+    {
+      "id": "pa39",
+      "title": "",
+      "tag": "How accurate were participants overall at estimating correlations?",
+      "text": "We first examine how accurately participants estimated the correlation values in the scatterplots without considering the effects of belief. Overall, participants were quite accurate at estimating correlations in scatterplots, corroborating existing findings.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s5"
+    },
+    {
+      "id": "pa40",
+      "title": "",
+      "tag": "How did estimates for X/Y labeled scatterplots compare to ground truth?",
+      "text": "We compared participant estimations of the XY labeled scatterplot correlations with the ground truth correlations (which is either 0.4 or 0.6). Participants\u2019 correlation estimates for the two versions of the 0.4 and 0.6 correlation scatterplots slightly differ from ground truth, but generally, they were quite accurate. They reported an average correlation of 0.415 (SD = 0.19, CI = [0.394, 0.437]) and 0.401 (SD = 0.21, CI = [0.377, 0.425]) for the two versions of scatterplots with a 0.4 correlation. For scatterplots with a 0.6 correlation, participants reported an average correlation of 0.558 (SD = 0.19, CI = [0.537, 0.579]) and 0.625 (SD = 0.18, CI = [0.604, 0.646]).",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s5"
+    },
+    {
+      "id": "pa41",
+      "title": "",
+      "tag": "Did real-world labels change correlation estimates vs unlabeled plots?",
+      "text": "We compared the correlation estimates of the same scatterplots with and without real-world labels to identify potential bias resulting from labeling the axes with real-world variable pairs. Participants reported significantly different correlation values for the same scatterplot in the presence of real-world variable pair labels. On average, they estimated the correlation for the scatterplots with a 0.4 correlation with real-world variable labels to be 0.385 (SD = 0.19, CI = [0.363, 0.407]) and 0.287 (SD = 0.22, CI = [0.262, 0.312]). They estimated the correlation for the scatterplots with a 0.6 correlation with real-world labels to be 0.561 (SD = 0.19, CI = [0.539, 0.583]) and 0.546 (SD = 0.23, CI = [0.520, 0.572]).",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s5"
+    },
+    {
+      "id": "pa42",
+      "title": "",
+      "tag": "What variable pairs were used to test belief effects?",
+      "text": "To examine the effect of participant belief on their correlation estimates, we showed them two plots with belief-triggering variable pairs (gun ownership and violent crimes; environmental regulations and air quality), and two with neutral variable pairs not usually associated with strong beliefs (the number of trees and people whose names start with \u201cT;\u201d the number of lawyers and annual rainfall).",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s5"
+    },
+    {
+      "id": "pa43",
+      "title": "",
+      "tag": "Did participants actually hold stronger beliefs about the belief-triggering topics?",
+      "text": "This analysis verifies that participants more strongly believed that there exists a positive correlation between gun ownership and violent crimes (M = 5.72, SE = 0.07) and between environmental regulations and air quality (M = 4.57, SE = 0.11). They less strongly believed that there exists a positive correlation between the number of trees and people whose names start with \u201cT\u201d (M = 2.19, SE = 0.088) and between the number of lawyers and annual rainfall (M = 2.21, SE = 0.089). Post-hoc pair-wise comparisons between their belief on the four topics suggest that participants most strongly believed in the gun relationship, followed by the environment relationship, followed by the trees/names, and the lawyers/rainfall relationship (their beliefs of which are not statistically different, p = 0.998). Figure 4 shows the belief distributions for the four topics.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s5"
+    },
+    {
+      "id": "pa44",
+      "title": "",
+      "tag": "Is labeling-induced estimation bias related to belief strength?",
+      "text": "To investigate whether labeling the scatterplot with real-world variables biases participants\u2019 correlation estimations, we compare the differences between their estimation for the same scatterplot labeled with \u2018X\u2019 and \u2018Y\u2019 and with real-world variables. We demonstrate this difference to be correlated with how strongly they believe the real-world variables are positively correlated.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s5"
+    },
+    {
+      "id": "pa45",
+      "title": "",
+      "tag": "What statistical model was built to test belief's effect on bias?",
+      "text": "We constructed a mixed-effect linear model predicting the difference between estimates in the scatterplots labeled with \u2018X\u2019 and \u2018Y\u2019 and with real-world variables using the lmer function in R [6]. We used experiment versions (counterbalanced conditions), topics (the two belief-triggering and two neutral topics), the strength of belief (the degree of agreement with the correlation statements), and the interaction between topics and the strength of belief as predictors, and included a random effect of participants. We also added demographic variables including age, gender, political orientation, level of education, experience with statistics, and experience with doing research as fixed effects to explore potential differences.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s5"
+    },
+    {
+      "id": "pa46",
+      "title": "",
+      "tag": "What was the main effect of belief on estimation bias?",
+      "text": "We found a significant main effect of belief (\u03c72 = 18.39, Est = 0.024, SE = 0.011, t = 2.23, p = 0.023), such that the stronger the participant believes in the variables\u2019 correlation, the more they overestimated the correlation when the scatterplot was labeled with that variable pair, as shown in Figure 5. Similarly, the more they disagreed with the variable correlation, the more they underestimated the correlation.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s5"
+    },
+    {
+      "id": "pa47",
+      "title": "",
+      "tag": "Did condition or topic type also affect estimation bias?",
+      "text": "There was no significant main effect of condition (\u03c72 = 0.022, p = 0.88), suggesting that the two counterbalanced conditions were not different from one another. There was also no significant main effect of topic (\u03c72 = 4.28, p = 0.23), nor a significant interaction between topic and belief (\u03c72 = 1.84, p = 0.61). This suggests that regardless of whether the topic was belief-triggering or neutral, the under/overestimation of the correlation was driven by the participants\u2019 own beliefs. Figure 6 shows a comparison of the relationship of correlation estimation error and belief strength, between belief-triggering topics and less plausible topics. The two look extremely similar.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s5"
+    },
+    {
+      "id": "pa48",
+      "title": "",
+      "tag": "Did demographic variables affect estimation bias?",
+      "text": "We also found no significant effect of any demographic variables. Details can be found in the supplementary materials.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s5"
+    },
+    {
+      "id": "pa49",
+      "title": "",
+      "tag": "What is the overall summary of Experiment 1a's findings?",
+      "text": "Despite accurately estimating scatterplot correlations when the plots were labeled with \u2018X\u2019 and \u2018Y\u2019, participants became less accurate when estimating the correlation for the same scatterplots but with real-world variable labels. Our model suggests that the deviation in correlation estimation is associated with the strength of participant beliefs, such that strong beliefs predict overestimation and strong disbeliefs predict underestimation.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s5"
+    },
+    {
+      "id": "pa50",
+      "title": "",
+      "tag": "What alternative explanation (time/order) must be ruled out?",
+      "text": "However, one possible alternative explanation for the over/underestimation could be the factor of time. Participants always saw the real-world labeled scatterplots after they had seen the \u2018X\u2019 and \u2018Y\u2019 labeled scatterplots, at which point they could have become habituated or anchored by previously seen scatterplots. Further, more time has lapsed between training and estimating correlations for the real-world variable labeled scatterplots, compared to the time between training and estimating correlation for the \u2018X\u2019 and \u2018Y\u2019 labeled scatterplots. So it is possible that the effect of training has deteriorated, and thus participants provided less accurate correlation estimations. This motivated us to conduct Experiment 1b, a control experiment where, instead of showing participants the \u2018X\u2019 and \u2018Y\u2019 labeled scatterplots followed by the same plots labeled with real-world variables, we showed them the same \u2018X\u2019 and \u2018Y\u2019 labeled scatterplots twice to account for the potential effect of time.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s5"
+    },
+    {
+      "id": "pa51",
+      "title": "",
+      "tag": "What alternative explanation needs to be ruled out?",
+      "text": "We observed a significant difference in the correlation values participants reported for the scatterplots labeled with \u2018X\u2019 and \u2018Y\u2019, compared to the same scatterplots labeled with real-world variables. We investigate whether the difference is driven by the real-world labels, or simply by the passage of time in this experiment.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s6"
+    },
+    {
+      "id": "pa52",
+      "title": "",
+      "tag": "What was the experimental procedure/design?",
+      "text": "Participants completed training on rating correlation, then rated four scatterplots with alphabetic labels (e.g., X, Y), with correlation values of either 0.4 or 0.6. They then completed a distractor task before rating the same four scatterplots, also with alphabetic labels on each axis. The alphabetic labels are used to strip context away from the scatterplots to ensure that belief does not play a role in our results. Participants then reported demographic information.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s6"
+    },
+    {
+      "id": "pa53",
+      "title": "",
+      "tag": "Who were the participants in this experiment?",
+      "text": "Because Experiment 1b is intended as a control version of Experiment 1a with no manipulation before and after the distractor task, we recruited participants to match the number of participants in one condition of Experiment 1a, which is equivalent to half the number of participants from Experiment 1a. After applying the exclusion criteria specified previously, we ended up with 153 participants (86 men, 64 women, 1 non-binary person, and 2 who chose not to disclose), with an average age of 38 years (SD = 11.49 years).",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s6"
+    },
+    {
+      "id": "pa54",
+      "title": "",
+      "tag": "What were the raw correlation estimates before/after the delay?",
+      "text": "Participants estimated the correlation of scatterplot with alphabetic labels twice (e.g., \u2018X\u2019 and \u2018Y\u2019) in Experiment 1b, which we will refer to as Phase 1 and Phase 2 estimates. In Phase 1, the average correlation they reported for the two versions of the 0.4 correlation scatterplots were 0.423 (CI = [0.395, 0.451]) and 0.354 (CI = [0.395, 0.451]). The average correlation they reported for the two versions of the 0.6 correlation scatterplots were 0.541 (CI = [0.509, 0.572]) and 0.599 (CI = [0.570, 0.628]). In Phase 2 the average correlation they reported for the two versions of the 0.4 correlation scatterplots are 0.442 (CI = [0.413, 0.472]) and 0.372 (CI = [0.339, 0.406]). The average correlation they reported for the two versions of the 0.6 correlation scatterplots are 0.513 (CI = [0.482, 0.545]) and 0.629 (CI = [0.600, 0.656]).",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s6"
+    },
+    {
+      "id": "pa55",
+      "title": "",
+      "tag": "How is this experiment's data compared to Experiment 1a to isolate the labeling effect?",
+      "text": "We compared participants\u2019 correlation estimates for the real-world variable labeled scatterplots in Experiment 1a to the Phase 2 estimations in Experiment 1b (labeled with alphabetical letters). Between these two sets of estimates, the only difference is how the scatterplots were labeled. If the two sets are similar, that suggests that timing is likely the factor driving any deviation from their estimation of the first set of scatterplots labeled with \u2018X\u2019 and \u2018Y\u2019 (phase 1). If the two are different, it likely suggests that the real-world variable labels, which trigger either belief or disbelief in a positive correlation, affected correlation estimations, rather than it being an effect of time.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s6"
+    },
+    {
+      "id": "pa56",
+      "title": "",
+      "tag": "What did the statistical comparison reveal about time vs. labels?",
+      "text": "We found there to be a significant difference between them. Pairwise comparisons with Bonferroni corrections suggest that the correlation estimates for the two versions of 0.4 correlation plots were significantly different (pv1 = 0.002, pv2 < 0.001), and that of the two versions of the 0.6 correlation plots were also significantly different (pv1 = 0.016, pv2 < 0.001). We can infer from these comparisons that the deviations in correlation estimates with the scatterplots labeled with real-world variables in Experiment 1a are not caused by time delays, but rather by the real-world labels and their associated beliefs.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s6"
+    },
+    {
+      "id": "pa57",
+      "title": "",
+      "tag": "What follow-up question motivates the next experiment?",
+      "text": "In both Experiment 1a, participants viewed the real-world variable labeled scatterplots before reporting their belief (level of agreement with a positive correlation between the depicted variables). It is possible that these beliefs that people reported are posterior in nature such that they were not their true beliefs, but rather updated beliefs affected by the scatterplots they saw. To demonstrate that participants\u2019 prior beliefs have an influence on how they estimate correlations in scatterplots, we conduct Experiment 2 where we elicited their level of agreement on the depicted topics prior to them seeing the real-world variable labeled correlations.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s6"
+    },
+    {
+      "id": "pa58",
+      "title": "",
+      "tag": "Why run a second experiment with beliefs measured first?",
+      "text": "In Experiment 1a, we measured participants\u2019 beliefs on relevant real-world variable pairs at the end of the experiment, after they had seen scatterplots depicting potential relationships between those variables. To account for the potential effect of these visualizations on participants\u2019 beliefs, we conducted Experiment 2 and measured their beliefs on these real-world variable pairs at the very beginning of the experiment.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s7"
+    },
+    {
+      "id": "pa59",
+      "title": "",
+      "tag": "What was the procedure/design of Experiment 2?",
+      "text": "Similar to both previous experiments, participants first completed training on correlation estimation. Immediately following training, they rated their level of agreement with belief statements regarding the variables previously viewed in the scatterplots. They then rated the correlation of four scatterplots with \u2018X\u2019 and \u2018Y\u2019 labels on the axes (correlations of 0.4 and 0.6). Next, they completed a distractor task before rating the same four scatterplots, this time with real-world variables on the axes. Finally, participants reported demographic information such as their age and level of education.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s7"
+    },
+    {
+      "id": "pa60",
+      "title": "",
+      "tag": "How was sample size determined and who participated?",
+      "text": "Assuming a medium effect size (a \u03c1 = 0.21 correlation based on pilot studies) for the effects of belief, power analysis with G*Power [16] suggested a target sample of 291 participants for 95% power to detect an overall effect of the belief factor at an alpha level of 0.05. After applying the exclusion criteria specified previously, we ended up with 300 participants, with an average age of 40 years (SD = 11.01 years).",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s7"
+    },
+    {
+      "id": "pa61",
+      "title": "",
+      "tag": "How accurate were estimates on unlabeled scatterplots?",
+      "text": "To gauge how accurate participants were in estimating of \u2018X\u2019 and \u2018Y\u2019 labeled scatterplot correlation, we compared their response with the ground truth correlations. As in Experiment 1a, the correct answers were either 0.4 or 0.6. We observed that participants overall performed well on estimating the correlation. On average, participants reported 0.381 (SD = 0.18, CI = [0.36, 0.40]) for the first 0.4 stimuli, and 0.38 (SD = 0.21, CI = [0.35, 0.40]) for the second. For the stimuli depicting 0.6, participants reported 0.530 (SD = 0.19, CI=[0.51, 0.55]) and 0.62 (SD = 0.18, CI = [0.60, 0.64]), respectively. This was similar to the results of Experiment 1a.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s7"
+    },
+    {
+      "id": "pa62",
+      "title": "",
+      "tag": "How did estimates differ with vs without real-world labels?",
+      "text": "Next, we compared the participants\u2019 estimations from when they saw the plots with and without real-world labels. We found that the responses were significantly different. Participants estimated the correlation for the scatterplots with a 0.4 correlation with real-world variable labels to be 0.407 (SD = 0.21, CI = [0.38, 0.43]) and 0.255 (SD = 0.22, CI = [0.23, 0.28]). They reported the correlation for the scatterplots with a 0.6 correlation with real-world labels to be 0.546 (SD = 0.20, CI = [0.52, 0.57]) and 0.546 (SD = 0.25, CI = [0.52, 0.57]).",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s7"
+    },
+    {
+      "id": "pa63",
+      "title": "",
+      "tag": "How strong were participants' prior beliefs about each topic?",
+      "text": "Similar to Experiment 1a, we analyzed the influence of the beliefs on estimating correlation. We found that participants more strongly believed in a positive correlation between environmental regulations and air quality (M = 5.66, SE = 1.20) and between gun ownership and violent crimes (M = 4.45, SE = 1.80). They less strongly believed a positive correlation between the number of lawyers and annual rainfall (M = 1.55, SE = 1.03), and between the number of trees and people whose names start with \u201cT\u201d (M = 1.38, SE = 0.92). We ran post-hoc pair-wise comparisons with corrections between their beliefs on the four topics, and the result shows that belief ratings in the four conditions were reliably different (p < 0.0001). Figure 4 shows the belief distributions.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s7"
+    },
+    {
+      "id": "pa64",
+      "title": "",
+      "tag": "What statistical model tested belief effects on estimation bias?",
+      "text": "To understand the influence of the beliefs on the correlation estimation, we ran a mixed effect linear model with the difference between their estimation on the scatterplots with and without the real-world label as a dependent variable, beliefs and the topic of the chart and their interaction as fixed effects, and participants as a random effect. We also added demographic variables including age, gender, political orientation, level of education, experience with statistics, and experience with doing research as fixed effects to explore potential differences.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s7"
+    },
+    {
+      "id": "pa65",
+      "title": "",
+      "tag": "What did the model reveal about beliefs' effect on bias?",
+      "text": "We found that the beliefs had a reliable impact on the difference (Est = 0.025, SE = 0.011, t = 2.28, p = 0.023), as shown in Figure 5. As the average participant\u2019s beliefs were 1 unit stronger in a positive relationship of the two variables, they saw 0.02 units of additional correlation compared to when they examined the chart without the real-world labels. There was no reliable effect of the topic nor the interaction. Additionally, consistent with the results from Experiment 1a, there is no significant effect of topic (p = 0.085), condition (p = 0.51), nor the interactions between topic and belief (p = 0.21), as shown in Figure 6. We also found no significant effect of any demographic variables. Details can be found in the supplementary materials.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s7"
+    },
+    {
+      "id": "pa66",
+      "title": "",
+      "tag": "Why compare Experiment 1a and 2?",
+      "text": "We compared our results from Experiment 1a and 2 to examine whether the effect of labeling scatterplots on correlation estimates replicates, and whether asking the belief questions before or after the participants see the scatterplots made a difference.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s8"
+    },
+    {
+      "id": "pa67",
+      "title": "",
+      "tag": "Does estimation ability differ between experiments for neutral-labeled plots?",
+      "text": "Ability to Estimate Correlations: We did not observe a difference between participants\u2019 ability to estimate the correlation of scatterplots with \u2018X\u2019 and \u2018Y\u2019 labels. Since this step was shown before seeing the scatterplots with the real-world labels, we did not expect the result to differ.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s8"
+    },
+    {
+      "id": "pa68",
+      "title": "",
+      "tag": "Do beliefs differ when elicited before vs after seeing real-world scatterplots?",
+      "text": "Belief Distributions We compared the participants\u2019 beliefs when they were prompted before and after seeing the scatterplots with the real-world labels. We found no difference of their beliefs on environmental regulations and air quality (t = \u22120.654, p = 0.512) nor gun ownership and violent crimes (t = \u22120.862, p = 0.389). However, there was a difference between belief ratings for the number of trees and people whose names start with \u201cT\u201d (t = \u22128.051, p < 0.001) and for the number of lawyers and annual rainfall (t = \u22125.997, p < 0.001).",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s8"
+    },
+    {
+      "id": "pa69",
+      "title": "",
+      "tag": "How do prior and posterior belief distributions compare across topics?",
+      "text": "Figure 4 shows the belief distributions of participants in Experiments 1a and 2. For the belief triggering topics, there were no differences between people in Experiment 1a and 2 (Environment prior: M = 5.66, SD = 1.201, posterior: M = 5.722, SD = 1.233, Gun prior: M = 4.450, SD = 1.800, posterior M = 4.579, SD = 1.864). However, for the non-belief triggering topics, we observed a difference in people\u2019s belief distributions (Rain prior: M = 1.553, SD = 1.035, posterior: M = 2.190, SD = 1.507, Tree prior: M = 1.383, SD = 0.916, posterior: M = 2.214, SD = 1.520).",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s8"
+    },
+    {
+      "id": "pa70",
+      "title": "",
+      "tag": "Does belief's effect on estimation differ between experiments?",
+      "text": "Figure 5 shows the relationship between the belief strength and the correlation estimation difference. We compared the effect of prior and posterior beliefs on participants\u2019 correlation estimations when they viewed scatterplots with \u2018X\u2019 and \u2018Y\u2019 labels versus real-world variable pairs. The results are very similar between Experiments 1a and 2. The coefficient of the prior belief factor is 0.022, and the posterior belief factor is 0.023.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s8"
+    },
+    {
+      "id": "pa71",
+      "title": "",
+      "tag": "What does the belief shift in non-belief topics suggest?",
+      "text": "In the case of non-belief triggering topics, we observed a slight difference in beliefs distribution when participants were asked to indicate their beliefs before and after seeing the scatterplots. This may imply that seeing the correlated scatterplots led them to believe that there might be a correlation between two variables.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s8"
+    },
+    {
+      "id": "pa72",
+      "title": "",
+      "tag": "How large is the belief-driven bias in correlation estimates?",
+      "text": "People were biased by their existing beliefs when estimating correlations in scatterplots, and we were able to quantify how much those beliefs can influence the estimates. As shown in Figure 7, people tend to underestimate the correlation of a scatterplot, by approximately 0.1 in Pearson\u2019s correlation value, when it depicts a relationship between two variables that they don\u2019t believe to be correlated. They tend to overestimate the correlation by approximately 0.1 when it depicts a relationship that they do believe to be correlated. This may explain the difficulty frequently faced when persuading people with data - as objective as the data is believed to be, our interpretations of it are often riddled with bias from our expectations and beliefs.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s9"
+    },
+    {
+      "id": "pa73",
+      "title": "",
+      "tag": "Could selective attention to belief-confirming points explain the labeling difference?",
+      "text": "However, it remains unclear why participants gave differing correlation estimates for the same scatterplot when it was labeled with \u2018X\u2019 and \u2018Y\u2019 compared to when it was labeled with real-world variables. One explanation might be that perceived correlation strength could be impacted by \u2018top-down\u2019 effects such that they paid more attention to scattered dots that would make the correlation look higher or lower (in accordance with their belief), discounting outliers that would strengthen or weaken the correlation against their beliefs [3]. This possibility would be consistent with previous work showing that darker colored dots are weighted more when viewers estimate means in scatterplots [31], and from Luo & Zhao, where viewer decisions and actions can be manipulated by making certain patterns in a visualization more visually salient [50]. In this case, participants may be weighing dots that support their belief more heavily, such as weighing the dots near the regression line more heavily when they more firmly believe in the correlation.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s9"
+    },
+    {
+      "id": "pa74",
+      "title": "",
+      "tag": "Could uncertainty-range reporting explain the labeling difference?",
+      "text": "Another possibility is that correlation estimates come with uncertainty intervals around a best guess value. When the scatterplot was labeled with \u2018X\u2019 and \u2018Y\u2019, viewers may be more likely to report the midpoint value in that uncertainty range. But for belief-triggering relationships, they might report a correlation either in the upper or lower range depending on the direction of their belief. Existing work in uncertainty demonstrates that people are more biased when the data shows more uncertainty, supporting this possibility [13, 42]. We discuss potential future research opportunities in Section 10.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s9"
+    },
+    {
+      "id": "pa75",
+      "title": "",
+      "tag": "What practical advice follows for readers and analysts to reduce belief-driven bias?",
+      "text": "When an analyst or scientist has a belief about how the world works, their thinking can be biased in favor of that belief. Therefore, one bedrock principle of science is to minimize that bias by testing the predictions of one\u2019s belief against objective data. However, we have demonstrated that when people look at scatterplots, their beliefs can interact with the objective data to bias judgments of the objective strength of the relationship between two variables. The stronger the belief (and disbelief), the stronger the bias. Based on this result, when reading visualizations, if readers can first form an impression of the strength of the relationship based on only the data values (without letting the labels alone drive that impression), they might become less susceptible to belief-driven biases when interpreting the visualization. Similarly, data analysts should thoroughly consider their data filtering and manipulation decisions and proceed with caution once they have already seen the data. If the data is aligned with their beliefs, except for a couple of outliers, as shown in Figure 1, the analysts might be motivated to adjust the exclusion criteria to exclude them or to collect additional data to \u2018drown the outliers out\u2019, which likely will skew the results and introduce biases in their analysis.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s10"
+    },
+    {
+      "id": "pa76",
+      "title": "",
+      "tag": "What does this section cover?",
+      "text": "We discuss several limitations in our study that provide promising future research directions.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s11"
+    },
+    {
+      "id": "pa77",
+      "title": "",
+      "tag": "Did the study distinguish perception from cognition effects?",
+      "text": "Cognition versus Perception: We did not try to tease apart effects on perception and cognition. Making sense of data, even through a visualization, is a complex process that involves both mechanisms [71]. We demonstrated that belief impacts how data gets interpreted by a viewer, and quantified the extent to which it does.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s11"
+    },
+    {
+      "id": "pa78",
+      "title": "",
+      "tag": "What does prior research say about belief penetrating perception?",
+      "text": "There is debate in the psychology research community on the extent to which \u2018top-down\u2019 effects (e.g., belief or motivation) affect perception [17, 64]. Some researchers have argued that cognition has the ability to \u2018penetrate\u2019 perception [10, 53, 58], such that existing beliefs or personal goals affect how we perceive the natural world. For example, Balcetis & Dunning demonstrated that wishful thinking could make desirable objects appear closer [5]. For example, a water bottle appears closer to a thirsty person. As mentioned in Section 2, familiarity and prior knowledge can affect size and speed perception [22, 57].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s11"
+    },
+    {
+      "id": "pa79",
+      "title": "",
+      "tag": "What counterarguments exist against belief penetrating perception?",
+      "text": "However, some researchers have argued against such an interpretation of these effects, suggesting that although our knowledge and beliefs can affect what we look at or what we pay attention to, the lower-level stages of visual perception are impenetrable to existing beliefs [63,64]. Recent support for this idea includes a study that demonstrates the influence of object familiarity on perceived distance found in [57] could not be conceptually replicated [59]. Two manipulations differed between the studies: 1) instead of using an adjustment task with unlimited viewing duration, Mischenko et al. used brief presentations to minimize the potential effect of deeper thinking during task completion, and 2) instead of showing participants objects that varied significantly in size (e.g., tennis balls and golf balls), they showed participants different types of coins with similar sizes [59]. Firestone and Scholl, in [17], also note that some experimental designs in traditional \u2018motivated perception\u2019 type studies make the studies less convincing in support of \u2018top-down\u2019 effects. For example, some of these studies capture what participants recognize rather than examining what they actually see, which makes the study more about semantic priming than perception. They also point out the risk of experimenter demands (participants reporting what they believe the experimenter expects them to report) and other forms of response bias. Additionally, researchers do not always show people the same visual stimuli to compare their perception with and without the motivation or additional beliefs. The low-level visual differences between the experimental stimuli can weaken the results [17].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s11"
+    },
+    {
+      "id": "pa80",
+      "title": "",
+      "tag": "How did the study design address these methodological concerns?",
+      "text": "To account for some of the concerns listed by Firestone and Scholl [17], in the current experiment, we tried to detect potential experimenter demands by explicitly asking participants what they thought the study was about and conveying that their answers will not affect their compensation. We also used the same stimuli and compared participants\u2019 correlation estimation with or without the belief component. Our participants viewed scatterplots labeled with \u2018X\u2019 and \u2018Y\u2019, and later viewed the same scatterplots again but labeled with real-world variable pairs. They are the same stimuli, so there are no low-level differences, and the differences in correlation estimation we observed should be driven by their attitudes towards the labels alone.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s11"
+    },
+    {
+      "id": "pa81",
+      "title": "",
+      "tag": "What future experiment could better isolate perceptual bias?",
+      "text": "Future research could find stronger evidence for a perceptual root of the present bias by seeking evidence of biases on Just Noticeable Differences (JND) between pairs of correlations, which might be less potentially influenced by cognitive factors compared to the individual ratings used here [68]. For example, if the bias effect is driven by participants reporting estimations on either side in the range of possible correlations due to uncertainty, such that they opt to report correlations in the upper range when they think the variables should be more strongly correlated and vice versa, then experiments that leverage JND comparisons should be far less influenced by this form of bias that does not require the production of correlation estimates.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s11"
+    },
+    {
+      "id": "pa82",
+      "title": "",
+      "tag": "How could future work help mitigate interpretation biases?",
+      "text": "Mitigating Biases in Data Interpretation: The current results cannot specify why participants gave differing correlation estimates for the same scatterplot when it was labeled with \u2018X\u2019 and \u2018Y\u2019 compared to when it was labeled with real-world variables. We discussed some potential explanations in Section 8, and future work can further test the mechanisms driving participants to misestimate the correlations depending on their beliefs. Understanding these mechanisms can help us design tools to potentially mitigate these biases in correlation estimation. For example, a visual analysis tool can monitor patterns of exploration or request objective decision criteria during analysis to mitigate biases [79]. If the effect is driven by participants overweighing points that are more congruent with their beliefs, a visual analytic system might first survey a user\u2019s existing beliefs, and then highlight data points that might be under weighed to increase their visual salience. Existing work has shown promising results in this area [78], and future work can test similar mitigation techniques in real-world contexts with more complex data sets and tasks.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s11"
+    },
+    {
+      "id": "pa83",
+      "title": "",
+      "tag": "What limitation exists in how beliefs were elicited?",
+      "text": "Eliciting Beliefs: We elicited beliefs via self-reporting, a survey technique commonly used in existing work to capture people\u2019s state of mind [34], following a similar approach in measuring belief in correlations as introduced in [85]. We intentionally asked participants to report their beliefs on a verbal scale instead of the same numerical scale they used to report their correlation estimates to reduce potential carryover effects and experimenter demand. Future work should investigate the effects of reporting beliefs on a verbal versus numerical scale, which can lead to more refined quantitative models of belief elicitation.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s11"
+    },
+    {
+      "id": "pa84",
+      "title": "",
+      "tag": "What alternative belief elicitation methods should be explored?",
+      "text": "There exists a variety of methods to elicit beliefs from multiple disciplines (for a design space on these methods, see [54]). In behavioral economics, researchers often infer belief from a choice tasks where participants indicate their preferences [70], though more recent work has argued against its effectiveness [55]. In visualization work, researchers have experimented with capturing belief through having participants manipulate the slope of a line in a chart [38, 44], specialized elicitation visual interfaces [43, 56], or using a Likert scale where participants rate their agreement with a statement [85]. Griffiths and Tenenbaum [24] demonstrated that we could approximate people\u2019s prior beliefs by asking them to make predictions. More recently, Suchow, Pacer, & Griffiths [72] demonstrated that we can also estimate people\u2019s priors through transmission chains, such as a game of telephone. Future work should explore how our results might generalize (or not) to other belief elicitation methods, in addition to exploring and evaluating alternative methods to capture people\u2019s beliefs.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s11"
+    },
+    {
+      "id": "pa85",
+      "title": "",
+      "tag": "What did the study find about belief updating?",
+      "text": "Belief Updating: Our work also has implications for how people update their beliefs. When participants reported their level of agreement with statements describing the correlation between two variables, when the variables were belief-triggering (gun/violent crime, air quality/environmental regulations), participants\u2019 prior and posterior beliefs did not significantly differ. But when the variables were not belief-triggering (tree/names, rain/lawyers), there was a significant difference in participants\u2019 prior and posterior beliefs.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s11"
+    },
+    {
+      "id": "pa86",
+      "title": "",
+      "tag": "What does the belief-updating pattern imply for future research?",
+      "text": "This may suggest that when participants hold strong existing beliefs (priors), seeing additional evidence does not change their beliefs. They stick to their strong priors, as it was built on a great deal of data from their past experiences. However, when participants do not have strong existing beliefs about how two variables could be correlated, just seeing one instance of a scatterplot depicting a correlation pushed them to update their beliefs, even though the scatterplot they saw was not designed to be persuasive. The amount of change between prior and posterior beliefs can likely be used as a proxy to determine how much people are persuaded by the new data they saw, which will allow us to reverse engineer the correlation people see in data by comparing the deltas between their prior and posterior beliefs (see [15] for more discussions). Future work can further examine how much seeing a correlation impacts belief, and how much stating a belief impacts subsequent correlation estimation, using a wider range of topics, belief elicitation methods, and correlation values. Additionally, for instances where participants viewed data depicting variables for which they do not have strong priors, future researchers can also examine how that data could influence participants\u2019 belief updating through exposure effects [26].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s11"
+    },
+    {
+      "id": "pa87",
+      "title": "",
+      "tag": "What limits the generalizability of the experimental design?",
+      "text": "Generalizability: We only tested two levels of correlation in the current experiment using one scatterplot design and elicited participants\u2019 correlation estimations through Pearson\u2019s r. These decisions were made based on methodologies from prior work to control for the effect of these design-based factors and prevent the combinatorial explosion of having too many conditions [80]. Future work can extend this space of investigation and examine the generalizability of our effects by testing additional levels of correlation, different shapes of the data (e.g., varying the dispersion, the number of outliers, or the range of R-values), and various scatterplot designs (e.g., aspect ratios of the plot area or with regression lines).",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s11"
+    },
+    {
+      "id": "pa88",
+      "title": "",
+      "tag": "What alternative estimation methods could future studies test?",
+      "text": "Furthermore, future work can test other methods of eliciting participant estimations. For example, instead of asking for an r-value, they could ask participants to indicate which points they think are \u2019important\u2019 or indicate the perceived correlation by drawing an ellipse or regression line. Such measures may be more or less sensitive to bias and may provide a more precise indication of the influence of outliers or other salient points on a trial-to-trial basis. These follow-up experiments can build towards a comprehensive model mapping each component of a scatterplot to its impact on viewer interpretation, potentially pinpointing the factors or mechanisms behind belief-driven misestimation of correlations.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s11"
+    },
+    {
+      "id": "pa89",
+      "title": "",
+      "tag": "Whom do the authors credit with making this research possible?",
+      "text": "We thank the online participants who made this study possible. We also thank our reviewers and Akira Wada for their helpful feedback.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s12"
+    }
+  ]
+}

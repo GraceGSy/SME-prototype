@@ -1,0 +1,2079 @@
+{
+  "meta": {
+    "reassigned": 184,
+    "total_assigned": 392,
+    "dropped_groups": []
+  },
+  "candidates_used": [
+    {
+      "group_id": "group_1",
+      "overarching_question": "How were experimental stimuli and task design constructed for the study?"
+    },
+    {
+      "group_id": "group_2",
+      "overarching_question": "How were study participants recruited, screened, and characterized?"
+    },
+    {
+      "group_id": "group_3",
+      "overarching_question": "How do visual encoding and chart design choices shape data interpretation?"
+    },
+    {
+      "group_id": "group_6",
+      "overarching_question": "How were experimental stimuli and task design constructed for visualization perception studies?"
+    },
+    {
+      "group_id": "group_7",
+      "overarching_question": "How do visualization design choices affect perceptual accuracy and data interpretation?"
+    },
+    {
+      "group_id": "group_8",
+      "overarching_question": "How do visualization design choices affect viewers' perception and interpretation of data?"
+    },
+    {
+      "group_id": "group_9",
+      "overarching_question": "How do visualization design choices influence viewers' perception and interpretation of data?"
+    },
+    {
+      "group_id": "group_11",
+      "overarching_question": "How were experimental stimuli and tasks designed to test visualization perception?"
+    },
+    {
+      "group_id": "group_12",
+      "overarching_question": "What statistical methods were used to analyze experimental results?"
+    },
+    {
+      "group_id": "group_13",
+      "overarching_question": "What do crowdsourced experiments reveal about visualization design's effects on perception and interpretation?"
+    },
+    {
+      "group_id": "group_14",
+      "overarching_question": "What experimental design and stimuli were used in the study?"
+    },
+    {
+      "group_id": "group_15",
+      "overarching_question": "What design guidelines and implications follow from empirical visualization perception studies?"
+    }
+  ],
+  "groups": [
+    {
+      "group_id": "group_1",
+      "members": [
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa17",
+          "tag": "Why replicate this particular classic study?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa19",
+          "tag": "How were the charts and trials designed and administered?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa33",
+          "tag": "How was the interactive task technically implemented?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa36",
+          "tag": "What data was recorded and how was it deployed?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa42",
+          "tag": "What prior work inspired this study and what gap remains?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa43",
+          "tag": "What task did subjects perform?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa44",
+          "tag": "What was the experimental design and stimuli setup?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa45",
+          "tag": "How was error measured and how were the two runs configured?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa9",
+          "tag": "Which visual formats does this study focus on for correlated data?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa11",
+          "tag": "How might the task type (judgment vs. generative) shape interpretation?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa12",
+          "tag": "How were the candidate variable pairs generated?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa14",
+          "tag": "Which four contexts were selected based on pilot ratings?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa18",
+          "tag": "How was variable grouping identified in responses?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa19",
+          "tag": "How were direct observation responses defined?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa24",
+          "tag": "What were the independent variables measured?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa26",
+          "tag": "How was the underlying dataset generated and visualized?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa81",
+          "tag": "Does correlation strength/direction matter for causal perception?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa83",
+          "tag": "How might statement wording and order affect ratings?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa23",
+          "tag": "How were the stimuli and forced-choice task designed?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa24",
+          "tag": "How were mark sizes selected and converted for modeling?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa26",
+          "tag": "What phases made up the study procedure?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa31",
+          "tag": "What is the design of Experiment One (shape's effect on color)?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa32",
+          "tag": "How were stimuli colors constructed for Experiment One?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa43",
+          "tag": "How were colors sampled for Experiment Two stimuli?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa52",
+          "tag": "How were size differences between shapes constructed?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa53",
+          "tag": "How did participants judge size and what was measured?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa76",
+          "tag": "Why was diameter rather than area used to encode size?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa21",
+          "tag": "What stimuli were used across experiments?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa25",
+          "tag": "What is the overall survey structure?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa27",
+          "tag": "How were participants trained to estimate correlation?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa29",
+          "tag": "How did participants estimate correlations in the baseline task?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa30",
+          "tag": "How did the real-world variable phase differ from baseline?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa31",
+          "tag": "What topic pairs were chosen and why?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa32",
+          "tag": "How was correlation value confounding with topic controlled?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa33",
+          "tag": "How was belief in variable relationships measured?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa34",
+          "tag": "When were belief ratings collected in each experiment?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa37",
+          "tag": "What was the procedure/design of Experiment 1a?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa42",
+          "tag": "What variable pairs were used to test belief effects?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa50",
+          "tag": "What alternative explanation (time/order) must be ruled out?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa52",
+          "tag": "What was the experimental procedure/design?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa55",
+          "tag": "How is this experiment's data compared to Experiment 1a to isolate the labeling effect?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa58",
+          "tag": "Why run a second experiment with beliefs measured first?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa83",
+          "tag": "What limitation exists in how beliefs were elicited?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa22",
+          "tag": "How did the researchers resolve ambiguity without automation?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa23",
+          "tag": "What went wrong in the first pilot attempt?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa24",
+          "tag": "What was tried in the second pilot attempt and why did it fail?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa25",
+          "tag": "What target-referent-relation approach was tried third?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa27",
+          "tag": "Why did the mathematical-expression approach fail to scale?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa28",
+          "tag": "What final method succeeded, and what was its cost?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa35",
+          "tag": "How is the comparison taxonomy's group/element dimension defined?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa38",
+          "tag": "What defines a two-to-two comparison type?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa40",
+          "tag": "What defines a one-to-multiple comparison type?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa43",
+          "tag": "How were duplicate same-type comparisons handled?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa44",
+          "tag": "How were conjunction comparisons handled in coding?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa58",
+          "tag": "How do these findings inform selection of intents for Experiment 2?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa69",
+          "tag": "Why couldn't analysis be automated, and how could future methods improve data collection?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_2",
+      "members": [
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa10",
+          "tag": "How has the web been used for experimentation in prior research?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa13",
+          "tag": "How has MTurk been used previously for perception experiments?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa20",
+          "tag": "How were subjects qualified to ensure task comprehension?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa27",
+          "tag": "How were subjects qualified and compensated for this task?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa34",
+          "tag": "How was subject qualification and display info handled?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa37",
+          "tag": "How many responses were collected and filtered?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa48",
+          "tag": "What aspects of MTurk performance and cost will be analyzed?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa49",
+          "tag": "How many subjects participated and how were experiments deployed?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa50",
+          "tag": "How much did subject participation overlap across experiments?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa51",
+          "tag": "Do Turkers complete tasks in batches or sample randomly?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa52",
+          "tag": "What pattern describes how many HITs Turkers complete?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa53",
+          "tag": "What do completion patterns imply for study design?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa57",
+          "tag": "How does reward level affect study completion speed?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa22",
+          "tag": "How were participants recruited and screened?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa55",
+          "tag": "How was participant comprehension of aggregated data ensured?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa71",
+          "tag": "What was the experimental design and sample size?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa28",
+          "tag": "Who were the participants and how were they screened?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa35",
+          "tag": "Who were the participants and how was data analyzed?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa45",
+          "tag": "Who were the participants in Experiment Two?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa22",
+          "tag": "Who were the participants recruited?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa23",
+          "tag": "How many participants were excluded and why?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa24",
+          "tag": "How were participants compensated and treated ethically?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa26",
+          "tag": "What was the first attention check?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa28",
+          "tag": "What was the second attention check?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa38",
+          "tag": "What sample size and power analysis were used?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa48",
+          "tag": "Did demographic variables affect estimation bias?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa53",
+          "tag": "Who were the participants in this experiment?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa60",
+          "tag": "How was sample size determined and who participated?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa63",
+          "tag": "How strong were participants' prior beliefs about each topic?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa89",
+          "tag": "Whom do the authors credit with making this research possible?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa31",
+          "tag": "Who were the study participants?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa45",
+          "tag": "How much data was collected overall?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa60",
+          "tag": "Who were the expert participants and what are their qualifications?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_3",
+      "members": [
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa6",
+          "tag": "What foundational studies ranked visual variables' effectiveness?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa8",
+          "tag": "How do interacting variables and context complicate perception?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa2",
+          "tag": "What is the background problem of channel separability in visualization?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa9",
+          "tag": "What prior work studied shape as a visual channel?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa10",
+          "tag": "What prior work studied color as a visual channel?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa13",
+          "tag": "How does vision science define integral/separable channels?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa15",
+          "tag": "How has visualization research treated integral/separable channels so far?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa2",
+          "tag": "What motivating scenario illustrates top-down bias in data analysis?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa11",
+          "tag": "How does prior knowledge bias basic perceptual judgments?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa18",
+          "tag": "What perceptual cues underlie correlation judgments?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa7",
+          "tag": "What spatial arrangements exist for showing multiple visualizations?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa10",
+          "tag": "How has prior work categorized visualization designs for comparison?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa13",
+          "tag": "How does linguistics describe comparative language and gradable concepts?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa19",
+          "tag": "What is lexical ambiguity and how does it appear here?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa20",
+          "tag": "What is syntactic ambiguity and how does it appear here?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa21",
+          "tag": "What is semantic ambiguity and how does it appear here?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa36",
+          "tag": "How are the four group-element comparison categories defined?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa37",
+          "tag": "What defines a one-to-one comparison type?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa47",
+          "tag": "Which comparison type was second most frequent?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_6",
+      "members": [
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa16",
+          "tag": "How were experiment assignment sizes scaled after piloting?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa18",
+          "tag": "What visual encoding types were tested?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa21",
+          "tag": "How was the task structure adapted for Mechanical Turk?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa26",
+          "tag": "What was the experimental design for rectangular area judgments?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa30",
+          "tag": "Why replicate this alpha contrast experiment?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa32",
+          "tag": "What tasks were subjects asked to perform?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa40",
+          "tag": "What design variable motivates this experiment?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa23",
+          "tag": "What was the experimental design and stimuli set?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa27",
+          "tag": "What procedure did participants follow in the study?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa54",
+          "tag": "How were stimuli designed to manipulate aggregation and encoding?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa56",
+          "tag": "What was the experimental design and sample for Experiment 2?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa68",
+          "tag": "Why compare non-aggregated visualizations across chart types?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa69",
+          "tag": "How were non-aggregated bar, line, and scatter plots constructed?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa70",
+          "tag": "How were participants prepared for unfamiliar visualization formats?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa4",
+          "tag": "What experimental approach and shape categories were used?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa25",
+          "tag": "How were distractor marks generated and placed?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa27",
+          "tag": "How was the formal trial phase conducted?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa30",
+          "tag": "What is the goal of the shape-color experiment pair?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa33",
+          "tag": "How were color differences and mark sizes set in stimuli?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa41",
+          "tag": "What is the design of Experiment Two (color's effect on shape)?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa42",
+          "tag": "What shape stimuli were used in Experiment Two?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa44",
+          "tag": "What was the task and trial structure in Experiment Two?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa49",
+          "tag": "Why run further experiments on shape and size separability?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa50",
+          "tag": "What is the design of Experiment Three?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa51",
+          "tag": "What stimuli were used in Experiment Three?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa60",
+          "tag": "What is the design of Experiment Four?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa61",
+          "tag": "How was Experiment Four's procedure structured?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa74",
+          "tag": "How was anti-aliasing/rendering variability addressed as a limitation?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa35",
+          "tag": "How did Experiment 1b's procedure differ as a control?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa36",
+          "tag": "What is the overall purpose of each experiment?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa57",
+          "tag": "What follow-up question motivates the next experiment?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa59",
+          "tag": "What was the procedure/design of Experiment 2?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa80",
+          "tag": "How did the study design address these methodological concerns?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa87",
+          "tag": "What limits the generalizability of the experimental design?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa17",
+          "tag": "What is the two-experiment research plan?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa30",
+          "tag": "What is the goal of Experiment 1?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa32",
+          "tag": "What stimuli/visualizations were created?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa33",
+          "tag": "What was the experimental task procedure?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa34",
+          "tag": "How was bias/pattern recognition across trials controlled?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa59",
+          "tag": "What was the goal of Experiment 2?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa61",
+          "tag": "What was the task and design procedure for experts?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_7",
+      "members": [
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa7",
+          "tag": "What specific experimental studies tested graphical perception tasks?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa24",
+          "tag": "What did the new angle and area judgment types reveal?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa25",
+          "tag": "Why extend to rectangular area judgments and what was hypothesized?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa28",
+          "tag": "What effect did aspect ratio have on judgment accuracy?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa29",
+          "tag": "Did treemap distractors affect judgment accuracy compared to plain rectangles?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa39",
+          "tag": "How did display configuration affect alpha judgments?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa2",
+          "tag": "What real-world example shows people wrongly inferring causation?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa7",
+          "tag": "How does visualization design affect low-level perceptual data interpretation?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa16",
+          "tag": "How were causal vs correlational statements distinguished?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa21",
+          "tag": "What is the goal of Experiment 1?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa30",
+          "tag": "How does data aggregation explain causality differences across designs?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa32",
+          "tag": "What predicted correlation ratings, and did visualization matter?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa34",
+          "tag": "How did visualization type affect correlation conclusions?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa36",
+          "tag": "What example shows confusion between correlation and causation?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa39",
+          "tag": "How did visualization type affect causal conclusions?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa40",
+          "tag": "How did participants invoke third variables in reasoning?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa43",
+          "tag": "What were the rates of group-wise comparisons by visualization?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa45",
+          "tag": "What were the rates of direct observations by visualization?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa46",
+          "tag": "Did visualization design affect rate of no-conclusion responses?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa50",
+          "tag": "How did superficial understanding of the phrase mislead participants?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa52",
+          "tag": "What overall conclusion do quantitative and qualitative results support?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa53",
+          "tag": "What question motivates Experiment 2?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa58",
+          "tag": "What was the main effect of encoding type on causality?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa59",
+          "tag": "What was the main effect of aggregation level on causality?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa60",
+          "tag": "How do encoding type and aggregation interact to affect causality?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa62",
+          "tag": "How do Experiment 2 results compare with Experiment 1's bar graph finding?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa63",
+          "tag": "What was the main effect of encoding type on correlation ratings?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa64",
+          "tag": "What was the main effect of aggregation level on correlation ratings?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa65",
+          "tag": "How do encoding type and aggregation interact to affect correlation?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa67",
+          "tag": "What do Experiment 2 results mean and what remains untested?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa73",
+          "tag": "How did encoding type affect perceived correlation?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa75",
+          "tag": "What overall conclusion do the three experiments support?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa80",
+          "tag": "Why might visual encoding type affect causal perception?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa3",
+          "tag": "What does this paper aim to measure and why does it matter?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa5",
+          "tag": "What did the study find about shape's effect on size and color?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa7",
+          "tag": "What gap motivates studying shape's interaction with other channels?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa8",
+          "tag": "What does graphical perception research generally study?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa11",
+          "tag": "What prior work studied size as a visual channel?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa12",
+          "tag": "What prior scatterplot-specific graphical perception studies exist, and what gap remains?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa16",
+          "tag": "What recent work quantified channel interactions, and how does this study differ?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa19",
+          "tag": "H1: Will denser shapes make colors more discriminable?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa20",
+          "tag": "H2: Will denser shapes appear larger?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa21",
+          "tag": "H3: Is interference between shape, color, and size asymmetric?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa36",
+          "tag": "Does shape affect color discrimination (filled vs unfilled)?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa37",
+          "tag": "How do certain mQTon shapes affect color discriminability?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa38",
+          "tag": "How does mark size affect color discriminability?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa40",
+          "tag": "What do the modeled JND results imply about shape-color separability?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa46",
+          "tag": "Does color lightness affect shape discrimination accuracy?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa47",
+          "tag": "What is the nature of the lightness effect on shape perception?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa48",
+          "tag": "What does comparing both experiments reveal about asymmetry?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa56",
+          "tag": "What effect did shape have on perceived size?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa57",
+          "tag": "How did fixed size and shape interactions affect size perception?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa63",
+          "tag": "How large and where does size affect shape discrimination?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa64",
+          "tag": "What does comparing both experiments reveal about shape-size asymmetry?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa66",
+          "tag": "How does shape affect color discriminability, and does density explain it?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa67",
+          "tag": "What alternative mechanism might explain the unexpected mQTon color results?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa68",
+          "tag": "What did Experiment Two reveal about color's effect on shape perception?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa69",
+          "tag": "How does shape influence perceived size, and does size explain Experiment One's results?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa70",
+          "tag": "What did Experiment Three reveal about size's effect on shape perception?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa77",
+          "tag": "What trade-off exists between using filled vs unfilled shapes?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa3",
+          "tag": "What prior example shows belief biasing visualization interpretation?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa4",
+          "tag": "What study shows lingering top-down bias even after correction?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa5",
+          "tag": "How does this work extend prior research on top-down bias?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa6",
+          "tag": "What hypotheses does the study propose about belief and correlation estimation?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa7",
+          "tag": "What theoretical distinction is drawn about where belief acts in processing?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa13",
+          "tag": "Can beliefs bias low-level visual properties like correlation perception?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa17",
+          "tag": "How well do people perceive correlation in scatterplots?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa19",
+          "tag": "How do visual design choices affect correlation perception accuracy?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa39",
+          "tag": "How accurate were participants overall at estimating correlations?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa40",
+          "tag": "How did estimates for X/Y labeled scatterplots compare to ground truth?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa41",
+          "tag": "Did real-world labels change correlation estimates vs unlabeled plots?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa49",
+          "tag": "What is the overall summary of Experiment 1a's findings?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa61",
+          "tag": "How accurate were estimates on unlabeled scatterplots?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa62",
+          "tag": "How did estimates differ with vs without real-world labels?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa67",
+          "tag": "Does estimation ability differ between experiments for neutral-labeled plots?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa72",
+          "tag": "How large is the belief-driven bias in correlation estimates?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa73",
+          "tag": "Could selective attention to belief-confirming points explain the labeling difference?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa74",
+          "tag": "Could uncertainty-range reporting explain the labeling difference?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa81",
+          "tag": "What future experiment could better isolate perceptual bias?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa85",
+          "tag": "What did the study find about belief updating?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa8",
+          "tag": "What hypothesis follows from spatial alignment effects on comparison?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa9",
+          "tag": "What cognitive limitations affect visual comparison?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa11",
+          "tag": "What do studies say about comprehension of different comparison arrangements?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa12",
+          "tag": "What hypothesis follows from grouping by spatial proximity?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa14",
+          "tag": "What gap exists in linking comparative language semantics to visualization design?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa15",
+          "tag": "What gap exists in visualization recommendation systems regarding comparison?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa39",
+          "tag": "What defines an all-element comparison type?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa41",
+          "tag": "What comparison patterns were hypothesized per arrangement?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa46",
+          "tag": "Which comparison type was most frequent?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa48",
+          "tag": "Which comparison types tied for third/fourth?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa49",
+          "tag": "Which comparison type was fifth most frequent?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa51",
+          "tag": "Which comparison type was seventh most frequent?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa52",
+          "tag": "Which comparison types were rarely made?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa53",
+          "tag": "Does arrangement affect comparison-set-size categories?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa54",
+          "tag": "Does arrangement affect group-within/across element comparisons?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa55",
+          "tag": "Which specific comparison types does each arrangement especially afford?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa56",
+          "tag": "What do participant drawings reveal about comparison difficulty?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa70",
+          "tag": "Does arrangement affect comparison accuracy, not just intuitive preference?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_8",
+      "members": [
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa5",
+          "tag": "What is graphical perception and why does it matter?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa4",
+          "tag": "Why is this problem hard, and what question does the paper ask?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa8",
+          "tag": "How does visualization design affect higher-level decision making and interpretation?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa29",
+          "tag": "What did the model reveal about causation ratings by visualization?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa35",
+          "tag": "How did participants reason when drawing causal conclusions?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa37",
+          "tag": "Did participants associate bar graphs with experiments?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa42",
+          "tag": "Did visualization design affect group-wise comparison responses?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa44",
+          "tag": "Did visualization design affect direct observation responses?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa51",
+          "tag": "Do participants assume a conventional causal direction (X to Y)?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa72",
+          "tag": "How did encoding type affect perceived causality?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa77",
+          "tag": "Why do two-bar bar graphs invite causal reading?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa65",
+          "tag": "What are the summarized key findings across all experiments?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa10",
+          "tag": "What cognitive/perceptual biases affect data interpretation?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa12",
+          "tag": "How do beliefs bias perception of visualized data?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa14",
+          "tag": "How does failed belief updating cause biased data interpretation?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa15",
+          "tag": "What visualization techniques help correct belief updating?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa44",
+          "tag": "Is labeling-induced estimation bias related to belief strength?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa71",
+          "tag": "What does the belief shift in non-belief topics suggest?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa77",
+          "tag": "Did the study distinguish perception from cognition effects?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa1",
+          "tag": "What was studied, how, and what was found about chart arrangements affording comparisons?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa3",
+          "tag": "What specific gap exists in handling data arrangement within visualizations?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa6",
+          "tag": "How do design choices like chart type affect data perception?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa18",
+          "tag": "Why is eliciting viewer takeaways in natural language challenging?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa57",
+          "tag": "What is the overall takeaway on arrangement-comparison affordances?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_9",
+      "members": [
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa5",
+          "tag": "What prior work suggests visualization design shapes interpretation?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa10",
+          "tag": "How does context/prior belief shape perceived causality, independent of design?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa74",
+          "tag": "Does aggregation itself affect perceived causality, controlling for encoding?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa14",
+          "tag": "What has psychology research found about channel interdependence?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa2",
+          "tag": "Why are current visualization recommendation systems limited?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_11",
+      "members": [
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa13",
+          "tag": "How was the pilot survey study designed?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa18",
+          "tag": "What experimental design, shapes, and sizes were tested?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa54",
+          "tag": "How were trials structured and counterbalanced in Experiment Three?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa26",
+          "tag": "How did piloting reveal problems with the target/referent/relation method?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_12",
+      "members": [
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa46",
+          "tag": "What statistical results did the ANOVA reveal?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa58",
+          "tag": "What statistical evidence shows reward's effect on time and accuracy?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa15",
+          "tag": "How was the coding taxonomy for responses developed?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa17",
+          "tag": "How was mention of third variables coded?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa25",
+          "tag": "What were the dependent variables measured?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa28",
+          "tag": "How was the causation rating data modeled statistically?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa31",
+          "tag": "What effects did order and demographics have on causation ratings?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa33",
+          "tag": "How were generative task responses coded?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa41",
+          "tag": "Did visualization design affect mentioning of third variables?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa57",
+          "tag": "What statistical model was used to analyze causation ratings?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa61",
+          "tag": "Did presentation order or demographics affect causality ratings?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa66",
+          "tag": "Did order or demographics affect correlation ratings?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa82",
+          "tag": "How could qualitative response coding be improved?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa29",
+          "tag": "What statistical analysis approach was used?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa39",
+          "tag": "How were JND models constructed from the data?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa55",
+          "tag": "How was Experiment Three's data collected and analyzed?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa58",
+          "tag": "How were psychometric models fit to the size-perception data?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa59",
+          "tag": "What do the fitted models reveal about shape-driven size bias?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa62",
+          "tag": "What were the statistical results of Experiment Four?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa81",
+          "tag": "Who funded and supported this research?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa43",
+          "tag": "Did participants actually hold stronger beliefs about the belief-triggering topics?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa45",
+          "tag": "What statistical model was built to test belief's effect on bias?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa46",
+          "tag": "What was the main effect of belief on estimation bias?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa47",
+          "tag": "Did condition or topic type also affect estimation bias?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa54",
+          "tag": "What were the raw correlation estimates before/after the delay?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa56",
+          "tag": "What did the statistical comparison reveal about time vs. labels?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa64",
+          "tag": "What statistical model tested belief effects on estimation bias?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa65",
+          "tag": "What did the model reveal about beliefs' effect on bias?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa68",
+          "tag": "Do beliefs differ when elicited before vs after seeing real-world scatterplots?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa70",
+          "tag": "Does belief's effect on estimation differ between experiments?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa42",
+          "tag": "How were participant takeaways coded into categories?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa62",
+          "tag": "Did experts show consistent preferences for arrangements per comparison type?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_13",
+      "members": [
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa1",
+          "tag": "Is crowdsourcing a viable method for graphical perception studies?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa2",
+          "tag": "Why is crowdsourcing attractive for user studies?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa3",
+          "tag": "What concerns does crowdsourcing raise for perception research?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa4",
+          "tag": "What does this paper contribute?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa9",
+          "tag": "Why pursue crowdsourced, web-based validation of these findings?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa11",
+          "tag": "What is Mechanical Turk and how does it work?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa12",
+          "tag": "How can MTurk support formal experiments and what has prior crowdsourcing research found?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa14",
+          "tag": "What are the three research goals of this study?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa22",
+          "tag": "How do the crowdsourced accuracy results compare to the original?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa23",
+          "tag": "How consistent is the ranking of encoding types across studies?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa31",
+          "tag": "What are the goals of this crowdsourced replication?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa38",
+          "tag": "How do the results compare to the original study?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa41",
+          "tag": "Why is chart size hard to study via crowdsourcing?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa54",
+          "tag": "How does response quality vary with completion rate?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa55",
+          "tag": "How reliable is MTurk timing data for trials?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa56",
+          "tag": "Can meaningful timing effects still be detected despite limitations?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa59",
+          "tag": "How much cost savings did crowdsourcing provide over lab studies?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa60",
+          "tag": "What non-monetary benefits does crowdsourcing offer researchers?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa61",
+          "tag": "What did the crowdsourced studies find and confirm?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa62",
+          "tag": "What do results reveal about running studies on Mechanical Turk?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa63",
+          "tag": "What benefits does crowdsourcing offer over lab experiments?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa64",
+          "tag": "How can crowdsourcing be combined with other methods?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa65",
+          "tag": "What tools are needed to improve crowdsourced experimentation?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa66",
+          "tag": "How can integrated tools support replication and dissemination?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa67",
+          "tag": "What limitations does crowdsourcing still have?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa1",
+          "tag": "What did the experiments reveal about visualization design's effect on perceived causality?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa6",
+          "tag": "What do the three experiments contribute?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa1",
+          "tag": "What problem, experiments, and findings does the paper present?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa17",
+          "tag": "What prior work motivates modeling shape-color-size interactions?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa22",
+          "tag": "Why use crowdsourcing to study separability in real-world displays?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa73",
+          "tag": "What limitations arise from using crowdsourcing (hardware/screen variability)?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa1",
+          "tag": "What did the experiments find about belief bias in correlation estimation?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa8",
+          "tag": "What experiments were run and what did they find?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa51",
+          "tag": "What alternative explanation needs to be ruled out?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa66",
+          "tag": "Why compare Experiment 1a and 2?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa69",
+          "tag": "How do prior and posterior belief distributions compare across topics?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa50",
+          "tag": "Which comparison type was sixth most frequent?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa63",
+          "tag": "How did expert preferences compare to crowdworker results per comparison?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_14",
+      "members": [
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa15",
+          "tag": "How is the paper's experimental structure organized?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa35",
+          "tag": "What experimental design and stimuli were used?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa20",
+          "tag": "How were inconclusive responses defined?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa34",
+          "tag": "What was the experimental task and design structure?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa20",
+          "tag": "Where are materials and data available?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_15",
+      "members": [
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa47",
+          "tag": "What do the results imply about optimal height and gridline spacing?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa3",
+          "tag": "Why does confusing correlation with causation matter broadly?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa38",
+          "tag": "What reasoning did participants use to reject causal claims?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa47",
+          "tag": "What reasoning underlies no-conclusion responses?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa48",
+          "tag": "What general reasoning pattern did participants show?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa49",
+          "tag": "How did participants use template phrases in reasoning?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa76",
+          "tag": "Why not offer concrete design guidelines yet?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa78",
+          "tag": "How does context/aggregation level need further testing?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa79",
+          "tag": "Do results extend to complex or contextual visualizations?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa84",
+          "tag": "What other techniques could reduce causal misinterpretation?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa6",
+          "tag": "What are the paper's main contributions?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa71",
+          "tag": "How might these perceptual biases affect higher-level visualization tasks?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa72",
+          "tag": "What is the broader significance of these findings for channel separability guidelines?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa75",
+          "tag": "What sampling limitations exist and what future work could address them?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa78",
+          "tag": "How can these models help correct for perceptual biases in practice?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa79",
+          "tag": "What practical tool was implemented to apply these findings?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa80",
+          "tag": "What are the paper's overall findings and contributions?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa9",
+          "tag": "What is the broader significance of these findings?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa16",
+          "tag": "How are visual analytic tasks categorized in taxonomies?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa75",
+          "tag": "What practical advice follows for readers and analysts to reduce belief-driven bias?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa76",
+          "tag": "What does this section cover?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa78",
+          "tag": "What does prior research say about belief penetrating perception?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa79",
+          "tag": "What counterarguments exist against belief penetrating perception?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa82",
+          "tag": "How could future work help mitigate interpretation biases?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa84",
+          "tag": "What alternative belief elicitation methods should be explored?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa86",
+          "tag": "What does the belief-updating pattern imply for future research?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa88",
+          "tag": "What alternative estimation methods could future studies test?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa4",
+          "tag": "What approach did the authors take to address this gap?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa5",
+          "tag": "What are the paper's contributions?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa16",
+          "tag": "What gap exists in natural language interfaces for handling comparisons?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa29",
+          "tag": "What lessons should future researchers take from this process?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa64",
+          "tag": "What general design guideline follows from the visual arrangement findings?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa65",
+          "tag": "How can findings inform comparison handling in recommendation and NL interfaces?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa66",
+          "tag": "How can authoring tools set smarter defaults for chart-caption pairs?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa67",
+          "tag": "What does this section cover?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa68",
+          "tag": "How does data/chart simplicity limit generalizability, and what future work addresses it?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa71",
+          "tag": "What other factors beyond arrangement could improve comparison affordances?"
+        }
+      ]
+    }
+  ]
+}

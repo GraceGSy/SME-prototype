@@ -1,0 +1,872 @@
+{
+  "paper_id": "multileveltypology",
+  "title": "A Multi-Level Typology of Abstract Visualization Tasks",
+  "sections": [
+    {
+      "id": "s1",
+      "title": "Abstract",
+      "tag": "What gap in prior visualization-task characterizations motivates this paper, and what does the proposed typology contribute and demonstrate to address it?",
+      "text": "The considerable previous work characterizing visualization usage has focused on low-level tasks or interactions and high-level tasks, leaving a gap between them that is not addressed. This gap leads to a lack of distinction between the ends and means of a task, limiting the potential for rigorous analysis. We contribute a multi-level typology of visualization tasks to address this gap, distinguishing why and how a visualization task is performed, as well as what the task inputs and outputs are. Our typology allows complex tasks to be expressed as sequences of interdependent simpler tasks, resulting in concise and flexible descriptions for tasks of varying complexity and scope. It provides abstract rather than domain-specific descriptions of tasks, so that useful comparisons can be made between visualization systems targeted at different application domains. This descriptive power supports a level of analysis required for the generation of new designs, by guiding the translation of domain-specific problems into abstract tasks, and for the qualitative evaluation of visualization usage. We demonstrate the benefits of our approach in a detailed case study, comparing task descriptions from our typology to those derived from related work. We also discuss the similarities and differences between our typology and over two dozen extant classification systems and theoretical frameworks from the literatures of visualization, human-computer interaction, information retrieval, communications, and cartography.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": ""
+    },
+    {
+      "id": "s2",
+      "title": "Introduction",
+      "tag": "What gap motivates the need for a multi-level task typology, and how is the rest of the paper organized to introduce, demonstrate, and situate it?",
+      "text": "Consider a person who encounters a choropleth map while reading a blog post in the aftermath of last year\u2019s American presidential election. This particular map is static and visually encodes two attributes, candidate and margin of victory, encoded for each state using a bivariate colour mapping. This person decides to compare the election results of Texas to those of California, motivated not by an explicit need to generate or verify some hypothesis, nor by a need to present the visualization to an audience, but rather by a casual interest in American politics and its two most populous states. How might we describe this person\u2019s task in an abstract rather than domain-specific way?\n\nAccording to the nested model for visualization design and validation [43], abstract tasks are domain- and interface-agnostic operations performed by users. Disappointingly, there is little agreement as to the appropriate granularity of an abstract task among the many extant classifications of user behaviour in the visualization, human-computer interaction, cartography, and information retrieval literature [2, 3, 5, 10, 11, 12, 13, 14, 15, 19, 23, 29, 31, 37, 39, 42, 50, 51, 56, 57, 59, 61, 64, 66, 72, 73, 75, 78, 82, 83]. One of the more frequently cited of these [2] would classify the above example as being a series of value retrieval tasks. This low-level characterization does not describe the user\u2019s context or motivation; nor does take into account prior experience and background knowledge. For instance, a description of this task might differ if the user was unfamiliar with American geography: the user must locate and identify these states before comparing their values. Conversely, high-level descriptions of exploratory data analysis and presentation emanating from the sensemaking literature [3, 11, 31, 51] cannot aptly describe this user\u2019s task.\n\nThe gap between low-level and high-level classification leaves us unable to abstractly describe user tasks in a useful way [41], even for the simple static visualization in the above example. This gap widens when interactive visualization is considered, and the complexity of its usage is compounded over time. We must move beyond describing a single task in isolation, to a description that designates when one task ends and another begins. To close this gap, visualization tasks must be describable in an abstract way across multiple levels.\n\nThe primary contribution of this paper is a multi-level typology of abstract visualization tasks that unites the previously disconnected scopes of low-level and high-level classification systems by proposing multiple levels of linkage between them. Our typology provides a powerful and flexible way to describe complex tasks as a sequence of interdependent simpler ones. While this typology is very much informed by previous work, it is also the result of new thinking and has many points of divergence with previous models. Central to the organization of our typology are three questions that serve to disambiguate the means and ends of a task: why the task is performed, how the task is performed, and what are the task\u2019s inputs and outputs. We have found that no prior characterization of tasks satisfactorily answers all of these questions simultaneously at multiple levels of abstraction. Typically, low-level classification systems provide a sense of how a task is performed, but not why; high-level classification systems are the converse. One major advantage of our typology over prior work is in providing linkage between these two questions. Another advantage is the ability to link sequences of tasks, made possible by the consideration of what tasks operate on.\n\nOur typology provides a consistent lexicon for description that supports making precise comparisons of tasks between different visualization tools and across application domains. Succinct and abstract descriptions of tasks are crucial for analysis of visualization usage. This analysis is an essential precursor to the effective design and evaluation of visualization tools, particularly in the context of problem-driven design studies [60]. In these studies, visualization practitioners work with users to identify why and what, subsequently drawing from their specialized knowledge of visual encoding and interaction techniques to design how that task is to be supported [41]. A need for task analysis also arises in visualization evaluation [34], particularly in observational studies of open-ended visualization usage. Our typology provides a multi-level code set for qualitatively describing user behaviour in such studies.\n\nAs we expect some readers to be unfamiliar with the context that motivated this work, we begin with a brief discussion of our current inability to succinctly describe and analyze visualization tasks. In Section 3 of this paper, we introduce our multi-level typology of abstract visualization tasks. In Section 4, we demonstrate the benefits of our approach with a detailed case study, in which we describe a sequence of interdependent tasks. In Section 5, we summarize our typology\u2019s connections to related work and to its theoretical foundations. In Section 6, we discuss the value and usage of this typology, as well as our plans for its further validation and extension. In Section 7, we offer our concluding remarks.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": ""
+    },
+    {
+      "id": "s3",
+      "title": "Background Context",
+      "tag": "What ends-means ambiguities and coverage gaps do worked examples expose in existing task-classification systems, and why do those gaps motivate organizing task description around why, how, and what?",
+      "text": "The primary limiting factor in using extant classification systems as tools for analysis is that we cannot easily distinguish between the ends and means of tasks. Making this distinction is a central problem for practitioners during the abstraction phase of design studies [60] and during the analysis phase of qualitative user studies [34].\n\nFor instance, a number of extant classification systems mention the word derive [2, 14, 23, 37, 50, 66]. Is derive a task, or the means by which another task is executed? A user may derive data items as an end in itself, for example to reduce the number of dimensions in a dataset, or as a means towards another end, such as to verify a hypothesis regarding the existence of clusters in a derived low-dimensional space. The ends-means ambiguity exists for many terms found in extant classification systems: consider filter [2, 11, 19, 23, 29, 31, 37, 42, 50, 51, 57, 61, 82], navigate [23, 64, 75], or record [23, 42, 66]. The first step towards distinguishing ends from means involves asking why a task is performed separately from how a task is performed, a question that is central to the organization of our typology.\n\nThe separation of why and how does not in itself resolve all confusion. Consider sort, another term appearing in extant classification systems [2, 19, 23, 37, 50]. Sorting has an input and an output; in some cases, it is items of data within a single view [55]; in others, views themselves may be sorted [8]. In both cases, the sorted output can serve as input to subsequent tasks. The next step in distinguishing ends from means is thus characterizing what the task\u2019s inputs and outputs are, allowing us to describe sequences of interdependent tasks.\n\nTo illustrate how the ends-means ambiguity arises during the course of analysis, we will now attempt to use representative extant classification systems to describe two example tasks:\n\nExample #1: recall the example stated in the paper\u2019s introduction, that of a casual encounter with an electoral map in which a user compares two regions; election results for each state are encoded as a choropleth map based on two attributes, candidate and margin of victory. Furthermore, we know that this user is familiar with American geography and its regions; this prior knowledge dictates the type of search.\n\nUsing the typology of Andrienko and Andrienko [5], we might describe this example as an elementary direct comparison task. While richer than a series of retrieve value tasks [2], this description tells us little about why and how this comparison was performed. Low-level descriptions derived from a number of other classification systems are similarly impoverished [12, 19, 59, 73, 78, 82, 83].\n\nWe might enrich our description of this task using Roth\u2019s recent taxonomy of cartographic interaction primitives [57], a much more comprehensive approach that distinguishes between goals, objectives, operators, and operands. Using his taxonomy, this task would be described as follows: goals: procure; objectives: compare; operators: retrieve, calculate; operands: attribute\u2013in\u2013space (search target), general (search level). While the dimensions of this description are similar to the questions of why, how, and what, the description is incomplete, particularly in its classification of goals and objectives. Roth\u2019s taxonomy provides us only with a partial sense of how the comparison is performed: retrieve does not tells us about whether the user knows the spatial location of the regions to be compared a priori. The goal, procure, does not provide us with any higher-level context or motivation for why the user is procuring; specifically, the user\u2019s casual interest in these two regions is lost. Finally, Roth\u2019s taxonomy imposes a spatial constraint on operands, leaving us unable to fully articulate what is being compared.\n\nExample #2: in evaluation studies [34], it is sometimes necessary to perform a comparative analysis of a task being performed using different visualization systems. Consider a user of a tree visualization tool who whose interest relates to two nodes in a large tree, and her intent is to present the path between these nodes to her colleagues. SpaceTree [20] and TreeJuxtaposer [46] are two tree visualization tools that allow users to locate paths between nodes by means of different focus + context techniques. Both systems allow for path selection, in which the encoding of selected paths differs from that of non-selected paths. The systems differ in how elements of the visualization are manipulated: TreeJuxtaposer allows the user to arrange areas of the tree to ensure visibility for areas of interest, while SpaceTree couples the act of selection by aggregating and filtering unselected items.\n\nAs in the previous example, task descriptions from extant classification systems seldom answer all three questions: why, how, and what. Using Heer and Shneiderman\u2019s taxonomy of interactive dynamics for visual analysis [23], we might describe this task as being an instance of data and view specification (visualize and filter) as well as view manipulation (navigate and select). This description tells us how, but it doesn\u2019t specify why the task is performed.\n\nWe might complement Heer and Shneiderman\u2019s description with one based on Lee et al.\u2019s taxonomy of graph visualization tasks [37], in which this task would be classified as a topology task, namely one of determining connectivity and subsequently finding the shortest path. As the scope of Lee et al.\u2019s taxonomy is specialized, we are provided with a clear indication of what the user\u2019s interest is, this being a path. Unfortunately, this description provides only a partial account of why the task is performed; we are not provided with a high-level motivation beyond determining and finding.\n\nBoth descriptions do not relate the user\u2019s actions to the high-level goal of presenting information to others. Second, and more importantly, these descriptions fail to distinguish how this task is performed using SpaceTree from how it is performed using TreeJuxtaposer.\n\nSummary: these examples demonstrate our inability to comprehensively analyze tasks using state-of-the-art systems for classifying user behaviour. Note that we are not directly criticizing these classification systems; we acknowledge that their scope is often deliberately constrained, with some focusing on low-level tasks, interactions, or operations [2, 5, 10, 12, 13, 14, 15, 19, 29, 37, 59, 61, 72, 73, 75, 78, 82, 83], while others focus on high-level tasks or goals [3, 11, 31, 39, 51], or on user behaviour in specialized domains [37, 57, 65]. We lack guidance on how to integrate these disjoint bodies of work, to compose task descriptions that draw from all of them. This integration is the aim of our typology, which will allow practitioners to describe tasks that address critical questions posed during visualization design and evaluation, namely why, how, and what.\n\nIt could be argued that a classification of tasks should focus solely on the goal of the user, or why visualization is used; users are often not immediately concerned with how a task is performed, as long as their task can be accomplished. We argue that by classifying tasks according to how they are performed, in addition to why they are performed and what they pertain to, we can improve communication between visualization practitioners working in different application areas, facilitating tool-independent comparisons, the analysis of diverging usage strategies for executing tasks [74, 84], and improved reasoning about design alternatives.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": ""
+    },
+    {
+      "id": "s4",
+      "title": "Typology of Abstract Visualization Tasks",
+      "tag": "What are the why, how, and what parts of the typology, and how do their component terms combine to support concise, comparable descriptions of visualization tasks?",
+      "text": "Our multi-level typology of abstract visualization tasks, represented in Figure 1, is encapsulated by three questions: why the task is performed, how the task is performed, and what does the task pertain to (Figures 1a-c). Complete task descriptions, such as those for Examples #1-2 (represented in Figure 2), must include nodes from all three parts of this typology. We denote this work as a typology, rather than a taxonomy, as the former is appropriate for classifying abstract concepts, while the latter is appropriate for classifying empirically observable events [6].\n\nThis structure, while unusual relative to many extant classification systems, mirrors the analytical thinking process undertaken in design studies [41, 43, 60]. Why, what, and how are also used in Cognitive Work Analysis [74], particularly for relating abstractions within a work domains, as well as in Aigner et al.\u2019s analysis of techniques and systems for visualizing time-oriented data [1], which asks what is presented?, why is it presented?, and how is it presented?.\n\nWe will introduce why before how, as this order reflects the translation of empirically observable domain problems into abstract tasks and subsequently into design choices: practitioners first identify why a task is to be performed, and then must decide upon how the task is to be supported. We then discuss the what part of our typology, which considers the input and output of tasks. Our typology supports the description of complex visualization usage as a sequence of interdependent tasks, where the output of a prior task may serve as the input to a subsequent task, as we demonstrate in the case study of Section 4. For clarity, we first present our typology in its entirety with minimal discussion of the previous work that informed its organization, and then focus on these connections in Section 5 and in Table 1.\n\nThe why part of our typology, shown in Figure 1a, allows us to describe why a task is performed, and includes multiple levels of specificity, a narrowing of scope from high-level (consume vs. produce) to mid-level (search) to low-level (query). Consume: Visualizations are used to consume information in many domain contexts. In most cases this consumption is driven by either a need to present information or to discover and analyze new information [79]. However, there are many other contexts in which visualizations are simply enjoyed [17, 54, 65], where users indulge their casual interests in a topic.\n\nPresent refers to the use of visualization for the succinct communication of information, for telling a story with data, guiding an audience through a series of cognitive operations. Presentation using visualization may take place within the context of decision making, planning, forecasting, and instructional processes [18, 40, 57]. Presentation brings to mind collaborative and pedagogical contexts, and the means by which a presentation is given may vary according to the size of the audience, whether the presentation is live or pre-recorded, and whether the audience is co-located with the presenter [32].\n\nDiscover is about the generation and verification of hypotheses, associated with modes of scientific inquiry [50]. Scientific investigation may be motivated by existing theories, models, and hypotheses, or by the serendipitous observation of unexpected phenomena [4].\n\nEnjoy refers to casual encounters with visualization [54, 65]. In these contexts, the user is not driven by a need to verify or generate a hypothesis; novelty stimulates curiosity and thereby exploration [16, 65, 67, 69]. This motivation is notably absent from previous classification systems, as shown in Table 1. Casual encounters with visualization can be fleeting, such as in the earlier example of encountering a static choropleth electoral map while reading a blog post. Conversely, these encounters might be immersive and time-consuming experiences, such as in museum settings [54].\n\nProduce: we use produce in reference to tasks in which the intent is to generate new artefacts. These artefacts include but are not limited to: transformed or derived data, annotations, recorded visualization interactions, or screen shots of static visualizations. Examples of produce in previous work include the production of graphical annotations and explanatory notes to describe features of time-series graphs [81], or the production of graphical histories in Tableau [21], the latter being meta-visualizations intended to improve users\u2019 analytical provenance. Additional examples of produce involving derived data and annotations are featured in the case study of Section 4.\n\nIt is important to note that the products of a produce task may be used in some subsequent task that may or may not involve visualization. For example, some visualization tools for analyzing high-dimensional data allow users to produce new categorical attributes for labelling clustered data points in a dimensionally-reduced coordinate space; these attributes might be used later for constructing a predictive model.\n\nSearch: Regardless of whether the intent is to present, discover, or merely enjoy, the user must find elements of interest in the visualization. While terms relating to search and exploration are often conflated [40, 69], we have imposed a characterization of search that depends on what is being sought. We classify them according to whether the identity or location of the search target is known a priori. Whether the identity of the search target is known recalls Andrienko and Andrienko\u2019s concept of references and characteristics [5]: searching for known reference targets entails lookup or locate, while searching for targets matching particular characteristics entails browse or explore. Consider our earlier example of a user who is familiar with American geography and is searching for California on an choropleth map; we would describe this as an instance of lookup. However, a user who is unfamiliar with American geography must locate California.\n\nIn contrast, the identity of a search target might be unknown a priori; the user may be searching for characteristics rather than references [5]; these characteristics might include particular values, extremum, anomalies, trends, or ranges [2]. For instance, if a user of a tree visualization is searching within a particular subtree for leaf nodes having few siblings, we would describe this as an instance of browse because the location is known a priori. Finally, explore entails searching for characteristics without regard to their location, often beginning at an overview level of the visualization [37]. Examples include searching for outliers in a scatterplot, for anomalous spikes or periodic patterns in a line graph of time-series data, or for unanticipated spatially-dependent patterns in a choropleth map.\n\nQuery: Once a target or set of targets has been found, a user will identify, compare, or summarize these targets. If a search returns known or reference targets [5], either by lookup or locate, identify returns their characteristics. For example, a user of a choropleth map representing election results can identify the winning candidate and margin of victory for the state of California. Conversely, if a search returns targets matching particular characteristics, either by browse or explore, identify returns references. For instance, our election map user can identify the state having the highest margin of victory.\n\nThe progression from identify to compare to summarize corresponds to an increase in the amount of search targets under consideration [5, 10, 72], in that identify refers to a single target, compare refers to multiple subsets of targets, and summarize refers to a whole set of targets. As with explore, summarize is also often associated with overviews of the data [37]. Continuing with the choropleth map example, a user identifies the election results for one state, compares the election results of one state to another, or summarizes the election results across all states, determining how many favoured one candidate or the other, or the overall distribution of margin of victory values.\n\nWe now turn our consideration to the how part of our typology, which contains methods, defined as families of related visual encoding and interaction techniques [45]. This part of our typology, shown in Figure 1b, is likely to be most familiar to readers, as it contains a number of methods associated with interaction techniques that are well-represented by several extant classification systems [19, 42, 57, 82]. We distinguish between three classes of methods: those for encoding data, those for manipulating existing elements in a visualization, and those for introducing new elements into a visualization. Encode: the majority of visualization tasks rely on how data is initially encoded as a visual representation. A full enumeration of visual encoding techniques for various data types in terms of methods is beyond the scope of this paper and appears elsewhere [45].\n\nManipulate: the following methods affect existing elements of a visualization, modifying them to some extent. These methods represent families of interrelated techniques incorporating both interaction and visual encoding. We consider visual encoding and interaction techniques in a unified way because many methods incorporate aspects of both [41, 43], such as focus + context techniques [20, 46].\n\nSelect refers to the demarcation of one or more elements in a visualization, differentiating selected from unselected elements [56]. Examples range from directly clicking or lassoing elements in a single visualization to brushing methods used to highlight elements in visualization systems incorporating multiple linked views [77].\n\nNavigate methods include those that alter a user\u2019s viewpoint, such as zooming, panning, and rotating. Other methods trigger details-on-demand views, combining navigate and select [61].\n\nArrange refers to the process of organizing visualization elements spatially. Some of these methods arrange representations of data [39, 42, 80], such as reordering the axes in a parallel coordinates plot or the rows and columns of a scatterplot matrix. Other methods allow users to coordinate the spatial layout of views [23, 77].\n\nChange pertains to alterations in visual encoding. Simple examples include altering the size and transparency of points in a scatterplot or edges in a node-link graph, altering a colour-scale or texture mapping, or transforming the scales of axes. Other methods have more pronounced effects, changing the chart type altogether, such as transitioning between grouped and stacked bar charts, or between linear and radial layouts for time-series graphs. Pronounced changes in visual encoding such as these are often facilitated by smoothly animated transitions, which reduce their disruptive effects [22].\n\nFilter methods adjust the exclusion and inclusion criteria for elements in a visualization. Some methods allow for elements to be temporarily hidden from view and later restored, while other methods are synonymous with outright deletion. As an example of temporary filtering, consider a user examining an age histogram based on population census data. First, she decides to exclude males, then further adjusts her filter criteria to focus solely on unemployed females. Finally, she revises the gender criteria to focus on unemployed males.\n\nA common example of permanent filtering, or deletion, is that of manually selecting and removing outliers resulting from errors in data entry. Alternatively, consider a scatterplot in which some points are labelled with manually generated categorical tags. Deleting a tag would remove this categorical label from all points having that tag.\n\nAggregate concerns methods that change the granularity of visualization elements. As such, we also consider its converse, segregate, as being associated with this family of methods. For example, a user may adjust the granularity of a continuous time scale in a line graph, aggregating daily values into monthly values, or segregating annual values into quarterly values. Alternatively, a user may aggregate a clique within a node-link diagram into a representative glyph, or segregate clique glyphs into their component nodes.\n\nIntroduce: While manipulate methods alter existing elements of the visualization, introduce methods add new elements.\n\nAnnotate refers to the addition of graphical or textual annotations associated with one or more visualization elements. When an annotation is associated with data elements, an annotation could be thought of as a new attribute for these elements. The earlier example of manually tagging points in a scatterplot with categorical labels is one such instance of annotating data.\n\nImport pertains to the addition of new elements to the visualization, including new data elements. In some environments, these new data elements might be loaded from external sources, while others might be manually generated.\n\nDerive methods compute new data elements given existing data elements. Aggregating data often implies deriving data, however this may not always be true: we further specify that derived data must be persistent, while aggregated data need not be. For instance, a user might derive new attributes for tabular data using a multidimensional scaling algorithm.\n\nFinally, record methods save or capture visualization elements as persistent artefacts. As such, record methods are often associated with produce. These artefacts include screen shots, annotations, lists of bookmarked elements or locations, parameter settings, or interaction logs [63]. An interesting example of record is that of assembling a graphical history [21], in which the output of each task includes a static snapshot of the visualization, and these snapshots accumulate in a branching meta-visualization. Recording and retaining artefacts such as these are often desirable for maintaining a sense of analytical provenance, allowing users to revisit earlier states or parameter settings.\n\nPrevious work has reached no agreement on the question of what comprises a visualization. Many classification systems do not address it at all; others discuss what implicitly, as indicated by the parenthetical terms in Table 1. Of those that classify what, some focus on the level of the entire dataset, such as tables composed of values and attributes or networks composed of nodes and links [61]. Others allow more precise specification of data\u2013attribute semantics, such as categorical, ordinal, and quantitative [11]. A few classification systems include not only data but also views as first-class citizens [13, 14, 23, 75]. Specific examples of what as classified in previous work include: Values, extremum, ranges, distributions, anomalies, clusters, correlations [3]. Graph-specific objects [37]: nodes, links, paths, graphs, connected components, clusters, groups. Time-oriented primitives [1]: points, intervals, spans, temporal patterns, rates of change, sequences, synchronization. Interaction operands [75]: pixels, data [values, structures], attributes, geometric [objects, surfaces], visualization structures.\n\nIn this typology, we have chosen a flexible and agnostic representation of what that accommodates all of these modes of thinking: in short, we have a \u201cbring your own what\u201d mentality. The only absolute requirement is to explicitly distinguish a task\u2019s input and output constraints when describing sequences of interdependent tasks [72]. An extensive discussion of what that dovetails well with this typology appears elsewhere [45], but it cannot be effectively summarized in a few paragraphs; thus, it is beyond the scope of this paper.\n\nOur multi-level typology can be used to concisely describe visualization tasks. Each task is defined by why it is executed, the method(s) by which it is executed (how), and by what the task pertains to. Single tasks may involve multiple nodes from each part of the typology, as shown in Figure 2.\n\nUsing our typology, we can express dependencies in which the output of one task serves as the input of another, such as the relationship between how data is derived and the choice of visual encoding technique [43]. Such dependencies are represented in Figure 3.\n\nAs in the examples of Section 2, we can compare our description to those generated by extant classification systems. Consider Chuah and Roth\u2019s classification of basic visualization tasks [14], which distinguishes between three categories of operations. Using this classification, this sequence of tasks could be described as having data operations (derived attributes), graphical operations (encode data), and set operations (create set, express membership). This description does specify how and what, but it does not express the interdependencies within a sequence of tasks, nor does it tell us why these tasks were performed. Neither can we easily distinguish when sets (or clusters) are created, as this might occur before the data is encoded, such as in the case of the cluster hierarchy, but not in the case of the scatterplot.\n\nWhile the description based on Chuah and Roth\u2019s [14] classification is atemporal, Chi and Riedl\u2019s operator interaction framework [13] defines stage- and transformation-based operators occurring along the visualization pipeline. Their framework does not contain a comprehensive list of operators, so we draw from the example operators cited in their paper to describe this sequence of tasks as follows: 1. visualization transformation operators: dimension reduction, cluster. 2. visual mapping transformation operators: tree layout, scatterplot. 3. view stage operators: zoom, focus, brush, details-on-demand, pick.\n\nWe have chosen to present these descriptions using a simple and flexible visual notation, rather than with a formal grammar [5, 35, 72, 80]; in doing so, creating and iterating on task descriptions can be easily integrated into existing collaborative design and ideation activities, making use of materials such as coloured sticky notes and whiteboards. A crucial aspect of these descriptions is that sequences of interdependent tasks can be chained together, such that the output from earlier tasks forms the input to later tasks, as discussed in the following case study and as represented in Figure 3.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": ""
+    },
+    {
+      "id": "s5",
+      "title": "Case Study: A Sequence of Interdependent Tasks",
+      "tag": "How does the Overview system's sequence of interdependent tasks demonstrate the typology's descriptive power, and how does that description compare to one generated using a prior classification framework?",
+      "text": "Visualization tasks are seldom executed in isolation, and the output of one task may serve as input to a subsequent task. To illustrate this type of dependency, we present an case study in which our typology is used to describe a sequence of interdependent tasks.\n\nOverview [25] is a visual analytics tool for exploring large text document collections. Overview supports the task of producing a set of tags for semantically related documents as a new categorical attribute, using clusters of documents as scaffolding for the discovery process. Tags are assigned to clusters by means of annotation. However, one must first explore visualizations of the document space and identify clusters of interest. The user is presented both with two linked visualizations, one in which documents are encoded as points in a scatterplot, and another in which clusters of documents are encoded in a hierarchical tree layout. Identifying clusters is facilitated by navigating and selecting clusters in both visualizations; upon selection, frequent document or cluster terms and raw individual document text are shown in secondary displays. This task too has a dependency on the result of an earlier task. Before the the data is encoded in the two visualizations, a set of two-dimensional distances between documents must be produced: they are derived and aggregated from the original high-dimensional distance matrix using a multidimensional scaling algorithm.\n\nThis description does capture the interdependencies for this sequence of tasks, though it mischaracterizes the processes of dimension reduction and clustering as transformations on a visualization, rather than transformations on data, a distinction central to our definition of derive. While this description captures up until the second task in our description, it does not capture the final task of producing cluster tags by means of annotation.\n\nThe description based on our typology retains the separability of these tasks, ensuring the distinction between interim inputs and outputs. Another problem with descriptions generated by extant classification systems was that of coverage; the how part of our typology includes both derive and annotate, while descriptions generated by other classification systems could not account for the latter [2, 13], or both [50, 61, 73, 78, 82, 83]. Finally, our description also accounts for both why data is derived and why clusters are annotated with tags, whereas descriptions generated using extant classification systems mention how a task is performed in relation only to when it is performed [13] or to what it is performed on [14]. We maintain that a task description requires why, how, and what; the question of when for a sequence of interdependent tasks is best served by denoting task input and output.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": ""
+    },
+    {
+      "id": "s6",
+      "title": "Connections to Previous Work",
+      "tag": "How does the typology relate to and build on prior classification systems and theoretical frameworks from visualization, cognitive science, and interaction design?",
+      "text": "Our typology was informed in part by related work, including extant classification systems and established theoretical models, and in part by new thinking with many points of divergence from previous work. We surveyed work relating to tasks and models of user behaviour, spanning the research literature in visualization, visual analytics, human-computer interaction, cartography, and information retrieval. We focus on two subsets that informed the configuration of our typology: thirty works that explicitly contribute a taxonomy, typology, characterization, framework, or model of tasks, goals, objectives, intentions, activities, or interactions [2, 3, 5, 10, 11, 12, 13, 14, 15, 19, 23, 29, 31, 37, 39, 42, 50, 51, 56, 57, 59, 61, 64, 66, 72, 73, 75, 78, 82, 83], along with twenty other references that make compelling or noteworthy assertions about user behaviour [1, 4, 16, 17, 18, 27, 40, 44, 52, 54, 58, 65, 63, 67, 70, 69, 71, 79, 76, 80]. The similarities between the individual nodes of our typology and those of extant classification systems and other related work are presented in detail in Table 1.\n\nTable 1 serves three purposes: it documents our choices of terms for the purpose of reproducibility, it illustrates the influence of previous work on our thinking, and it summarizes overrepresented and underrepresented areas in the literature, such as consume and enjoy in the why part of our typology. Note that non-leaf nodes in the how part of our typology are poorly represented, serving to indicate the gap between low and high levels of abstraction.\n\nThe scope of extant classification systems can be categorized in three different ways: level, temporality, and specificity.\n\nHigh vs. low: much of previous work can be divided into those having a low or high level of abstraction, with very little falling in between. Relying solely on either type of classification leads to the aforementioned ends-means confusion, thereby limiting the potential for rigorous analysis. Low-level visualization usage is well represented in related work [2, 5, 10, 12, 13, 14, 15, 19, 29, 37, 59, 61, 72, 73, 75, 78, 82, 83]. Elements common to many of these classification systems include select, filter, and navigate. Following Lee et al. [36], we note that low-level classifications of tasks are often conflated with those of interaction techniques. At the high level, abstract tasks can be found in the context of theoretical models, but without explicit connections to low-level visualization tasks [3, 11, 31, 39, 51]. Examples of these include confirm hypotheses, present, and explore. Low-level classification systems often provide a sense of how a task is performed, but not why; high-level models are the converse. Our focus on multi-level descriptions of visualization tasks is intended to close this gap and resolve the ends-means confusion.\n\nSequences vs. constraints: most classification systems are atemporal in that they do not have any way to express sequences or dependencies between different stages. A few classification systems are explicitly temporal in that they divide user behavior into larger stages that occur in specific sequences or cycles. Examples include pipeline models for visualization construction [13] or data analysis [27], or cyclic models such as knowledge crystallization [11] or information foraging and sensemaking [51]. However, empirical observations of visualization usage have indicated a mismatch between the specific cyclical or sequential patterns proposed by these models and actual user behaviour [26]. Vicente argues that sequence-based approaches to task analysis are overly rigid and thus inappropriate for describing such open-ended tasks [74], and that constraint-based approaches to task analysis allow for more flexibility in terms of how a task is performed. Descriptions based on our typology do not force any strict global temporal orderings, as imposed by sequence- or cycle-based models; instead, they accommodate local interdependencies within sequences of tasks by way of constraints on task input and output.\n\nGeneral vs. specific: many visualization classification systems represented in our survey are generally applicable, though specifically-targeted classification systems and models do exist. Examples include Lee et al.\u2019s task taxonomy for graph visualization [37] and Lammarsch et al.\u2019s task framework for time-oriented data [35]. Our typology encompasses and complements these specific classification systems, and we encourage further development of more like these.\n\nWe also identify five general classification systems that span low-level and high-level tasks. These classification systems had the highest contributions to the organization of our own typology:\n\nSpringmeyer et al. (1992) [66]: This classification of scientific data analysis covers both how and why, but these aspects are not clearly distinguished within its hierarchical structure, that which begins with a high-level distinction between investigation and integration of insight.\n\nMullins and Treu (1993) [42]: This extensive taxonomy contains over 150 elements: an exhaustive list of high-level mediation and coordination tasks, which overlaps with our classification of why and how, as well as many low-level object-oriented interactions relating to physical interface input and output. We do not attempt to specify tasks at this lowest level, though we have adopted a consideration of input and output in the what part of our typology.\n\nPike et al. (2009) [50]: Their characterization of analytic discourse draws from earlier work, distinguishing high-level modes of inquiry [3] as goals, from low-level tasks [2] and interactions [82]. These are in turn distinguished from the separable intents of representation and interaction techniques. Bringing these formerly disjoint classifications together is laudable, though the integration of this information for the purpose of analyzing tasks was not the focus of Pike et al.\u2019s article. The aim of our typology of abstract tasks is to make this integration explicit, relating these intents and techniques (how) to modes of inquiry, goals, and tasks (why).\n\nHeer and Shneiderman (2012) [23]: Their taxonomy of interaction dynamics provides a top-level distinction between data-, view-, and process-centric tasks. The focus of their taxonomy is on interactive elements and operations; ten of the twelve task types they identify are encompassed by the how part of our typology. The two remaining process and provenance tasks, share and guide, are captured by the definition of present in the why part of our typology.\n\nRoth (2012) [57]: Roth\u2019s taxonomy, based on Norman\u2019s Stages of Action model [47], classifies cartographic interaction primitives as objectives, operators, and operands. Norman\u2019s model describes a series of translations between the user\u2019s goal, an immediate intention (or objective), and a series of actions (operators) performed on an environment (of operands). Roth\u2019s taxonomy is closely aligned with our notions of why, how, and what, and thus has a high-level structure similar to that of our own taxonomy. However, Roth\u2019s taxonomy imposes a spatial constraint on where operands are located in space, as discussed in Section 2. In contrast, we restrict our classification of what to that of input and output; the location of operands is represented by the search node in the why part of our typology.\n\nWhat these five classification systems have in common is that they are atemporal, and most span our characterization of why and how. Our typology integrates and extends this work, adding a specification of what, the input and output tasks. As a result, our typology can be used to describe sequences of tasks, in that the output of one task may serve as the input of another.\n\nOur typology was also informed by four theoretical frameworks:\n\nDistributed cognition: The distributed cognition literature offers us a useful distinction between pragmatic and epistemic actions [30, 38]. Pragmatic actions are explicitly and consciously goal-directed, while epistemic actions refer to processes of coordination between internal mental models and external representations of information [38], often performed in support of pragmatic actions. This distinction is lost in low-level classification systems; in isolation from higher-level goals we are unable to discern between pragmatic and epistemic actions. Our typology accommodates this distinction. External representations are the graphical elements of visualizations displayed to or created by the user. Pragmatic actions are correspond to the why part of our typology, while epistemic actions are captured by the how part of our typology. The set of manipulate methods are particularly well-suited for the purpose of describing epistemic actions and their role in coordinating between internal and external representations.\n\nStages of action: Norman\u2019s Stages of action model [47] and its influence on Roth\u2019s objective-operand-operator classification of extant classification systems [58] helped shape the why-what-how organization of our typology. In the process of evaluating visualizations, we can discuss the Norman\u2019s gulf of execution with respect to the how part of the typology, asking if the user has the means to execute the task. Also central to Norman\u2019s model is the gulf of evaluation, useful for reasoning about whether the output of a task matches the user\u2019s expectation. However, this gulf is more applicable when reasoning about specific interaction techniques, which are not directly addressed by our typology. More recently, Lam extended the model with a gulf of goal formation [33], relevant whenever a user articulates their own questions pertaining to a visualization, thereby specifying the ends of a task. This gulf corresponds to the why part of our typology, which allows us to abstractly describe these questions.\n\nSensemaking: The why part of our typology overlaps with and bridges to high-level processes of decision making and prediction described in theories of information foraging and sensemaking, both temporal stage-based models [11, 51] and atemporal data-frame models [31]. In particular, sensemaking models connect at the levels of discover, denoting hypothesis generation and formation, present, and the types of search: lookup, locate, browse, and explore.\n\nPlay theory: Casual interactions with visualization pose another set of problems for many extant classification systems, in that task specifications for these contexts are not easy to motivate by a need to present, discover, or produce [65]. We included enjoy in the why part of the typology to encompass casual consumption of information, curiosity-driven tasks without expectations or predicted outcomes [16, 69]. The choropleth map example from the paper\u2019s introduction is an instance of this type of task. As visualization becomes increasingly pervasive in casual contexts, we may turn to theories of casual information seeking and newsreading behaviour, such as Stephenson\u2019s Play theory [67] to motivate visualization tasks in these contexts. This theory accounts for media consumption activities that bring no material gain, serving no \u201cwork\u201d functions, but instead induce moments of absorption and self-enchantment. Casual media consumption relies upon serendipitous apperception, a readiness to interact with information relating to existing interests. Studies of newsreading behaviour indicated that people read most avidly what they already know about [67], a seemingly irrational activity that cannot be described as an explicit need to discover new information. We posit that this behaviour is also true of some visualization consumption, particularly in non-work contexts [54, 65].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": ""
+    },
+    {
+      "id": "s7",
+      "title": "Discussion",
+      "tag": "What descriptive, generative, and evaluative value does the typology offer, and what limitations and future validation does the paper acknowledge for each?",
+      "text": "Our motivation to develop a multi-level classification of abstract tasks grew in part from our own needs. We have specifically noted that our ability to rigorously analyze tasks in the context of the design and evaluation of visualization in general [41, 45] and of design studies in particular [60] has been constrained by its lack. While we well aware of the limits of the \u201creductionist assumption that complex sensemaking tasks can be broken down into low-level components\u201d [43], we have already found that this typology has led us to conduct more precise analysis than we could do before; a forthcoming book [45] will feature many additional examples of analysis using it. We offer this new typology as a next step in the ongoing discussion in the literature, rather than as a final answer. Our efforts also serve the broader purpose of strengthening the science of analytical reasoning [68] by further uniting the frameworks and methodologies of the cognitive sciences with those in the field of visualization [53]. This work also calls for a wider range of evaluation techniques centred around task analysis, with a feedback loop in which tasks observed in field settings can inform subsequent visualization design and evaluation. Our multi-level task typology will serve to expedite this translation and analysis.\n\nWe now discuss the capabilities and potential usage of our typology in terms of its descriptive, evaluative, and generative power [7, 9].\n\nThe typology\u2019s descriptive power is in its provision of a consistent lexicon for tasks in terms of why, how, and what in a way supports precise comparisons across different visualization tools and application domains. This lexicon can be used to describe and compare user tasks as they occur in situ, of particular use to those analyzing current work practices and use of visualization tools \u201cin the wild\u201d. This form of inquiry is often performed within a single domain, such as enterprise data analysis [27] or intelligence analysis [28], wherein tasks are described in a domain-specific way. An interface- and domain-independent vocabulary for multi-level tasks allows practitioners to perform comparative analyses of tasks involving different visualization tools occurring in different disciplines.\n\nOnly the descriptive aspect of the typology has been directly validated in this paper; we used our typology to describe several empirical cases including single tasks and a sequence of interdependent tasks. We also demonstrated its ability to facilitate the comparison of tasks as they are performed using different visualization tools. Future work includes a further examination of its descriptive power by analyzing whether it covers the full set of abstract tasks described in previous published design studies. In addition, we acknowledge that the typology does not at present explicitly address collaborative use of visualization, although we did consider some of the issues involved during its development [26]. Future work will verify if the typology can sufficiently describe collaborative tasks, or if extensions are needed.\n\nThe typology\u2019s generative power stems from its ability to prescribe and inform design. In particular, the typology is well-suited to support task analysis occurring throughout the formative discover and design stages of the nine-stage design study framework [60]. In the discover stage, the practitioner must transform a domain problem into an abstract task description; the typology provides an explicit set of choices for why the task is performed, possibly making this difficult aspect of design studies more tractable [41, 43]. In the design stage, the practitioner then chooses how the task will be supported, calling upon the existing repertoire of encoding and interaction techniques or inventing new ones [44]. During both stages, the practitioner must consider what comprises the inputs and outputs of these tasks, remaining aware that these tasks may have interdependencies. We aim to validate the typology\u2019s generative power in our future design studies.\n\nPart of the motivation for developing this typology arose from our struggle to characterize and compare the tasks of different users in an ongoing post-deployment qualitative user study evaluating Overview [25], the system described in Section 4. The typology is intended to facilitate the evaluation of user experiences as well as field studies examining visualization usage [34]. We plan to validate the typology\u2019s evaluative power by assessing its utility a multi-level code set for labelling user behaviour, a common practice in observational studies of open-ended visualization use; these include longitudinal insight-based studies [48] and multidimensional in-depth long-term case studies (MILCs) [62]. A MILC study of SocialAction [49], a social network visualization tool, incorporated Yi et al.\u2019s [82] categorization of interaction techniques into the analysis of how users tasks were performed; we envision a similar use for our task typology, in which the scope of analysis will broaden to include why and what. Mixed-method qualitative evaluation studies allow practitioners to identify how a task is performed along with its inputs and outputs via interaction logs and observational analysis; we can also identify why a task is performed via interviews, think-aloud protocols, and artefact analysis.\n\nTask descriptions generated by our typology could be also used to better understanding users\u2019 individual analytical strategies and the context-dependent variability with regards to how a task is performed [74, 84]. Understanding individual problem solving strategies in terms of mental model formation and coordination is also an ongoing goal of distributed cognition research [24, 39]. Our typology and its accommodation of pragmatic and epistemic actions may serve to further this research in the context of visualization usage.\n\nFinally, while our typology does not provide the low level of specification required for empirical experiments aimed at evaluating user performance with respect to specific interaction and visual encoding techniques [34], it may be useful in suggesting external validity for these low-level benchmark experimental tasks.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": ""
+    },
+    {
+      "id": "s8",
+      "title": "Conclusion",
+      "tag": "What is the paper's central contribution, and how does it summarize the typology's advance over prior task-classification work?",
+      "text": "Our primary contribution is a multi-level task typology that relates both why and how a task is performed to what the task pertains to in terms of inputs and outputs. The typology allows for the precise description of complex tasks as sequences of simpler tasks, with their interdependencies made explicit. One major advance of the new typology is that it bridges the gap between the low-level and high-level tasks of previous work by providing linkages between them, distinguishing the ends and means of a task. Our typology integrates new thinking with extant systems for classifying tasks, and with previously established theoretical frameworks spanning multiple literatures. The multi-level task typology presented here is another step towards a systematic theoretical framework for visualization, helping us to describe existing user experiences, evaluate them, and generate new ones.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": ""
+    },
+    {
+      "id": "s9",
+      "title": "Acknowledgements",
+      "tag": "Who provided funding, feedback, or early ideas that supported this work?",
+      "text": "We thank NSERC for funding. We thank Jessica Dawson, Joel Ferstay, Stephen Ingram, Joanna McGrenere, Miriah Meyer, Michael Sedlmair, and Colin Ware for their feedback. We also thank Fran\u00e7ois Guimbreti\u00e8re for very early discussions on the topic. We acknowledge Ron Rensink for the original idea of classifying lookup, browse, locate, and explore according to target identity and location.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": ""
+    },
+    {
+      "id": "s10",
+      "title": "References",
+      "tag": "",
+      "text": "",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": ""
+    }
+  ],
+  "paragraphs": [
+    {
+      "id": "pa1",
+      "title": "",
+      "tag": "What gap exists and what typology is proposed to fill it?",
+      "text": "The considerable previous work characterizing visualization usage has focused on low-level tasks or interactions and high-level tasks, leaving a gap between them that is not addressed. This gap leads to a lack of distinction between the ends and means of a task, limiting the potential for rigorous analysis. We contribute a multi-level typology of visualization tasks to address this gap, distinguishing why and how a visualization task is performed, as well as what the task inputs and outputs are. Our typology allows complex tasks to be expressed as sequences of interdependent simpler tasks, resulting in concise and flexible descriptions for tasks of varying complexity and scope. It provides abstract rather than domain-specific descriptions of tasks, so that useful comparisons can be made between visualization systems targeted at different application domains. This descriptive power supports a level of analysis required for the generation of new designs, by guiding the translation of domain-specific problems into abstract tasks, and for the qualitative evaluation of visualization usage. We demonstrate the benefits of our approach in a detailed case study, comparing task descriptions from our typology to those derived from related work. We also discuss the similarities and differences between our typology and over two dozen extant classification systems and theoretical frameworks from the literatures of visualization, human-computer interaction, information retrieval, communications, and cartography.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s1"
+    },
+    {
+      "id": "pa2",
+      "title": "",
+      "tag": "What example illustrates the difficulty of describing tasks abstractly?",
+      "text": "Consider a person who encounters a choropleth map while reading a blog post in the aftermath of last year\u2019s American presidential election. This particular map is static and visually encodes two attributes, candidate and margin of victory, encoded for each state using a bivariate colour mapping. This person decides to compare the election results of Texas to those of California, motivated not by an explicit need to generate or verify some hypothesis, nor by a need to present the visualization to an audience, but rather by a casual interest in American politics and its two most populous states. How might we describe this person\u2019s task in an abstract rather than domain-specific way?",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s2"
+    },
+    {
+      "id": "pa3",
+      "title": "",
+      "tag": "Why do existing task classifications fail to describe this example well?",
+      "text": "According to the nested model for visualization design and validation [43], abstract tasks are domain- and interface-agnostic operations performed by users. Disappointingly, there is little agreement as to the appropriate granularity of an abstract task among the many extant classifications of user behaviour in the visualization, human-computer interaction, cartography, and information retrieval literature [2, 3, 5, 10, 11, 12, 13, 14, 15, 19, 23, 29, 31, 37, 39, 42, 50, 51, 56, 57, 59, 61, 64, 66, 72, 73, 75, 78, 82, 83]. One of the more frequently cited of these [2] would classify the above example as being a series of value retrieval tasks. This low-level characterization does not describe the user\u2019s context or motivation; nor does take into account prior experience and background knowledge. For instance, a description of this task might differ if the user was unfamiliar with American geography: the user must locate and identify these states before comparing their values. Conversely, high-level descriptions of exploratory data analysis and presentation emanating from the sensemaking literature [3, 11, 31, 51] cannot aptly describe this user\u2019s task.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s2"
+    },
+    {
+      "id": "pa4",
+      "title": "",
+      "tag": "What is the core gap between low-level and high-level task descriptions?",
+      "text": "The gap between low-level and high-level classification leaves us unable to abstractly describe user tasks in a useful way [41], even for the simple static visualization in the above example. This gap widens when interactive visualization is considered, and the complexity of its usage is compounded over time. We must move beyond describing a single task in isolation, to a description that designates when one task ends and another begins. To close this gap, visualization tasks must be describable in an abstract way across multiple levels.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s2"
+    },
+    {
+      "id": "pa5",
+      "title": "",
+      "tag": "What typology is proposed to bridge this gap?",
+      "text": "The primary contribution of this paper is a multi-level typology of abstract visualization tasks that unites the previously disconnected scopes of low-level and high-level classification systems by proposing multiple levels of linkage between them. Our typology provides a powerful and flexible way to describe complex tasks as a sequence of interdependent simpler ones. While this typology is very much informed by previous work, it is also the result of new thinking and has many points of divergence with previous models. Central to the organization of our typology are three questions that serve to disambiguate the means and ends of a task: why the task is performed, how the task is performed, and what are the task\u2019s inputs and outputs. We have found that no prior characterization of tasks satisfactorily answers all of these questions simultaneously at multiple levels of abstraction. Typically, low-level classification systems provide a sense of how a task is performed, but not why; high-level classification systems are the converse. One major advantage of our typology over prior work is in providing linkage between these two questions. Another advantage is the ability to link sequences of tasks, made possible by the consideration of what tasks operate on.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s2"
+    },
+    {
+      "id": "pa6",
+      "title": "",
+      "tag": "Why is this typology useful in practice?",
+      "text": "Our typology provides a consistent lexicon for description that supports making precise comparisons of tasks between different visualization tools and across application domains. Succinct and abstract descriptions of tasks are crucial for analysis of visualization usage. This analysis is an essential precursor to the effective design and evaluation of visualization tools, particularly in the context of problem-driven design studies [60]. In these studies, visualization practitioners work with users to identify why and what, subsequently drawing from their specialized knowledge of visual encoding and interaction techniques to design how that task is to be supported [41]. A need for task analysis also arises in visualization evaluation [34], particularly in observational studies of open-ended visualization usage. Our typology provides a multi-level code set for qualitatively describing user behaviour in such studies.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s2"
+    },
+    {
+      "id": "pa7",
+      "title": "",
+      "tag": "How is the rest of the paper organized?",
+      "text": "As we expect some readers to be unfamiliar with the context that motivated this work, we begin with a brief discussion of our current inability to succinctly describe and analyze visualization tasks. In Section 3 of this paper, we introduce our multi-level typology of abstract visualization tasks. In Section 4, we demonstrate the benefits of our approach with a detailed case study, in which we describe a sequence of interdependent tasks. In Section 5, we summarize our typology\u2019s connections to related work and to its theoretical foundations. In Section 6, we discuss the value and usage of this typology, as well as our plans for its further validation and extension. In Section 7, we offer our concluding remarks.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s2"
+    },
+    {
+      "id": "pa8",
+      "title": "",
+      "tag": "What is the core limitation of existing classification systems?",
+      "text": "The primary limiting factor in using extant classification systems as tools for analysis is that we cannot easily distinguish between the ends and means of tasks. Making this distinction is a central problem for practitioners during the abstraction phase of design studies [60] and during the analysis phase of qualitative user studies [34].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s3"
+    },
+    {
+      "id": "pa9",
+      "title": "",
+      "tag": "How does the term 'derive' illustrate ends-means ambiguity?",
+      "text": "For instance, a number of extant classification systems mention the word derive [2, 14, 23, 37, 50, 66]. Is derive a task, or the means by which another task is executed? A user may derive data items as an end in itself, for example to reduce the number of dimensions in a dataset, or as a means towards another end, such as to verify a hypothesis regarding the existence of clusters in a derived low-dimensional space. The ends-means ambiguity exists for many terms found in extant classification systems: consider filter [2, 11, 19, 23, 29, 31, 37, 42, 50, 51, 57, 61, 82], navigate [23, 64, 75], or record [23, 42, 66]. The first step towards distinguishing ends from means involves asking why a task is performed separately from how a task is performed, a question that is central to the organization of our typology.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s3"
+    },
+    {
+      "id": "pa10",
+      "title": "",
+      "tag": "Why doesn't separating why/how fully resolve ambiguity, as shown by 'sort'?",
+      "text": "The separation of why and how does not in itself resolve all confusion. Consider sort, another term appearing in extant classification systems [2, 19, 23, 37, 50]. Sorting has an input and an output; in some cases, it is items of data within a single view [55]; in others, views themselves may be sorted [8]. In both cases, the sorted output can serve as input to subsequent tasks. The next step in distinguishing ends from means is thus characterizing what the task\u2019s inputs and outputs are, allowing us to describe sequences of interdependent tasks.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s3"
+    },
+    {
+      "id": "pa11",
+      "title": "",
+      "tag": "How will worked examples illustrate the ambiguity problem?",
+      "text": "To illustrate how the ends-means ambiguity arises during the course of analysis, we will now attempt to use representative extant classification systems to describe two example tasks:",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s3"
+    },
+    {
+      "id": "pa12",
+      "title": "",
+      "tag": "What is the first worked example task?",
+      "text": "Example #1: recall the example stated in the paper\u2019s introduction, that of a casual encounter with an electoral map in which a user compares two regions; election results for each state are encoded as a choropleth map based on two attributes, candidate and margin of victory. Furthermore, we know that this user is familiar with American geography and its regions; this prior knowledge dictates the type of search.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s3"
+    },
+    {
+      "id": "pa13",
+      "title": "",
+      "tag": "How does one existing taxonomy describe example 1 inadequately?",
+      "text": "Using the typology of Andrienko and Andrienko [5], we might describe this example as an elementary direct comparison task. While richer than a series of retrieve value tasks [2], this description tells us little about why and how this comparison was performed. Low-level descriptions derived from a number of other classification systems are similarly impoverished [12, 19, 59, 73, 78, 82, 83].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s3"
+    },
+    {
+      "id": "pa14",
+      "title": "",
+      "tag": "How does a richer taxonomy still fall short on example 1?",
+      "text": "We might enrich our description of this task using Roth\u2019s recent taxonomy of cartographic interaction primitives [57], a much more comprehensive approach that distinguishes between goals, objectives, operators, and operands. Using his taxonomy, this task would be described as follows: goals: procure; objectives: compare; operators: retrieve, calculate; operands: attribute\u2013in\u2013space (search target), general (search level). While the dimensions of this description are similar to the questions of why, how, and what, the description is incomplete, particularly in its classification of goals and objectives. Roth\u2019s taxonomy provides us only with a partial sense of how the comparison is performed: retrieve does not tells us about whether the user knows the spatial location of the regions to be compared a priori. The goal, procure, does not provide us with any higher-level context or motivation for why the user is procuring; specifically, the user\u2019s casual interest in these two regions is lost. Finally, Roth\u2019s taxonomy imposes a spatial constraint on operands, leaving us unable to fully articulate what is being compared.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s3"
+    },
+    {
+      "id": "pa15",
+      "title": "",
+      "tag": "What is the second worked example task?",
+      "text": "Example #2: in evaluation studies [34], it is sometimes necessary to perform a comparative analysis of a task being performed using different visualization systems. Consider a user of a tree visualization tool who whose interest relates to two nodes in a large tree, and her intent is to present the path between these nodes to her colleagues. SpaceTree [20] and TreeJuxtaposer [46] are two tree visualization tools that allow users to locate paths between nodes by means of different focus + context techniques. Both systems allow for path selection, in which the encoding of selected paths differs from that of non-selected paths. The systems differ in how elements of the visualization are manipulated: TreeJuxtaposer allows the user to arrange areas of the tree to ensure visibility for areas of interest, while SpaceTree couples the act of selection by aggregating and filtering unselected items.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s3"
+    },
+    {
+      "id": "pa16",
+      "title": "",
+      "tag": "How does one taxonomy describe example 2 but miss why?",
+      "text": "As in the previous example, task descriptions from extant classification systems seldom answer all three questions: why, how, and what. Using Heer and Shneiderman\u2019s taxonomy of interactive dynamics for visual analysis [23], we might describe this task as being an instance of data and view specification (visualize and filter) as well as view manipulation (navigate and select). This description tells us how, but it doesn\u2019t specify why the task is performed.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s3"
+    },
+    {
+      "id": "pa17",
+      "title": "",
+      "tag": "How does another taxonomy describe example 2 but miss why?",
+      "text": "We might complement Heer and Shneiderman\u2019s description with one based on Lee et al.\u2019s taxonomy of graph visualization tasks [37], in which this task would be classified as a topology task, namely one of determining connectivity and subsequently finding the shortest path. As the scope of Lee et al.\u2019s taxonomy is specialized, we are provided with a clear indication of what the user\u2019s interest is, this being a path. Unfortunately, this description provides only a partial account of why the task is performed; we are not provided with a high-level motivation beyond determining and finding.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s3"
+    },
+    {
+      "id": "pa18",
+      "title": "",
+      "tag": "What shared shortcoming do both descriptions of example 2 share?",
+      "text": "Both descriptions do not relate the user\u2019s actions to the high-level goal of presenting information to others. Second, and more importantly, these descriptions fail to distinguish how this task is performed using SpaceTree from how it is performed using TreeJuxtaposer.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s3"
+    },
+    {
+      "id": "pa19",
+      "title": "",
+      "tag": "What do the examples collectively show about existing systems' coverage?",
+      "text": "Summary: these examples demonstrate our inability to comprehensively analyze tasks using state-of-the-art systems for classifying user behaviour. Note that we are not directly criticizing these classification systems; we acknowledge that their scope is often deliberately constrained, with some focusing on low-level tasks, interactions, or operations [2, 5, 10, 12, 13, 14, 15, 19, 29, 37, 59, 61, 72, 73, 75, 78, 82, 83], while others focus on high-level tasks or goals [3, 11, 31, 39, 51], or on user behaviour in specialized domains [37, 57, 65]. We lack guidance on how to integrate these disjoint bodies of work, to compose task descriptions that draw from all of them. This integration is the aim of our typology, which will allow practitioners to describe tasks that address critical questions posed during visualization design and evaluation, namely why, how, and what.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s3"
+    },
+    {
+      "id": "pa20",
+      "title": "",
+      "tag": "Why include how and what, not just why, in task classification?",
+      "text": "It could be argued that a classification of tasks should focus solely on the goal of the user, or why visualization is used; users are often not immediately concerned with how a task is performed, as long as their task can be accomplished. We argue that by classifying tasks according to how they are performed, in addition to why they are performed and what they pertain to, we can improve communication between visualization practitioners working in different application areas, facilitating tool-independent comparisons, the analysis of diverging usage strategies for executing tasks [74, 84], and improved reasoning about design alternatives.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s3"
+    },
+    {
+      "id": "pa21",
+      "title": "",
+      "tag": "What is the overall structure of the typology?",
+      "text": "Our multi-level typology of abstract visualization tasks, represented in Figure 1, is encapsulated by three questions: why the task is performed, how the task is performed, and what does the task pertain to (Figures 1a-c). Complete task descriptions, such as those for Examples #1-2 (represented in Figure 2), must include nodes from all three parts of this typology. We denote this work as a typology, rather than a taxonomy, as the former is appropriate for classifying abstract concepts, while the latter is appropriate for classifying empirically observable events [6].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa22",
+      "title": "",
+      "tag": "How does this why/how/what structure relate to prior work?",
+      "text": "This structure, while unusual relative to many extant classification systems, mirrors the analytical thinking process undertaken in design studies [41, 43, 60]. Why, what, and how are also used in Cognitive Work Analysis [74], particularly for relating abstractions within a work domains, as well as in Aigner et al.\u2019s analysis of techniques and systems for visualizing time-oriented data [1], which asks what is presented?, why is it presented?, and how is it presented?.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa23",
+      "title": "",
+      "tag": "Why present why before how, and what is the presentation order?",
+      "text": "We will introduce why before how, as this order reflects the translation of empirically observable domain problems into abstract tasks and subsequently into design choices: practitioners first identify why a task is to be performed, and then must decide upon how the task is to be supported. We then discuss the what part of our typology, which considers the input and output of tasks. Our typology supports the description of complex visualization usage as a sequence of interdependent tasks, where the output of a prior task may serve as the input to a subsequent task, as we demonstrate in the case study of Section 4. For clarity, we first present our typology in its entirety with minimal discussion of the previous work that informed its organization, and then focus on these connections in Section 5 and in Table 1.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa24",
+      "title": "",
+      "tag": "What does the why part's top level (consume vs produce) describe?",
+      "text": "The why part of our typology, shown in Figure 1a, allows us to describe why a task is performed, and includes multiple levels of specificity, a narrowing of scope from high-level (consume vs. produce) to mid-level (search) to low-level (query). Consume: Visualizations are used to consume information in many domain contexts. In most cases this consumption is driven by either a need to present information or to discover and analyze new information [79]. However, there are many other contexts in which visualizations are simply enjoyed [17, 54, 65], where users indulge their casual interests in a topic.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa25",
+      "title": "",
+      "tag": "What does 'present' mean in the why typology?",
+      "text": "Present refers to the use of visualization for the succinct communication of information, for telling a story with data, guiding an audience through a series of cognitive operations. Presentation using visualization may take place within the context of decision making, planning, forecasting, and instructional processes [18, 40, 57]. Presentation brings to mind collaborative and pedagogical contexts, and the means by which a presentation is given may vary according to the size of the audience, whether the presentation is live or pre-recorded, and whether the audience is co-located with the presenter [32].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa26",
+      "title": "",
+      "tag": "What does 'discover' mean in the why typology?",
+      "text": "Discover is about the generation and verification of hypotheses, associated with modes of scientific inquiry [50]. Scientific investigation may be motivated by existing theories, models, and hypotheses, or by the serendipitous observation of unexpected phenomena [4].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa27",
+      "title": "",
+      "tag": "What does 'enjoy' mean in the why typology?",
+      "text": "Enjoy refers to casual encounters with visualization [54, 65]. In these contexts, the user is not driven by a need to verify or generate a hypothesis; novelty stimulates curiosity and thereby exploration [16, 65, 67, 69]. This motivation is notably absent from previous classification systems, as shown in Table 1. Casual encounters with visualization can be fleeting, such as in the earlier example of encountering a static choropleth electoral map while reading a blog post. Conversely, these encounters might be immersive and time-consuming experiences, such as in museum settings [54].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa28",
+      "title": "",
+      "tag": "What does 'produce' mean in the why typology?",
+      "text": "Produce: we use produce in reference to tasks in which the intent is to generate new artefacts. These artefacts include but are not limited to: transformed or derived data, annotations, recorded visualization interactions, or screen shots of static visualizations. Examples of produce in previous work include the production of graphical annotations and explanatory notes to describe features of time-series graphs [81], or the production of graphical histories in Tableau [21], the latter being meta-visualizations intended to improve users\u2019 analytical provenance. Additional examples of produce involving derived data and annotations are featured in the case study of Section 4.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa29",
+      "title": "",
+      "tag": "How can produce task outputs feed into other tasks?",
+      "text": "It is important to note that the products of a produce task may be used in some subsequent task that may or may not involve visualization. For example, some visualization tools for analyzing high-dimensional data allow users to produce new categorical attributes for labelling clustered data points in a dimensionally-reduced coordinate space; these attributes might be used later for constructing a predictive model.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa30",
+      "title": "",
+      "tag": "What does 'search' mean and how is it categorized?",
+      "text": "Search: Regardless of whether the intent is to present, discover, or merely enjoy, the user must find elements of interest in the visualization. While terms relating to search and exploration are often conflated [40, 69], we have imposed a characterization of search that depends on what is being sought. We classify them according to whether the identity or location of the search target is known a priori. Whether the identity of the search target is known recalls Andrienko and Andrienko\u2019s concept of references and characteristics [5]: searching for known reference targets entails lookup or locate, while searching for targets matching particular characteristics entails browse or explore. Consider our earlier example of a user who is familiar with American geography and is searching for California on an choropleth map; we would describe this as an instance of lookup. However, a user who is unfamiliar with American geography must locate California.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa31",
+      "title": "",
+      "tag": "How are browse and explore distinguished as search types?",
+      "text": "In contrast, the identity of a search target might be unknown a priori; the user may be searching for characteristics rather than references [5]; these characteristics might include particular values, extremum, anomalies, trends, or ranges [2]. For instance, if a user of a tree visualization is searching within a particular subtree for leaf nodes having few siblings, we would describe this as an instance of browse because the location is known a priori. Finally, explore entails searching for characteristics without regard to their location, often beginning at an overview level of the visualization [37]. Examples include searching for outliers in a scatterplot, for anomalous spikes or periodic patterns in a line graph of time-series data, or for unanticipated spatially-dependent patterns in a choropleth map.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa32",
+      "title": "",
+      "tag": "What does the 'query' level (identify) involve?",
+      "text": "Query: Once a target or set of targets has been found, a user will identify, compare, or summarize these targets. If a search returns known or reference targets [5], either by lookup or locate, identify returns their characteristics. For example, a user of a choropleth map representing election results can identify the winning candidate and margin of victory for the state of California. Conversely, if a search returns targets matching particular characteristics, either by browse or explore, identify returns references. For instance, our election map user can identify the state having the highest margin of victory.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa33",
+      "title": "",
+      "tag": "How do identify, compare, and summarize differ in scope?",
+      "text": "The progression from identify to compare to summarize corresponds to an increase in the amount of search targets under consideration [5, 10, 72], in that identify refers to a single target, compare refers to multiple subsets of targets, and summarize refers to a whole set of targets. As with explore, summarize is also often associated with overviews of the data [37]. Continuing with the choropleth map example, a user identifies the election results for one state, compares the election results of one state to another, or summarizes the election results across all states, determining how many favoured one candidate or the other, or the overall distribution of margin of victory values.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa34",
+      "title": "",
+      "tag": "What does the how part of the typology comprise?",
+      "text": "We now turn our consideration to the how part of our typology, which contains methods, defined as families of related visual encoding and interaction techniques [45]. This part of our typology, shown in Figure 1b, is likely to be most familiar to readers, as it contains a number of methods associated with interaction techniques that are well-represented by several extant classification systems [19, 42, 57, 82]. We distinguish between three classes of methods: those for encoding data, those for manipulating existing elements in a visualization, and those for introducing new elements into a visualization. Encode: the majority of visualization tasks rely on how data is initially encoded as a visual representation. A full enumeration of visual encoding techniques for various data types in terms of methods is beyond the scope of this paper and appears elsewhere [45].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa35",
+      "title": "",
+      "tag": "What does the 'manipulate' method class cover?",
+      "text": "Manipulate: the following methods affect existing elements of a visualization, modifying them to some extent. These methods represent families of interrelated techniques incorporating both interaction and visual encoding. We consider visual encoding and interaction techniques in a unified way because many methods incorporate aspects of both [41, 43], such as focus + context techniques [20, 46].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa36",
+      "title": "",
+      "tag": "What does 'select' mean as a manipulate method?",
+      "text": "Select refers to the demarcation of one or more elements in a visualization, differentiating selected from unselected elements [56]. Examples range from directly clicking or lassoing elements in a single visualization to brushing methods used to highlight elements in visualization systems incorporating multiple linked views [77].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa37",
+      "title": "",
+      "tag": "What does 'navigate' mean as a manipulate method?",
+      "text": "Navigate methods include those that alter a user\u2019s viewpoint, such as zooming, panning, and rotating. Other methods trigger details-on-demand views, combining navigate and select [61].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa38",
+      "title": "",
+      "tag": "What does 'arrange' mean as a manipulate method?",
+      "text": "Arrange refers to the process of organizing visualization elements spatially. Some of these methods arrange representations of data [39, 42, 80], such as reordering the axes in a parallel coordinates plot or the rows and columns of a scatterplot matrix. Other methods allow users to coordinate the spatial layout of views [23, 77].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa39",
+      "title": "",
+      "tag": "What does 'change' mean as a manipulate method?",
+      "text": "Change pertains to alterations in visual encoding. Simple examples include altering the size and transparency of points in a scatterplot or edges in a node-link graph, altering a colour-scale or texture mapping, or transforming the scales of axes. Other methods have more pronounced effects, changing the chart type altogether, such as transitioning between grouped and stacked bar charts, or between linear and radial layouts for time-series graphs. Pronounced changes in visual encoding such as these are often facilitated by smoothly animated transitions, which reduce their disruptive effects [22].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa40",
+      "title": "",
+      "tag": "What does temporary filtering involve?",
+      "text": "Filter methods adjust the exclusion and inclusion criteria for elements in a visualization. Some methods allow for elements to be temporarily hidden from view and later restored, while other methods are synonymous with outright deletion. As an example of temporary filtering, consider a user examining an age histogram based on population census data. First, she decides to exclude males, then further adjusts her filter criteria to focus solely on unemployed females. Finally, she revises the gender criteria to focus on unemployed males.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa41",
+      "title": "",
+      "tag": "What does permanent filtering (deletion) involve?",
+      "text": "A common example of permanent filtering, or deletion, is that of manually selecting and removing outliers resulting from errors in data entry. Alternatively, consider a scatterplot in which some points are labelled with manually generated categorical tags. Deleting a tag would remove this categorical label from all points having that tag.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa42",
+      "title": "",
+      "tag": "What does 'aggregate/segregate' mean as a method?",
+      "text": "Aggregate concerns methods that change the granularity of visualization elements. As such, we also consider its converse, segregate, as being associated with this family of methods. For example, a user may adjust the granularity of a continuous time scale in a line graph, aggregating daily values into monthly values, or segregating annual values into quarterly values. Alternatively, a user may aggregate a clique within a node-link diagram into a representative glyph, or segregate clique glyphs into their component nodes.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa43",
+      "title": "",
+      "tag": "What distinguishes 'introduce' methods from manipulate methods?",
+      "text": "Introduce: While manipulate methods alter existing elements of the visualization, introduce methods add new elements.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa44",
+      "title": "",
+      "tag": "What does 'annotate' mean as an introduce method?",
+      "text": "Annotate refers to the addition of graphical or textual annotations associated with one or more visualization elements. When an annotation is associated with data elements, an annotation could be thought of as a new attribute for these elements. The earlier example of manually tagging points in a scatterplot with categorical labels is one such instance of annotating data.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa45",
+      "title": "",
+      "tag": "What does 'import' mean as an introduce method?",
+      "text": "Import pertains to the addition of new elements to the visualization, including new data elements. In some environments, these new data elements might be loaded from external sources, while others might be manually generated.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa46",
+      "title": "",
+      "tag": "What does 'derive' mean as an introduce method?",
+      "text": "Derive methods compute new data elements given existing data elements. Aggregating data often implies deriving data, however this may not always be true: we further specify that derived data must be persistent, while aggregated data need not be. For instance, a user might derive new attributes for tabular data using a multidimensional scaling algorithm.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa47",
+      "title": "",
+      "tag": "What does 'record' mean as an introduce method?",
+      "text": "Finally, record methods save or capture visualization elements as persistent artefacts. As such, record methods are often associated with produce. These artefacts include screen shots, annotations, lists of bookmarked elements or locations, parameter settings, or interaction logs [63]. An interesting example of record is that of assembling a graphical history [21], in which the output of each task includes a static snapshot of the visualization, and these snapshots accumulate in a branching meta-visualization. Recording and retaining artefacts such as these are often desirable for maintaining a sense of analytical provenance, allowing users to revisit earlier states or parameter settings.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa48",
+      "title": "",
+      "tag": "How has prior work treated the 'what' component of tasks?",
+      "text": "Previous work has reached no agreement on the question of what comprises a visualization. Many classification systems do not address it at all; others discuss what implicitly, as indicated by the parenthetical terms in Table 1. Of those that classify what, some focus on the level of the entire dataset, such as tables composed of values and attributes or networks composed of nodes and links [61]. Others allow more precise specification of data\u2013attribute semantics, such as categorical, ordinal, and quantitative [11]. A few classification systems include not only data but also views as first-class citizens [13, 14, 23, 75]. Specific examples of what as classified in previous work include: Values, extremum, ranges, distributions, anomalies, clusters, correlations [3]. Graph-specific objects [37]: nodes, links, paths, graphs, connected components, clusters, groups. Time-oriented primitives [1]: points, intervals, spans, temporal patterns, rates of change, sequences, synchronization. Interaction operands [75]: pixels, data [values, structures], attributes, geometric [objects, surfaces], visualization structures.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa49",
+      "title": "",
+      "tag": "How does this typology handle the 'what' component flexibly?",
+      "text": "In this typology, we have chosen a flexible and agnostic representation of what that accommodates all of these modes of thinking: in short, we have a \u201cbring your own what\u201d mentality. The only absolute requirement is to explicitly distinguish a task\u2019s input and output constraints when describing sequences of interdependent tasks [72]. An extensive discussion of what that dovetails well with this typology appears elsewhere [45], but it cannot be effectively summarized in a few paragraphs; thus, it is beyond the scope of this paper.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa50",
+      "title": "",
+      "tag": "How does the typology enable concise task descriptions?",
+      "text": "Our multi-level typology can be used to concisely describe visualization tasks. Each task is defined by why it is executed, the method(s) by which it is executed (how), and by what the task pertains to. Single tasks may involve multiple nodes from each part of the typology, as shown in Figure 2.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa51",
+      "title": "",
+      "tag": "How does the typology represent dependencies between tasks?",
+      "text": "Using our typology, we can express dependencies in which the output of one task serves as the input of another, such as the relationship between how data is derived and the choice of visual encoding technique [43]. Such dependencies are represented in Figure 3.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa52",
+      "title": "",
+      "tag": "How does this description compare to Chuah and Roth's classification?",
+      "text": "As in the examples of Section 2, we can compare our description to those generated by extant classification systems. Consider Chuah and Roth\u2019s classification of basic visualization tasks [14], which distinguishes between three categories of operations. Using this classification, this sequence of tasks could be described as having data operations (derived attributes), graphical operations (encode data), and set operations (create set, express membership). This description does specify how and what, but it does not express the interdependencies within a sequence of tasks, nor does it tell us why these tasks were performed. Neither can we easily distinguish when sets (or clusters) are created, as this might occur before the data is encoded, such as in the case of the cluster hierarchy, but not in the case of the scatterplot.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa53",
+      "title": "",
+      "tag": "How does this description compare to Chi and Riedl's framework?",
+      "text": "While the description based on Chuah and Roth\u2019s [14] classification is atemporal, Chi and Riedl\u2019s operator interaction framework [13] defines stage- and transformation-based operators occurring along the visualization pipeline. Their framework does not contain a comprehensive list of operators, so we draw from the example operators cited in their paper to describe this sequence of tasks as follows: 1. visualization transformation operators: dimension reduction, cluster. 2. visual mapping transformation operators: tree layout, scatterplot. 3. view stage operators: zoom, focus, brush, details-on-demand, pick.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa54",
+      "title": "",
+      "tag": "Why use a visual notation instead of a formal grammar?",
+      "text": "We have chosen to present these descriptions using a simple and flexible visual notation, rather than with a formal grammar [5, 35, 72, 80]; in doing so, creating and iterating on task descriptions can be easily integrated into existing collaborative design and ideation activities, making use of materials such as coloured sticky notes and whiteboards. A crucial aspect of these descriptions is that sequences of interdependent tasks can be chained together, such that the output from earlier tasks forms the input to later tasks, as discussed in the following case study and as represented in Figure 3.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s4"
+    },
+    {
+      "id": "pa55",
+      "title": "",
+      "tag": "Why present a case study of interdependent tasks?",
+      "text": "Visualization tasks are seldom executed in isolation, and the output of one task may serve as input to a subsequent task. To illustrate this type of dependency, we present an case study in which our typology is used to describe a sequence of interdependent tasks.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s5"
+    },
+    {
+      "id": "pa56",
+      "title": "",
+      "tag": "What does the Overview tool's task sequence consist of?",
+      "text": "Overview [25] is a visual analytics tool for exploring large text document collections. Overview supports the task of producing a set of tags for semantically related documents as a new categorical attribute, using clusters of documents as scaffolding for the discovery process. Tags are assigned to clusters by means of annotation. However, one must first explore visualizations of the document space and identify clusters of interest. The user is presented both with two linked visualizations, one in which documents are encoded as points in a scatterplot, and another in which clusters of documents are encoded in a hierarchical tree layout. Identifying clusters is facilitated by navigating and selecting clusters in both visualizations; upon selection, frequent document or cluster terms and raw individual document text are shown in secondary displays. This task too has a dependency on the result of an earlier task. Before the the data is encoded in the two visualizations, a set of two-dimensional distances between documents must be produced: they are derived and aggregated from the original high-dimensional distance matrix using a multidimensional scaling algorithm.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s5"
+    },
+    {
+      "id": "pa57",
+      "title": "",
+      "tag": "How does a prior framework's description fall short?",
+      "text": "This description does capture the interdependencies for this sequence of tasks, though it mischaracterizes the processes of dimension reduction and clustering as transformations on a visualization, rather than transformations on data, a distinction central to our definition of derive. While this description captures up until the second task in our description, it does not capture the final task of producing cluster tags by means of annotation.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s5"
+    },
+    {
+      "id": "pa58",
+      "title": "",
+      "tag": "How does the typology's description compare favorably to prior frameworks?",
+      "text": "The description based on our typology retains the separability of these tasks, ensuring the distinction between interim inputs and outputs. Another problem with descriptions generated by extant classification systems was that of coverage; the how part of our typology includes both derive and annotate, while descriptions generated by other classification systems could not account for the latter [2, 13], or both [50, 61, 73, 78, 82, 83]. Finally, our description also accounts for both why data is derived and why clusters are annotated with tags, whereas descriptions generated using extant classification systems mention how a task is performed in relation only to when it is performed [13] or to what it is performed on [14]. We maintain that a task description requires why, how, and what; the question of when for a sequence of interdependent tasks is best served by denoting task input and output.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s5"
+    },
+    {
+      "id": "pa59",
+      "title": "",
+      "tag": "What prior literature informed the typology's development?",
+      "text": "Our typology was informed in part by related work, including extant classification systems and established theoretical models, and in part by new thinking with many points of divergence from previous work. We surveyed work relating to tasks and models of user behaviour, spanning the research literature in visualization, visual analytics, human-computer interaction, cartography, and information retrieval. We focus on two subsets that informed the configuration of our typology: thirty works that explicitly contribute a taxonomy, typology, characterization, framework, or model of tasks, goals, objectives, intentions, activities, or interactions [2, 3, 5, 10, 11, 12, 13, 14, 15, 19, 23, 29, 31, 37, 39, 42, 50, 51, 56, 57, 59, 61, 64, 66, 72, 73, 75, 78, 82, 83], along with twenty other references that make compelling or noteworthy assertions about user behaviour [1, 4, 16, 17, 18, 27, 40, 44, 52, 54, 58, 65, 63, 67, 70, 69, 71, 79, 76, 80]. The similarities between the individual nodes of our typology and those of extant classification systems and other related work are presented in detail in Table 1.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s6"
+    },
+    {
+      "id": "pa60",
+      "title": "",
+      "tag": "What does the comparison table reveal about the literature?",
+      "text": "Table 1 serves three purposes: it documents our choices of terms for the purpose of reproducibility, it illustrates the influence of previous work on our thinking, and it summarizes overrepresented and underrepresented areas in the literature, such as consume and enjoy in the why part of our typology. Note that non-leaf nodes in the how part of our typology are poorly represented, serving to indicate the gap between low and high levels of abstraction.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s6"
+    },
+    {
+      "id": "pa61",
+      "title": "",
+      "tag": "How can prior classification systems be categorized?",
+      "text": "The scope of extant classification systems can be categorized in three different ways: level, temporality, and specificity.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s6"
+    },
+    {
+      "id": "pa62",
+      "title": "",
+      "tag": "How does prior work split between high and low abstraction levels?",
+      "text": "High vs. low: much of previous work can be divided into those having a low or high level of abstraction, with very little falling in between. Relying solely on either type of classification leads to the aforementioned ends-means confusion, thereby limiting the potential for rigorous analysis. Low-level visualization usage is well represented in related work [2, 5, 10, 12, 13, 14, 15, 19, 29, 37, 59, 61, 72, 73, 75, 78, 82, 83]. Elements common to many of these classification systems include select, filter, and navigate. Following Lee et al. [36], we note that low-level classifications of tasks are often conflated with those of interaction techniques. At the high level, abstract tasks can be found in the context of theoretical models, but without explicit connections to low-level visualization tasks [3, 11, 31, 39, 51]. Examples of these include confirm hypotheses, present, and explore. Low-level classification systems often provide a sense of how a task is performed, but not why; high-level models are the converse. Our focus on multi-level descriptions of visualization tasks is intended to close this gap and resolve the ends-means confusion.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s6"
+    },
+    {
+      "id": "pa63",
+      "title": "",
+      "tag": "How do prior models handle sequence versus flexible constraints?",
+      "text": "Sequences vs. constraints: most classification systems are atemporal in that they do not have any way to express sequences or dependencies between different stages. A few classification systems are explicitly temporal in that they divide user behavior into larger stages that occur in specific sequences or cycles. Examples include pipeline models for visualization construction [13] or data analysis [27], or cyclic models such as knowledge crystallization [11] or information foraging and sensemaking [51]. However, empirical observations of visualization usage have indicated a mismatch between the specific cyclical or sequential patterns proposed by these models and actual user behaviour [26]. Vicente argues that sequence-based approaches to task analysis are overly rigid and thus inappropriate for describing such open-ended tasks [74], and that constraint-based approaches to task analysis allow for more flexibility in terms of how a task is performed. Descriptions based on our typology do not force any strict global temporal orderings, as imposed by sequence- or cycle-based models; instead, they accommodate local interdependencies within sequences of tasks by way of constraints on task input and output.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s6"
+    },
+    {
+      "id": "pa64",
+      "title": "",
+      "tag": "How does the typology relate to general versus specific classification systems?",
+      "text": "General vs. specific: many visualization classification systems represented in our survey are generally applicable, though specifically-targeted classification systems and models do exist. Examples include Lee et al.\u2019s task taxonomy for graph visualization [37] and Lammarsch et al.\u2019s task framework for time-oriented data [35]. Our typology encompasses and complements these specific classification systems, and we encourage further development of more like these.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s6"
+    },
+    {
+      "id": "pa65",
+      "title": "",
+      "tag": "Which general classification systems most influenced the typology?",
+      "text": "We also identify five general classification systems that span low-level and high-level tasks. These classification systems had the highest contributions to the organization of our own typology:",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s6"
+    },
+    {
+      "id": "pa66",
+      "title": "",
+      "tag": "How does Springmeyer et al.'s classification relate to the typology?",
+      "text": "Springmeyer et al. (1992) [66]: This classification of scientific data analysis covers both how and why, but these aspects are not clearly distinguished within its hierarchical structure, that which begins with a high-level distinction between investigation and integration of insight.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s6"
+    },
+    {
+      "id": "pa67",
+      "title": "",
+      "tag": "How does Mullins and Treu's taxonomy relate to the typology?",
+      "text": "Mullins and Treu (1993) [42]: This extensive taxonomy contains over 150 elements: an exhaustive list of high-level mediation and coordination tasks, which overlaps with our classification of why and how, as well as many low-level object-oriented interactions relating to physical interface input and output. We do not attempt to specify tasks at this lowest level, though we have adopted a consideration of input and output in the what part of our typology.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s6"
+    },
+    {
+      "id": "pa68",
+      "title": "",
+      "tag": "How does Pike et al.'s characterization relate to the typology?",
+      "text": "Pike et al. (2009) [50]: Their characterization of analytic discourse draws from earlier work, distinguishing high-level modes of inquiry [3] as goals, from low-level tasks [2] and interactions [82]. These are in turn distinguished from the separable intents of representation and interaction techniques. Bringing these formerly disjoint classifications together is laudable, though the integration of this information for the purpose of analyzing tasks was not the focus of Pike et al.\u2019s article. The aim of our typology of abstract tasks is to make this integration explicit, relating these intents and techniques (how) to modes of inquiry, goals, and tasks (why).",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s6"
+    },
+    {
+      "id": "pa69",
+      "title": "",
+      "tag": "How does Heer and Shneiderman's taxonomy relate to the typology?",
+      "text": "Heer and Shneiderman (2012) [23]: Their taxonomy of interaction dynamics provides a top-level distinction between data-, view-, and process-centric tasks. The focus of their taxonomy is on interactive elements and operations; ten of the twelve task types they identify are encompassed by the how part of our typology. The two remaining process and provenance tasks, share and guide, are captured by the definition of present in the why part of our typology.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s6"
+    },
+    {
+      "id": "pa70",
+      "title": "",
+      "tag": "How does Roth's cartographic taxonomy relate to the typology?",
+      "text": "Roth (2012) [57]: Roth\u2019s taxonomy, based on Norman\u2019s Stages of Action model [47], classifies cartographic interaction primitives as objectives, operators, and operands. Norman\u2019s model describes a series of translations between the user\u2019s goal, an immediate intention (or objective), and a series of actions (operators) performed on an environment (of operands). Roth\u2019s taxonomy is closely aligned with our notions of why, how, and what, and thus has a high-level structure similar to that of our own taxonomy. However, Roth\u2019s taxonomy imposes a spatial constraint on where operands are located in space, as discussed in Section 2. In contrast, we restrict our classification of what to that of input and output; the location of operands is represented by the search node in the why part of our typology.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s6"
+    },
+    {
+      "id": "pa71",
+      "title": "",
+      "tag": "What common gap in prior classification systems does the typology fill?",
+      "text": "What these five classification systems have in common is that they are atemporal, and most span our characterization of why and how. Our typology integrates and extends this work, adding a specification of what, the input and output tasks. As a result, our typology can be used to describe sequences of tasks, in that the output of one task may serve as the input of another.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s6"
+    },
+    {
+      "id": "pa72",
+      "title": "",
+      "tag": "Which theoretical frameworks also informed the typology?",
+      "text": "Our typology was also informed by four theoretical frameworks:",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s6"
+    },
+    {
+      "id": "pa73",
+      "title": "",
+      "tag": "How does distributed cognition theory relate to the typology?",
+      "text": "Distributed cognition: The distributed cognition literature offers us a useful distinction between pragmatic and epistemic actions [30, 38]. Pragmatic actions are explicitly and consciously goal-directed, while epistemic actions refer to processes of coordination between internal mental models and external representations of information [38], often performed in support of pragmatic actions. This distinction is lost in low-level classification systems; in isolation from higher-level goals we are unable to discern between pragmatic and epistemic actions. Our typology accommodates this distinction. External representations are the graphical elements of visualizations displayed to or created by the user. Pragmatic actions are correspond to the why part of our typology, while epistemic actions are captured by the how part of our typology. The set of manipulate methods are particularly well-suited for the purpose of describing epistemic actions and their role in coordinating between internal and external representations.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s6"
+    },
+    {
+      "id": "pa74",
+      "title": "",
+      "tag": "How does Norman's Stages of Action model relate to the typology?",
+      "text": "Stages of action: Norman\u2019s Stages of action model [47] and its influence on Roth\u2019s objective-operand-operator classification of extant classification systems [58] helped shape the why-what-how organization of our typology. In the process of evaluating visualizations, we can discuss the Norman\u2019s gulf of execution with respect to the how part of the typology, asking if the user has the means to execute the task. Also central to Norman\u2019s model is the gulf of evaluation, useful for reasoning about whether the output of a task matches the user\u2019s expectation. However, this gulf is more applicable when reasoning about specific interaction techniques, which are not directly addressed by our typology. More recently, Lam extended the model with a gulf of goal formation [33], relevant whenever a user articulates their own questions pertaining to a visualization, thereby specifying the ends of a task. This gulf corresponds to the why part of our typology, which allows us to abstractly describe these questions.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s6"
+    },
+    {
+      "id": "pa75",
+      "title": "",
+      "tag": "How does sensemaking theory relate to the typology?",
+      "text": "Sensemaking: The why part of our typology overlaps with and bridges to high-level processes of decision making and prediction described in theories of information foraging and sensemaking, both temporal stage-based models [11, 51] and atemporal data-frame models [31]. In particular, sensemaking models connect at the levels of discover, denoting hypothesis generation and formation, present, and the types of search: lookup, locate, browse, and explore.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s6"
+    },
+    {
+      "id": "pa76",
+      "title": "",
+      "tag": "How does play theory motivate casual visualization tasks in the typology?",
+      "text": "Play theory: Casual interactions with visualization pose another set of problems for many extant classification systems, in that task specifications for these contexts are not easy to motivate by a need to present, discover, or produce [65]. We included enjoy in the why part of the typology to encompass casual consumption of information, curiosity-driven tasks without expectations or predicted outcomes [16, 69]. The choropleth map example from the paper\u2019s introduction is an instance of this type of task. As visualization becomes increasingly pervasive in casual contexts, we may turn to theories of casual information seeking and newsreading behaviour, such as Stephenson\u2019s Play theory [67] to motivate visualization tasks in these contexts. This theory accounts for media consumption activities that bring no material gain, serving no \u201cwork\u201d functions, but instead induce moments of absorption and self-enchantment. Casual media consumption relies upon serendipitous apperception, a readiness to interact with information relating to existing interests. Studies of newsreading behaviour indicated that people read most avidly what they already know about [67], a seemingly irrational activity that cannot be described as an explicit need to discover new information. We posit that this behaviour is also true of some visualization consumption, particularly in non-work contexts [54, 65].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s6"
+    },
+    {
+      "id": "pa77",
+      "title": "",
+      "tag": "Why was this typology developed and what broader purpose does it serve?",
+      "text": "Our motivation to develop a multi-level classification of abstract tasks grew in part from our own needs. We have specifically noted that our ability to rigorously analyze tasks in the context of the design and evaluation of visualization in general [41, 45] and of design studies in particular [60] has been constrained by its lack. While we well aware of the limits of the \u201creductionist assumption that complex sensemaking tasks can be broken down into low-level components\u201d [43], we have already found that this typology has led us to conduct more precise analysis than we could do before; a forthcoming book [45] will feature many additional examples of analysis using it. We offer this new typology as a next step in the ongoing discussion in the literature, rather than as a final answer. Our efforts also serve the broader purpose of strengthening the science of analytical reasoning [68] by further uniting the frameworks and methodologies of the cognitive sciences with those in the field of visualization [53]. This work also calls for a wider range of evaluation techniques centred around task analysis, with a feedback loop in which tasks observed in field settings can inform subsequent visualization design and evaluation. Our multi-level task typology will serve to expedite this translation and analysis.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s7"
+    },
+    {
+      "id": "pa78",
+      "title": "",
+      "tag": "What three capabilities will be discussed next?",
+      "text": "We now discuss the capabilities and potential usage of our typology in terms of its descriptive, evaluative, and generative power [7, 9].",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s7"
+    },
+    {
+      "id": "pa79",
+      "title": "",
+      "tag": "How does the typology provide descriptive power?",
+      "text": "The typology\u2019s descriptive power is in its provision of a consistent lexicon for tasks in terms of why, how, and what in a way supports precise comparisons across different visualization tools and application domains. This lexicon can be used to describe and compare user tasks as they occur in situ, of particular use to those analyzing current work practices and use of visualization tools \u201cin the wild\u201d. This form of inquiry is often performed within a single domain, such as enterprise data analysis [27] or intelligence analysis [28], wherein tasks are described in a domain-specific way. An interface- and domain-independent vocabulary for multi-level tasks allows practitioners to perform comparative analyses of tasks involving different visualization tools occurring in different disciplines.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s7"
+    },
+    {
+      "id": "pa80",
+      "title": "",
+      "tag": "What has been validated so far and what descriptive work remains?",
+      "text": "Only the descriptive aspect of the typology has been directly validated in this paper; we used our typology to describe several empirical cases including single tasks and a sequence of interdependent tasks. We also demonstrated its ability to facilitate the comparison of tasks as they are performed using different visualization tools. Future work includes a further examination of its descriptive power by analyzing whether it covers the full set of abstract tasks described in previous published design studies. In addition, we acknowledge that the typology does not at present explicitly address collaborative use of visualization, although we did consider some of the issues involved during its development [26]. Future work will verify if the typology can sufficiently describe collaborative tasks, or if extensions are needed.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s7"
+    },
+    {
+      "id": "pa81",
+      "title": "",
+      "tag": "How does the typology support generative design work?",
+      "text": "The typology\u2019s generative power stems from its ability to prescribe and inform design. In particular, the typology is well-suited to support task analysis occurring throughout the formative discover and design stages of the nine-stage design study framework [60]. In the discover stage, the practitioner must transform a domain problem into an abstract task description; the typology provides an explicit set of choices for why the task is performed, possibly making this difficult aspect of design studies more tractable [41, 43]. In the design stage, the practitioner then chooses how the task will be supported, calling upon the existing repertoire of encoding and interaction techniques or inventing new ones [44]. During both stages, the practitioner must consider what comprises the inputs and outputs of these tasks, remaining aware that these tasks may have interdependencies. We aim to validate the typology\u2019s generative power in our future design studies.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s7"
+    },
+    {
+      "id": "pa82",
+      "title": "",
+      "tag": "How could the typology's evaluative power be validated in field studies?",
+      "text": "Part of the motivation for developing this typology arose from our struggle to characterize and compare the tasks of different users in an ongoing post-deployment qualitative user study evaluating Overview [25], the system described in Section 4. The typology is intended to facilitate the evaluation of user experiences as well as field studies examining visualization usage [34]. We plan to validate the typology\u2019s evaluative power by assessing its utility a multi-level code set for labelling user behaviour, a common practice in observational studies of open-ended visualization use; these include longitudinal insight-based studies [48] and multidimensional in-depth long-term case studies (MILCs) [62]. A MILC study of SocialAction [49], a social network visualization tool, incorporated Yi et al.\u2019s [82] categorization of interaction techniques into the analysis of how users tasks were performed; we envision a similar use for our task typology, in which the scope of analysis will broaden to include why and what. Mixed-method qualitative evaluation studies allow practitioners to identify how a task is performed along with its inputs and outputs via interaction logs and observational analysis; we can also identify why a task is performed via interviews, think-aloud protocols, and artefact analysis.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s7"
+    },
+    {
+      "id": "pa83",
+      "title": "",
+      "tag": "How could the typology inform research on individual analytical strategies?",
+      "text": "Task descriptions generated by our typology could be also used to better understanding users\u2019 individual analytical strategies and the context-dependent variability with regards to how a task is performed [74, 84]. Understanding individual problem solving strategies in terms of mental model formation and coordination is also an ongoing goal of distributed cognition research [24, 39]. Our typology and its accommodation of pragmatic and epistemic actions may serve to further this research in the context of visualization usage.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s7"
+    },
+    {
+      "id": "pa84",
+      "title": "",
+      "tag": "What limitation exists regarding low-level experimental tasks?",
+      "text": "Finally, while our typology does not provide the low level of specification required for empirical experiments aimed at evaluating user performance with respect to specific interaction and visual encoding techniques [34], it may be useful in suggesting external validity for these low-level benchmark experimental tasks.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s7"
+    },
+    {
+      "id": "pa85",
+      "title": "",
+      "tag": "What is the paper's central contribution and its advance over prior work?",
+      "text": "Our primary contribution is a multi-level task typology that relates both why and how a task is performed to what the task pertains to in terms of inputs and outputs. The typology allows for the precise description of complex tasks as sequences of simpler tasks, with their interdependencies made explicit. One major advance of the new typology is that it bridges the gap between the low-level and high-level tasks of previous work by providing linkages between them, distinguishing the ends and means of a task. Our typology integrates new thinking with extant systems for classifying tasks, and with previously established theoretical frameworks spanning multiple literatures. The multi-level task typology presented here is another step towards a systematic theoretical framework for visualization, helping us to describe existing user experiences, evaluate them, and generate new ones.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s8"
+    },
+    {
+      "id": "pa86",
+      "title": "",
+      "tag": "Who provided funding, feedback, or early ideas for this work?",
+      "text": "We thank NSERC for funding. We thank Jessica Dawson, Joel Ferstay, Stephen Ingram, Joanna McGrenere, Miriah Meyer, Michael Sedlmair, and Colin Ware for their feedback. We also thank Fran\u00e7ois Guimbreti\u00e8re for very early discussions on the topic. We acknowledge Ron Rensink for the original idea of classifying lookup, browse, locate, and explore according to target identity and location.",
+      "prev_relation": "",
+      "next_relation": "",
+      "section_id": "s9"
+    }
+  ]
+}

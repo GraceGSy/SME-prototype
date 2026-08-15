@@ -1,0 +1,12 @@
+{
+  "pa12": "What are the three areas of prior work reviewed?",
+  "pa13": "How does skimming differ from reading, and why use highlights?",
+  "pa14": "How does this work extend skimming research to cross-document comparison?",
+  "pa15": "How do existing multi-document visualization systems fall short on direct text access?",
+  "pa16": "How does document layout/structure support skimming and comprehension?",
+  "pa17": "How has prior work aligned and visualized shared text patterns across documents?",
+  "pa18": "How does this work compare to code-corpus visualization tools like OverCode/Examplore?",
+  "pa19": "Why do prior visualization features not directly transfer to LLM responses?",
+  "pa20": "What inspired the grid-based layout for comparing generative AI outputs?",
+  "pa21": "How do existing LLM sensemaking interfaces differ from this work's approach?"
+}

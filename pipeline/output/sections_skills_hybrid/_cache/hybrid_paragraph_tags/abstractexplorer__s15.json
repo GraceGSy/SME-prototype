@@ -1,0 +1,8 @@
+{
+  "pa105": "What does this section cover?",
+  "pa106": "What prompt categorizes sentences into aspects?",
+  "pa107": "What prompt segments sentences into chunks?",
+  "pa108": "What prompt annotates chunks with facet type?",
+  "pa109": "What prompts generate and use aspect descriptions?",
+  "pa110": "How were the prompts developed and tuned?"
+}

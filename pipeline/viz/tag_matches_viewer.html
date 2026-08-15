@@ -141,7 +141,7 @@
     font-size: 9.5px; white-space: nowrap;
   }
   .paper-map-hide-unselected-toggle input:disabled { cursor: not-allowed; }
-  .paper-map-hide-unselected-toggle:has(input:disabled) { opacity: .5; }
+  .paper-map-hide-unselected-toggle:has(input:disabled), .paper-map-sync-toggle:has(input:disabled) { opacity: .5; }
   .paper-map-paragraph.hidden, .paper-map-skeleton-block.hidden { display: none; }
   .paper-map-legend { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 5px; min-width: 0; padding: 3px 2px 8px; }
   .paper-map-legend-item {
@@ -502,6 +502,7 @@ const PAPER_MAP_HUES = [205, 25, 145, 48, 275, 175, 350, 95, 230, 8, 160, 62, 30
 let paperMapMode = "reading";
 let paperMapSelectedGroupId = null;
 let paperMapSyncScroll = true;
+let paperMapSyncScrollBeforeSelection = null; // null = not currently overridden; remembers the checkbox's value from just before a group got selected, so deselecting restores it
 let paperMapHideUnselected = false; // only meaningful with a group selected -- forced back to false whenever selection clears
 let paperMapLastScrolledPaper = null;
 let paperMapScrollSyncing = false;
@@ -566,7 +567,7 @@ function updatePreviews() {
 }
 
 async function loadAll() {
-  const base = "../output/sections_5papers/";
+  const base = "../output/sections_skills_hybrid_papers3_core/";
   const opts = { cache: "no-store" }; // these files change often during development; never serve a stale cached copy
   const manifest = await (await fetch(base + "manifest.json", opts)).json();
   const papers = [];
@@ -576,9 +577,15 @@ async function loadAll() {
   const links = await (await fetch(base + "bidirectional_matches.json", opts)).json();
   const quoteGroups = await (await fetch(base + "quote_groups.json", opts)).json();
   const iterations = { 0: { groups: quoteGroups.paragraphs || [], meta: null } };
+  // Iteration-track output is optional -- a directory that only ran the
+  // epoch-refinement track (refine_with_epoch_matrix1_reassign.py) never
+  // produces these, same best-effort handling as the balance/MILP/epoch
+  // fetches below.
   for (let i = 1; i <= N_ITERATIONS; i++) {
-    const state = await (await fetch(base + `paragraph_groups_iter${i}.json`, opts)).json();
-    iterations[i] = state;
+    try {
+      const response = await fetch(base + `paragraph_groups_iter${i}.json`, opts);
+      if (response.ok) iterations[i] = await response.json();
+    } catch (e) { /* no iteration-track output available */ }
   }
   // Balance files are optional so older output directories still load.
   const balances = {};
@@ -1311,6 +1318,10 @@ function renderPaperMap() {
   if (paperMapSelectedGroupId && !model.entriesById.has(paperMapSelectedGroupId)) {
     paperMapSelectedGroupId = null;
     paperMapHideUnselected = false;
+    if (paperMapSyncScrollBeforeSelection !== null) {
+      paperMapSyncScroll = paperMapSyncScrollBeforeSelection;
+      paperMapSyncScrollBeforeSelection = null;
+    }
   }
 
   const totalParagraphs = allPapers.reduce((sum, paper) => sum + paperMapVisibleParagraphs(paper).length, 0);
@@ -1320,8 +1331,8 @@ function renderPaperMap() {
     <button type="button" class="paper-map-mode-button${paperMapMode === "reading" ? " active" : ""}" data-paper-map-mode="reading" aria-pressed="${paperMapMode === "reading"}">Read</button>
     <button type="button" class="paper-map-mode-button${paperMapMode === "skeleton" ? " active" : ""}" data-paper-map-mode="skeleton" aria-pressed="${paperMapMode === "skeleton"}">Skeleton</button>
   </div>`;
-  const syncToggle = paperMapMode === "reading" ? `<label class="paper-map-sync-toggle" title="Off keeps each paper independently scrollable">
-    <input type="checkbox" id="paperMapSyncScroll"${paperMapSyncScroll ? " checked" : ""}> sync paper scrolling
+  const syncToggle = paperMapMode === "reading" ? `<label class="paper-map-sync-toggle" title="${paperMapSelectedGroupId ? "Turned off automatically while a group is selected" : "Off keeps each paper independently scrollable"}">
+    <input type="checkbox" id="paperMapSyncScroll"${paperMapSyncScroll ? " checked" : ""}${paperMapSelectedGroupId ? " disabled" : ""}> sync paper scrolling
   </label>` : "";
   const hideUnselectedToggle = `<label class="paper-map-hide-unselected-toggle" title="${paperMapSelectedGroupId ? "" : "Select a group in the legend or map first"}">
     <input type="checkbox" id="paperMapHideUnselected"${paperMapHideUnselected ? " checked" : ""}${paperMapSelectedGroupId ? "" : " disabled"}> Hide unselected
@@ -1532,16 +1543,38 @@ function syncHideUnselectedToggle() {
   toggle.checked = paperMapHideUnselected;
 }
 
+function syncSyncScrollToggle() {
+  const toggle = document.getElementById("paperMapSyncScroll");
+  if (!toggle) return;
+  toggle.disabled = Boolean(paperMapSelectedGroupId);
+  toggle.checked = paperMapSyncScroll;
+}
+
 // Shared cleanup after any change to paperMapSelectedGroupId (paragraph
-// click, legend click, or clicking empty space to clear it) -- hide-unselected
-// is meaningless with nothing selected, so it's forced off right along with
-// every other selection-dependent UI piece.
+// click, legend click, or clicking empty space to clear it). Hide-unselected
+// is meaningless with nothing selected, so it's forced off; conversely, sync
+// scrolling is forced off (and locked) for as long as a group stays selected,
+// since jumping every column to follow the synced scroll position would
+// fight with staying put to read the selected group's paragraphs.
 function finalizePaperMapSelectionChange(model) {
-  if (!paperMapSelectedGroupId) paperMapHideUnselected = false;
+  if (paperMapSelectedGroupId) {
+    // Only remember it on the null -> selected transition -- switching
+    // between two selected groups shouldn't overwrite the remembered value
+    // with the already-forced "false".
+    if (paperMapSyncScrollBeforeSelection === null) paperMapSyncScrollBeforeSelection = paperMapSyncScroll;
+    paperMapSyncScroll = false;
+  } else {
+    paperMapHideUnselected = false;
+    if (paperMapSyncScrollBeforeSelection !== null) {
+      paperMapSyncScroll = paperMapSyncScrollBeforeSelection;
+      paperMapSyncScrollBeforeSelection = null;
+    }
+  }
   updateColumnGroupIndicators();
   refreshPaperMapLegend(model);
   updatePaperMapHiddenState();
   syncHideUnselectedToggle();
+  syncSyncScrollToggle();
 }
 
 function attachPaperMapInteractions(model) {
@@ -1570,6 +1603,7 @@ function attachPaperMapInteractions(model) {
   if (syncToggle) {
     syncToggle.addEventListener("change", event => {
       event.stopPropagation();
+      if (syncToggle.disabled) return;
       paperMapSyncScroll = syncToggle.checked;
       if (!paperMapSyncScroll || !columns.length) return;
       const source = columns.find(column => column.dataset.paper === paperMapLastScrolledPaper) || columns[0];
@@ -1611,6 +1645,7 @@ function attachPaperMapInteractions(model) {
   updateColumnGroupIndicators();
   updatePaperMapHiddenState();
   syncHideUnselectedToggle();
+  syncSyncScrollToggle();
 }
 
 function traceIterationNumbers() {

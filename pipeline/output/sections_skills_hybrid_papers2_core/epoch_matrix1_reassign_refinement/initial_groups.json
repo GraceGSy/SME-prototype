@@ -1,0 +1,1008 @@
+[
+  {
+    "group_id": "group_1",
+    "overarching_question": "What conceptual framework or typology emerges from analyzing this design/research space?",
+    "members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa26",
+        "title": "",
+        "tag": "What is the scope and method of this synthesis?"
+      },
+      {
+        "paper": "interaction",
+        "unit_id": "pa58",
+        "title": "",
+        "tag": "What is the Dialogue concept of interaction?"
+      },
+      {
+        "paper": "interaction",
+        "unit_id": "pa59",
+        "title": "",
+        "tag": "What is the Transmission concept of interaction?"
+      },
+      {
+        "paper": "interaction",
+        "unit_id": "pa60",
+        "title": "",
+        "tag": "What is the Control concept of interaction?"
+      },
+      {
+        "paper": "interaction",
+        "unit_id": "pa61",
+        "title": "",
+        "tag": "What is the Tool Use concept of interaction?"
+      },
+      {
+        "paper": "interaction",
+        "unit_id": "pa63",
+        "title": "",
+        "tag": "What is the Embodiment concept of interaction?"
+      },
+      {
+        "paper": "interaction",
+        "unit_id": "pa64",
+        "title": "",
+        "tag": "What is the Experience concept of interaction?"
+      },
+      {
+        "paper": "multileveltypology",
+        "unit_id": "pa21",
+        "title": "",
+        "tag": "What is the overall structure of the typology?"
+      },
+      {
+        "paper": "multileveltypology",
+        "unit_id": "pa30",
+        "title": "",
+        "tag": "What does 'search' mean and how is it categorized?"
+      },
+      {
+        "paper": "storytellingtechniques",
+        "unit_id": "pa20",
+        "title": "",
+        "tag": "What is the purpose and future use of this analysis?"
+      },
+      {
+        "paper": "storytellingtechniques",
+        "unit_id": "pa22",
+        "title": "",
+        "tag": "How is this section organized and what does it cover?"
+      },
+      {
+        "paper": "storytellingtechniques",
+        "unit_id": "pa54",
+        "title": "",
+        "tag": "What will this reflection section cover?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa17",
+        "title": "",
+        "tag": "What does this section cover?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa34",
+        "title": "",
+        "tag": "What is enhanced numeracy and how is it depicted in fiction?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa37",
+        "title": "",
+        "tag": "What is enhanced comparison ability and how does it manifest?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa43",
+        "title": "",
+        "tag": "What is the 'scope' dimension and how does it manifest?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa45",
+        "title": "",
+        "tag": "What is the 'access' dimension of empowerment?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa47",
+        "title": "",
+        "tag": "What is the 'spatial relevance' dimension?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa50",
+        "title": "",
+        "tag": "What is the 'temporal relevance' dimension?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa55",
+        "title": "",
+        "tag": "What is the 'degree of control' dimension?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa69",
+        "title": "",
+        "tag": "What discussion threads does this section cover?"
+      },
+      {
+        "paper": "timelines",
+        "unit_id": "pa25",
+        "title": "",
+        "tag": "What is the resulting design space structure?"
+      },
+      {
+        "paper": "timelines",
+        "unit_id": "pa36",
+        "title": "",
+        "tag": "What were the overall results of the viability analysis?"
+      },
+      {
+        "paper": "timelines",
+        "unit_id": "pa8",
+        "title": "",
+        "tag": "What does this section cover?"
+      }
+    ],
+    "representative_members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa63",
+        "title": "",
+        "tag": "What is the Embodiment concept of interaction?"
+      },
+      {
+        "paper": "multileveltypology",
+        "unit_id": "pa21",
+        "title": "",
+        "tag": "What is the overall structure of the typology?"
+      },
+      {
+        "paper": "storytellingtechniques",
+        "unit_id": "pa20",
+        "title": "",
+        "tag": "What is the purpose and future use of this analysis?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa45",
+        "title": "",
+        "tag": "What is the 'access' dimension of empowerment?"
+      },
+      {
+        "paper": "timelines",
+        "unit_id": "pa25",
+        "title": "",
+        "tag": "What is the resulting design space structure?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_2",
+    "overarching_question": "What contribution does this visualization paper make to advance the field?",
+    "members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa5",
+        "title": "",
+        "tag": "What approach does the paper take to address this gap?"
+      },
+      {
+        "paper": "multileveltypology",
+        "unit_id": "pa85",
+        "title": "",
+        "tag": "What is the paper's central contribution and its advance over prior work?"
+      },
+      {
+        "paper": "storytellingtechniques",
+        "unit_id": "pa1",
+        "title": "",
+        "tag": "What approach and contribution does the paper make in narrative visualization?"
+      },
+      {
+        "paper": "storytellingtechniques",
+        "unit_id": "pa3",
+        "title": "",
+        "tag": "What is the paper's goal in studying storytelling techniques?"
+      },
+      {
+        "paper": "storytellingtechniques",
+        "unit_id": "pa5",
+        "title": "",
+        "tag": "What are the paper's specific contributions?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa1",
+        "title": "",
+        "tag": "What is the paper's approach and contribution?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa11",
+        "title": "",
+        "tag": "What is the paper's aim in using fiction to reconsider visualization design?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa73",
+        "title": "",
+        "tag": "What theoretical gap does the empowerment framework address?"
+      },
+      {
+        "paper": "timelines",
+        "unit_id": "pa7",
+        "title": "",
+        "tag": "What are the paper's two main contributions?"
+      }
+    ],
+    "representative_members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa5",
+        "title": "",
+        "tag": "What approach does the paper take to address this gap?"
+      },
+      {
+        "paper": "multileveltypology",
+        "unit_id": "pa85",
+        "title": "",
+        "tag": "What is the paper's central contribution and its advance over prior work?"
+      },
+      {
+        "paper": "storytellingtechniques",
+        "unit_id": "pa5",
+        "title": "",
+        "tag": "What are the paper's specific contributions?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa1",
+        "title": "",
+        "tag": "What is the paper's approach and contribution?"
+      },
+      {
+        "paper": "timelines",
+        "unit_id": "pa7",
+        "title": "",
+        "tag": "What are the paper's two main contributions?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_3",
+    "overarching_question": "What methodology was used to build and structure the paper's survey/corpus?",
+    "members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa15",
+        "title": "",
+        "tag": "How is the 'Definition of Interaction' tag defined?"
+      },
+      {
+        "paper": "interaction",
+        "unit_id": "pa17",
+        "title": "",
+        "tag": "How is the 'Benefits of Interaction' tag defined?"
+      },
+      {
+        "paper": "multileveltypology",
+        "unit_id": "pa7",
+        "title": "",
+        "tag": "How is the rest of the paper organized?"
+      },
+      {
+        "paper": "storytellingtechniques",
+        "unit_id": "pa15",
+        "title": "",
+        "tag": "How was the initial story corpus gathered?"
+      },
+      {
+        "paper": "storytellingtechniques",
+        "unit_id": "pa16",
+        "title": "",
+        "tag": "How representative is the corpus of the field?"
+      },
+      {
+        "paper": "timelines",
+        "unit_id": "pa23",
+        "title": "",
+        "tag": "How was the initial corpus of timelines gathered?"
+      }
+    ],
+    "representative_members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa17",
+        "title": "",
+        "tag": "How is the 'Benefits of Interaction' tag defined?"
+      },
+      {
+        "paper": "multileveltypology",
+        "unit_id": "pa7",
+        "title": "",
+        "tag": "How is the rest of the paper organized?"
+      },
+      {
+        "paper": "storytellingtechniques",
+        "unit_id": "pa15",
+        "title": "",
+        "tag": "How was the initial story corpus gathered?"
+      },
+      {
+        "paper": "timelines",
+        "unit_id": "pa23",
+        "title": "",
+        "tag": "How was the initial corpus of timelines gathered?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_4",
+    "overarching_question": "How does the proposed classification compare to prior taxonomies?",
+    "members": [
+      {
+        "paper": "multileveltypology",
+        "unit_id": "pa52",
+        "title": "",
+        "tag": "How does this description compare to Chuah and Roth's classification?"
+      },
+      {
+        "paper": "multileveltypology",
+        "unit_id": "pa53",
+        "title": "",
+        "tag": "How does this description compare to Chi and Riedl's framework?"
+      },
+      {
+        "paper": "multileveltypology",
+        "unit_id": "pa58",
+        "title": "",
+        "tag": "How does the typology's description compare favorably to prior frameworks?"
+      },
+      {
+        "paper": "timelines",
+        "unit_id": "pa33",
+        "title": "",
+        "tag": "How does this design space compare to prior classifications?"
+      }
+    ],
+    "representative_members": [
+      {
+        "paper": "multileveltypology",
+        "unit_id": "pa52",
+        "title": "",
+        "tag": "How does this description compare to Chuah and Roth's classification?"
+      },
+      {
+        "paper": "timelines",
+        "unit_id": "pa33",
+        "title": "",
+        "tag": "How does this design space compare to prior classifications?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_5",
+    "overarching_question": "What do comparative analyses reveal about gaps and trends in the field?",
+    "members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa111",
+        "title": "",
+        "tag": "What does comparing HomeFinder and Token reveal about missing interactions?"
+      },
+      {
+        "paper": "interaction",
+        "unit_id": "pa117",
+        "title": "",
+        "tag": "What did the methodology and comparison reveal?"
+      },
+      {
+        "paper": "multileveltypology",
+        "unit_id": "pa60",
+        "title": "",
+        "tag": "What does the comparison table reveal about the literature?"
+      },
+      {
+        "paper": "storytellingtechniques",
+        "unit_id": "pa58",
+        "title": "",
+        "tag": "What does technique combination reveal about field maturity?"
+      }
+    ],
+    "representative_members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa111",
+        "title": "",
+        "tag": "What does comparing HomeFinder and Token reveal about missing interactions?"
+      },
+      {
+        "paper": "multileveltypology",
+        "unit_id": "pa60",
+        "title": "",
+        "tag": "What does the comparison table reveal about the literature?"
+      },
+      {
+        "paper": "storytellingtechniques",
+        "unit_id": "pa58",
+        "title": "",
+        "tag": "What does technique combination reveal about field maturity?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_6",
+    "overarching_question": "What is this paper's contribution and vision for future visualization research?",
+    "members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa118",
+        "title": "",
+        "tag": "What definition of interaction does this work propose?"
+      },
+      {
+        "paper": "interaction",
+        "unit_id": "pa120",
+        "title": "",
+        "tag": "What is the hoped-for broader impact of this work?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa6",
+        "title": "",
+        "tag": "What broader research goal motivates this work?"
+      },
+      {
+        "paper": "timelines",
+        "unit_id": "pa58",
+        "title": "",
+        "tag": "What broader impact does this work aim for?"
+      }
+    ],
+    "representative_members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa118",
+        "title": "",
+        "tag": "What definition of interaction does this work propose?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa6",
+        "title": "",
+        "tag": "What broader research goal motivates this work?"
+      },
+      {
+        "paper": "timelines",
+        "unit_id": "pa58",
+        "title": "",
+        "tag": "What broader impact does this work aim for?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_7",
+    "overarching_question": "How does visualization differ from analogous concepts in other domains?",
+    "members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa67",
+        "title": "",
+        "tag": "How does visualization's emphasis on user intent differ from HCI's?"
+      },
+      {
+        "paper": "interaction",
+        "unit_id": "pa75",
+        "title": "",
+        "tag": "How does visualization's entity set differ from HCI's?"
+      },
+      {
+        "paper": "interaction",
+        "unit_id": "pa76",
+        "title": "",
+        "tag": "How does visualization's performance goal differ from HCI's?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa76",
+        "title": "",
+        "tag": "How does visualization's goal of widespread empowerment differ from superhero fiction?"
+      }
+    ],
+    "representative_members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa67",
+        "title": "",
+        "tag": "How does visualization's emphasis on user intent differ from HCI's?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa76",
+        "title": "",
+        "tag": "How does visualization's goal of widespread empowerment differ from superhero fiction?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_8",
+    "overarching_question": "What limitations of existing authoring tools motivate this new tool's design?",
+    "members": [
+      {
+        "paper": "storytellingtechniques",
+        "unit_id": "pa13",
+        "title": "",
+        "tag": "What tools support infographic creation for storytelling?"
+      },
+      {
+        "paper": "storytellingtechniques",
+        "unit_id": "pa9",
+        "title": "",
+        "tag": "Why review existing storytelling authoring tools?"
+      },
+      {
+        "paper": "timelines",
+        "unit_id": "pa13",
+        "title": "",
+        "tag": "What existing timeline authoring tools support interactive storytelling?"
+      },
+      {
+        "paper": "timelines",
+        "unit_id": "pa14",
+        "title": "",
+        "tag": "What gap remains in existing timeline authoring tools?"
+      }
+    ],
+    "representative_members": [
+      {
+        "paper": "storytellingtechniques",
+        "unit_id": "pa9",
+        "title": "",
+        "tag": "Why review existing storytelling authoring tools?"
+      },
+      {
+        "paper": "timelines",
+        "unit_id": "pa14",
+        "title": "",
+        "tag": "What gap remains in existing timeline authoring tools?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_9",
+    "overarching_question": "How does visualization differ from related concepts or contexts?",
+    "members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa78",
+        "title": "",
+        "tag": "How does intent formation differ between visualization and HCI?"
+      },
+      {
+        "paper": "interaction",
+        "unit_id": "pa79",
+        "title": "",
+        "tag": "How does flexibility differ between visualization and HCI interaction?"
+      },
+      {
+        "paper": "storytellingtechniques",
+        "unit_id": "pa35",
+        "title": "",
+        "tag": "How does interaction link narrative text and visualization?"
+      },
+      {
+        "paper": "timelines",
+        "unit_id": "pa16",
+        "title": "",
+        "tag": "How does dataset size differ between exploratory and storytelling timelines?"
+      }
+    ],
+    "representative_members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa79",
+        "title": "",
+        "tag": "How does flexibility differ between visualization and HCI interaction?"
+      },
+      {
+        "paper": "storytellingtechniques",
+        "unit_id": "pa35",
+        "title": "",
+        "tag": "How does interaction link narrative text and visualization?"
+      },
+      {
+        "paper": "timelines",
+        "unit_id": "pa16",
+        "title": "",
+        "tag": "How does dataset size differ between exploratory and storytelling timelines?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_10",
+    "overarching_question": "What contributions and design insights does this visualization research offer?",
+    "members": [
+      {
+        "paper": "storytellingtechniques",
+        "unit_id": "pa79",
+        "title": "",
+        "tag": "What did this study do and find overall?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa4",
+        "title": "",
+        "tag": "What frameworks and process did this paper develop?"
+      },
+      {
+        "paper": "timelines",
+        "unit_id": "pa54",
+        "title": "",
+        "tag": "What did this paper contribute overall?"
+      }
+    ],
+    "representative_members": [
+      {
+        "paper": "storytellingtechniques",
+        "unit_id": "pa79",
+        "title": "",
+        "tag": "What did this study do and find overall?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa4",
+        "title": "",
+        "tag": "What frameworks and process did this paper develop?"
+      },
+      {
+        "paper": "timelines",
+        "unit_id": "pa54",
+        "title": "",
+        "tag": "What did this paper contribute overall?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_11",
+    "overarching_question": "How do core HCI concepts manifest uniquely within visualization systems?",
+    "members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa77",
+        "title": "",
+        "tag": "How does intent in visualization differ from HCI intent?"
+      },
+      {
+        "paper": "storytellingtechniques",
+        "unit_id": "pa42",
+        "title": "",
+        "tag": "How does a persistent visualization interact with scrolling?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa46",
+        "title": "",
+        "tag": "How does access manifest in visualization technologies?"
+      }
+    ],
+    "representative_members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa77",
+        "title": "",
+        "tag": "How does intent in visualization differ from HCI intent?"
+      },
+      {
+        "paper": "storytellingtechniques",
+        "unit_id": "pa42",
+        "title": "",
+        "tag": "How does a persistent visualization interact with scrolling?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa46",
+        "title": "",
+        "tag": "How does access manifest in visualization technologies?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_12",
+    "overarching_question": "How is interaction conceptualized and exemplified in visualization/HCI?",
+    "members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa28",
+        "title": "",
+        "tag": "What are the mandatory components of interaction definitions?"
+      },
+      {
+        "paper": "interaction",
+        "unit_id": "pa57",
+        "title": "",
+        "tag": "What are the seven HCI concepts of interaction?"
+      },
+      {
+        "paper": "storytellingtechniques",
+        "unit_id": "pa34",
+        "title": "",
+        "tag": "What are examples of interaction-linked visualizations?"
+      }
+    ],
+    "representative_members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa57",
+        "title": "",
+        "tag": "What are the seven HCI concepts of interaction?"
+      },
+      {
+        "paper": "storytellingtechniques",
+        "unit_id": "pa34",
+        "title": "",
+        "tag": "What are examples of interaction-linked visualizations?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_13",
+    "overarching_question": "How are core visualization concepts defined and differentiated?",
+    "members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa68",
+        "title": "",
+        "tag": "How do HCI and visualization differ in defining user profiles?"
+      },
+      {
+        "paper": "multileveltypology",
+        "unit_id": "pa33",
+        "title": "",
+        "tag": "How do identify, compare, and summarize differ in scope?"
+      }
+    ],
+    "representative_members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa68",
+        "title": "",
+        "tag": "How do HCI and visualization differ in defining user profiles?"
+      },
+      {
+        "paper": "multileveltypology",
+        "unit_id": "pa33",
+        "title": "",
+        "tag": "How do identify, compare, and summarize differ in scope?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_14",
+    "overarching_question": "Why were specific terminology and representation choices made in defining the framework?",
+    "members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa84",
+        "title": "",
+        "tag": "Why use 'person' instead of 'user'?"
+      },
+      {
+        "paper": "multileveltypology",
+        "unit_id": "pa54",
+        "title": "",
+        "tag": "Why use a visual notation instead of a formal grammar?"
+      }
+    ],
+    "representative_members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa84",
+        "title": "",
+        "tag": "Why use 'person' instead of 'user'?"
+      },
+      {
+        "paper": "multileveltypology",
+        "unit_id": "pa54",
+        "title": "",
+        "tag": "Why use a visual notation instead of a formal grammar?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_15",
+    "overarching_question": "Who provided support, feedback, or resources for this work? (Acknowledgments)",
+    "members": [
+      {
+        "paper": "multileveltypology",
+        "unit_id": "pa86",
+        "title": "",
+        "tag": "Who provided funding, feedback, or early ideas for this work?"
+      },
+      {
+        "paper": "timelines",
+        "unit_id": "pa59",
+        "title": "",
+        "tag": "Who gave feedback or resources to support this work?"
+      }
+    ],
+    "representative_members": [
+      {
+        "paper": "multileveltypology",
+        "unit_id": "pa86",
+        "title": "",
+        "tag": "Who provided funding, feedback, or early ideas for this work?"
+      },
+      {
+        "paper": "timelines",
+        "unit_id": "pa59",
+        "title": "",
+        "tag": "Who gave feedback or resources to support this work?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_16",
+    "overarching_question": "How does visualization research conceptualize its users and their benefits?",
+    "members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa69",
+        "title": "",
+        "tag": "How does visualization characterize its user population versus HCI?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa2",
+        "title": "",
+        "tag": "How does visualization research describe its value to users?"
+      }
+    ],
+    "representative_members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa69",
+        "title": "",
+        "tag": "How does visualization characterize its user population versus HCI?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa2",
+        "title": "",
+        "tag": "How does visualization research describe its value to users?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_17",
+    "overarching_question": "How does this paper's contribution differ from prior related work?",
+    "members": [
+      {
+        "paper": "superpowers",
+        "unit_id": "pa16",
+        "title": "",
+        "tag": "How does this paper's focus differ from prior superpower-technology work?"
+      },
+      {
+        "paper": "timelines",
+        "unit_id": "pa19",
+        "title": "",
+        "tag": "How does this paper's focus differ from prior storytelling research?"
+      }
+    ],
+    "representative_members": [
+      {
+        "paper": "superpowers",
+        "unit_id": "pa16",
+        "title": "",
+        "tag": "How does this paper's focus differ from prior superpower-technology work?"
+      },
+      {
+        "paper": "timelines",
+        "unit_id": "pa19",
+        "title": "",
+        "tag": "How does this paper's focus differ from prior storytelling research?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_18",
+    "overarching_question": "What specific dimensions or properties define and structure a design concept?",
+    "members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa104",
+        "title": "",
+        "tag": "Which properties of allowable actions will be examined?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa42",
+        "title": "",
+        "tag": "What seven dimensions of empowerment will be examined?"
+      }
+    ],
+    "representative_members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa104",
+        "title": "",
+        "tag": "Which properties of allowable actions will be examined?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa42",
+        "title": "",
+        "tag": "What seven dimensions of empowerment will be examined?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_19",
+    "overarching_question": "How should new conceptual frameworks reshape visualization design and interaction?",
+    "members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa81",
+        "title": "",
+        "tag": "What is the proposed definition of interaction for visualization?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa60",
+        "title": "",
+        "tag": "What is the purpose of proposing these new visualization designs?"
+      }
+    ],
+    "representative_members": [
+      {
+        "paper": "interaction",
+        "unit_id": "pa81",
+        "title": "",
+        "tag": "What is the proposed definition of interaction for visualization?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa60",
+        "title": "",
+        "tag": "What is the purpose of proposing these new visualization designs?"
+      }
+    ]
+  },
+  {
+    "group_id": "group_20",
+    "overarching_question": "Who funded and supported this research?",
+    "members": [
+      {
+        "paper": "storytellingtechniques",
+        "unit_id": "pa81",
+        "title": "",
+        "tag": "Who funded this research?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa79",
+        "title": "",
+        "tag": "Who funded and supported this work?"
+      }
+    ],
+    "representative_members": [
+      {
+        "paper": "storytellingtechniques",
+        "unit_id": "pa81",
+        "title": "",
+        "tag": "Who funded this research?"
+      },
+      {
+        "paper": "superpowers",
+        "unit_id": "pa79",
+        "title": "",
+        "tag": "Who funded and supported this work?"
+      }
+    ]
+  }
+]

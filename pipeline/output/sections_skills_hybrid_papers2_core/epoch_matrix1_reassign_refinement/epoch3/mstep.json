@@ -1,0 +1,500 @@
+{
+  "groups": [
+    {
+      "group_id": "group_1",
+      "overarching_question": "What frameworks or typologies characterize and organize visualization concepts?",
+      "representative_members": [
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa1",
+          "tag": "What gap exists and what typology is proposed to fill it?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa26",
+          "tag": "What framework categorizes low-level epistemic superpower mechanisms?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa1",
+          "tag": "What gap motivates a richer design space for storytelling timelines, and what was contributed and validated?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa21",
+          "tag": "What are the four categories of storytelling techniques?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa100",
+          "tag": "How is the visualization pipeline reinterpreted to classify allowable actions?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_2",
+      "overarching_question": "What conceptual framework or typology advances understanding of visualization design and use?",
+      "representative_members": [
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa1",
+          "tag": "What gap exists and what typology is proposed to fill it?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa1",
+          "tag": "What is the paper's approach and contribution?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa1",
+          "tag": "What gap motivates a richer design space for storytelling timelines, and what was contributed and validated?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa1",
+          "tag": "What approach and contribution does the paper make in narrative visualization?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa81",
+          "tag": "What is the proposed definition of interaction for visualization?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_3",
+      "overarching_question": "How was the source material or corpus initially collected to build the framework?",
+      "representative_members": [
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa59",
+          "tag": "What prior literature informed the typology's development?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa19",
+          "tag": "How did the initial superpower concept and list originate?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa23",
+          "tag": "How was the initial corpus of timelines gathered?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa15",
+          "tag": "How was the initial story corpus gathered?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa11",
+          "tag": "How were seed papers iteratively identified via snowballing?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_4",
+      "overarching_question": "How does the proposed classification relate to prior taxonomies?",
+      "representative_members": [
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa59",
+          "tag": "What prior literature informed the typology's development?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa23",
+          "tag": "How are superpowers classified into two types?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa33",
+          "tag": "How does this design space compare to prior classifications?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa59",
+          "tag": "How do our codes align with Segel and Heer's taxonomy?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa100",
+          "tag": "How is the visualization pipeline reinterpreted to classify allowable actions?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_5",
+      "overarching_question": "How does this new classification framework relate to prior taxonomies?",
+      "representative_members": [
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa65",
+          "tag": "Which general classification systems most influenced the typology?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa23",
+          "tag": "How are superpowers classified into two types?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa33",
+          "tag": "How does this design space compare to prior classifications?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa59",
+          "tag": "How do our codes align with Segel and Heer's taxonomy?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa100",
+          "tag": "How is the visualization pipeline reinterpreted to classify allowable actions?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_6",
+      "overarching_question": "What classification framework or design space is proposed to structure this domain?",
+      "representative_members": [
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa5",
+          "tag": "What typology is proposed to bridge this gap?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa26",
+          "tag": "What framework categorizes low-level epistemic superpower mechanisms?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa1",
+          "tag": "What gap motivates a richer design space for storytelling timelines, and what was contributed and validated?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa21",
+          "tag": "What are the four categories of storytelling techniques?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa47",
+          "tag": "What are the three approaches to conceptualizing interaction?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_7",
+      "overarching_question": "How does this classification relate to prior taxonomies and frameworks?",
+      "representative_members": [
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa65",
+          "tag": "Which general classification systems most influenced the typology?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa7",
+          "tag": "How do prior frameworks distinguish types of human abilities/actions?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa33",
+          "tag": "How does this design space compare to prior classifications?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa59",
+          "tag": "How do our codes align with Segel and Heer's taxonomy?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa100",
+          "tag": "How is the visualization pipeline reinterpreted to classify allowable actions?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_8",
+      "overarching_question": "What gaps in visualization research motivate new conceptual frameworks?",
+      "representative_members": [
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa1",
+          "tag": "What gap exists and what typology is proposed to fill it?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa9",
+          "tag": "What gap exists in characterizing visualization's benefits?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa1",
+          "tag": "What gap motivates a richer design space for storytelling timelines, and what was contributed and validated?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa6",
+          "tag": "How has prior work categorized narrative visualization genres?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa4",
+          "tag": "What core problem underlies these demands: lack of interaction definition?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_9",
+      "overarching_question": "How does this work build on and extend prior classification frameworks?",
+      "representative_members": [
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa59",
+          "tag": "What prior literature informed the typology's development?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa7",
+          "tag": "How do prior frameworks distinguish types of human abilities/actions?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa7",
+          "tag": "What are the paper's two main contributions?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa6",
+          "tag": "How has prior work categorized narrative visualization genres?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa73",
+          "tag": "Why compare visualization and HCI views of interaction?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_10",
+      "overarching_question": "What conceptual framework or typology does this visualization paper propose and contribute?",
+      "representative_members": [
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa1",
+          "tag": "What gap exists and what typology is proposed to fill it?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa1",
+          "tag": "What is the paper's approach and contribution?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa1",
+          "tag": "What gap motivates a richer design space for storytelling timelines, and what was contributed and validated?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa5",
+          "tag": "What are the paper's specific contributions?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa81",
+          "tag": "What is the proposed definition of interaction for visualization?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_12",
+      "overarching_question": "What are the categories/dimensions of the proposed classification framework?",
+      "representative_members": [
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa21",
+          "tag": "What is the overall structure of the typology?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa26",
+          "tag": "What framework categorizes low-level epistemic superpower mechanisms?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa29",
+          "tag": "What dimensions define the proposed design space?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa21",
+          "tag": "What are the four categories of storytelling techniques?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa100",
+          "tag": "How is the visualization pipeline reinterpreted to classify allowable actions?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_14",
+      "overarching_question": "How are key visualization terms and concepts defined?",
+      "representative_members": [
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa30",
+          "tag": "What does 'search' mean and how is it categorized?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa25",
+          "tag": "How are key terms like epistemic tool and object defined?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa9",
+          "tag": "What is a timeline and how are events encoded?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa23",
+          "tag": "What terminology definitions are used in this section?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa81",
+          "tag": "What is the proposed definition of interaction for visualization?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_15",
+      "overarching_question": "Who funded or contributed to this research (acknowledgments)?",
+      "representative_members": [
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa86",
+          "tag": "Who provided funding, feedback, or early ideas for this work?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa79",
+          "tag": "Who funded and supported this work?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa59",
+          "tag": "Who gave feedback or resources to support this work?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa81",
+          "tag": "Who funded this research?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa121",
+          "tag": "Who is being thanked for their contributions?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_17",
+      "overarching_question": "How does this work address gaps in existing visualization research frameworks?",
+      "representative_members": [
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa5",
+          "tag": "What typology is proposed to bridge this gap?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa9",
+          "tag": "What gap exists in characterizing visualization's benefits?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa19",
+          "tag": "How does this paper's focus differ from prior storytelling research?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa6",
+          "tag": "How has prior work categorized narrative visualization genres?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa4",
+          "tag": "What core problem underlies these demands: lack of interaction definition?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_18",
+      "overarching_question": "What are the categories/dimensions of the proposed conceptual framework?",
+      "representative_members": [
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa21",
+          "tag": "What is the overall structure of the typology?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa42",
+          "tag": "What seven dimensions of empowerment will be examined?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa29",
+          "tag": "What dimensions define the proposed design space?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa21",
+          "tag": "What are the four categories of storytelling techniques?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa100",
+          "tag": "How is the visualization pipeline reinterpreted to classify allowable actions?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_19",
+      "overarching_question": "How do researchers develop frameworks/typologies to characterize visualization concepts?",
+      "representative_members": [
+        {
+          "paper": "multileveltypology",
+          "unit_id": "pa1",
+          "tag": "What gap exists and what typology is proposed to fill it?"
+        },
+        {
+          "paper": "superpowers",
+          "unit_id": "pa20",
+          "tag": "How was the list refined into a formal framework?"
+        },
+        {
+          "paper": "timelines",
+          "unit_id": "pa25",
+          "tag": "What is the resulting design space structure?"
+        },
+        {
+          "paper": "storytellingtechniques",
+          "unit_id": "pa6",
+          "tag": "How has prior work categorized narrative visualization genres?"
+        },
+        {
+          "paper": "interaction",
+          "unit_id": "pa47",
+          "tag": "What are the three approaches to conceptualizing interaction?"
+        }
+      ]
+    }
+  ]
+}

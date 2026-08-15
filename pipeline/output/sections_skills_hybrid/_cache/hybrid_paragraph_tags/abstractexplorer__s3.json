@@ -1,0 +1,15 @@
+{
+  "pa9": "What prior work does AbstractExplorer build on?",
+  "pa10": "How does close reading differ from distant reading approaches?",
+  "pa11": "What existing tools support close reading of single documents?",
+  "pa12": "What gap remains in prior reading tools for document corpora?",
+  "pa13": "What is text alignment and how is it typically done?",
+  "pa14": "How has prior work aligned larger texts, and what's missing?",
+  "pa15": "What prior methods scale alignment to many diverse texts?",
+  "pa16": "How does AbstractExplorer reframe text alignment differently?",
+  "pa17": "What prior systems use structure to support sensemaking?",
+  "pa18": "How does AbstractExplorer differ from these prior sensemaking systems?",
+  "pa19": "Why are scientific abstracts suited to this structural approach?",
+  "pa20": "How do existing corpus sensemaking systems support exploration?",
+  "pa21": "What cognitive theories underpin these prior tools' designs?"
+}

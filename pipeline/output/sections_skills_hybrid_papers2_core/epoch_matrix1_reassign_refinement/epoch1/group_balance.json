@@ -1,0 +1,122 @@
+[
+  {
+    "group_id": "group_3",
+    "overarching_question": "How was the source material or corpus initially collected to build the framework?",
+    "group_balance": 100.0,
+    "member_count": 46
+  },
+  {
+    "group_id": "group_9",
+    "overarching_question": "How does this work position itself relative to prior visualization research and frameworks?",
+    "group_balance": 100.0,
+    "member_count": 21
+  },
+  {
+    "group_id": "group_13",
+    "overarching_question": "How are key terms and concepts defined and structured in this framework?",
+    "group_balance": 100.0,
+    "member_count": 47
+  },
+  {
+    "group_id": "group_18",
+    "overarching_question": "What are the key structural components or dimensions of this visualization framework?",
+    "group_balance": 100.0,
+    "member_count": 51
+  },
+  {
+    "group_id": "group_19",
+    "overarching_question": "What frameworks or design spaces guide visualization design and its contributions?",
+    "group_balance": 100.0,
+    "member_count": 22
+  },
+  {
+    "group_id": "group_2",
+    "overarching_question": "What conceptual framework or typology does this visualization paper contribute?",
+    "group_balance": 80.0,
+    "member_count": 6
+  },
+  {
+    "group_id": "group_5",
+    "overarching_question": "How does this work relate to and extend prior classification frameworks?",
+    "group_balance": 80.0,
+    "member_count": 19
+  },
+  {
+    "group_id": "group_12",
+    "overarching_question": "How do researchers classify and characterize visualization interaction techniques?",
+    "group_balance": 80.0,
+    "member_count": 75
+  },
+  {
+    "group_id": "group_14",
+    "overarching_question": "How are key concepts and terminology defined within the framework?",
+    "group_balance": 80.0,
+    "member_count": 22
+  },
+  {
+    "group_id": "group_1",
+    "overarching_question": "What classification framework or design space organizes this visualization research area?",
+    "group_balance": 60.0,
+    "member_count": 25
+  },
+  {
+    "group_id": "group_4",
+    "overarching_question": "How does the new framework relate to prior classification systems?",
+    "group_balance": 60.0,
+    "member_count": 28
+  },
+  {
+    "group_id": "group_8",
+    "overarching_question": "What gaps in prior visualization research motivate this paper's contribution?",
+    "group_balance": 60.0,
+    "member_count": 17
+  },
+  {
+    "group_id": "group_11",
+    "overarching_question": "How does this work relate to and build on prior visualization/HCI frameworks?",
+    "group_balance": 60.0,
+    "member_count": 12
+  },
+  {
+    "group_id": "group_15",
+    "overarching_question": "Who funded or contributed to this research (acknowledgments)?",
+    "group_balance": 60.0,
+    "member_count": 3
+  },
+  {
+    "group_id": "group_17",
+    "overarching_question": "How does this paper position its contribution relative to prior visualization research?",
+    "group_balance": 60.0,
+    "member_count": 4
+  },
+  {
+    "group_id": "group_6",
+    "overarching_question": "What contribution and framework does this visualization paper offer?",
+    "group_balance": 40.0,
+    "member_count": 4
+  },
+  {
+    "group_id": "group_7",
+    "overarching_question": "How does this work position itself relative to prior frameworks and terminology?",
+    "group_balance": 40.0,
+    "member_count": 4
+  },
+  {
+    "group_id": "group_16",
+    "overarching_question": "How does this work situate itself within visualization research literature?",
+    "group_balance": 40.0,
+    "member_count": 17
+  },
+  {
+    "group_id": "group_20",
+    "overarching_question": "Acknowledgments: who funded and supported this work?",
+    "group_balance": 40.0,
+    "member_count": 2
+  },
+  {
+    "group_id": "group_10",
+    "overarching_question": "What does this visualization paper contribute and how does it advance prior work?",
+    "group_balance": 20.0,
+    "member_count": 1
+  }
+]
