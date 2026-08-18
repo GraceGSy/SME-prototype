@@ -1,8 +1,8 @@
 {
-  "pa23": "What scenario introduces the interface's use?",
-  "pa24": "How are code examples displayed and color-coded for clarity?",
-  "pa25": "How does the interface show common usage options and their frequency?",
-  "pa26": "How does a user filter examples by selecting an option?",
-  "pa27": "How do skeleton options update after applying a filter?",
-  "pa28": "How does drilling into filters help discover unfamiliar patterns?"
+  "pa29": "What is the example task and setup for the walkthrough?",
+  "pa30": "How does the interface visually organize and highlight mined code examples?",
+  "pa31": "How does the user see and adjust which usage options are shown?",
+  "pa32": "How does the user filter examples to focus on a less common pattern?",
+  "pa33": "How does the skeleton view update to reflect a filtered selection?",
+  "pa34": "How does the user drill down further to find relevant guard patterns?"
 }

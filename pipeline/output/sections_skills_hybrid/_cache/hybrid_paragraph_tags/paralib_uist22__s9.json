@@ -1,7 +1,7 @@
 {
-  "pa70": "Which design goals did ParaLib successfully achieve?",
-  "pa71": "What does the mixed usability-assessment result mean?",
-  "pa72": "Which specific design features drove the observed benefits?",
-  "pa73": "What factors does ParaLib fail to address?",
-  "pa74": "How might future tools like ParaLib fit into programmers' workflows?"
+  "pa73": "Which design goals did ParaLib successfully achieve?",
+  "pa74": "How ambiguous/double-edged was ParaLib's support for usability assessment?",
+  "pa75": "What follow-up research is needed to isolate which design features mattered?",
+  "pa76": "What library-selection factors remain outside ParaLib's scope?",
+  "pa77": "How might future tools like ParaLib fit into programmers' workflows?"
 }

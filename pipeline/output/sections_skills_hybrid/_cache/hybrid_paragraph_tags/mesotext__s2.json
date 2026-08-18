@@ -1,12 +1,11 @@
 {
-  "pa2": "Why do users need help making sense of multiple LLM responses?",
-  "pa3": "Why not just use automatic analysis instead of showing full text?",
-  "pa4": "What did formative interviews reveal about current inspection practices?",
-  "pa5": "What is the 'mesoscale' of LLM response sensemaking?",
-  "pa6": "What techniques were built to support mesoscale sensemaking?",
-  "pa7": "What is the paper's research question?",
-  "pa8": "How were the interface features evaluated?",
-  "pa9": "What themes emerged from the studies?",
-  "pa10": "What are the paper's main contributions?",
-  "pa11": "What does the rest of the paper cover?"
+  "pa2": "Why is sensemaking of multiple LLM responses useful?",
+  "pa3": "What gap exists in current tools/methods for inspecting many responses?",
+  "pa4": "What is the 'mesoscale' of LLM response sensemaking?",
+  "pa5": "What system/features were designed to support mesoscale sensemaking?",
+  "pa6": "What is the paper's research question?",
+  "pa7": "How was the system evaluated?",
+  "pa8": "What themes emerged from the studies?",
+  "pa9": "What are the paper's contributions?",
+  "pa10": "What does the rest of the paper (discussion) cover?"
 }

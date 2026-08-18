@@ -1,9 +1,10 @@
 {
-  "pa2": "Why is library selection a hard problem for programmers?",
-  "pa3": "What do programmers currently do to compare libraries, and why is it inadequate?",
-  "pa4": "What existing tools support library comparison, and what are their limitations?",
-  "pa5": "What system does this paper propose and what does it focus on?",
-  "pa6": "What theoretical basis informs the interface's design choices?",
-  "pa7": "What interactive features does the interface provide?",
-  "pa8": "How was the system evaluated and what does the paper contribute?"
+  "pa2": "Why is library selection a common and difficult task?",
+  "pa3": "What do programmers currently do to compare libraries, and why is it tedious?",
+  "pa4": "What existing tools support library comparison, and what are their limits?",
+  "pa5": "What system was built to address this gap?",
+  "pa6": "What theories informed the interface design choices?",
+  "pa7": "What interactive features does the interface offer?",
+  "pa8": "How was the system evaluated and what were the findings?",
+  "pa9": "What are the paper's main contributions?"
 }

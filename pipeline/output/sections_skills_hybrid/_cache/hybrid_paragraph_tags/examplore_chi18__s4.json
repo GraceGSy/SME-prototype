@@ -1,6 +1,13 @@
 {
-  "pa19": "Why introduce a synthetic code skeleton and what inspired its design?",
-  "pa20": "What API usage features make up the skeleton?",
-  "pa21": "What language does the skeleton design target?",
-  "pa22": "How well does the skeleton generalize to other languages?"
+  "pa18": "What is the synthetic code skeleton and what motivated its design?",
+  "pa19": "What are the components of the skeleton?",
+  "pa20": "What does the Declarations feature capture?",
+  "pa21": "What does the Pre-focal method calls feature capture?",
+  "pa22": "What does the Guard feature capture?",
+  "pa23": "What does the Return value check feature capture?",
+  "pa24": "What does the Post-focal method calls feature capture?",
+  "pa25": "What does the Exception handling feature capture?",
+  "pa26": "What does the Resource management feature capture?",
+  "pa27": "What is the intended scope and grounding of the skeleton design?",
+  "pa28": "How far can the skeleton generalize beyond Java?"
 }

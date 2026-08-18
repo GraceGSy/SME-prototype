@@ -1,14 +1,13 @@
 {
-  "pa79": "What analysis approach structures the results?",
-  "pa80": "What was participants' overall reaction and workload experience?",
-  "pa81": "How did highlighting and alignment aid skimming efficiency?",
-  "pa82": "What does usage log data show about feature preferences?",
-  "pa83": "How did participants rate usefulness of alignment/highlighting features?",
-  "pa84": "Did the interface help participants review more/broader papers?",
-  "pa85": "How did features support cross-paper pattern comparison?",
-  "pa86": "What usability issues did participants report with the interface?",
-  "pa87": "What concerns arose about context loss and misclassification?",
-  "pa88": "How was the user-defined aspect feature used and received?",
-  "pa89": "How did experience level affect ease of using custom aspects?",
-  "pa90": "Would participants adopt the tool in real-world use?"
+  "pa75": "What data sources are combined to present findings?",
+  "pa76": "What is the overall summary of participant feedback and workload ratings?",
+  "pa77": "How did highlighting and alignment help participants skim efficiently?",
+  "pa78": "What does usage log data reveal about feature preferences?",
+  "pa79": "Did the interface help participants read more abstracts at scale?",
+  "pa80": "How did participants use the tool to compare abstracts and find patterns?",
+  "pa81": "What readability and visual clutter issues did users report?",
+  "pa82": "What context and misclassification concerns did users raise?",
+  "pa83": "How did participants use and rate the user-defined aspects feature?",
+  "pa84": "Did experience level affect usability of the user-defined feature?",
+  "pa85": "Would participants adopt this tool in real-world settings?"
 }

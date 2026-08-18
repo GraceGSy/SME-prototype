@@ -1,13 +1,13 @@
 {
-  "pa88": "What is the overall takeaway of the study?",
-  "pa89": "Where do the design implications come from?",
-  "pa90": "What new algorithms or renderings did participants suggest?",
-  "pa91": "Why apply algorithms to subsets of responses?",
-  "pa92": "Why support user-defined queries?",
-  "pa93": "Why support subsetting of responses?",
-  "pa94": "How could explicit annotation support be added?",
-  "pa95": "How could automated analysis be integrated into inspectors?",
-  "pa96": "What implementation limitations affected the algorithms and renderings?",
-  "pa97": "What are the limitations of the study's task scope?",
-  "pa98": "How does scale affect the utility of response inspectors?"
+  "pa86": "What is the overall takeaway from the studies?",
+  "pa87": "How were the design implications derived?",
+  "pa88": "What new algorithms/renderings did participants suggest?",
+  "pa89": "How could algorithms apply to response subsets?",
+  "pa90": "Should users be able to define custom queries?",
+  "pa91": "How could users filter or subset responses?",
+  "pa92": "How could annotation features extend the tool?",
+  "pa93": "Should automated analysis be integrated into the interface?",
+  "pa94": "What implementation-level limitations were observed?",
+  "pa95": "What limitations exist in the study design and scope?",
+  "pa96": "How does scale limit the current findings and future work?"
 }

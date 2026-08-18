@@ -1,11 +1,10 @@
 {
-  "pa10": "How have prior systems visualized large collections of related documents/data?",
-  "pa11": "How do WordTree and WordSeer's text visualization techniques relate to Examplore?",
-  "pa12": "How does OverCode's approach to visualizing code collections differ from Examplore?",
-  "pa13": "What do prior studies show about how programmers search for code examples?",
-  "pa14": "Why are individual code examples problematic and why is visualizing many examples desired?",
-  "pa15": "Why do developers only explore a few examples in practice, motivating Examplore's design?",
-  "pa16": "What prior techniques exist for mining API usage patterns from Big Code?",
-  "pa17": "How does Examplore differ from prior visualizations of mined API usage patterns?",
-  "pa18": "How does this paper build on and differ from the authors' prior ICSE work?"
+  "pa10": "How have prior systems visualized collections of complex non-code objects?",
+  "pa11": "How do text visualization tools inform EXAMPLORE's design?",
+  "pa12": "How does OverCode's approach to code collections differ from EXAMPLORE's needs?",
+  "pa13": "Why do developers need better support for learning APIs from code examples?",
+  "pa14": "Why do developers only explore a limited number of code examples?",
+  "pa15": "What techniques exist for mining API usage patterns from code?",
+  "pa16": "How does EXAMPLORE differ from prior API pattern visualization tools?",
+  "pa17": "How does this paper's contribution relate to the authors' prior mining work?"
 }

@@ -1,0 +1,3 @@
+{
+  "question": "What system design and implementation choices enable researchers to closely read and compare sentence-level aspects across a large corpus of paper abstracts without losing the authors' original wording, and how would such a tool actually be used in practice?"
+}

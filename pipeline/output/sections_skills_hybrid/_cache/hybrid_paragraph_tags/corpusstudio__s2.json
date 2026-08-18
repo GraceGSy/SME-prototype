@@ -1,10 +1,7 @@
 {
-  "pa2": "What problem do inexperienced writers face with implicit community norms?",
-  "pa3": "Why are examples helpful but risky for learning to write?",
-  "pa4": "What limits prior example-based writing support approaches?",
-  "pa5": "How does prior language-learning-from-examples work differ from this approach?",
-  "pa6": "What system was built and how does it work?",
-  "pa7": "How was the system evaluated?",
-  "pa8": "What did the study find?",
-  "pa9": "What are the paper's main contributions?"
+  "pa2": "Why is learning from examples hard for novice writers?",
+  "pa3": "How does prior example-based learning work relate to this approach?",
+  "pa4": "What tool and features were built to address this?",
+  "pa5": "How was the tool evaluated and what was found?",
+  "pa6": "What are the paper's main contributions?"
 }

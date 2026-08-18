@@ -567,7 +567,7 @@ function updatePreviews() {
 }
 
 async function loadAll() {
-  const base = "../output/sections_skills_hybrid_papers3_core/";
+  const base = "../output/sections_skills_hybrid_core/";
   const opts = { cache: "no-store" }; // these files change often during development; never serve a stale cached copy
   const manifest = await (await fetch(base + "manifest.json", opts)).json();
   const papers = [];

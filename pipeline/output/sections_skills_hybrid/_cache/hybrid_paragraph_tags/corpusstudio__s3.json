@@ -1,11 +1,10 @@
 {
-  "pa10": "What will this section cover?",
-  "pa11": "Why is writing for a specific audience/community hard?",
-  "pa12": "Why are writing norms difficult for novices to apply?",
-  "pa13": "What theoretical approach supports teaching writing to novices?",
-  "pa14": "What kinds of writing support tools exist and their drawbacks?",
-  "pa15": "How does this work differ from prior example-surfacing tools?",
-  "pa16": "How does this work compare to prior scaffolded annotation tools?",
-  "pa17": "Why are existing related-work search tools insufficient for writing support?",
-  "pa18": "Why is switching between writing and searching tools a problem?"
+  "pa7": "What will this section cover?",
+  "pa8": "Why is understanding community writing norms important?",
+  "pa9": "What makes up writing norms and why are they hard to apply?",
+  "pa10": "What theoretical approach explains how writers learn community norms?",
+  "pa11": "How do existing tools support writing with external/generated text, and how does this work differ?",
+  "pa12": "How have prior tools used corpus text for writing support, and what's different here?",
+  "pa13": "How do existing search/related-work tools fall short for writing support?",
+  "pa14": "What gap exists between separate writing and related-work tools that motivates an integrated approach?"
 }

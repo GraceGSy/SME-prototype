@@ -1,6 +1,0 @@
-{
-  "pa101": "How exactly is the exact matches algorithm implemented?",
-  "pa102": "How is content similarity between sentences mathematically defined?",
-  "pa103": "What clustering algorithm groups similar sentences across responses?",
-  "pa104": "Why were these specific design choices made for PDC?"
-}

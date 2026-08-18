@@ -1,123 +1,101 @@
 {
   "meta": {
-    "reassigned": 214,
-    "total_assigned": 456,
-    "dropped_groups": [
-      "group_11"
-    ]
+    "reassigned": 207,
+    "total_assigned": 454,
+    "dropped_groups": []
   },
   "candidates_used": [
     {
       "group_id": "group_1",
-      "overarching_question": "How was the user study designed to evaluate the tool's effectiveness?"
+      "overarching_question": "How can interactive systems help users make sense of large text corpora?"
     },
     {
       "group_id": "group_2",
-      "overarching_question": "How did users perceive the usefulness of the tool's features?"
+      "overarching_question": "How was the user study designed to evaluate the proposed tool/interface?"
     },
     {
       "group_id": "group_3",
-      "overarching_question": "What did user studies reveal about tool effectiveness and user experience?"
-    },
-    {
-      "group_id": "group_4",
-      "overarching_question": "How does this system differ from prior related tools/work?"
-    },
-    {
-      "group_id": "group_5",
-      "overarching_question": "How were these systems evaluated and what did they contribute?"
-    },
-    {
-      "group_id": "group_6",
-      "overarching_question": "How is a specific interface feature technically implemented?"
-    },
-    {
-      "group_id": "group_7",
-      "overarching_question": "How do cognitive learning theories inform tool design for comparing examples?"
-    },
-    {
-      "group_id": "group_8",
-      "overarching_question": "Who funded and supported this research?"
-    },
-    {
-      "group_id": "group_9",
       "overarching_question": "How was the user study designed to evaluate the tool's effectiveness?"
     },
     {
-      "group_id": "group_10",
-      "overarching_question": "How did the proposed tool perform against baseline in user studies?"
+      "group_id": "group_4",
+      "overarching_question": "Does the tool's user study show it improves task performance and experience?"
+    },
+    {
+      "group_id": "group_5",
+      "overarching_question": "How do prior text alignment/visualization methods inform new tools for comparing multiple documents?"
+    },
+    {
+      "group_id": "group_6",
+      "overarching_question": "How does color-coded highlighting support comparison across text/code examples?"
+    },
+    {
+      "group_id": "group_7",
+      "overarching_question": "How can interactive systems help users make sense of and compare large text corpora?"
+    },
+    {
+      "group_id": "group_9",
+      "overarching_question": "How does this system's approach differ from prior related tools?"
     },
     {
       "group_id": "group_11",
-      "overarching_question": "How does this system differ from prior related tools and approaches?"
-    },
-    {
-      "group_id": "group_12",
-      "overarching_question": "How is color-coded highlighting designed to support visual comparison?"
+      "overarching_question": "Who funded and supported this research?"
     },
     {
       "group_id": "group_13",
-      "overarching_question": "What usability issues and improvement suggestions did participants report for the tool?"
+      "overarching_question": "How do cognitive theories of comparison inform tool design for aligning examples?"
     },
     {
       "group_id": "group_14",
-      "overarching_question": "How are system features designed to support cross-document comparison?"
+      "overarching_question": "Why do existing tools/representations fall short in supporting cross-document exploration?"
     },
     {
       "group_id": "group_15",
-      "overarching_question": "How does prior work align/visualize text or code examples, and how does this system differ?"
+      "overarching_question": "How can interface design help users visually compare analogous text/code across documents?"
     },
     {
       "group_id": "group_16",
-      "overarching_question": "How does this system's approach differ from prior related tools/methods?"
+      "overarching_question": "How are system features designed to support sensemaking across many text examples?"
     },
     {
       "group_id": "group_17",
-      "overarching_question": "How are comparison units and features designed to support learning through examples?"
+      "overarching_question": "How should interfaces render and align multiple text/code examples to support cross-example comparison?"
     },
     {
       "group_id": "group_18",
-      "overarching_question": "How are multiple examples visually arranged to support cross-item comparison?"
+      "overarching_question": "How did users actually use and value the tool's features in the study?"
     },
     {
       "group_id": "group_19",
-      "overarching_question": "What were the goals and design of the user study evaluating the tool?"
+      "overarching_question": "How should text/code visualization tools be designed to leverage cognitive theories for sensemaking?"
     },
     {
       "group_id": "group_20",
-      "overarching_question": "How was the user study designed and conducted to evaluate the tool?"
+      "overarching_question": "Who were the study participants and how were they recruited?"
     },
     {
       "group_id": "group_21",
-      "overarching_question": "Which interface features did users find most useful and preferred?"
+      "overarching_question": "How was the user study designed and conducted?"
     },
     {
       "group_id": "group_22",
-      "overarching_question": "How do exploratory interface features affect cognitive load and user confidence?"
+      "overarching_question": "What specific tasks did participants perform during the user study?"
     },
     {
       "group_id": "group_23",
-      "overarching_question": "What tool was built to support this task and how well did it work?"
+      "overarching_question": "Did the tool's features actually help users, per study evidence and feedback?"
     },
     {
       "group_id": "group_24",
-      "overarching_question": "What limitations and future work does the study acknowledge?"
+      "overarching_question": "What did the user study reveal about the tool's effectiveness and implications?"
     },
     {
       "group_id": "group_25",
-      "overarching_question": "How does a user experience the system through a walkthrough scenario?"
+      "overarching_question": "Does the tool quantitatively outperform baseline in user study?"
     },
     {
-      "group_id": "group_27",
-      "overarching_question": "Who were the recruited participants in the user study?"
-    },
-    {
-      "group_id": "group_28",
-      "overarching_question": "How were study tasks designed and conducted to evaluate the tool?"
-    },
-    {
-      "group_id": "group_29",
-      "overarching_question": "How do these systems help users make sense of large text collections, and what did evaluation show?"
+      "group_id": "group_26",
+      "overarching_question": "Why do existing tools/approaches fail to help users process large information sets?"
     }
   ],
   "groups": [
@@ -126,23 +104,93 @@
       "members": [
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa58",
-          "tag": "What equipment was used to measure reading behavior?"
+          "unit_id": "pa1",
+          "tag": "What problem, system, and evaluations does this paper present?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa7",
+          "tag": "What system was built and for what purpose?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa9",
+          "tag": "What are the paper's main contributions?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa11",
+          "tag": "How does close reading differ from distant reading approaches?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa17",
+          "tag": "What structure-based sensemaking systems exist for document corpora?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa41",
+          "tag": "How does keyword filtering work?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa7",
-          "tag": "How was the system evaluated?"
+          "unit_id": "pa6",
+          "tag": "What are the paper's main contributions?"
         },
         {
-          "paper": "examplore_chi18",
-          "unit_id": "pa39",
-          "tag": "How long was the study and how were conditions counterbalanced?"
+          "paper": "corpusstudio",
+          "unit_id": "pa15",
+          "tag": "What is CorpusStudio designed to do?"
         },
         {
-          "paper": "examplore_chi18",
+          "paper": "corpusstudio",
+          "unit_id": "pa17",
+          "tag": "What usage scenario illustrates the system?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa18",
+          "tag": "How does the scenario show document-level norm inspection?"
+        },
+        {
+          "paper": "corpusstudio",
           "unit_id": "pa43",
-          "tag": "How were participants' answers scored for correctness?"
+          "tag": "How were section titles clustered into a distribution?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa111",
+          "tag": "How does community-sourced support benefit writing communities?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa112",
+          "tag": "How might this approach improve discoverability of lesser-known work?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa2",
+          "tag": "Why is sensemaking of multiple LLM responses useful?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa4",
+          "tag": "What is the 'mesoscale' of LLM response sensemaking?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa24",
+          "tag": "How do practitioners make sense of LLM outputs?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa27",
+          "tag": "What scale of LLM outputs should users be able to review?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa77",
+          "tag": "How might future tools like ParaLib fit into programmers' workflows?"
         }
       ]
     },
@@ -151,138 +199,13 @@
       "members": [
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa28",
-          "tag": "How did participants respond to the example-based search mock-up?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa69",
-          "tag": "Why did higher NFC participants prefer the baseline condition?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa81",
-          "tag": "How did highlighting and alignment aid skimming efficiency?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa90",
-          "tag": "Would participants adopt the tool in real-world use?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa66",
-          "tag": "What overall benefit did participants report from the interface?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa67",
-          "tag": "How did participants use retrieved sentences and titles?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa68",
-          "tag": "Did the tool change participants' understanding of venue norms?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa71",
-          "tag": "How did participants interpret section title frequency?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa72",
-          "tag": "What future uses did participants envision for the section title feature?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa74",
-          "tag": "How did participants react to atypical/uncommon section titles?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa75",
-          "tag": "How did participants engage with retrieved sentence text while reading?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa78",
-          "tag": "How did participants use the tool to find related work?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa79",
-          "tag": "How did the tool help fill content gaps in drafts?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa84",
-          "tag": "What purposes did notes on bookmarks serve?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa85",
-          "tag": "How useful were the tooltips overall?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa88",
-          "tag": "How did paragraph-level tooltip context help participants?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa90",
-          "tag": "How did feature usefulness differ across writing stages, early vs later?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa91",
-          "tag": "How did feature use shift during later revision stages?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa99",
-          "tag": "Which interface did participants report made outline writing easier?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa104",
-          "tag": "Did CorpusStudio change participants' sense of when to break venue norms?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa105",
-          "tag": "Did reviewing many past sentences improve understanding of venue expectations?"
-        },
-        {
-          "paper": "examplore_chi18",
-          "unit_id": "pa53",
-          "tag": "How would participants use Examplore in their real workflows?"
+          "unit_id": "pa24",
+          "tag": "What mock-ups were shown to participants?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa60",
-          "tag": "What qualitative benefits did participants report for the exploratory interface in the email task?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa86",
-          "tag": "How did task stage and preference affect desired response count?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa65",
-          "tag": "What value did participants attribute to ParaLib's example collection?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa66",
-          "tag": "How useful did participants find ParaLib's specific features?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa69",
-          "tag": "Would participants adopt ParaLib for future library comparisons?"
+          "unit_id": "pa46",
+          "tag": "What interfaces were compared in the study?"
         }
       ]
     },
@@ -290,104 +213,19 @@
       "group_id": "group_3",
       "members": [
         {
-          "paper": "abstractexplorer",
-          "unit_id": "pa79",
-          "tag": "What analysis approach structures the results?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa80",
-          "tag": "What was participants' overall reaction and workload experience?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa91",
-          "tag": "How do findings connect back to the design framework?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa8",
-          "tag": "What did the study find?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa65",
-          "tag": "How was the qualitative analysis conducted?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa97",
-          "tag": "Was there a learning effect between first and second half of the outline task?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa102",
-          "tag": "What did the NASA-TLX workload results show for the writing task?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa106",
-          "tag": "What is the purpose of this discussion section?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa107",
-          "tag": "What determined relevance of retrieved sentences to users?"
+          "paper": "examplore_chi18",
+          "unit_id": "pa49",
+          "tag": "How did the control and experimental conditions differ?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa9",
-          "tag": "What themes emerged from the studies?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa25",
-          "tag": "Why do interviewees distrust automatic evaluation?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa57",
-          "tag": "How was qualitative data analyzed?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa58",
-          "tag": "What themes emerged from participant interviews?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa66",
-          "tag": "What qualitative differences did participants report in the comparison task?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa72",
-          "tag": "How was the case study data analyzed?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa88",
-          "tag": "What is the overall takeaway of the study?"
+          "unit_id": "pa95",
+          "tag": "What limitations exist in the study design and scope?"
         },
         {
           "paper": "paralib_uist22",
-          "unit_id": "pa60",
-          "tag": "How were participant responses categorized for analysis?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa61",
-          "tag": "What types of insights did participants share in each condition?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa70",
-          "tag": "Which design goals did ParaLib successfully achieve?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa71",
-          "tag": "What does the mixed usability-assessment result mean?"
+          "unit_id": "pa46",
+          "tag": "What conditions were compared in the study?"
         }
       ]
     },
@@ -395,74 +233,19 @@
       "group_id": "group_4",
       "members": [
         {
-          "paper": "abstractexplorer",
-          "unit_id": "pa9",
-          "tag": "What prior work does AbstractExplorer build on?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa11",
-          "tag": "What existing tools support close reading of single documents?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa93",
-          "tag": "How does this approach compare to existing information-seeking paradigms?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa16",
-          "tag": "How does this work compare to prior scaffolded annotation tools?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa17",
-          "tag": "Why are existing related-work search tools insufficient for writing support?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa18",
-          "tag": "Why is switching between writing and searching tools a problem?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa114",
-          "tag": "How does using real corpus examples instead of AI-generated text support communities?"
-        },
-        {
           "paper": "examplore_chi18",
-          "unit_id": "pa18",
-          "tag": "How does this paper build on and differ from the authors' prior ICSE work?"
+          "unit_id": "pa8",
+          "tag": "How was the tool evaluated and what was found?"
         },
         {
           "paper": "paralib_uist22",
-          "unit_id": "pa3",
-          "tag": "What do programmers currently do to compare libraries, and why is it inadequate?"
+          "unit_id": "pa1",
+          "tag": "What was hypothesized, built, and found in the study?"
         },
         {
           "paper": "paralib_uist22",
-          "unit_id": "pa4",
-          "tag": "What existing tools support library comparison, and what are their limitations?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa13",
-          "tag": "How do prior automated library comparison tools differ from ParaLib?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa14",
-          "tag": "How does ParaLib differ from API annotation/collection tools?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa15",
-          "tag": "Do API authors also need library/API comparison support?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa17",
-          "tag": "How does ParaLib differ from standard code diff tools?"
+          "unit_id": "pa8",
+          "tag": "How was the system evaluated and what were the findings?"
         }
       ]
     },
@@ -471,13 +254,53 @@
       "members": [
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa8",
-          "tag": "How was the system validated, and what are the contributions?"
+          "unit_id": "pa4",
+          "tag": "What prior lossless text-centric approaches exist for cross-document reading?"
         },
         {
-          "paper": "paralib_uist22",
+          "paper": "abstractexplorer",
+          "unit_id": "pa10",
+          "tag": "What prior work does this paper build on?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa14",
+          "tag": "What is text alignment and how is it typically done?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa15",
+          "tag": "How has text alignment been applied to longer texts?"
+        },
+        {
+          "paper": "abstractexplorer",
           "unit_id": "pa16",
-          "tag": "What comparison tools exist for other tasks/domains?"
+          "tag": "How do prior alignment methods scale to many texts, and how does this differ from AbstractExplorer?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa7",
+          "tag": "What will this section cover?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa10",
+          "tag": "How have prior systems visualized collections of complex non-code objects?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa11",
+          "tag": "How do text visualization tools inform EXAMPLORE's design?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa11",
+          "tag": "What is the goal and structure of this related work review?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa16",
+          "tag": "What text alignment approaches exist and how are they limited for LLM responses?"
         }
       ]
     },
@@ -486,183 +309,103 @@
       "members": [
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa32",
-          "tag": "How do user-defined custom aspects work?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa33",
-          "tag": "How are sentences segmented and labeled with roles?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa42",
-          "tag": "How does the Abstract/TLDR panel provide sentence context?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa43",
-          "tag": "How does keyword filtering work?"
+          "unit_id": "pa34",
+          "tag": "How do role-color highlights work in the interface?"
         },
         {
           "paper": "abstractexplorer",
           "unit_id": "pa44",
-          "tag": "How does sentence bookmarking work?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa49",
-          "tag": "What data and tech stack underlie the interface?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa50",
-          "tag": "How does the sentence segmentation and aspect classification pipeline work?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa51",
-          "tag": "How are chunk boundaries and role labels generated?"
+          "tag": "How does a user compare participant numbers across studies?"
         },
         {
           "paper": "abstractexplorer",
           "unit_id": "pa52",
-          "tag": "How are chunk labels assigned and stored for performance?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa53",
-          "tag": "How are custom aspects computed dynamically on the backend?"
+          "tag": "Why run an ablation study on these features?"
         },
         {
           "paper": "corpusstudio",
           "unit_id": "pa29",
-          "tag": "What are the core text editor components?"
+          "tag": "How does the interface highlight commonalities and variations in clusters?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa30",
-          "tag": "How are section titles created in the editor?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa32",
-          "tag": "How does the PDC algorithm generate the section title ordering?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa36",
-          "tag": "How does the spatial retrieval mechanism work?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa37",
-          "tag": "How can writers preview subsequent sentences via offset retrieval?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa41",
-          "tag": "How can users bookmark and annotate sentences?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa42",
-          "tag": "How can users view context around a retrieved sentence?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa45",
-          "tag": "What technology stack implements the system?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa46",
-          "tag": "Why was pure vector-based search chosen over hybrid search?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa48",
-          "tag": "How were manuscripts split into sentences?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa49",
-          "tag": "How was data prepared for spatial retrieval/embedding?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa50",
-          "tag": "How were section titles processed for distribution analysis?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa51",
-          "tag": "How was the sample size for section titles chosen?"
+          "unit_id": "pa34",
+          "tag": "How are retrieved sentences visually rendered to aid comparison?"
         },
         {
           "paper": "examplore_chi18",
-          "unit_id": "pa27",
-          "tag": "How do skeleton options update after applying a filter?"
+          "unit_id": "pa22",
+          "tag": "What does the Guard feature capture?"
         },
         {
           "paper": "examplore_chi18",
           "unit_id": "pa30",
-          "tag": "How does the underlying API usage mining process extract code examples?"
+          "tag": "How does the interface visually organize and highlight mined code examples?"
         },
         {
           "paper": "examplore_chi18",
-          "unit_id": "pa31",
-          "tag": "How is normalized code data stored and used for the interface?"
+          "unit_id": "pa39",
+          "tag": "How are variable names canonicalized across examples?"
         },
         {
-          "paper": "examplore_chi18",
-          "unit_id": "pa32",
-          "tag": "How does Examplore rewrite chained method calls?"
-        },
-        {
-          "paper": "examplore_chi18",
-          "unit_id": "pa33",
-          "tag": "How does Examplore canonicalize variable names?"
-        },
-        {
-          "paper": "examplore_chi18",
+          "paper": "mesotext",
           "unit_id": "pa35",
-          "tag": "How is the visualization rendered and updated from the database?"
+          "tag": "What is the Exact Matches feature and its intended benefit?"
         },
         {
           "paper": "mesotext",
           "unit_id": "pa36",
-          "tag": "What implementation platform and overall feature structure was used?"
+          "tag": "How does the Exact Matches algorithm work?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa38",
-          "tag": "How is the Exact Matches algorithm computed?"
+          "unit_id": "pa37",
+          "tag": "What is the Unique Words feature and its rationale?"
         },
         {
-          "paper": "mesotext",
-          "unit_id": "pa41",
-          "tag": "How is the Unique Words algorithm implemented and displayed?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa42",
-          "tag": "What is the novel Positional Diction Clustering algorithm meant to find?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa44",
-          "tag": "How is the PDC clustering algorithm computed and rendered?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa47",
-          "tag": "How does the Interleaved Layout render PDC groups?"
+          "paper": "paralib_uist22",
+          "unit_id": "pa26",
+          "tag": "How does the interface visually mark analogous code concepts across libraries?"
         },
         {
           "paper": "paralib_uist22",
           "unit_id": "pa27",
-          "tag": "What does the example length distribution visualize?"
+          "tag": "How do users disambiguate overlapping concept colors?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa30",
+          "tag": "How do concept distribution bars convey functionality usage across libraries?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa31",
+          "tag": "How are code example length distributions visualized and used?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa34",
+          "tag": "What feature helps users focus on relevant code by hiding unlabeled lines?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa35",
+          "tag": "How does the interface reveal cross-library substring similarities?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa39",
+          "tag": "How do concept distributions help compare library styles and eliminate a candidate?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa41",
+          "tag": "How does selecting a concept filter and highlight relevant code examples?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa42",
+          "tag": "How does the user compare code complexity and reduce visual clutter?"
         }
       ]
     },
@@ -671,168 +414,18 @@
       "members": [
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa4",
-          "tag": "What prior lossless text-centric techniques exist and what theory informs them?"
+          "unit_id": "pa46",
+          "tag": "How does a user investigate LLM-related research gaps?"
         },
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa21",
-          "tag": "What cognitive theories underpin these prior tools' designs?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa36",
-          "tag": "What theory motivates using chunk-role sequences for comparison?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa39",
-          "tag": "What juxtaposition types support structural comparison?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa92",
-          "tag": "How does AbstractExplorer relate to prior Structure-Mapping Theory work?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa95",
-          "tag": "What new conceptual contribution (variation affordances) does the work introduce?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa96",
-          "tag": "What broader theoretical implication does this have for sensemaking and AI's role?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa2",
-          "tag": "What problem do inexperienced writers face with implicit community norms?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa3",
-          "tag": "Why are examples helpful but risky for learning to write?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa4",
-          "tag": "What limits prior example-based writing support approaches?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa10",
-          "tag": "What will this section cover?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa11",
-          "tag": "Why is writing for a specific audience/community hard?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa12",
-          "tag": "Why are writing norms difficult for novices to apply?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa13",
-          "tag": "What theoretical approach supports teaching writing to novices?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa26",
-          "tag": "What theoretical framing motivates the feature design?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa27",
-          "tag": "How does Variation Theory inform showing many examples?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa28",
-          "tag": "How does Structural Alignment Theory inform example rendering?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa38",
-          "tag": "How many retrieved sentences are shown and why?"
+          "unit_id": "pa89",
+          "tag": "What new paradigm does this work contribute and how might it generalize?"
         },
         {
           "paper": "corpusstudio",
           "unit_id": "pa116",
-          "tag": "How does the design address metacognitive challenges via interface features?"
-        },
-        {
-          "paper": "examplore_chi18",
-          "unit_id": "pa2",
-          "tag": "Why is learning APIs challenging for developers?"
-        },
-        {
-          "paper": "examplore_chi18",
-          "unit_id": "pa19",
-          "tag": "Why introduce a synthetic code skeleton and what inspired its design?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa34",
-          "tag": "What theories of mental model formation motivate feature design?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa35",
-          "tag": "How do the two learning theories jointly inform feature design?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa43",
-          "tag": "How does PDC theoretically support mental model formation?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa6",
-          "tag": "What theoretical basis informs the interface's design choices?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa9",
-          "tag": "What learning theories inform ParaLib's design?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa11",
-          "tag": "Why focus comparison on functional concepts, per library-learning research?"
-        }
-      ]
-    },
-    {
-      "group_id": "group_8",
-      "members": [
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa100",
-          "tag": "Who funded and supported this research?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa120",
-          "tag": "Who funded this research and what disclosures does that funding require?"
-        },
-        {
-          "paper": "examplore_chi18",
-          "unit_id": "pa59",
-          "tag": "Who contributed and funded this work?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa99",
-          "tag": "Who and what funding supported this work?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa78",
-          "tag": "Who funded and contributed to this work?"
+          "tag": "What is CorpusStudio and how does it advance writing support?"
         }
       ]
     },
@@ -840,279 +433,179 @@
       "group_id": "group_9",
       "members": [
         {
-          "paper": "mesotext",
-          "unit_id": "pa56",
-          "tag": "How was quantitative data analyzed?"
-        }
-      ]
-    },
-    {
-      "group_id": "group_10",
-      "members": [
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa95",
-          "tag": "Did participants rate CorpusStudio as more useful than the baseline for outlining?"
+          "paper": "abstractexplorer",
+          "unit_id": "pa18",
+          "tag": "How does AbstractExplorer differ from prior structure-based sensemaking tools?"
         },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa96",
-          "tag": "Were there differences between interface conditions on outline drafting sub-questions?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa101",
-          "tag": "Did CorpusStudio help participants identify and justify breaking venue norms?"
-        },
-        {
-          "paper": "examplore_chi18",
-          "unit_id": "pa8",
-          "tag": "How was the tool evaluated and what was found?"
-        },
-        {
-          "paper": "examplore_chi18",
-          "unit_id": "pa44",
-          "tag": "Did Examplore users give more correct answers than search users?"
-        },
-        {
-          "paper": "examplore_chi18",
-          "unit_id": "pa45",
-          "tag": "Why did Examplore users answer more correctly, and by how much?"
-        },
-        {
-          "paper": "examplore_chi18",
-          "unit_id": "pa46",
-          "tag": "How did vague answers compare between the two conditions?"
-        },
-        {
-          "paper": "examplore_chi18",
-          "unit_id": "pa48",
-          "tag": "How did perceived helpfulness and confidence compare in the survey?"
-        },
-        {
-          "paper": "examplore_chi18",
-          "unit_id": "pa51",
-          "tag": "What shortcomings of online search did Examplore highlight by contrast?"
-        },
-        {
-          "paper": "examplore_chi18",
-          "unit_id": "pa54",
-          "tag": "What was the overall finding of the study?"
-        },
-        {
-          "paper": "examplore_chi18",
-          "unit_id": "pa55",
-          "tag": "When is Examplore most beneficial - familiar vs unfamiliar APIs?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa49",
-          "tag": "What interfaces were compared in the study?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa59",
-          "tag": "Were there quantitative differences between interfaces in the email task?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa63",
-          "tag": "What quantitative differences were found in the model comparison task?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa64",
-          "tag": "Did the exploratory interface help participants find more differences?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa65",
-          "tag": "How did time on task relate to performance in the comparison task?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa51",
-          "tag": "How were library ranking results presented?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa52",
-          "tag": "Did ParaLib lead to more consistent library rankings?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa53",
-          "tag": "Was online search associated with more divergent/indecisive rankings?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa54",
-          "tag": "Which tool led to more correct scenario-based library choices?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa55",
-          "tag": "How did prior library experience relate to choices?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa56",
-          "tag": "How many code examples did participants inspect per condition?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa57",
-          "tag": "How long were participants' written comparison responses per condition?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa58",
-          "tag": "Were response length differences statistically significant?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa59",
-          "tag": "Did response content quality differ despite similar example counts?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa64",
-          "tag": "How did participants directly rate ParaLib vs online search?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa72",
-          "tag": "Which specific design features drove the observed benefits?"
-        }
-      ]
-    },
-    {
-      "group_id": "group_12",
-      "members": [
         {
           "paper": "abstractexplorer",
+          "unit_id": "pa88",
+          "tag": "How does this approach compare to existing information-seeking paradigms?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa3",
+          "tag": "How does prior example-based learning work relate to this approach?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa11",
+          "tag": "How do existing tools support writing with external/generated text, and how does this work differ?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa12",
+          "tag": "How have prior tools used corpus text for writing support, and what's different here?"
+        },
+        {
+          "paper": "corpusstudio",
           "unit_id": "pa27",
-          "tag": "How did participants react to alignment and highlighting designs?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa34",
-          "tag": "How were the nine chunk roles and their colors defined?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa35",
-          "tag": "How do users interact with role-based color highlights?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa41",
-          "tag": "How are sentences aligned within a structure group?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa54",
-          "tag": "What was the goal of the ablation study?"
+          "tag": "What algorithm generates the section title ordering?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa34",
-          "tag": "How does the interface highlight commonalities and variations in clusters?"
+          "unit_id": "pa38",
+          "tag": "What technology stack implements the system?"
         },
         {
           "paper": "corpusstudio",
           "unit_id": "pa39",
-          "tag": "How are retrieved sentences visually rendered to aid comparison?"
+          "tag": "How was the retrieval approach chosen technically?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa40",
-          "tag": "How does re-ranking let users explore sentence relationships?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa81",
-          "tag": "How did participants perceive the colorized word feature?"
+          "unit_id": "pa110",
+          "tag": "How does this system differ from AI-generated writing assistants?"
         },
         {
           "paper": "examplore_chi18",
-          "unit_id": "pa7",
-          "tag": "How does the visualization technique work?"
+          "unit_id": "pa9",
+          "tag": "What are the paper's contributions?"
         },
         {
           "paper": "examplore_chi18",
-          "unit_id": "pa24",
-          "tag": "How are code examples displayed and color-coded for clarity?"
+          "unit_id": "pa12",
+          "tag": "How does OverCode's approach to code collections differ from EXAMPLORE's needs?"
         },
         {
           "paper": "examplore_chi18",
-          "unit_id": "pa25",
-          "tag": "How does the interface show common usage options and their frequency?"
+          "unit_id": "pa15",
+          "tag": "What techniques exist for mining API usage patterns from code?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa16",
+          "tag": "How does EXAMPLORE differ from prior API pattern visualization tools?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa17",
+          "tag": "How does this paper's contribution relate to the authors' prior mining work?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa23",
+          "tag": "What does the Return value check feature capture?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa26",
+          "tag": "What does the Resource management feature capture?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa27",
+          "tag": "What is the intended scope and grounding of the skeleton design?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa36",
+          "tag": "How does the data collection phase mine and slice code examples?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa3",
-          "tag": "Why not just use automatic analysis instead of showing full text?"
+          "unit_id": "pa10",
+          "tag": "What does the rest of the paper (discussion) cover?"
         },
         {
           "paper": "mesotext",
           "unit_id": "pa13",
-          "tag": "How does skimming differ from reading, and why use highlights?"
+          "tag": "How does this paper's focus differ from single-document skimming research?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa32",
-          "tag": "Why embed pre-computed relationships directly in the text rendering?"
+          "unit_id": "pa17",
+          "tag": "How does prior code-corpus visualization work relate and differ from this work?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa37",
-          "tag": "What is the Exact Matches feature and its purpose?"
+          "unit_id": "pa18",
+          "tag": "How do existing grid-based comparison interfaces inspire this design?"
         },
         {
-          "paper": "mesotext",
-          "unit_id": "pa39",
-          "tag": "How are exact matches visually rendered?"
+          "paper": "paralib_uist22",
+          "unit_id": "pa5",
+          "tag": "What system was built to address this gap?"
         },
         {
-          "paper": "mesotext",
-          "unit_id": "pa40",
-          "tag": "What is the Unique Words feature and its metric?"
+          "paper": "paralib_uist22",
+          "unit_id": "pa14",
+          "tag": "How do prior automated comparison tools work, and how does this differ?"
         },
         {
-          "paper": "mesotext",
-          "unit_id": "pa77",
-          "tag": "How did Grid PDC help assess response consistency?"
+          "paper": "paralib_uist22",
+          "unit_id": "pa15",
+          "tag": "How do prior annotation/aggregation tools for API comparison differ from this work?"
         },
         {
-          "paper": "mesotext",
+          "paper": "paralib_uist22",
+          "unit_id": "pa17",
+          "tag": "What comparison tools exist for other domains/tasks?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa18",
+          "tag": "How does this differ from standard code diff tools?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa19",
+          "tag": "What other tools visualize many code examples at scale, and how do they differ?"
+        },
+        {
+          "paper": "paralib_uist22",
           "unit_id": "pa80",
-          "tag": "How was Interleaved PDC useful for spotting variation?"
+          "tag": "What tooling improvements are needed to automate concept hierarchy creation?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_11",
+      "members": [
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa94",
+          "tag": "Who funded and supported this research?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa117",
+          "tag": "What funding sources supported this research?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa65",
+          "tag": "Who provided intellectual, technical, and financial support?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa97",
+          "tag": "Who funded and contributed to this research?"
         },
         {
           "paper": "paralib_uist22",
-          "unit_id": "pa23",
-          "tag": "How do concept annotations highlight analogous code across libraries?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa25",
-          "tag": "How is the concept hierarchy organized in the side panel?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa26",
-          "tag": "How do concept distribution bars convey functionality typicality?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa30",
-          "tag": "What features reveal additional cross-library code correspondences?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa32",
-          "tag": "What caveat applies to the distribution bars and example sampling?"
+          "unit_id": "pa81",
+          "tag": "Who provided support and funding for this work?"
         }
       ]
     },
@@ -1121,118 +614,98 @@
       "members": [
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa86",
-          "tag": "What usability issues did participants report with the interface?"
+          "unit_id": "pa5",
+          "tag": "How does this theoretical approach support user engagement with text?"
         },
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa87",
-          "tag": "What concerns arose about context loss and misclassification?"
+          "unit_id": "pa20",
+          "tag": "What cognitive theories underlie prior sensemaking systems?"
         },
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa89",
-          "tag": "How did experience level affect ease of using custom aspects?"
+          "unit_id": "pa21",
+          "tag": "What does Structural Mapping Theory predict about comparison?"
         },
         {
-          "paper": "corpusstudio",
-          "unit_id": "pa73",
-          "tag": "What did participants notice about variation in section titles?"
+          "paper": "abstractexplorer",
+          "unit_id": "pa35",
+          "tag": "Why group sentences by structural patterns?"
         },
         {
-          "paper": "corpusstudio",
-          "unit_id": "pa83",
-          "tag": "How did participants use bookmarking and note-taking?"
+          "paper": "abstractexplorer",
+          "unit_id": "pa38",
+          "tag": "How are sentences ordered within a structure group?"
         },
         {
-          "paper": "corpusstudio",
-          "unit_id": "pa89",
-          "tag": "Why did some participants use tooltips less?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa93",
-          "tag": "Did the tool raise plagiarism concerns among participants?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa108",
-          "tag": "How does relevance depend on writing goals versus semantic similarity?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa110",
-          "tag": "How did lack of retrieval results affect participants' behavior and interpretations?"
-        },
-        {
-          "paper": "examplore_chi18",
-          "unit_id": "pa47",
-          "tag": "What kinds of critiques did participants give of a code example?"
-        },
-        {
-          "paper": "examplore_chi18",
-          "unit_id": "pa52",
-          "tag": "What interface improvements did participants suggest for Examplore?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa76",
-          "tag": "Where did Unique Words fail to meet expectations?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa79",
-          "tag": "When did Grid PDC fail?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa81",
-          "tag": "What limitation of Interleaved PDC did participants note?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa82",
-          "tag": "Why were some participants hesitant to view many responses?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa83",
-          "tag": "How did hesitant participants change their view after trying more responses?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa84",
-          "tag": "Which participants had no initial hesitancy about many responses?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa87",
-          "tag": "How did varying response attributes challenge the algorithms?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa89",
-          "tag": "Where do the design implications come from?"
-        },
-        {
-          "paper": "mesotext",
+          "paper": "abstractexplorer",
           "unit_id": "pa90",
-          "tag": "What new algorithms or renderings did participants suggest?"
+          "tag": "What conceptual contribution do 'variation affordances' represent?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa91",
+          "tag": "How does the design support human engagement versus AI automation?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa10",
+          "tag": "What theoretical approach explains how writers learn community norms?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa22",
+          "tag": "What theoretical basis informs the system's design?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa23",
+          "tag": "How does Variation Theory guide the anti-overfitting/anti-plagiarism design?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa24",
+          "tag": "How does Structural Alignment Theory inform rendering choices?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa33",
+          "tag": "How many retrieved sentences should be shown at once?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa93",
-          "tag": "Why support subsetting of responses?"
+          "unit_id": "pa32",
+          "tag": "What theories of mental model formation inform the design?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa33",
+          "tag": "How do these theories specifically shape feature design?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa40",
+          "tag": "How does PDC connect to mental-model theories?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa43",
+          "tag": "Why should the Grid Layout help users' sensemaking?"
         },
         {
           "paper": "paralib_uist22",
-          "unit_id": "pa67",
-          "tag": "What challenges did participants report with online search?"
+          "unit_id": "pa6",
+          "tag": "What theories informed the interface design choices?"
         },
         {
           "paper": "paralib_uist22",
-          "unit_id": "pa68",
-          "tag": "What improvements did participants suggest for ParaLib?"
+          "unit_id": "pa9",
+          "tag": "What are the paper's main contributions?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa10",
+          "tag": "What learning theories inform ParaLib's design?"
         }
       ]
     },
@@ -1241,43 +714,88 @@
       "members": [
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa5",
-          "tag": "How does this SMT-informed approach support comparative close reading?"
+          "unit_id": "pa12",
+          "tag": "What existing tools support close/document-centric reading?"
         },
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa29",
-          "tag": "What are the design goals of AbstractExplorer?"
+          "unit_id": "pa13",
+          "tag": "What gap in reading tools does AbstractExplorer address?"
         },
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa85",
-          "tag": "How did features support cross-paper pattern comparison?"
+          "unit_id": "pa19",
+          "tag": "Why is exploiting structure feasible for scientific abstracts?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa92",
+          "tag": "What are the limits of generalizing this design to other corpora?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa93",
+          "tag": "What tradeoff exists in sentence-level reading and how could it be improved?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa20",
-          "tag": "What is the overarching design goal?"
+          "unit_id": "pa105",
+          "tag": "What does this suggest about how relevance is constructed in writing support?"
         },
         {
-          "paper": "corpusstudio",
-          "unit_id": "pa31",
-          "tag": "How is document-level structure from the corpus displayed?"
+          "paper": "examplore_chi18",
+          "unit_id": "pa6",
+          "tag": "What tool was built to address this gap?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa91",
-          "tag": "Why apply algorithms to subsets of responses?"
+          "unit_id": "pa14",
+          "tag": "How do existing cross-document visualization systems fall short of showing full text?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa15",
+          "tag": "How has document layout/structure been used to support skimming and comprehension?"
         },
         {
           "paper": "paralib_uist22",
-          "unit_id": "pa7",
-          "tag": "What interactive features does the interface provide?"
+          "unit_id": "pa4",
+          "tag": "What existing tools support library comparison, and what are their limits?"
         },
         {
           "paper": "paralib_uist22",
-          "unit_id": "pa29",
-          "tag": "How do other interface components update after concept selection?"
+          "unit_id": "pa11",
+          "tag": "What factors matter when developers select libraries?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa12",
+          "tag": "Why focus comparison on functional concepts rather than just code?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa13",
+          "tag": "What do existing library comparison websites offer, and what's missing?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa16",
+          "tag": "Do library authors also need comparison tools, not just users?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa36",
+          "tag": "What limitation exists in how the concept hierarchy was constructed?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa76",
+          "tag": "What library-selection factors remain outside ParaLib's scope?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa78",
+          "tag": "How does reliance on a single author-created concept hierarchy limit findings?"
         }
       ]
     },
@@ -1285,74 +803,14 @@
       "group_id": "group_15",
       "members": [
         {
-          "paper": "abstractexplorer",
-          "unit_id": "pa13",
-          "tag": "What is text alignment and how is it typically done?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa14",
-          "tag": "How has prior work aligned larger texts, and what's missing?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa15",
-          "tag": "What prior methods scale alignment to many diverse texts?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa16",
-          "tag": "How does AbstractExplorer reframe text alignment differently?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa24",
-          "tag": "What mock-up designs were shown to participants?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa5",
-          "tag": "How does prior language-learning-from-examples work differ from this approach?"
-        },
-        {
-          "paper": "examplore_chi18",
-          "unit_id": "pa5",
-          "tag": "What gap exists in current API usage mining research, and what research question does it raise?"
-        },
-        {
-          "paper": "examplore_chi18",
-          "unit_id": "pa11",
-          "tag": "How do WordTree and WordSeer's text visualization techniques relate to Examplore?"
-        },
-        {
-          "paper": "examplore_chi18",
-          "unit_id": "pa16",
-          "tag": "What prior techniques exist for mining API usage patterns from Big Code?"
-        },
-        {
           "paper": "mesotext",
-          "unit_id": "pa14",
-          "tag": "How does this work extend skimming research to cross-document comparison?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa16",
-          "tag": "How does document layout/structure support skimming and comprehension?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa17",
-          "tag": "How has prior work aligned and visualized shared text patterns across documents?"
+          "unit_id": "pa45",
+          "tag": "What benefits are hypothesized for the Interleaved Layout?"
         },
         {
           "paper": "paralib_uist22",
-          "unit_id": "pa12",
-          "tag": "What do existing library comparison websites offer and lack?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa18",
-          "tag": "What other tools visualize many code examples, and how do they differ?"
+          "unit_id": "pa43",
+          "tag": "How does the user make a final library choice and prepare to code?"
         }
       ]
     },
@@ -1360,39 +818,184 @@
       "group_id": "group_16",
       "members": [
         {
-          "paper": "corpusstudio",
-          "unit_id": "pa15",
-          "tag": "How does this work differ from prior example-surfacing tools?"
+          "paper": "abstractexplorer",
+          "unit_id": "pa29",
+          "tag": "What are the design goals of AbstractExplorer?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa32",
+          "tag": "How can users define custom aspects?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa37",
+          "tag": "What does the Structure Global View show?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa40",
+          "tag": "How does the Abstract/TLDR panel provide context?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa42",
+          "tag": "How does sentence bookmarking work?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa45",
+          "tag": "How does a user use custom aspects to explore study populations?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa48",
+          "tag": "How are sentences segmented and classified into aspects?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa49",
+          "tag": "How are chunk role labels generated with human-in-the-loop?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa50",
+          "tag": "How are chunk labels assigned and stored for performance?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa51",
+          "tag": "How are custom aspects generated dynamically on the backend?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa119",
-          "tag": "What does CorpusStudio contribute and how does it differ from generative writing tools?"
+          "unit_id": "pa4",
+          "tag": "What tool and features were built to address this?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa16",
+          "tag": "What are the system's design goals?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa20",
+          "tag": "How does the scenario show note-taking on norms?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa21",
+          "tag": "How does the scenario continue during drafting?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa26",
+          "tag": "How are document-level norms surfaced via section title clusters?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa28",
+          "tag": "How are section title clusters visually presented?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa30",
+          "tag": "Why surface sentence-level norms across papers?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa35",
+          "tag": "How can users annotate and export bookmarked sentences?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa44",
+          "tag": "How was the sample size for clustering chosen?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa108",
+          "tag": "What tradeoff does showing many examples create?"
         },
         {
           "paper": "examplore_chi18",
-          "unit_id": "pa12",
-          "tag": "How does OverCode's approach to visualizing code collections differ from Examplore?"
+          "unit_id": "pa31",
+          "tag": "How does the user see and adjust which usage options are shown?"
         },
         {
-          "paper": "examplore_chi18",
-          "unit_id": "pa17",
-          "tag": "How does Examplore differ from prior visualizations of mined API usage patterns?"
+          "paper": "mesotext",
+          "unit_id": "pa5",
+          "tag": "What system/features were designed to support mesoscale sensemaking?"
         },
         {
-          "paper": "examplore_chi18",
+          "paper": "mesotext",
+          "unit_id": "pa6",
+          "tag": "What is the paper's research question?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa9",
+          "tag": "What are the paper's contributions?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa26",
+          "tag": "What was designed and how is it framed?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa31",
+          "tag": "What range of sensemaking sub-tasks should be supported?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa34",
+          "tag": "What implementation platform and feature set were built?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa91",
+          "tag": "How could users filter or subset responses?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa92",
+          "tag": "How could annotation features extend the tool?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa93",
+          "tag": "Should automated analysis be integrated into the interface?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa7",
+          "tag": "What interactive features does the interface offer?"
+        },
+        {
+          "paper": "paralib_uist22",
           "unit_id": "pa22",
-          "tag": "How well does the skeleton generalize to other languages?"
+          "tag": "What overall capability should these design goals enable for users?"
         },
         {
-          "paper": "mesotext",
-          "unit_id": "pa18",
-          "tag": "How does this work compare to code-corpus visualization tools like OverCode/Examplore?"
+          "paper": "paralib_uist22",
+          "unit_id": "pa23",
+          "tag": "What is ParaLib and how was it built from the design goals?"
         },
         {
-          "paper": "mesotext",
-          "unit_id": "pa19",
-          "tag": "Why do prior visualization features not directly transfer to LLM responses?"
+          "paper": "paralib_uist22",
+          "unit_id": "pa28",
+          "tag": "How do these combined features address the design goals?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa29",
+          "tag": "How are concepts organized and displayed by default?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa32",
+          "tag": "How does concept selection let users filter examples?"
         }
       ]
     },
@@ -1401,13 +1004,8 @@
       "members": [
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa19",
-          "tag": "Why are scientific abstracts suited to this structural approach?"
-        },
-        {
-          "paper": "abstractexplorer",
           "unit_id": "pa30",
-          "tag": "Why use sentences as the unit for cross-document comparison?"
+          "tag": "How does the system slice abstracts for sentence-level comparison?"
         },
         {
           "paper": "abstractexplorer",
@@ -1415,69 +1013,174 @@
           "tag": "What are the pre-defined aspects and how are they used?"
         },
         {
-          "paper": "corpusstudio",
-          "unit_id": "pa35",
-          "tag": "What insight does sentence-level retrieval provide about norms?"
+          "paper": "abstractexplorer",
+          "unit_id": "pa33",
+          "tag": "How are sentences segmented and roles assigned/colored?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa36",
+          "tag": "How are sentences grouped by shared structure?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa39",
+          "tag": "How are sentences aligned within structure groups?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa43",
-          "tag": "How do the features help writers avoid plagiarism?"
+          "unit_id": "pa25",
+          "tag": "What is the text editor's basic structure?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa31",
+          "tag": "What retrieval mechanism powers sentence suggestions?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa32",
+          "tag": "How can users preview subsequent sentences in a section?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa36",
+          "tag": "How do tooltips provide context for retrieved sentences?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa41",
+          "tag": "How were documents split into sentences?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa42",
+          "tag": "How were sentences embedded for retrieval?"
         },
         {
           "paper": "examplore_chi18",
-          "unit_id": "pa3",
-          "tag": "Why are existing API examples and documentation insufficient?"
+          "unit_id": "pa7",
+          "tag": "How does the tool represent and visualize API usage?"
         },
         {
           "paper": "examplore_chi18",
-          "unit_id": "pa15",
-          "tag": "Why do developers only explore a few examples in practice, motivating Examplore's design?"
+          "unit_id": "pa18",
+          "tag": "What is the synthetic code skeleton and what motivated its design?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa19",
+          "tag": "What are the components of the skeleton?"
         },
         {
           "paper": "examplore_chi18",
           "unit_id": "pa20",
-          "tag": "What API usage features make up the skeleton?"
+          "tag": "What does the Declarations feature capture?"
         },
         {
           "paper": "examplore_chi18",
           "unit_id": "pa21",
-          "tag": "What language does the skeleton design target?"
+          "tag": "What does the Pre-focal method calls feature capture?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa24",
+          "tag": "What does the Post-focal method calls feature capture?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa25",
+          "tag": "What does the Exception handling feature capture?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa28",
+          "tag": "How far can the skeleton generalize beyond Java?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa33",
+          "tag": "How does the skeleton view update to reflect a filtered selection?"
         },
         {
           "paper": "examplore_chi18",
           "unit_id": "pa34",
-          "tag": "What is a concrete example of extracted API usage features?"
+          "tag": "How does the user drill down further to find relevant guard patterns?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa35",
+          "tag": "What are the three phases of EXAMPLORE's pipeline?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa37",
+          "tag": "What does the post-processing phase do to normalize examples?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa38",
+          "tag": "How are chained method calls rewritten for clarity?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa40",
+          "tag": "How is the skeleton visualization rendered and updated?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa29",
-          "tag": "Why aim to scale up the number of viewable LLM outputs?"
+          "unit_id": "pa30",
+          "tag": "Why embed pre-computed relationships directly in the text?"
         },
         {
-          "paper": "paralib_uist22",
-          "unit_id": "pa19",
-          "tag": "What design goals guided ParaLib's development?"
+          "paper": "mesotext",
+          "unit_id": "pa38",
+          "tag": "How is the Unique Words/TF-IDF algorithm implemented?"
         },
         {
-          "paper": "paralib_uist22",
-          "unit_id": "pa20",
-          "tag": "How do the design goals translate into user benefits?"
+          "paper": "mesotext",
+          "unit_id": "pa39",
+          "tag": "What is the novel Positional Diction Clustering algorithm meant to find?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa41",
+          "tag": "How does the PDC clustering algorithm technically work?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa42",
+          "tag": "What is the Grid Layout and how does it organize responses?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa44",
+          "tag": "What is the Interleaved Layout and how is it rendered?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa89",
+          "tag": "How could algorithms apply to response subsets?"
         },
         {
           "paper": "paralib_uist22",
           "unit_id": "pa21",
-          "tag": "How were the design goals implemented into an interface?"
+          "tag": "What are the five specific design goals (D1-D5)?"
         },
         {
           "paper": "paralib_uist22",
           "unit_id": "pa24",
-          "tag": "How do these design choices jointly address the design goals?"
+          "tag": "How does the interface display multiple code examples side-by-side?"
         },
         {
           "paper": "paralib_uist22",
-          "unit_id": "pa28",
-          "tag": "How does concept selection filter code examples?"
+          "unit_id": "pa25",
+          "tag": "How can users navigate and access example source details?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa33",
+          "tag": "How do other interface elements update when a concept is selected?"
         }
       ]
     },
@@ -1486,53 +1189,373 @@
       "members": [
         {
           "paper": "abstractexplorer",
+          "unit_id": "pa27",
+          "tag": "How did participants react to alignment and highlighting mock-ups?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa28",
+          "tag": "How did participants respond to the custom search query mock-up?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa43",
+          "tag": "How might a user first explore the tool?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa59",
+          "tag": "How were participants' preferences and reflections gathered?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa62",
+          "tag": "How did NFC groups differ in eye-tracking gaze patterns?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa63",
+          "tag": "How did lower NFC participants describe using the features?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa64",
+          "tag": "Why did lower NFC participants prefer the guided features?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa65",
+          "tag": "How did higher NFC participants experience the baseline condition?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa67",
+          "tag": "Why were higher NFC participants annoyed by the guiding features?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa78",
+          "tag": "What does usage log data reveal about feature preferences?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa80",
+          "tag": "How did participants use the tool to compare abstracts and find patterns?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa81",
+          "tag": "What readability and visual clutter issues did users report?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa82",
+          "tag": "What context and misclassification concerns did users raise?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa83",
+          "tag": "How did participants use and rate the user-defined aspects feature?"
+        },
+        {
+          "paper": "corpusstudio",
           "unit_id": "pa37",
-          "tag": "How are sentences grouped and navigated by structure?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa38",
-          "tag": "What does the Structure Global View show?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa40",
-          "tag": "How are sentences ordered within a structure group?"
+          "tag": "What features discourage plagiarism while promoting learning?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa33",
-          "tag": "How are section title clusters visually presented?"
+          "unit_id": "pa63",
+          "tag": "How did participants create section titles before using the tool?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa113",
-          "tag": "What design recommendation follows from varied visual preferences?"
+          "unit_id": "pa64",
+          "tag": "How did participants use the section title distribution feature?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa65",
+          "tag": "How did participants interpret section title frequency?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa66",
+          "tag": "What future use cases did participants foresee for the feature?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa67",
+          "tag": "What did participants notice about variation in section titles?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa68",
+          "tag": "How did participants respond to titles deviating from the norm?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa69",
+          "tag": "How did participants read and process retrieved sentences?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa70",
+          "tag": "What did retrieved sentences look like and what did users value in them?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa71",
+          "tag": "How did one participant use retrieved sentence similarities?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa72",
+          "tag": "How did the tool help with terminology alignment?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa73",
+          "tag": "How did participants use the tool to find related work?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa74",
+          "tag": "What dual utility did the tool serve for writing and research?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa77",
+          "tag": "How did participants perceive colorized word rendering?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa78",
+          "tag": "How did participants respond to the greyed-out word feature?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa79",
+          "tag": "How did participants use bookmarking and notes?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa80",
+          "tag": "What purposes did notes on bookmarks serve?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa81",
+          "tag": "How useful were tooltips and what was the main critique?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa82",
+          "tag": "How did paper-level tooltip info help participants?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa83",
+          "tag": "How did section-level tooltip info influence writing decisions?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa84",
+          "tag": "How did paragraph-level tooltip context resolve ambiguity?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa85",
+          "tag": "Why did some participants use tooltips less?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa86",
+          "tag": "How did feature use differ in early writing stages?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa87",
+          "tag": "How did feature use differ in later revision stages?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa88",
+          "tag": "How did participants manage cognitive load across multiple features?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa99",
+          "tag": "How often were CorpusStudio's features used during writing?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa103",
+          "tag": "How was relevance related to writers' intentions?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa106",
+          "tag": "How did users react when retrieval found nothing relevant?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa57",
+          "tag": "Which EXAMPLORE features did users highlight as most valuable?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa59",
+          "tag": "What usability issues did participants report with EXAMPLORE?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa60",
+          "tag": "How would users incorporate EXAMPLORE into their workflow?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa20",
-          "tag": "What inspired the grid-based layout for comparing generative AI outputs?"
+          "unit_id": "pa57",
+          "tag": "What did participants like about the exploratory interface for email task?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa45",
-          "tag": "How does the Grid Layout organize responses for comparison?"
+          "unit_id": "pa65",
+          "tag": "How did Interleaved PDC help in the model comparison task?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa46",
-          "tag": "Why is the grid layout hypothesized to aid perception?"
+          "unit_id": "pa66",
+          "tag": "How were Exact Matches and Unique Words used?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa48",
-          "tag": "What benefits are hypothesized for the interleaved rendering?"
+          "unit_id": "pa69",
+          "tag": "How were case study results analyzed?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa71",
+          "tag": "How did users use Exact Matches in their own tasks?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa72",
+          "tag": "What exception in exact match frequency was observed, and why?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa75",
+          "tag": "How did users leverage Grid PDC to assess consistency?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa76",
+          "tag": "What other use cases did Grid PDC support?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa78",
+          "tag": "How did users apply Interleaved PDC to their tasks?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa79",
+          "tag": "What limitation of Interleaved PDC did users note?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa80",
+          "tag": "Why were some users initially hesitant to view many responses?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa81",
+          "tag": "How did user attitudes shift once viewing more responses?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa82",
+          "tag": "Which users lacked hesitancy about viewing many responses, and why?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa83",
+          "tag": "Who remained hesitant about large response sets, and why?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa84",
+          "tag": "How did task stage affect preferred number of responses viewed?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa85",
+          "tag": "How did varying response attributes challenge the algorithms?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa87",
+          "tag": "How were the design implications derived?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa88",
+          "tag": "What new algorithms/renderings did participants suggest?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa90",
+          "tag": "Should users be able to define custom queries?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa94",
+          "tag": "What implementation-level limitations were observed?"
         },
         {
           "paper": "paralib_uist22",
-          "unit_id": "pa22",
-          "tag": "What does the parallel code examples feature show?"
+          "unit_id": "pa40",
+          "tag": "How does the user learn unfamiliar visualization concepts via tooltips?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa58",
+          "tag": "Did prior library experience affect participants' choices?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa62",
+          "tag": "How were participants' qualitative insights categorized?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa63",
+          "tag": "What kinds of insights did participants share more with ParaLib?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa65",
+          "tag": "How did participants describe sensemaking with search vs ParaLib?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa67",
+          "tag": "What value did participants attribute to ParaLib's pre-loaded examples?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa68",
+          "tag": "How did participants rate the concept hierarchy feature?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa69",
+          "tag": "How did participants rate ParaLib's other UI features?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa71",
+          "tag": "What improvements did participants suggest for ParaLib?"
         }
       ]
     },
@@ -1541,63 +1564,23 @@
       "members": [
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa22",
-          "tag": "What was the goal and setup of the formative study?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa23",
-          "tag": "What topics did the first interview part cover?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa25",
-          "tag": "How were the mock-ups used and analyzed?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa55",
-          "tag": "What research questions guided the ablation study?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa72",
-          "tag": "Why was a summative study conducted and why no comparison baseline?"
+          "unit_id": "pa87",
+          "tag": "How does the design change users' cognitive engagement with text?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa52",
-          "tag": "What was the overall goal and design of the user study?"
+          "unit_id": "pa109",
+          "tag": "Why offer multiple visualization methods for examples?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa64",
-          "tag": "How did the study conclude and gather feedback?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa94",
-          "tag": "What statistical method and comparisons were used to analyze survey data?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa4",
-          "tag": "What did formative interviews reveal about current inspection practices?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa8",
-          "tag": "How were the interface features evaluated?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa53",
-          "tag": "Why was the email rewriting task chosen?"
+          "unit_id": "pa113",
+          "tag": "How does the design embed metacognitive strategies into the interface?"
         },
         {
           "paper": "paralib_uist22",
-          "unit_id": "pa39",
-          "tag": "What research questions does the user study aim to answer?"
+          "unit_id": "pa20",
+          "tag": "What design goals guide ParaLib's development?"
         }
       ]
     },
@@ -1606,38 +1589,88 @@
       "members": [
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa59",
-          "tag": "What experimental design was used across conditions?"
+          "unit_id": "pa54",
+          "tag": "Who were the study participants?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa55",
+          "tag": "What materials and setup were used?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa69",
+          "tag": "Who were the study participants?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa40",
+          "tag": "What papers make up the corpus?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa46",
+          "tag": "Who were the study participants?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa47",
+          "tag": "How motivated were participants to exert cognitive effort?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa48",
+          "tag": "What venues and reference habits did participants have?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa49",
+          "tag": "What prior writing support tools had participants used?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa51",
+          "tag": "What happened during consent and the pre-study survey?"
         },
         {
           "paper": "examplore_chi18",
-          "unit_id": "pa36",
-          "tag": "What is the study's design and question set for comparing tools?"
+          "unit_id": "pa43",
+          "tag": "Who were the study participants?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa27",
+          "unit_id": "pa20",
+          "tag": "What did the interview study involve?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa21",
+          "tag": "Who were the interview participants?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa25",
           "tag": "How do practitioners perform detailed manual annotation?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa50",
-          "tag": "What research question and study design was used?"
+          "unit_id": "pa48",
+          "tag": "Who were the study participants?"
         },
         {
-          "paper": "mesotext",
+          "paper": "paralib_uist22",
+          "unit_id": "pa51",
+          "tag": "Who were the study participants and how were they recruited?"
+        },
+        {
+          "paper": "paralib_uist22",
           "unit_id": "pa52",
-          "tag": "How was the study procedure conducted?"
+          "tag": "What programming and domain experience did participants have?"
         },
         {
           "paper": "paralib_uist22",
-          "unit_id": "pa42",
-          "tag": "What were the two experimental conditions compared?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa43",
-          "tag": "How was the study session structured and timed?"
+          "unit_id": "pa53",
+          "tag": "How familiar were participants with the specific libraries tested?"
         }
       ]
     },
@@ -1646,103 +1679,93 @@
       "members": [
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa63",
-          "tag": "Which condition did participants prefer most?"
+          "unit_id": "pa8",
+          "tag": "What studies were conducted to validate the system?"
         },
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa67",
-          "tag": "How did lower NFC participants use the features per interviews?"
+          "unit_id": "pa22",
+          "tag": "What was the goal and setup of the interview study?"
         },
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa82",
-          "tag": "What does usage log data show about feature preferences?"
+          "unit_id": "pa47",
+          "tag": "What data and platform underlie the implementation?"
         },
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa83",
-          "tag": "How did participants rate usefulness of alignment/highlighting features?"
+          "unit_id": "pa56",
+          "tag": "What experimental design was used to test conditions?"
         },
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa88",
-          "tag": "How was the user-defined aspect feature used and received?"
-        },
-        {
-          "paper": "corpusstudio",
           "unit_id": "pa70",
-          "tag": "How did participants use the section title distribution feature?"
+          "tag": "How was the study logistically conducted?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa76",
-          "tag": "What did participants value when reviewing retrieved sentences?"
+          "unit_id": "pa45",
+          "tag": "What was the overall goal and design of the user study?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa77",
-          "tag": "How did the tool help with terminology alignment?"
+          "unit_id": "pa50",
+          "tag": "How was the study logistically conducted?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa82",
-          "tag": "How did participants react to the greyed-out repeated words feature?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa86",
-          "tag": "How did paper-level tooltip info help participants?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa87",
-          "tag": "How did section-level tooltip info help participants?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa103",
-          "tag": "How frequently were CorpusStudio's individual features used and rated?"
+          "unit_id": "pa59",
+          "tag": "How was the qualitative analysis conducted?"
         },
         {
           "paper": "examplore_chi18",
-          "unit_id": "pa50",
-          "tag": "Which Examplore features did participants value most?"
+          "unit_id": "pa41",
+          "tag": "What is the overall study design and goal?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa44",
+          "tag": "What was the overall study procedure and counterbalancing?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa62",
-          "tag": "Which features were used and valued in the email task?"
+          "unit_id": "pa1",
+          "tag": "What was the study's approach, method, and key findings?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa67",
-          "tag": "How useful was the Grid PDC feature in the comparison task?"
+          "unit_id": "pa7",
+          "tag": "How was the system evaluated?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa47",
+          "tag": "What was the overall design of the user study?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa49",
+          "tag": "How was the study conducted logistically?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa54",
+          "tag": "How was qualitative data analyzed?"
         },
         {
           "paper": "mesotext",
           "unit_id": "pa68",
-          "tag": "How useful was Interleaved PDC in the comparison task?"
+          "tag": "What was the procedure and format of the case study sessions?"
         },
         {
-          "paper": "mesotext",
-          "unit_id": "pa69",
-          "tag": "How useful were Exact Matches and Unique Words features?"
+          "paper": "paralib_uist22",
+          "unit_id": "pa44",
+          "tag": "What research questions does the user study aim to answer?"
         },
         {
-          "paper": "mesotext",
-          "unit_id": "pa73",
-          "tag": "What is the framing for the feature-by-feature findings?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa74",
-          "tag": "How useful was Exact Matches across different contexts?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa75",
-          "tag": "How did participants use Unique Words as a summary?"
+          "paper": "paralib_uist22",
+          "unit_id": "pa47",
+          "tag": "How long did the study take and how was it structured?"
         }
       ]
     },
@@ -1751,98 +1774,188 @@
       "members": [
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa64",
-          "tag": "Which condition led to lowest cognitive load?"
+          "unit_id": "pa23",
+          "tag": "What did the first interview part ask about?"
         },
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa65",
-          "tag": "How did preference and cognitive load relate to Need for Cognition?"
+          "unit_id": "pa25",
+          "tag": "How were the mock-ups used to elicit feedback?"
         },
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa66",
-          "tag": "How did reading patterns differ by NFC level?"
+          "unit_id": "pa57",
+          "tag": "What did participants do at the start of the session?"
         },
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa68",
-          "tag": "Why did lower NFC participants prefer the guided features?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa70",
-          "tag": "How did higher NFC participants react to the full-feature condition?"
+          "unit_id": "pa58",
+          "tag": "What task and measures were used per condition?"
         },
         {
           "paper": "abstractexplorer",
           "unit_id": "pa71",
-          "tag": "Why were higher NFC participants annoyed by the guiding features?"
+          "tag": "How were participants onboarded and trained?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa72",
+          "tag": "What was the general reading task?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa73",
+          "tag": "What was the focused reading task?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa74",
+          "tag": "What data was collected after the tasks?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa44",
-          "tag": "What additional design choices discourage plagiarism?"
+          "unit_id": "pa19",
+          "tag": "How does the scenario show sentence-level retrieval?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa80",
-          "tag": "How did the tool affect participants' writing confidence?"
+          "unit_id": "pa52",
+          "tag": "How were participants briefed on the corpus context?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa92",
-          "tag": "How did participants manage cognitive load from multiple features?"
+          "unit_id": "pa53",
+          "tag": "How were participants introduced to each task's features?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa98",
-          "tag": "Did interface condition affect ease of drafting titles across outline halves?"
+          "unit_id": "pa54",
+          "tag": "Why was outlining chosen as the first task?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa100",
-          "tag": "Which interface did participants find more overwhelming to use?"
+          "unit_id": "pa55",
+          "tag": "How was the outline writing task structured?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa111",
-          "tag": "Why did the design present many examples instead of aggregated results?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa112",
-          "tag": "What trade-off exists between showing many examples and cognitive load?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa117",
-          "tag": "How did seeing community examples affect writers' confidence?"
-        },
-        {
-          "paper": "examplore_chi18",
-          "unit_id": "pa49",
-          "tag": "What made Examplore feel more accurate and confident to use?"
-        },
-        {
-          "paper": "examplore_chi18",
           "unit_id": "pa56",
-          "tag": "What trade-off exists between expressiveness and visual complexity?"
+          "tag": "How was the paper writing task structured?"
         },
         {
-          "paper": "mesotext",
+          "paper": "corpusstudio",
+          "unit_id": "pa57",
+          "tag": "What plagiarism-related instructions were given during the task?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa58",
+          "tag": "How did the study conclude?"
+        },
+        {
+          "paper": "corpusstudio",
           "unit_id": "pa61",
-          "tag": "What downsides did participants report about the exploratory interface in the email task?"
+          "tag": "What writing tasks did participants use retrieved content for?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa29",
+          "tag": "What is the example task and setup for the walkthrough?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa32",
+          "tag": "How does the user filter examples to focus on a less common pattern?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa42",
+          "tag": "Which API methods were chosen and why?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa45",
+          "tag": "What happened during the training session?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa46",
+          "tag": "What did the first exploration task involve?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa47",
+          "tag": "What did the second exploration task involve?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa48",
+          "tag": "What was collected in the post survey?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa50",
+          "tag": "What instructions were given about answering thoroughness?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa51",
+          "tag": "How were participants' answers scored for correctness?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa55",
+          "tag": "How did participants critique Stack Overflow examples after each condition?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa85",
-          "tag": "Did any participant remain hesitant about viewing many responses?"
+          "unit_id": "pa50",
+          "tag": "Why was the email rewriting task chosen?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa51",
+          "tag": "What exactly did participants do in the email task?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa52",
+          "tag": "What exactly did participants do in the model comparison task?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa67",
+          "tag": "Why and how were case studies with real user tasks conducted?"
         },
         {
           "paper": "paralib_uist22",
-          "unit_id": "pa62",
-          "tag": "How did confidence and cognitive load differ between conditions?"
+          "unit_id": "pa38",
+          "tag": "Who is the example user and what task are they trying to accomplish?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa45",
+          "tag": "What tasks did participants perform in the study?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa48",
+          "tag": "How was participant feedback collected after each task?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa49",
+          "tag": "How was the NLP library selection scenario designed?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa50",
+          "tag": "How was the visualization library selection scenario designed?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa59",
+          "tag": "How many code examples did participants inspect per condition?"
         }
       ]
     },
@@ -1851,103 +1964,178 @@
       "members": [
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa1",
-          "tag": "What was built and how was it validated?"
+          "unit_id": "pa53",
+          "tag": "What are the study's research questions?"
         },
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa7",
-          "tag": "What system and techniques does this paper introduce?"
+          "unit_id": "pa60",
+          "tag": "Do features need to work together to be effective?"
         },
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa94",
-          "tag": "What new paradigm does this work contribute and how might it generalize?"
+          "unit_id": "pa61",
+          "tag": "How does Need for Cognition relate to preferences and cognitive load?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa66",
+          "tag": "How did higher NFC participants react to the full-feature condition?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa77",
+          "tag": "How did highlighting and alignment help participants skim efficiently?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa79",
+          "tag": "Did the interface help participants read more abstracts at scale?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa84",
+          "tag": "Did experience level affect usability of the user-defined feature?"
+        },
+        {
+          "paper": "abstractexplorer",
+          "unit_id": "pa85",
+          "tag": "Would participants adopt this tool in real-world settings?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa1",
-          "tag": "What problem is addressed, what was built, and what did the study find?"
+          "unit_id": "pa60",
+          "tag": "What overall benefit did participants report from the tool?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa6",
-          "tag": "What system was built and how does it work?"
+          "unit_id": "pa62",
+          "tag": "Did the tool change participants' understanding of venue norms?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa9",
-          "tag": "What are the paper's main contributions?"
+          "unit_id": "pa75",
+          "tag": "How did the tool help identify content gaps in drafts?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa14",
-          "tag": "What kinds of writing support tools exist and their drawbacks?"
+          "unit_id": "pa76",
+          "tag": "How did retrieved results affect participants' confidence and perceived novelty?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa19",
-          "tag": "What is CorpusStudio designed to do?"
+          "unit_id": "pa89",
+          "tag": "Did the anti-plagiarism design features work as intended?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa47",
-          "tag": "What corpus of papers was collected?"
+          "unit_id": "pa100",
+          "tag": "Did participants feel clearer about when to break venue norms?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa101",
+          "tag": "Did reviewing many sentences improve understanding of venue expectations?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa104",
+          "tag": "Was semantic similarity alone sufficient for relevance?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa114",
+          "tag": "How did the system affect writers' confidence?"
         },
         {
           "paper": "examplore_chi18",
-          "unit_id": "pa1",
-          "tag": "What problem, solution, and evaluation results does the paper present?"
+          "unit_id": "pa53",
+          "tag": "Why did EXAMPLORE users give more correct/thorough answers?"
         },
         {
           "paper": "examplore_chi18",
-          "unit_id": "pa6",
-          "tag": "What system is introduced to address this gap?"
+          "unit_id": "pa56",
+          "tag": "What did the post-survey ratings reveal about perceived helpfulness and confidence?"
         },
         {
           "paper": "examplore_chi18",
-          "unit_id": "pa9",
-          "tag": "What are the paper's main contributions?"
-        },
-        {
-          "paper": "examplore_chi18",
-          "unit_id": "pa29",
-          "tag": "What are the three phases of Examplore's pipeline?"
+          "unit_id": "pa62",
+          "tag": "What tradeoff exists between comprehensiveness and visual complexity?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa10",
-          "tag": "What are the paper's main contributions?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa78",
-          "tag": "How did Grid PDC support other task-specific goals?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa1",
-          "tag": "What problem, proposed tool, and study findings does this paper present?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa5",
-          "tag": "What system does this paper propose and what does it focus on?"
-        },
-        {
-          "paper": "paralib_uist22",
           "unit_id": "pa8",
-          "tag": "How was the system evaluated and what does the paper contribute?"
+          "tag": "What themes emerged from the studies?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa56",
+          "tag": "Were there qualitative preference differences despite no quantitative ones?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa58",
+          "tag": "What did participants dislike about the exploratory interface for email task?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa59",
+          "tag": "Which features were most used/useful in the email task?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa63",
+          "tag": "What qualitative feedback explains the model comparison results?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa64",
+          "tag": "How did Grid PDC help in the model comparison task?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa70",
+          "tag": "What section topic follows: feature utility across contexts?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa73",
+          "tag": "How did users find Unique Words useful as a summary?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa74",
+          "tag": "When did Unique Words fail to meet user expectations?"
+        },
+        {
+          "paper": "mesotext",
+          "unit_id": "pa77",
+          "tag": "When did Grid PDC fail to be useful?"
         },
         {
           "paper": "paralib_uist22",
-          "unit_id": "pa10",
-          "tag": "What factors do developers consider when selecting libraries?"
+          "unit_id": "pa61",
+          "tag": "Why were ParaLib responses richer in insight, not just examples?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa72",
+          "tag": "Would participants use ParaLib in future library comparisons?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa73",
+          "tag": "Which design goals did ParaLib successfully achieve?"
         },
         {
           "paper": "paralib_uist22",
           "unit_id": "pa74",
-          "tag": "How might future tools like ParaLib fit into programmers' workflows?"
+          "tag": "How ambiguous/double-edged was ParaLib's support for usability assessment?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa75",
+          "tag": "What follow-up research is needed to isolate which design features mattered?"
         }
       ]
     },
@@ -1956,98 +2144,48 @@
       "members": [
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa97",
-          "tag": "How well would the approach generalize to other corpora?"
+          "unit_id": "pa75",
+          "tag": "What data sources are combined to present findings?"
         },
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa98",
-          "tag": "What limitation exists in sentence-level aspect-based reading?"
+          "unit_id": "pa76",
+          "tag": "What is the overall summary of participant feedback and workload ratings?"
         },
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa99",
-          "tag": "What future improvement could reduce context-switching costs?"
+          "unit_id": "pa86",
+          "tag": "How do the findings set up the discussion?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa1",
+          "tag": "What problem does the work address, what was built, and what did the study find?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa5",
+          "tag": "How was the tool evaluated and what was found?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa102",
+          "tag": "What is the purpose of this discussion section?"
         },
         {
           "paper": "corpusstudio",
           "unit_id": "pa115",
-          "tag": "How might this retrieval approach improve discoverability of lesser-known work?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa118",
-          "tag": "What are the limitations and generalizability caveats of the study?"
+          "tag": "What are the study's limitations and future research directions?"
         },
         {
           "paper": "examplore_chi18",
-          "unit_id": "pa57",
-          "tag": "What limitations remain regarding example quality and sorting?"
-        },
-        {
-          "paper": "examplore_chi18",
-          "unit_id": "pa58",
-          "tag": "What did the paper contribute and what future work is planned?"
+          "unit_id": "pa64",
+          "tag": "What is the overall contribution and future direction of this work?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa11",
-          "tag": "What does the rest of the paper cover?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa92",
-          "tag": "Why support user-defined queries?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa94",
-          "tag": "How could explicit annotation support be added?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa95",
-          "tag": "How could automated analysis be integrated into inspectors?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa96",
-          "tag": "What implementation limitations affected the algorithms and renderings?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa97",
-          "tag": "What are the limitations of the study's task scope?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa98",
-          "tag": "How does scale affect the utility of response inspectors?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa31",
-          "tag": "What limitation exists in how the concept hierarchy was built?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa73",
-          "tag": "What factors does ParaLib fail to address?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa75",
-          "tag": "What limitation arises from using a single author-created concept hierarchy?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa76",
-          "tag": "How might choice of baseline limit interpretation of the results?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa77",
-          "tag": "What future tooling could automate concept hierarchy and annotation creation?"
+          "unit_id": "pa86",
+          "tag": "What is the overall takeaway from the studies?"
         }
       ]
     },
@@ -2056,333 +2194,143 @@
       "members": [
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa45",
-          "tag": "What does an example usage scenario look like initially?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa46",
-          "tag": "How does the example user explore participant numbers?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa47",
-          "tag": "How does the example user use a custom aspect?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa48",
-          "tag": "How does the example user explore LLM-related research gaps?"
+          "unit_id": "pa68",
+          "tag": "What was the goal and scope of the summative study?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa21",
-          "tag": "Who is the example user and scenario setup?"
+          "unit_id": "pa90",
+          "tag": "What statistical method and comparisons were used?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa22",
-          "tag": "How does a writer explore section title structures?"
+          "unit_id": "pa91",
+          "tag": "Did participants rate CorpusStudio more useful for outline drafting?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa23",
-          "tag": "How does a writer retrieve example sentences while drafting?"
+          "unit_id": "pa92",
+          "tag": "Was there a significant difference in ease of drafting titles between conditions?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa24",
-          "tag": "How does a writer record personal writing insights?"
+          "unit_id": "pa93",
+          "tag": "Did performance differ between first and second half of outline task?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa25",
-          "tag": "How does the writer continue using retrieval while drafting?"
+          "unit_id": "pa94",
+          "tag": "Did interface condition affect ease of drafting across both halves?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa95",
+          "tag": "How many participants found CorpusStudio easier for writing section titles?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa96",
+          "tag": "Did participants find CorpusStudio more overwhelming than baseline?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa97",
+          "tag": "Did the tool improve identification of venue norms statistically?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa98",
+          "tag": "How demanding was the section-writing task per NASA-TLX?"
         },
         {
           "paper": "examplore_chi18",
-          "unit_id": "pa23",
-          "tag": "What scenario introduces the interface's use?"
+          "unit_id": "pa52",
+          "tag": "Did EXAMPLORE lead to more correct answers than online search?"
         },
         {
           "paper": "examplore_chi18",
-          "unit_id": "pa26",
-          "tag": "How does a user filter examples by selecting an option?"
+          "unit_id": "pa54",
+          "tag": "How did answer vagueness compare between EXAMPLORE and online search?"
         },
         {
           "paper": "examplore_chi18",
-          "unit_id": "pa28",
-          "tag": "How does drilling into filters help discover unfamiliar patterns?"
+          "unit_id": "pa61",
+          "tag": "When does EXAMPLORE help most compared to online search?"
         },
         {
-          "paper": "paralib_uist22",
-          "unit_id": "pa33",
-          "tag": "Who is the example user and what is their goal?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa34",
-          "tag": "How does comparing concept distributions help narrow down library choices?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa35",
-          "tag": "How does the user learn about unfamiliar visualization concepts?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa36",
-          "tag": "How does filtering by a selected concept aid code inspection?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa37",
-          "tag": "How does the user compare code complexity across libraries?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa38",
-          "tag": "How does the user finalize her library choice and prepare to code?"
-        }
-      ]
-    },
-    {
-      "group_id": "group_27",
-      "members": [
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa56",
-          "tag": "Who were the study participants?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa62",
-          "tag": "How were participants' preferences gathered after the trials?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa73",
-          "tag": "Who were the study participants?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa74",
-          "tag": "What was the study logistics/setup?"
-        },
-        {
-          "paper": "corpusstudio",
+          "paper": "mesotext",
           "unit_id": "pa53",
-          "tag": "Who were the study participants and their backgrounds?"
+          "tag": "How was quantitative data analyzed?"
         },
         {
-          "paper": "corpusstudio",
-          "unit_id": "pa54",
-          "tag": "What venues and referencing habits did participants have?"
-        },
-        {
-          "paper": "corpusstudio",
+          "paper": "mesotext",
           "unit_id": "pa55",
-          "tag": "What prior writing support tools had participants used?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa57",
-          "tag": "What did the initial participant survey cover?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa58",
-          "tag": "What corpus information were participants given?"
-        },
-        {
-          "paper": "examplore_chi18",
-          "unit_id": "pa38",
-          "tag": "Who were the study participants and their backgrounds?"
+          "tag": "Did the interfaces differ quantitatively on the email task?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa22",
-          "tag": "What was the interview methodology?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa23",
-          "tag": "Who were the interview participants?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa24",
-          "tag": "What common practice emerged across all interviewees?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa51",
-          "tag": "Who were the study participants?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa70",
-          "tag": "Why and how were case studies recruited and scoped?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa47",
-          "tag": "Who were the study participants and how were they recruited?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa48",
-          "tag": "What programming experience did participants have?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa49",
-          "tag": "What domain-specific experience did participants report?"
-        },
-        {
-          "paper": "paralib_uist22",
-          "unit_id": "pa50",
-          "tag": "What prior familiarity did participants have with the specific libraries?"
-        }
-      ]
-    },
-    {
-      "group_id": "group_28",
-      "members": [
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa57",
-          "tag": "What materials/sentences were used in the study?"
-        },
-        {
-          "paper": "abstractexplorer",
           "unit_id": "pa60",
-          "tag": "What was the study procedure at onboarding?"
+          "tag": "Did interfaces differ quantitatively on the model comparison task?"
         },
         {
-          "paper": "abstractexplorer",
+          "paper": "mesotext",
           "unit_id": "pa61",
-          "tag": "What task and measures were used per condition?"
+          "tag": "Did the exploratory interface actually yield more differences found?"
         },
         {
-          "paper": "abstractexplorer",
-          "unit_id": "pa75",
-          "tag": "How were participants onboarded and trained on the tool?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa76",
-          "tag": "What was the first study task and its procedure?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa77",
-          "tag": "What was the second study task and its purpose?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa78",
-          "tag": "What data was collected after the tasks?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa56",
-          "tag": "How were the study sessions logistically conducted?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa59",
-          "tag": "How were participants introduced to the tasks?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa60",
-          "tag": "Why was outlining chosen as the first task?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa61",
-          "tag": "How was the outlining task structured and run?"
-        },
-        {
-          "paper": "corpusstudio",
+          "paper": "mesotext",
           "unit_id": "pa62",
-          "tag": "How was the section-writing task structured and run?"
+          "tag": "How did time on task relate to performance in model comparison?"
         },
         {
-          "paper": "corpusstudio",
-          "unit_id": "pa63",
-          "tag": "What plagiarism-avoidance guidance was given during the task?"
-        },
-        {
-          "paper": "corpusstudio",
-          "unit_id": "pa69",
-          "tag": "How did participants draft outlines before using the tool?"
-        },
-        {
-          "paper": "examplore_chi18",
+          "paper": "paralib_uist22",
           "unit_id": "pa37",
-          "tag": "Which API methods were chosen and why?"
+          "tag": "What assumptions underlie the distribution bars' reliability?"
         },
         {
-          "paper": "examplore_chi18",
-          "unit_id": "pa40",
-          "tag": "What steps made up the study procedure?"
-        },
-        {
-          "paper": "examplore_chi18",
-          "unit_id": "pa41",
-          "tag": "What did participants do in each condition?"
-        },
-        {
-          "paper": "examplore_chi18",
-          "unit_id": "pa42",
-          "tag": "What instructions were given about answering the questions?"
-        },
-        {
-          "paper": "mesotext",
+          "paper": "paralib_uist22",
           "unit_id": "pa54",
-          "tag": "What did the email rewriting task involve?"
+          "tag": "How was library ranking data measured and presented?"
         },
         {
-          "paper": "mesotext",
+          "paper": "paralib_uist22",
           "unit_id": "pa55",
-          "tag": "What did the model comparison task involve?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa71",
-          "tag": "How was each case study session structured?"
+          "tag": "Were rankings more consistent with ParaLib than search?"
         },
         {
           "paper": "paralib_uist22",
-          "unit_id": "pa40",
-          "tag": "What library comparison tasks and domains were chosen?"
+          "unit_id": "pa56",
+          "tag": "Did online search lead to more divergent/indecisive rankings?"
         },
         {
           "paper": "paralib_uist22",
-          "unit_id": "pa41",
-          "tag": "What components made up the comparison task?"
+          "unit_id": "pa57",
+          "tag": "Which tool led to more correct scenario decisions?"
         },
         {
           "paper": "paralib_uist22",
-          "unit_id": "pa44",
-          "tag": "What post-task surveys did participants complete?"
+          "unit_id": "pa60",
+          "tag": "Were written comparison responses longer with ParaLib?"
         },
         {
           "paper": "paralib_uist22",
-          "unit_id": "pa45",
-          "tag": "How was the NLP library selection scenario designed?"
+          "unit_id": "pa64",
+          "tag": "How did confidence and cognitive load differ between tools?"
         },
         {
           "paper": "paralib_uist22",
-          "unit_id": "pa46",
-          "tag": "How was the visualization library selection scenario designed?"
+          "unit_id": "pa66",
+          "tag": "How did participants directly rate ParaLib versus search in surveys?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa79",
+          "tag": "How does the choice of baseline limit causal claims about ParaLib's benefits?"
         }
       ]
     },
     {
-      "group_id": "group_29",
+      "group_id": "group_26",
       "members": [
         {
           "paper": "abstractexplorer",
@@ -2392,7 +2340,7 @@
         {
           "paper": "abstractexplorer",
           "unit_id": "pa3",
-          "tag": "What limitations do existing lossy corpus-reasoning approaches have?"
+          "tag": "Why do lossy representations of document corpora fall short?"
         },
         {
           "paper": "abstractexplorer",
@@ -2401,138 +2349,138 @@
         },
         {
           "paper": "abstractexplorer",
-          "unit_id": "pa10",
-          "tag": "How does close reading differ from distant reading approaches?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa12",
-          "tag": "What gap remains in prior reading tools for document corpora?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa17",
-          "tag": "What prior systems use structure to support sensemaking?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa18",
-          "tag": "How does AbstractExplorer differ from these prior sensemaking systems?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa20",
-          "tag": "How do existing corpus sensemaking systems support exploration?"
-        },
-        {
-          "paper": "abstractexplorer",
           "unit_id": "pa26",
-          "tag": "What challenges do researchers face with current tools?"
-        },
-        {
-          "paper": "abstractexplorer",
-          "unit_id": "pa84",
-          "tag": "Did the interface help participants review more/broader papers?"
+          "tag": "What existing sensemaking challenges did participants report?"
         },
         {
           "paper": "corpusstudio",
-          "unit_id": "pa109",
-          "tag": "What does this reveal about query-document relevance assumptions?"
+          "unit_id": "pa2",
+          "tag": "Why is learning from examples hard for novice writers?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa8",
+          "tag": "Why is understanding community writing norms important?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa9",
+          "tag": "What makes up writing norms and why are they hard to apply?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa13",
+          "tag": "How do existing search/related-work tools fall short for writing support?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa14",
+          "tag": "What gap exists between separate writing and related-work tools that motivates an integrated approach?"
+        },
+        {
+          "paper": "corpusstudio",
+          "unit_id": "pa107",
+          "tag": "Why present many retrieved examples instead of aggregated results?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa1",
+          "tag": "What problem is addressed and what was built/found to solve it?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa2",
+          "tag": "Why is learning API usage difficult?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa3",
+          "tag": "What specific shortcoming do documentation and tutorials have?"
         },
         {
           "paper": "examplore_chi18",
           "unit_id": "pa4",
-          "tag": "Why don't code-sharing sites fully solve the example-finding problem?"
+          "tag": "Why doesn't code search solve the example-finding problem?"
         },
         {
           "paper": "examplore_chi18",
-          "unit_id": "pa10",
-          "tag": "How have prior systems visualized large collections of related documents/data?"
+          "unit_id": "pa5",
+          "tag": "What gap exists in Big Code API mining research, and what research question follows?"
         },
         {
           "paper": "examplore_chi18",
           "unit_id": "pa13",
-          "tag": "What do prior studies show about how programmers search for code examples?"
+          "tag": "Why do developers need better support for learning APIs from code examples?"
         },
         {
           "paper": "examplore_chi18",
           "unit_id": "pa14",
-          "tag": "Why are individual code examples problematic and why is visualizing many examples desired?"
+          "tag": "Why do developers only explore a limited number of code examples?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa58",
+          "tag": "What shortcomings of online search did users note by contrast?"
+        },
+        {
+          "paper": "examplore_chi18",
+          "unit_id": "pa63",
+          "tag": "What risks arise from unvetted code example quality?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa1",
-          "tag": "What was built, tested, and found?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa2",
-          "tag": "Why do users need help making sense of multiple LLM responses?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa5",
-          "tag": "What is the 'mesoscale' of LLM response sensemaking?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa6",
-          "tag": "What techniques were built to support mesoscale sensemaking?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa7",
-          "tag": "What is the paper's research question?"
+          "unit_id": "pa3",
+          "tag": "What gap exists in current tools/methods for inspecting many responses?"
         },
         {
           "paper": "mesotext",
           "unit_id": "pa12",
-          "tag": "What are the three areas of prior work reviewed?"
+          "tag": "What does prior research say about skimming as a cognitive process?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa15",
-          "tag": "How do existing multi-document visualization systems fall short on direct text access?"
+          "unit_id": "pa19",
+          "tag": "How do existing GenAI sensemaking tools fail to address stochastic LLM outputs?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa21",
-          "tag": "How do existing LLM sensemaking interfaces differ from this work's approach?"
+          "unit_id": "pa22",
+          "tag": "What overall pattern emerged across interviewees' practices?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa26",
-          "tag": "How do practitioners make sense of LLM outputs?"
+          "unit_id": "pa23",
+          "tag": "Why do practitioners distrust automatic evaluation metrics?"
         },
         {
           "paper": "mesotext",
           "unit_id": "pa28",
-          "tag": "What was designed and how is it framed conceptually?"
+          "tag": "Why show raw text rather than abstracted summaries?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa30",
-          "tag": "Why show full text rather than abstracted summaries?"
+          "unit_id": "pa29",
+          "tag": "Why avoid requiring users to pick analysis lenses upfront?"
         },
         {
           "paper": "mesotext",
-          "unit_id": "pa31",
-          "tag": "Why avoid requiring users to pick analytic lenses?"
-        },
-        {
-          "paper": "mesotext",
-          "unit_id": "pa33",
-          "tag": "Why support diverse sensemaking sub-tasks for different users?"
+          "unit_id": "pa96",
+          "tag": "How does scale limit the current findings and future work?"
         },
         {
           "paper": "paralib_uist22",
           "unit_id": "pa2",
-          "tag": "Why is library selection a hard problem for programmers?"
+          "tag": "Why is library selection a common and difficult task?"
         },
         {
           "paper": "paralib_uist22",
-          "unit_id": "pa63",
-          "tag": "How did participants describe the sensemaking experience differences?"
+          "unit_id": "pa3",
+          "tag": "What do programmers currently do to compare libraries, and why is it tedious?"
+        },
+        {
+          "paper": "paralib_uist22",
+          "unit_id": "pa70",
+          "tag": "What challenges did participants report with online search?"
         }
       ]
     }

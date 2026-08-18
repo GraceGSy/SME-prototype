@@ -1,11 +1,10 @@
 {
-  "pa91": "How do findings connect back to the design framework?",
-  "pa92": "How does AbstractExplorer relate to prior Structure-Mapping Theory work?",
-  "pa93": "How does this approach compare to existing information-seeking paradigms?",
-  "pa94": "What new paradigm does this work contribute and how might it generalize?",
-  "pa95": "What new conceptual contribution (variation affordances) does the work introduce?",
-  "pa96": "What broader theoretical implication does this have for sensemaking and AI's role?",
-  "pa97": "How well would the approach generalize to other corpora?",
-  "pa98": "What limitation exists in sentence-level aspect-based reading?",
-  "pa99": "What future improvement could reduce context-switching costs?"
+  "pa86": "How do the findings set up the discussion?",
+  "pa87": "How does the design change users' cognitive engagement with text?",
+  "pa88": "How does this approach compare to existing information-seeking paradigms?",
+  "pa89": "What new paradigm does this work contribute and how might it generalize?",
+  "pa90": "What conceptual contribution do 'variation affordances' represent?",
+  "pa91": "How does the design support human engagement versus AI automation?",
+  "pa92": "What are the limits of generalizing this design to other corpora?",
+  "pa93": "What tradeoff exists in sentence-level reading and how could it be improved?"
 }

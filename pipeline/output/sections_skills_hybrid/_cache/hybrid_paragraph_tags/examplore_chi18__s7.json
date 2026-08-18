@@ -1,9 +1,12 @@
 {
-  "pa36": "What is the study's design and question set for comparing tools?",
-  "pa37": "Which API methods were chosen and why?",
-  "pa38": "Who were the study participants and their backgrounds?",
-  "pa39": "How long was the study and how were conditions counterbalanced?",
-  "pa40": "What steps made up the study procedure?",
-  "pa41": "What did participants do in each condition?",
-  "pa42": "What instructions were given about answering the questions?"
+  "pa41": "What is the overall study design and goal?",
+  "pa42": "Which API methods were chosen and why?",
+  "pa43": "Who were the study participants?",
+  "pa44": "What was the overall study procedure and counterbalancing?",
+  "pa45": "What happened during the training session?",
+  "pa46": "What did the first exploration task involve?",
+  "pa47": "What did the second exploration task involve?",
+  "pa48": "What was collected in the post survey?",
+  "pa49": "How did the control and experimental conditions differ?",
+  "pa50": "What instructions were given about answering thoroughness?"
 }

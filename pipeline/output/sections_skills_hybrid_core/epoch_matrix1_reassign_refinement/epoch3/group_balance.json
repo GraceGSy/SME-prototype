@@ -1,164 +1,140 @@
 [
   {
-    "group_id": "group_2",
-    "overarching_question": "Which specific interface features did participants find most useful?",
-    "group_balance": 100.0,
-    "member_count": 27
-  },
-  {
     "group_id": "group_6",
-    "overarching_question": "How is a specific system feature/algorithm technically implemented?",
+    "overarching_question": "How can visual highlighting/rendering aid cross-document comparison and learning?",
     "group_balance": 100.0,
-    "member_count": 36
+    "member_count": 20
   },
   {
-    "group_id": "group_7",
-    "overarching_question": "How do cognitive/learning theories inform tool design for comparing examples?",
+    "group_id": "group_9",
+    "overarching_question": "How does this system's approach differ from prior related work?",
     "group_balance": 100.0,
-    "member_count": 27
+    "member_count": 29
   },
   {
-    "group_id": "group_8",
+    "group_id": "group_11",
     "overarching_question": "Who funded and supported this research?",
     "group_balance": 100.0,
     "member_count": 5
   },
   {
-    "group_id": "group_12",
-    "overarching_question": "How is color-coded visual highlighting designed to aid content comparison?",
+    "group_id": "group_14",
+    "overarching_question": "How do existing tools/approaches fall short, motivating a new system?",
     "group_balance": 100.0,
-    "member_count": 25
+    "member_count": 17
   },
   {
-    "group_id": "group_13",
-    "overarching_question": "What usability drawbacks and improvements did participants report about the tool's interface?",
+    "group_id": "group_16",
+    "overarching_question": "How do interface and algorithm design choices support comparative sensemaking across text corpora?",
     "group_balance": 100.0,
-    "member_count": 23
-  },
-  {
-    "group_id": "group_15",
-    "overarching_question": "How does this system relate to prior text/code alignment and example-visualization tools?",
-    "group_balance": 100.0,
-    "member_count": 14
+    "member_count": 36
   },
   {
     "group_id": "group_17",
-    "overarching_question": "How do design choices and theories shape comparative example-based interface features?",
+    "overarching_question": "How are interface and algorithm design choices used to support cross-text comparison?",
     "group_balance": 100.0,
-    "member_count": 16
+    "member_count": 36
+  },
+  {
+    "group_id": "group_18",
+    "overarching_question": "Which tool features did users find most useful and why?",
+    "group_balance": 100.0,
+    "member_count": 74
+  },
+  {
+    "group_id": "group_20",
+    "overarching_question": "Who were the recruited participants in the user study?",
+    "group_balance": 100.0,
+    "member_count": 17
+  },
+  {
+    "group_id": "group_21",
+    "overarching_question": "How were user studies designed and conducted to evaluate the tool?",
+    "group_balance": 100.0,
+    "member_count": 18
   },
   {
     "group_id": "group_22",
-    "overarching_question": "How do exploration tools affect users' cognitive load and confidence versus baselines?",
+    "overarching_question": "What tasks did participants perform to evaluate the tool in user studies?",
     "group_balance": 100.0,
-    "member_count": 19
+    "member_count": 37
   },
   {
     "group_id": "group_23",
-    "overarching_question": "How do interactive visualization tools help users make sense of large document collections?",
+    "overarching_question": "Does the tool/feature empirically improve user performance and experience over baseline?",
     "group_balance": 100.0,
-    "member_count": 20
+    "member_count": 35
   },
   {
-    "group_id": "group_24",
-    "overarching_question": "What limitations and future work does the study acknowledge?",
+    "group_id": "group_25",
+    "overarching_question": "Does user study evidence show the tool improves task performance and experience over baseline?",
     "group_balance": 100.0,
-    "member_count": 19
+    "member_count": 27
   },
   {
-    "group_id": "group_27",
-    "overarching_question": "Who were the participants recruited for the user study?",
-    "group_balance": 100.0,
-    "member_count": 19
-  },
-  {
-    "group_id": "group_28",
-    "overarching_question": "How were user studies designed and conducted to evaluate the tool?",
-    "group_balance": 100.0,
-    "member_count": 26
-  },
-  {
-    "group_id": "group_29",
-    "overarching_question": "How do visualization/interaction tools help users make sense of large text collections?",
+    "group_id": "group_26",
+    "overarching_question": "Why do existing tools fail to help users make sense of many items at once?",
     "group_balance": 100.0,
     "member_count": 30
   },
   {
-    "group_id": "group_3",
-    "overarching_question": "What did user studies find about tool effectiveness and preference?",
-    "group_balance": 80.0,
-    "member_count": 20
-  },
-  {
-    "group_id": "group_4",
-    "overarching_question": "How does this system differ from prior related tools/approaches?",
-    "group_balance": 80.0,
-    "member_count": 14
-  },
-  {
-    "group_id": "group_10",
-    "overarching_question": "Did the proposed tool outperform the baseline in user studies?",
-    "group_balance": 80.0,
-    "member_count": 27
-  },
-  {
-    "group_id": "group_14",
-    "overarching_question": "How do interface designs visually support cross-example comparison?",
-    "group_balance": 80.0,
-    "member_count": 8
-  },
-  {
-    "group_id": "group_18",
-    "overarching_question": "How are examples visually arranged and rendered to support cross-example comparison?",
-    "group_balance": 80.0,
-    "member_count": 10
-  },
-  {
-    "group_id": "group_19",
-    "overarching_question": "How was the user study designed and conducted to evaluate the tool?",
-    "group_balance": 80.0,
-    "member_count": 12
-  },
-  {
-    "group_id": "group_20",
-    "overarching_question": "How was the user study designed to evaluate the tool against a baseline?",
-    "group_balance": 80.0,
-    "member_count": 7
-  },
-  {
-    "group_id": "group_21",
-    "overarching_question": "Which specific interface features did users find most useful?",
-    "group_balance": 80.0,
-    "member_count": 20
-  },
-  {
-    "group_id": "group_25",
-    "overarching_question": "How does a user walk through a system's interface in a usage scenario?",
+    "group_id": "group_1",
+    "overarching_question": "How can interfaces help users make sense of large collections of complex textual data?",
     "group_balance": 80.0,
     "member_count": 18
   },
   {
-    "group_id": "group_1",
-    "overarching_question": "What was the design and goal of the user study evaluating the tool?",
+    "group_id": "group_5",
+    "overarching_question": "How does prior work on aligning/visualizing multiple texts or examples relate to this system?",
+    "group_balance": 80.0,
+    "member_count": 10
+  },
+  {
+    "group_id": "group_13",
+    "overarching_question": "How do cognitive theories of comparison and learning inform system design?",
+    "group_balance": 80.0,
+    "member_count": 19
+  },
+  {
+    "group_id": "group_24",
+    "overarching_question": "Does the proposed tool/interface improve user performance and experience over baseline?",
+    "group_balance": 80.0,
+    "member_count": 9
+  },
+  {
+    "group_id": "group_3",
+    "overarching_question": "How was the user study designed to evaluate the system's features?",
+    "group_balance": 60.0,
+    "member_count": 3
+  },
+  {
+    "group_id": "group_19",
+    "overarching_question": "How do cognitive theories of comparison inform system design choices?",
     "group_balance": 60.0,
     "member_count": 4
   },
   {
-    "group_id": "group_16",
-    "overarching_question": "How does this system differ from prior related tools?",
-    "group_balance": 60.0,
-    "member_count": 7
-  },
-  {
-    "group_id": "group_5",
-    "overarching_question": "How was the proposed system evaluated and what did the study show?",
+    "group_id": "group_2",
+    "overarching_question": "How was the user study designed and conducted to evaluate the tool?",
     "group_balance": 40.0,
     "member_count": 2
   },
   {
-    "group_id": "group_9",
-    "overarching_question": "How was the user study designed to evaluate the tool?",
-    "group_balance": 20.0,
-    "member_count": 1
+    "group_id": "group_4",
+    "overarching_question": "Does the user study show the tool improves task performance and user experience over baseline?",
+    "group_balance": 40.0,
+    "member_count": 3
+  },
+  {
+    "group_id": "group_7",
+    "overarching_question": "How can interfaces help users make sense of large collections of similar textual/data items?",
+    "group_balance": 40.0,
+    "member_count": 3
+  },
+  {
+    "group_id": "group_15",
+    "overarching_question": "How do interface visual/alignment techniques help users compare analogous items across examples?",
+    "group_balance": 40.0,
+    "member_count": 2
   }
 ]

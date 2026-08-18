@@ -1,8 +1,8 @@
 {
-  "pa22": "What was the interview methodology?",
-  "pa23": "Who were the interview participants?",
-  "pa24": "What common practice emerged across all interviewees?",
-  "pa25": "Why do interviewees distrust automatic evaluation?",
-  "pa26": "How do practitioners make sense of LLM outputs?",
-  "pa27": "How do practitioners perform detailed manual annotation?"
+  "pa20": "What did the interview study involve?",
+  "pa21": "Who were the interview participants?",
+  "pa22": "What overall pattern emerged across interviewees' practices?",
+  "pa23": "Why do practitioners distrust automatic evaluation metrics?",
+  "pa24": "How do practitioners make sense of LLM outputs?",
+  "pa25": "How do practitioners perform detailed manual annotation?"
 }

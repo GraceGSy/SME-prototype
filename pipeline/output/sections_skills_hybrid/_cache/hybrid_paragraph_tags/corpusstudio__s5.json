@@ -1,7 +1,7 @@
 {
-  "pa47": "What corpus of papers was collected?",
-  "pa48": "How were manuscripts split into sentences?",
-  "pa49": "How was data prepared for spatial retrieval/embedding?",
-  "pa50": "How were section titles processed for distribution analysis?",
-  "pa51": "How was the sample size for section titles chosen?"
+  "pa40": "What papers make up the corpus?",
+  "pa41": "How were documents split into sentences?",
+  "pa42": "How were sentences embedded for retrieval?",
+  "pa43": "How were section titles clustered into a distribution?",
+  "pa44": "How was the sample size for clustering chosen?"
 }
