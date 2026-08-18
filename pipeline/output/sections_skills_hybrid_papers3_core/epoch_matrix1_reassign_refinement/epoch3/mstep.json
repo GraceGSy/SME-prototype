@@ -2,373 +2,342 @@
   "groups": [
     {
       "group_id": "group_1",
-      "overarching_question": "How were experimental stimuli and task design constructed for visualization judgment studies?",
+      "overarching_question": "What experimental methods were used to study visualization perception and judgment?",
       "representative_members": [
         {
           "paper": "crowdsourcinggraphical",
-          "unit_id": "pa26",
-          "tag": "What was the experimental design for rectangular area judgments?"
+          "unit_id": "pa22",
+          "tag": "What were the experimental stimuli and procedure details?"
         },
         {
           "paper": "illusionofcausality",
-          "unit_id": "pa23",
-          "tag": "What was the experimental design and stimuli set?"
+          "unit_id": "pa29",
+          "tag": "What experimental design and visualization conditions were used?"
         },
         {
           "paper": "measuringseparability",
-          "unit_id": "pa23",
-          "tag": "How were the stimuli and forced-choice task designed?"
+          "unit_id": "pa12",
+          "tag": "What experimental design and stimuli were used to test hypotheses?"
         },
         {
           "paper": "seeingbelieve",
-          "unit_id": "pa21",
-          "tag": "What stimuli were used across experiments?"
+          "unit_id": "pa18",
+          "tag": "What stimuli and materials were used across experiments?"
         },
         {
           "paper": "visualarrangements",
-          "unit_id": "pa32",
-          "tag": "What stimuli/visualizations were created?"
+          "unit_id": "pa26",
+          "tag": "What was the experimental design and task procedure?"
         }
       ]
     },
     {
       "group_id": "group_2",
-      "overarching_question": "Who participated in the study and how were they recruited/screened?",
+      "overarching_question": "What were the participant recruitment and study design details of the experiment?",
       "representative_members": [
         {
           "paper": "crowdsourcinggraphical",
-          "unit_id": "pa49",
-          "tag": "How many subjects participated and how were experiments deployed?"
+          "unit_id": "pa58",
+          "tag": "How many subjects participated and how were experiments grouped?"
         },
         {
           "paper": "illusionofcausality",
-          "unit_id": "pa22",
-          "tag": "How were participants recruited and screened?"
+          "unit_id": "pa26",
+          "tag": "Who were the participants and what variables were measured?"
         },
         {
           "paper": "measuringseparability",
-          "unit_id": "pa28",
-          "tag": "Who were the participants and how were they screened?"
+          "unit_id": "pa20",
+          "tag": "Who were the participants and how were exclusions handled?"
         },
         {
           "paper": "seeingbelieve",
-          "unit_id": "pa22",
-          "tag": "Who were the participants recruited?"
+          "unit_id": "pa18",
+          "tag": "What stimuli and materials were used across experiments?"
         },
         {
           "paper": "visualarrangements",
-          "unit_id": "pa31",
-          "tag": "Who were the study participants?"
+          "unit_id": "pa25",
+          "tag": "What is the goal and participant pool for this experiment?"
         }
       ]
     },
     {
       "group_id": "group_3",
-      "overarching_question": "How do visual encoding and design choices shape data perception and interpretation?",
+      "overarching_question": "What statistical methods and results support the visualization study's findings?",
       "representative_members": [
         {
           "paper": "crowdsourcinggraphical",
-          "unit_id": "pa6",
-          "tag": "What foundational studies ranked visual variables' effectiveness?"
+          "unit_id": "pa62",
+          "tag": "What were the statistical results of the height/spacing experiment?"
         },
         {
           "paper": "illusionofcausality",
-          "unit_id": "pa1",
-          "tag": "What did the experiments reveal about visualization design's effect on perceived causality?"
+          "unit_id": "pa31",
+          "tag": "What statistical model was used for causation ratings?"
         },
         {
           "paper": "measuringseparability",
-          "unit_id": "pa1",
-          "tag": "What problem, experiments, and findings does the paper present?"
+          "unit_id": "pa21",
+          "tag": "What statistical approach was used to analyze the data?"
         },
         {
           "paper": "seeingbelieve",
-          "unit_id": "pa19",
-          "tag": "How do visual design choices affect correlation perception accuracy?"
+          "unit_id": "pa41",
+          "tag": "What statistical model was used to test belief's effect on estimates?"
         },
         {
           "paper": "visualarrangements",
-          "unit_id": "pa6",
-          "tag": "How do design choices like chart type affect data perception?"
+          "unit_id": "pa33",
+          "tag": "Does arrangement affect number of bars compared?"
         }
       ]
     },
     {
-      "group_id": "group_6",
-      "overarching_question": "What experimental stimuli and design were used to test visualization judgments?",
+      "group_id": "group_4",
+      "overarching_question": "How do visual encoding and chart design choices shape data interpretation?",
       "representative_members": [
         {
           "paper": "crowdsourcinggraphical",
-          "unit_id": "pa26",
-          "tag": "What was the experimental design for rectangular area judgments?"
+          "unit_id": "pa5",
+          "tag": "What is graphical perception and why does it matter?"
         },
         {
           "paper": "illusionofcausality",
-          "unit_id": "pa23",
-          "tag": "What was the experimental design and stimuli set?"
+          "unit_id": "pa1",
+          "tag": "What did the experiments test and find about visualization's effect on causal inference?"
         },
         {
           "paper": "measuringseparability",
-          "unit_id": "pa23",
-          "tag": "How were the stimuli and forced-choice task designed?"
+          "unit_id": "pa1",
+          "tag": "What was studied, and what did it find?"
         },
         {
           "paper": "seeingbelieve",
-          "unit_id": "pa21",
-          "tag": "What stimuli were used across experiments?"
+          "unit_id": "pa14",
+          "tag": "What design factors and perceptual shortcuts affect correlation judgments?"
         },
         {
           "paper": "visualarrangements",
-          "unit_id": "pa32",
-          "tag": "What stimuli/visualizations were created?"
+          "unit_id": "pa7",
+          "tag": "How do chart design choices shape viewer perception and comparisons?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_5",
+      "overarching_question": "How do visualization design choices shape viewers' perception and interpretation of data?",
+      "representative_members": [
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa5",
+          "tag": "What is graphical perception and why does it matter?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa6",
+          "tag": "What prior work motivates this, and what does this paper contribute?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa1",
+          "tag": "What was studied, and what did it find?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa14",
+          "tag": "What design factors and perceptual shortcuts affect correlation judgments?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa7",
+          "tag": "How do chart design choices shape viewer perception and comparisons?"
         }
       ]
     },
     {
       "group_id": "group_7",
-      "overarching_question": "How do visualization design choices affect perceptual accuracy of data interpretation?",
+      "overarching_question": "How do visual encoding and design choices shape viewers' perception and interpretation of data",
       "representative_members": [
         {
           "paper": "crowdsourcinggraphical",
-          "unit_id": "pa28",
-          "tag": "What effect did aspect ratio have on judgment accuracy?"
+          "unit_id": "pa5",
+          "tag": "What is graphical perception and why does it matter?"
         },
         {
           "paper": "illusionofcausality",
-          "unit_id": "pa7",
-          "tag": "How does visualization design affect low-level perceptual data interpretation?"
+          "unit_id": "pa79",
+          "tag": "Why do visual marks and data trends affect causal perception?"
         },
         {
           "paper": "measuringseparability",
           "unit_id": "pa1",
-          "tag": "What problem, experiments, and findings does the paper present?"
+          "tag": "What was studied, and what did it find?"
         },
         {
           "paper": "seeingbelieve",
-          "unit_id": "pa19",
-          "tag": "How do visual design choices affect correlation perception accuracy?"
+          "unit_id": "pa14",
+          "tag": "What design factors and perceptual shortcuts affect correlation judgments?"
         },
         {
           "paper": "visualarrangements",
-          "unit_id": "pa6",
-          "tag": "How do design choices like chart type affect data perception?"
+          "unit_id": "pa7",
+          "tag": "How do chart design choices shape viewer perception and comparisons?"
         }
       ]
     },
     {
       "group_id": "group_8",
-      "overarching_question": "How do visualization design choices influence data perception and interpretation?",
+      "overarching_question": "What experimental stimuli and design details underlie visualization perception studies?",
       "representative_members": [
         {
           "paper": "crowdsourcinggraphical",
-          "unit_id": "pa8",
-          "tag": "How do interacting variables and context complicate perception?"
+          "unit_id": "pa22",
+          "tag": "What were the experimental stimuli and procedure details?"
         },
         {
           "paper": "illusionofcausality",
-          "unit_id": "pa1",
-          "tag": "What did the experiments reveal about visualization design's effect on perceived causality?"
+          "unit_id": "pa29",
+          "tag": "What experimental design and visualization conditions were used?"
         },
         {
           "paper": "measuringseparability",
-          "unit_id": "pa1",
-          "tag": "What problem, experiments, and findings does the paper present?"
+          "unit_id": "pa17",
+          "tag": "How were stimuli designed to ensure ecological validity?"
         },
         {
           "paper": "seeingbelieve",
-          "unit_id": "pa19",
-          "tag": "How do visual design choices affect correlation perception accuracy?"
+          "unit_id": "pa18",
+          "tag": "What stimuli and materials were used across experiments?"
         },
         {
           "paper": "visualarrangements",
-          "unit_id": "pa6",
-          "tag": "How do design choices like chart type affect data perception?"
+          "unit_id": "pa26",
+          "tag": "What was the experimental design and task procedure?"
         }
       ]
     },
     {
       "group_id": "group_9",
-      "overarching_question": "How do visualization design choices shape viewers' perception and interpretation of data?",
+      "overarching_question": "How do visual encoding and design choices shape graphical perception and data interpretation?",
       "representative_members": [
         {
           "paper": "crowdsourcinggraphical",
-          "unit_id": "pa8",
-          "tag": "How do interacting variables and context complicate perception?"
+          "unit_id": "pa5",
+          "tag": "What is graphical perception and why does it matter?"
         },
         {
           "paper": "illusionofcausality",
           "unit_id": "pa1",
-          "tag": "What did the experiments reveal about visualization design's effect on perceived causality?"
+          "tag": "What did the experiments test and find about visualization's effect on causal inference?"
         },
         {
           "paper": "measuringseparability",
           "unit_id": "pa1",
-          "tag": "What problem, experiments, and findings does the paper present?"
+          "tag": "What was studied, and what did it find?"
         },
         {
           "paper": "seeingbelieve",
-          "unit_id": "pa19",
-          "tag": "How do visual design choices affect correlation perception accuracy?"
+          "unit_id": "pa14",
+          "tag": "What design factors and perceptual shortcuts affect correlation judgments?"
         },
         {
           "paper": "visualarrangements",
-          "unit_id": "pa6",
-          "tag": "How do design choices like chart type affect data perception?"
-        }
-      ]
-    },
-    {
-      "group_id": "group_11",
-      "overarching_question": "How were experimental stimuli and task design constructed for the study?",
-      "representative_members": [
-        {
-          "paper": "crowdsourcinggraphical",
-          "unit_id": "pa26",
-          "tag": "What was the experimental design for rectangular area judgments?"
-        },
-        {
-          "paper": "illusionofcausality",
-          "unit_id": "pa23",
-          "tag": "What was the experimental design and stimuli set?"
-        },
-        {
-          "paper": "measuringseparability",
-          "unit_id": "pa23",
-          "tag": "How were the stimuli and forced-choice task designed?"
-        },
-        {
-          "paper": "seeingbelieve",
-          "unit_id": "pa21",
-          "tag": "What stimuli were used across experiments?"
-        },
-        {
-          "paper": "visualarrangements",
-          "unit_id": "pa32",
-          "tag": "What stimuli/visualizations were created?"
-        }
-      ]
-    },
-    {
-      "group_id": "group_12",
-      "overarching_question": "What statistical methods and results support the study's experimental findings?",
-      "representative_members": [
-        {
-          "paper": "crowdsourcinggraphical",
-          "unit_id": "pa46",
-          "tag": "What statistical results did the ANOVA reveal?"
-        },
-        {
-          "paper": "illusionofcausality",
-          "unit_id": "pa28",
-          "tag": "How was the causation rating data modeled statistically?"
-        },
-        {
-          "paper": "measuringseparability",
-          "unit_id": "pa29",
-          "tag": "What statistical analysis approach was used?"
-        },
-        {
-          "paper": "seeingbelieve",
-          "unit_id": "pa45",
-          "tag": "What statistical model was built to test belief's effect on bias?"
-        },
-        {
-          "paper": "visualarrangements",
-          "unit_id": "pa53",
-          "tag": "Does arrangement affect comparison-set-size categories?"
-        }
-      ]
-    },
-    {
-      "group_id": "group_13",
-      "overarching_question": "What do crowdsourced graphical perception experiments reveal about visualization design effects?",
-      "representative_members": [
-        {
-          "paper": "crowdsourcinggraphical",
-          "unit_id": "pa61",
-          "tag": "What did the crowdsourced studies find and confirm?"
-        },
-        {
-          "paper": "illusionofcausality",
-          "unit_id": "pa1",
-          "tag": "What did the experiments reveal about visualization design's effect on perceived causality?"
-        },
-        {
-          "paper": "measuringseparability",
-          "unit_id": "pa1",
-          "tag": "What problem, experiments, and findings does the paper present?"
-        },
-        {
-          "paper": "seeingbelieve",
-          "unit_id": "pa1",
-          "tag": "What did the experiments find about belief bias in correlation estimation?"
-        },
-        {
-          "paper": "visualarrangements",
-          "unit_id": "pa1",
-          "tag": "What was studied, how, and what was found about chart arrangements affording comparisons?"
+          "unit_id": "pa7",
+          "tag": "How do chart design choices shape viewer perception and comparisons?"
         }
       ]
     },
     {
       "group_id": "group_14",
-      "overarching_question": "What experimental design and stimuli were used to study visualization perception?",
+      "overarching_question": "What experimental design and stimuli were used to test visualization perception hypotheses?",
       "representative_members": [
         {
           "paper": "crowdsourcinggraphical",
-          "unit_id": "pa26",
-          "tag": "What was the experimental design for rectangular area judgments?"
+          "unit_id": "pa20",
+          "tag": "What visual encodings/judgment types were tested?"
         },
         {
           "paper": "illusionofcausality",
-          "unit_id": "pa23",
-          "tag": "What was the experimental design and stimuli set?"
+          "unit_id": "pa29",
+          "tag": "What experimental design and visualization conditions were used?"
         },
         {
           "paper": "measuringseparability",
-          "unit_id": "pa18",
-          "tag": "What experimental design, shapes, and sizes were tested?"
+          "unit_id": "pa12",
+          "tag": "What experimental design and stimuli were used to test hypotheses?"
         },
         {
           "paper": "seeingbelieve",
-          "unit_id": "pa21",
-          "tag": "What stimuli were used across experiments?"
+          "unit_id": "pa18",
+          "tag": "What stimuli and materials were used across experiments?"
         },
         {
           "paper": "visualarrangements",
-          "unit_id": "pa33",
-          "tag": "What was the experimental task procedure?"
+          "unit_id": "pa26",
+          "tag": "What was the experimental design and task procedure?"
         }
       ]
     },
     {
-      "group_id": "group_15",
-      "overarching_question": "What design guidance follows from visualization perception research findings?",
+      "group_id": "group_16",
+      "overarching_question": "What experimental stimuli and procedures were used in visualization perception studies?",
       "representative_members": [
         {
           "paper": "crowdsourcinggraphical",
-          "unit_id": "pa47",
-          "tag": "What do the results imply about optimal height and gridline spacing?"
+          "unit_id": "pa22",
+          "tag": "What were the experimental stimuli and procedure details?"
         },
         {
           "paper": "illusionofcausality",
-          "unit_id": "pa76",
-          "tag": "Why not offer concrete design guidelines yet?"
+          "unit_id": "pa29",
+          "tag": "What experimental design and visualization conditions were used?"
         },
         {
           "paper": "measuringseparability",
-          "unit_id": "pa78",
-          "tag": "How can these models help correct for perceptual biases in practice?"
+          "unit_id": "pa17",
+          "tag": "How were stimuli designed to ensure ecological validity?"
         },
         {
           "paper": "seeingbelieve",
-          "unit_id": "pa75",
-          "tag": "What practical advice follows for readers and analysts to reduce belief-driven bias?"
+          "unit_id": "pa18",
+          "tag": "What stimuli and materials were used across experiments?"
         },
         {
           "paper": "visualarrangements",
-          "unit_id": "pa64",
-          "tag": "What general design guideline follows from the visual arrangement findings?"
+          "unit_id": "pa26",
+          "tag": "What was the experimental design and task procedure?"
+        }
+      ]
+    },
+    {
+      "group_id": "group_18",
+      "overarching_question": "What methodological safeguards ensure valid, reliable results in crowdsourced visualization experiments?",
+      "representative_members": [
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa24",
+          "tag": "How were subjects qualified to ensure understanding of the task?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa30",
+          "tag": "How was sample size determined and participants excluded?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa20",
+          "tag": "Who were the participants and how were exclusions handled?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa76",
+          "tag": "How did this study address these methodological concerns?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa27",
+          "tag": "How were confounds like memory/order effects controlled?"
         }
       ]
     }

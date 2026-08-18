@@ -4,935 +4,29 @@
       "group_id": "group_1",
       "members": [
         {
-          "paper": "crowdsourcinggraphical",
-          "unit_id": "s1",
-          "title": "ABSTRACT",
-          "tag": "What did this paper set out to investigate, and what does it conclude about crowdsourcing as a tool for visualization research?"
-        },
-        {
-          "paper": "crowdsourcinggraphical",
-          "unit_id": "s11",
-          "title": "FINDINGS AND FUTURE WORK",
-          "tag": "What do the paper\u2019s results establish about the viability and benefits of crowdsourcing for visualization research, and what future work and limitations remain?"
-        },
-        {
-          "paper": "crowdsourcinggraphical",
-          "unit_id": "s2",
-          "title": "INTRODUCTION",
-          "tag": "What motivates using crowdsourcing for visualization research, what concerns does it raise, and what does this paper contribute to address them?"
-        },
-        {
-          "paper": "crowdsourcinggraphical",
-          "unit_id": "s3",
-          "title": "GRAPHICAL PERCEPTION",
-          "tag": "What does prior research establish about how visual encodings affect graphical perception, and why does this motivate further empirical validation?"
-        },
-        {
-          "paper": "crowdsourcinggraphical",
-          "unit_id": "s5",
-          "title": "RESEARCH GOALS",
-          "tag": "What are this paper\u2019s research goals, and how are the following experiments organized to address them?"
-        },
-        {
-          "paper": "crowdsourcinggraphical",
-          "unit_id": "s7",
-          "title": "EXPERIMENT 1B: RECTANGULAR AREA JUDGMENTS",
-          "tag": "How did the rectangular area judgment experiment extend the circular area study, and what did it find about the effect of aspect ratio on judgment accuracy?"
-        },
-        {
-          "paper": "illusionofcausality",
-          "unit_id": "s1",
-          "title": "Abstract",
-          "tag": "What research problem does this paper address, and what did its three experiments find about how visualization design shapes perceived causality?"
-        },
-        {
-          "paper": "illusionofcausality",
-          "unit_id": "s2",
-          "title": "Introduction",
-          "tag": "What problem motivates this work, and what do the paper's three experiments contribute toward addressing it?"
-        },
-        {
-          "paper": "illusionofcausality",
-          "unit_id": "s3",
-          "title": "Related Work",
-          "tag": "What does prior research establish about how visualization design, context, and task type shape data interpretation, and what gap does this paper's approach address?"
-        },
-        {
-          "paper": "illusionofcausality",
-          "unit_id": "s4",
-          "title": "Pilot Experiment",
-          "tag": "How did the pilot experiment select variable pairs of varying causal plausibility, and what taxonomy did it develop for coding participants' correlational and causal interpretations?"
-        },
-        {
-          "paper": "illusionofcausality",
-          "unit_id": "s9",
-          "title": "Limitations and Future Directions",
-          "tag": "What limitations of the present studies does the paper acknowledge, and what specific directions does it propose for future research on visualization design and perceived causality?"
-        },
-        {
-          "paper": "measuringseparability",
-          "unit_id": "s1",
-          "title": "ABSTRACT",
-          "tag": "What problem does this paper address, what experiments did the authors run to address it, and what did they find?"
-        },
-        {
-          "paper": "measuringseparability",
-          "unit_id": "s10",
-          "title": "ACKNOWLEDGMENTS",
-          "tag": "Who supported this research and how was it funded?"
-        },
-        {
-          "paper": "measuringseparability",
-          "unit_id": "s2",
-          "title": "INTRODUCTION",
-          "tag": "What gap in understanding the separability of shape, size, and color motivates this work, and what does the paper contribute to address it?"
-        },
-        {
-          "paper": "measuringseparability",
-          "unit_id": "s3",
-          "title": "BACKGROUND",
-          "tag": "What prior research on graphical perception and on integral/separable visual channels does this paper build on, and what gap does it aim to fill?"
-        },
-        {
-          "paper": "measuringseparability",
-          "unit_id": "s9",
-          "title": "CONCLUSION",
-          "tag": "What are the paper's overall findings about the separability of shape, size, and color, and what contribution and future research direction does it offer?"
-        },
-        {
-          "paper": "seeingbelieve",
-          "unit_id": "s1",
-          "title": "Abstract",
-          "tag": "What does this paper investigate, and what did the experiments find about how belief affects the accuracy of correlation estimation from scatterplots?"
-        },
-        {
           "paper": "seeingbelieve",
           "unit_id": "s11",
           "title": "Limitation and Future Directions",
-          "tag": "What limitations in this study's ability to isolate perception from cognition, elicit beliefs, and generalize its findings are acknowledged, and what future research directions do they motivate?"
-        },
-        {
-          "paper": "seeingbelieve",
-          "unit_id": "s2",
-          "title": "Introduction",
-          "tag": "What phenomenon and motivating example set up this work, and what hypotheses and contributions do the two experiments introduced here aim to establish?"
-        },
-        {
-          "paper": "seeingbelieve",
-          "unit_id": "s3",
-          "title": "Related Work",
-          "tag": "What prior research on motivated perception, belief updating, and correlation perception in scatterplots does this work build on and extend?"
-        },
-        {
-          "paper": "visualarrangements",
-          "unit_id": "s1",
-          "title": "Abstract",
-          "tag": "What problem motivates this work, what approach and studies were used to investigate it, and what did the authors find?"
-        },
-        {
-          "paper": "visualarrangements",
-          "unit_id": "s2",
-          "title": "Introduction",
-          "tag": "What gap in visualization recommendation systems motivates this work, and what approach and contributions does the paper offer to address it?"
-        },
-        {
-          "paper": "visualarrangements",
-          "unit_id": "s3",
-          "title": "Related Work",
-          "tag": "What prior work on visual comparison, comparative language, and visualization recommendation tools does this paper build on, and what gaps does it identify to motivate its approach?"
+          "tag": "What are the key constraints and open uncertainties in this study's design and interpretation, and what specific research directions should future work pursue to address them?"
         },
         {
           "paper": "visualarrangements",
           "unit_id": "s9",
           "title": "Limitation and Future Directions",
-          "tag": "What limitations of the study do the authors identify, and what future research directions do they propose to address each one?"
+          "tag": "What are the boundaries of this study's scope and methodology, and what open questions do they leave for future research to address?"
         }
       ],
       "links": [
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s1",
-          "title_a": "ABSTRACT",
-          "tag_a": "What did this paper set out to investigate, and what does it conclude about crowdsourcing as a tool for visualization research?",
-          "paper_b": "illusionofcausality",
-          "section_b": "s1",
-          "title_b": "Abstract",
-          "tag_b": "What research problem does this paper address, and what did its three experiments find about how visualization design shapes perceived causality?",
-          "similarity": 0.395
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s1",
-          "title_a": "ABSTRACT",
-          "tag_a": "What did this paper set out to investigate, and what does it conclude about crowdsourcing as a tool for visualization research?",
-          "paper_b": "illusionofcausality",
-          "section_b": "s9",
-          "title_b": "Limitations and Future Directions",
-          "tag_b": "What limitations of the present studies does the paper acknowledge, and what specific directions does it propose for future research on visualization design and perceived causality?",
-          "similarity": 0.338
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s1",
-          "title_a": "ABSTRACT",
-          "tag_a": "What did this paper set out to investigate, and what does it conclude about crowdsourcing as a tool for visualization research?",
-          "paper_b": "measuringseparability",
-          "section_b": "s1",
-          "title_b": "ABSTRACT",
-          "tag_b": "What problem does this paper address, what experiments did the authors run to address it, and what did they find?",
-          "similarity": 0.339
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s1",
-          "title_a": "ABSTRACT",
-          "tag_a": "What did this paper set out to investigate, and what does it conclude about crowdsourcing as a tool for visualization research?",
-          "paper_b": "seeingbelieve",
-          "section_b": "s1",
-          "title_b": "Abstract",
-          "tag_b": "What does this paper investigate, and what did the experiments find about how belief affects the accuracy of correlation estimation from scatterplots?",
-          "similarity": 0.399
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s1",
-          "title_a": "ABSTRACT",
-          "tag_a": "What did this paper set out to investigate, and what does it conclude about crowdsourcing as a tool for visualization research?",
-          "paper_b": "visualarrangements",
-          "section_b": "s1",
-          "title_b": "Abstract",
-          "tag_b": "What problem motivates this work, what approach and studies were used to investigate it, and what did the authors find?",
-          "similarity": 0.348
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s2",
-          "title_a": "INTRODUCTION",
-          "tag_a": "What motivates using crowdsourcing for visualization research, what concerns does it raise, and what does this paper contribute to address them?",
-          "paper_b": "illusionofcausality",
-          "section_b": "s2",
-          "title_b": "Introduction",
-          "tag_b": "What problem motivates this work, and what do the paper's three experiments contribute toward addressing it?",
-          "similarity": 0.396
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s2",
-          "title_a": "INTRODUCTION",
-          "tag_a": "What motivates using crowdsourcing for visualization research, what concerns does it raise, and what does this paper contribute to address them?",
-          "paper_b": "illusionofcausality",
-          "section_b": "s3",
-          "title_b": "Related Work",
-          "tag_b": "What does prior research establish about how visualization design, context, and task type shape data interpretation, and what gap does this paper's approach address?",
-          "similarity": 0.368
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s2",
-          "title_a": "INTRODUCTION",
-          "tag_a": "What motivates using crowdsourcing for visualization research, what concerns does it raise, and what does this paper contribute to address them?",
-          "paper_b": "measuringseparability",
-          "section_b": "s2",
-          "title_b": "INTRODUCTION",
-          "tag_b": "What gap in understanding the separability of shape, size, and color motivates this work, and what does the paper contribute to address it?",
-          "similarity": 0.422
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s2",
-          "title_a": "INTRODUCTION",
-          "tag_a": "What motivates using crowdsourcing for visualization research, what concerns does it raise, and what does this paper contribute to address them?",
-          "paper_b": "measuringseparability",
-          "section_b": "s1",
-          "title_b": "ABSTRACT",
-          "tag_b": "What problem does this paper address, what experiments did the authors run to address it, and what did they find?",
-          "similarity": 0.337
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s2",
-          "title_a": "INTRODUCTION",
-          "tag_a": "What motivates using crowdsourcing for visualization research, what concerns does it raise, and what does this paper contribute to address them?",
-          "paper_b": "measuringseparability",
-          "section_b": "s3",
-          "title_b": "BACKGROUND",
-          "tag_b": "What prior research on graphical perception and on integral/separable visual channels does this paper build on, and what gap does it aim to fill?",
-          "similarity": 0.331
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s2",
-          "title_a": "INTRODUCTION",
-          "tag_a": "What motivates using crowdsourcing for visualization research, what concerns does it raise, and what does this paper contribute to address them?",
-          "paper_b": "visualarrangements",
-          "section_b": "s2",
-          "title_b": "Introduction",
-          "tag_b": "What gap in visualization recommendation systems motivates this work, and what approach and contributions does the paper offer to address it?",
-          "similarity": 0.466
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s2",
-          "title_a": "INTRODUCTION",
-          "tag_a": "What motivates using crowdsourcing for visualization research, what concerns does it raise, and what does this paper contribute to address them?",
-          "paper_b": "visualarrangements",
-          "section_b": "s3",
-          "title_b": "Related Work",
-          "tag_b": "What prior work on visual comparison, comparative language, and visualization recommendation tools does this paper build on, and what gaps does it identify to motivate its approach?",
-          "similarity": 0.34
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s3",
-          "title_a": "GRAPHICAL PERCEPTION",
-          "tag_a": "What does prior research establish about how visual encodings affect graphical perception, and why does this motivate further empirical validation?",
-          "paper_b": "illusionofcausality",
-          "section_b": "s3",
-          "title_b": "Related Work",
-          "tag_b": "What does prior research establish about how visualization design, context, and task type shape data interpretation, and what gap does this paper's approach address?",
-          "similarity": 0.435
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s3",
-          "title_a": "GRAPHICAL PERCEPTION",
-          "tag_a": "What does prior research establish about how visual encodings affect graphical perception, and why does this motivate further empirical validation?",
-          "paper_b": "measuringseparability",
-          "section_b": "s3",
-          "title_b": "BACKGROUND",
-          "tag_b": "What prior research on graphical perception and on integral/separable visual channels does this paper build on, and what gap does it aim to fill?",
-          "similarity": 0.397
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s5",
-          "title_a": "RESEARCH GOALS",
-          "tag_a": "What are this paper\u2019s research goals, and how are the following experiments organized to address them?",
-          "paper_b": "illusionofcausality",
-          "section_b": "s2",
-          "title_b": "Introduction",
-          "tag_b": "What problem motivates this work, and what do the paper's three experiments contribute toward addressing it?",
-          "similarity": 0.416
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s5",
-          "title_a": "RESEARCH GOALS",
-          "tag_a": "What are this paper\u2019s research goals, and how are the following experiments organized to address them?",
-          "paper_b": "illusionofcausality",
-          "section_b": "s1",
-          "title_b": "Abstract",
-          "tag_b": "What research problem does this paper address, and what did its three experiments find about how visualization design shapes perceived causality?",
-          "similarity": 0.378
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s5",
-          "title_a": "RESEARCH GOALS",
-          "tag_a": "What are this paper\u2019s research goals, and how are the following experiments organized to address them?",
-          "paper_b": "measuringseparability",
-          "section_b": "s1",
-          "title_b": "ABSTRACT",
-          "tag_b": "What problem does this paper address, what experiments did the authors run to address it, and what did they find?",
-          "similarity": 0.441
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s5",
-          "title_a": "RESEARCH GOALS",
-          "tag_a": "What are this paper\u2019s research goals, and how are the following experiments organized to address them?",
-          "paper_b": "measuringseparability",
-          "section_b": "s2",
-          "title_b": "INTRODUCTION",
-          "tag_b": "What gap in understanding the separability of shape, size, and color motivates this work, and what does the paper contribute to address it?",
-          "similarity": 0.332
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s5",
-          "title_a": "RESEARCH GOALS",
-          "tag_a": "What are this paper\u2019s research goals, and how are the following experiments organized to address them?",
-          "paper_b": "measuringseparability",
-          "section_b": "s10",
-          "title_b": "ACKNOWLEDGMENTS",
-          "tag_b": "Who supported this research and how was it funded?",
-          "similarity": 0.332
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s5",
-          "title_a": "RESEARCH GOALS",
-          "tag_a": "What are this paper\u2019s research goals, and how are the following experiments organized to address them?",
-          "paper_b": "seeingbelieve",
-          "section_b": "s1",
-          "title_b": "Abstract",
-          "tag_b": "What does this paper investigate, and what did the experiments find about how belief affects the accuracy of correlation estimation from scatterplots?",
-          "similarity": 0.363
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s7",
-          "title_a": "EXPERIMENT 1B: RECTANGULAR AREA JUDGMENTS",
-          "tag_a": "How did the rectangular area judgment experiment extend the circular area study, and what did it find about the effect of aspect ratio on judgment accuracy?",
-          "paper_b": "illusionofcausality",
-          "section_b": "s4",
-          "title_b": "Pilot Experiment",
-          "tag_b": "How did the pilot experiment select variable pairs of varying causal plausibility, and what taxonomy did it develop for coding participants' correlational and causal interpretations?",
-          "similarity": 0.33
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s7",
-          "title_a": "EXPERIMENT 1B: RECTANGULAR AREA JUDGMENTS",
-          "tag_a": "How did the rectangular area judgment experiment extend the circular area study, and what did it find about the effect of aspect ratio on judgment accuracy?",
-          "paper_b": "seeingbelieve",
-          "section_b": "s1",
-          "title_b": "Abstract",
-          "tag_b": "What does this paper investigate, and what did the experiments find about how belief affects the accuracy of correlation estimation from scatterplots?",
-          "similarity": 0.353
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s11",
-          "title_a": "FINDINGS AND FUTURE WORK",
-          "tag_a": "What do the paper\u2019s results establish about the viability and benefits of crowdsourcing for visualization research, and what future work and limitations remain?",
-          "paper_b": "illusionofcausality",
-          "section_b": "s9",
-          "title_b": "Limitations and Future Directions",
-          "tag_b": "What limitations of the present studies does the paper acknowledge, and what specific directions does it propose for future research on visualization design and perceived causality?",
-          "similarity": 0.364
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s11",
-          "title_a": "FINDINGS AND FUTURE WORK",
-          "tag_a": "What do the paper\u2019s results establish about the viability and benefits of crowdsourcing for visualization research, and what future work and limitations remain?",
-          "paper_b": "illusionofcausality",
-          "section_b": "s3",
-          "title_b": "Related Work",
-          "tag_b": "What does prior research establish about how visualization design, context, and task type shape data interpretation, and what gap does this paper's approach address?",
-          "similarity": 0.33
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s11",
-          "title_a": "FINDINGS AND FUTURE WORK",
-          "tag_a": "What do the paper\u2019s results establish about the viability and benefits of crowdsourcing for visualization research, and what future work and limitations remain?",
-          "paper_b": "measuringseparability",
-          "section_b": "s9",
-          "title_b": "CONCLUSION",
-          "tag_b": "What are the paper's overall findings about the separability of shape, size, and color, and what contribution and future research direction does it offer?",
-          "similarity": 0.379
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "s1",
-          "title_a": "Abstract",
-          "tag_a": "What research problem does this paper address, and what did its three experiments find about how visualization design shapes perceived causality?",
-          "paper_b": "measuringseparability",
-          "section_b": "s1",
-          "title_b": "ABSTRACT",
-          "tag_b": "What problem does this paper address, what experiments did the authors run to address it, and what did they find?",
-          "similarity": 0.425
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "s1",
-          "title_a": "Abstract",
-          "tag_a": "What research problem does this paper address, and what did its three experiments find about how visualization design shapes perceived causality?",
-          "paper_b": "seeingbelieve",
-          "section_b": "s1",
-          "title_b": "Abstract",
-          "tag_b": "What does this paper investigate, and what did the experiments find about how belief affects the accuracy of correlation estimation from scatterplots?",
-          "similarity": 0.465
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "s2",
-          "title_a": "Introduction",
-          "tag_a": "What problem motivates this work, and what do the paper's three experiments contribute toward addressing it?",
-          "paper_b": "measuringseparability",
-          "section_b": "s2",
-          "title_b": "INTRODUCTION",
-          "tag_b": "What gap in understanding the separability of shape, size, and color motivates this work, and what does the paper contribute to address it?",
-          "similarity": 0.482
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "s2",
-          "title_a": "Introduction",
-          "tag_a": "What problem motivates this work, and what do the paper's three experiments contribute toward addressing it?",
-          "paper_b": "measuringseparability",
-          "section_b": "s1",
-          "title_b": "ABSTRACT",
-          "tag_b": "What problem does this paper address, what experiments did the authors run to address it, and what did they find?",
-          "similarity": 0.447
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "s2",
-          "title_a": "Introduction",
-          "tag_a": "What problem motivates this work, and what do the paper's three experiments contribute toward addressing it?",
-          "paper_b": "seeingbelieve",
-          "section_b": "s2",
-          "title_b": "Introduction",
-          "tag_b": "What phenomenon and motivating example set up this work, and what hypotheses and contributions do the two experiments introduced here aim to establish?",
-          "similarity": 0.399
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "s2",
-          "title_a": "Introduction",
-          "tag_a": "What problem motivates this work, and what do the paper's three experiments contribute toward addressing it?",
-          "paper_b": "visualarrangements",
-          "section_b": "s2",
-          "title_b": "Introduction",
-          "tag_b": "What gap in visualization recommendation systems motivates this work, and what approach and contributions does the paper offer to address it?",
-          "similarity": 0.433
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "s2",
-          "title_a": "Introduction",
-          "tag_a": "What problem motivates this work, and what do the paper's three experiments contribute toward addressing it?",
-          "paper_b": "visualarrangements",
-          "section_b": "s1",
-          "title_b": "Abstract",
-          "tag_b": "What problem motivates this work, what approach and studies were used to investigate it, and what did the authors find?",
-          "similarity": 0.407
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "s3",
-          "title_a": "Related Work",
-          "tag_a": "What does prior research establish about how visualization design, context, and task type shape data interpretation, and what gap does this paper's approach address?",
-          "paper_b": "measuringseparability",
-          "section_b": "s3",
-          "title_b": "BACKGROUND",
-          "tag_b": "What prior research on graphical perception and on integral/separable visual channels does this paper build on, and what gap does it aim to fill?",
-          "similarity": 0.366
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "s3",
-          "title_a": "Related Work",
-          "tag_a": "What does prior research establish about how visualization design, context, and task type shape data interpretation, and what gap does this paper's approach address?",
-          "paper_b": "measuringseparability",
-          "section_b": "s2",
-          "title_b": "INTRODUCTION",
-          "tag_b": "What gap in understanding the separability of shape, size, and color motivates this work, and what does the paper contribute to address it?",
-          "similarity": 0.348
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "s3",
-          "title_a": "Related Work",
-          "tag_a": "What does prior research establish about how visualization design, context, and task type shape data interpretation, and what gap does this paper's approach address?",
-          "paper_b": "visualarrangements",
-          "section_b": "s3",
-          "title_b": "Related Work",
-          "tag_b": "What prior work on visual comparison, comparative language, and visualization recommendation tools does this paper build on, and what gaps does it identify to motivate its approach?",
-          "similarity": 0.357
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "s3",
-          "title_a": "Related Work",
-          "tag_a": "What does prior research establish about how visualization design, context, and task type shape data interpretation, and what gap does this paper's approach address?",
-          "paper_b": "visualarrangements",
-          "section_b": "s2",
-          "title_b": "Introduction",
-          "tag_b": "What gap in visualization recommendation systems motivates this work, and what approach and contributions does the paper offer to address it?",
-          "similarity": 0.34
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "s9",
-          "title_a": "Limitations and Future Directions",
-          "tag_a": "What limitations of the present studies does the paper acknowledge, and what specific directions does it propose for future research on visualization design and perceived causality?",
-          "paper_b": "measuringseparability",
-          "section_b": "s9",
-          "title_b": "CONCLUSION",
-          "tag_b": "What are the paper's overall findings about the separability of shape, size, and color, and what contribution and future research direction does it offer?",
-          "similarity": 0.35
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "s9",
-          "title_a": "Limitations and Future Directions",
-          "tag_a": "What limitations of the present studies does the paper acknowledge, and what specific directions does it propose for future research on visualization design and perceived causality?",
-          "paper_b": "visualarrangements",
-          "section_b": "s9",
-          "title_b": "Limitation and Future Directions",
-          "tag_b": "What limitations of the study do the authors identify, and what future research directions do they propose to address each one?",
-          "similarity": 0.398
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "s1",
-          "title_a": "ABSTRACT",
-          "tag_a": "What problem does this paper address, what experiments did the authors run to address it, and what did they find?",
-          "paper_b": "seeingbelieve",
-          "section_b": "s1",
-          "title_b": "Abstract",
-          "tag_b": "What does this paper investigate, and what did the experiments find about how belief affects the accuracy of correlation estimation from scatterplots?",
-          "similarity": 0.357
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "s1",
-          "title_a": "ABSTRACT",
-          "tag_a": "What problem does this paper address, what experiments did the authors run to address it, and what did they find?",
-          "paper_b": "visualarrangements",
-          "section_b": "s1",
-          "title_b": "Abstract",
-          "tag_b": "What problem motivates this work, what approach and studies were used to investigate it, and what did the authors find?",
-          "similarity": 0.519
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "s1",
-          "title_a": "ABSTRACT",
-          "tag_a": "What problem does this paper address, what experiments did the authors run to address it, and what did they find?",
-          "paper_b": "visualarrangements",
-          "section_b": "s2",
-          "title_b": "Introduction",
-          "tag_b": "What gap in visualization recommendation systems motivates this work, and what approach and contributions does the paper offer to address it?",
-          "similarity": 0.334
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "s2",
-          "title_a": "INTRODUCTION",
-          "tag_a": "What gap in understanding the separability of shape, size, and color motivates this work, and what does the paper contribute to address it?",
-          "paper_b": "visualarrangements",
-          "section_b": "s2",
-          "title_b": "Introduction",
-          "tag_b": "What gap in visualization recommendation systems motivates this work, and what approach and contributions does the paper offer to address it?",
-          "similarity": 0.543
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "s2",
-          "title_a": "INTRODUCTION",
-          "tag_a": "What gap in understanding the separability of shape, size, and color motivates this work, and what does the paper contribute to address it?",
-          "paper_b": "visualarrangements",
-          "section_b": "s1",
-          "title_b": "Abstract",
-          "tag_b": "What problem motivates this work, what approach and studies were used to investigate it, and what did the authors find?",
-          "similarity": 0.343
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "s2",
-          "title_a": "INTRODUCTION",
-          "tag_a": "What gap in understanding the separability of shape, size, and color motivates this work, and what does the paper contribute to address it?",
-          "paper_b": "visualarrangements",
-          "section_b": "s3",
-          "title_b": "Related Work",
-          "tag_b": "What prior work on visual comparison, comparative language, and visualization recommendation tools does this paper build on, and what gaps does it identify to motivate its approach?",
-          "similarity": 0.339
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "s3",
-          "title_a": "BACKGROUND",
-          "tag_a": "What prior research on graphical perception and on integral/separable visual channels does this paper build on, and what gap does it aim to fill?",
-          "paper_b": "seeingbelieve",
-          "section_b": "s3",
-          "title_b": "Related Work",
-          "tag_b": "What prior research on motivated perception, belief updating, and correlation perception in scatterplots does this work build on and extend?",
-          "similarity": 0.424
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "s3",
-          "title_a": "BACKGROUND",
-          "tag_a": "What prior research on graphical perception and on integral/separable visual channels does this paper build on, and what gap does it aim to fill?",
-          "paper_b": "visualarrangements",
-          "section_b": "s3",
-          "title_b": "Related Work",
-          "tag_b": "What prior work on visual comparison, comparative language, and visualization recommendation tools does this paper build on, and what gaps does it identify to motivate its approach?",
-          "similarity": 0.433
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "s3",
-          "title_a": "BACKGROUND",
-          "tag_a": "What prior research on graphical perception and on integral/separable visual channels does this paper build on, and what gap does it aim to fill?",
-          "paper_b": "visualarrangements",
-          "section_b": "s2",
-          "title_b": "Introduction",
-          "tag_b": "What gap in visualization recommendation systems motivates this work, and what approach and contributions does the paper offer to address it?",
-          "similarity": 0.349
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "s9",
-          "title_a": "CONCLUSION",
-          "tag_a": "What are the paper's overall findings about the separability of shape, size, and color, and what contribution and future research direction does it offer?",
-          "paper_b": "visualarrangements",
-          "section_b": "s9",
-          "title_b": "Limitation and Future Directions",
-          "tag_b": "What limitations of the study do the authors identify, and what future research directions do they propose to address each one?",
-          "similarity": 0.354
-        },
-        {
-          "paper_a": "seeingbelieve",
-          "section_a": "s2",
-          "title_a": "Introduction",
-          "tag_a": "What phenomenon and motivating example set up this work, and what hypotheses and contributions do the two experiments introduced here aim to establish?",
-          "paper_b": "visualarrangements",
-          "section_b": "s2",
-          "title_b": "Introduction",
-          "tag_b": "What gap in visualization recommendation systems motivates this work, and what approach and contributions does the paper offer to address it?",
-          "similarity": 0.407
-        },
-        {
-          "paper_a": "seeingbelieve",
-          "section_a": "s3",
-          "title_a": "Related Work",
-          "tag_a": "What prior research on motivated perception, belief updating, and correlation perception in scatterplots does this work build on and extend?",
-          "paper_b": "visualarrangements",
-          "section_b": "s3",
-          "title_b": "Related Work",
-          "tag_b": "What prior work on visual comparison, comparative language, and visualization recommendation tools does this paper build on, and what gaps does it identify to motivate its approach?",
-          "similarity": 0.38
-        },
         {
           "paper_a": "seeingbelieve",
           "section_a": "s11",
           "title_a": "Limitation and Future Directions",
-          "tag_a": "What limitations in this study's ability to isolate perception from cognition, elicit beliefs, and generalize its findings are acknowledged, and what future research directions do they motivate?",
+          "tag_a": "What are the key constraints and open uncertainties in this study's design and interpretation, and what specific research directions should future work pursue to address them?",
           "paper_b": "visualarrangements",
           "section_b": "s9",
           "title_b": "Limitation and Future Directions",
-          "tag_b": "What limitations of the study do the authors identify, and what future research directions do they propose to address each one?",
-          "similarity": 0.409
-        }
-      ]
-    },
-    {
-      "group_id": "group_2",
-      "members": [
-        {
-          "paper": "crowdsourcinggraphical",
-          "unit_id": "s12",
-          "title": "REFERENCES",
-          "tag": ""
-        },
-        {
-          "paper": "illusionofcausality",
-          "unit_id": "s10",
-          "title": "References",
-          "tag": ""
-        },
-        {
-          "paper": "measuringseparability",
-          "unit_id": "s11",
-          "title": "REFERENCES",
-          "tag": ""
-        },
-        {
-          "paper": "seeingbelieve",
-          "unit_id": "s13",
-          "title": "References",
-          "tag": ""
-        },
-        {
-          "paper": "visualarrangements",
-          "unit_id": "s10",
-          "title": "References",
-          "tag": ""
-        }
-      ],
-      "links": [
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s12",
-          "title_a": "REFERENCES",
-          "tag_a": "",
-          "paper_b": "illusionofcausality",
-          "section_b": "s10",
-          "title_b": "References",
-          "tag_b": "",
-          "similarity": 0.5
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s12",
-          "title_a": "REFERENCES",
-          "tag_a": "",
-          "paper_b": "measuringseparability",
-          "section_b": "s11",
-          "title_b": "REFERENCES",
-          "tag_b": "",
-          "similarity": 0.5
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s12",
-          "title_a": "REFERENCES",
-          "tag_a": "",
-          "paper_b": "seeingbelieve",
-          "section_b": "s13",
-          "title_b": "References",
-          "tag_b": "",
-          "similarity": 0.5
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s12",
-          "title_a": "REFERENCES",
-          "tag_a": "",
-          "paper_b": "visualarrangements",
-          "section_b": "s10",
-          "title_b": "References",
-          "tag_b": "",
-          "similarity": 0.5
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "s10",
-          "title_a": "References",
-          "tag_a": "",
-          "paper_b": "measuringseparability",
-          "section_b": "s11",
-          "title_b": "REFERENCES",
-          "tag_b": "",
-          "similarity": 0.5
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "s10",
-          "title_a": "References",
-          "tag_a": "",
-          "paper_b": "seeingbelieve",
-          "section_b": "s13",
-          "title_b": "References",
-          "tag_b": "",
-          "similarity": 0.5
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "s10",
-          "title_a": "References",
-          "tag_a": "",
-          "paper_b": "visualarrangements",
-          "section_b": "s10",
-          "title_b": "References",
-          "tag_b": "",
-          "similarity": 0.5
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "s11",
-          "title_a": "REFERENCES",
-          "tag_a": "",
-          "paper_b": "seeingbelieve",
-          "section_b": "s13",
-          "title_b": "References",
-          "tag_b": "",
-          "similarity": 0.5
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "s11",
-          "title_a": "REFERENCES",
-          "tag_a": "",
-          "paper_b": "visualarrangements",
-          "section_b": "s10",
-          "title_b": "References",
-          "tag_b": "",
-          "similarity": 0.5
-        },
-        {
-          "paper_a": "seeingbelieve",
-          "section_a": "s13",
-          "title_a": "References",
-          "tag_a": "",
-          "paper_b": "visualarrangements",
-          "section_b": "s10",
-          "title_b": "References",
-          "tag_b": "",
-          "similarity": 0.5
-        }
-      ]
-    },
-    {
-      "group_id": "group_3",
-      "members": [
-        {
-          "paper": "crowdsourcinggraphical",
-          "unit_id": "s9",
-          "title": "EXPERIMENT 3: CHART SIZE AND GRIDLINE SPACING",
-          "tag": "How was the chart size and gridline spacing experiment designed and analyzed, and what did it find about optimal chart height and gridline spacing for web-based display?"
-        },
-        {
-          "paper": "measuringseparability",
-          "unit_id": "s6",
-          "title": "SHAPE AND COLOR",
-          "tag": "How were Experiment One (effects of shape on color) and Experiment Two (effects of color on shape) designed and analyzed, and what did their results and models reveal about the separability of shape and color?"
-        },
-        {
-          "paper": "visualarrangements",
-          "unit_id": "s6",
-          "title": "Experiment 1 Crowdsourcing Takeaways",
-          "tag": "How was Experiment 1 designed and its takeaways coded into a taxonomy of comparison types, and what did the results reveal about which comparisons each visual arrangement affords?"
-        }
-      ],
-      "links": [
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "s9",
-          "title_a": "EXPERIMENT 3: CHART SIZE AND GRIDLINE SPACING",
-          "tag_a": "How was the chart size and gridline spacing experiment designed and analyzed, and what did it find about optimal chart height and gridline spacing for web-based display?",
-          "paper_b": "visualarrangements",
-          "section_b": "s6",
-          "title_b": "Experiment 1 Crowdsourcing Takeaways",
-          "tag_b": "How was Experiment 1 designed and its takeaways coded into a taxonomy of comparison types, and what did the results reveal about which comparisons each visual arrangement affords?",
-          "similarity": 0.337
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "s6",
-          "title_a": "SHAPE AND COLOR",
-          "tag_a": "How were Experiment One (effects of shape on color) and Experiment Two (effects of color on shape) designed and analyzed, and what did their results and models reveal about the separability of shape and color?",
-          "paper_b": "visualarrangements",
-          "section_b": "s6",
-          "title_b": "Experiment 1 Crowdsourcing Takeaways",
-          "tag_b": "How was Experiment 1 designed and its takeaways coded into a taxonomy of comparison types, and what did the results reveal about which comparisons each visual arrangement affords?",
-          "similarity": 0.379
-        }
-      ]
-    },
-    {
-      "group_id": "group_4",
-      "members": [
-        {
-          "paper": "measuringseparability",
-          "unit_id": "s5",
-          "title": "GENERAL METHODS",
-          "tag": "What common experimental methodology (stimuli design, study procedure, participant recruitment, and statistical analysis approach) underlies all four experiments reported in this paper?"
-        },
-        {
-          "paper": "seeingbelieve",
-          "unit_id": "s4",
-          "title": "General Method",
-          "tag": "What stimuli, participant pool, and survey procedure are shared across the experiments described in the sections that follow?"
-        }
-      ],
-      "links": [
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "s5",
-          "title_a": "GENERAL METHODS",
-          "tag_a": "What common experimental methodology (stimuli design, study procedure, participant recruitment, and statistical analysis approach) underlies all four experiments reported in this paper?",
-          "paper_b": "seeingbelieve",
-          "section_b": "s4",
-          "title_b": "General Method",
-          "tag_b": "What stimuli, participant pool, and survey procedure are shared across the experiments described in the sections that follow?",
-          "similarity": 0.332
+          "tag_b": "What are the boundaries of this study's scope and methodology, and what open questions do they leave for future research to address?",
+          "similarity": 0.442
         }
       ]
     }
@@ -943,133 +37,103 @@
       "members": [
         {
           "paper": "crowdsourcinggraphical",
+          "unit_id": "pa16",
+          "title": "",
+          "tag": "What was the general experimental procedure for launching studies?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa22",
+          "title": "",
+          "tag": "What were the experimental stimuli and procedure details?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa33",
+          "title": "",
+          "tag": "What was the experimental task and design setup?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa42",
+          "title": "",
+          "tag": "What are the goals of this replication experiment?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa49",
+          "title": "",
+          "tag": "What was the factorial design for the alpha contrast experiment?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa59",
+          "title": "",
+          "tag": "What was the experimental design for the gridline spacing study?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa62",
+          "title": "",
+          "tag": "What were the statistical results of the height/spacing experiment?"
+        },
+        {
+          "paper": "illusionofcausality",
           "unit_id": "pa11",
           "title": "",
-          "tag": "What is Mechanical Turk and how does it work?"
+          "tag": "What was the purpose and setup of the pilot experiment?"
         },
         {
-          "paper": "crowdsourcinggraphical",
-          "unit_id": "pa26",
+          "paper": "illusionofcausality",
+          "unit_id": "pa12",
           "title": "",
-          "tag": "What was the experimental design for rectangular area judgments?"
-        },
-        {
-          "paper": "crowdsourcinggraphical",
-          "unit_id": "pa3",
-          "title": "",
-          "tag": "What concerns does crowdsourcing raise for perception research?"
-        },
-        {
-          "paper": "crowdsourcinggraphical",
-          "unit_id": "pa35",
-          "title": "",
-          "tag": "What experimental design and stimuli were used?"
-        },
-        {
-          "paper": "crowdsourcinggraphical",
-          "unit_id": "pa4",
-          "title": "",
-          "tag": "What does this paper contribute?"
-        },
-        {
-          "paper": "crowdsourcinggraphical",
-          "unit_id": "pa40",
-          "title": "",
-          "tag": "What design variable motivates this experiment?"
-        },
-        {
-          "paper": "crowdsourcinggraphical",
-          "unit_id": "pa44",
-          "title": "",
-          "tag": "What was the experimental design and stimuli setup?"
-        },
-        {
-          "paper": "crowdsourcinggraphical",
-          "unit_id": "pa46",
-          "title": "",
-          "tag": "What statistical results did the ANOVA reveal?"
-        },
-        {
-          "paper": "crowdsourcinggraphical",
-          "unit_id": "pa5",
-          "title": "",
-          "tag": "What is graphical perception and why does it matter?"
+          "tag": "How was the pilot survey on variable-pair plausibility conducted?"
         },
         {
           "paper": "illusionofcausality",
           "unit_id": "pa21",
           "title": "",
-          "tag": "What is the goal of Experiment 1?"
+          "tag": "What is the goal and task design of Experiment 1?"
         },
         {
           "paper": "illusionofcausality",
-          "unit_id": "pa23",
+          "unit_id": "pa27",
           "title": "",
-          "tag": "What was the experimental design and stimuli set?"
+          "tag": "What were the dependent variables and stimulus materials?"
         },
         {
           "paper": "illusionofcausality",
-          "unit_id": "pa4",
+          "unit_id": "pa28",
           "title": "",
-          "tag": "Why is this problem hard, and what question does the paper ask?"
+          "tag": "What was the experimental procedure and design layout?"
         },
         {
           "paper": "illusionofcausality",
-          "unit_id": "pa53",
+          "unit_id": "pa29",
           "title": "",
-          "tag": "What question motivates Experiment 2?"
+          "tag": "What experimental design and visualization conditions were used?"
         },
         {
           "paper": "illusionofcausality",
-          "unit_id": "pa56",
+          "unit_id": "pa68",
           "title": "",
-          "tag": "What was the experimental design and sample for Experiment 2?"
-        },
-        {
-          "paper": "illusionofcausality",
-          "unit_id": "pa6",
-          "title": "",
-          "tag": "What do the three experiments contribute?"
-        },
-        {
-          "paper": "illusionofcausality",
-          "unit_id": "pa71",
-          "title": "",
-          "tag": "What was the experimental design and sample size?"
+          "tag": "What experimental design and variables were used in Experiment 2?"
         },
         {
           "paper": "measuringseparability",
-          "unit_id": "pa1",
+          "unit_id": "pa12",
           "title": "",
-          "tag": "What problem, experiments, and findings does the paper present?"
+          "tag": "What experimental design and stimuli were used to test hypotheses?"
         },
         {
           "paper": "measuringseparability",
-          "unit_id": "pa18",
+          "unit_id": "pa19",
           "title": "",
-          "tag": "What experimental design, shapes, and sizes were tested?"
+          "tag": "How was the formal study trial procedure conducted?"
         },
         {
           "paper": "measuringseparability",
-          "unit_id": "pa3",
-          "title": "",
-          "tag": "What does this paper aim to measure and why does it matter?"
-        },
-        {
-          "paper": "measuringseparability",
-          "unit_id": "pa30",
-          "title": "",
-          "tag": "What is the goal of the shape-color experiment pair?"
-        },
-        {
-          "paper": "measuringseparability",
-          "unit_id": "pa31",
-          "title": "",
-          "tag": "What is the design of Experiment One (shape's effect on color)?"
-        },
-        {
-          "paper": "measuringseparability",
-          "unit_id": "pa34",
+          "unit_id": "pa25",
           "title": "",
           "tag": "What was the experimental task and design structure?"
         },
@@ -1077,1521 +141,585 @@
           "paper": "measuringseparability",
           "unit_id": "pa4",
           "title": "",
-          "tag": "What experimental approach and shape categories were used?"
+          "tag": "What experimental methods and stimuli were used?"
         },
         {
-          "paper": "measuringseparability",
-          "unit_id": "pa42",
+          "paper": "seeingbelieve",
+          "unit_id": "pa18",
           "title": "",
-          "tag": "What shape stimuli were used in Experiment Two?"
-        },
-        {
-          "paper": "measuringseparability",
-          "unit_id": "pa44",
-          "title": "",
-          "tag": "What was the task and trial structure in Experiment Two?"
-        },
-        {
-          "paper": "measuringseparability",
-          "unit_id": "pa50",
-          "title": "",
-          "tag": "What is the design of Experiment Three?"
-        },
-        {
-          "paper": "measuringseparability",
-          "unit_id": "pa51",
-          "title": "",
-          "tag": "What stimuli were used in Experiment Three?"
-        },
-        {
-          "paper": "measuringseparability",
-          "unit_id": "pa6",
-          "title": "",
-          "tag": "What are the paper's main contributions?"
-        },
-        {
-          "paper": "measuringseparability",
-          "unit_id": "pa60",
-          "title": "",
-          "tag": "What is the design of Experiment Four?"
-        },
-        {
-          "paper": "measuringseparability",
-          "unit_id": "pa62",
-          "title": "",
-          "tag": "What were the statistical results of Experiment Four?"
-        },
-        {
-          "paper": "measuringseparability",
-          "unit_id": "pa8",
-          "title": "",
-          "tag": "What does graphical perception research generally study?"
-        },
-        {
-          "paper": "measuringseparability",
-          "unit_id": "pa80",
-          "title": "",
-          "tag": "What are the paper's overall findings and contributions?"
+          "tag": "What stimuli and materials were used across experiments?"
         },
         {
           "paper": "seeingbelieve",
           "unit_id": "pa21",
           "title": "",
-          "tag": "What stimuli were used across experiments?"
+          "tag": "What was the overall survey procedure structure?"
         },
         {
           "paper": "seeingbelieve",
+          "unit_id": "pa32",
+          "title": "",
+          "tag": "What was the overall purpose of each experiment?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa33",
+          "title": "",
+          "tag": "What was the design and procedure of Experiment 1A?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa47",
+          "title": "",
+          "tag": "What is the purpose and method of this control experiment?"
+        },
+        {
+          "paper": "visualarrangements",
           "unit_id": "pa25",
           "title": "",
-          "tag": "What is the overall survey structure?"
-        },
-        {
-          "paper": "seeingbelieve",
-          "unit_id": "pa36",
-          "title": "",
-          "tag": "What is the overall purpose of each experiment?"
-        },
-        {
-          "paper": "seeingbelieve",
-          "unit_id": "pa37",
-          "title": "",
-          "tag": "What was the procedure/design of Experiment 1a?"
-        },
-        {
-          "paper": "seeingbelieve",
-          "unit_id": "pa38",
-          "title": "",
-          "tag": "What sample size and power analysis were used?"
-        },
-        {
-          "paper": "seeingbelieve",
-          "unit_id": "pa49",
-          "title": "",
-          "tag": "What is the overall summary of Experiment 1a's findings?"
-        },
-        {
-          "paper": "seeingbelieve",
-          "unit_id": "pa52",
-          "title": "",
-          "tag": "What was the experimental procedure/design?"
-        },
-        {
-          "paper": "seeingbelieve",
-          "unit_id": "pa56",
-          "title": "",
-          "tag": "What did the statistical comparison reveal about time vs. labels?"
-        },
-        {
-          "paper": "seeingbelieve",
-          "unit_id": "pa57",
-          "title": "",
-          "tag": "What follow-up question motivates the next experiment?"
-        },
-        {
-          "paper": "seeingbelieve",
-          "unit_id": "pa59",
-          "title": "",
-          "tag": "What was the procedure/design of Experiment 2?"
-        },
-        {
-          "paper": "seeingbelieve",
-          "unit_id": "pa76",
-          "title": "",
-          "tag": "What does this section cover?"
-        },
-        {
-          "paper": "seeingbelieve",
-          "unit_id": "pa87",
-          "title": "",
-          "tag": "What limits the generalizability of the experimental design?"
+          "tag": "What is the goal and participant pool for this experiment?"
         },
         {
           "paper": "visualarrangements",
-          "unit_id": "pa17",
+          "unit_id": "pa26",
           "title": "",
-          "tag": "What is the two-experiment research plan?"
-        },
-        {
-          "paper": "visualarrangements",
-          "unit_id": "pa19",
-          "title": "",
-          "tag": "What is lexical ambiguity and how does it appear here?"
-        },
-        {
-          "paper": "visualarrangements",
-          "unit_id": "pa20",
-          "title": "",
-          "tag": "What is syntactic ambiguity and how does it appear here?"
-        },
-        {
-          "paper": "visualarrangements",
-          "unit_id": "pa21",
-          "title": "",
-          "tag": "What is semantic ambiguity and how does it appear here?"
+          "tag": "What was the experimental design and task procedure?"
         },
         {
           "paper": "visualarrangements",
           "unit_id": "pa30",
           "title": "",
-          "tag": "What is the goal of Experiment 1?"
-        },
-        {
-          "paper": "visualarrangements",
-          "unit_id": "pa33",
-          "title": "",
-          "tag": "What was the experimental task procedure?"
-        },
-        {
-          "paper": "visualarrangements",
-          "unit_id": "pa5",
-          "title": "",
-          "tag": "What are the paper's contributions?"
-        },
-        {
-          "paper": "visualarrangements",
-          "unit_id": "pa57",
-          "title": "",
-          "tag": "What is the overall takeaway on arrangement-comparison affordances?"
-        },
-        {
-          "paper": "visualarrangements",
-          "unit_id": "pa59",
-          "title": "",
-          "tag": "What was the goal of Experiment 2?"
-        },
-        {
-          "paper": "visualarrangements",
-          "unit_id": "pa61",
-          "title": "",
-          "tag": "What was the task and design procedure for experts?"
-        },
-        {
-          "paper": "visualarrangements",
-          "unit_id": "pa67",
-          "title": "",
-          "tag": "What does this section cover?"
+          "tag": "What are the overall frequencies of comparison types?"
         }
       ],
       "links": [
         {
           "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa3",
+          "section_a": "pa16",
           "title_a": "",
-          "tag_a": "What concerns does crowdsourcing raise for perception research?",
-          "paper_b": "measuringseparability",
-          "section_b": "pa8",
-          "title_b": "",
-          "tag_b": "What does graphical perception research generally study?",
-          "similarity": 0.476
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa4",
-          "title_a": "",
-          "tag_a": "What does this paper contribute?",
+          "tag_a": "What was the general experimental procedure for launching studies?",
           "paper_b": "illusionofcausality",
-          "section_b": "pa6",
+          "section_b": "pa28",
           "title_b": "",
-          "tag_b": "What do the three experiments contribute?",
-          "similarity": 0.467
+          "tag_b": "What was the experimental procedure and design layout?",
+          "similarity": 0.558
         },
         {
           "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa4",
+          "section_a": "pa16",
           "title_a": "",
-          "tag_a": "What does this paper contribute?",
-          "paper_b": "measuringseparability",
-          "section_b": "pa3",
+          "tag_a": "What was the general experimental procedure for launching studies?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa21",
           "title_b": "",
-          "tag_b": "What does this paper aim to measure and why does it matter?",
-          "similarity": 0.463
+          "tag_b": "What was the overall survey procedure structure?",
+          "similarity": 0.474
         },
         {
           "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa4",
+          "section_a": "pa22",
           "title_a": "",
-          "tag_a": "What does this paper contribute?",
-          "paper_b": "measuringseparability",
-          "section_b": "pa6",
+          "tag_a": "What were the experimental stimuli and procedure details?",
+          "paper_b": "illusionofcausality",
+          "section_b": "pa28",
           "title_b": "",
-          "tag_b": "What are the paper's main contributions?",
+          "tag_b": "What was the experimental procedure and design layout?",
+          "similarity": 0.57
+        },
+        {
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa22",
+          "title_a": "",
+          "tag_a": "What were the experimental stimuli and procedure details?",
+          "paper_b": "illusionofcausality",
+          "section_b": "pa27",
+          "title_b": "",
+          "tag_b": "What were the dependent variables and stimulus materials?",
+          "similarity": 0.465
+        },
+        {
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa22",
+          "title_a": "",
+          "tag_a": "What were the experimental stimuli and procedure details?",
+          "paper_b": "measuringseparability",
+          "section_b": "pa4",
+          "title_b": "",
+          "tag_b": "What experimental methods and stimuli were used?",
+          "similarity": 0.555
+        },
+        {
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa22",
+          "title_a": "",
+          "tag_a": "What were the experimental stimuli and procedure details?",
+          "paper_b": "measuringseparability",
+          "section_b": "pa25",
+          "title_b": "",
+          "tag_b": "What was the experimental task and design structure?",
+          "similarity": 0.497
+        },
+        {
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa22",
+          "title_a": "",
+          "tag_a": "What were the experimental stimuli and procedure details?",
+          "paper_b": "measuringseparability",
+          "section_b": "pa12",
+          "title_b": "",
+          "tag_b": "What experimental design and stimuli were used to test hypotheses?",
+          "similarity": 0.477
+        },
+        {
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa22",
+          "title_a": "",
+          "tag_a": "What were the experimental stimuli and procedure details?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa33",
+          "title_b": "",
+          "tag_b": "What was the design and procedure of Experiment 1A?",
+          "similarity": 0.459
+        },
+        {
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa22",
+          "title_a": "",
+          "tag_a": "What were the experimental stimuli and procedure details?",
+          "paper_b": "visualarrangements",
+          "section_b": "pa26",
+          "title_b": "",
+          "tag_b": "What was the experimental design and task procedure?",
+          "similarity": 0.603
+        },
+        {
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa33",
+          "title_a": "",
+          "tag_a": "What was the experimental task and design setup?",
+          "paper_b": "illusionofcausality",
+          "section_b": "pa28",
+          "title_b": "",
+          "tag_b": "What was the experimental procedure and design layout?",
+          "similarity": 0.692
+        },
+        {
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa33",
+          "title_a": "",
+          "tag_a": "What was the experimental task and design setup?",
+          "paper_b": "measuringseparability",
+          "section_b": "pa25",
+          "title_b": "",
+          "tag_b": "What was the experimental task and design structure?",
+          "similarity": 0.849
+        },
+        {
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa33",
+          "title_a": "",
+          "tag_a": "What was the experimental task and design setup?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa33",
+          "title_b": "",
+          "tag_b": "What was the design and procedure of Experiment 1A?",
           "similarity": 0.461
         },
         {
           "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa4",
+          "section_a": "pa33",
           "title_a": "",
-          "tag_a": "What does this paper contribute?",
+          "tag_a": "What was the experimental task and design setup?",
+          "paper_b": "visualarrangements",
+          "section_b": "pa26",
+          "title_b": "",
+          "tag_b": "What was the experimental design and task procedure?",
+          "similarity": 0.759
+        },
+        {
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa42",
+          "title_a": "",
+          "tag_a": "What are the goals of this replication experiment?",
+          "paper_b": "illusionofcausality",
+          "section_b": "pa11",
+          "title_b": "",
+          "tag_b": "What was the purpose and setup of the pilot experiment?",
+          "similarity": 0.487
+        },
+        {
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa42",
+          "title_a": "",
+          "tag_a": "What are the goals of this replication experiment?",
           "paper_b": "seeingbelieve",
-          "section_b": "pa76",
+          "section_b": "pa47",
           "title_b": "",
-          "tag_b": "What does this section cover?",
-          "similarity": 0.559
+          "tag_b": "What is the purpose and method of this control experiment?",
+          "similarity": 0.526
         },
         {
           "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa4",
+          "section_a": "pa42",
           "title_a": "",
-          "tag_a": "What does this paper contribute?",
+          "tag_a": "What are the goals of this replication experiment?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa32",
+          "title_b": "",
+          "tag_b": "What was the overall purpose of each experiment?",
+          "similarity": 0.493
+        },
+        {
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa42",
+          "title_a": "",
+          "tag_a": "What are the goals of this replication experiment?",
           "paper_b": "visualarrangements",
-          "section_b": "pa67",
+          "section_b": "pa25",
           "title_b": "",
-          "tag_b": "What does this section cover?",
-          "similarity": 0.559
+          "tag_b": "What is the goal and participant pool for this experiment?",
+          "similarity": 0.458
         },
         {
           "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa4",
+          "section_a": "pa49",
           "title_a": "",
-          "tag_a": "What does this paper contribute?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa5",
+          "tag_a": "What was the factorial design for the alpha contrast experiment?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa33",
           "title_b": "",
-          "tag_b": "What are the paper's contributions?",
-          "similarity": 0.499
+          "tag_b": "What was the design and procedure of Experiment 1A?",
+          "similarity": 0.514
         },
         {
           "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa5",
+          "section_a": "pa59",
           "title_a": "",
-          "tag_a": "What is graphical perception and why does it matter?",
+          "tag_a": "What was the experimental design for the gridline spacing study?",
           "paper_b": "measuringseparability",
-          "section_b": "pa3",
-          "title_b": "",
-          "tag_b": "What does this paper aim to measure and why does it matter?",
-          "similarity": 0.548
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa5",
-          "title_a": "",
-          "tag_a": "What is graphical perception and why does it matter?",
-          "paper_b": "measuringseparability",
-          "section_b": "pa8",
-          "title_b": "",
-          "tag_b": "What does graphical perception research generally study?",
-          "similarity": 0.481
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa5",
-          "title_a": "",
-          "tag_a": "What is graphical perception and why does it matter?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa19",
-          "title_b": "",
-          "tag_b": "What is lexical ambiguity and how does it appear here?",
-          "similarity": 0.49
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa5",
-          "title_a": "",
-          "tag_a": "What is graphical perception and why does it matter?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa21",
-          "title_b": "",
-          "tag_b": "What is semantic ambiguity and how does it appear here?",
-          "similarity": 0.478
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa5",
-          "title_a": "",
-          "tag_a": "What is graphical perception and why does it matter?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa20",
-          "title_b": "",
-          "tag_b": "What is syntactic ambiguity and how does it appear here?",
-          "similarity": 0.475
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa11",
-          "title_a": "",
-          "tag_a": "What is Mechanical Turk and how does it work?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa19",
-          "title_b": "",
-          "tag_b": "What is lexical ambiguity and how does it appear here?",
-          "similarity": 0.574
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa11",
-          "title_a": "",
-          "tag_a": "What is Mechanical Turk and how does it work?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa21",
-          "title_b": "",
-          "tag_b": "What is semantic ambiguity and how does it appear here?",
-          "similarity": 0.571
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa11",
-          "title_a": "",
-          "tag_a": "What is Mechanical Turk and how does it work?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa20",
-          "title_b": "",
-          "tag_b": "What is syntactic ambiguity and how does it appear here?",
-          "similarity": 0.548
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa26",
-          "title_a": "",
-          "tag_a": "What was the experimental design for rectangular area judgments?",
-          "paper_b": "illusionofcausality",
-          "section_b": "pa56",
-          "title_b": "",
-          "tag_b": "What was the experimental design and sample for Experiment 2?",
-          "similarity": 0.575
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa26",
-          "title_a": "",
-          "tag_a": "What was the experimental design for rectangular area judgments?",
-          "paper_b": "illusionofcausality",
-          "section_b": "pa23",
-          "title_b": "",
-          "tag_b": "What was the experimental design and stimuli set?",
-          "similarity": 0.571
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa26",
-          "title_a": "",
-          "tag_a": "What was the experimental design for rectangular area judgments?",
-          "paper_b": "illusionofcausality",
-          "section_b": "pa71",
-          "title_b": "",
-          "tag_b": "What was the experimental design and sample size?",
-          "similarity": 0.553
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa26",
-          "title_a": "",
-          "tag_a": "What was the experimental design for rectangular area judgments?",
-          "paper_b": "measuringseparability",
-          "section_b": "pa34",
+          "section_b": "pa25",
           "title_b": "",
           "tag_b": "What was the experimental task and design structure?",
           "similarity": 0.527
         },
         {
           "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa26",
+          "section_a": "pa59",
           "title_a": "",
-          "tag_a": "What was the experimental design for rectangular area judgments?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa52",
-          "title_b": "",
-          "tag_b": "What was the experimental procedure/design?",
-          "similarity": 0.558
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa26",
-          "title_a": "",
-          "tag_a": "What was the experimental design for rectangular area judgments?",
+          "tag_a": "What was the experimental design for the gridline spacing study?",
           "paper_b": "visualarrangements",
-          "section_b": "pa33",
+          "section_b": "pa26",
           "title_b": "",
-          "tag_b": "What was the experimental task procedure?",
-          "similarity": 0.468
+          "tag_b": "What was the experimental design and task procedure?",
+          "similarity": 0.545
         },
         {
           "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa26",
+          "section_a": "pa62",
           "title_a": "",
-          "tag_a": "What was the experimental design for rectangular area judgments?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa61",
-          "title_b": "",
-          "tag_b": "What was the task and design procedure for experts?",
-          "similarity": 0.462
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa35",
-          "title_a": "",
-          "tag_a": "What experimental design and stimuli were used?",
-          "paper_b": "illusionofcausality",
-          "section_b": "pa23",
-          "title_b": "",
-          "tag_b": "What was the experimental design and stimuli set?",
-          "similarity": 0.667
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa35",
-          "title_a": "",
-          "tag_a": "What experimental design and stimuli were used?",
-          "paper_b": "illusionofcausality",
-          "section_b": "pa71",
-          "title_b": "",
-          "tag_b": "What was the experimental design and sample size?",
-          "similarity": 0.567
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa35",
-          "title_a": "",
-          "tag_a": "What experimental design and stimuli were used?",
-          "paper_b": "illusionofcausality",
-          "section_b": "pa56",
-          "title_b": "",
-          "tag_b": "What was the experimental design and sample for Experiment 2?",
-          "similarity": 0.469
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa35",
-          "title_a": "",
-          "tag_a": "What experimental design and stimuli were used?",
-          "paper_b": "measuringseparability",
-          "section_b": "pa18",
-          "title_b": "",
-          "tag_b": "What experimental design, shapes, and sizes were tested?",
-          "similarity": 0.648
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa35",
-          "title_a": "",
-          "tag_a": "What experimental design and stimuli were used?",
-          "paper_b": "measuringseparability",
-          "section_b": "pa4",
-          "title_b": "",
-          "tag_b": "What experimental approach and shape categories were used?",
-          "similarity": 0.602
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa35",
-          "title_a": "",
-          "tag_a": "What experimental design and stimuli were used?",
-          "paper_b": "measuringseparability",
-          "section_b": "pa34",
-          "title_b": "",
-          "tag_b": "What was the experimental task and design structure?",
-          "similarity": 0.495
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa35",
-          "title_a": "",
-          "tag_a": "What experimental design and stimuli were used?",
+          "tag_a": "What were the statistical results of the height/spacing experiment?",
           "paper_b": "seeingbelieve",
-          "section_b": "pa21",
+          "section_b": "pa32",
           "title_b": "",
-          "tag_b": "What stimuli were used across experiments?",
-          "similarity": 0.481
+          "tag_b": "What was the overall purpose of each experiment?",
+          "similarity": 0.458
         },
         {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa35",
+          "paper_a": "illusionofcausality",
+          "section_a": "pa11",
           "title_a": "",
-          "tag_a": "What experimental design and stimuli were used?",
+          "tag_a": "What was the purpose and setup of the pilot experiment?",
           "paper_b": "seeingbelieve",
-          "section_b": "pa38",
+          "section_b": "pa32",
           "title_b": "",
-          "tag_b": "What sample size and power analysis were used?",
-          "similarity": 0.472
+          "tag_b": "What was the overall purpose of each experiment?",
+          "similarity": 0.632
         },
         {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa40",
+          "paper_a": "illusionofcausality",
+          "section_a": "pa11",
           "title_a": "",
-          "tag_a": "What design variable motivates this experiment?",
-          "paper_b": "illusionofcausality",
-          "section_b": "pa53",
-          "title_b": "",
-          "tag_b": "What question motivates Experiment 2?",
-          "similarity": 0.557
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa40",
-          "title_a": "",
-          "tag_a": "What design variable motivates this experiment?",
+          "tag_a": "What was the purpose and setup of the pilot experiment?",
           "paper_b": "seeingbelieve",
-          "section_b": "pa57",
+          "section_b": "pa47",
           "title_b": "",
-          "tag_b": "What follow-up question motivates the next experiment?",
-          "similarity": 0.473
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa44",
-          "title_a": "",
-          "tag_a": "What was the experimental design and stimuli setup?",
-          "paper_b": "illusionofcausality",
-          "section_b": "pa23",
-          "title_b": "",
-          "tag_b": "What was the experimental design and stimuli set?",
-          "similarity": 0.879
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa44",
-          "title_a": "",
-          "tag_a": "What was the experimental design and stimuli setup?",
-          "paper_b": "illusionofcausality",
-          "section_b": "pa71",
-          "title_b": "",
-          "tag_b": "What was the experimental design and sample size?",
-          "similarity": 0.74
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa44",
-          "title_a": "",
-          "tag_a": "What was the experimental design and stimuli setup?",
-          "paper_b": "illusionofcausality",
-          "section_b": "pa56",
-          "title_b": "",
-          "tag_b": "What was the experimental design and sample for Experiment 2?",
-          "similarity": 0.625
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa44",
-          "title_a": "",
-          "tag_a": "What was the experimental design and stimuli setup?",
-          "paper_b": "measuringseparability",
-          "section_b": "pa34",
-          "title_b": "",
-          "tag_b": "What was the experimental task and design structure?",
-          "similarity": 0.679
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa44",
-          "title_a": "",
-          "tag_a": "What was the experimental design and stimuli setup?",
-          "paper_b": "measuringseparability",
-          "section_b": "pa18",
-          "title_b": "",
-          "tag_b": "What experimental design, shapes, and sizes were tested?",
-          "similarity": 0.484
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa44",
-          "title_a": "",
-          "tag_a": "What was the experimental design and stimuli setup?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa52",
-          "title_b": "",
-          "tag_b": "What was the experimental procedure/design?",
+          "tag_b": "What is the purpose and method of this control experiment?",
           "similarity": 0.629
         },
         {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa44",
+          "paper_a": "illusionofcausality",
+          "section_a": "pa11",
           "title_a": "",
-          "tag_a": "What was the experimental design and stimuli setup?",
+          "tag_a": "What was the purpose and setup of the pilot experiment?",
           "paper_b": "seeingbelieve",
-          "section_b": "pa87",
-          "title_b": "",
-          "tag_b": "What limits the generalizability of the experimental design?",
-          "similarity": 0.461
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa44",
-          "title_a": "",
-          "tag_a": "What was the experimental design and stimuli setup?",
-          "paper_b": "visualarrangements",
           "section_b": "pa33",
           "title_b": "",
-          "tag_b": "What was the experimental task procedure?",
-          "similarity": 0.515
+          "tag_b": "What was the design and procedure of Experiment 1A?",
+          "similarity": 0.59
         },
         {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa44",
+          "paper_a": "illusionofcausality",
+          "section_a": "pa11",
           "title_a": "",
-          "tag_a": "What was the experimental design and stimuli setup?",
+          "tag_a": "What was the purpose and setup of the pilot experiment?",
           "paper_b": "visualarrangements",
-          "section_b": "pa61",
+          "section_b": "pa25",
           "title_b": "",
-          "tag_b": "What was the task and design procedure for experts?",
+          "tag_b": "What is the goal and participant pool for this experiment?",
+          "similarity": 0.47
+        },
+        {
+          "paper_a": "illusionofcausality",
+          "section_a": "pa12",
+          "title_a": "",
+          "tag_a": "How was the pilot survey on variable-pair plausibility conducted?",
+          "paper_b": "measuringseparability",
+          "section_b": "pa19",
+          "title_b": "",
+          "tag_b": "How was the formal study trial procedure conducted?",
+          "similarity": 0.453
+        },
+        {
+          "paper_a": "illusionofcausality",
+          "section_a": "pa21",
+          "title_a": "",
+          "tag_a": "What is the goal and task design of Experiment 1?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa33",
+          "title_b": "",
+          "tag_b": "What was the design and procedure of Experiment 1A?",
+          "similarity": 0.571
+        },
+        {
+          "paper_a": "illusionofcausality",
+          "section_a": "pa21",
+          "title_a": "",
+          "tag_a": "What is the goal and task design of Experiment 1?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa47",
+          "title_b": "",
+          "tag_b": "What is the purpose and method of this control experiment?",
+          "similarity": 0.541
+        },
+        {
+          "paper_a": "illusionofcausality",
+          "section_a": "pa21",
+          "title_a": "",
+          "tag_a": "What is the goal and task design of Experiment 1?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa32",
+          "title_b": "",
+          "tag_b": "What was the overall purpose of each experiment?",
           "similarity": 0.473
         },
         {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa46",
-          "title_a": "",
-          "tag_a": "What statistical results did the ANOVA reveal?",
-          "paper_b": "measuringseparability",
-          "section_b": "pa62",
-          "title_b": "",
-          "tag_b": "What were the statistical results of Experiment Four?",
-          "similarity": 0.485
-        },
-        {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa46",
-          "title_a": "",
-          "tag_a": "What statistical results did the ANOVA reveal?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa56",
-          "title_b": "",
-          "tag_b": "What did the statistical comparison reveal about time vs. labels?",
-          "similarity": 0.461
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa4",
-          "title_a": "",
-          "tag_a": "Why is this problem hard, and what question does the paper ask?",
-          "paper_b": "measuringseparability",
-          "section_b": "pa1",
-          "title_b": "",
-          "tag_b": "What problem, experiments, and findings does the paper present?",
-          "similarity": 0.502
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa4",
-          "title_a": "",
-          "tag_a": "Why is this problem hard, and what question does the paper ask?",
-          "paper_b": "measuringseparability",
-          "section_b": "pa3",
-          "title_b": "",
-          "tag_b": "What does this paper aim to measure and why does it matter?",
-          "similarity": 0.463
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa6",
-          "title_a": "",
-          "tag_a": "What do the three experiments contribute?",
-          "paper_b": "measuringseparability",
-          "section_b": "pa50",
-          "title_b": "",
-          "tag_b": "What is the design of Experiment Three?",
-          "similarity": 0.488
-        },
-        {
           "paper_a": "illusionofcausality",
           "section_a": "pa21",
           "title_a": "",
-          "tag_a": "What is the goal of Experiment 1?",
-          "paper_b": "measuringseparability",
-          "section_b": "pa60",
-          "title_b": "",
-          "tag_b": "What is the design of Experiment Four?",
-          "similarity": 0.686
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa21",
-          "title_a": "",
-          "tag_a": "What is the goal of Experiment 1?",
-          "paper_b": "measuringseparability",
-          "section_b": "pa50",
-          "title_b": "",
-          "tag_b": "What is the design of Experiment Three?",
-          "similarity": 0.681
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa21",
-          "title_a": "",
-          "tag_a": "What is the goal of Experiment 1?",
-          "paper_b": "measuringseparability",
-          "section_b": "pa30",
-          "title_b": "",
-          "tag_b": "What is the goal of the shape-color experiment pair?",
-          "similarity": 0.676
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa21",
-          "title_a": "",
-          "tag_a": "What is the goal of Experiment 1?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa36",
-          "title_b": "",
-          "tag_b": "What is the overall purpose of each experiment?",
-          "similarity": 0.625
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa21",
-          "title_a": "",
-          "tag_a": "What is the goal of Experiment 1?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa49",
-          "title_b": "",
-          "tag_b": "What is the overall summary of Experiment 1a's findings?",
-          "similarity": 0.568
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa21",
-          "title_a": "",
-          "tag_a": "What is the goal of Experiment 1?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa37",
-          "title_b": "",
-          "tag_b": "What was the procedure/design of Experiment 1a?",
-          "similarity": 0.544
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa21",
-          "title_a": "",
-          "tag_a": "What is the goal of Experiment 1?",
+          "tag_a": "What is the goal and task design of Experiment 1?",
           "paper_b": "visualarrangements",
-          "section_b": "pa30",
+          "section_b": "pa25",
           "title_b": "",
-          "tag_b": "What is the goal of Experiment 1?",
-          "similarity": 1.0
+          "tag_b": "What is the goal and participant pool for this experiment?",
+          "similarity": 0.551
         },
         {
           "paper_a": "illusionofcausality",
-          "section_a": "pa21",
+          "section_a": "pa28",
           "title_a": "",
-          "tag_a": "What is the goal of Experiment 1?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa59",
-          "title_b": "",
-          "tag_b": "What was the goal of Experiment 2?",
-          "similarity": 0.74
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa21",
-          "title_a": "",
-          "tag_a": "What is the goal of Experiment 1?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa17",
-          "title_b": "",
-          "tag_b": "What is the two-experiment research plan?",
-          "similarity": 0.538
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa23",
-          "title_a": "",
-          "tag_a": "What was the experimental design and stimuli set?",
+          "tag_a": "What was the experimental procedure and design layout?",
           "paper_b": "measuringseparability",
-          "section_b": "pa34",
+          "section_b": "pa25",
           "title_b": "",
           "tag_b": "What was the experimental task and design structure?",
-          "similarity": 0.676
+          "similarity": 0.687
         },
         {
           "paper_a": "illusionofcausality",
-          "section_a": "pa23",
+          "section_a": "pa28",
           "title_a": "",
-          "tag_a": "What was the experimental design and stimuli set?",
-          "paper_b": "measuringseparability",
-          "section_b": "pa18",
-          "title_b": "",
-          "tag_b": "What experimental design, shapes, and sizes were tested?",
-          "similarity": 0.49
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa23",
-          "title_a": "",
-          "tag_a": "What was the experimental design and stimuli set?",
+          "tag_a": "What was the experimental procedure and design layout?",
           "paper_b": "seeingbelieve",
-          "section_b": "pa52",
-          "title_b": "",
-          "tag_b": "What was the experimental procedure/design?",
-          "similarity": 0.636
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa23",
-          "title_a": "",
-          "tag_a": "What was the experimental design and stimuli set?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa87",
-          "title_b": "",
-          "tag_b": "What limits the generalizability of the experimental design?",
-          "similarity": 0.466
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa23",
-          "title_a": "",
-          "tag_a": "What was the experimental design and stimuli set?",
-          "paper_b": "visualarrangements",
           "section_b": "pa33",
           "title_b": "",
-          "tag_b": "What was the experimental task procedure?",
-          "similarity": 0.522
+          "tag_b": "What was the design and procedure of Experiment 1A?",
+          "similarity": 0.558
         },
         {
           "paper_a": "illusionofcausality",
-          "section_a": "pa23",
+          "section_a": "pa28",
           "title_a": "",
-          "tag_a": "What was the experimental design and stimuli set?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa61",
-          "title_b": "",
-          "tag_b": "What was the task and design procedure for experts?",
-          "similarity": 0.478
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa53",
-          "title_a": "",
-          "tag_a": "What question motivates Experiment 2?",
+          "tag_a": "What was the experimental procedure and design layout?",
           "paper_b": "seeingbelieve",
-          "section_b": "pa57",
+          "section_b": "pa21",
           "title_b": "",
-          "tag_b": "What follow-up question motivates the next experiment?",
+          "tag_b": "What was the overall survey procedure structure?",
+          "similarity": 0.476
+        },
+        {
+          "paper_a": "illusionofcausality",
+          "section_a": "pa28",
+          "title_a": "",
+          "tag_a": "What was the experimental procedure and design layout?",
+          "paper_b": "visualarrangements",
+          "section_b": "pa26",
+          "title_b": "",
+          "tag_b": "What was the experimental design and task procedure?",
+          "similarity": 0.729
+        },
+        {
+          "paper_a": "illusionofcausality",
+          "section_a": "pa29",
+          "title_a": "",
+          "tag_a": "What experimental design and visualization conditions were used?",
+          "paper_b": "measuringseparability",
+          "section_b": "pa4",
+          "title_b": "",
+          "tag_b": "What experimental methods and stimuli were used?",
           "similarity": 0.607
         },
         {
           "paper_a": "illusionofcausality",
-          "section_a": "pa53",
+          "section_a": "pa29",
           "title_a": "",
-          "tag_a": "What question motivates Experiment 2?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa59",
+          "tag_a": "What experimental design and visualization conditions were used?",
+          "paper_b": "measuringseparability",
+          "section_b": "pa12",
           "title_b": "",
-          "tag_b": "What was the procedure/design of Experiment 2?",
-          "similarity": 0.463
+          "tag_b": "What experimental design and stimuli were used to test hypotheses?",
+          "similarity": 0.588
         },
         {
           "paper_a": "illusionofcausality",
-          "section_a": "pa53",
+          "section_a": "pa29",
           "title_a": "",
-          "tag_a": "What question motivates Experiment 2?",
+          "tag_a": "What experimental design and visualization conditions were used?",
           "paper_b": "visualarrangements",
-          "section_b": "pa59",
+          "section_b": "pa26",
           "title_b": "",
-          "tag_b": "What was the goal of Experiment 2?",
-          "similarity": 0.491
+          "tag_b": "What was the experimental design and task procedure?",
+          "similarity": 0.46
         },
         {
           "paper_a": "illusionofcausality",
-          "section_a": "pa56",
+          "section_a": "pa68",
           "title_a": "",
-          "tag_a": "What was the experimental design and sample for Experiment 2?",
+          "tag_a": "What experimental design and variables were used in Experiment 2?",
           "paper_b": "measuringseparability",
-          "section_b": "pa34",
+          "section_b": "pa12",
           "title_b": "",
-          "tag_b": "What was the experimental task and design structure?",
-          "similarity": 0.569
+          "tag_b": "What experimental design and stimuli were used to test hypotheses?",
+          "similarity": 0.573
         },
         {
           "paper_a": "illusionofcausality",
-          "section_a": "pa56",
+          "section_a": "pa68",
           "title_a": "",
-          "tag_a": "What was the experimental design and sample for Experiment 2?",
+          "tag_a": "What experimental design and variables were used in Experiment 2?",
           "paper_b": "measuringseparability",
-          "section_b": "pa44",
+          "section_b": "pa4",
           "title_b": "",
-          "tag_b": "What was the task and trial structure in Experiment Two?",
-          "similarity": 0.483
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa56",
-          "title_a": "",
-          "tag_a": "What was the experimental design and sample for Experiment 2?",
-          "paper_b": "measuringseparability",
-          "section_b": "pa60",
-          "title_b": "",
-          "tag_b": "What is the design of Experiment Four?",
-          "similarity": 0.477
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa56",
-          "title_a": "",
-          "tag_a": "What was the experimental design and sample for Experiment 2?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa59",
-          "title_b": "",
-          "tag_b": "What was the procedure/design of Experiment 2?",
-          "similarity": 0.596
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa56",
-          "title_a": "",
-          "tag_a": "What was the experimental design and sample for Experiment 2?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa52",
-          "title_b": "",
-          "tag_b": "What was the experimental procedure/design?",
+          "tag_b": "What experimental methods and stimuli were used?",
           "similarity": 0.545
         },
         {
           "paper_a": "illusionofcausality",
-          "section_a": "pa56",
+          "section_a": "pa68",
           "title_a": "",
-          "tag_a": "What was the experimental design and sample for Experiment 2?",
+          "tag_a": "What experimental design and variables were used in Experiment 2?",
           "paper_b": "seeingbelieve",
-          "section_b": "pa37",
-          "title_b": "",
-          "tag_b": "What was the procedure/design of Experiment 1a?",
-          "similarity": 0.526
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa56",
-          "title_a": "",
-          "tag_a": "What was the experimental design and sample for Experiment 2?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa61",
-          "title_b": "",
-          "tag_b": "What was the task and design procedure for experts?",
-          "similarity": 0.561
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa56",
-          "title_a": "",
-          "tag_a": "What was the experimental design and sample for Experiment 2?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa59",
-          "title_b": "",
-          "tag_b": "What was the goal of Experiment 2?",
-          "similarity": 0.535
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa56",
-          "title_a": "",
-          "tag_a": "What was the experimental design and sample for Experiment 2?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa33",
-          "title_b": "",
-          "tag_b": "What was the experimental task procedure?",
-          "similarity": 0.451
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa71",
-          "title_a": "",
-          "tag_a": "What was the experimental design and sample size?",
-          "paper_b": "measuringseparability",
-          "section_b": "pa34",
-          "title_b": "",
-          "tag_b": "What was the experimental task and design structure?",
-          "similarity": 0.656
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa71",
-          "title_a": "",
-          "tag_a": "What was the experimental design and sample size?",
-          "paper_b": "measuringseparability",
           "section_b": "pa18",
           "title_b": "",
-          "tag_b": "What experimental design, shapes, and sizes were tested?",
-          "similarity": 0.49
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa71",
-          "title_a": "",
-          "tag_a": "What was the experimental design and sample size?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa52",
-          "title_b": "",
-          "tag_b": "What was the experimental procedure/design?",
-          "similarity": 0.636
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa71",
-          "title_a": "",
-          "tag_a": "What was the experimental design and sample size?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa87",
-          "title_b": "",
-          "tag_b": "What limits the generalizability of the experimental design?",
-          "similarity": 0.466
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa71",
-          "title_a": "",
-          "tag_a": "What was the experimental design and sample size?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa33",
-          "title_b": "",
-          "tag_b": "What was the experimental task procedure?",
-          "similarity": 0.522
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa71",
-          "title_a": "",
-          "tag_a": "What was the experimental design and sample size?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa61",
-          "title_b": "",
-          "tag_b": "What was the task and design procedure for experts?",
-          "similarity": 0.488
+          "tag_b": "What stimuli and materials were used across experiments?",
+          "similarity": 0.498
         },
         {
           "paper_a": "measuringseparability",
-          "section_a": "pa6",
+          "section_a": "pa19",
           "title_a": "",
-          "tag_a": "What are the paper's main contributions?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa5",
-          "title_b": "",
-          "tag_b": "What are the paper's contributions?",
-          "similarity": 0.895
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa30",
-          "title_a": "",
-          "tag_a": "What is the goal of the shape-color experiment pair?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa36",
-          "title_b": "",
-          "tag_b": "What is the overall purpose of each experiment?",
-          "similarity": 0.532
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa30",
-          "title_a": "",
-          "tag_a": "What is the goal of the shape-color experiment pair?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa30",
-          "title_b": "",
-          "tag_b": "What is the goal of Experiment 1?",
-          "similarity": 0.676
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa30",
-          "title_a": "",
-          "tag_a": "What is the goal of the shape-color experiment pair?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa59",
-          "title_b": "",
-          "tag_b": "What was the goal of Experiment 2?",
-          "similarity": 0.588
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa31",
-          "title_a": "",
-          "tag_a": "What is the design of Experiment One (shape's effect on color)?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa49",
-          "title_b": "",
-          "tag_b": "What is the overall summary of Experiment 1a's findings?",
-          "similarity": 0.49
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa34",
-          "title_a": "",
-          "tag_a": "What was the experimental task and design structure?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa52",
-          "title_b": "",
-          "tag_b": "What was the experimental procedure/design?",
-          "similarity": 0.636
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa34",
-          "title_a": "",
-          "tag_a": "What was the experimental task and design structure?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa25",
-          "title_b": "",
-          "tag_b": "What is the overall survey structure?",
-          "similarity": 0.462
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa34",
-          "title_a": "",
-          "tag_a": "What was the experimental task and design structure?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa87",
-          "title_b": "",
-          "tag_b": "What limits the generalizability of the experimental design?",
-          "similarity": 0.459
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa34",
-          "title_a": "",
-          "tag_a": "What was the experimental task and design structure?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa33",
-          "title_b": "",
-          "tag_b": "What was the experimental task procedure?",
-          "similarity": 0.665
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa34",
-          "title_a": "",
-          "tag_a": "What was the experimental task and design structure?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa61",
-          "title_b": "",
-          "tag_b": "What was the task and design procedure for experts?",
-          "similarity": 0.613
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa42",
-          "title_a": "",
-          "tag_a": "What shape stimuli were used in Experiment Two?",
+          "tag_a": "How was the formal study trial procedure conducted?",
           "paper_b": "seeingbelieve",
           "section_b": "pa21",
           "title_b": "",
-          "tag_b": "What stimuli were used across experiments?",
-          "similarity": 0.593
+          "tag_b": "What was the overall survey procedure structure?",
+          "similarity": 0.468
         },
         {
           "paper_a": "measuringseparability",
-          "section_a": "pa44",
-          "title_a": "",
-          "tag_a": "What was the task and trial structure in Experiment Two?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa61",
-          "title_b": "",
-          "tag_b": "What was the task and design procedure for experts?",
-          "similarity": 0.515
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa50",
-          "title_a": "",
-          "tag_a": "What is the design of Experiment Three?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa59",
-          "title_b": "",
-          "tag_b": "What was the procedure/design of Experiment 2?",
-          "similarity": 0.638
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa50",
-          "title_a": "",
-          "tag_a": "What is the design of Experiment Three?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa37",
-          "title_b": "",
-          "tag_b": "What was the procedure/design of Experiment 1a?",
-          "similarity": 0.634
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa50",
-          "title_a": "",
-          "tag_a": "What is the design of Experiment Three?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa36",
-          "title_b": "",
-          "tag_b": "What is the overall purpose of each experiment?",
-          "similarity": 0.587
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa50",
-          "title_a": "",
-          "tag_a": "What is the design of Experiment Three?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa30",
-          "title_b": "",
-          "tag_b": "What is the goal of Experiment 1?",
-          "similarity": 0.681
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa50",
-          "title_a": "",
-          "tag_a": "What is the design of Experiment Three?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa59",
-          "title_b": "",
-          "tag_b": "What was the goal of Experiment 2?",
-          "similarity": 0.584
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa50",
-          "title_a": "",
-          "tag_a": "What is the design of Experiment Three?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa17",
-          "title_b": "",
-          "tag_b": "What is the two-experiment research plan?",
-          "similarity": 0.55
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa51",
-          "title_a": "",
-          "tag_a": "What stimuli were used in Experiment Three?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa21",
-          "title_b": "",
-          "tag_b": "What stimuli were used across experiments?",
-          "similarity": 0.634
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa60",
-          "title_a": "",
-          "tag_a": "What is the design of Experiment Four?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa59",
-          "title_b": "",
-          "tag_b": "What was the procedure/design of Experiment 2?",
-          "similarity": 0.643
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa60",
-          "title_a": "",
-          "tag_a": "What is the design of Experiment Four?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa37",
-          "title_b": "",
-          "tag_b": "What was the procedure/design of Experiment 1a?",
-          "similarity": 0.638
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa60",
-          "title_a": "",
-          "tag_a": "What is the design of Experiment Four?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa36",
-          "title_b": "",
-          "tag_b": "What is the overall purpose of each experiment?",
-          "similarity": 0.591
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa60",
-          "title_a": "",
-          "tag_a": "What is the design of Experiment Four?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa30",
-          "title_b": "",
-          "tag_b": "What is the goal of Experiment 1?",
-          "similarity": 0.686
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa60",
-          "title_a": "",
-          "tag_a": "What is the design of Experiment Four?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa59",
-          "title_b": "",
-          "tag_b": "What was the goal of Experiment 2?",
-          "similarity": 0.589
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa60",
-          "title_a": "",
-          "tag_a": "What is the design of Experiment Four?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa17",
-          "title_b": "",
-          "tag_b": "What is the two-experiment research plan?",
-          "similarity": 0.529
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa62",
-          "title_a": "",
-          "tag_a": "What were the statistical results of Experiment Four?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa59",
-          "title_b": "",
-          "tag_b": "What was the procedure/design of Experiment 2?",
-          "similarity": 0.48
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa62",
-          "title_a": "",
-          "tag_a": "What were the statistical results of Experiment Four?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa37",
-          "title_b": "",
-          "tag_b": "What was the procedure/design of Experiment 1a?",
-          "similarity": 0.477
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa80",
-          "title_a": "",
-          "tag_a": "What are the paper's overall findings and contributions?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa5",
-          "title_b": "",
-          "tag_b": "What are the paper's contributions?",
-          "similarity": 0.718
-        },
-        {
-          "paper_a": "seeingbelieve",
           "section_a": "pa25",
           "title_a": "",
-          "tag_a": "What is the overall survey structure?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa57",
+          "tag_a": "What was the experimental task and design structure?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa21",
           "title_b": "",
-          "tag_b": "What is the overall takeaway on arrangement-comparison affordances?",
+          "tag_b": "What was the overall survey procedure structure?",
+          "similarity": 0.512
+        },
+        {
+          "paper_a": "measuringseparability",
+          "section_a": "pa25",
+          "title_a": "",
+          "tag_a": "What was the experimental task and design structure?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa33",
+          "title_b": "",
+          "tag_b": "What was the design and procedure of Experiment 1A?",
           "similarity": 0.451
         },
         {
-          "paper_a": "seeingbelieve",
-          "section_a": "pa36",
+          "paper_a": "measuringseparability",
+          "section_a": "pa25",
           "title_a": "",
-          "tag_a": "What is the overall purpose of each experiment?",
+          "tag_a": "What was the experimental task and design structure?",
+          "paper_b": "visualarrangements",
+          "section_b": "pa26",
+          "title_b": "",
+          "tag_b": "What was the experimental design and task procedure?",
+          "similarity": 0.774
+        },
+        {
+          "paper_a": "seeingbelieve",
+          "section_a": "pa21",
+          "title_a": "",
+          "tag_a": "What was the overall survey procedure structure?",
+          "paper_b": "visualarrangements",
+          "section_b": "pa26",
+          "title_b": "",
+          "tag_b": "What was the experimental design and task procedure?",
+          "similarity": 0.482
+        },
+        {
+          "paper_a": "seeingbelieve",
+          "section_a": "pa32",
+          "title_a": "",
+          "tag_a": "What was the overall purpose of each experiment?",
           "paper_b": "visualarrangements",
           "section_b": "pa30",
           "title_b": "",
-          "tag_b": "What is the goal of Experiment 1?",
-          "similarity": 0.625
+          "tag_b": "What are the overall frequencies of comparison types?",
+          "similarity": 0.464
         },
         {
           "paper_a": "seeingbelieve",
-          "section_a": "pa36",
+          "section_a": "pa33",
           "title_a": "",
-          "tag_a": "What is the overall purpose of each experiment?",
+          "tag_a": "What was the design and procedure of Experiment 1A?",
           "paper_b": "visualarrangements",
-          "section_b": "pa59",
+          "section_b": "pa26",
           "title_b": "",
-          "tag_b": "What was the goal of Experiment 2?",
-          "similarity": 0.54
+          "tag_b": "What was the experimental design and task procedure?",
+          "similarity": 0.603
         },
         {
           "paper_a": "seeingbelieve",
-          "section_a": "pa36",
+          "section_a": "pa47",
           "title_a": "",
-          "tag_a": "What is the overall purpose of each experiment?",
+          "tag_a": "What is the purpose and method of this control experiment?",
           "paper_b": "visualarrangements",
-          "section_b": "pa17",
+          "section_b": "pa25",
           "title_b": "",
-          "tag_b": "What is the two-experiment research plan?",
-          "similarity": 0.455
-        },
-        {
-          "paper_a": "seeingbelieve",
-          "section_a": "pa37",
-          "title_a": "",
-          "tag_a": "What was the procedure/design of Experiment 1a?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa59",
-          "title_b": "",
-          "tag_b": "What was the goal of Experiment 2?",
-          "similarity": 0.62
-        },
-        {
-          "paper_a": "seeingbelieve",
-          "section_a": "pa37",
-          "title_a": "",
-          "tag_a": "What was the procedure/design of Experiment 1a?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa30",
-          "title_b": "",
-          "tag_b": "What is the goal of Experiment 1?",
-          "similarity": 0.544
-        },
-        {
-          "paper_a": "seeingbelieve",
-          "section_a": "pa37",
-          "title_a": "",
-          "tag_a": "What was the procedure/design of Experiment 1a?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa61",
-          "title_b": "",
-          "tag_b": "What was the task and design procedure for experts?",
-          "similarity": 0.535
-        },
-        {
-          "paper_a": "seeingbelieve",
-          "section_a": "pa49",
-          "title_a": "",
-          "tag_a": "What is the overall summary of Experiment 1a's findings?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa30",
-          "title_b": "",
-          "tag_b": "What is the goal of Experiment 1?",
-          "similarity": 0.568
-        },
-        {
-          "paper_a": "seeingbelieve",
-          "section_a": "pa52",
-          "title_a": "",
-          "tag_a": "What was the experimental procedure/design?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa33",
-          "title_b": "",
-          "tag_b": "What was the experimental task procedure?",
-          "similarity": 0.786
-        },
-        {
-          "paper_a": "seeingbelieve",
-          "section_a": "pa52",
-          "title_a": "",
-          "tag_a": "What was the experimental procedure/design?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa61",
-          "title_b": "",
-          "tag_b": "What was the task and design procedure for experts?",
-          "similarity": 0.548
-        },
-        {
-          "paper_a": "seeingbelieve",
-          "section_a": "pa59",
-          "title_a": "",
-          "tag_a": "What was the procedure/design of Experiment 2?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa59",
-          "title_b": "",
-          "tag_b": "What was the goal of Experiment 2?",
-          "similarity": 0.721
-        },
-        {
-          "paper_a": "seeingbelieve",
-          "section_a": "pa59",
-          "title_a": "",
-          "tag_a": "What was the procedure/design of Experiment 2?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa61",
-          "title_b": "",
-          "tag_b": "What was the task and design procedure for experts?",
-          "similarity": 0.538
-        },
-        {
-          "paper_a": "seeingbelieve",
-          "section_a": "pa76",
-          "title_a": "",
-          "tag_a": "What does this section cover?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa67",
-          "title_b": "",
-          "tag_b": "What does this section cover?",
-          "similarity": 1.0
+          "tag_b": "What is the goal and participant pool for this experiment?",
+          "similarity": 0.55
         }
       ]
     },
@@ -2600,341 +728,269 @@
       "members": [
         {
           "paper": "crowdsourcinggraphical",
-          "unit_id": "pa37",
+          "unit_id": "pa58",
           "title": "",
-          "tag": "How many responses were collected and filtered?"
-        },
-        {
-          "paper": "crowdsourcinggraphical",
-          "unit_id": "pa49",
-          "title": "",
-          "tag": "How many subjects participated and how were experiments deployed?"
+          "tag": "How many subjects participated and how were experiments grouped?"
         },
         {
           "paper": "illusionofcausality",
-          "unit_id": "pa22",
+          "unit_id": "pa26",
           "title": "",
-          "tag": "How were participants recruited and screened?"
+          "tag": "Who were the participants and what variables were measured?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa30",
+          "title": "",
+          "tag": "How was sample size determined and participants excluded?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa65",
+          "title": "",
+          "tag": "Who were the participants recruited for Experiment 2?"
         },
         {
           "paper": "measuringseparability",
-          "unit_id": "pa28",
+          "unit_id": "pa20",
           "title": "",
-          "tag": "Who were the participants and how were they screened?"
+          "tag": "Who were the participants and how were exclusions handled?"
         },
         {
           "paper": "measuringseparability",
-          "unit_id": "pa35",
+          "unit_id": "pa26",
           "title": "",
-          "tag": "Who were the participants and how was data analyzed?"
+          "tag": "Who were the participants and how many trials resulted?"
         },
         {
           "paper": "measuringseparability",
-          "unit_id": "pa45",
+          "unit_id": "pa40",
           "title": "",
-          "tag": "Who were the participants in Experiment Two?"
+          "tag": "How many participants were recruited and included for Experiment Three?"
+        },
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa48",
+          "title": "",
+          "tag": "How many participants were recruited and included for Experiment Four?"
         },
         {
           "paper": "seeingbelieve",
-          "unit_id": "pa22",
-          "title": "",
-          "tag": "Who were the participants recruited?"
-        },
-        {
-          "paper": "seeingbelieve",
-          "unit_id": "pa23",
+          "unit_id": "pa19",
           "title": "",
           "tag": "How many participants were excluded and why?"
         },
         {
           "paper": "seeingbelieve",
-          "unit_id": "pa24",
+          "unit_id": "pa20",
           "title": "",
           "tag": "How were participants compensated and treated ethically?"
         },
         {
           "paper": "seeingbelieve",
-          "unit_id": "pa53",
+          "unit_id": "pa49",
           "title": "",
-          "tag": "Who were the participants in this experiment?"
-        },
-        {
-          "paper": "visualarrangements",
-          "unit_id": "pa31",
-          "title": "",
-          "tag": "Who were the study participants?"
-        },
-        {
-          "paper": "visualarrangements",
-          "unit_id": "pa60",
-          "title": "",
-          "tag": "Who were the expert participants and what are their qualifications?"
+          "tag": "Who were the participants in this control study?"
         }
       ],
       "links": [
         {
           "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa37",
+          "section_a": "pa58",
           "title_a": "",
-          "tag_a": "How many responses were collected and filtered?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa23",
+          "tag_a": "How many subjects participated and how were experiments grouped?",
+          "paper_b": "measuringseparability",
+          "section_b": "pa48",
           "title_b": "",
-          "tag_b": "How many participants were excluded and why?",
-          "similarity": 0.519
+          "tag_b": "How many participants were recruited and included for Experiment Four?",
+          "similarity": 0.464
         },
         {
           "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa49",
+          "section_a": "pa58",
           "title_a": "",
-          "tag_a": "How many subjects participated and how were experiments deployed?",
+          "tag_a": "How many subjects participated and how were experiments grouped?",
+          "paper_b": "measuringseparability",
+          "section_b": "pa40",
+          "title_b": "",
+          "tag_b": "How many participants were recruited and included for Experiment Three?",
+          "similarity": 0.461
+        },
+        {
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa58",
+          "title_a": "",
+          "tag_a": "How many subjects participated and how were experiments grouped?",
           "paper_b": "seeingbelieve",
-          "section_b": "pa23",
+          "section_b": "pa19",
           "title_b": "",
           "tag_b": "How many participants were excluded and why?",
-          "similarity": 0.466
+          "similarity": 0.469
         },
         {
           "paper_a": "illusionofcausality",
-          "section_a": "pa22",
+          "section_a": "pa26",
           "title_a": "",
-          "tag_a": "How were participants recruited and screened?",
+          "tag_a": "Who were the participants and what variables were measured?",
           "paper_b": "measuringseparability",
-          "section_b": "pa28",
+          "section_b": "pa20",
           "title_b": "",
-          "tag_b": "Who were the participants and how were they screened?",
-          "similarity": 0.625
+          "tag_b": "Who were the participants and how were exclusions handled?",
+          "similarity": 0.586
         },
         {
           "paper_a": "illusionofcausality",
-          "section_a": "pa22",
+          "section_a": "pa26",
           "title_a": "",
-          "tag_a": "How were participants recruited and screened?",
+          "tag_a": "Who were the participants and what variables were measured?",
           "paper_b": "measuringseparability",
-          "section_b": "pa35",
+          "section_b": "pa26",
           "title_b": "",
-          "tag_b": "Who were the participants and how was data analyzed?",
-          "similarity": 0.491
+          "tag_b": "Who were the participants and how many trials resulted?",
+          "similarity": 0.586
         },
         {
           "paper_a": "illusionofcausality",
-          "section_a": "pa22",
+          "section_a": "pa26",
           "title_a": "",
-          "tag_a": "How were participants recruited and screened?",
+          "tag_a": "Who were the participants and what variables were measured?",
           "paper_b": "seeingbelieve",
-          "section_b": "pa24",
+          "section_b": "pa49",
           "title_b": "",
-          "tag_b": "How were participants compensated and treated ethically?",
-          "similarity": 0.579
+          "tag_b": "Who were the participants in this control study?",
+          "similarity": 0.522
         },
         {
           "paper_a": "illusionofcausality",
-          "section_a": "pa22",
+          "section_a": "pa30",
           "title_a": "",
-          "tag_a": "How were participants recruited and screened?",
+          "tag_a": "How was sample size determined and participants excluded?",
           "paper_b": "seeingbelieve",
-          "section_b": "pa22",
-          "title_b": "",
-          "tag_b": "Who were the participants recruited?",
-          "similarity": 0.57
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa22",
-          "title_a": "",
-          "tag_a": "How were participants recruited and screened?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa23",
+          "section_b": "pa19",
           "title_b": "",
           "tag_b": "How many participants were excluded and why?",
-          "similarity": 0.559
+          "similarity": 0.479
         },
         {
-          "paper_a": "measuringseparability",
-          "section_a": "pa28",
+          "paper_a": "illusionofcausality",
+          "section_a": "pa65",
           "title_a": "",
-          "tag_a": "Who were the participants and how were they screened?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa22",
+          "tag_a": "Who were the participants recruited for Experiment 2?",
+          "paper_b": "measuringseparability",
+          "section_b": "pa48",
           "title_b": "",
-          "tag_b": "Who were the participants recruited?",
-          "similarity": 0.593
+          "tag_b": "How many participants were recruited and included for Experiment Four?",
+          "similarity": 0.542
         },
         {
-          "paper_a": "measuringseparability",
-          "section_a": "pa28",
+          "paper_a": "illusionofcausality",
+          "section_a": "pa65",
           "title_a": "",
-          "tag_a": "Who were the participants and how were they screened?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa53",
+          "tag_a": "Who were the participants recruited for Experiment 2?",
+          "paper_b": "measuringseparability",
+          "section_b": "pa40",
           "title_b": "",
-          "tag_b": "Who were the participants in this experiment?",
+          "tag_b": "How many participants were recruited and included for Experiment Three?",
           "similarity": 0.539
         },
         {
-          "paper_a": "measuringseparability",
-          "section_a": "pa28",
+          "paper_a": "illusionofcausality",
+          "section_a": "pa65",
           "title_a": "",
-          "tag_a": "Who were the participants and how were they screened?",
+          "tag_a": "Who were the participants recruited for Experiment 2?",
+          "paper_b": "measuringseparability",
+          "section_b": "pa20",
+          "title_b": "",
+          "tag_b": "Who were the participants and how were exclusions handled?",
+          "similarity": 0.464
+        },
+        {
+          "paper_a": "illusionofcausality",
+          "section_a": "pa65",
+          "title_a": "",
+          "tag_a": "Who were the participants recruited for Experiment 2?",
           "paper_b": "seeingbelieve",
-          "section_b": "pa24",
+          "section_b": "pa49",
           "title_b": "",
-          "tag_b": "How were participants compensated and treated ethically?",
-          "similarity": 0.475
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa28",
-          "title_a": "",
-          "tag_a": "Who were the participants and how were they screened?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa60",
-          "title_b": "",
-          "tag_b": "Who were the expert participants and what are their qualifications?",
-          "similarity": 0.534
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa28",
-          "title_a": "",
-          "tag_a": "Who were the participants and how were they screened?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa31",
-          "title_b": "",
-          "tag_b": "Who were the study participants?",
-          "similarity": 0.528
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa35",
-          "title_a": "",
-          "tag_a": "Who were the participants and how was data analyzed?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa22",
-          "title_b": "",
-          "tag_b": "Who were the participants recruited?",
-          "similarity": 0.541
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa35",
-          "title_a": "",
-          "tag_a": "Who were the participants and how was data analyzed?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa53",
-          "title_b": "",
-          "tag_b": "Who were the participants in this experiment?",
-          "similarity": 0.507
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa35",
-          "title_a": "",
-          "tag_a": "Who were the participants and how was data analyzed?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa24",
-          "title_b": "",
-          "tag_b": "How were participants compensated and treated ethically?",
-          "similarity": 0.463
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa35",
-          "title_a": "",
-          "tag_a": "Who were the participants and how was data analyzed?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa31",
-          "title_b": "",
-          "tag_b": "Who were the study participants?",
-          "similarity": 0.51
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa35",
-          "title_a": "",
-          "tag_a": "Who were the participants and how was data analyzed?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa60",
-          "title_b": "",
-          "tag_b": "Who were the expert participants and what are their qualifications?",
-          "similarity": 0.498
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa45",
-          "title_a": "",
-          "tag_a": "Who were the participants in Experiment Two?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa53",
-          "title_b": "",
-          "tag_b": "Who were the participants in this experiment?",
-          "similarity": 0.824
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa45",
-          "title_a": "",
-          "tag_a": "Who were the participants in Experiment Two?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa22",
-          "title_b": "",
-          "tag_b": "Who were the participants recruited?",
-          "similarity": 0.613
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa45",
-          "title_a": "",
-          "tag_a": "Who were the participants in Experiment Two?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa31",
-          "title_b": "",
-          "tag_b": "Who were the study participants?",
-          "similarity": 0.592
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa45",
-          "title_a": "",
-          "tag_a": "Who were the participants in Experiment Two?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa60",
-          "title_b": "",
-          "tag_b": "Who were the expert participants and what are their qualifications?",
-          "similarity": 0.451
-        },
-        {
-          "paper_a": "seeingbelieve",
-          "section_a": "pa22",
-          "title_a": "",
-          "tag_a": "Who were the participants recruited?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa31",
-          "title_b": "",
-          "tag_b": "Who were the study participants?",
-          "similarity": 0.716
-        },
-        {
-          "paper_a": "seeingbelieve",
-          "section_a": "pa22",
-          "title_a": "",
-          "tag_a": "Who were the participants recruited?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa60",
-          "title_b": "",
-          "tag_b": "Who were the expert participants and what are their qualifications?",
+          "tag_b": "Who were the participants in this control study?",
           "similarity": 0.483
         },
         {
-          "paper_a": "seeingbelieve",
-          "section_a": "pa53",
+          "paper_a": "measuringseparability",
+          "section_a": "pa20",
           "title_a": "",
-          "tag_a": "Who were the participants in this experiment?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa31",
+          "tag_a": "Who were the participants and how were exclusions handled?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa49",
           "title_b": "",
-          "tag_b": "Who were the study participants?",
-          "similarity": 0.588
+          "tag_b": "Who were the participants in this control study?",
+          "similarity": 0.506
+        },
+        {
+          "paper_a": "measuringseparability",
+          "section_a": "pa20",
+          "title_a": "",
+          "tag_a": "Who were the participants and how were exclusions handled?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa19",
+          "title_b": "",
+          "tag_b": "How many participants were excluded and why?",
+          "similarity": 0.496
+        },
+        {
+          "paper_a": "measuringseparability",
+          "section_a": "pa20",
+          "title_a": "",
+          "tag_a": "Who were the participants and how were exclusions handled?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa20",
+          "title_b": "",
+          "tag_b": "How were participants compensated and treated ethically?",
+          "similarity": 0.471
+        },
+        {
+          "paper_a": "measuringseparability",
+          "section_a": "pa26",
+          "title_a": "",
+          "tag_a": "Who were the participants and how many trials resulted?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa49",
+          "title_b": "",
+          "tag_b": "Who were the participants in this control study?",
+          "similarity": 0.513
+        },
+        {
+          "paper_a": "measuringseparability",
+          "section_a": "pa26",
+          "title_a": "",
+          "tag_a": "Who were the participants and how many trials resulted?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa20",
+          "title_b": "",
+          "tag_b": "How were participants compensated and treated ethically?",
+          "similarity": 0.455
+        },
+        {
+          "paper_a": "measuringseparability",
+          "section_a": "pa40",
+          "title_a": "",
+          "tag_a": "How many participants were recruited and included for Experiment Three?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa19",
+          "title_b": "",
+          "tag_b": "How many participants were excluded and why?",
+          "similarity": 0.547
+        },
+        {
+          "paper_a": "measuringseparability",
+          "section_a": "pa48",
+          "title_a": "",
+          "tag_a": "How many participants were recruited and included for Experiment Four?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa19",
+          "title_b": "",
+          "tag_b": "How many participants were excluded and why?",
+          "similarity": 0.542
         }
       ]
     },
@@ -2943,152 +999,168 @@
       "members": [
         {
           "paper": "illusionofcausality",
-          "unit_id": "pa1",
+          "unit_id": "pa31",
           "title": "",
-          "tag": "What did the experiments reveal about visualization design's effect on perceived causality?"
+          "tag": "What statistical model was used for causation ratings?"
         },
         {
           "paper": "illusionofcausality",
-          "unit_id": "pa29",
+          "unit_id": "pa69",
           "title": "",
-          "tag": "What did the model reveal about causation ratings by visualization?"
+          "tag": "What statistical model was used to analyze causation ratings?"
         },
         {
           "paper": "measuringseparability",
-          "unit_id": "pa5",
+          "unit_id": "pa21",
           "title": "",
-          "tag": "What did the study find about shape's effect on size and color?"
+          "tag": "What statistical approach was used to analyze the data?"
         },
         {
           "paper": "measuringseparability",
-          "unit_id": "pa59",
+          "unit_id": "pa27",
           "title": "",
-          "tag": "What do the fitted models reveal about shape-driven size bias?"
+          "tag": "What statistical method was used to analyze the data?"
         },
         {
           "paper": "measuringseparability",
-          "unit_id": "pa68",
+          "unit_id": "pa36",
           "title": "",
-          "tag": "What did Experiment Two reveal about color's effect on shape perception?"
+          "tag": "What stimuli were used to test shape's effect on size?"
         },
         {
           "paper": "measuringseparability",
-          "unit_id": "pa70",
+          "unit_id": "pa41",
           "title": "",
-          "tag": "What did Experiment Three reveal about size's effect on shape perception?"
+          "tag": "What statistical model was used to analyze shape's effect on size?"
         },
         {
           "paper": "seeingbelieve",
-          "unit_id": "pa65",
+          "unit_id": "pa41",
           "title": "",
-          "tag": "What did the model reveal about beliefs' effect on bias?"
-        },
-        {
-          "paper": "seeingbelieve",
-          "unit_id": "pa85",
-          "title": "",
-          "tag": "What did the study find about belief updating?"
+          "tag": "What statistical model was used to test belief's effect on estimates?"
         }
       ],
       "links": [
         {
           "paper_a": "illusionofcausality",
-          "section_a": "pa1",
+          "section_a": "pa31",
           "title_a": "",
-          "tag_a": "What did the experiments reveal about visualization design's effect on perceived causality?",
+          "tag_a": "What statistical model was used for causation ratings?",
           "paper_b": "measuringseparability",
-          "section_b": "pa70",
+          "section_b": "pa27",
           "title_b": "",
-          "tag_b": "What did Experiment Three reveal about size's effect on shape perception?",
-          "similarity": 0.542
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa1",
-          "title_a": "",
-          "tag_a": "What did the experiments reveal about visualization design's effect on perceived causality?",
-          "paper_b": "measuringseparability",
-          "section_b": "pa68",
-          "title_b": "",
-          "tag_b": "What did Experiment Two reveal about color's effect on shape perception?",
-          "similarity": 0.532
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa1",
-          "title_a": "",
-          "tag_a": "What did the experiments reveal about visualization design's effect on perceived causality?",
-          "paper_b": "measuringseparability",
-          "section_b": "pa5",
-          "title_b": "",
-          "tag_b": "What did the study find about shape's effect on size and color?",
-          "similarity": 0.47
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa1",
-          "title_a": "",
-          "tag_a": "What did the experiments reveal about visualization design's effect on perceived causality?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa65",
-          "title_b": "",
-          "tag_b": "What did the model reveal about beliefs' effect on bias?",
-          "similarity": 0.545
-        },
-        {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa29",
-          "title_a": "",
-          "tag_a": "What did the model reveal about causation ratings by visualization?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa65",
-          "title_b": "",
-          "tag_b": "What did the model reveal about beliefs' effect on bias?",
-          "similarity": 0.539
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa5",
-          "title_a": "",
-          "tag_a": "What did the study find about shape's effect on size and color?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa85",
-          "title_b": "",
-          "tag_b": "What did the study find about belief updating?",
-          "similarity": 0.53
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa59",
-          "title_a": "",
-          "tag_a": "What do the fitted models reveal about shape-driven size bias?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa65",
-          "title_b": "",
-          "tag_b": "What did the model reveal about beliefs' effect on bias?",
-          "similarity": 0.495
-        },
-        {
-          "paper_a": "measuringseparability",
-          "section_a": "pa68",
-          "title_a": "",
-          "tag_a": "What did Experiment Two reveal about color's effect on shape perception?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa65",
-          "title_b": "",
-          "tag_b": "What did the model reveal about beliefs' effect on bias?",
+          "tag_b": "What statistical method was used to analyze the data?",
           "similarity": 0.5
         },
         {
-          "paper_a": "measuringseparability",
-          "section_a": "pa70",
+          "paper_a": "illusionofcausality",
+          "section_a": "pa31",
           "title_a": "",
-          "tag_a": "What did Experiment Three reveal about size's effect on shape perception?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa65",
+          "tag_a": "What statistical model was used for causation ratings?",
+          "paper_b": "measuringseparability",
+          "section_b": "pa41",
           "title_b": "",
-          "tag_b": "What did the model reveal about beliefs' effect on bias?",
-          "similarity": 0.513
+          "tag_b": "What statistical model was used to analyze shape's effect on size?",
+          "similarity": 0.492
+        },
+        {
+          "paper_a": "illusionofcausality",
+          "section_a": "pa31",
+          "title_a": "",
+          "tag_a": "What statistical model was used for causation ratings?",
+          "paper_b": "measuringseparability",
+          "section_b": "pa21",
+          "title_b": "",
+          "tag_b": "What statistical approach was used to analyze the data?",
+          "similarity": 0.475
+        },
+        {
+          "paper_a": "illusionofcausality",
+          "section_a": "pa31",
+          "title_a": "",
+          "tag_a": "What statistical model was used for causation ratings?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa41",
+          "title_b": "",
+          "tag_b": "What statistical model was used to test belief's effect on estimates?",
+          "similarity": 0.516
+        },
+        {
+          "paper_a": "illusionofcausality",
+          "section_a": "pa69",
+          "title_a": "",
+          "tag_a": "What statistical model was used to analyze causation ratings?",
+          "paper_b": "measuringseparability",
+          "section_b": "pa27",
+          "title_b": "",
+          "tag_b": "What statistical method was used to analyze the data?",
+          "similarity": 0.645
+        },
+        {
+          "paper_a": "illusionofcausality",
+          "section_a": "pa69",
+          "title_a": "",
+          "tag_a": "What statistical model was used to analyze causation ratings?",
+          "paper_b": "measuringseparability",
+          "section_b": "pa41",
+          "title_b": "",
+          "tag_b": "What statistical model was used to analyze shape's effect on size?",
+          "similarity": 0.644
+        },
+        {
+          "paper_a": "illusionofcausality",
+          "section_a": "pa69",
+          "title_a": "",
+          "tag_a": "What statistical model was used to analyze causation ratings?",
+          "paper_b": "measuringseparability",
+          "section_b": "pa21",
+          "title_b": "",
+          "tag_b": "What statistical approach was used to analyze the data?",
+          "similarity": 0.621
+        },
+        {
+          "paper_a": "illusionofcausality",
+          "section_a": "pa69",
+          "title_a": "",
+          "tag_a": "What statistical model was used to analyze causation ratings?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa41",
+          "title_b": "",
+          "tag_b": "What statistical model was used to test belief's effect on estimates?",
+          "similarity": 0.562
+        },
+        {
+          "paper_a": "measuringseparability",
+          "section_a": "pa27",
+          "title_a": "",
+          "tag_a": "What statistical method was used to analyze the data?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa41",
+          "title_b": "",
+          "tag_b": "What statistical model was used to test belief's effect on estimates?",
+          "similarity": 0.476
+        },
+        {
+          "paper_a": "measuringseparability",
+          "section_a": "pa36",
+          "title_a": "",
+          "tag_a": "What stimuli were used to test shape's effect on size?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa41",
+          "title_b": "",
+          "tag_b": "What statistical model was used to test belief's effect on estimates?",
+          "similarity": 0.576
+        },
+        {
+          "paper_a": "measuringseparability",
+          "section_a": "pa41",
+          "title_a": "",
+          "tag_a": "What statistical model was used to analyze shape's effect on size?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa41",
+          "title_b": "",
+          "tag_b": "What statistical model was used to test belief's effect on estimates?",
+          "similarity": 0.7
         }
       ]
     },
@@ -3096,63 +1168,130 @@
       "group_id": "group_4",
       "members": [
         {
-          "paper": "illusionofcausality",
-          "unit_id": "pa58",
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa4",
           "title": "",
-          "tag": "What was the main effect of encoding type on causality?"
+          "tag": "What are the paper's three main contributions?"
         },
         {
-          "paper": "illusionofcausality",
-          "unit_id": "pa59",
+          "paper": "measuringseparability",
+          "unit_id": "pa51",
           "title": "",
-          "tag": "What was the main effect of aggregation level on causality?"
-        },
-        {
-          "paper": "illusionofcausality",
-          "unit_id": "pa63",
-          "title": "",
-          "tag": "What was the main effect of encoding type on correlation ratings?"
+          "tag": "What are the key findings summarized?"
         },
         {
           "paper": "seeingbelieve",
-          "unit_id": "pa46",
+          "unit_id": "pa15",
           "title": "",
-          "tag": "What was the main effect of belief on estimation bias?"
+          "tag": "What is the paper's title?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa54",
+          "title": "",
+          "tag": "What is the paper's title (header artifact)?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa2",
+          "title": "",
+          "tag": "What are the paper's key terms/topics?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa6",
+          "title": "",
+          "tag": "What are the paper's specific contributions?"
         }
       ],
       "links": [
         {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa58",
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa4",
           "title_a": "",
-          "tag_a": "What was the main effect of encoding type on causality?",
+          "tag_a": "What are the paper's three main contributions?",
           "paper_b": "seeingbelieve",
-          "section_b": "pa46",
+          "section_b": "pa15",
           "title_b": "",
-          "tag_b": "What was the main effect of belief on estimation bias?",
-          "similarity": 0.618
+          "tag_b": "What is the paper's title?",
+          "similarity": 0.492
         },
         {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa59",
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa4",
           "title_a": "",
-          "tag_a": "What was the main effect of aggregation level on causality?",
+          "tag_a": "What are the paper's three main contributions?",
           "paper_b": "seeingbelieve",
-          "section_b": "pa46",
+          "section_b": "pa54",
           "title_b": "",
-          "tag_b": "What was the main effect of belief on estimation bias?",
-          "similarity": 0.606
+          "tag_b": "What is the paper's title (header artifact)?",
+          "similarity": 0.467
         },
         {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa63",
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa4",
           "title_a": "",
-          "tag_a": "What was the main effect of encoding type on correlation ratings?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa46",
+          "tag_a": "What are the paper's three main contributions?",
+          "paper_b": "visualarrangements",
+          "section_b": "pa6",
           "title_b": "",
-          "tag_b": "What was the main effect of belief on estimation bias?",
-          "similarity": 0.628
+          "tag_b": "What are the paper's specific contributions?",
+          "similarity": 0.756
+        },
+        {
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa4",
+          "title_a": "",
+          "tag_a": "What are the paper's three main contributions?",
+          "paper_b": "visualarrangements",
+          "section_b": "pa2",
+          "title_b": "",
+          "tag_b": "What are the paper's key terms/topics?",
+          "similarity": 0.561
+        },
+        {
+          "paper_a": "measuringseparability",
+          "section_a": "pa51",
+          "title_a": "",
+          "tag_a": "What are the key findings summarized?",
+          "paper_b": "visualarrangements",
+          "section_b": "pa2",
+          "title_b": "",
+          "tag_b": "What are the paper's key terms/topics?",
+          "similarity": 0.467
+        },
+        {
+          "paper_a": "seeingbelieve",
+          "section_a": "pa15",
+          "title_a": "",
+          "tag_a": "What is the paper's title?",
+          "paper_b": "visualarrangements",
+          "section_b": "pa2",
+          "title_b": "",
+          "tag_b": "What are the paper's key terms/topics?",
+          "similarity": 0.528
+        },
+        {
+          "paper_a": "seeingbelieve",
+          "section_a": "pa15",
+          "title_a": "",
+          "tag_a": "What is the paper's title?",
+          "paper_b": "visualarrangements",
+          "section_b": "pa6",
+          "title_b": "",
+          "tag_b": "What are the paper's specific contributions?",
+          "similarity": 0.522
+        },
+        {
+          "paper_a": "seeingbelieve",
+          "section_a": "pa54",
+          "title_a": "",
+          "tag_a": "What is the paper's title (header artifact)?",
+          "paper_b": "visualarrangements",
+          "section_b": "pa2",
+          "title_b": "",
+          "tag_b": "What are the paper's key terms/topics?",
+          "similarity": 0.472
         }
       ]
     },
@@ -3160,46 +1299,97 @@
       "group_id": "group_5",
       "members": [
         {
-          "paper": "illusionofcausality",
-          "unit_id": "pa40",
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa27",
           "title": "",
-          "tag": "How did participants invoke third variables in reasoning?"
+          "tag": "What does the comparison figure show?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa34",
+          "title": "",
+          "tag": "What did the results show about accuracy and aspect ratio?"
+        },
+        {
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa48",
+          "title": "",
+          "tag": "What does the OS-grouped figure show about monitor gamma effects?"
         },
         {
           "paper": "illusionofcausality",
-          "unit_id": "pa49",
+          "unit_id": "pa20",
           "title": "",
-          "tag": "How did participants use template phrases in reasoning?"
+          "tag": "What do the pilot results show visually about selected contexts?"
         },
         {
           "paper": "seeingbelieve",
-          "unit_id": "pa29",
+          "unit_id": "pa38",
           "title": "",
-          "tag": "How did participants estimate correlations in the baseline task?"
+          "tag": "What does the figure show about belief distributions across topics?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa31",
+          "title": "",
+          "tag": "What do the heatmaps show about comparison counts?"
         }
       ],
       "links": [
         {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa40",
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa27",
           "title_a": "",
-          "tag_a": "How did participants invoke third variables in reasoning?",
+          "tag_a": "What does the comparison figure show?",
           "paper_b": "seeingbelieve",
-          "section_b": "pa29",
+          "section_b": "pa38",
           "title_b": "",
-          "tag_b": "How did participants estimate correlations in the baseline task?",
-          "similarity": 0.46
+          "tag_b": "What does the figure show about belief distributions across topics?",
+          "similarity": 0.477
+        },
+        {
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa27",
+          "title_a": "",
+          "tag_a": "What does the comparison figure show?",
+          "paper_b": "visualarrangements",
+          "section_b": "pa31",
+          "title_b": "",
+          "tag_b": "What do the heatmaps show about comparison counts?",
+          "similarity": 0.499
+        },
+        {
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa34",
+          "title_a": "",
+          "tag_a": "What did the results show about accuracy and aspect ratio?",
+          "paper_b": "illusionofcausality",
+          "section_b": "pa20",
+          "title_b": "",
+          "tag_b": "What do the pilot results show visually about selected contexts?",
+          "similarity": 0.47
+        },
+        {
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa48",
+          "title_a": "",
+          "tag_a": "What does the OS-grouped figure show about monitor gamma effects?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa38",
+          "title_b": "",
+          "tag_b": "What does the figure show about belief distributions across topics?",
+          "similarity": 0.495
         },
         {
           "paper_a": "illusionofcausality",
-          "section_a": "pa49",
+          "section_a": "pa20",
           "title_a": "",
-          "tag_a": "How did participants use template phrases in reasoning?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa29",
+          "tag_a": "What do the pilot results show visually about selected contexts?",
+          "paper_b": "visualarrangements",
+          "section_b": "pa31",
           "title_b": "",
-          "tag_b": "How did participants estimate correlations in the baseline task?",
-          "similarity": 0.498
+          "tag_b": "What do the heatmaps show about comparison counts?",
+          "similarity": 0.491
         }
       ]
     },
@@ -3208,28 +1398,73 @@
       "members": [
         {
           "paper": "crowdsourcinggraphical",
-          "unit_id": "pa19",
+          "unit_id": "pa1",
           "title": "",
-          "tag": "How were the charts and trials designed and administered?"
+          "tag": "What was studied, how, and what was found?"
         },
         {
           "paper": "measuringseparability",
-          "unit_id": "pa23",
+          "unit_id": "pa1",
           "title": "",
-          "tag": "How were the stimuli and forced-choice task designed?"
+          "tag": "What was studied, and what did it find?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa8",
+          "title": "",
+          "tag": "What experiments were run and what did they find?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa1",
+          "title": "",
+          "tag": "What was studied, how, and what was found?"
         }
       ],
       "links": [
         {
           "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa19",
+          "section_a": "pa1",
           "title_a": "",
-          "tag_a": "How were the charts and trials designed and administered?",
+          "tag_a": "What was studied, how, and what was found?",
           "paper_b": "measuringseparability",
-          "section_b": "pa23",
+          "section_b": "pa1",
           "title_b": "",
-          "tag_b": "How were the stimuli and forced-choice task designed?",
-          "similarity": 0.499
+          "tag_b": "What was studied, and what did it find?",
+          "similarity": 0.617
+        },
+        {
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa1",
+          "title_a": "",
+          "tag_a": "What was studied, how, and what was found?",
+          "paper_b": "visualarrangements",
+          "section_b": "pa1",
+          "title_b": "",
+          "tag_b": "What was studied, how, and what was found?",
+          "similarity": 1.0
+        },
+        {
+          "paper_a": "measuringseparability",
+          "section_a": "pa1",
+          "title_a": "",
+          "tag_a": "What was studied, and what did it find?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa8",
+          "title_b": "",
+          "tag_b": "What experiments were run and what did they find?",
+          "similarity": 0.511
+        },
+        {
+          "paper_a": "measuringseparability",
+          "section_a": "pa1",
+          "title_a": "",
+          "tag_a": "What was studied, and what did it find?",
+          "paper_b": "visualarrangements",
+          "section_b": "pa1",
+          "title_b": "",
+          "tag_b": "What was studied, how, and what was found?",
+          "similarity": 0.617
         }
       ]
     },
@@ -3237,29 +1472,63 @@
       "group_id": "group_7",
       "members": [
         {
-          "paper": "crowdsourcinggraphical",
-          "unit_id": "pa28",
+          "paper": "measuringseparability",
+          "unit_id": "pa14",
           "title": "",
-          "tag": "What effect did aspect ratio have on judgment accuracy?"
+          "tag": "What is the second hypothesis about shape and size perception?"
         },
         {
           "paper": "measuringseparability",
-          "unit_id": "pa56",
+          "unit_id": "pa3",
           "title": "",
-          "tag": "What effect did shape have on perceived size?"
+          "tag": "What is the paper's goal and approach to studying channel interference?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa7",
+          "title": "",
+          "tag": "What is the study's hypothesis about belief and correlation estimation?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa16",
+          "title": "",
+          "tag": "What is the study's approach and overall plan?"
         }
       ],
       "links": [
         {
-          "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa28",
+          "paper_a": "measuringseparability",
+          "section_a": "pa3",
           "title_a": "",
-          "tag_a": "What effect did aspect ratio have on judgment accuracy?",
-          "paper_b": "measuringseparability",
-          "section_b": "pa56",
+          "tag_a": "What is the paper's goal and approach to studying channel interference?",
+          "paper_b": "visualarrangements",
+          "section_b": "pa16",
           "title_b": "",
-          "tag_b": "What effect did shape have on perceived size?",
-          "similarity": 0.518
+          "tag_b": "What is the study's approach and overall plan?",
+          "similarity": 0.465
+        },
+        {
+          "paper_a": "measuringseparability",
+          "section_a": "pa14",
+          "title_a": "",
+          "tag_a": "What is the second hypothesis about shape and size perception?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa7",
+          "title_b": "",
+          "tag_b": "What is the study's hypothesis about belief and correlation estimation?",
+          "similarity": 0.538
+        },
+        {
+          "paper_a": "seeingbelieve",
+          "section_a": "pa7",
+          "title_a": "",
+          "tag_a": "What is the study's hypothesis about belief and correlation estimation?",
+          "paper_b": "visualarrangements",
+          "section_b": "pa16",
+          "title_b": "",
+          "tag_b": "What is the study's approach and overall plan?",
+          "similarity": 0.488
         }
       ]
     },
@@ -3268,28 +1537,45 @@
       "members": [
         {
           "paper": "crowdsourcinggraphical",
-          "unit_id": "pa42",
+          "unit_id": "pa38",
           "title": "",
-          "tag": "What prior work inspired this study and what gap remains?"
+          "tag": "How was the gridline contrast task administered?"
         },
         {
           "paper": "measuringseparability",
-          "unit_id": "pa12",
+          "unit_id": "pa32",
           "title": "",
-          "tag": "What prior scatterplot-specific graphical perception studies exist, and what gap remains?"
+          "tag": "How was the reverse experiment (color's effect on shape) designed and conducted?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa47",
+          "title": "",
+          "tag": "How was the expert survey designed and administered?"
         }
       ],
       "links": [
         {
           "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa42",
+          "section_a": "pa38",
           "title_a": "",
-          "tag_a": "What prior work inspired this study and what gap remains?",
-          "paper_b": "measuringseparability",
-          "section_b": "pa12",
+          "tag_a": "How was the gridline contrast task administered?",
+          "paper_b": "visualarrangements",
+          "section_b": "pa47",
           "title_b": "",
-          "tag_b": "What prior scatterplot-specific graphical perception studies exist, and what gap remains?",
-          "similarity": 0.475
+          "tag_b": "How was the expert survey designed and administered?",
+          "similarity": 0.492
+        },
+        {
+          "paper_a": "measuringseparability",
+          "section_a": "pa32",
+          "title_a": "",
+          "tag_a": "How was the reverse experiment (color's effect on shape) designed and conducted?",
+          "paper_b": "visualarrangements",
+          "section_b": "pa47",
+          "title_b": "",
+          "tag_b": "How was the expert survey designed and administered?",
+          "similarity": 0.459
         }
       ]
     },
@@ -3298,28 +1584,45 @@
       "members": [
         {
           "paper": "crowdsourcinggraphical",
-          "unit_id": "pa47",
+          "unit_id": "pa53",
           "title": "",
-          "tag": "What do the results imply about optimal height and gridline spacing?"
+          "tag": "How does chart height affect comparison accuracy?"
         },
         {
           "paper": "measuringseparability",
-          "unit_id": "pa40",
+          "unit_id": "pa52",
           "title": "",
-          "tag": "What do the modeled JND results imply about shape-color separability?"
+          "tag": "How does shape affect color perception?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa34",
+          "title": "",
+          "tag": "How does arrangement affect group-vs-element comparison focus?"
         }
       ],
       "links": [
         {
           "paper_a": "crowdsourcinggraphical",
-          "section_a": "pa47",
+          "section_a": "pa53",
           "title_a": "",
-          "tag_a": "What do the results imply about optimal height and gridline spacing?",
+          "tag_a": "How does chart height affect comparison accuracy?",
           "paper_b": "measuringseparability",
-          "section_b": "pa40",
+          "section_b": "pa52",
           "title_b": "",
-          "tag_b": "What do the modeled JND results imply about shape-color separability?",
-          "similarity": 0.465
+          "tag_b": "How does shape affect color perception?",
+          "similarity": 0.468
+        },
+        {
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa53",
+          "title_a": "",
+          "tag_a": "How does chart height affect comparison accuracy?",
+          "paper_b": "visualarrangements",
+          "section_b": "pa34",
+          "title_b": "",
+          "tag_b": "How does arrangement affect group-vs-element comparison focus?",
+          "similarity": 0.482
         }
       ]
     },
@@ -3328,28 +1631,45 @@
       "members": [
         {
           "paper": "illusionofcausality",
-          "unit_id": "pa5",
+          "unit_id": "pa1",
           "title": "",
-          "tag": "What prior work suggests visualization design shapes interpretation?"
+          "tag": "What did the experiments test and find about visualization's effect on causal inference?"
+        },
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa15",
+          "title": "",
+          "tag": "What did the pilot experiment find about plausibility ratings?"
         },
         {
           "paper": "seeingbelieve",
-          "unit_id": "pa3",
+          "unit_id": "pa2",
           "title": "",
-          "tag": "What prior example shows belief biasing visualization interpretation?"
+          "tag": "What did the experiments test and find about belief-driven bias?"
         }
       ],
       "links": [
         {
           "paper_a": "illusionofcausality",
-          "section_a": "pa5",
+          "section_a": "pa1",
           "title_a": "",
-          "tag_a": "What prior work suggests visualization design shapes interpretation?",
+          "tag_a": "What did the experiments test and find about visualization's effect on causal inference?",
           "paper_b": "seeingbelieve",
-          "section_b": "pa3",
+          "section_b": "pa2",
           "title_b": "",
-          "tag_b": "What prior example shows belief biasing visualization interpretation?",
-          "similarity": 0.488
+          "tag_b": "What did the experiments test and find about belief-driven bias?",
+          "similarity": 0.597
+        },
+        {
+          "paper_a": "illusionofcausality",
+          "section_a": "pa15",
+          "title_a": "",
+          "tag_a": "What did the pilot experiment find about plausibility ratings?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa2",
+          "title_b": "",
+          "tag_b": "What did the experiments test and find about belief-driven bias?",
+          "similarity": 0.5
         }
       ]
     },
@@ -3357,29 +1677,29 @@
       "group_id": "group_11",
       "members": [
         {
-          "paper": "illusionofcausality",
-          "unit_id": "pa18",
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa9",
           "title": "",
-          "tag": "How was variable grouping identified in responses?"
+          "tag": "How do interactions between visual variables and context affect perception?"
         },
         {
-          "paper": "seeingbelieve",
-          "unit_id": "pa33",
+          "paper": "illusionofcausality",
+          "unit_id": "pa79",
           "title": "",
-          "tag": "How was belief in variable relationships measured?"
+          "tag": "Why do visual marks and data trends affect causal perception?"
         }
       ],
       "links": [
         {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa18",
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa9",
           "title_a": "",
-          "tag_a": "How was variable grouping identified in responses?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa33",
+          "tag_a": "How do interactions between visual variables and context affect perception?",
+          "paper_b": "illusionofcausality",
+          "section_b": "pa79",
           "title_b": "",
-          "tag_b": "How was belief in variable relationships measured?",
-          "similarity": 0.47
+          "tag_b": "Why do visual marks and data trends affect causal perception?",
+          "similarity": 0.461
         }
       ]
     },
@@ -3387,29 +1707,29 @@
       "group_id": "group_12",
       "members": [
         {
-          "paper": "illusionofcausality",
-          "unit_id": "pa57",
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa12",
           "title": "",
-          "tag": "What statistical model was used to analyze causation ratings?"
+          "tag": "What prior perception study used MTurk, and what gap remains?"
         },
         {
-          "paper": "seeingbelieve",
-          "unit_id": "pa45",
+          "paper": "measuringseparability",
+          "unit_id": "pa8",
           "title": "",
-          "tag": "What statistical model was built to test belief's effect on bias?"
+          "tag": "What do scatterplot-specific perception studies show and what gap remains?"
         }
       ],
       "links": [
         {
-          "paper_a": "illusionofcausality",
-          "section_a": "pa57",
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa12",
           "title_a": "",
-          "tag_a": "What statistical model was used to analyze causation ratings?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa45",
+          "tag_a": "What prior perception study used MTurk, and what gap remains?",
+          "paper_b": "measuringseparability",
+          "section_b": "pa8",
           "title_b": "",
-          "tag_b": "What statistical model was built to test belief's effect on bias?",
-          "similarity": 0.498
+          "tag_b": "What do scatterplot-specific perception studies show and what gap remains?",
+          "similarity": 0.527
         }
       ]
     },
@@ -3417,29 +1737,29 @@
       "group_id": "group_13",
       "members": [
         {
-          "paper": "measuringseparability",
-          "unit_id": "pa55",
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa14",
           "title": "",
-          "tag": "How was Experiment Three's data collected and analyzed?"
+          "tag": "What were the three research goals of the study?"
         },
         {
-          "paper": "visualarrangements",
-          "unit_id": "pa45",
+          "paper": "measuringseparability",
+          "unit_id": "pa5",
           "title": "",
-          "tag": "How much data was collected overall?"
+          "tag": "What were the key findings and contributions of the study?"
         }
       ],
       "links": [
         {
-          "paper_a": "measuringseparability",
-          "section_a": "pa55",
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa14",
           "title_a": "",
-          "tag_a": "How was Experiment Three's data collected and analyzed?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa45",
+          "tag_a": "What were the three research goals of the study?",
+          "paper_b": "measuringseparability",
+          "section_b": "pa5",
           "title_b": "",
-          "tag_b": "How much data was collected overall?",
-          "similarity": 0.457
+          "tag_b": "What were the key findings and contributions of the study?",
+          "similarity": 0.51
         }
       ]
     },
@@ -3447,29 +1767,29 @@
       "group_id": "group_14",
       "members": [
         {
-          "paper": "measuringseparability",
-          "unit_id": "pa61",
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa32",
           "title": "",
-          "tag": "How was Experiment Four's procedure structured?"
+          "tag": "How were the rectangle/treemap stimuli constructed?"
         },
         {
-          "paper": "seeingbelieve",
-          "unit_id": "pa35",
+          "paper": "measuringseparability",
+          "unit_id": "pa37",
           "title": "",
-          "tag": "How did Experiment 1b's procedure differ as a control?"
+          "tag": "How were size differences between shapes constructed?"
         }
       ],
       "links": [
         {
-          "paper_a": "measuringseparability",
-          "section_a": "pa61",
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa32",
           "title_a": "",
-          "tag_a": "How was Experiment Four's procedure structured?",
-          "paper_b": "seeingbelieve",
-          "section_b": "pa35",
+          "tag_a": "How were the rectangle/treemap stimuli constructed?",
+          "paper_b": "measuringseparability",
+          "section_b": "pa37",
           "title_b": "",
-          "tag_b": "How did Experiment 1b's procedure differ as a control?",
-          "similarity": 0.481
+          "tag_b": "How were size differences between shapes constructed?",
+          "similarity": 0.454
         }
       ]
     },
@@ -3477,29 +1797,29 @@
       "group_id": "group_15",
       "members": [
         {
-          "paper": "measuringseparability",
-          "unit_id": "pa72",
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa46",
           "title": "",
-          "tag": "What is the broader significance of these findings for channel separability guidelines?"
+          "tag": "What is this leftover figure/axis label fragment?"
         },
         {
           "paper": "seeingbelieve",
-          "unit_id": "pa9",
+          "unit_id": "pa17",
           "title": "",
-          "tag": "What is the broader significance of these findings?"
+          "tag": "What is this figure/section divider labeling?"
         }
       ],
       "links": [
         {
-          "paper_a": "measuringseparability",
-          "section_a": "pa72",
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa46",
           "title_a": "",
-          "tag_a": "What is the broader significance of these findings for channel separability guidelines?",
+          "tag_a": "What is this leftover figure/axis label fragment?",
           "paper_b": "seeingbelieve",
-          "section_b": "pa9",
+          "section_b": "pa17",
           "title_b": "",
-          "tag_b": "What is the broader significance of these findings?",
-          "similarity": 0.703
+          "tag_b": "What is this figure/section divider labeling?",
+          "similarity": 0.49
         }
       ]
     },
@@ -3507,29 +1827,119 @@
       "group_id": "group_16",
       "members": [
         {
-          "paper": "seeingbelieve",
-          "unit_id": "pa19",
+          "paper": "crowdsourcinggraphical",
+          "unit_id": "pa60",
           "title": "",
-          "tag": "How do visual design choices affect correlation perception accuracy?"
+          "tag": "How much did subjects overlap across separate experiments?"
         },
         {
-          "paper": "visualarrangements",
-          "unit_id": "pa6",
+          "paper": "seeingbelieve",
+          "unit_id": "pa31",
           "title": "",
-          "tag": "How do design choices like chart type affect data perception?"
+          "tag": "When and how did belief ratings differ across experiments?"
         }
       ],
       "links": [
         {
-          "paper_a": "seeingbelieve",
-          "section_a": "pa19",
+          "paper_a": "crowdsourcinggraphical",
+          "section_a": "pa60",
           "title_a": "",
-          "tag_a": "How do visual design choices affect correlation perception accuracy?",
-          "paper_b": "visualarrangements",
-          "section_b": "pa6",
+          "tag_a": "How much did subjects overlap across separate experiments?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa31",
           "title_b": "",
-          "tag_b": "How do design choices like chart type affect data perception?",
-          "similarity": 0.564
+          "tag_b": "When and how did belief ratings differ across experiments?",
+          "similarity": 0.456
+        }
+      ]
+    },
+    {
+      "group_id": "group_17",
+      "members": [
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa52",
+          "title": "",
+          "tag": "How did participants misapply the correlation-causation phrase?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa25",
+          "title": "",
+          "tag": "How did participants estimate the baseline scatterplots?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "illusionofcausality",
+          "section_a": "pa52",
+          "title_a": "",
+          "tag_a": "How did participants misapply the correlation-causation phrase?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa25",
+          "title_b": "",
+          "tag_b": "How did participants estimate the baseline scatterplots?",
+          "similarity": 0.451
+        }
+      ]
+    },
+    {
+      "group_id": "group_18",
+      "members": [
+        {
+          "paper": "illusionofcausality",
+          "unit_id": "pa73",
+          "title": "",
+          "tag": "How were participants prepared to understand unconventional charts?"
+        },
+        {
+          "paper": "seeingbelieve",
+          "unit_id": "pa23",
+          "title": "",
+          "tag": "How were participants trained to estimate correlation?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "illusionofcausality",
+          "section_a": "pa73",
+          "title_a": "",
+          "tag_a": "How were participants prepared to understand unconventional charts?",
+          "paper_b": "seeingbelieve",
+          "section_b": "pa23",
+          "title_b": "",
+          "tag_b": "How were participants trained to estimate correlation?",
+          "similarity": 0.537
+        }
+      ]
+    },
+    {
+      "group_id": "group_19",
+      "members": [
+        {
+          "paper": "measuringseparability",
+          "unit_id": "pa11",
+          "title": "",
+          "tag": "What experiments will be run to address this gap?"
+        },
+        {
+          "paper": "visualarrangements",
+          "unit_id": "pa5",
+          "title": "",
+          "tag": "What approach does the paper take to address this gap?"
+        }
+      ],
+      "links": [
+        {
+          "paper_a": "measuringseparability",
+          "section_a": "pa11",
+          "title_a": "",
+          "tag_a": "What experiments will be run to address this gap?",
+          "paper_b": "visualarrangements",
+          "section_b": "pa5",
+          "title_b": "",
+          "tag_b": "What approach does the paper take to address this gap?",
+          "similarity": 0.48
         }
       ]
     }

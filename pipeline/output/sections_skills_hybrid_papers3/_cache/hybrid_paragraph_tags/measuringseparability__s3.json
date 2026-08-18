@@ -1,12 +1,6 @@
 {
-  "pa7": "What gap motivates studying shape's interaction with other channels?",
-  "pa8": "What does graphical perception research generally study?",
-  "pa9": "What prior work studied shape as a visual channel?",
-  "pa10": "What prior work studied color as a visual channel?",
-  "pa11": "What prior work studied size as a visual channel?",
-  "pa12": "What prior scatterplot-specific graphical perception studies exist, and what gap remains?",
-  "pa13": "How does vision science define integral/separable channels?",
-  "pa14": "What has psychology research found about channel interdependence?",
-  "pa15": "How has visualization research treated integral/separable channels so far?",
-  "pa16": "What recent work quantified channel interactions, and how does this study differ?"
+  "pa6": "What has graphical perception research shown about shape and color channels?",
+  "pa7": "What does prior work say about size as an encoding channel?",
+  "pa8": "What do scatterplot-specific perception studies show and what gap remains?",
+  "pa9": "What does vision science say about integral/separable channel interactions and what remains unstudied?"
 }

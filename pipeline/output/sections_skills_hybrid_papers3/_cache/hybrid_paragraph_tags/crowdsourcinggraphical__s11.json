@@ -1,9 +1,10 @@
 {
-  "pa61": "What did the crowdsourced studies find and confirm?",
-  "pa62": "What do results reveal about running studies on Mechanical Turk?",
-  "pa63": "What benefits does crowdsourcing offer over lab experiments?",
-  "pa64": "How can crowdsourcing be combined with other methods?",
-  "pa65": "What tools are needed to improve crowdsourced experimentation?",
-  "pa66": "How can integrated tools support replication and dissemination?",
-  "pa67": "What limitations does crowdsourcing still have?"
+  "pa73": "Did crowdsourced results replicate prior lab findings?",
+  "pa74": "What pitfalls and effects of reward/naming were observed?",
+  "pa75": "What new visualization design insights and best practices emerged?",
+  "pa76": "How much cost savings did crowdsourcing provide?",
+  "pa77": "What are the main benefits of crowdsourcing over lab studies?",
+  "pa78": "What non-cost advantages does crowdsourcing offer?",
+  "pa79": "How can crowdsourcing complement traditional lab methods?",
+  "pa80": "What future tools and limitations should be addressed?"
 }

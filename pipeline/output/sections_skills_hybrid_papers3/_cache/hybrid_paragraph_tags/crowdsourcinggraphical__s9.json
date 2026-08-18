@@ -1,10 +1,11 @@
 {
-  "pa40": "What design variable motivates this experiment?",
-  "pa41": "Why is chart size hard to study via crowdsourcing?",
-  "pa42": "What prior work inspired this study and what gap remains?",
-  "pa43": "What task did subjects perform?",
-  "pa44": "What was the experimental design and stimuli setup?",
-  "pa45": "How was error measured and how were the two runs configured?",
-  "pa46": "What statistical results did the ANOVA reveal?",
-  "pa47": "What do the results imply about optimal height and gridline spacing?"
+  "pa47": "Why study chart size via crowdsourcing despite uncontrolled displays?",
+  "pa48": "What does the OS-grouped figure show about monitor gamma effects?",
+  "pa49": "What was the factorial design for the alpha contrast experiment?",
+  "pa50": "What motivates studying chart height and gridline spacing effects?",
+  "pa51": "What data was collected and how many responses analyzed?",
+  "pa52": "What did the alpha contrast statistical analysis reveal?",
+  "pa53": "How does chart height affect comparison accuracy?",
+  "pa54": "How does gridline spacing affect accuracy?",
+  "pa55": "What stimuli sizes are depicted in the figure?"
 }

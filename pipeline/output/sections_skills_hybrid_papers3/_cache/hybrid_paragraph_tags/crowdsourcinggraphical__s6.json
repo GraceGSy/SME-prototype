@@ -1,10 +1,14 @@
 {
-  "pa17": "Why replicate this particular classic study?",
-  "pa18": "What visual encoding types were tested?",
-  "pa19": "How were the charts and trials designed and administered?",
-  "pa20": "How were subjects qualified to ensure task comprehension?",
-  "pa21": "How was the task structure adapted for Mechanical Turk?",
-  "pa22": "How do the crowdsourced accuracy results compare to the original?",
-  "pa23": "How consistent is the ranking of encoding types across studies?",
-  "pa24": "What did the new angle and area judgment types reveal?"
+  "pa18": "Why replicate this particular classic study?",
+  "pa19": "How was the task structure adapted for Mechanical Turk?",
+  "pa20": "What visual encodings/judgment types were tested?",
+  "pa21": "Do the crowdsourced results match the original findings?",
+  "pa22": "What were the experimental stimuli and procedure details?",
+  "pa23": "How do accuracy rankings compare between original and crowdsourced studies?",
+  "pa24": "How were subjects qualified to ensure understanding of the task?",
+  "pa25": "What new judgment types were added and why?",
+  "pa26": "What does the error chart show?",
+  "pa27": "What does the comparison figure show?",
+  "pa28": "Do the new encoding results match psychophysical theory?",
+  "pa29": "What are the numeric ratio labels in the figure?"
 }

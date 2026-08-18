@@ -1,10 +1,7 @@
 {
-  "pa58": "Why run a second experiment with beliefs measured first?",
-  "pa59": "What was the procedure/design of Experiment 2?",
-  "pa60": "How was sample size determined and who participated?",
-  "pa61": "How accurate were estimates on unlabeled scatterplots?",
-  "pa62": "How did estimates differ with vs without real-world labels?",
-  "pa63": "How strong were participants' prior beliefs about each topic?",
-  "pa64": "What statistical model tested belief effects on estimation bias?",
-  "pa65": "What did the model reveal about beliefs' effect on bias?"
+  "pa57": "What is Experiment 2's design, sample, and baseline estimation accuracy?",
+  "pa58": "How did adding real-world labels shift correlation estimates, and what beliefs did participants hold?",
+  "pa59": "Do topic or condition factors also affect estimates?",
+  "pa60": "Do demographic variables influence the belief effect?",
+  "pa61": "Where can additional analysis details be found?"
 }

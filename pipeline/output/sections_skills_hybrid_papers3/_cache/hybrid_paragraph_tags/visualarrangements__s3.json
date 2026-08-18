@@ -1,13 +1,11 @@
 {
-  "pa6": "How do design choices like chart type affect data perception?",
-  "pa7": "What spatial arrangements exist for showing multiple visualizations?",
-  "pa8": "What hypothesis follows from spatial alignment effects on comparison?",
-  "pa9": "What cognitive limitations affect visual comparison?",
-  "pa10": "How has prior work categorized visualization designs for comparison?",
-  "pa11": "What do studies say about comprehension of different comparison arrangements?",
-  "pa12": "What hypothesis follows from grouping by spatial proximity?",
-  "pa13": "How does linguistics describe comparative language and gradable concepts?",
-  "pa14": "What gap exists in linking comparative language semantics to visualization design?",
-  "pa15": "What gap exists in visualization recommendation systems regarding comparison?",
-  "pa16": "What gap exists in natural language interfaces for handling comparisons?"
+  "pa7": "How do chart design choices shape viewer perception and comparisons?",
+  "pa8": "What spatial arrangements exist for multi-view comparisons and how might they differ?",
+  "pa9": "What hypothesis follows about alignment and comparison behavior?",
+  "pa10": "What does cognitive research say about the difficulty of visual comparison?",
+  "pa11": "How has prior work categorized visualization designs for supporting comparison?",
+  "pa12": "What have empirical studies found about how chart format affects comparison comprehension?",
+  "pa13": "What hypothesis follows about grouping and comparison, and how do linguistics treat gradable comparison?",
+  "pa14": "Why does ambiguity in comparative semantics matter for visualization, and what gap remains?",
+  "pa15": "What do visualization recommendation and NL interface systems currently lack regarding comparison support?"
 }

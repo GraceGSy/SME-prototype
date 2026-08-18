@@ -1,10 +1,8 @@
 {
-  "pa2": "What motivating scenario illustrates top-down bias in data analysis?",
-  "pa3": "What prior example shows belief biasing visualization interpretation?",
-  "pa4": "What study shows lingering top-down bias even after correction?",
-  "pa5": "How does this work extend prior research on top-down bias?",
-  "pa6": "What hypotheses does the study propose about belief and correlation estimation?",
-  "pa7": "What theoretical distinction is drawn about where belief acts in processing?",
-  "pa8": "What experiments were run and what did they find?",
-  "pa9": "What is the broader significance of these findings?"
+  "pa3": "What motivating example shows top-down bias in data interpretation?",
+  "pa4": "How does political belief bias interpretation of a data visualization?",
+  "pa5": "How does prior belief persist in perceived salience despite instructions to ignore it?",
+  "pa6": "How does this study extend prior work on top-down bias in visualization?",
+  "pa7": "What is the study's hypothesis about belief and correlation estimation?",
+  "pa8": "What experiments were run and what did they find?"
 }

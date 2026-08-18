@@ -1,9 +1,12 @@
 {
-  "pa51": "What alternative explanation needs to be ruled out?",
-  "pa52": "What was the experimental procedure/design?",
-  "pa53": "Who were the participants in this experiment?",
-  "pa54": "What were the raw correlation estimates before/after the delay?",
-  "pa55": "How is this experiment's data compared to Experiment 1a to isolate the labeling effect?",
-  "pa56": "What did the statistical comparison reveal about time vs. labels?",
-  "pa57": "What follow-up question motivates the next experiment?"
+  "pa47": "What is the purpose and method of this control experiment?",
+  "pa48": "How does belief strength relate to over/underestimation, shown visually?",
+  "pa49": "Who were the participants in this control study?",
+  "pa50": "What does the figure show about belief-driven estimation across variable pairs?",
+  "pa51": "What were the raw correlation estimates across the two phases?",
+  "pa52": "What comparison tests whether time or labels drove the difference?",
+  "pa53": "What statistical results were found in this comparison?",
+  "pa54": "What is the paper's title (header artifact)?",
+  "pa55": "What conclusion is drawn about time vs. belief as the cause?",
+  "pa56": "Why is a follow-up experiment on prior beliefs needed?"
 }

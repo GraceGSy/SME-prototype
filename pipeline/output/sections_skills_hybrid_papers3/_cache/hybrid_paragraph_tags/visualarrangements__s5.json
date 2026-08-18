@@ -1,14 +1,10 @@
 {
-  "pa18": "Why is eliciting viewer takeaways in natural language challenging?",
-  "pa19": "What is lexical ambiguity and how does it appear here?",
-  "pa20": "What is syntactic ambiguity and how does it appear here?",
-  "pa21": "What is semantic ambiguity and how does it appear here?",
-  "pa22": "How did the researchers resolve ambiguity without automation?",
-  "pa23": "What went wrong in the first pilot attempt?",
-  "pa24": "What was tried in the second pilot attempt and why did it fail?",
-  "pa25": "What target-referent-relation approach was tried third?",
-  "pa26": "How did piloting reveal problems with the target/referent/relation method?",
-  "pa27": "Why did the mathematical-expression approach fail to scale?",
-  "pa28": "What final method succeeded, and what was its cost?",
-  "pa29": "What lessons should future researchers take from this process?"
+  "pa17": "Why is eliciting viewer takeaways in natural language challenging?",
+  "pa18": "What is lexical ambiguity in participant descriptions?",
+  "pa19": "What is syntactic ambiguity in participant descriptions?",
+  "pa20": "What is semantic ambiguity in participant descriptions?",
+  "pa21": "How did the researchers manually resolve ambiguity, and what did early attempts fail?",
+  "pa22": "Why did the multiple-choice attempt to capture comparisons fail?",
+  "pa23": "What target-referent-relation framework was tried next?",
+  "pa24": "What further pilot attempts failed and what final method/lessons emerged?"
 }

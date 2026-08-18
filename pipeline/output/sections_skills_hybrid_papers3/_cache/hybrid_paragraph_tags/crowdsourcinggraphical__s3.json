@@ -1,7 +1,10 @@
 {
   "pa5": "What is graphical perception and why does it matter?",
-  "pa6": "What foundational studies ranked visual variables' effectiveness?",
-  "pa7": "What specific experimental studies tested graphical perception tasks?",
-  "pa8": "How do interacting variables and context complicate perception?",
-  "pa9": "Why pursue crowdsourced, web-based validation of these findings?"
+  "pa6": "How does Mechanical Turk work as an experimental platform?",
+  "pa7": "What prior research studied ranking effectiveness of visual variables?",
+  "pa8": "How can MTurk be used to implement formal experiment designs?",
+  "pa9": "How do interactions between visual variables and context affect perception?",
+  "pa10": "What has prior work found about MTurk's reliability for user studies?",
+  "pa11": "What is the goal of this study given these considerations?",
+  "pa12": "What prior perception study used MTurk, and what gap remains?"
 }

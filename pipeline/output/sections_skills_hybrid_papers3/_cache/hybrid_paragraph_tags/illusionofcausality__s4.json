@@ -1,11 +1,12 @@
 {
-  "pa12": "How were the candidate variable pairs generated?",
-  "pa13": "How was the pilot survey study designed?",
-  "pa14": "Which four contexts were selected based on pilot ratings?",
-  "pa15": "How was the coding taxonomy for responses developed?",
-  "pa16": "How were causal vs correlational statements distinguished?",
-  "pa17": "How was mention of third variables coded?",
-  "pa18": "How was variable grouping identified in responses?",
-  "pa19": "How were direct observation responses defined?",
-  "pa20": "How were inconclusive responses defined?"
+  "pa11": "What was the purpose and setup of the pilot experiment?",
+  "pa12": "How was the pilot survey on variable-pair plausibility conducted?",
+  "pa13": "What two task types are used to study people's causal interpretations?",
+  "pa14": "What examples and data illustrate the selected variable-pair statements?",
+  "pa15": "What did the pilot experiment find about plausibility ratings?",
+  "pa16": "How were causal vs correlational verbal responses coded?",
+  "pa17": "How was variable-grouping behavior identified in responses?",
+  "pa18": "How were direct observation responses defined in the coding scheme?",
+  "pa19": "How were inconclusive responses categorized?",
+  "pa20": "What do the pilot results show visually about selected contexts?"
 }

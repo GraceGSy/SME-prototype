@@ -1,12 +1,11 @@
 {
-  "pa10": "What cognitive/perceptual biases affect data interpretation?",
-  "pa11": "How does prior knowledge bias basic perceptual judgments?",
-  "pa12": "How do beliefs bias perception of visualized data?",
-  "pa13": "Can beliefs bias low-level visual properties like correlation perception?",
-  "pa14": "How does failed belief updating cause biased data interpretation?",
-  "pa15": "What visualization techniques help correct belief updating?",
-  "pa16": "How are visual analytic tasks categorized in taxonomies?",
-  "pa17": "How well do people perceive correlation in scatterplots?",
-  "pa18": "What perceptual cues underlie correlation judgments?",
-  "pa19": "How do visual design choices affect correlation perception accuracy?"
+  "pa9": "How do perceptual and cognitive biases affect data interpretation generally?",
+  "pa10": "How do beliefs shape what patterns people perceive in visualizations?",
+  "pa11": "Can low-level visual properties like correlation perception be biased by beliefs?",
+  "pa12": "What visualization techniques help or hinder proper belief updating?",
+  "pa13": "How well-studied and accurate is correlation perception in scatterplots?",
+  "pa14": "What design factors and perceptual shortcuts affect correlation judgments?",
+  "pa15": "What is the paper's title?",
+  "pa16": "Why is scatterplot correlation estimation a good test bed for belief bias?",
+  "pa17": "What is this figure/section divider labeling?"
 }

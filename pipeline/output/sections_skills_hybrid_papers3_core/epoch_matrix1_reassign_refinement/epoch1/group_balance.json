@@ -1,98 +1,116 @@
 [
   {
-    "group_id": "group_2",
-    "overarching_question": "Who were the study participants and how were they recruited/screened?",
-    "group_balance": 100.0,
-    "member_count": 39
-  },
-  {
-    "group_id": "group_4",
-    "overarching_question": "How do visualization design choices shape viewers' perception and interpretation of data?",
-    "group_balance": 100.0,
-    "member_count": 39
-  },
-  {
-    "group_id": "group_6",
-    "overarching_question": "How were experimental stimuli and tasks designed for visualization perception studies?",
-    "group_balance": 100.0,
-    "member_count": 78
-  },
-  {
-    "group_id": "group_8",
-    "overarching_question": "How do visual encodings and design choices affect graphical perception?",
-    "group_balance": 100.0,
-    "member_count": 45
-  },
-  {
-    "group_id": "group_13",
-    "overarching_question": "What do crowdsourced experiments reveal about visualization design's perceptual and cognitive effects?",
-    "group_balance": 100.0,
-    "member_count": 54
-  },
-  {
-    "group_id": "group_14",
-    "overarching_question": "What experimental design and stimuli were used in the visualization perception study?",
-    "group_balance": 100.0,
-    "member_count": 12
-  },
-  {
-    "group_id": "group_15",
-    "overarching_question": "What do study findings imply for visualization design guidelines and practice?",
-    "group_balance": 100.0,
-    "member_count": 22
-  },
-  {
-    "group_id": "group_7",
-    "overarching_question": "How do visual encoding and design choices affect perceptual accuracy in data visualizations?",
-    "group_balance": 80.0,
-    "member_count": 22
-  },
-  {
-    "group_id": "group_9",
-    "overarching_question": "How do visualization design choices affect viewers' perception and interpretation of data?",
-    "group_balance": 80.0,
-    "member_count": 24
-  },
-  {
     "group_id": "group_1",
-    "overarching_question": "How were stimuli and tasks designed in visualization perception experiments?",
-    "group_balance": 60.0,
-    "member_count": 4
+    "overarching_question": "What experimental design and stimuli were used to test the visualization hypotheses?",
+    "group_balance": 100.0,
+    "member_count": 23
   },
   {
-    "group_id": "group_11",
-    "overarching_question": "What experimental design and analysis methods were used to study graphical perception?",
-    "group_balance": 60.0,
-    "member_count": 24
-  },
-  {
-    "group_id": "group_12",
-    "overarching_question": "What statistical methods were used to analyze experimental data and results?",
-    "group_balance": 60.0,
-    "member_count": 7
+    "group_id": "group_2",
+    "overarching_question": "What were the participant recruitment and study design details in these crowdsourced experiments?",
+    "group_balance": 100.0,
+    "member_count": 25
   },
   {
     "group_id": "group_3",
-    "overarching_question": "How do visualization design choices shape viewers' perception and interpretation of data?",
-    "group_balance": 40.0,
-    "member_count": 4
+    "overarching_question": "What statistical methods were used to analyze the experimental results?",
+    "group_balance": 100.0,
+    "member_count": 14
   },
   {
     "group_id": "group_5",
+    "overarching_question": "What do experimental/study results reveal about visualization perception and interpretation?",
+    "group_balance": 100.0,
+    "member_count": 41
+  },
+  {
+    "group_id": "group_8",
+    "overarching_question": "What experimental stimuli and procedures were used to study visualization perception?",
+    "group_balance": 100.0,
+    "member_count": 19
+  },
+  {
+    "group_id": "group_9",
+    "overarching_question": "How do chart design and encoding choices affect perceptual judgment and interpretation of data?",
+    "group_balance": 100.0,
+    "member_count": 63
+  },
+  {
+    "group_id": "group_12",
+    "overarching_question": "How does visualization design influence viewers' perception and interpretation of data?",
+    "group_balance": 100.0,
+    "member_count": 17
+  },
+  {
+    "group_id": "group_14",
+    "overarching_question": "How were experimental stimuli and methods designed to test visualization perception?",
+    "group_balance": 100.0,
+    "member_count": 20
+  },
+  {
+    "group_id": "group_6",
+    "overarching_question": "How do visual encoding and design choices shape viewers' perception and interpretation of data?",
+    "group_balance": 80.0,
+    "member_count": 4
+  },
+  {
+    "group_id": "group_13",
     "overarching_question": "How do visualization design choices shape viewers' perception and interpretation of data?",
-    "group_balance": 40.0,
-    "member_count": 8
+    "group_balance": 80.0,
+    "member_count": 10
+  },
+  {
+    "group_id": "group_15",
+    "overarching_question": "What empirical evidence supports the study's visualization perception findings?",
+    "group_balance": 80.0,
+    "member_count": 11
+  },
+  {
+    "group_id": "group_18",
+    "overarching_question": "How was the study procedure designed to ensure valid, comparable participant responses?",
+    "group_balance": 80.0,
+    "member_count": 14
+  },
+  {
+    "group_id": "group_19",
+    "overarching_question": "How do visualization design choices shape human perception and interpretation of data?",
+    "group_balance": 80.0,
+    "member_count": 13
+  },
+  {
+    "group_id": "group_7",
+    "overarching_question": "How does visualization design affect perception, interpretation, and cognitive judgments of data?",
+    "group_balance": 60.0,
+    "member_count": 6
   },
   {
     "group_id": "group_16",
-    "overarching_question": "How do visualization design choices affect viewers' perception and interpretation of data?",
+    "overarching_question": "What experimental design and procedures were used to test graphical perception?",
+    "group_balance": 60.0,
+    "member_count": 3
+  },
+  {
+    "group_id": "group_10",
+    "overarching_question": "How do contextual and perceptual factors bias interpretation of visualized data?",
+    "group_balance": 40.0,
+    "member_count": 45
+  },
+  {
+    "group_id": "group_11",
+    "overarching_question": "How do visualization design choices and encoding interactions shape data perception and interpretation?",
     "group_balance": 40.0,
     "member_count": 4
   },
   {
-    "group_id": "group_10",
-    "overarching_question": "How do visualization design choices influence viewers' perception and interpretation of data?",
+    "group_id": "group_17",
+    "overarching_question": "How do visualization design choices shape viewers' perception and interpretation of data?",
+    "group_balance": 40.0,
+    "member_count": 25
+  },
+  {
+    "group_id": "group_4",
+    "overarching_question": "How do visualization design choices affect viewers' perception and interpretation of data?",
     "group_balance": 20.0,
-    "member_count": 6
+    "member_count": 2
   }
 ]

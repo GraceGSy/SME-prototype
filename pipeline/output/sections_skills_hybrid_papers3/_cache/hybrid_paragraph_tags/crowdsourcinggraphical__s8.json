@@ -1,12 +1,10 @@
 {
-  "pa30": "Why replicate this alpha contrast experiment?",
-  "pa31": "What are the goals of this crowdsourced replication?",
-  "pa32": "What tasks were subjects asked to perform?",
-  "pa33": "How was the interactive task technically implemented?",
-  "pa34": "How was subject qualification and display info handled?",
-  "pa35": "What experimental design and stimuli were used?",
-  "pa36": "What data was recorded and how was it deployed?",
-  "pa37": "How many responses were collected and filtered?",
-  "pa38": "How do the results compare to the original study?",
-  "pa39": "How did display configuration affect alpha judgments?"
+  "pa39": "How was the interactive task technically implemented for MTurk?",
+  "pa40": "What prior study and task is being replicated, and why?",
+  "pa41": "How was subject qualification and display gamma estimated?",
+  "pa42": "What are the goals of this replication experiment?",
+  "pa43": "Do the crowdsourced results match the original lab findings?",
+  "pa44": "How do resolution and color depth correlate with chosen alpha?",
+  "pa45": "Does operating system (gamma) significantly affect chosen alpha?",
+  "pa46": "What is this leftover figure/axis label fragment?"
 }

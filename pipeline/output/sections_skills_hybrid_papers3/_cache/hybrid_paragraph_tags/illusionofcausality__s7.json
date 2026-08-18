@@ -1,9 +1,5 @@
 {
-  "pa68": "Why compare non-aggregated visualizations across chart types?",
-  "pa69": "How were non-aggregated bar, line, and scatter plots constructed?",
-  "pa70": "How were participants prepared for unfamiliar visualization formats?",
-  "pa71": "What was the experimental design and sample size?",
-  "pa72": "How did encoding type affect perceived causality?",
-  "pa73": "How did encoding type affect perceived correlation?",
-  "pa74": "Does aggregation itself affect perceived causality, controlling for encoding?"
+  "pa72": "Why create non-aggregated versions of bar, line, and scatter plots?",
+  "pa73": "How were participants prepared to understand unconventional charts?",
+  "pa74": "What did the analysis find about encoding type and aggregation effects?"
 }

@@ -1,7 +1,4 @@
 {
-  "pa67": "What does this section cover?",
-  "pa68": "How does data/chart simplicity limit generalizability, and what future work addresses it?",
-  "pa69": "Why couldn't analysis be automated, and how could future methods improve data collection?",
-  "pa70": "Does arrangement affect comparison accuracy, not just intuitive preference?",
-  "pa71": "What other factors beyond arrangement could improve comparison affordances?"
+  "pa51": "What scope limitation exists regarding chart types and data complexity studied?",
+  "pa52": "What methodological limitations and unresolved questions remain for future work?"
 }

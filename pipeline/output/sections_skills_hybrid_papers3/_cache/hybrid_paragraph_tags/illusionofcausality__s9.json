@@ -1,11 +1,7 @@
 {
-  "pa76": "Why not offer concrete design guidelines yet?",
-  "pa77": "Why do two-bar bar graphs invite causal reading?",
-  "pa78": "How does context/aggregation level need further testing?",
-  "pa79": "Do results extend to complex or contextual visualizations?",
-  "pa80": "Why might visual encoding type affect causal perception?",
-  "pa81": "Does correlation strength/direction matter for causal perception?",
-  "pa82": "How could qualitative response coding be improved?",
-  "pa83": "How might statement wording and order affect ratings?",
-  "pa84": "What other techniques could reduce causal misinterpretation?"
+  "pa76": "Why can't firm design guidelines be given yet?",
+  "pa77": "Why do two-bar bar graphs especially evoke causal inference?",
+  "pa78": "How should context, aggregation, and complexity be studied further?",
+  "pa79": "Why do visual marks and data trends affect causal perception?",
+  "pa80": "How can measurement methods and statement design be improved?"
 }

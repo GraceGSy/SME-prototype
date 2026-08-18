@@ -1,7 +1,7 @@
 {
-  "pa2": "What real-world example shows people wrongly inferring causation?",
-  "pa3": "Why does confusing correlation with causation matter broadly?",
-  "pa4": "Why is this problem hard, and what question does the paper ask?",
-  "pa5": "What prior work suggests visualization design shapes interpretation?",
-  "pa6": "What do the three experiments contribute?"
+  "pa2": "What example motivates the concern about visualization and causal inference?",
+  "pa3": "Why is the causal conclusion in the example flawed?",
+  "pa4": "Why does confusing correlation with causation matter broadly?",
+  "pa5": "What research question does this paper investigate?",
+  "pa6": "What prior work motivates this, and what does this paper contribute?"
 }

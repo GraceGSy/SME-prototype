@@ -1,7 +1,9 @@
 {
-  "pa17": "What prior work motivates modeling shape-color-size interactions?",
-  "pa18": "What experimental design, shapes, and sizes were tested?",
-  "pa19": "H1: Will denser shapes make colors more discriminable?",
-  "pa20": "H2: Will denser shapes appear larger?",
-  "pa21": "H3: Is interference between shape, color, and size asymmetric?"
+  "pa10": "What gap exists in prior research on channel separability?",
+  "pa11": "What experiments will be run to address this gap?",
+  "pa12": "What experimental design and stimuli were used to test hypotheses?",
+  "pa13": "What is the rationale behind the shape-density-color hypothesis (H1)?",
+  "pa14": "What is the second hypothesis about shape and size perception?",
+  "pa15": "What mechanisms could explain shape affecting perceived size?",
+  "pa16": "Why should shape perception be robust to color/size (H3 rationale)?"
 }

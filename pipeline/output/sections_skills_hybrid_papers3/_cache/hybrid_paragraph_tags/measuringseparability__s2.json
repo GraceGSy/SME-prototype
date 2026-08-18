@@ -1,7 +1,6 @@
 {
-  "pa2": "What is the background problem of channel separability in visualization?",
-  "pa3": "What does this paper aim to measure and why does it matter?",
-  "pa4": "What experimental approach and shape categories were used?",
-  "pa5": "What did the study find about shape's effect on size and color?",
-  "pa6": "What are the paper's main contributions?"
+  "pa2": "Why might separable visual channels actually interfere with each other?",
+  "pa3": "What is the paper's goal and approach to studying channel interference?",
+  "pa4": "What experimental methods and stimuli were used?",
+  "pa5": "What were the key findings and contributions of the study?"
 }
