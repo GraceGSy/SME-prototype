@@ -2,23 +2,30 @@
 
 Extracts a hierarchical structure (sections → paragraphs) from a set of academic
 papers, tags each unit with a free-text question describing its role, cross-matches
-those tags between papers, groups the resulting links, and computes two ranking
-matrices comparing every paragraph against the resulting set of candidate research
-questions.
+those tags between papers, groups the resulting links, and iteratively refines those
+groups (the "epoch" track) into a small set of cross-paper research-question clusters.
 
-This README covers the pipeline from raw PDFs through generating those two ranking
-matrices, plus the iterative paragraph-group refinement and group-balance metric
-built on top of them, and a separate epoch-based refinement track built directly on
-the bidirectional-link groups. (Further, more exploratory steps beyond that are in
-the codebase too — balanced MILP reassignment, earlier epoch-refinement variants,
-etc. — not documented here.)
+**This README assumes you already have each paper split into sections and
+paragraphs** — i.e. you have a `stage-0-pseudo-section-files/` folder like
+`SME/papers/papers1/stage-0-pseudo-section-files/` or
+`SME/papers/papers3/stage-0-pseudo-section-files/`, one JSON file per paper, each
+holding that paper's sections in reading order with each section's paragraphs
+already split out (see "Starting input" below for the exact shape). Getting from a
+raw PDF to that shape isn't covered by the steps below — the older, raw-PDF-driven
+scripts (`extract_sections.py`, `attach_section_text.py`, `extract_fine_grained.py`)
+still exist and still work if you need that starting point instead, but the
+paragraph splits they produce are lower quality than what a dedicated Claude Skill
+run per paper gives you, which is why this pipeline now assumes the latter.
 
 Loosely inspired by Gentner's Structure-Mapping Engine (structural alignment between
 papers), but implemented as a much simpler tag-matching pipeline rather than a full
 entity/proposition graph aligner. (An earlier, more literal SME-style attempt lives in
 `schema.py` / `extract_graph.py` / `align_graphs.py` / `align_trace.py` / `cli.py` and
 `viz/index.html` / `viz/align_viewer.html` — **not used by the current pipeline**,
-kept only for reference.)
+kept only for reference. The iteration-based paragraph-group refinement track —
+`summarize_groups.py`, `refine_paragraph_groups.py`, `compute_ranking_matrices.py`,
+`compute_group_balance.py` — is also still in the codebase but not needed to reach
+epoch results and isn't covered here either.)
 
 ## Setup
 
@@ -36,199 +43,166 @@ export ANTHROPIC_API_KEY=sk-ant-...
 no `.env` loading in the code, so `export` it in your shell, or `source` a `.env` file
 yourself before running.)
 
-Optionally override the model used for extraction/summarization calls (defaults to
-`claude-sonnet-5`):
+Optionally override the model used for extraction/tagging/summarization calls
+(defaults to `claude-sonnet-5`):
 
 ```bash
 export SME_EXTRACT_MODEL=claude-sonnet-5
 ```
 
-## Input papers
+Every script below reads its output/input directory from `SME_OUTPUT_DIR` (defaults
+to `output/sections` next to the scripts if unset) — set it once per run and every
+step in that run reads and writes the same directory:
 
-The pipeline expects PDFs in `SME/papers/`. Three example papers are checked in
-there already:
-
-```
-SME/papers/examplore_chi18.pdf
-SME/papers/mesotext.pdf
-SME/papers/paralib_uist22.pdf
+```bash
+export SME_OUTPUT_DIR="$(pwd)/output/my_paper_set"
 ```
 
-To use your own papers, drop PDFs into `SME/papers/` and either edit each script's
-`DEFAULT_PAPERS` list or pass paths explicitly, e.g. `python3 extract_sections.py
-my_paper.pdf`. The paper's filename stem (minus `.pdf`) becomes its `paper_id`
-throughout the pipeline.
+## Starting input: `stage-0-pseudo-section-files/`
+
+One JSON file per paper, named `<paper_id>-sections-with-paragraphs-and-questions-no-appendices.json`,
+each a JSON array of that paper's sections **in reading order**, appendices already
+excluded:
+
+```json
+[
+  {
+    "section_name": "Introduction",
+    "section_number": "1",
+    "paragraphs": [
+      {"paragraph_number": 1, "text": "..."},
+      {"paragraph_number": 2, "text": "..."}
+    ],
+    "question_this_section_answers": "..."
+  },
+  ...
+]
+```
+
+`section_number` is `null` for unnumbered sections (Abstract, Acknowledgments,
+References, ...). Despite its name, `question_this_section_answers` is **not** used
+by any step below — tagging is done fresh, later, from the paragraph text itself (see
+Steps 2–3). The paper's `paper_id` is derived from the filename (everything before
+`-sections-with-paragraphs-and-questions-no-appendices.json`).
 
 ## Running the pipeline
 
-Run these **in order** from `SME/pipeline/`. Each step reads the previous step's
-output from `output/sections/`, so later steps will silently do nothing useful (or
-crash) if run out of order. Every output file below lives in `output/sections/`.
+Run these **in order**. Every output file below lives in `$SME_OUTPUT_DIR`.
 
 ```bash
-# Step 1 -- script: extract_sections.py
-# Extract each paper's high-level sections + a free-text role tag per section.
-# One Claude call per paper.
-# Output: <paper_id>.json (sections only, text not yet filled in) + manifest.json
-python3 extract_sections.py
+# Step 1 -- script: build_hybrid_from_pseudo_sections.py
+# Converts every stage-0 pseudo-section file in SOURCE_DIR into the
+# pipeline's own SectionedPaper shape: sections get a fresh "s1", "s2", ...
+# id (in reading order) and their text reconstructed by joining their
+# paragraphs; paragraphs get a fresh, whole-paper-continuous "pa1", "pa2",
+# ... id and record their parent section's id. No API call. Both sections'
+# and paragraphs' `tag` fields are left as "" -- tagging is Steps 2-3.
+# If <paper_id>.json already exists in $SME_OUTPUT_DIR, its paper_id/title
+# are preserved (only sections/paragraphs are replaced); otherwise both
+# default to the filename-derived paper_id, since stage-0 files don't carry
+# a title -- hand-edit it afterward if you want the paper's real title on
+# record.
+# Output: <paper_id>.json (sections + paragraphs, no tags yet) + manifest.json
+python3 build_hybrid_from_pseudo_sections.py SME/papers/papers1/stage-0-pseudo-section-files
 
-# Step 2 -- script: attach_section_text.py
-# Fill in each section's actual text by slicing the raw PDF text locally.
-# No API call. MUST run before step 3, and MUST be re-run any time step 1
-# is re-run (extract_sections.py resets section text to "").
-# Output: <paper_id>.json (sections now have real text)
-python3 attach_section_text.py
+# Step 2 -- Claude Skill: annotate-section-questions-given-paragraphs
+#   (implemented directly by script: tag_hybrid_sections.py)
+# For every section, reads ALL of its already-extracted paragraphs and
+# composes one role-based question the section exists to answer in the
+# paper's argument (never a topic summary, never self-answering, must span
+# every paragraph -- see SME/skills/annotate-section-questions-given-paragraphs.skill
+# for the skill's own full guidance, which this script's system prompt
+# follows). One Claude call per section. A section with zero paragraphs
+# (References, typically) is left with tag = "".
+# Output: <paper_id>.json, sections now have a real `tag`
+python3 tag_hybrid_sections.py
 
-# Step 3 -- script: extract_fine_grained.py
-# Extract paragraphs within each section, each with its own free-text tag,
-# prev/next discourse-relation tags, and the id of its parent section
-# (section_id). One Claude call per section.
-# Output: <paper_id>.json (paragraphs added)
-python3 extract_fine_grained.py
+# Step 3 -- script: tag_hybrid_paragraphs.py
+# The original pipeline's own paragraph-tagging logic (extract_fine_grained.py's
+# tag guidance, verbatim), WITHOUT its paragraph-segmentation/start_text/
+# discourse-relation machinery -- paragraphs here are already correctly
+# split (Step 1), so this only adds a tag to each one. One Claude call per
+# section, batching that section's paragraphs into one request, matched
+# back to their existing unit_id (not by response order).
+# Output: <paper_id>.json, paragraphs now have a real `tag`
+python3 tag_hybrid_paragraphs.py
 
-# Step 4 -- script: match_tags.py
+# Step 4 -- script: filter_references.py
+# Drops each paper's References section (and any of its own paragraphs),
+# in place. A paper with no References section, or one that already has
+# zero paragraphs, is left untouched. No API call.
+# Output: <paper_id>.json, References section (and its paragraphs) removed
+python3 filter_references.py
+
+# Step 5 -- script: match_tags.py
 # For every section/paragraph, find its top-3 most similar tags in each
 # OTHER paper (directional candidates). No API call -- pure lexical
 # similarity.
 # Output: tag_matches.json
 python3 match_tags.py
 
-# Step 5 -- script: prune_bidirectional.py
+# Step 6 -- script: prune_bidirectional.py
 # Prune to only bidirectional (mutual top-3) matches. No API call.
 # Output: bidirectional_matches.json
 python3 prune_bidirectional.py
 
-# Step 6 -- script: group_matches.py
+# Step 7 -- script: group_matches.py
 # Group linked quotes into connected components (transitive), filtered to
 # a per-granularity similarity threshold before grouping. No API call.
 # Output: quote_groups.json (sections + paragraphs groups; no
-# overarching_question yet)
+# overarching_question yet -- the epoch track below computes its own)
 python3 group_matches.py
-
-# Step 7 -- script: summarize_groups.py
-# For each paragraph group, ask Claude what overarching research question
-# unifies its members -- given each member's own question, its actual
-# paragraph text, AND its parent section's question (not the section's
-# content). One Claude call per group.
-# Output: quote_groups.json, updated in place (paragraph groups now have
-# an overarching_question)
-python3 summarize_groups.py
-
-# Step 8 -- script: refine_paragraph_groups.py
-# Iteratively refines quote_groups.json's paragraph groups over
-# N_ITERATIONS = 5 rounds (quote_groups.json itself is left untouched).
-# Each round: (1) reassign -- ask Claude, for EVERY paragraph in EVERY
-# paper (not just already-grouped ones), which CURRENT group's
-# overarching_question it fits best; one Claude call per paragraph,
-# returning a single group_id directly rather than a score per candidate,
-# to keep output small and cheap. (2) re-summarize -- recompute each
-# surviving group's overarching_question from its new membership (reusing
-# summarize_group() from step 7, same enriched prompt), discarding the old
-# question. Groups that lose every member are dropped. ~236 paragraphs x 5
-# iterations ~= 1,180 Claude calls on the example papers, but each call's
-# output is tiny (a single group_id).
-# Output: paragraph_groups_iter<N>.json for N = 1..5 (one full snapshot
-#         per round), paragraph_groups_refined.json (the final iteration's
-#         result)
-python3 refine_paragraph_groups.py
-
-# Step 9 -- script: compute_ranking_matrices.py
-# Matrix 1: for every paragraph, rank all of step 7's candidate questions
-# best -> worst. Matrix 2: for every (question, paper) pair, rank that
-# paper's own paragraphs best -> worst for that question. One Claude call
-# per paragraph (Matrix 1) plus one per question-paper pair (Matrix 2);
-# the constant part of each prompt (the candidate list / the paper's
-# paragraph list) is cached in the system prompt so it's only paid for
-# once per batch, not once per call. Only depends on step 7's output, not
-# on step 8.
-# Output: paragraph_question_ranking.json (Matrix 1),
-#         question_paragraph_ranking.json (Matrix 2)
-python3 compute_ranking_matrices.py
-
-# Step 10 -- script: compute_group_balance.py
-# For every saved paragraph_groups_iter<N>.json snapshot, counts how many
-# papers have at least one paragraph assigned to each group's QI-Prime.
-# Each paper counts at most once regardless of how many of its paragraphs
-# are assigned. Balance is that paper count divided by the total number of
-# papers (100% = every paper has at least one paragraph assigned to the
-# QI-Prime). No API call -- pure local computation over saved assignments.
-# Groups are sorted by this metric, highest first within each iteration.
-# Output: group_balance_iter<N>.json for every available iteration
-python3 compute_group_balance.py
 ```
 
-Steps 1, 3, 7, 8, and 9 are the only ones that call the Claude API (step 10 is pure
-local computation). All of them cache their responses to disk (per
-paper/section/group/paragraph id, under `output/sections/_cache/`) and check the
-cache before calling again — safe to re-run a script after a crash or after running
-out of credit; already-completed items are skipped. To force a full re-run of a
-step, delete its cache subdirectory first (and remember step 2's note above about
-re-running `attach_section_text.py` after step 1).
+Steps 2 and 3 are the only ones above that call the Claude API. Both cache their
+responses to disk under `$SME_OUTPUT_DIR/_cache/` (`hybrid_section_tags/` and
+`hybrid_paragraph_tags/`, keyed by `paper_id__section_id`) and check the cache before
+calling again — safe to re-run after a crash or after running out of credit.
 
-Anthropic prompt caching (`cache_control: ephemeral` on the system prompt) is also
-used within steps 1/3/7/8/9 so that repeated calls in one run only pay full price
-for the first call.
+**Cache-staleness warning:** because the cache key is `paper_id__section_id`, not the
+actual paragraph content, re-running Step 1 against *different* stage-0 data (a new
+extraction, a different set of paragraphs) for a paper whose section ids stay the
+same will make Steps 2–3 silently reuse stale cached tags — in the worst case,
+returning tags for paragraph ids that no longer exist, leaving those paragraphs with
+an empty tag with no error raised. If you rebuild a paper's Step 1 output from new
+source data, delete its cache entries under `_cache/hybrid_section_tags/` and
+`_cache/hybrid_paragraph_tags/` first (or the whole `_cache/` directory, to be safe).
 
 ### Output files
 
 | File | Produced by | Contents |
 |---|---|---|
-| `<paper_id>.json` | extract_sections.py, attach_section_text.py, extract_fine_grained.py | one paper's sections + paragraphs, each with `id`, `title`, `tag`, `text`, `prev_relation`, `next_relation`; paragraphs also have `section_id` (their parent section's id) |
-| `manifest.json` | extract_sections.py | `[{paper_id, title, file}, ...]` for every paper in `output/sections/` |
+| `<paper_id>.json` | build_hybrid_from_pseudo_sections.py, tag_hybrid_sections.py, tag_hybrid_paragraphs.py, filter_references.py | one paper's sections + paragraphs, each with `id`, `title`, `tag`, `text`, `prev_relation`, `next_relation`; paragraphs also have `section_id` (their parent section's id). `prev_relation`/`next_relation` are always `""` in this track. |
+| `manifest.json` | build_hybrid_from_pseudo_sections.py | `[{paper_id, title, file}, ...]` for every paper in `$SME_OUTPUT_DIR` |
 | `tag_matches.json` | match_tags.py | directional top-3 tag candidates per unit, per granularity |
 | `bidirectional_matches.json` | prune_bidirectional.py | mutual-match links only, per granularity |
-| `quote_groups.json` | group_matches.py, summarize_groups.py | connected-component groups of linked quotes (sections + paragraphs); paragraph groups also get an `overarching_question` |
-| `paragraph_groups_iter<N>.json` | refine_paragraph_groups.py | snapshot of `{meta: {reassigned, total_assigned}, groups: [...]}` after refinement round N (N = 1..5) |
-| `paragraph_groups_refined.json` | refine_paragraph_groups.py | final refined paragraph groups after all 5 rounds |
-| `paragraph_question_ranking.json` (Matrix 1) | compute_ranking_matrices.py | `{"paper_id:unit_id": [group_id, group_id, ...]}` — for each paragraph, its own best→worst ranking of all candidate questions |
-| `question_paragraph_ranking.json` (Matrix 2) | compute_ranking_matrices.py | `{group_id: {paper_id: [unit_id, unit_id, ...]}}` — for each question, that one paper's own paragraphs ranked best→worst for it |
-| `group_balance_iter<N>.json` | compute_group_balance.py | for each group in iteration N, its balance score (% of papers with at least one paragraph assigned to that group's QI-Prime) — sorted highest first |
-
-`viz/tag_matches_viewer.html` presents the paragraph groups in `quote_groups.json`
-as **Iteration 0 · QI-Primes**, followed by refinement iterations 1–5. The Groups,
-Paper Map, and Skeleton views share this iteration selector; numeric balance is
-shown for every refinement iteration.
-
-`output/sections/_cache/` holds the raw per-item Claude responses (safe to delete to
-force a re-run; checked into git alongside everything else so collaborators can skip
-re-running expensive steps entirely).
-
-### Visualizing the matrices
-
-```bash
-python3 -m http.server 8743 --directory SME/pipeline
-```
-
-then open `http://localhost:8743/viz/ranking_heatmap.html` — one row per paragraph
-(grouped and color-coded by paper), one column per question, three views side by
-side: Matrix 1 alone, Matrix 2 alone, and a combined view (Matrix 1 = fill color,
-Matrix 2 = outline color, same scale). Hover any cell for the exact question,
-paragraph, and rank.
+| `quote_groups.json` | group_matches.py | connected-component groups of linked quotes (sections + paragraphs) |
 
 ## Epoch-based refinement
 
-`refine_with_epoch_matrix1_reassign.py` is a separate refinement track, an
-alternative to step 8's `refine_paragraph_groups.py`. It only depends on step 6's
-`quote_groups.json` (the bidirectional-link connected components) — it does NOT
-need step 7's precomputed `overarching_question`, or steps 8–10's output, since it
-recomputes its own starting question from scratch (see "Pre-epoch" below). It
-writes its own output directory, `output/sections/epoch_matrix1_reassign_refinement/`,
-without touching anything from the main pipeline above.
+`refine_with_epoch_matrix1_reassign.py` only needs `quote_groups.json`'s paragraph
+groups (the bidirectional-link connected components) — it recomputes its own
+starting question from scratch (see "Pre-epoch" below) rather than relying on any
+precomputed `overarching_question`. It writes its own output directory,
+`$SME_OUTPUT_DIR/epoch_matrix1_reassign_refinement/`, without touching anything
+written by Steps 1–7 above.
 
 ```bash
 # Pre-epoch -- script: refine_with_epoch_matrix1_reassign.py
-# For each of step 6's connected-component paragraph groups, randomly pick
+# For each of Step 7's connected-component paragraph groups, randomly pick
 # ONE paragraph per paper (not all members), then ask Claude for an
-# overarching_question from just those representatives (reusing
-# summarize_group()'s enriched prompt from step 7). The random pick is
-# seeded (RANDOM_SEED = 42) so re-runs select the same representatives and
-# don't invalidate the per-group_id response cache.
+# overarching_question from just those representatives -- each
+# representative's own tag, its actual text, and its parent section's tag
+# for context (not that section's full content). The random pick is seeded
+# (RANDOM_SEED = 42) so re-runs select the same representatives and don't
+# invalidate the per-group_id response cache.
 # Output: epoch_matrix1_reassign_refinement/initial_groups.json
 
-# Each epoch (repeated N_EPOCHS = 5 times):
+# Each epoch (repeated $SME_N_EPOCHS times -- set this to 3 to get to the
+# epoch 3 results; defaults to 5 if unset):
 #
-# 1. Matrix 1 -- one Claude call per paragraph (236 total), ranking every
-#    current candidate group's question best -> worst for that paragraph.
+# 1. Matrix 1 -- one Claude call per paragraph, ranking every current
+#    candidate group's question best -> worst for that paragraph.
 # 2. E-step (reassign) -- every paragraph is assigned directly to its
 #    Matrix 1 #1-ranked group_id. No additional Claude call. Tallies how
 #    many paragraphs changed group vs. the previous epoch. Any candidate
@@ -244,27 +218,27 @@ without touching anything from the main pipeline above.
 #         epoch_matrix1_reassign_refinement/epoch<N>/estep.json,
 #         epoch_matrix1_reassign_refinement/epoch<N>/matrix2.json,
 #         epoch_matrix1_reassign_refinement/epoch<N>/mstep.json
-#         for N = 1..5
-python3 refine_with_epoch_matrix1_reassign.py
+#         for N = 1..$SME_N_EPOCHS
+SME_N_EPOCHS=3 python3 refine_with_epoch_matrix1_reassign.py
 
 # script: compute_epoch_group_balance.py [run_dir_name]
-# For each epoch<N>/estep.json in a given run directory (defaults to
-# epoch_matrix_refinement; pass epoch_matrix1_reassign_refinement to match
-# the current run above), counts how many papers have at least one
-# paragraph in each surviving group -- same formula as step 10's
-# compute_group_balance.py (paper count / total papers). No API call. The
-# number of epochs is auto-detected from however many epoch<N>
-# subdirectories exist, so this works unmodified on any epoch-refinement
-# run directory.
+# For each epoch<N>/estep.json in a given run directory, counts how many
+# papers have at least one paragraph in each surviving group -- balance =
+# (papers represented) / (total papers), each paper counting at most once.
+# No API call. The number of epochs is auto-detected from however many
+# epoch<N> subdirectories exist. run_dir_name defaults to
+# epoch_matrix_refinement -- pass epoch_matrix1_reassign_refinement to
+# match the run above.
 # Output: epoch<N>/group_balance.json for every available epoch
 python3 compute_epoch_group_balance.py epoch_matrix1_reassign_refinement
 ```
 
 Every Claude call above is cached per item under
-`output/sections/_cache/epoch_matrix1_reassign_refinement/`, distinct from the main
-pipeline's cache and from earlier epoch-refinement variants still in the codebase
-(`refine_with_epoch_matrices.py`, `refine_with_epoch_random_seed.py` — not
-documented here).
+`$SME_OUTPUT_DIR/_cache/epoch_matrix1_reassign_refinement/` — same staleness caveat as
+Steps 2–3 above applies here too (the pre-epoch/epoch caches are keyed by group_id and
+paragraph unit_id, both of which can silently point at different content after a
+Step 1 rebuild). Delete the relevant `_cache/epoch_matrix1_reassign_refinement/`
+subdirectory before re-running against rebuilt data.
 
 ### Epoch output files
 
@@ -277,9 +251,20 @@ documented here).
 | `epoch<N>/mstep.json` | refine_with_epoch_matrix1_reassign.py | `{groups: [{group_id, overarching_question, representative_members}]}` |
 | `epoch<N>/group_balance.json` | compute_epoch_group_balance.py | for each group, its balance score (% of papers represented) — sorted highest first |
 
-`viz/tag_matches_viewer.html`'s **Epoch Groups** tab visualizes this run — Pre-epoch
-through Epoch 5, each group card showing its balance badge (sorted highest first)
-and one filled square per paragraph, per paper.
+## Visualizing the results
+
+```bash
+python3 -m http.server 8743 --directory SME/pipeline
+```
+
+then open `http://localhost:8743/viz/tag_matches_viewer.html`. Edit the `base` const
+near the top of `loadAll()` in that file to point at your `$SME_OUTPUT_DIR`
+(relative to `viz/`, e.g. `"../output/my_paper_set/"`) before loading — there's no
+UI or query-param control for this, it's a one-line edit. The **Epoch Groups** and
+**Paper Map** tabs both read `epoch_matrix1_reassign_refinement/epoch3/` specifically
+(`currentEpochPhase` is hardcoded near the top of the `<script>` block — change it to
+`"epoch1"`/`"epoch2"`/etc. and reload if you want a different epoch instead; there's
+no in-app toggle).
 
 ## Tuning knobs
 
@@ -293,3 +278,6 @@ and one filled square per paragraph, per paper.
 - Similarity itself (`text_similarity()` in `align_graphs.py`) is a 50/50 blend of
   Jaccard word-overlap and character-level sequence similarity — cheap and
   dependency-free, no embeddings or extra API calls involved.
+- `SME_N_EPOCHS` (env var, defaults to `5`) — how many epochs
+  `refine_with_epoch_matrix1_reassign.py` runs; set to `3` to reproduce the epoch 3
+  results this README walks through.
