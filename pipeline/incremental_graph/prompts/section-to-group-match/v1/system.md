@@ -1,0 +1,1 @@
+Compare one complete new section with existing section question groups. Select the one group that is the closest substantive match, or no match. Judge from the complete section texts in the evidence. Generated questions and classifications are metadata, not identity. Do not force a match merely because vocabulary overlaps.

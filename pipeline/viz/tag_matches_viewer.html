@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <title>SME Viewer</title>
 <link rel="icon" href="data:,">
+<link rel="stylesheet" href="./graph_replay.css">
 <style>
   * { box-sizing: border-box; }
   body {
@@ -603,6 +604,7 @@
   </section>
 </div>
 
+<script src="./graph_replay.js"></script>
 <script>
 const GRANULARITIES = ["sections", "paragraphs"]; // matching/data granularities
 const GRANULARITY_LABELS = { sections: "Section", paragraphs: "Paragraph" };
@@ -615,9 +617,9 @@ const ENABLE_QI_FLOW_VIEW = true; // independent experimental surface; set false
 const MILP_VARIANTS = [];
 const MILP_VARIANT_KEYS = MILP_VARIANTS.map(v => v.key);
 
-const TABS = ["epoch_groups", "paper-map"]; // only these two tabs are shown -- the rendering/dispatch code for the rest (sections, paragraphs, groups, qi-trace, qi-flow, MILP_VARIANT_KEYS) is untouched, so re-adding any of them here brings the tab straight back
+let availableTabs = ["epoch_groups", "paper-map"];
 const TAB_LABELS = Object.assign(
-  { sections: "Section", paragraphs: "Paragraph", groups: "Groups", epoch_groups: "Question Groups", "paper-map": "Paper Map", "qi-trace": "QI-Prime Trace", "qi-flow": "QI-Prime Flow" },
+  { sections: "Section", paragraphs: "Paragraph", groups: "Groups", epoch_groups: "Question Groups", "paper-map": "Paper Map", "graph-replay": "Graph Replay", "qi-trace": "QI-Prime Trace", "qi-flow": "QI-Prime Flow" },
   Object.fromEntries(MILP_VARIANTS.map(v => [v.key, v.label]))
 );
 
@@ -642,7 +644,8 @@ const sectionTextById = {}; // id -> normalized full text, for live preview-leng
 let allPapers = [];
 let allLinksByGranularity = { sections: [], paragraphs: [] };
 let rawLinksForGranularity = []; // all links for the current granularity, before the similarity filter
-let currentGranularity = "epoch_groups"; // default tab on load -- must be one of TABS
+let currentGranularity = "epoch_groups"; // default tab on load -- must be one of availableTabs
+let graphReplayData = null;
 
 let paragraphUnitLookup = {}; // "paper_id:unit_id" -> full paragraph object, for group-detail rendering
 
@@ -1104,8 +1107,23 @@ async function fetchDatasetJson(path) {
   return response.json();
 }
 
+async function loadOptionalGraphReplay(descriptor) {
+  if (!descriptor.graph_replay_file) return null;
+  try {
+    const replay = await fetchDatasetJson(descriptor.graph_replay_file);
+    if (replay.schema_version !== 1 || replay.mode !== "incremental_graph_replay" || !Array.isArray(replay.events)) {
+      throw new Error("The graph replay file has an unsupported contract");
+    }
+    return replay;
+  } catch (error) {
+    console.warn("Graph Replay is unavailable; continuing with the core views", error);
+    return null;
+  }
+}
+
 async function loadAll() {
   const descriptor = await fetchDatasetJson("dataset.json");
+  const graphReplay = await loadOptionalGraphReplay(descriptor);
   if (descriptor.schema_version === 2 && descriptor.mode === "final_snapshot") {
     const manifest = await fetchDatasetJson("manifest.json");
     if (!Array.isArray(manifest) || !manifest.length) throw new Error("data/manifest.json has no papers");
@@ -1127,6 +1145,7 @@ async function loadAll() {
       milpDataByVariant: {},
       epochInitialGroups: null,
       epochStepData: {},
+      graphReplay,
     };
   }
 
@@ -1167,6 +1186,7 @@ async function loadAll() {
     epochInitialGroups,
     epochStepData: Object.fromEntries(epochEntries),
     finalSnapshot: null,
+    graphReplay,
   };
 }
 
@@ -1422,7 +1442,7 @@ function attachInteractions() {
 }
 
 function buildGranularityTabs() {
-  granularityTabsEl.innerHTML = TABS.map(g =>
+  granularityTabsEl.innerHTML = availableTabs.map(g =>
     `<button type="button" class="granularity-btn${g === currentGranularity ? " active" : ""}" data-granularity="${g}">${TAB_LABELS[g]}</button>`
   ).join("");
   granularityTabsEl.querySelectorAll(".granularity-btn").forEach(btn => {
@@ -3263,6 +3283,7 @@ function updateSliderVisibility() {
 function switchGranularity(granularity) {
   hidePaperMapQuestionPreview();
   if (currentGranularity === "qi-flow" && granularity !== "qi-flow") stopQiFlowPlayback();
+  if (currentGranularity === "graph-replay" && granularity !== "graph-replay") window.GraphReplayView?.destroy();
   currentGranularity = granularity;
   updateSliderVisibility();
   buildGranularityTabs();
@@ -3282,6 +3303,10 @@ function switchGranularity(granularity) {
     renderPaperMap();
     return;
   }
+  if (granularity === "graph-replay") {
+    window.GraphReplayView.mount(stage, graphReplayData, allPapers);
+    return;
+  }
   if (granularity === "qi-trace") {
     renderQiPrimeTrace();
     return;
@@ -3295,11 +3320,13 @@ function switchGranularity(granularity) {
 }
 
 async function init() {
-  const { dataset, papers, links, iterations, balances, milpDataByVariant, epochInitialGroups, epochStepData, finalSnapshot } = await loadAll();
+  const { dataset, papers, links, iterations, balances, milpDataByVariant, epochInitialGroups, epochStepData, finalSnapshot, graphReplay } = await loadAll();
   const viewerTitle = dataset.label || "SME Viewer";
   document.title = viewerTitle;
   document.getElementById("viewerTitle").textContent = viewerTitle;
   finalSnapshotMode = Boolean(finalSnapshot);
+  graphReplayData = graphReplay;
+  if (graphReplayData) availableTabs = [...availableTabs, "graph-replay"];
   if (finalSnapshotMode) {
     document.getElementById("legend").textContent = "Questions are grouped by shared conceptual role. Singleton questions remain available separately, with every paragraph linked back to its source paper.";
   }
@@ -3358,6 +3385,7 @@ async function init() {
   });
   window.addEventListener("resize", () => {
     if (currentGranularity === "paper-map") updatePaperMapHeight();
+    else if (currentGranularity === "graph-replay") window.GraphReplayView?.resize();
     else if (currentGranularity === "qi-flow" && qiFlowCurrentModel) drawQiPrimeFlowLinks(qiFlowCurrentModel, false);
     else if (GRANULARITIES.includes(currentGranularity)) refreshView();
   });

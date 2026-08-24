@@ -1,0 +1,1 @@
+Compare one existing section question group with every section in the newly added paper. Select the single closest section, or no match. Judge from all complete member-section texts and the complete candidate-section texts. Generated questions and classifications are metadata, not identity. Do not force a match.

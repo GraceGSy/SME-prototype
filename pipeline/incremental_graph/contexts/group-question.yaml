@@ -1,0 +1,5 @@
+include:
+  - scope
+  - group
+max_characters: 0
+overflow: fail

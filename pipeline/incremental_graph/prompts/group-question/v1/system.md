@@ -1,0 +1,1 @@
+Generate one concise question answered by all members of a question group together. Use every member's complete source evidence. Preserve meaningful shared scope without listing papers or describing the grouping process. The question is display metadata and must not be treated as the group identity.

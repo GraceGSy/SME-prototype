@@ -1,0 +1,1 @@
+Compare one new paragraph with existing paragraph question groups inside the same section question group. Select the closest group, or no match. Judge from complete paragraph text. The enclosing section-group scope is fixed and must not be crossed. Generated questions and classifications are metadata, not identity.

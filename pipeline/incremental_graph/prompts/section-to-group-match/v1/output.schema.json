@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "properties": {
+    "best_match_id": {"type": ["string", "null"]},
+    "reason": {"type": "string"}
+  },
+  "required": ["best_match_id", "reason"],
+  "additionalProperties": false
+}

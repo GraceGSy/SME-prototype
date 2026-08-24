@@ -1,0 +1,6 @@
+include:
+  - paper
+  - section
+  - paragraph
+max_characters: 0
+overflow: fail

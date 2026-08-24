@@ -1,0 +1,67 @@
+schema_version: 1
+pipeline_id: incremental-question-graph-v1
+prompt_root: ../prompts
+context_root: ../contexts
+
+model:
+  provider: anthropic
+  name: claude-sonnet-5
+  max_tokens: 1024
+  temperature: 0
+
+stages:
+  - id: ingest
+    handler: ingest_paper
+
+  - id: section_questions
+    handler: generate_section_questions
+    prompt: section-question/v1
+    context: section-question
+
+  - id: section_matching
+    handler: match_sections
+    prompts:
+      new_to_group: section-to-group-match/v1
+      group_to_new: group-to-section-match/v1
+    contexts:
+      new_to_group: matching
+      group_to_new: matching
+
+  - id: section_reconciliation
+    handler: reconcile_sections
+
+  - id: section_classification
+    handler: classify_sections
+
+  - id: section_group_questions
+    handler: generate_section_group_questions
+    prompt: group-question/v1
+    context: group-question
+
+  - id: paragraph_questions
+    handler: generate_paragraph_questions
+    prompt: paragraph-question/v1
+    context: paragraph-question
+
+  - id: paragraph_matching
+    handler: match_paragraphs
+    prompts:
+      new_to_group: paragraph-to-group-match/v1
+      group_to_new: group-to-paragraph-match/v1
+    contexts:
+      new_to_group: matching
+      group_to_new: matching
+
+  - id: paragraph_reconciliation
+    handler: reconcile_paragraphs
+
+  - id: paragraph_classification
+    handler: classify_paragraphs
+
+  - id: paragraph_group_questions
+    handler: generate_paragraph_group_questions
+    prompt: group-question/v1
+    context: group-question
+
+  - id: export
+    handler: export_outputs

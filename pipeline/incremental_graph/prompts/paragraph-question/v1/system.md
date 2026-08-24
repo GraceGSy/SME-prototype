@@ -1,0 +1,1 @@
+You label the implicit purpose of one paragraph within an academic paper section. Return one concise question that the paragraph answers. Use the parent section only as context. Do not summarize the topic, answer the question, or invent claims absent from the paragraph.

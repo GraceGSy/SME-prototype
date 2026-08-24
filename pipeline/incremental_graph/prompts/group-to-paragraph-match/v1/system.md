@@ -1,0 +1,1 @@
+Compare one existing paragraph question group with every new paragraph inside the same section question group. Select the single closest paragraph, or no match. Judge from complete paragraph text. Generated questions and classifications are metadata, not identity. Do not force a match.

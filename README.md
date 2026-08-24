@@ -6,6 +6,13 @@ those tags between papers, groups the resulting links, and computes two ranking
 matrices comparing every paragraph against the resulting set of candidate research
 questions.
 
+## Incremental question-group graph experiment
+
+The order-dependent graph pipeline, editable prompt bundles, provenance/retry
+model, deterministic classification, paragraph recursion, and optional Graph
+Replay viewer are documented in
+[`pipeline/incremental_graph/README.md`](pipeline/incremental_graph/README.md).
+
 This README covers the pipeline from raw PDFs through generating those two ranking
 matrices, plus the iterative paragraph-group refinement and group-balance metric
 built on top of them, and a separate epoch-based refinement track built directly on

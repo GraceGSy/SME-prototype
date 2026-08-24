@@ -184,6 +184,39 @@ class ViewerDatasetTest(unittest.TestCase):
             self.assertFalse((output / "public" / "data" / "quote_groups.json").exists())
             self.assertFalse((output / "public" / "data" / "epoch_matrix1_reassign_refinement").exists())
 
+    def test_packages_optional_incremental_graph_replay(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "source"
+            output = root / "site"
+            make_snapshot_dataset(source)
+            write_json(source / "graph-replay.json", {
+                "schema_version": 1,
+                "mode": "incremental_graph_replay",
+                "paper_order": ["paper_a", "paper_b"],
+                "final_graph_hash": "0" * 64,
+                "layouts": {"section": {"group-1": {"x": 0.5, "y": 0.5}}},
+                "events": [
+                    {
+                        "sequence": 1,
+                        "event_id": "event-000001",
+                        "paper_index": 1,
+                        "action": "node_created",
+                        "node_id": "group-1",
+                        "level": "section",
+                        "parent_id": None,
+                        "member": {"paper_id": "paper_a", "unit_id": "sa1"},
+                    },
+                ],
+            })
+
+            descriptor = package_dataset(source, output, VIEWER_PATH, "snapshot", "Snapshot")
+
+            self.assertEqual(descriptor["graph_replay_file"], "graph-replay.json")
+            self.assertTrue((output / "public" / "data" / "graph-replay.json").is_file())
+            self.assertTrue((output / "public" / "graph_replay.js").is_file())
+            self.assertTrue((output / "public" / "graph_replay.css").is_file())
+
     def test_packages_counterbalanced_study_with_both_orders(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

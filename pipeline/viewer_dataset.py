@@ -13,6 +13,8 @@ from typing import Any
 COMMON_ROOT_FILES = ("manifest.json", "bidirectional_matches.json")
 LEGACY_ROOT_FILES = ("quote_groups.json",)
 SNAPSHOT_FILE = "final_snapshot.json"
+GRAPH_REPLAY_FILE = "graph-replay.json"
+VIEWER_ASSETS = ("graph_replay.js", "graph_replay.css")
 EPOCH_FILES = ("estep.json", "mstep.json", "group_balance.json")
 EPOCH_VALIDATION_FILES = EPOCH_FILES + ("matrix1.json", "matrix2.json")
 EPOCH_PATTERN = re.compile(r"epoch(\d+)$")
@@ -48,6 +50,43 @@ def _validate_members(
             for member in group.get(field, []):
                 key = f"{member.get('paper')}:{member.get('unit_id')}"
                 _require(key in units, f"{source} references unknown {unit_label} {key}")
+
+
+def _validate_optional_graph_replay(dataset_dir: Path, paper_ids: list[str]) -> dict[str, Any]:
+    path = dataset_dir / GRAPH_REPLAY_FILE
+    if not path.is_file():
+        return {}
+    replay = _read_json(path)
+    _require(replay.get("schema_version") == 1, f"{GRAPH_REPLAY_FILE} has an unsupported schema version")
+    _require(replay.get("mode") == "incremental_graph_replay", f"{GRAPH_REPLAY_FILE} has an invalid mode")
+    _require(replay.get("paper_order") == paper_ids, f"{GRAPH_REPLAY_FILE} paper order disagrees with manifest")
+    _require(isinstance(replay.get("layouts"), dict), f"{GRAPH_REPLAY_FILE} has no layouts object")
+    events = replay.get("events")
+    _require(isinstance(events, list), f"{GRAPH_REPLAY_FILE} has no events list")
+    _require(
+        [event.get("sequence") for event in events] == list(range(1, len(events) + 1)),
+        f"{GRAPH_REPLAY_FILE} event sequences must be contiguous from 1",
+    )
+    known_nodes: set[str] = set()
+    for event in events:
+        action = event.get("action")
+        if action == "node_created":
+            node_id = event.get("node_id")
+            _require(bool(node_id) and node_id not in known_nodes, f"{GRAPH_REPLAY_FILE} creates a duplicate node")
+            known_nodes.add(node_id)
+        elif action in {"member_added", "classification_changed", "question_generated"}:
+            _require(event.get("node_id") in known_nodes, f"{GRAPH_REPLAY_FILE} updates an unknown node")
+        elif action == "edge_created":
+            _require(
+                event.get("source") in known_nodes and event.get("target") in known_nodes,
+                f"{GRAPH_REPLAY_FILE} creates an edge with an unknown endpoint",
+            )
+    graph_hash = replay.get("final_graph_hash")
+    _require(
+        isinstance(graph_hash, str) and bool(re.fullmatch(r"[a-f0-9]{64}", graph_hash)),
+        f"{GRAPH_REPLAY_FILE} has an invalid final graph hash",
+    )
+    return {"graph_replay_file": GRAPH_REPLAY_FILE}
 
 
 def validate_dataset(
@@ -122,6 +161,7 @@ def validate_dataset(
         bool(re.fullmatch(r"[a-z0-9][a-z0-9_-]*", normalized_id)),
         "dataset_id must use lowercase letters, numbers, dashes, or underscores",
     )
+    replay_descriptor = _validate_optional_graph_replay(dataset_dir, paper_ids)
 
     snapshot_path = dataset_dir / SNAPSHOT_FILE
     if snapshot_path.is_file():
@@ -159,6 +199,7 @@ def validate_dataset(
             "paragraph_count": paragraph_count,
             "snapshot_file": SNAPSHOT_FILE,
             "stats": snapshot.get("stats") or {},
+            **replay_descriptor,
         }
 
     quote_groups = _read_json(dataset_dir / "quote_groups.json")
@@ -210,6 +251,7 @@ def validate_dataset(
         "paragraph_count": paragraph_count,
         "epochs": epochs,
         "default_epoch": epochs[-1],
+        **replay_descriptor,
     }
 
 
@@ -235,6 +277,11 @@ def package_dataset(
     viewer_dir.mkdir(parents=True, exist_ok=True)
     shutil.copy2(viewer_path, public_dir / "index.html")
     shutil.copy2(viewer_path, viewer_dir / "tag_matches_viewer.html")
+    for filename in VIEWER_ASSETS:
+        source = viewer_path.parent / filename
+        _require(source.is_file(), f"Missing viewer asset: {source}")
+        shutil.copy2(source, public_dir / filename)
+        shutil.copy2(source, viewer_dir / filename)
 
     manifest = _read_json(dataset_dir / "manifest.json")
     for filename in COMMON_ROOT_FILES + tuple(entry["file"] for entry in manifest):
@@ -255,6 +302,9 @@ def package_dataset(
             target.mkdir()
             for filename in EPOCH_FILES:
                 shutil.copy2(source / filename, target / filename)
+
+    if descriptor.get("graph_replay_file"):
+        shutil.copy2(dataset_dir / descriptor["graph_replay_file"], data_dir / descriptor["graph_replay_file"])
 
     (data_dir / "dataset.json").write_text(json.dumps(descriptor, indent=2) + "\n", encoding="utf-8")
     (output_dir / "package.json").write_text(
