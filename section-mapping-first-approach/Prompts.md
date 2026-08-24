@@ -1,7 +1,7 @@
 # Approximate prompts (adjustments to language are untested)
 
 ## Original section-section mapping pre-questions that set up the conversation context
-Can you tell me the top-level section titles of abstractexplorer.pdf?
+Can you tell me the top-level section titles of abstractexplorer.pdf? -- first skill
 
 Can you tell me the top-level section titles of corpusstudio.pdf?
 
@@ -13,13 +13,22 @@ Can you iterate through the section titles of AbstractExplorer and suggest the c
 Can you iterate through the section titles of CorpusStudio and suggest the closest corresponding section of AbstractExplorer, based on section title and content as found in corpusstudio.pdf and abstractexplorer.pdf?
 
 ### Revised wording
+second skill: add questions to extracted sections
+
 Can you iterate through the section titles of AbstractExplorer and suggest the closest corresponding section of CorpusStudio, based on section title and content as found in abstractexplorer.pdf and corpusstudio.pdf? If a section maps to multiple sections in the other paper, create separate entries, one for each of the multiple sections rather than naming all of them in a single correspondence relationship with the section in the other paper. Output it as a JSON with "abstractexplorer_section_name", "corpusstudio_section_name", "abstractexplorer_section_number", "corpusstudio_section_number", "basis", and "question_the_sections_both_answer" as the fields for each pair of corresponding sections named p1-p2-section-mapping-try2.json
+
+---
+Can you create a new skill called directional-section-mapping-with-questions that 
+
+iterates through the section titles of the first paper (as captured in sections-with-questions.json for that paper) and suggests the closest corresponding section of the second paper (as captured in the sections-with-questions.json for that paper), primarily based on the question that the section answers section title and content as found in abstractexplorer.pdf and corpusstudio.pdf? If a section maps to multiple sections in the other paper, create separate entries, one for each of the multiple sections rather than naming all of them in a single correspondence relationship with the section in the other paper. Output it as a JSON with "abstractexplorer_section_name", "corpusstudio_section_name", "abstractexplorer_section_number", "corpusstudio_section_number", "basis", and "question_the_sections_both_answer" as the fields for each pair of corresponding sections
+
+---
 
 Can you iterate through the section titles of CorpusStudio and suggest the closest corresponding section of AbstractExplorer, based on section title and content as found in corpusstudio.pdf and abstractexplorer.pdf? If a section maps to multiple sections in the other paper, create separate entries, one for each of the multiple sections rather than naming all of them in a single correspondence relationship with the section in the other paper. Output it as a JSON with "abstractexplorer_section_name", "corpusstudio_section_name", "abstractexplorer_section_number", "corpusstudio_section_number", "basis", and "question_the_sections_both_answer" as the fields for each pair of corresponding sections named p2-p1-section-mapping-try2.json
 
 Possibly necessary pre-amble for the next instruction: Do not use the previously composed script; do not use a script at all. 
 
-Look at the section matches in p1-p2-section-mapping-try2.json and check whether the same section match is found in p2-p1-section-mapping-try2.json; output a JSON of just those bidirectional matches called p1-p2-common-section-structure.json. Include the following fields: "abstractexplorer_section_name", "corpusstudio_section_name", "abstractexplorer_section_number", "corpusstudio_section_number", "basis", "question_the_sections_both_answer".
+Look at the section matches in p1-p2-section-mapping-try2.json and check whether the same section match is found in p2-p1-section-mapping-try2.json; output a JSON of just those bidirectional matches called p1-p2-common-section-structure.json. Include the following fields: "abstractexplorer_section_name", "corpusstudio_section_name", "abstractexplorer_section_number", "corpusstudio_section_number", "basis", "question_the_sections_both_answer". 
 
 What section pairings in p1-p2-section-mapping-try2.json are not present in p1-p2-common-section-structure.json? Add them to a new JSON with the following fields:
 "abstractexplorer_section_name", "corpusstudio_section_name", "abstractexplorer_section_number", "corpusstudio_section_number", "basis", "question_the_sections_both_answer"
@@ -33,16 +42,16 @@ Iterate through all the pairings in p1-p2-alignable-section-diffs.json and p2-p1
 
 ## Paragraph mapping within a section (Intros in this case) that are mapped to each other
 
-### Extract paragraphs within each paper's introductions (which were mapped to each other)
+### Extract paragraphs within each paper's introductions (which were mapped to each other) --- turn into a skill that takes as an argument a paper and a section title
 Can you break the introduction of abstractexplorer.pdf into paragraphs and output a list of each paragraph's content with a numerical identifier, in JSON format?
 [saved as intro-p1-paragraphs.json]
 
 Can you break the introduction of corpusstudio.pdf into paragraphs and output a list of each paragraph's content with a numerical identifier, in JSON format?
 [saved as intro-p2-paragraphs.json]
 
-(could be combined with next step)
+(could be combined with next step of question generation) --- add to skill above
 
-### Describe each paragraph within each paper's introductions as the question it answers
+### Describe each paragraph within each paper's introductions as the question it answers 
 For each paragraph in the Introduction section of abstractexplorer.pdf as captured in intro-p1-paragraphs.json, can you tell me what question it answers, and output all those questions with their respective paragraph id as a JSON with a paragraph id and question_answered field?
 [saved as intro-p1-questions.json]
 
