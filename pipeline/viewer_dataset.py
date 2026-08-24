@@ -10,7 +10,9 @@ from pathlib import Path
 from typing import Any
 
 
-ROOT_FILES = ("manifest.json", "bidirectional_matches.json", "quote_groups.json")
+COMMON_ROOT_FILES = ("manifest.json", "bidirectional_matches.json")
+LEGACY_ROOT_FILES = ("quote_groups.json",)
+SNAPSHOT_FILE = "final_snapshot.json"
 EPOCH_FILES = ("estep.json", "mstep.json", "group_balance.json")
 EPOCH_VALIDATION_FILES = EPOCH_FILES + ("matrix1.json", "matrix2.json")
 EPOCH_PATTERN = re.compile(r"epoch(\d+)$")
@@ -34,13 +36,18 @@ def _require(condition: bool, message: str) -> None:
         raise DatasetValidationError(message)
 
 
-def _validate_members(groups: list[dict[str, Any]], units: set[str], source: str) -> None:
+def _validate_members(
+    groups: list[dict[str, Any]],
+    units: set[str],
+    source: str,
+    unit_label: str = "paragraph",
+) -> None:
     for group in groups:
         _require(bool(group.get("group_id")), f"{source} has a group without group_id")
         for field in ("members", "representative_members"):
             for member in group.get(field, []):
                 key = f"{member.get('paper')}:{member.get('unit_id')}"
-                _require(key in units, f"{source} references unknown paragraph {key}")
+                _require(key in units, f"{source} references unknown {unit_label} {key}")
 
 
 def validate_dataset(
@@ -110,6 +117,50 @@ def validate_dataset(
                 f"bidirectional_matches.json references unknown units {left}, {right}",
             )
 
+    normalized_id = dataset_id or dataset_dir.name
+    _require(
+        bool(re.fullmatch(r"[a-z0-9][a-z0-9_-]*", normalized_id)),
+        "dataset_id must use lowercase letters, numbers, dashes, or underscores",
+    )
+
+    snapshot_path = dataset_dir / SNAPSHOT_FILE
+    if snapshot_path.is_file():
+        snapshot = _read_json(snapshot_path)
+        shared_groups = snapshot.get("groups")
+        singleton_groups = snapshot.get("singletons")
+        section_groups = snapshot.get("section_groups")
+        _require(snapshot.get("mode") == "final_snapshot", f"{SNAPSHOT_FILE} has an invalid mode")
+        _require(isinstance(shared_groups, list), f"{SNAPSHOT_FILE} has no shared groups list")
+        _require(isinstance(singleton_groups, list), f"{SNAPSHOT_FILE} has no singleton list")
+        _require(isinstance(section_groups, list), f"{SNAPSHOT_FILE} has no section groups list")
+        _validate_members(shared_groups, paragraph_units, SNAPSHOT_FILE)
+        _validate_members(singleton_groups, paragraph_units, SNAPSHOT_FILE)
+        _validate_members(section_groups, section_units, SNAPSHOT_FILE, "section")
+
+        for group in shared_groups:
+            represented_papers = {member.get("paper") for member in group.get("members", [])}
+            _require(
+                len(represented_papers) >= 2,
+                f"{SNAPSHOT_FILE} shared group {group.get('group_id')} represents fewer than two papers",
+            )
+        for group in singleton_groups:
+            members = group.get("members", [])
+            represented_papers = {member.get("paper") for member in members}
+            _require(
+                bool(members) and len(represented_papers) == 1,
+                f"{SNAPSHOT_FILE} singleton {group.get('group_id')} must represent exactly one paper",
+            )
+        return {
+            "schema_version": 2,
+            "mode": "final_snapshot",
+            "dataset_id": normalized_id,
+            "label": label or normalized_id.replace("-", " ").replace("_", " ").title(),
+            "paper_count": len(paper_ids),
+            "paragraph_count": paragraph_count,
+            "snapshot_file": SNAPSHOT_FILE,
+            "stats": snapshot.get("stats") or {},
+        }
+
     quote_groups = _read_json(dataset_dir / "quote_groups.json")
     _require(isinstance(quote_groups.get("paragraphs"), list), "quote_groups.json has no paragraph groups")
     _validate_members(quote_groups["paragraphs"], paragraph_units, "quote_groups.json")
@@ -151,11 +202,6 @@ def validate_dataset(
             f"epoch{epoch} group IDs disagree across E-step, M-step, and balance",
         )
 
-    normalized_id = dataset_id or dataset_dir.name
-    _require(
-        bool(re.fullmatch(r"[a-z0-9][a-z0-9_-]*", normalized_id)),
-        "dataset_id must use lowercase letters, numbers, dashes, or underscores",
-    )
     return {
         "schema_version": 1,
         "dataset_id": normalized_id,
@@ -191,19 +237,24 @@ def package_dataset(
     shutil.copy2(viewer_path, viewer_dir / "tag_matches_viewer.html")
 
     manifest = _read_json(dataset_dir / "manifest.json")
-    for filename in ROOT_FILES + tuple(entry["file"] for entry in manifest):
+    for filename in COMMON_ROOT_FILES + tuple(entry["file"] for entry in manifest):
         shutil.copy2(dataset_dir / filename, data_dir / filename)
 
-    source_epoch_root = dataset_dir / "epoch_matrix1_reassign_refinement"
-    target_epoch_root = data_dir / "epoch_matrix1_reassign_refinement"
-    target_epoch_root.mkdir()
-    shutil.copy2(source_epoch_root / "initial_groups.json", target_epoch_root / "initial_groups.json")
-    for epoch in descriptor["epochs"]:
-        source = source_epoch_root / f"epoch{epoch}"
-        target = target_epoch_root / f"epoch{epoch}"
-        target.mkdir()
-        for filename in EPOCH_FILES:
-            shutil.copy2(source / filename, target / filename)
+    if descriptor.get("mode") == "final_snapshot":
+        shutil.copy2(dataset_dir / SNAPSHOT_FILE, data_dir / SNAPSHOT_FILE)
+    else:
+        for filename in LEGACY_ROOT_FILES:
+            shutil.copy2(dataset_dir / filename, data_dir / filename)
+        source_epoch_root = dataset_dir / "epoch_matrix1_reassign_refinement"
+        target_epoch_root = data_dir / "epoch_matrix1_reassign_refinement"
+        target_epoch_root.mkdir()
+        shutil.copy2(source_epoch_root / "initial_groups.json", target_epoch_root / "initial_groups.json")
+        for epoch in descriptor["epochs"]:
+            source = source_epoch_root / f"epoch{epoch}"
+            target = target_epoch_root / f"epoch{epoch}"
+            target.mkdir()
+            for filename in EPOCH_FILES:
+                shutil.copy2(source / filename, target / filename)
 
     (data_dir / "dataset.json").write_text(json.dumps(descriptor, indent=2) + "\n", encoding="utf-8")
     (output_dir / "package.json").write_text(
@@ -236,9 +287,14 @@ def main() -> None:
     )
     args = parser.parse_args()
     descriptor = package_dataset(args.dataset_dir, args.output_dir, args.viewer, args.dataset_id, args.label)
+    suffix = (
+        "final snapshot"
+        if descriptor.get("mode") == "final_snapshot"
+        else f"epochs {descriptor['epochs']}"
+    )
     print(
         f"Packaged {descriptor['label']}: {descriptor['paper_count']} papers, "
-        f"{descriptor['paragraph_count']} paragraphs, epochs {descriptor['epochs']}"
+        f"{descriptor['paragraph_count']} paragraphs, {suffix}"
     )
 
 

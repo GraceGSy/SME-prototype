@@ -215,6 +215,58 @@ validates paper/unit references and epoch completeness, copies only
 runtime files (not PDFs, matrices, or model caches), and writes the generated
 `data/dataset.json` contract used by the unchanged viewer.
 
+### Final snapshots from nested question mappings
+
+The nested-mapping adapter builds a final-snapshot dataset from an ordered
+manifest, one `*-sections-with-paragraphs-and-questions-no-appendices*.json`
+file per paper, and a nested paragraph-question mapping. Exact question text
+defines a group; questions represented in two or more papers are shared, while
+one-paper questions are singletons. Paragraphs without an explicit paragraph
+question or mapping remain visible as unassigned rather than inheriting their
+section question.
+
+```bash
+python pipeline/build_nested_snapshot_dataset.py \
+  path/to/all-matched-paragraph-structure-nested.json \
+  path/to/sme2-paper-json-directory \
+  pipeline/output/sections_skills_hybrid \
+  tmp/hci-sme2-snapshot
+```
+
+### Counterbalanced two-phase study
+
+Package two compatible datasets behind one participant-ID gate:
+
+```bash
+python pipeline/build_counterbalanced_study.py \
+  pipeline/output/sections_skills_hybrid_papers3_core \
+  pipeline/output/sections_stage0_snapshot_viz2_clean2 \
+  tmp/question-atlas-viz-study
+
+python -m http.server 8743 --directory tmp/question-atlas-viz-study/public
+```
+
+Participant IDs beginning with `1` receive SME 1 then SME 2; IDs beginning
+with `2` receive the reverse order. The current phase is kept in browser
+session storage across refreshes, and switching phases loads a fresh viewer.
+Opening the site with `?reset=1` clears the current participant session.
+
+Add an HCI pair to the same deployment without changing the frontend:
+
+```bash
+python pipeline/build_counterbalanced_study.py \
+  pipeline/output/sections_skills_hybrid_papers3_core \
+  pipeline/output/sections_stage0_snapshot_viz2_clean2 \
+  tmp/question-atlas-study \
+  --hci-sme1-dir pipeline/output/sections_skills_hybrid_core \
+  --hci-sme2-dir tmp/hci-sme2-snapshot \
+  --title "SME Study"
+```
+
+With the HCI pair present, participant prefix `3` receives HCI SME 1 then HCI
+SME 2, and prefix `4` receives the reverse order. Prefixes `1` and `2` retain
+the Viz orders above.
+
 `output/sections/_cache/` holds the raw per-item Claude responses (safe to delete to
 force a re-run; checked into git alongside everything else so collaborators can skip
 re-running expensive steps entirely).

@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SME Study</title>
+<link rel="icon" href="data:,">
+<style>
+  * { box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; margin: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: #fafafa; color: #212529;
+  }
+  button, input { font: inherit; }
+  [hidden] { display: none !important; }
+
+  .participant-gate {
+    display: grid; place-items: center; width: 100%; min-height: 100%; padding: 24px; background: #fff;
+  }
+  .participant-form { display: grid; gap: 14px; width: min(360px, 100%); }
+  .participant-form h1 { margin: 0; color: #343a40; font-size: 18px; font-weight: 650; }
+  .participant-form label { display: grid; gap: 6px; color: #495057; font-size: 12px; font-weight: 600; }
+  .participant-form input {
+    width: 100%; padding: 9px 11px; border: 1px solid #adb5bd; border-radius: 5px;
+    background: #fff; color: #212529; outline: none;
+  }
+  .participant-form input:focus { border-color: #1c7ed6; box-shadow: 0 0 0 2px rgba(28,126,214,.18); }
+  .primary-button, .secondary-button {
+    min-height: 34px; padding: 7px 12px; border: 1px solid #ced4da; border-radius: 5px;
+    background: #fff; color: #495057; cursor: pointer;
+  }
+  .primary-button { border-color: #1c7ed6; background: #1c7ed6; color: #fff; font-weight: 600; }
+  .primary-button:hover { background: #1971c2; }
+  .secondary-button:hover { border-color: #868e96; color: #343a40; }
+  .participant-error { min-height: 17px; margin: -5px 0 0; color: #c92a2a; font-size: 11px; }
+
+  .study-shell { display: grid; grid-template-rows: auto minmax(0, 1fr); width: 100%; height: 100%; }
+  .study-bar {
+    display: flex; align-items: center; gap: 12px; min-height: 39px; padding: 5px 14px;
+    border-bottom: 1px solid #dee2e6; background: #fff;
+  }
+  .study-phase { color: #343a40; font-size: 12px; font-weight: 650; }
+  .study-participant { color: #868e96; font-size: 10.5px; }
+  .next-stage-button { margin-left: auto; min-height: 28px; padding: 4px 10px; }
+  .viewer-wrap { position: relative; min-height: 0; background: #fafafa; }
+  .viewer-loading {
+    position: absolute; inset: 0; z-index: 1; display: grid; place-items: center;
+    background: #fafafa; color: #868e96; font-size: 12px;
+  }
+  .viewer-frame { display: block; width: 100%; height: 100%; border: 0; background: #fafafa; }
+
+  .confirmation-layer {
+    position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 20px;
+    background: rgba(33,37,41,.28);
+  }
+  .confirmation-dialog {
+    width: min(440px, 100%); padding: 20px; border: 1px solid #dee2e6; border-radius: 8px;
+    background: #fff; box-shadow: 0 12px 36px rgba(33,37,41,.2);
+  }
+  .confirmation-dialog h2 { margin: 0; color: #212529; font-size: 16px; line-height: 1.4; }
+  .confirmation-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+
+  @media (max-width: 620px) {
+    .study-bar { align-items: flex-start; flex-wrap: wrap; }
+    .next-stage-button { margin-left: 0; }
+    .confirmation-actions { align-items: stretch; flex-direction: column-reverse; }
+  }
+</style>
+</head>
+<body>
+<main class="participant-gate" id="participantGate">
+  <form class="participant-form" id="participantForm" novalidate>
+    <h1>Participant ID</h1>
+    <label for="participantId">Enter your participant ID
+      <input id="participantId" name="participant_id" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" autofocus>
+    </label>
+    <div class="participant-error" id="participantError" role="alert" aria-live="polite"></div>
+    <button class="primary-button" type="submit">Continue</button>
+  </form>
+</main>
+
+<section class="study-shell" id="studyShell" hidden>
+  <header class="study-bar">
+    <span class="study-phase" id="studyPhase"></span>
+    <span class="study-participant" id="studyParticipant"></span>
+    <button class="primary-button next-stage-button" id="nextStage" type="button">Next experiment stage</button>
+  </header>
+  <div class="viewer-wrap">
+    <div class="viewer-loading" id="viewerLoading">Loading experiment phase...</div>
+    <iframe class="viewer-frame" id="viewerFrame" title="SME experiment viewer"></iframe>
+  </div>
+</section>
+
+<div class="confirmation-layer" id="confirmationLayer" role="presentation" hidden>
+  <section class="confirmation-dialog" role="dialog" aria-modal="true" aria-labelledby="confirmationTitle">
+    <h2 id="confirmationTitle">Has the experimenter told you to move to the second SME phase?</h2>
+    <div class="confirmation-actions">
+      <button class="secondary-button" id="cancelStageChange" type="button">No, stay in this phase</button>
+      <button class="primary-button" id="confirmStageChange" type="button">Yes, move to the second SME phase</button>
+    </div>
+  </section>
+</div>
+
+<script>
+const CONFIG_URL = new URL("study-config.json", window.location.href);
+const STORAGE_KEY = "viz-sme-counterbalanced-session-v1";
+
+const participantGate = document.getElementById("participantGate");
+const participantForm = document.getElementById("participantForm");
+const participantInput = document.getElementById("participantId");
+const participantError = document.getElementById("participantError");
+const studyShell = document.getElementById("studyShell");
+const studyPhase = document.getElementById("studyPhase");
+const studyParticipant = document.getElementById("studyParticipant");
+const nextStage = document.getElementById("nextStage");
+const viewerFrame = document.getElementById("viewerFrame");
+const viewerLoading = document.getElementById("viewerLoading");
+const confirmationLayer = document.getElementById("confirmationLayer");
+const cancelStageChange = document.getElementById("cancelStageChange");
+const confirmStageChange = document.getElementById("confirmStageChange");
+
+let studyConfig = null;
+let activeSession = null;
+
+function validParticipantId(participantId) {
+  return Boolean(participantId && studyConfig?.orders?.[participantId[0]]);
+}
+
+function readSession() {
+  try {
+    const value = JSON.parse(sessionStorage.getItem(STORAGE_KEY));
+    if (!value || !validParticipantId(value.participantId) || ![0, 1].includes(value.stage)) return null;
+    return value;
+  } catch {
+    return null;
+  }
+}
+
+function saveSession(session) {
+  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+}
+
+function phaseOrder(participantId) {
+  return studyConfig.orders[participantId[0]];
+}
+
+function currentPhase() {
+  const phaseKey = phaseOrder(activeSession.participantId)[activeSession.stage];
+  return studyConfig.phases[phaseKey];
+}
+
+function showParticipantGate(message = "") {
+  studyShell.hidden = true;
+  participantGate.hidden = false;
+  participantError.textContent = message;
+  requestAnimationFrame(() => participantInput.focus());
+}
+
+function showStudy() {
+  const phase = currentPhase();
+  participantGate.hidden = true;
+  studyShell.hidden = false;
+  studyPhase.textContent = `Experiment phase ${activeSession.stage + 1} of 2`;
+  studyParticipant.textContent = `Participant ${activeSession.participantId}`;
+  nextStage.hidden = activeSession.stage === 1;
+  viewerLoading.hidden = false;
+  viewerFrame.title = `${phase.label}, experiment phase ${activeSession.stage + 1}`;
+  const viewerUrl = new URL(phase.viewer_path, CONFIG_URL);
+  viewerUrl.searchParams.set("experiment_phase", String(activeSession.stage + 1));
+  viewerFrame.src = viewerUrl.href;
+}
+
+function openConfirmation() {
+  confirmationLayer.hidden = false;
+  confirmStageChange.focus();
+}
+
+function closeConfirmation() {
+  confirmationLayer.hidden = true;
+  nextStage.focus();
+}
+
+participantForm.addEventListener("submit", event => {
+  event.preventDefault();
+  const participantId = participantInput.value.trim();
+  if (!validParticipantId(participantId)) {
+    const prefixes = Object.keys(studyConfig.orders).sort().join(", ");
+    participantError.textContent = `Participant IDs must begin with ${prefixes}.`;
+    participantInput.focus();
+    return;
+  }
+  activeSession = { participantId, stage: 0 };
+  saveSession(activeSession);
+  showStudy();
+});
+
+participantInput.addEventListener("input", () => { participantError.textContent = ""; });
+viewerFrame.addEventListener("load", () => { viewerLoading.hidden = true; });
+nextStage.addEventListener("click", openConfirmation);
+cancelStageChange.addEventListener("click", closeConfirmation);
+confirmationLayer.addEventListener("click", event => {
+  if (event.target === confirmationLayer) closeConfirmation();
+});
+confirmStageChange.addEventListener("click", () => {
+  activeSession = { ...activeSession, stage: 1 };
+  saveSession(activeSession);
+  confirmationLayer.hidden = true;
+  showStudy();
+});
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && !confirmationLayer.hidden) closeConfirmation();
+});
+
+async function initializeStudy() {
+  const url = new URL(window.location.href);
+  if (url.searchParams.get("reset") === "1") {
+    sessionStorage.removeItem(STORAGE_KEY);
+    url.searchParams.delete("reset");
+    history.replaceState(null, "", url);
+  }
+  try {
+    const response = await fetch(CONFIG_URL, { cache: "no-store" });
+    if (!response.ok) throw new Error(`Could not load study configuration (${response.status})`);
+    studyConfig = await response.json();
+    document.title = studyConfig.title || "SME Study";
+    const orders = Object.values(studyConfig.orders || {});
+    const phases = studyConfig.phases || {};
+    if (!orders.length || orders.some(order =>
+      !Array.isArray(order) || order.length !== 2 || order.some(phaseKey => !phases[phaseKey])
+    )) {
+      throw new Error("Study configuration is incomplete");
+    }
+    activeSession = readSession();
+    if (activeSession) showStudy();
+    else showParticipantGate();
+  } catch (error) {
+    console.error("Could not initialize the participant study", error);
+    showParticipantGate("The study could not be loaded. Please notify the experimenter.");
+    participantInput.disabled = true;
+    participantForm.querySelector("button").disabled = true;
+  }
+}
+
+initializeStudy();
+</script>
+</body>
+</html>

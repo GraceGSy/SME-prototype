@@ -106,6 +106,9 @@
   .unit-square.represented { background: var(--paper-color); }
   .unit-square.missing { background: transparent; border: 1px dashed var(--paper-color); }
   .group-card.open .group-unit-vis { display: none; }
+  .group-card.singleton-container { margin-top: 12px; border-style: dashed; background: #f8f9fa; }
+  .singleton-coverage { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+  .singleton-coverage-item { display: inline-flex; align-items: center; gap: 4px; color: #6c757d; font-size: 9.5px; }
   .group-detail-slot { margin-top: 10px; }
   .expand-all-btn {
     font-family: inherit; font-size: 10px; font-weight: 600; color: #495057; background: #fff;
@@ -130,6 +133,12 @@
   }
   .paper-map-control-row { display: flex; align-items: center; gap: 10px; min-width: 0; flex-wrap: wrap; }
   .paper-map-summary { color: #6c757d; font-size: 10px; white-space: nowrap; }
+  .paper-map-action-button {
+    min-height: 22px; border: 1px solid #ced4da; border-radius: 4px; background: #fff;
+    color: #495057; font: inherit; font-size: 9.5px;
+  }
+  .paper-map-action-button { padding: 2px 7px; cursor: pointer; }
+  .paper-map-action-button.active { border-color: #1c7ed6; color: #1864ab; background: #e7f5ff; }
   .paper-map-mode-toggle { display: inline-flex; border: 1px solid #ced4da; border-radius: 5px; overflow: hidden; }
   .paper-map-mode-button {
     padding: 3px 7px; border: 0; border-right: 1px solid #ced4da; background: #fff;
@@ -149,18 +158,32 @@
     max-height: 84px; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable;
     padding: 3px 6px 5px 2px;
   }
+  .paper-map-singleton-tray { padding-top: 4px; border-top: 1px dashed #ced4da; }
+  .paper-map-singleton-label { margin: 0 0 3px 2px; color: #6c757d; font-size: 9.5px; font-weight: 700; }
+  .paper-map-singleton-tray .paper-map-legend { max-height: 84px; }
   .paper-map-legend-item {
     display: inline-flex; align-items: flex-start; gap: 5px; flex: 0 0 auto; max-width: 380px;
     padding: 3px 7px; border: 1px solid #dee2e6; border-radius: 10px; background: #fff;
-    color: #495057; font-size: 9.5px; text-align: left; cursor: pointer;
+    color: #495057; font-size: 10.5px; line-height: 1.3; text-align: left; cursor: pointer;
   }
   .paper-map-legend-item:hover, .paper-map-legend-item.highlight, .paper-map-legend-item.selected {
     border-color: var(--group-color); box-shadow: inset 0 0 0 1px var(--group-color);
   }
   .paper-map-legend-item.selected { background: var(--group-fill); }
+  .paper-map-legend-item.singleton { border-style: dashed; }
   .paper-map-swatch { flex: 0 0 auto; width: 9px; height: 9px; border-radius: 2px; background: var(--group-color); margin-top: 2px; }
   .paper-map-legend-question { white-space: normal; }
   .paper-map-legend-count { color: #868e96; margin-top: 1px; }
+  .paper-map-question-preview {
+    position: fixed; z-index: 900; width: max-content; max-width: min(420px, calc(100vw - 24px));
+    padding: 9px 11px; border: 1px solid var(--group-color, #1c7ed6); border-left-width: 4px;
+    border-radius: 7px; background: rgba(255,255,255,.98); box-shadow: 0 8px 24px rgba(33,37,41,.18);
+    pointer-events: none; visibility: hidden; opacity: 0; transform: translateY(-3px);
+    transition: opacity .1s ease, transform .1s ease;
+  }
+  .paper-map-question-preview.visible { visibility: visible; opacity: 1; transform: translateY(0); }
+  .paper-map-question-preview-text { color: #212529; font-size: 13.5px; font-weight: 650; line-height: 1.4; }
+  .paper-map-question-preview-meta { margin-top: 5px; color: #868e96; font-size: 10px; }
   .paper-map-columns {
     display: grid; grid-template-columns: repeat(var(--paper-count), minmax(150px, 1fr));
     gap: 10px; min-height: 0; padding: 10px; overflow-x: auto; background: #fafafa;
@@ -188,19 +211,22 @@
   .paper-map-column-indicator-top { top: 0; box-shadow: 0 1px 3px rgba(0,0,0,.15); }
   .paper-map-column-indicator-bottom { bottom: 0; box-shadow: 0 -1px 3px rgba(0,0,0,.15); }
   .paper-map-section-head {
-    margin: 11px 9px 5px; padding-bottom: 4px; border-bottom: 1px solid #dee2e6;
-    color: #495057; font-size: 10.5px; font-weight: 700;
+    display: block; width: calc(100% - 18px); margin: 11px 9px 5px; padding: 0 0 4px;
+    border: 0; border-bottom: 1px solid #dee2e6; background: transparent;
+    color: #495057; font-family: inherit; font-size: 10.5px; font-weight: 700; text-align: left;
   }
   .paper-map-paragraph {
     margin: 0 8px 7px; padding: 8px 9px; border: 1px solid var(--group-color);
     border-left-width: 5px; border-radius: 5px; background: var(--group-fill); cursor: pointer;
     transition: opacity .12s ease, box-shadow .12s ease;
   }
-  .paper-map-paragraph:hover, .paper-map-paragraph.highlight { box-shadow: 0 0 0 2px var(--group-color); }
+  .paper-map-paragraph:hover, .paper-map-paragraph.highlight { box-shadow: 0 0 0 2px var(--emphasis-color, var(--group-color)); }
   .paper-map-paragraph.dim, .paper-map-legend-item.dim { opacity: .24; }
   .paper-map-paragraph.orphan {
     --group-color: #adb5bd; --group-fill: #f8f9fa; border-style: dashed;
   }
+  .paper-map-paragraph.singleton { --group-color: #868e96; --group-fill: #f8f9fa; border-style: dashed; }
+  .paper-map-membership-count { margin-left: auto; color: #6c757d; font-weight: 700; }
   .paper-map-paragraph-meta { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 4px; color: #868e96; font-size: 8.5px; }
   .paper-map-paragraph-question { margin-bottom: 4px; color: #343a40; font-size: 11px; font-weight: 650; line-height: 1.35; overflow-wrap: anywhere; }
   .paper-map-paragraph-text { color: #495057; font-size: 10.5px; line-height: 1.45; white-space: pre-line; overflow-wrap: anywhere; }
@@ -536,6 +562,10 @@
 </header>
 <div id="legend">tags are free-text questions/phrases, not a fixed category. Only <strong>bidirectional</strong> matches (mutual top-3) are shown; use the slider above to filter out weaker matches.</div>
 <div id="stage"><div class="empty-state">Loading...</div></div>
+<div class="paper-map-question-preview" id="paperMapQuestionPreview" role="tooltip" aria-hidden="true">
+  <div class="paper-map-question-preview-text" id="paperMapQuestionPreviewText"></div>
+  <div class="paper-map-question-preview-meta" id="paperMapQuestionPreviewMeta"></div>
+</div>
 
 <div class="tutorial-welcome" id="tutorialWelcome" role="dialog" aria-modal="true" aria-labelledby="tutorialWelcomeTitle">
   <section class="tutorial-welcome-card">
@@ -587,7 +617,7 @@ const MILP_VARIANT_KEYS = MILP_VARIANTS.map(v => v.key);
 
 const TABS = ["epoch_groups", "paper-map"]; // only these two tabs are shown -- the rendering/dispatch code for the rest (sections, paragraphs, groups, qi-trace, qi-flow, MILP_VARIANT_KEYS) is untouched, so re-adding any of them here brings the tab straight back
 const TAB_LABELS = Object.assign(
-  { sections: "Section", paragraphs: "Paragraph", groups: "Groups", epoch_groups: "Epoch Groups", "paper-map": "Paper Map", "qi-trace": "QI-Prime Trace", "qi-flow": "QI-Prime Flow" },
+  { sections: "Section", paragraphs: "Paragraph", groups: "Groups", epoch_groups: "Question Groups", "paper-map": "Paper Map", "qi-trace": "QI-Prime Trace", "qi-flow": "QI-Prime Flow" },
   Object.fromEntries(MILP_VARIANTS.map(v => [v.key, v.label]))
 );
 
@@ -599,6 +629,9 @@ const stage = document.getElementById("stage");
 const granularityTabsEl = document.getElementById("granularityTabs");
 const similaritySlider = document.getElementById("similaritySlider");
 const similarityValueEl = document.getElementById("similarityValue");
+const paperMapQuestionPreviewEl = document.getElementById("paperMapQuestionPreview");
+const paperMapQuestionPreviewTextEl = document.getElementById("paperMapQuestionPreviewText");
+const paperMapQuestionPreviewMetaEl = document.getElementById("paperMapQuestionPreviewMeta");
 let pinnedId = null;
 let currentLinks = []; // links for the current granularity AND above the current similarity threshold
 const expandedIds = new Set(); // units expanded to full text -- independent per unit, click toggles membership
@@ -651,6 +684,9 @@ const epochMetaByPhase = {}; // phase key -> {reassigned, total_assigned} | null
 const epochBalanceByPhase = {}; // phase key -> {group_id: group_balance}, when available (epoch1/2/3 only, from compute_epoch_group_balance.py)
 let currentEpochPhase = "initial"; // set from dataset.json; defaults to the package's last epoch
 const openEpochGroupIds = new Set(); // group_id currently expanded, cleared on phase switch (membership/content differs per phase)
+let finalSnapshotMode = false;
+let snapshotSingletonGroups = [];
+let paperMapShowSingletons = false;
 
 // Fixed per-paper colors (not tag-derived, so this isn't the hash-based tag
 // coloring that was removed earlier -- paper identity is a small, fixed,
@@ -1070,6 +1106,30 @@ async function fetchDatasetJson(path) {
 
 async function loadAll() {
   const descriptor = await fetchDatasetJson("dataset.json");
+  if (descriptor.schema_version === 2 && descriptor.mode === "final_snapshot") {
+    const manifest = await fetchDatasetJson("manifest.json");
+    if (!Array.isArray(manifest) || !manifest.length) throw new Error("data/manifest.json has no papers");
+    const papers = await Promise.all(manifest.map(entry => fetchDatasetJson(entry.file)));
+    const [links, finalSnapshot] = await Promise.all([
+      fetchDatasetJson("bidirectional_matches.json"),
+      fetchDatasetJson(descriptor.snapshot_file || "final_snapshot.json"),
+    ]);
+    if (![1, 2].includes(finalSnapshot.schema_version) || finalSnapshot.mode !== "final_snapshot") {
+      throw new Error("The final snapshot does not match the Question Atlas snapshot contract");
+    }
+    return {
+      dataset: descriptor,
+      papers,
+      links,
+      finalSnapshot,
+      iterations: {},
+      balances: {},
+      milpDataByVariant: {},
+      epochInitialGroups: null,
+      epochStepData: {},
+    };
+  }
+
   const epochs = (descriptor.epochs || []).map(Number);
   if (descriptor.schema_version !== 1 || !epochs.length || epochs.some(n => !Number.isInteger(n) || n < 1)) {
     throw new Error("data/dataset.json does not match the Question Atlas dataset contract");
@@ -1106,6 +1166,7 @@ async function loadAll() {
     milpDataByVariant: {},
     epochInitialGroups,
     epochStepData: Object.fromEntries(epochEntries),
+    finalSnapshot: null,
   };
 }
 
@@ -1464,6 +1525,7 @@ function switchIteration(n) {
 }
 
 function epochPhaseShortLabel(phase) {
+  if (phase === "final") return "F";
   return phase === "initial" ? "Pre" : phase.replace("epoch", "E");
 }
 
@@ -1500,15 +1562,39 @@ function refreshOpenEpochGroupDetails(groups) {
   });
 }
 
+function buildSingletonCoverageVis(singletons) {
+  const countByPaper = {};
+  singletons.forEach(group => {
+    const paperId = group.members?.[0]?.paper;
+    if (paperId) countByPaper[paperId] = (countByPaper[paperId] || 0) + 1;
+  });
+  return `<div class="singleton-coverage">${allPapers.map(paper => {
+    const count = countByPaper[paper.paper_id] || 0;
+    const color = paperColorById[paper.paper_id] || "#ced4da";
+    return `<span class="singleton-coverage-item"><span class="unit-square represented" style="--paper-color:${color}"></span>${escapeHtml(shortPaperLabel(paper))} ${count}</span>`;
+  }).join("")}</div>`;
+}
+
+function snapshotSingletonContainerGroup() {
+  return {
+    group_id: "__singleton_questions__",
+    overarching_question: "Singleton Questions",
+    members: snapshotSingletonGroups.flatMap(group => group.members || []),
+  };
+}
+
 // Same card-list-with-inline-3-column-detail pattern as renderIterationGroups().
 // The packaged dataset selects its final/default epoch; the UI remains unchanged.
 function renderEpochGroups() {
   const meta = epochMetaByPhase[currentEpochPhase];
-  const metaText = meta ? `${meta.reassigned} of ${meta.total_assigned} paragraphs were reassigned to a different group this epoch.` : "";
+  const metaText = finalSnapshotMode
+    ? `${(epochGroupsByPhase.final || []).length} shared question groups · ${snapshotSingletonGroups.length} singleton questions · final snapshot`
+    : meta ? `${meta.reassigned} of ${meta.total_assigned} paragraphs were reassigned to a different group this epoch.` : "";
 
   const groups = [...(epochGroupsByPhase[currentEpochPhase] || [])].sort((a, b) => (b.members?.length || 0) - (a.members?.length || 0));
+  const singletonContainer = finalSnapshotMode && snapshotSingletonGroups.length ? snapshotSingletonContainerGroup() : null;
 
-  if (!groups.length) {
+  if (!groups.length && !singletonContainer) {
     stage.innerHTML = `${buildPreviewLengthControlHtml()}<div class="empty-state">No groups available for this phase.</div>`;
     attachPreviewLengthControl(() => {});
     return;
@@ -1521,13 +1607,19 @@ function renderEpochGroups() {
       <div class="group-detail-slot"></div>
     </div>`;
   }).join("");
+  const singletonHtml = singletonContainer ? `<div class="group-card singleton-container" data-group-id="${singletonContainer.group_id}">
+    <div class="group-question">Singleton Questions <span class="group-balance-badge">${snapshotSingletonGroups.length} questions</span><button type="button" class="expand-all-btn">▾ Expand all</button></div>
+    ${buildSingletonCoverageVis(snapshotSingletonGroups)}
+    <div class="group-detail-slot"></div>
+  </div>` : "";
+  const renderedGroups = singletonContainer ? [...groups, singletonContainer] : groups;
 
-  stage.innerHTML = `${buildPreviewLengthControlHtml()}<div class="iteration-meta">${metaText}</div>${buildPapersLegend()}${cardsHtml}`;
-  attachPreviewLengthControl(() => refreshOpenEpochGroupDetails(groups));
+  stage.innerHTML = `${buildPreviewLengthControlHtml()}<div class="iteration-meta">${metaText}</div>${buildPapersLegend()}${cardsHtml}${singletonHtml}`;
+  attachPreviewLengthControl(() => refreshOpenEpochGroupDetails(renderedGroups));
 
   stage.querySelectorAll(".group-card").forEach(card => {
     const groupId = card.dataset.groupId;
-    const group = groups.find(g => g.group_id === groupId);
+    const group = renderedGroups.find(g => g.group_id === groupId);
     const slot = card.querySelector(".group-detail-slot");
     if (openEpochGroupIds.has(groupId)) {
       card.classList.add("open");
@@ -1601,7 +1693,7 @@ function renderGroupDetail(slot, group) {
 
   const cols = allPapers
     .map(paper => {
-      const units = membersByPaper[paper.paper_id] || [];
+      const units = [...(membersByPaper[paper.paper_id] || [])].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
       const blocks = units.map(unit => {
         const text = (unit.text || "").replace(/\s+/g, " ").trim();
         const id = `${paper.paper_id}:${unit.id}`;
@@ -1697,10 +1789,21 @@ function paperMapVisibleParagraphs(paper) {
   return paper.paragraphs || [];
 }
 
-// Every saved epoch phase carries its own membership -- Pre-epoch uses the
-// random-seeded initial groups, later phases use each paragraph's Matrix-1
-// best-fit group. The map displays that membership without adding another
-// matching rule.
+function paperMapMembershipIds(element) {
+  return String(element?.dataset?.paperMapGroups || element?.dataset?.paperMapGroup || "")
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+function paperMapElementMatchesGroup(element, groupId) {
+  return Boolean(groupId) && paperMapMembershipIds(element).includes(groupId);
+}
+
+// Final snapshots may preserve several valid shared-question memberships for
+// one paragraph. All are retained for filtering and highlighting. The primary
+// assignment used for the base color is deterministic: widest paper coverage,
+// then largest group, then stable group ID. Legacy epoch data uses the same
+// rule, so overlapping memberships are never silently discarded.
 function buildPaperMapModel() {
   const groups = epochGroupsByPhase[currentEpochPhase] || [];
   const colorByGroupId = epochColorCatalog();
@@ -1708,36 +1811,115 @@ function buildPaperMapModel() {
     group,
     label: `${epochPhaseShortLabel(currentEpochPhase)}-${index + 1}`,
     color: colorByGroupId.get(group.group_id) || paperMapColor(index),
+    kind: "shared",
+    memberKeys: new Set(),
+    paperIds: new Set(),
     count: 0,
+    paperCount: 0,
   }));
-  const entriesById = new Map(groupEntries.map(entry => [entry.group.group_id, entry]));
-  const assignments = new Map();
+  const singletonEntries = finalSnapshotMode ? snapshotSingletonGroups.map(group => ({
+    group,
+    label: "Singleton",
+    color: { border: "#868e96", fill: "#f8f9fa" },
+    kind: "singleton",
+    memberKeys: new Set(),
+    paperIds: new Set(),
+    count: 0,
+    paperCount: 0,
+  })) : [];
+  const allEntries = [...groupEntries, ...singletonEntries];
+  const entriesById = new Map(allEntries.map(entry => [entry.group.group_id, entry]));
+  const memberships = new Map();
 
-  groupEntries.forEach(entry => {
+  allEntries.forEach(entry => {
     (entry.group.members || []).forEach(member => {
       const key = `${member.paper}:${member.unit_id}`;
-      if (!paragraphUnitLookup[key] || assignments.has(key)) return;
-      assignments.set(key, entry);
-      entry.count += 1;
+      if (!paragraphUnitLookup[key] || entry.memberKeys.has(key)) return;
+      entry.memberKeys.add(key);
+      entry.paperIds.add(member.paper);
+      const paragraphEntries = memberships.get(key) || [];
+      paragraphEntries.push(entry);
+      memberships.set(key, paragraphEntries);
     });
+    entry.count = entry.memberKeys.size;
+    entry.paperCount = entry.paperIds.size;
   });
 
-  return { groups, groupEntries, entriesById, assignments };
+  const assignments = new Map();
+  memberships.forEach((entries, key) => {
+    const shared = entries.filter(entry => entry.kind === "shared");
+    const ranked = [...(shared.length ? shared : entries)].sort((a, b) =>
+      b.paperCount - a.paperCount
+      || b.count - a.count
+      || String(a.group.group_id).localeCompare(String(b.group.group_id), undefined, { numeric: true })
+    );
+    if (ranked[0]) assignments.set(key, ranked[0]);
+  });
+
+  return {
+    groups,
+    groupEntries,
+    singletonEntries,
+    entriesById,
+    memberships,
+    assignments,
+    sharedParagraphCount: new Set(groupEntries.flatMap(entry => [...entry.memberKeys])).size,
+    singletonParagraphCount: new Set(singletonEntries.flatMap(entry => [...entry.memberKeys])).size,
+  };
 }
 
 // Most-represented groups first. The selected group (if any) stays in its
-// count-sorted position but renders expanded (full question text, not
-// truncated) so it's readable without hovering for the title tooltip. A
+// count-sorted position but renders the full question text. A
 // pure function (given a model) so it can rebuild just the legend's own
 // HTML on a selection change, without re-rendering the whole paper map.
-function buildPaperMapLegendHtml(model) {
-  const legendEntries = [...model.groupEntries].sort((a, b) => b.count - a.count);
+let paperMapQuestionPreviewAnchor = null;
+
+function hidePaperMapQuestionPreview() {
+  if (paperMapQuestionPreviewAnchor) paperMapQuestionPreviewAnchor.removeAttribute("aria-describedby");
+  paperMapQuestionPreviewAnchor = null;
+  paperMapQuestionPreviewEl.classList.remove("visible");
+  paperMapQuestionPreviewEl.setAttribute("aria-hidden", "true");
+}
+
+function showPaperMapQuestionPreview(button) {
+  const question = button.querySelector(".paper-map-legend-question")?.textContent?.trim();
+  if (!question) return;
+  hidePaperMapQuestionPreview();
+  paperMapQuestionPreviewAnchor = button;
+  button.setAttribute("aria-describedby", "paperMapQuestionPreview");
+  paperMapQuestionPreviewTextEl.textContent = question;
+  const paragraphCount = Number(button.dataset.paragraphCount || 0);
+  const paperCount = Number(button.dataset.paperCount || 0);
+  paperMapQuestionPreviewMetaEl.textContent = `${paragraphCount} ${paragraphCount === 1 ? "paragraph" : "paragraphs"} · ${paperCount} ${paperCount === 1 ? "paper" : "papers"}`;
+  const color = getComputedStyle(button).getPropertyValue("--group-color").trim();
+  if (color) paperMapQuestionPreviewEl.style.setProperty("--group-color", color);
+  paperMapQuestionPreviewEl.classList.add("visible");
+  paperMapQuestionPreviewEl.setAttribute("aria-hidden", "false");
+
+  const anchorRect = button.getBoundingClientRect();
+  const previewRect = paperMapQuestionPreviewEl.getBoundingClientRect();
+  const margin = 8;
+  const left = Math.min(Math.max(12, anchorRect.left), window.innerWidth - previewRect.width - 12);
+  const below = anchorRect.bottom + margin;
+  const top = below + previewRect.height <= window.innerHeight - 12
+    ? below
+    : Math.max(12, anchorRect.top - previewRect.height - margin);
+  paperMapQuestionPreviewEl.style.left = `${left}px`;
+  paperMapQuestionPreviewEl.style.top = `${top}px`;
+}
+
+window.addEventListener("resize", hidePaperMapQuestionPreview);
+window.addEventListener("scroll", hidePaperMapQuestionPreview, { passive: true });
+
+function buildPaperMapLegendHtml(model, entries = model.groupEntries) {
+  const legendEntries = entries
+    .sort((a, b) => b.count - a.count || String(a.group.group_id).localeCompare(String(b.group.group_id)));
   return legendEntries.map(entry => {
     const groupId = entry.group.group_id;
     const question = entry.group.overarching_question || "(no summary)";
     const style = `--group-color:${entry.color.border};--group-fill:${entry.color.fill}`;
     const selected = paperMapSelectedGroupId === groupId;
-    return `<button type="button" class="paper-map-legend-item${selected ? " selected" : ""}" data-paper-map-group="${escapeHtml(groupId)}" style="${style}" title="${escapeHtml(question)}" aria-pressed="${selected}">
+    return `<button type="button" class="paper-map-legend-item${entry.kind === "singleton" ? " singleton" : ""}${selected ? " selected" : ""}" data-paper-map-group="${escapeHtml(groupId)}" data-paper-map-groups="${escapeHtml(groupId)}" data-paragraph-count="${entry.count}" data-paper-count="${entry.paperCount}" style="${style}" aria-pressed="${selected}">
       <span class="paper-map-swatch"></span><span class="paper-map-legend-question">${escapeHtml(question)}</span><span class="paper-map-legend-count">${entry.count}</span>
     </button>`;
   }).join("");
@@ -1749,9 +1931,18 @@ function buildPaperMapLegendHtml(model) {
 // alone only toggles classes on already-rendered buttons and can't reorder
 // or resize them.
 function refreshPaperMapLegend(model) {
-  const legendEl = stage.querySelector(".paper-map-legend");
-  if (!legendEl) return;
-  legendEl.innerHTML = buildPaperMapLegendHtml(model);
+  const sharedLegend = stage.querySelector(".paper-map-shared-legend");
+  if (!sharedLegend) return;
+  hidePaperMapQuestionPreview();
+  const sharedScrollTop = sharedLegend.scrollTop;
+  sharedLegend.innerHTML = buildPaperMapLegendHtml(model);
+  sharedLegend.scrollTop = sharedScrollTop;
+  const singletonLegend = stage.querySelector(".paper-map-singleton-legend");
+  if (singletonLegend) {
+    const singletonScrollTop = singletonLegend.scrollTop;
+    singletonLegend.innerHTML = buildPaperMapLegendHtml(model, model.singletonEntries);
+    singletonLegend.scrollTop = singletonScrollTop;
+  }
   attachPaperMapLegendInteractions(model);
   setPaperMapGroupEmphasis();
 }
@@ -1759,8 +1950,19 @@ function refreshPaperMapLegend(model) {
 function attachPaperMapLegendInteractions(model) {
   stage.querySelectorAll(".paper-map-legend-item").forEach(button => {
     const groupId = button.dataset.paperMapGroup;
-    button.addEventListener("mouseenter", () => setPaperMapGroupEmphasis(groupId));
-    button.addEventListener("mouseleave", () => setPaperMapGroupEmphasis());
+    button.addEventListener("mouseenter", () => {
+      if (!paperMapSelectedGroupId) setPaperMapGroupEmphasis(groupId);
+      showPaperMapQuestionPreview(button);
+    });
+    button.addEventListener("mouseleave", () => {
+      setPaperMapGroupEmphasis();
+      if (document.activeElement !== button) hidePaperMapQuestionPreview();
+    });
+    button.addEventListener("focus", () => {
+      if (!paperMapSelectedGroupId) setPaperMapGroupEmphasis(groupId);
+      showPaperMapQuestionPreview(button);
+    });
+    button.addEventListener("blur", () => { setPaperMapGroupEmphasis(); hidePaperMapQuestionPreview(); });
     button.addEventListener("click", event => {
       event.stopPropagation();
       const wasSelected = paperMapSelectedGroupId === groupId;
@@ -1771,7 +1973,17 @@ function attachPaperMapLegendInteractions(model) {
   });
 }
 
+function buildPaperMapSingletonTrayHtml(model) {
+  if (!finalSnapshotMode || !paperMapShowSingletons) return "";
+  const questions = buildPaperMapLegendHtml(model, model.singletonEntries);
+  return `<div class="paper-map-singleton-tray">
+    <div class="paper-map-singleton-label">Singleton questions · ${model.singletonEntries.length} total</div>
+    <div class="paper-map-legend paper-map-singleton-legend" aria-label="Singleton questions">${questions}</div>
+  </div>`;
+}
+
 function renderPaperMap() {
+  hidePaperMapQuestionPreview();
   // The user-study surface currently exposes only the full-text reading map.
   // Keep the skeleton implementation available for later experiments without
   // presenting its control or allowing stale state to activate it here.
@@ -1785,21 +1997,26 @@ function renderPaperMap() {
   const totalParagraphs = allPapers.reduce((sum, paper) => sum + paperMapVisibleParagraphs(paper).length, 0);
   const orphanCount = totalParagraphs - model.assignments.size;
   const legend = buildPaperMapLegendHtml(model);
+  const summary = finalSnapshotMode
+    ? `${model.groupEntries.length} shared groups · ${model.sharedParagraphCount} shared paragraphs · ${model.singletonEntries.length} singleton questions${orphanCount ? ` · ${orphanCount} unassigned` : ""}`
+    : `${model.groups.length} groups · ${model.assignments.size} assigned · ${orphanCount} unassigned`;
   const syncToggle = paperMapMode === "reading" ? `<label class="paper-map-sync-toggle" title="Off keeps each paper independently scrollable">
     <input type="checkbox" id="paperMapSyncScroll"${paperMapSyncScroll ? " checked" : ""}> sync paper scrolling
   </label>` : "";
   const hideUnselectedToggle = `<label class="paper-map-hide-unselected-toggle" title="${paperMapSelectedGroupId ? "" : "Select a group in the legend or map first"}">
     <input type="checkbox" id="paperMapHideUnselected"${paperMapHideUnselected ? " checked" : ""}${paperMapSelectedGroupId ? "" : " disabled"}> Hide unselected
   </label>`;
+  const singletonToggle = finalSnapshotMode ? `<button type="button" id="paperMapSingletonToggle" class="paper-map-action-button${paperMapShowSingletons ? " active" : ""}" aria-pressed="${paperMapShowSingletons}">${paperMapShowSingletons ? "Hide" : "Show"} singleton questions (${model.singletonEntries.length})</button>` : "";
   const content = renderPaperMapReading(model);
 
   stage.innerHTML = `<div class="paper-map-shell">
     <div class="paper-map-overview">
       <div class="paper-map-control-row">
-        <div class="paper-map-summary">${model.groups.length} groups · ${model.assignments.size} assigned · ${orphanCount} unassigned</div>
-        ${syncToggle}${hideUnselectedToggle}
+        <div class="paper-map-summary">${summary}</div>
+        ${singletonToggle}${syncToggle}${hideUnselectedToggle}
       </div>
-      <div class="paper-map-legend" aria-label="Question groups">${legend}</div>
+      <div class="paper-map-legend paper-map-shared-legend" aria-label="Shared question groups">${legend}</div>
+      ${buildPaperMapSingletonTrayHtml(model)}
     </div>
     ${content}
   </div>`;
@@ -1835,6 +2052,7 @@ function renderPaperMapReading(model) {
     const paragraphs = paperMapVisibleParagraphs(paper).map(paragraph => {
       const key = `${paper.paper_id}:${paragraph.id}`;
       const entry = model.assignments.get(key);
+      const memberships = model.memberships.get(key) || [];
       const groupId = entry ? entry.group.group_id : "";
       const style = entry ? `--group-color:${entry.color.border};--group-fill:${entry.color.fill}` : "";
       const sectionId = paragraph.section_id || paragraph.parent_section_id || "";
@@ -1842,10 +2060,20 @@ function renderPaperMapReading(model) {
       if (sectionId !== previousSectionId) {
         previousSectionId = sectionId;
         const section = sections.get(sectionId);
-        sectionHeading = `<div class="paper-map-section-head">${escapeHtml(section?.title || section?.tag || sectionId || "Unsectioned")}</div>`;
+        sectionHeading = `<div class="paper-map-section-head">${escapeHtml(section?.title || sectionId || "Unsectioned")}</div>`;
       }
-      return `${sectionHeading}<article class="paper-map-paragraph${entry ? "" : " orphan"}" data-paper-map-paragraph="${escapeHtml(key)}" data-paper-map-group="${escapeHtml(groupId)}" style="${style}">
-        <div class="paper-map-paragraph-meta">${entry ? "" : "<span>Unassigned</span>"}</div>
+      const groupIds = memberships.map(item => item.group.group_id);
+      const singleton = entry?.kind === "singleton";
+      const paragraphClasses = `paper-map-paragraph${entry ? "" : " orphan"}${singleton ? " singleton" : ""}`;
+      const membershipMeta = !entry
+        ? "<span>Unassigned</span>"
+        : singleton
+          ? "<span>Singleton question</span>"
+          : memberships.length > 1
+            ? `<span class="paper-map-membership-count" title="${escapeHtml(memberships.map(item => item.group.overarching_question || "(no summary)").join("\n"))}">${memberships.length} shared groups</span>`
+            : "";
+      return `${sectionHeading}<article class="${paragraphClasses}" data-paper-map-paragraph="${escapeHtml(key)}" data-paper-map-group="${escapeHtml(groupId)}" data-paper-map-groups="${escapeHtml(groupIds.join(" "))}" style="${style}">
+        <div class="paper-map-paragraph-meta">${membershipMeta}</div>
         <div class="paper-map-paragraph-question">${escapeHtml(paragraph.tag || "(no question)")}</div>
         <div class="paper-map-paragraph-text">${escapeHtml(compactText(paragraph.text))}</div>
       </article>`;
@@ -1865,11 +2093,12 @@ function renderPaperMapSkeleton(model) {
     const blocks = paperMapVisibleParagraphs(paper).map(paragraph => {
       const key = `${paper.paper_id}:${paragraph.id}`;
       const entry = model.assignments.get(key);
+      const memberships = model.memberships.get(key) || [];
       const groupId = entry ? entry.group.group_id : "";
       const characterCount = Math.max(1, compactText(paragraph.text).length);
       const style = `${entry ? `--group-color:${entry.color.border};` : ""}--paragraph-weight:${characterCount}`;
       const title = `${entry ? "" : "Unassigned · "}${characterCount.toLocaleString()} characters`;
-      return `<button type="button" class="paper-map-skeleton-block${entry ? "" : " orphan"}" data-paper-map-paragraph="${escapeHtml(key)}" data-paper-map-group="${escapeHtml(groupId)}" style="${style}" title="${escapeHtml(title)}" aria-label="${escapeHtml(`${shortPaperLabel(paper)} ${title}`)}"></button>`;
+      return `<button type="button" class="paper-map-skeleton-block${entry ? "" : " orphan"}" data-paper-map-paragraph="${escapeHtml(key)}" data-paper-map-group="${escapeHtml(groupId)}" data-paper-map-groups="${escapeHtml(memberships.map(item => item.group.group_id).join(" "))}" style="${style}" title="${escapeHtml(title)}" aria-label="${escapeHtml(`${shortPaperLabel(paper)} ${title}`)}"></button>`;
     }).join("");
     return `<section class="paper-map-skeleton-paper" data-paper="${escapeHtml(paper.paper_id)}">
       <div class="paper-map-paper-head" title="${escapeHtml(paper.title)}">${escapeHtml(shortPaperLabel(paper))} · ${paperMapVisibleParagraphs(paper).length} paragraphs</div>
@@ -1888,10 +2117,15 @@ function updatePaperMapHeight() {
 function setPaperMapGroupEmphasis(hoveredGroupId = null) {
   const groupId = hoveredGroupId || paperMapSelectedGroupId;
   const active = Boolean(groupId);
-  stage.querySelectorAll("[data-paper-map-group]").forEach(element => {
-    const matches = element.dataset.paperMapGroup === groupId;
+  const sourceButton = [...stage.querySelectorAll(".paper-map-legend-item")]
+    .find(element => element.dataset.paperMapGroup === groupId);
+  const emphasisColor = sourceButton?.style.getPropertyValue("--group-color") || "";
+  stage.querySelectorAll("[data-paper-map-group], [data-paper-map-groups]").forEach(element => {
+    const matches = paperMapElementMatchesGroup(element, groupId);
     element.classList.toggle("highlight", active && matches);
     element.classList.toggle("dim", active && !matches);
+    if (active && matches && emphasisColor) element.style.setProperty("--emphasis-color", emphasisColor);
+    else element.style.removeProperty("--emphasis-color");
     if (element.classList.contains("paper-map-legend-item")) {
       const selected = element.dataset.paperMapGroup === paperMapSelectedGroupId;
       element.classList.toggle("selected", selected);
@@ -1923,13 +2157,17 @@ function syncPaperMapColumns(source, columns) {
 function scrollColumnsToGroup(groupId) {
   if (paperMapMode !== "reading" || !groupId) return;
   stage.querySelectorAll(".paper-map-column").forEach(column => {
-    const target = column.querySelector(`.paper-map-paragraph[data-paper-map-group="${CSS.escape(groupId)}"]`);
+    const target = [...column.querySelectorAll(".paper-map-paragraph")]
+      .find(paragraph => paperMapElementMatchesGroup(paragraph, groupId));
     if (!target) return;
     // getBoundingClientRect deltas (not offsetTop) so this is correct regardless of
     // which element ends up as the offsetParent -- same technique as computeAndApplyAlignment().
     const columnRect = column.getBoundingClientRect();
     const targetRect = target.getBoundingClientRect();
-    const offset = targetRect.top - columnRect.top + column.scrollTop - 12; // small gap so it isn't flush against the column edge
+    const headerHeight = column.querySelector(".paper-map-paper-head")?.offsetHeight || 0;
+    // Keep the whole paragraph below the sticky paper title instead of
+    // aligning it to the obscured top edge of the scrolling container.
+    const offset = targetRect.top - columnRect.top + column.scrollTop - headerHeight - 8;
     column.scrollTop = Math.max(0, offset);
     paperMapScrollByPaper[column.dataset.paper] = column.scrollTop;
   });
@@ -1954,7 +2192,8 @@ function updateColumnGroupIndicators() {
       return;
     }
 
-    const paragraphs = [...column.querySelectorAll(`.paper-map-paragraph[data-paper-map-group="${CSS.escape(groupId)}"]`)];
+    const paragraphs = [...column.querySelectorAll(".paper-map-paragraph")]
+      .filter(paragraph => paperMapElementMatchesGroup(paragraph, groupId));
     // Sibling elements don't inherit a paragraph's own inline --group-color,
     // so pull it from any matching paragraph and set it explicitly.
     const color = paragraphs.length ? paragraphs[0].style.getPropertyValue("--group-color") : "";
@@ -1986,7 +2225,7 @@ function updateColumnGroupIndicators() {
 function updatePaperMapHiddenState() {
   const shouldHide = paperMapHideUnselected && Boolean(paperMapSelectedGroupId);
   stage.querySelectorAll(".paper-map-paragraph, .paper-map-skeleton-block").forEach(element => {
-    element.classList.toggle("hidden", shouldHide && element.dataset.paperMapGroup !== paperMapSelectedGroupId);
+    element.classList.toggle("hidden", shouldHide && !paperMapElementMatchesGroup(element, paperMapSelectedGroupId));
   });
 }
 
@@ -2009,6 +2248,20 @@ function finalizePaperMapSelectionChange(model) {
   syncHideUnselectedToggle();
 }
 
+function scrollPaperMapLegendToGroup(groupId) {
+  if (!groupId) return;
+  const button = [...stage.querySelectorAll(".paper-map-legend-item")]
+    .find(element => element.dataset.paperMapGroup === groupId);
+  const legend = button?.closest(".paper-map-legend");
+  if (!legend || !button) return;
+  const legendRect = legend.getBoundingClientRect();
+  const buttonRect = button.getBoundingClientRect();
+  let offset = 0;
+  if (buttonRect.top < legendRect.top) offset = buttonRect.top - legendRect.top - 3;
+  else if (buttonRect.bottom > legendRect.bottom) offset = buttonRect.bottom - legendRect.bottom + 3;
+  if (offset) legend.scrollTo({ top: legend.scrollTop + offset, behavior: "smooth" });
+}
+
 function attachPaperMapInteractions(model) {
   const shell = stage.querySelector(".paper-map-shell");
   if (shell) shell.addEventListener("click", event => event.stopPropagation());
@@ -2022,6 +2275,9 @@ function attachPaperMapInteractions(model) {
   });
 
   const columns = [...stage.querySelectorAll(".paper-map-column")];
+  stage.querySelectorAll(".paper-map-legend").forEach(legend => {
+    legend.addEventListener("scroll", hidePaperMapQuestionPreview, { passive: true });
+  });
   columns.forEach(column => {
     column.addEventListener("scroll", () => {
       if (paperMapScrollSyncing) return;
@@ -2051,16 +2307,41 @@ function attachPaperMapInteractions(model) {
     });
   }
 
+  const singletonToggle = document.getElementById("paperMapSingletonToggle");
+  if (singletonToggle) {
+    singletonToggle.addEventListener("click", event => {
+      event.stopPropagation();
+      const selectedEntry = model.entriesById.get(paperMapSelectedGroupId);
+      paperMapShowSingletons = !paperMapShowSingletons;
+      if (!paperMapShowSingletons && selectedEntry?.kind === "singleton") {
+        paperMapSelectedGroupId = null;
+        paperMapHideUnselected = false;
+      }
+      renderPaperMap();
+    });
+  }
+
   stage.querySelectorAll(".paper-map-paragraph, .paper-map-skeleton-block").forEach(card => {
     const groupId = card.dataset.paperMapGroup;
-    // Hovering a paragraph is just a preview -- once a group is pinned via
-    // click, that selection's emphasis should stay put regardless of hover.
-    card.addEventListener("mouseenter", () => { if (!paperMapSelectedGroupId) setPaperMapGroupEmphasis(groupId); });
-    card.addEventListener("mouseleave", () => { if (!paperMapSelectedGroupId) setPaperMapGroupEmphasis(); });
+    // Hover remains live while scrolling, but a pinned selection always wins.
+    card.addEventListener("mouseenter", () => {
+      if (!paperMapSelectedGroupId) setPaperMapGroupEmphasis(groupId);
+    });
+    card.addEventListener("mouseleave", () => {
+      if (!paperMapSelectedGroupId) setPaperMapGroupEmphasis();
+    });
     card.addEventListener("click", event => {
       event.stopPropagation();
-      paperMapSelectedGroupId = groupId && paperMapSelectedGroupId !== groupId ? groupId : null;
+      const membershipIds = paperMapMembershipIds(card);
+      paperMapSelectedGroupId = groupId && !membershipIds.includes(paperMapSelectedGroupId) ? groupId : null;
+      if (model.entriesById.get(paperMapSelectedGroupId)?.kind === "singleton" && !paperMapShowSingletons) {
+        paperMapShowSingletons = true;
+        renderPaperMap();
+        requestAnimationFrame(() => scrollPaperMapLegendToGroup(paperMapSelectedGroupId));
+        return;
+      }
       finalizePaperMapSelectionChange(model);
+      scrollPaperMapLegendToGroup(paperMapSelectedGroupId);
     });
   });
   attachPaperMapLegendInteractions(model);
@@ -2980,6 +3261,7 @@ function updateSliderVisibility() {
 }
 
 function switchGranularity(granularity) {
+  hidePaperMapQuestionPreview();
   if (currentGranularity === "qi-flow" && granularity !== "qi-flow") stopQiFlowPlayback();
   currentGranularity = granularity;
   updateSliderVisibility();
@@ -3013,11 +3295,15 @@ function switchGranularity(granularity) {
 }
 
 async function init() {
-  const { dataset, papers, links, iterations, balances, milpDataByVariant, epochInitialGroups, epochStepData } = await loadAll();
+  const { dataset, papers, links, iterations, balances, milpDataByVariant, epochInitialGroups, epochStepData, finalSnapshot } = await loadAll();
   const viewerTitle = dataset.label || "SME Viewer";
   document.title = viewerTitle;
   document.getElementById("viewerTitle").textContent = viewerTitle;
-  currentEpochPhase = `epoch${dataset.default_epoch}`;
+  finalSnapshotMode = Boolean(finalSnapshot);
+  if (finalSnapshotMode) {
+    document.getElementById("legend").textContent = "Questions are grouped by shared conceptual role. Singleton questions remain available separately, with every paragraph linked back to its source paper.";
+  }
+  currentEpochPhase = finalSnapshotMode ? "final" : `epoch${dataset.default_epoch}`;
   document.documentElement.dataset.datasetId = dataset.dataset_id || "dataset";
   allPapers = papers;
   allLinksByGranularity = links;
@@ -3034,22 +3320,28 @@ async function init() {
   MILP_VARIANT_KEYS.forEach(key => {
     if (milpDataByVariant[key]) milpGroupsByVariant[key] = milpDataByVariant[key].groups || [];
   });
-  if (epochInitialGroups) epochGroupsByPhase.initial = epochInitialGroups;
-  for (const n of dataset.epochs) {
-    const phase = `epoch${n}`;
-    const { estep, mstep, balance } = epochStepData[phase] || {};
-    if (!estep || !mstep) continue;
-    epochMetaByPhase[phase] = estep.meta || null;
-    const membersByGroupId = {};
-    (estep.groups || []).forEach(g => { membersByGroupId[g.group_id] = g.members; });
-    epochGroupsByPhase[phase] = (mstep.groups || []).map(g => ({
-      group_id: g.group_id,
-      overarching_question: g.overarching_question,
-      members: membersByGroupId[g.group_id] || [],
-    }));
-    if (balance) {
-      epochBalanceByPhase[phase] = {};
-      balance.forEach(g => { epochBalanceByPhase[phase][g.group_id] = g.group_balance; });
+  if (finalSnapshotMode) {
+    epochGroupsByPhase.final = finalSnapshot.groups || [];
+    epochMetaByPhase.final = null;
+    snapshotSingletonGroups = finalSnapshot.singletons || [];
+  } else {
+    if (epochInitialGroups) epochGroupsByPhase.initial = epochInitialGroups;
+    for (const n of dataset.epochs) {
+      const phase = `epoch${n}`;
+      const { estep, mstep, balance } = epochStepData[phase] || {};
+      if (!estep || !mstep) continue;
+      epochMetaByPhase[phase] = estep.meta || null;
+      const membersByGroupId = {};
+      (estep.groups || []).forEach(g => { membersByGroupId[g.group_id] = g.members; });
+      epochGroupsByPhase[phase] = (mstep.groups || []).map(g => ({
+        group_id: g.group_id,
+        overarching_question: g.overarching_question,
+        members: membersByGroupId[g.group_id] || [],
+      }));
+      if (balance) {
+        epochBalanceByPhase[phase] = {};
+        balance.forEach(g => { epochBalanceByPhase[phase][g.group_id] = g.group_balance; });
+      }
     }
   }
   if (!epochGroupsByPhase[currentEpochPhase]) throw new Error(`Default phase ${currentEpochPhase} was not loaded`);
