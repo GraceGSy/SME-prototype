@@ -204,3 +204,46 @@ For each paper, in insertion order:
 5. Generate a concise question describing everything contained in each node.
 6. Repeat the same process for paragraphs, but only compare paragraphs belonging to sections within the same section node.
 7. Save the graph, classifications, matches, provenance, and replay events.
+
+# Elena notes:
+
+1. Revise extraction skills to only extract non-appendix section & paragraph content (no question generation) into JSON with format specified above; document invocation here and archive in /skills folder
+2. (Pyfile that calls Claude API) Decorate sections (or paragraphs) with questions; add to existing JSON. The following revised instructions can be used (but this can be tweaked):
+
+```
+Identify the function this section serves in the paper's argument — not its topic, not
+a summary of its content, not a restatement of its title. Ask: what job is this section
+doing? What does the reader need answered here before moving to the next part of the
+paper?
+
+Write the question so it names enough context to stand alone — avoid bare "this"/"here"
+that only resolve if the reader already has the section's text open.
+
+The question must not answer itself (no parenthetical or clause that gives the answer
+away), must not mention section numbering or labels, and must not assert an outcome or
+claim the section's text doesn't actually establish.
+
+Return exactly one question, for every section with real text — including short ones
+(Acknowledgments, Preface). Never return null, "N/A", or a generic placeholder for a
+section that has content.
+
+Section text:
+{text}
+```
+
+Ideally this takes a section of paragraphs or a single paragraph so it's reused. To do this, it would likely need a new prompts section.
+3. Instantiate empty graph for collecting section groups; add each section of first paper to graph as a new node.
+4. Direction 1: Iterate over each section in next paper; ask which node it matches in the graph best or none.
+5. Direction 2: Iterate over each node in the graph; ask which section it matches in the next paepr best or none.
+6. Update the graph with an entire paper's sections:
+  - If a section and node select each other, add the section to that node.
+  - If only one selects the other, create a new node for the section and add a directed alignable difference edge. (Edge points from the selecting node/section to selected node/section.)
+  - If neither selects the other, create an isolated node for the section.
+7. Spit out the graph and/or update node metadata. Iterate over nodes in graph:
+  - if # of sections in node >= 50% # of papers (Implicit constraint: 1 section per paper per node) then it's a 'common structure' node.
+  - elif node is alignable difference node if it has any directed edges to any other common structure node
+  - otherwise: it's a non-alignable difference node, e.g., a section no other paper has or a group of sections that are in a minority of papers
+  Consider TODO: add directed edges based on relative position w.r.t. other nodes (requires capturing node order messy...) which could turn non-alignable nodes (on the basis of role) to alignable differences (on the basis of position)
+8. Re-run question generation on each node
+9. Repeat the same process for paragraphs, but only compare paragraphs belonging to sections within the same section node.
+10. Save the graph
