@@ -68,7 +68,7 @@ papers:
     file: papers/paper-b.json
 ```
 
-Each paper file may use the existing pseudo-section format:
+Each paper file may use the existing extracted-sections format:
 
 ```json
 [
@@ -182,3 +182,25 @@ agent skill would duplicate those instructions in an agent-specific execution
 layer and make provenance harder to compare. A skill may be useful later only as
 a thin convenience wrapper that invokes this CLI; it should not contain graph or
 matching logic.
+
+## Kanishk's First Draft of the Psuedocode
+
+This is the rough algorithm I implemented.
+
+For each paper, in insertion order:
+1. Generate one concise question for every section using its full text.
+2. Compare every new section with the existing question groups:
+   - The section selects its best group or none.
+   - Each existing group selects its best new section or none.
+   - Save every selection as provenance.
+3. Update the graph:
+   - If a section and group select each other, add the section to that group.
+   - If only one selects the other, create a new node for the section and add a directed alignable difference edge.
+   - If neither selects the other, create an isolated node for the section.
+4. Reclassify every node deterministically:
+   - Common structure: bidirectional matches represented in a majority of eligible papers.
+   - Alignable difference: not a majority bidirectional match, but has multiple papers or is a unidirectional match.
+   - Non-alignable difference: everything else, which is typically singletons that are unconnected.
+5. Generate a concise question describing everything contained in each node.
+6. Repeat the same process for paragraphs, but only compare paragraphs belonging to sections within the same section node.
+7. Save the graph, classifications, matches, provenance, and replay events.

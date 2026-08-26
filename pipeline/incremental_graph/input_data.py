@@ -33,7 +33,7 @@ def load_paper(path: Path, paper_id: str, title: str) -> Paper:
     except (OSError, json.JSONDecodeError) as error:
         raise InputError(f"Could not load paper JSON {path}: {error}") from error
     if isinstance(payload, list):
-        return _from_pseudo_sections(payload, paper_id, title)
+        return _from_extracted_sections(payload, paper_id, title)
     if isinstance(payload, dict):
         return _from_sectioned_paper(payload, paper_id, title)
     raise InputError(f"Paper JSON {path} must be an object or a list of sections")
@@ -44,7 +44,7 @@ def _safe_id(value: Any, fallback: str) -> str:
     return compact or fallback
 
 
-def _from_pseudo_sections(payload: list[dict[str, Any]], paper_id: str, title: str) -> Paper:
+def _from_extracted_sections(payload: list[dict[str, Any]], paper_id: str, title: str) -> Paper:
     sections: list[Section] = []
     used_section_ids: set[str] = set()
     used_paragraph_ids: set[str] = set()

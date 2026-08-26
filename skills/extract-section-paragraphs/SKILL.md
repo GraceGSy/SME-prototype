@@ -1,0 +1,136 @@
+---
+name: "extract-section-paragraphs"
+description: "Given a sections.json file (from \"extract-top-level-section-names\") and the PDF it was extracted from, splits each section's actual text into its constituent paragraphs and adds a \"paragraphs\" array (each with paragraph_number and text) to every entry, saved as a new file sections-with-paragraph-content.json. Use whenever the user wants a paper's paragraphs pulled out per section, \"break this section into paragraphs,\" \"enumerate the paragraphs in each section,\" or as a prerequisite before paragraph-level analysis (e.g. \"what does each paragraph do\"). This is a single-paper building block — it does not compare against another paper, judge paragraphs' purpose, or summarize them. For that, read the paragraphs field this skill produces and reason over it directly, or use \"annotate-section-questions\" for section-level (not paragraph-level) role questions."
+---
+
+
+# Extract Section Paragraphs
+
+## What this is (and isn't)
+
+This splits each section's actual text into paragraphs and enumerates them — nothing else. It does not judge a paragraph's purpose, summarize it, or compare it to anything. If the user wants to know what each paragraph is *for* (its apparent purpose or the question it answers), that's a separate downstream task to do with this skill's output, not something this skill itself produces.
+
+If the user hasn't already run `extract-top-level-section-names` on this PDF, run that first (or point them to it) — this skill takes its output (`sections.json`) as input rather than re-deriving the section list itself.
+
+## Inputs
+
+1. A `sections.json` file: a JSON array of section objects (at minimum `{section_name, section_number}`, possibly with other fields already added by a sibling skill like `annotate-section-questions` — preserve whatever's already there), in the order the sections appear in the paper.
+2. The PDF path those sections were extracted from.
+
+## Workflow
+
+### Step 1: Extract full text, line-position data, AND running headers/footers
+
+Run `pdftotext -layout` on the PDF (fall back to plain `pdftotext` if headers or body text come out garbled for a two-column layout — same guidance as the sibling skills). Keep the `-layout` output as your reference for Step 3's indent-based paragraph-break check below — plain-mode output strips all leading whitespace, so it cannot show that signal at all.
+
+**Also extract line-position data up front, unconditionally — don't treat this as an optional fallback tool you only reach for when something looks suspicious.** Run a short `pdfplumber` (or equivalent) script over the whole PDF that pulls `page.extract_words()`, groups words into lines by their vertical position (`top`), and records each line's `x0` (left edge), `x1` (right edge), and `top`. You need this data for every section regardless of how the text-only signals in Step 3 look, because Signal 3 below (vertical spacing) is invisible in plain or `-layout` text output — there is no text-only "looks fine" check that can tell you it isn't needed. Do this extraction once per PDF, not once per section, and keep it on hand while you work through Step 3.
+
+**Also detect running headers/footers corpus-wide within the PDF, unconditionally (added 2026-08-17) — the same "check every time, not just when something looks wrong" discipline as line-position data.** In the same pass (or a second short `pdfplumber` script), collect every page's lines with their vertical position, and cluster lines *across all pages* by (near-identical text, similar position relative to the page). Any line whose text recurs near-verbatim on 3 or more pages — a running title, a page footer, a page number, a conference/venue stamp — is a running header or footer, not body content, regardless of whether it happens to sit inside the normal body-text column area on some pages. Build this list once per PDF before starting Step 3, and treat every line matching it as excluded from the body-text stream on every page it appears, not just the pages where it's visually obvious. Caught via a real example: a paper's own running title ("Seeing What You Believe or Believing What You See? Belief Biases...") landed inside the body column at a page boundary and was extracted as if it were a real paragraph, interrupting a sentence that actually continued across the page break — the interruption wasn't visually distinguishable from body text in isolation; it only showed up as a header once compared against its own recurrence on other pages of the same PDF.
+
+**Sanity-check `-layout` mode's column merging before trusting it, especially on two-column templates.** `-layout` tries to reconstruct reading order automatically by merging left- and right-column text onto shared visual rows, and on some two-column layouts (observed on an ACM CHI two-column paper with a sidebar copyright block) it gets this wrong — text from a lower part of one column gets merged onto the same output line as text from a much higher part of the other column, so a phrase that actually belongs near the *end* of a paragraph can appear on the same line as, or right next to, the section's opening lines. Read a full section's worth of `-layout` output start to finish and confirm it actually reads as continuous, sensible prose in order. If it doesn't — sentences seem to jump between unrelated topics line to line, or a phrase you know belongs later in the section shows up near the top — don't try to manually reorder the scrambled text. Instead, use the same line-position data described above, grouping words into columns by `x0` range and reading each column's own text in its own correct order.
+
+### Step 2: Locate each section's boundaries
+
+Same rule as `annotate-section-questions`: for each entry in `sections.json`, in order, find where its header actually appears in the body text (not a citation to it, not a running header/footer, not a Table of Contents entry), and treat its content as running until the start of the *next* entry in `sections.json` (including all of its own subsections along the way). The last entry's content runs to its natural extent.
+
+### Step 3: Split each section's text into paragraphs
+
+Within a section's boundaries, identify paragraph breaks. This is the hard part — PDF text extraction is lossy in ways that create false paragraph boundaries and hide real ones. There are **three** independent signals a template might use to mark a new paragraph — a section can use any one of them, and you cannot assume which one just because a paper is two-column, or because one signal happens to be absent. **All three signals must be checked for every section, every time — not signal 1 first, then signal 2 only if signal 1 comes up empty, then signal 3 only if that also looks suspicious.** A template can use signal 3 exclusively, with text that reads as completely ordinary prose and gives you no textual reason to suspect anything's wrong — the only way to know is to have already checked the line-position data, not to decide after the fact whether checking was warranted.
+
+- **Signal 1 — a blank line in `pdftotext -layout` output**, or a clear topic/sentence shift after what should be a completed thought. Use blank lines as a primary signal when present, but verify against the actual prose — don't trust blank lines mechanically without reading what's on either side.
+- **Signal 2 — a first-line indent.** Some two-column academic templates (e.g. IEEE TVCG, some ACM CHI papers) mark a new paragraph with a first-line indent instead of a blank line — and plain-mode `pdftotext` strips all leading whitespace, so that signal is invisible unless you're looking at `-layout` mode output specifically. Re-examine the `-layout` output (or the line-position data from Step 1) for a line that starts a few characters further right than the surrounding lines *in its own column*, immediately after a line that ends in terminal punctuation (`.`, `!`, `?`, `:`, optionally followed by a closing quote or paren) — that's a real paragraph start even with no blank line. In a two-column layout, reason about each column separately: the wide gap between the two columns will also look like a run of whitespace, so don't confuse the column gutter with a paragraph's own indent — the indent signal is a few extra characters at the very start of a column's own text, not the gap between columns.
+- **Signal 3 — extra vertical line spacing, with no blank line and no indent (fixed 2026-08-17; check unconditionally, every section).** Some templates mark a new paragraph with neither a blank line nor a first-line indent — every line, including each paragraph's first line, starts flush at the exact same left margin as every continuation line, and the running text reads as ordinary, uninterrupted prose with no textual hint that anything is off. Using the line-position data from Step 1, walk every line-to-line gap within each section (per column, for two-column layouts) and compare it to that block's typical single-line leading. A gap roughly 1.5–2x the section's normal line-to-line spacing is a real paragraph break — and it's usually accompanied by the *previous* line ending well short of the column's right margin (an incomplete last line, since a paragraph rarely ends exactly at the margin), which is a strong secondary confirmation. This check must run on every section as standard practice, the same way signals 1 and 2 do — do not gate it behind first noticing a section "looks suspiciously long" or "seems to contain more than one thought." That kind of textual suspicion is exactly what signal 3 does *not* reliably produce: nothing about the prose itself flags it, since there's no blank line and no indent to look for and be missing. Caught via a real example: a CHI paper's Introduction had the sentence "The reduced cost structure of crowdsourced evaluations is..." silently merged into the end of the preceding paragraph, because neither a blank line nor an indent separated it from "...the subject pool is greatly increased and diversified [13]." immediately before it, and the merged text read as unremarkable prose — but the vertical gap between those two lines (18.9pt) was nearly double the section's normal 11pt line spacing, and the line before the gap ended at less than 90% of the column's normal line width, both of which confirmed a real paragraph break that only showed up once the line-position data was actually checked.
+- **Join lines that wrap mid-sentence.** Within a paragraph, each visual line in the extracted text is *not* a new paragraph — rejoin wrapped lines into continuous prose.
+- **Strip running headers/footers using the Step 1 detection list, on every page, before clustering paragraphs — don't rely on noticing them reactively.** Once a line is on the Step 1 running-header/footer list, remove it from the body-text stream wherever it appears, then check whether doing so reconnects a sentence that was cut across a page boundary: if the text immediately before the removed header/footer is clearly incomplete (trailing conjunction, dangling clause, a dash or comma where a period doesn't belong) and the text immediately after picks the same sentence back up, join them into one paragraph. This replaces guessing per-instance whether a gap "looks like" a page-break artifact (fixed 2026-08-17) — with the header/footer list already built in Step 1, you know definitively which lines are junk rather than inferring it from how the surrounding prose reads. Page numbers and footnote markers/text should be stripped the same way even if they don't recur often enough to make the Step 1 list (footnote text is usually unique per occurrence) — a numeral or short footnote sitting alone between two paragraph fragments, with no sentence-level continuity argument for merging, is not itself a paragraph and should simply be dropped.
+- **Keep bulleted or numbered lists as a single paragraph unit**, including whatever introductory sentence precedes them, unless the user asks for list items split individually. A list is one coherent thought, not several paragraphs.
+- **Exclude non-paragraph content**: figure/table captions, chart-internal text (axis labels, legend entries, data callouts), footnote text, and the section's own header line are not paragraphs and should not appear in the output. If a figure, chart label block, or footnote is interleaved mid-paragraph by the extraction (common in two-column layouts), remove it from the paragraph text rather than treating it as a paragraph boundary or leaving it embedded. This matters even more once you're applying the indent-based and vertical-gap checks above: a caption or chart-label block is very often visually isolated in the layout (its own indent level and/or extra surrounding whitespace), which can make it *look* like a legitimate new-paragraph start by either signal. It isn't one.
+  - Identify **captions** by content — a line beginning "Fig.", "Figure", or "Table" immediately followed by a number — never by their whitespace or spacing pattern, and exclude them regardless of how indented, isolated, or gapped-off they appear.
+  - Identify **chart-internal text (axis labels, legend entries, data callouts) with no "Fig."/"Table" marker of its own — added 2026-08-17.** Vector-drawn charts (as opposed to rasterized images) place their axis tick labels, legend text, and data callouts as real, selectable text in the PDF's content stream, at coordinates that can fall inside the normal body-text column — so this content clusters into what looks like an ordinary paragraph by every layout signal, with no "Fig."/"Table" keyword to catch it by content the way a caption line has. Before accepting any candidate paragraph as real prose, sanity-check it: does it contain a reasonable density of common stopwords ("the", "and", "of", "that", "is", "with"...) relative to its total word count, and is the proportion of standalone numeric/short-symbol tokens (bare numbers, single letters, percentage signs, axis-scale markers) low? Real prose almost always passes this easily; chart-label blocks almost always fail it — e.g. a run like "0.6 0.6 0.5 0.5 0.4 0.4 0.3 Baseline Belief-Triggering 0.3 Estimation Difference..." is overwhelmingly bare numbers and short capitalized labels with no connecting prose. If a candidate block fails this check, exclude it as chart-internal content rather than emitting it as a paragraph — don't give it its own `paragraph_number`, and if it was extracted in the middle of a real paragraph's flow, strip it out and keep the real text on either side joined as one paragraph.
+  - Don't give any caption or chart-label block its own `paragraph_number`; strip it from wherever it sits, and if it interrupts the middle of a real paragraph's flow, keep the real text on either side joined as one paragraph rather than splitting at that point.
+
+If you're genuinely unsure whether something is one paragraph or two, prefer treating it as one and note the uncertainty in your summary to the user, rather than silently guessing.
+
+### Step 4: Build the output
+
+For each section entry, preserve every existing field unchanged and add one new field:
+
+| Field | Description |
+|---|---|
+| `paragraphs` | An array of paragraph objects, in the order they appear in the section |
+
+Each paragraph object has:
+
+| Field | Description |
+|---|---|
+| `paragraph_number` | Integer, counting from `0` within that section (resets to `0` at the start of each new section) |
+| `text` | The paragraph's full text, with wrapped lines rejoined into continuous prose and any interleaved figure/chart-label/footnote/header junk removed |
+
+### Output
+
+Save as `sections-with-paragraph-content.json`, a JSON array, in the same directory as the input `sections.json` unless the user specifies otherwise. Don't overwrite `sections.json` or any file a sibling skill already produced (e.g. `sections-with-questions.json`).
+
+Briefly tell the user how many sections were processed and how many paragraphs were found in total, and flag anything uncertain — e.g. a paragraph boundary that was ambiguous, a page-break artifact you had to clean up (and whether it was resolved via the Step 1 running-header/footer list or a one-off footnote/page-number), an indent-marked or vertical-gap-marked paragraph break you had to infer without a blank line, a figure/table caption or chart-internal text block you excluded or unmerged from a real paragraph, a section where `-layout` mode's column merge looked scrambled and you fell back to per-column word-position extraction, or a section with unusually little body prose (like a References section, which may have no real "paragraphs" at all — in that case, output an empty `paragraphs` array rather than forcing individual reference entries into fake paragraphs).
+
+### Output schema (strict)
+
+ALWAYS use this exact shape for every entry — every field from the input `sections.json` preserved unchanged, plus exactly one new key (`paragraphs`), no others added, none renamed, none reordered:
+
+```json
+{
+  "section_name": "string, unchanged from the input",
+  "section_number": "string or null, unchanged from the input",
+  "paragraphs": [
+    {
+      "paragraph_number": 0,
+      "text": "string, the paragraph's full text"
+    }
+  ]
+}
+```
+
+The file itself is a JSON array of these objects, e.g.:
+
+```json
+[
+  {
+    "section_name": "Abstract",
+    "section_number": null,
+    "paragraphs": [
+      {"paragraph_number": 0, "text": "This paper presents..."}
+    ]
+  },
+  {
+    "section_name": "Introduction",
+    "section_number": "1",
+    "paragraphs": [
+      {"paragraph_number": 0, "text": "Prior work on..."},
+      {"paragraph_number": 1, "text": "In this paper, we..."}
+    ]
+  },
+  {
+    "section_name": "References",
+    "section_number": null,
+    "paragraphs": []
+  }
+]
+```
+
+`paragraph_number` is always an integer (not a string), always `0`-indexed, and always resets to `0` at the start of each section's own `paragraphs` array — never a running count across the whole paper. `paragraphs` is `[]` (not `null`, not omitted) for a section with no real body prose, like References. Don't add extra fields to either the section object or the paragraph object — no `page_number`, no `word_count`, no `summary`, nothing beyond what's specified here. Downstream skills (`annotate-section-questions-given-paragraphs`, `directional-section-mapping-by-paragraphs-and-questions`) are written against exactly this shape.
+
+## Common mistakes to avoid
+
+- **Treating every blank line in the extracted text as a paragraph break without checking.** Column layouts, figures, and footnotes routinely produce blank-line gaps that aren't real paragraph boundaries.
+- **Only checking for vertical-gap-marked paragraphs (signal 3) when a section already looks suspicious.** This is one of the two most important mistakes to avoid, and the reason signal 3 exists as a *mandatory, every-section* check rather than a fallback: a template that uses vertical gaps exclusively (no blank line, no indent) produces text that reads as completely ordinary prose, with no textual cue that a break was missed. Waiting for a section to "look suspiciously long" or "seem to contain more than one topic" before checking line-position data will miss exactly the cases this signal exists to catch — extract line-position data (Step 1) for every PDF, and check every section's line-to-line gaps (Step 3) as standard practice, not as a conditional follow-up.
+- **Assuming a blank-line-free, non-indented section is genuinely just one paragraph.** There are two distinct ways this assumption can be wrong, and checking for only one of them isn't enough. Some two-column templates (IEEE TVCG, some ACM CHI) mark paragraphs with a first-line indent instead of a blank line, and plain-mode `pdftotext` hides that signal entirely — check `-layout` mode for indent-marked breaks. But *other* templates use neither a blank line nor an indent at all — every line, first or continuation, starts at the same left margin — and mark paragraphs purely with extra vertical spacing between lines, invisible in `pdftotext` text output (plain or `-layout`) altogether and only detectable via actual line-position data. Check both, on every section, regardless of how the text itself reads.
+- **Splitting a paragraph in two at a page-break artifact, or catching only the obvious ones.** This is the other most important mistake to avoid. A page boundary interrupts the raw extracted text with headers/footers/footnotes, and it's tempting to treat the resulting gap as a paragraph break and even "fix up" the punctuation right before it (e.g. turning a trailing dash into a period). Beyond the obvious cases, a paper's own running title/header can land squarely inside the normal body-text column at a page boundary and read as an unremarkable extra "paragraph" with no visual red flag at all — reactively judging each gap by whether the surrounding prose "looks incomplete" will catch some of these but not all. Build the Step 1 running-header/footer list proactively (lines recurring near-verbatim across 3+ pages) and strip every match before paragraph-clustering, rather than relying only on reactive sentence-completeness judgment.
+- **Splitting a bulleted/numbered list into one paragraph per item.** Keep it as a single paragraph unit unless asked otherwise.
+- **Including figure captions, table captions, chart-internal text (axis labels, legend entries, data callouts), or footnotes as their own paragraphs (or leaving them embedded inside a real paragraph).** These aren't body paragraphs — remove them.
+- **Only catching captions that literally start with "Fig.", "Figure", or "Table" and missing chart-internal content that has no such marker (added 2026-08-17).** A vector-drawn chart's axis labels, legend entries, and data callouts are real selectable text at real coordinates, often landing inside the normal body column with no caption keyword anywhere in the block — they will pass a caption-keyword check and can still slip through as a fake "paragraph." Run the stopword-density / numeric-token-density sanity check described in Step 3 on every candidate paragraph, not just ones that already look caption-like.
+- **Letting a figure/table caption's or chart-label block's own visual isolation, indentation, or spacing fool you into giving it its own `paragraph_number`.** A caption or chart-label block is very often set off by whitespace and indented or gapped in a way that mimics the indent-based or vertical-gap-based paragraph-break signals described in Step 3 — but these are identified by their content (a caption keyword, or failing the stopword/numeric-density sanity check), never by their whitespace or spacing pattern. Never create a standalone paragraph entry for one, and never let it be the reason you split an otherwise-continuous real paragraph in two — merge the real text on either side of it back together.
+- **Trusting `pdftotext -layout`'s automatic two-column merge without checking it reads as continuous prose in order.** On at least one real two-column paper, `-layout` mode merged a later part of one column onto the same visual row as an earlier part of the other column, making text appear out of its true reading order without any obvious garbling (no broken words, just wrong sequence) — easy to miss unless you actually read the merged output for sense. If it looks scrambled, fall back to the per-column word-position extraction from Step 1 rather than trying to manually re-sequence the merged text.
+- **Restarting `paragraph_number` from the previous section's count instead of `0`.** Numbering is per-section, not global across the whole paper.
+- **Overwriting `sections.json` or other sibling-skill outputs.** Always write a new file (`sections-with-paragraph-content.json`).
+- **Using `null` or omitting `paragraphs` for a content-less section instead of `[]`.** An empty array is the correct honest representation of "no paragraphs here" — downstream skills check for an empty array, not a missing or null field.
+- **Adding fields beyond `paragraph_number` and `text` on a paragraph object, or any field beyond the input's own plus `paragraphs` on a section object.** See "Output schema (strict)" above.
+</content>
+
