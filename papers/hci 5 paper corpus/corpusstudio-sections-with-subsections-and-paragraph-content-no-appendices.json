@@ -384,7 +384,7 @@
         "paragraphs": [
           {
             "paragraph_number": 0,
-            "text": "Sixteen participants were recruited through mailing lists and Slack channels from different universities in the USA, Germany, United Kingdom and South Korea (Table 1). Participants had most commonly authored or co-authored 3-5 academic papers already, but two had authored less and four had authored more than twenty (see Appendix Figure 12 for the entire distribution). The average [EXTRACTION GAP -- text obscured by the intervening Figure 4 / Table 1 layout, could not be reliably reconstructed] few times per month, 5/16 a few times a week, and 3/16 once a day or more.",
+            "text": "Sixteen participants were recruited through mailing lists and Slack channels from different universities in the USA, Germany, United Kingdom and South Korea (Table 1). Participants had most commonly authored or co-authored 3-5 academic papers already, but two had authored less and four had authored more than twenty (see Appendix Figure 12 for the entire distribution). The average few times per month, 5/16 a few times a week, and 3/16 once a day or more.",
             "question_this_text_answers": "Who were the participants recruited for the user study and what were their characteristics?"
           }
         ],
@@ -448,7 +448,7 @@
         "question_this_text_answers": "What steps and structure made up the user study procedure for evaluating CorpusStudio?"
       }
     ],
-    "question_this_text_answers": "How was the user study designed and conducted to evaluate CorpusStudio's writing support features?"
+    "question_this_text_answers": "What experimental design, participants, and procedure were used to evaluate CorpusStudio's writing support features?"
   },
   {
     "section_name": "Qualitative Results",
