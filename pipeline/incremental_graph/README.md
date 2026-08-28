@@ -237,12 +237,11 @@ Ideally this takes a section of paragraphs or a single paragraph so it's reused.
 5. Direction 2: Iterate over each node in the graph; ask which section it matches in the next paepr best or none.
 6. Update the graph with an entire paper's sections:
   - If a section and node select each other, add the section to that node.
-  - If only one selects the other, create a new node for the section and add a directed alignable difference edge. (Edge points from the selecting node/section to selected node/section.)
-  - If neither selects the other, create an isolated node for the section.
+  - else, create an isolated node for the section.
 7. Spit out the graph and/or update node metadata. Iterate over nodes in graph:
   - if # of sections in node >= 50% # of papers (Implicit constraint: 1 section per paper per node) then it's a 'common structure' node.
-  - elif node is alignable difference node if it has any directed edges to any other common structure node
-  - otherwise: it's a non-alignable difference node, e.g., a section no other paper has or a group of sections that are in a minority of papers
+  - else node is alignable difference node if it is not an orphan (has more than one member)
+  - otherwise: it's a non-alignable difference node
   Consider TODO: add directed edges based on relative position w.r.t. other nodes (requires capturing node order messy...) which could turn non-alignable nodes (on the basis of role) to alignable differences (on the basis of position)
 8. Re-run question generation on each node
 9. Repeat the same process for paragraphs, but only compare paragraphs belonging to sections within the same section node.
