@@ -2,12 +2,15 @@
 
 This is a fresh, better SME-2 implemenation.
 
-Four stages, ordered:
+Four stages, ordered, plus an optional paragraph-level drill-down pair for zooming
+into one specific section pairing once Stage 4 has flagged it as interesting:
 
 1. **PDF → nested sections/subsections/paragraphs** (a Claude skill)
 2. **Add a role question to every section, subsection, and paragraph** (a standalone script: `pipeline/annotate_text_questions.py`)
 3. **Closest-match batch** (a standalone script: `pipeline/closest_section_match_batch.py`)
 4. **Closest-match graph** (a standalone script/module: `pipeline/closest_match_graph.py`) — accumulates Stage 3's per-pair output into one persistent cross-paper correspondence graph, confirming bidirectional matches and flagging redundant one-directional ones
+5. **Paragraph-level closest-match, scoped to one section pairing** (a standalone script: `pipeline/closest_paragraph_match_within_section.py`) — the same matching mechanics as Stage 3, narrowed to one already-identified section/subsection on each side, looping over paragraphs instead of sections
+6. **Paragraph-level correspondence graph** (a standalone script/module: `pipeline/paragraph_match_graph.py`) — the paragraph-level sibling of Stage 4's `ClosestMatchGraph`, accumulating Stage 5's per-section-pairing output instead of per-paper-pair output
 
 ## Setup
 
@@ -402,12 +405,158 @@ is that covering confirmed match (from the table above):
 | User Study > Study Procedure | USER STUDY > Methodology |
 | Qualitative Results > Document-level Writing Support | RESULTS (whole) |
 
+## Stage 5: Paragraph-level closest-match, scoped to one section pairing — `pipeline/closest_paragraph_match_within_section.py`
+
+Once Stage 4 (or a human) has identified a specific section/subsection pairing worth a
+closer look — confirmed, or a promising one-directional edge — this script drills into
+it at the paragraph level. Same underlying mapping query as Stage 3 (`record_match`
+tool, `match_index`/`basis`, prompt-caching + pre-warm + concurrent-thread-pool
+dispatch, "null is common and expected, don't force the least-bad candidate"), but
+both sides are pre-scoped to one chosen section/subsection instead of the whole paper,
+and the loop runs over paragraphs, not sections. Paragraphs carry their own
+`question_this_text_answers` field, same as sections/subsections — an early draft of
+this script wrongly assumed they didn't and judged from paragraph text alone; corrected
+so paragraph matching now weighs the question field as primary evidence, text
+overriding only on a genuine conflict, the same joint-evidence discipline as every
+other skill in this family.
+
+```bash
+cd pipeline
+python3 closest_paragraph_match_within_section.py \
+  --paper1 "/path/to/paperA-sections-with-subsections-and-paragraph-content-no-appendices.json" \
+  --paper2 "/path/to/paperB-sections-with-subsections-and-paragraph-content-no-appendices.json" \
+  --paper1-section "Section Name" [--paper1-section-number N] [--paper1-subsection "Subsection Name" --paper1-subsection-number M] \
+  --paper2-section "Section Name" [--paper2-section-number N] [--paper2-subsection "Subsection Name" --paper2-subsection-number M] \
+  [--output OUTPUT.json] [--model claude-sonnet-5] [--max-workers 5] [--limit N] [--resume]
+```
+
+Example — corpusstudio's "Implementation Details" (3.4) against examplore_chi18's
+"Post-processing" subsection (a Stage 4 one-directional match worth checking at the
+paragraph level):
+
+```bash
+python3 closest_paragraph_match_within_section.py \
+  --paper1 "/Users/elena/GitRepos/SME-prototype/papers/hci 5 paper corpus/corpusstudio-sections-with-subsections-and-paragraph-content-no-appendices.json" \
+  --paper2 "/Users/elena/GitRepos/SME-prototype/papers/hci 5 paper corpus/examplore_chi18-sections-with-subsections-and-paragraph-content-no-appendices.json" \
+  --paper1-section "Corpus Studio" --paper1-section-number 3 \
+  --paper1-subsection "Implementation Details" --paper1-subsection-number 3.4 \
+  --paper2-section "SYSTEM ARCHITECTURE AND IMPLEMENTATION" --paper2-subsection "Post-processing"
+```
+
+**"A section" vs. "a subsection" for the pool.** Omit `--paperN-subsection` and the pool
+is that section's own paragraphs *plus every subsection's*, concatenated — the same
+"whole section" definition Stage 3's candidate construction uses. Pass a subsection
+explicitly to narrow to just that.
+
+**Output**: `{paperA-name}-{paperA-scope-slug}-{paperB-name}-{paperB-scope-slug}-closest-paragraph-match.json`
+(default name), one row per paper1 paragraph — `paper1_section_name`/`_number`,
+`paper1_subsection_name`/`_number`, `paper1_paragraph_number`, `paper1_text`, and the
+matched `paper2_*` fields plus `paper2_text` (all `null` on no match), plus `basis`.
+Unlike Stage 3's output, paragraph text is stored inline on both sides — an identity
+tuple alone doesn't tell you what a paragraph says.
+
+**A section-level pairing doesn't guarantee real paragraph-level correspondence.**
+Two real probes against the examplore_chi18/corpusstudio pair found this directly:
+`Corpus Studio > Design Goals` (1 paragraph) against the whole examplore_chi18
+`INTRODUCTION` returned **null** — no examplore_chi18 Introduction paragraph actually
+states a design goal the way corpusstudio's does, despite Stage 4's own one-directional
+edge judging INTRODUCTION the best *available* section-level proxy. `Corpus Studio >
+Implementation Details` (3.4, 2 paragraphs) against examplore_chi18's `Post-processing`
+subsection also returned **null** on both paragraphs — 3.4 is about deployment
+infrastructure and retrieval-ranking choices, Post-processing is about canonicalizing
+already-retrieved code text for display; the section-level match's own basis ("both
+cover technical implementation choices") turned out to be a looser abstraction than it
+looked once read at paragraph granularity.
+
+## Stage 6: Paragraph-level correspondence graph — `pipeline/paragraph_match_graph.py`
+
+`ParagraphMatchGraph`, the paragraph-level sibling of Stage 4's `ClosestMatchGraph` —
+same `nx.MultiDiGraph` wrapper, same confirmed-merge / one-directional-edge /
+`redundant_edges()` / `one_to_many_candidates()` machinery, one nesting level deeper.
+Deliberately a **separate class**, not a generalization of `ClosestMatchGraph`: the two
+graphs' natural accumulation unit differs (one paper pair vs. one section pairing),
+`ClosestMatchGraph` already has real persisted corpus-scale state and a test suite tied
+to its exact 2-level unit schema, and unifying the two would mean turning
+`_unit_from_row` into a schema-pluggable abstraction rather than a mechanical
+extension — a bigger, riskier refactor than the value justified here.
+
+What changes relative to `ClosestMatchGraph`, concretely:
+
+- **Unit identity** is a 6-tuple — `(paper_id, section_name, section_number,
+  subsection_name, subsection_number, paragraph_number)` — one field deeper.
+- **`_unit_from_row`** reads Stage 5's row schema (`paper1_paragraph_number`/
+  `paper1_text`, `paper2_paragraph_number`/`paper2_text`) instead of Stage 3's.
+- **Each member carries its own `text`**, unlike a section/subsection unit — you can't
+  reconstruct what a paragraph says from its identity tuple without re-reading the
+  source JSON, so it's cached inline for a self-contained, readable persisted graph.
+- **A paragraph's "family"** — the unit for `redundant_edges()`/`one_to_many_candidates()`
+  — is its enclosing section/subsection: `(paper_id, section_name, section_number,
+  subsection_name, subsection_number)`, deliberately identical in shape to a
+  `ClosestMatchGraph` unit key one level up. A paragraph's "siblings" are the other
+  paragraphs in the same subsection (or section, if none).
+- **`add_pair` becomes `add_section_pairing`**, reflecting that this graph's natural
+  accumulation unit is one section pairing's two directional Stage 5 passes, not one
+  paper pair.
+
+```bash
+cd pipeline
+python3 paragraph_match_graph.py \
+  --graph paragraph_match_graph.json \
+  --paper1-id corpusstudio --paper2-id examplore_chi18 \
+  --paper1-to-paper2 "corpusstudio-introduction-examplore_chi18-introduction-closest-paragraph-match.json" \
+  --paper2-to-paper1 "examplore_chi18-introduction-corpusstudio-introduction-closest-paragraph-match.json"
+```
+
+### Worked example: corpusstudio ↔ examplore_chi18 Introductions, at the paragraph level
+
+Both directional Stage 5 passes run and fed into a fresh `ParagraphMatchGraph`, 8
+paragraphs per side:
+
+**4 confirmed bidirectional matches**: the contributions list (corpusstudio ¶7 ↔
+examplore_chi18 ¶7), the tool-introduction paragraph (¶4 ↔ ¶4), the
+few-vs-many-examples tension (corpusstudio ¶1 ↔ examplore_chi18 ¶2), and the user-study
+setup (corpusstudio ¶5 ↔ examplore_chi18 ¶6).
+
+**3 one-directional edges correctly flagged redundant**, all from the same underlying
+cause — paragraph-density mismatch, not weak matching. corpusstudio's Introduction
+consistently compresses into one paragraph what examplore_chi18's spreads across two or
+three (e.g. corpusstudio ¶4 alone covers what examplore_chi18 splits across ¶3/¶4/¶5),
+so multiple examplore_chi18 paragraphs independently converge on the same corpusstudio
+paragraph as their closest match; only the first (reciprocally confirmed) claim on each
+target survives the flag, exactly as designed.
+
+**0 `one_to_many_candidates()` flags** — correctly so. Every link from each family
+lands in the *same* far-side family (each paper's own single Introduction section), so
+this is paragraph-density mismatch *within* one already-agreed section pair, not a
+section spanning genuinely different topics — the distinction the flag is specifically
+built to preserve (see the class's own docstring for the corpusstudio/examplore_chi18
+`Corpus Studio` section-level case this mirrors one level down).
+
+Confirmed end-to-end: `add_section_pairing`'s stats, `redundant_edges()`,
+`one_to_many_candidates()`, and `save`/`load` round-tripping all check out against this
+real pair, including the null-result and single-direction-only paths (`Corpus Studio >
+Design Goals` against the whole `INTRODUCTION`, fed with an empty reverse-direction
+list, correctly adds one new unmatched node and zero edges rather than erroring).
+
 ## Open gaps
 
 - **No wrapper that runs both Stage 3 directions and updates the graph in one command.**
   Today: run Stage 3 twice by hand (`--paper1=A --paper2=B`, then `--paper1=B --paper2=A`),
   then call `closest_match_graph.py` with both output files. A single orchestrating script
-  would remove that manual step.
+  would remove that manual step. **The same gap exists for Stages 5–6**: running Stage 5
+  twice by hand (once per direction) and then feeding both files into
+  `paragraph_match_graph.py` is still a manual, three-command sequence per section
+  pairing.
 - **`redundant_edges()` is available as a library/CLI-summary count, but nothing renders
   the flagged list to a file yet** — the worked example above was generated by calling it
-  directly in a Python shell, not via a packaged report/export command.
+  directly in a Python shell, not via a packaged report/export command. Same is true of
+  `ParagraphMatchGraph.redundant_edges()`/`one_to_many_candidates()`.
+- **No test suite yet for Stages 5–6** — `pipeline/tests/test_closest_match_graph.py`
+  covers `ClosestMatchGraph`'s 11 cases, but `closest_paragraph_match_within_section.py`
+  and `paragraph_match_graph.py` have only been exercised against real corpus data in a
+  Python shell, not a checked-in automated test.
+- **`ParagraphMatchGraph` and `ClosestMatchGraph` are separate, unlinked persisted
+  graphs** — a paragraph node carries no explicit reference back to its enclosing
+  section/subsection's node in the Stage 4 graph. Fine for now (the enclosing identity
+  is reconstructible from a paragraph member's own `section_name`/`subsection_name`
+  fields), but worth revisiting if the two graphs need to be queried together later.
