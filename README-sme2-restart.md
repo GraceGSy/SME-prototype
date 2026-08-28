@@ -309,6 +309,73 @@ than expecting a single best match.
   corpusstudio Qualitative Results subsection whose target is the *whole* Results section
   rather than the already-confirmed `RESULTS > Qualitative Analysis` subsection specifically.
 
+### Full data: confirmed, redundant, and surviving matches
+
+Raw tables behind the numbers and clusters above, for reference.
+
+**Confirmed bidirectional matches (12)**
+
+| examplore_chi18 | corpusstudio |
+|---|---|
+| ABSTRACT | Abstract |
+| INTRODUCTION | Introduction |
+| RELATED WORK (whole) | Background and Related Work (whole) |
+| SCENARIO: INTERACTING WITH CODE DISTRIBUTIONS | Corpus Studio > Usage Scenario |
+| USER STUDY (whole) | User Study (whole) |
+| USER STUDY > Participants | User Study > Participants |
+| RESULTS > Quantitative Analysis | Quantitative Results (whole) |
+| RESULTS > Qualitative Analysis | Qualitative Results (whole) |
+| DISCUSSION AND LIMITATIONS (whole) | Discussion (whole) |
+| CONCLUSION (whole) | Conclusion (whole) |
+| ACKNOWLEDGMENTS | Acknowledgments |
+| REFERENCES (empty) | References (empty) |
+
+**One-directional matches filtered as redundant (11)** — each target is already the exact
+confirmed partner of another member of the source's own section family:
+
+| Source | → Target |
+|---|---|
+| corpusstudio: Background and Related Work > Writing with External Text | examplore_chi18: RELATED WORK |
+| examplore_chi18: USER STUDY > Methodology | corpusstudio: User Study |
+| examplore_chi18: RESULTS (whole) | corpusstudio: Qualitative Results (whole) |
+| corpusstudio: Qualitative Results > Sentence-level Writing Support | examplore_chi18: RESULTS > Qualitative Analysis |
+| corpusstudio: Qualitative Results > Bookmark and User Notes | examplore_chi18: RESULTS > Qualitative Analysis |
+| corpusstudio: Qualitative Results > Tooltips | examplore_chi18: RESULTS > Qualitative Analysis |
+| corpusstudio: Qualitative Results > Use of Features, Especially Across Writing Stages | examplore_chi18: RESULTS > Qualitative Analysis |
+| corpusstudio: Quantitative Results > Task 1: Outline Writing | examplore_chi18: RESULTS > Quantitative Analysis |
+| corpusstudio: Quantitative Results > Task 2: Writing a Section of a Manuscript | examplore_chi18: RESULTS > Quantitative Analysis |
+| corpusstudio: Discussion > Designing a System with Many Retrieved Examples | examplore_chi18: DISCUSSION AND LIMITATIONS |
+| corpusstudio: Discussion > Limitations and Future Work | examplore_chi18: DISCUSSION AND LIMITATIONS |
+
+**One-directional matches that survived the filter — forward, examplore_chi18 → corpusstudio (7)**
+
+| examplore_chi18 | → corpusstudio |
+|---|---|
+| RELATED WORK > Interfaces for Exploring Collections of Complex Objects | Background and Related Work > Finding Relevant Examples |
+| RELATED WORK > Learning APIs with Code Examples | Background and Related Work > Writing with External Text |
+| RELATED WORK > Mining and Visualization of API Usage | Background and Related Work > Writing with External Text |
+| SYSTEM ARCHITECTURE AND IMPLEMENTATION (whole) | Corpus Studio (whole) |
+| SYSTEM ARCHITECTURE AND IMPLEMENTATION > Data Collection | Data & Processing > Pre-processing Documents |
+| SYSTEM ARCHITECTURE AND IMPLEMENTATION > Post-processing | Corpus Studio > Implementation Details |
+| SYSTEM ARCHITECTURE AND IMPLEMENTATION > Visualization | Corpus Studio > System Characteristics |
+
+**One-directional matches that survived the filter — reverse, corpusstudio → examplore_chi18 (12)**
+
+| corpusstudio | → examplore_chi18 |
+|---|---|
+| Background and Related Work > Finding Relevant Examples | RELATED WORK > Learning APIs with Code Examples |
+| Corpus Studio (whole) | SYNTHETIC CODE SKELETON |
+| Data & Processing > Pre-processing Documents | SYSTEM ARCHITECTURE AND IMPLEMENTATION > Post-processing |
+| Corpus Studio > Implementation Details | SYSTEM ARCHITECTURE AND IMPLEMENTATION (whole) |
+| Corpus Studio > System Characteristics | SYNTHETIC CODE SKELETON |
+| Background and Related Work > Community Writing Norms | RELATED WORK > Learning APIs with Code Examples |
+| Corpus Studio > Design Goals | INTRODUCTION |
+| Data & Processing (whole) | SYSTEM ARCHITECTURE AND IMPLEMENTATION (whole) |
+| Data & Processing > Embedding Process | SYSTEM ARCHITECTURE AND IMPLEMENTATION > Post-processing |
+| Data & Processing > Extracting an Ordered Distribution over Section Titles | SYSTEM ARCHITECTURE AND IMPLEMENTATION > Post-processing |
+| User Study > Study Procedure | USER STUDY > Methodology |
+| Qualitative Results > Document-level Writing Support | RESULTS (whole) |
+
 ## Open gaps
 
 - **No wrapper that runs both Stage 3 directions and updates the graph in one command.**
