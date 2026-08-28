@@ -2,11 +2,12 @@
 
 This is a fresh, better SME-2 implemenation.
 
-Three stages, ordered:
+Four stages, ordered:
 
 1. **PDF → nested sections/subsections/paragraphs** (a Claude skill)
 2. **Add a role question to every section, subsection, and paragraph** (a standalone script: `pipeline/annotate_text_questions.py`)
 3. **Closest-match batch** (a standalone script: `pipeline/closest_section_match_batch.py`)
+4. **Closest-match graph** (a standalone script/module: `pipeline/closest_match_graph.py`) — accumulates Stage 3's per-pair output into one persistent cross-paper correspondence graph, confirming bidirectional matches and flagging redundant one-directional ones
 
 ## Setup
 
@@ -18,8 +19,9 @@ export ANTHROPIC_API_KEY=sk-ant-...
 ```
 
 Stage 1 is run as a Claude skill inside a Cowork/Claude Code session (not a standalone
-script in this repo). Stages 2 and 3 are standalone Python scripts you run yourself from
-a terminal, using the key above.
+script in this repo). Stages 2, 3, and 4 are standalone Python scripts you run yourself
+from a terminal, using the key above (Stage 4 itself makes no API calls, but shares the
+same environment).
 
 ## Stage 1: PDF → nested sections, subsections, and paragraphs (no appendices)
 
@@ -192,8 +194,127 @@ in the pre-warm call, and every real query call after it showing a cache read in
   workers share one `Anthropic` client, and concurrent calls burst against that limit in
   a way a sequential loop with a fixed sleep wouldn't.
 
+## Stage 4: Closest-match graph — `pipeline/closest_match_graph.py`
+
+Module + CLI (`ClosestMatchGraph`, wrapping `nx.MultiDiGraph` — `networkx` is already in
+`pipeline/requirements.txt`, no new dependency). Turns Stage 3's per-pair output into one
+persistent, incrementally-growing cross-paper structure, rather than leaving each pair's
+`closest-section-match-batch.json` as an island.
+
+**Feed it one paper pair's two directional passes at a time.** For a pair (A, B) you run
+Stage 3 twice — `--paper1=A --paper2=B` and `--paper1=B --paper2=A` — then call:
+
+```bash
+cd pipeline
+python3 closest_match_graph.py \
+  --graph closest_match_graph.json \
+  --paper1-id examplore_chi18 --paper2-id corpusstudio \
+  --paper1-to-paper2 "path/to/examplore_chi18-corpusstudio-closest-section-match-batch.json" \
+  --paper2-to-paper1 "path/to/corpusstudio-examplore_chi18-closest-section-match-batch.json"
+```
+
+Each run loads the existing graph (or starts fresh), adds this one pair, and saves back —
+so running it once per pair as more `closest-section-match-batch.json` files are generated
+is how the graph grows over time.
+
+**Confirmed matches collapse into one node; everything else stays a visible edge.** If
+both directional passes independently agree on a correspondence (A's unit → B's unit AND
+B's unit → A's same unit), the two units' nodes merge into one group node whose `members`
+list keeps absorbing further confirmed units as more pairs are processed — a unit
+confirmed-matched in pair (A, B) and later confirmed-matched again in pair (B, C) ends up
+in the *same* three-member node, not two disconnected ones. If only one direction found
+the match, it becomes a `one_directional_match` edge between the two separate nodes
+instead — weaker evidence, kept visible rather than discarded.
+
+**`redundant_edges()` flags (without removing) one-directional edges made redundant by an
+existing confirmed match.** Rule: a one-directional edge (S → T) is flagged when some
+other unit in S's own section family — its parent section, or a sibling subsection under
+that same parent — is *already* confirmed-matched to that exact same T. It deliberately
+does **not** flag an edge whose target is merely *near* an already-confirmed match (e.g. a
+sibling of the confirmed partner, or its parent) — that case is a genuine finer-grained
+refinement of an already-confirmed whole-section pairing, not a restatement of it, so it's
+left alone. `.summary()` reports the flagged count as `redundant_one_directional_edges`;
+nothing is ever pruned automatically, so every flag stays inspectable against its
+`covering_confirmed_node` and original `basis` text.
+
+Tests: `pipeline/tests/test_closest_match_graph.py` (11 cases — confirmed merges,
+one-directional edges, incremental cross-pair growth, save/load round-tripping,
+idempotent re-processing, and both directions of the redundancy rule plus the
+non-redundant refinement case).
+
+## Worked example: examplore_chi18 ↔ corpusstudio
+
+Both directional Stage 3 passes have been run for this pair and fed into the graph.
+Numbers, for a sense of what a real pair looks like: 23 examplore_chi18 queries, 21
+non-empty corpusstudio queries, **12 confirmed bidirectional matches**, 30 raw
+one-directional matches, of which **11 are flagged redundant** by the Stage 4 rule above,
+leaving **19 genuinely open one-directional correspondences**.
+
+The confirmed matches cover the paper skeleton cleanly — Abstract, Introduction, whole
+Related Work, whole User Study (+ Participants), Discussion, Conclusion, Acknowledgments,
+References, plus Results splitting into Quantitative/Qualitative Analysis on one side
+matching the other's separate Quantitative/Qualitative Results sections.
+
+### Open questions for discussion
+
+The 19 remaining one-directional matches aren't noise scattered evenly across the paper —
+they cluster into two specific structural disagreements worth raising with collaborators,
+plus a few smaller loose ends.
+
+**1. Related Work: the two papers' subsection breakdowns don't line up, and the two
+matching passes actively disagree about how to reconcile them.** examplore_chi18 splits
+Related Work into three subsections (Interfaces for Exploring Collections of Complex
+Objects; Learning APIs with Code Examples; Mining and Visualization of API Usage);
+corpusstudio splits its Background and Related Work into a different three (Community
+Writing Norms 2.1; Writing with External Text 2.2; Finding Relevant Examples 2.3). Neither
+side's three subsections map onto the other's three subsections 1:1. Concretely:
+examplore_chi18's own pass matches its "Learning APIs with Code Examples" subsection to
+corpusstudio's 2.2 ("Writing with External Text") — but corpusstudio's own pass has *two
+different* subsections (2.1 "Community Writing Norms" *and* 2.3 "Finding Relevant
+Examples") both independently proposing that same examplore_chi18 subsection as their own
+closest match, while ignoring 2.2 entirely as the reverse-direction pick. That's a genuine
+three-way disagreement about where the boundaries are, not just a labeling difference —
+worth a human call on whether these three-vs-three subsection sets should be considered
+structurally comparable at all, or whether one paper's Related Work is organized by a
+different principle than the other's.
+
+**2. System description: examplore_chi18 splits across three top-level sections that
+corpusstudio bundles into one.** examplore_chi18 has three separate top-level sections for
+what corpusstudio does in one: SYNTHETIC CODE SKELETON (core design concept),
+SCENARIO: INTERACTING WITH CODE DISTRIBUTIONS (walkthrough — already confirmed against
+corpusstudio's Usage Scenario subsection), and SYSTEM ARCHITECTURE AND IMPLEMENTATION
+(technical pipeline). corpusstudio bundles design goals, scenario, feature description, and
+implementation all under one top-level "Corpus Studio" section (3), broken into
+subsections instead. The mismatch shows up as an unresolved triangle: examplore_chi18's
+whole SYSTEM ARCHITECTURE AND IMPLEMENTATION points at corpusstudio's whole "Corpus
+Studio" section, but corpusstudio's whole "Corpus Studio" section points back at
+examplore_chi18's SYNTHETIC CODE SKELETON instead (not System Architecture) — and
+corpusstudio's "Implementation Details" subsection (3.4) separately points at
+examplore_chi18's whole System Architecture section, closer but still not confirmed
+against anything examplore_chi18 itself proposed. Worth deciding, as a matter of
+comparison methodology, whether to treat corpusstudio's whole "Corpus Studio" section as
+the counterpart to *all three* of examplore_chi18's top-level sections combined, rather
+than expecting a single best match.
+
+**Smaller loose ends**, not part of either cluster above but still unresolved:
+
+- `Corpus Studio > Design Goals` → `INTRODUCTION` (corpusstudio has no dedicated Design
+  Goals equivalent in examplore_chi18; the Introduction is the closest examplore_chi18
+  gets to stating design rationale up front).
+- `User Study > Study Procedure` ↔ `USER STUDY > Methodology` (near-miss: each side's
+  procedural-walkthrough subsection points at the other, but by different names, and
+  examplore_chi18's own pass instead matched Methodology to the whole User Study section
+  rather than reciprocating Study Procedure specifically).
+- `Qualitative Results > Document-level Writing Support` → `RESULTS` (whole) — the one
+  corpusstudio Qualitative Results subsection whose target is the *whole* Results section
+  rather than the already-confirmed `RESULTS > Qualitative Analysis` subsection specifically.
+
 ## Open gaps
 
-- **No aggregation step yet** past a single ordered pair's `closest-section-match-batch.json`.
-  Comparing across more than two papers, or turning per-pair match files into a shared
-  structure the way the main pipeline's grouping/refinement steps do, isn't built here.
+- **No wrapper that runs both Stage 3 directions and updates the graph in one command.**
+  Today: run Stage 3 twice by hand (`--paper1=A --paper2=B`, then `--paper1=B --paper2=A`),
+  then call `closest_match_graph.py` with both output files. A single orchestrating script
+  would remove that manual step.
+- **`redundant_edges()` is available as a library/CLI-summary count, but nothing renders
+  the flagged list to a file yet** — the worked example above was generated by calling it
+  directly in a Python shell, not via a packaged report/export command.
