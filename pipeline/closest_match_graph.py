@@ -415,6 +415,140 @@ class ClosestMatchGraph:
                 )
         return flagged
 
+    def one_to_many_candidates(self) -> list[dict[str, Any]]:
+        """Flag families (a paper's own top-level section plus all its subsections)
+        whose combined evidence -- confirmed matches AND one-directional edges
+        together -- points at TWO OR MORE DISTINCT top-level sections on the other
+        paper. Purely a post-hoc read of matches already made; no new API call and
+        no new matching logic. The graph is never modified.
+
+        This is the automated version of the "Corpus Studio bundles three
+        examplore_chi18 sections into one" pattern found by hand for the
+        examplore_chi18/corpusstudio pair (see README-sme2-restart.md): when a
+        section's own subsections and whole-section candidate collectively link to
+        multiple genuinely different sections elsewhere, that's often a sign the
+        section's real content spans more than one role the other paper keeps
+        separate -- a real candidate for a one-to-many correspondence, not
+        something a single-best-match-per-query design can represent cleanly.
+
+        A family's links come from two sources, both counted as coverage evidence
+        toward the same question ("what does this family correspond to over
+        there?"):
+          - CONFIRMED matches: every member of a merged (>1-member) node implies a
+            link between that member's family and every other member's family.
+          - ONE-DIRECTIONAL edges: every `one_directional_match` edge implies a
+            link between its source's family and its target's family (counted from
+            both families' point of view).
+
+        Two links into the SAME far-side family (e.g. three different subsections
+        of one section all linking into different subsections of one already-
+        confirmed far-side section) do NOT trigger a flag -- that's ordinary
+        subsection-level refinement or disagreement within an already-matched pair
+        of sections (see `redundant_edges` for the exact-duplicate-target case of
+        this), not evidence of spanning multiple sections. Only distinct far-side
+        TOP-LEVEL sections count.
+
+        Returns a list of dicts, one per flagged family:
+          - "family": {"paper_id", "section_name", "section_number"}
+          - "far_side_targets": one entry per distinct far-side family this one
+            links to, each with that family's identity and the specific evidence
+            (confirmed member pairs and/or one-directional edges, each carrying
+            its own `status` ("confirmed" or "one_directional"), the specific
+            linking/target units, and -- for one-directional evidence -- the
+            original `basis` text).
+        """
+        # far_side_links[source_family][far_family] = [evidence, ...]
+        far_side_links: dict[
+            tuple[str, Optional[str], Optional[str]],
+            dict[tuple[str, Optional[str], Optional[str]], list[dict[str, Any]]],
+        ] = {}
+
+        def add_link(
+            source_family: tuple[str, Optional[str], Optional[str]],
+            far_family: tuple[str, Optional[str], Optional[str]],
+            evidence: dict[str, Any],
+        ) -> None:
+            far_side_links.setdefault(source_family, {}).setdefault(far_family, []).append(evidence)
+
+        # Confirmed matches: every pair of members in a merged node links their
+        # two families to each other (this is symmetric evidence -- both families
+        # learn about each other from the same confirmed pairing).
+        for _, data in self.graph.nodes(data=True):
+            members = data["members"]
+            if len(members) <= 1:
+                continue
+            for member in members:
+                member_family = self._family_key(member)
+                for other in members:
+                    if other is member:
+                        continue
+                    other_family = self._family_key(other)
+                    if other_family == member_family:
+                        continue  # same paper -- shouldn't happen, guard anyway
+                    add_link(
+                        member_family,
+                        other_family,
+                        {"status": "confirmed", "linking_unit": member, "target_unit": other, "basis": None},
+                    )
+
+        # One-directional edges: link source's family to target's family, and the
+        # reverse, so both sides' families see the evidence.
+        for _, _, _, data in self.graph.edges(keys=True, data=True):
+            if data.get("kind") != "one_directional_match":
+                continue
+            source_unit = data["source_unit"]
+            target_unit = data["target_unit"]
+            source_family = self._family_key(source_unit)
+            target_family = self._family_key(target_unit)
+            add_link(
+                source_family,
+                target_family,
+                {
+                    "status": "one_directional",
+                    "linking_unit": source_unit,
+                    "target_unit": target_unit,
+                    "basis": data.get("basis"),
+                },
+            )
+            add_link(
+                target_family,
+                source_family,
+                {
+                    "status": "one_directional",
+                    "linking_unit": target_unit,
+                    "target_unit": source_unit,
+                    "basis": data.get("basis"),
+                },
+            )
+
+        flagged: list[dict[str, Any]] = []
+        for source_family, far_families in far_side_links.items():
+            if len(far_families) < 2:
+                continue
+            flagged.append(
+                {
+                    "family": {
+                        "paper_id": source_family[0],
+                        "section_name": source_family[1],
+                        "section_number": source_family[2],
+                    },
+                    "far_side_targets": [
+                        {
+                            "family": {
+                                "paper_id": far_family[0],
+                                "section_name": far_family[1],
+                                "section_number": far_family[2],
+                            },
+                            "evidence": evidence_list,
+                        }
+                        for far_family, evidence_list in far_families.items()
+                    ],
+                }
+            )
+
+        flagged.sort(key=lambda f: (f["family"]["paper_id"], f["family"]["section_name"] or ""))
+        return flagged
+
     # -- persistence --------------------------------------------------------
 
     def serialize(self) -> dict[str, Any]:

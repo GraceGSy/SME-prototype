@@ -264,6 +264,79 @@ class TestRedundantEdges(unittest.TestCase):
         self.assertEqual(graph.summary()["redundant_one_directional_edges"], 1)
 
 
+class TestOneToManyCandidates(unittest.TestCase):
+    def test_flags_family_linked_to_two_distinct_far_side_sections(self) -> None:
+        # Mirrors the real "Corpus Studio" case: one corpusstudio section has a
+        # CONFIRMED match to one examplore section (via its own subsection) AND a
+        # separate ONE-DIRECTIONAL edge (from a sibling subsection) pointing at a
+        # totally different examplore top-level section.
+        graph = ClosestMatchGraph()
+        graph.add_pair(
+            "corpusstudio",
+            "examplore",
+            [_row("Corpus Studio", "3", "SCENARIO", None, "confirmed fwd", p1_sub="Usage Scenario")],
+            [_row("SCENARIO", None, "Corpus Studio", "3", "confirmed rev", p2_sub="Usage Scenario")],
+        )
+        graph.add_pair(
+            "corpusstudio",
+            "examplore",
+            [_row("Corpus Studio", "3", "SYNTHETIC CODE SKELETON", None, "unconfirmed fwd")],
+            [_row("SYNTHETIC CODE SKELETON", None, None, None, "no reverse match")],
+        )
+
+        flagged = graph.one_to_many_candidates()
+        target_families = {f["family"]["section_name"]: f for f in flagged}
+        self.assertIn("Corpus Studio", target_families)
+
+        far_sections = {t["family"]["section_name"] for t in target_families["Corpus Studio"]["far_side_targets"]}
+        self.assertEqual(far_sections, {"SCENARIO", "SYNTHETIC CODE SKELETON"})
+
+        statuses = {
+            t["family"]["section_name"]: sorted({e["status"] for e in t["evidence"]})
+            for t in target_families["Corpus Studio"]["far_side_targets"]
+        }
+        self.assertEqual(statuses["SCENARIO"], ["confirmed"])
+        self.assertEqual(statuses["SYNTHETIC CODE SKELETON"], ["one_directional"])
+
+    def test_not_flagged_when_all_links_point_at_the_same_far_side_section(self) -> None:
+        # Three subsections all pointing into the SAME already-confirmed far-side
+        # section (different subsections of it, but one section) should NOT be
+        # flagged -- that's ordinary subsection-level refinement, not spanning
+        # multiple sections.
+        graph = ClosestMatchGraph()
+        graph.add_pair(
+            "examplore",
+            "corpusstudio",
+            [_row("RELATED WORK", None, "Background and Related Work", "2", "whole fwd")],
+            [_row("Background and Related Work", "2", "RELATED WORK", None, "whole rev")],
+        )
+        graph.add_pair(
+            "examplore",
+            "corpusstudio",
+            [
+                _row(
+                    "RELATED WORK", None, "Background and Related Work", "2", "sub fwd, unconfirmed",
+                    p1_sub="Interfaces", p2_sub="Finding Relevant Examples",
+                )
+            ],
+            [_row("Background and Related Work", "2", None, None, "no reverse match", p1_sub="Finding Relevant Examples")],
+        )
+
+        flagged = graph.one_to_many_candidates()
+        target_families = {f["family"]["section_name"]: f for f in flagged}
+        self.assertNotIn("RELATED WORK", target_families)
+
+    def test_no_matches_at_all_means_nothing_flagged(self) -> None:
+        graph = ClosestMatchGraph()
+        graph.add_pair(
+            "paperA",
+            "paperB",
+            [_row("Appendix", "A", "Notes", "Z", "weak guess")],
+            [_row("Notes", "Z", None, None, "no reverse match")],
+        )
+        self.assertEqual(graph.one_to_many_candidates(), [])
+
+
 class TestReconfirmationIsIdempotentOnNodeCount(unittest.TestCase):
     def test_reprocessing_same_confirmed_pair_does_not_duplicate_members(self) -> None:
         graph = ClosestMatchGraph()
