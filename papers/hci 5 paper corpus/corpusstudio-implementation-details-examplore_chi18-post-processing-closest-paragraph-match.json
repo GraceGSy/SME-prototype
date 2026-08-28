@@ -1,0 +1,32 @@
+[
+  {
+    "paper1_section_name": "Corpus Studio",
+    "paper1_section_number": "3",
+    "paper1_subsection_name": "Implementation Details",
+    "paper1_subsection_number": "3.4",
+    "paper1_paragraph_number": 0,
+    "paper1_text": "We implemented our system as a web application using SvelteKit. For sentence retrieval, we used WeaviateDB as our vector database, using its built-in text embedding capabilities and approximate k-Nearest Neighbor (kNN) search implementation [34]. The system was deployed on a workstation with 12 GB of GPU memory and made remotely accessible to study participants.",
+    "paper2_section_name": null,
+    "paper2_section_number": null,
+    "paper2_subsection_name": null,
+    "paper2_subsection_number": null,
+    "paper2_paragraph_number": null,
+    "paper2_text": null,
+    "basis": "The query paragraph describes the technical implementation stack (SvelteKit web app, WeaviateDB vector database, kNN search, GPU workstation deployment) used to build Corpus Studio. None of the candidate paragraphs discuss implementation technology stack or deployment infrastructure; instead they all describe post-processing steps (normalizing code examples, canonicalizing variable names, rewriting chained calls, mapping API usage features) in EXAMPLORE. While paragraph 0 mentions MongoDB database and front-end querying, it is focused on data normalization for usability rather than describing the overall tech stack/deployment like the query. There is no clear counterpart in this candidate pool for a paragraph specifically about the system's implementation stack and deployment infrastructure, so no paragraph closely corresponds."
+  },
+  {
+    "paper1_section_name": "Corpus Studio",
+    "paper1_section_number": "3",
+    "paper1_subsection_name": "Implementation Details",
+    "paper1_subsection_number": "3.4",
+    "paper1_paragraph_number": 1,
+    "paper1_text": "While determining relevance in retrieval systems is inherently complex and depends on users' dynamic writing objectives, querying based on semantic similarity in text vector space is an established approach in retrieval-based systems [47]. Our initial implementation explored hybrid search techniques, following prior work that used Reciprocal Rank Fusion [41] to combine keyword-based and vector-based retrieval results. However, through initial experiments, we found pure vector-based search provided more contextually relevant matches.",
+    "paper2_section_name": null,
+    "paper2_section_number": null,
+    "paper2_subsection_name": null,
+    "paper2_subsection_number": null,
+    "paper2_paragraph_number": null,
+    "paper2_text": null,
+    "basis": "The query paragraph discusses Corpus Studio's retrieval implementation choice (vector-based search vs. hybrid search with Reciprocal Rank Fusion) for determining textual relevance. None of the candidate paragraphs from EXAMPLORE's 'Post-processing' subsection address retrieval method selection or semantic similarity search; instead they describe post-retrieval normalization steps (canonical form storage in MongoDB, chained call rewriting, variable renaming, mapping to API usage feature code segments). These are fundamentally different topics—retrieval strategy vs. post-processing/normalization of already-retrieved examples—so no paragraph in this candidate pool corresponds to the query's content."
+  }
+]
