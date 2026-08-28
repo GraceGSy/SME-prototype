@@ -331,21 +331,22 @@ Raw tables behind the numbers and clusters above, for reference.
 | REFERENCES (empty) | References (empty) |
 
 **One-directional matches filtered as redundant (11)** — each target is already the exact
-confirmed partner of another member of the source's own section family:
+confirmed partner of another member of the source's own section family; the third column
+is that covering confirmed match (from the table above):
 
-| Source | → Target |
-|---|---|
-| corpusstudio: Background and Related Work > Writing with External Text | examplore_chi18: RELATED WORK |
-| examplore_chi18: USER STUDY > Methodology | corpusstudio: User Study |
-| examplore_chi18: RESULTS (whole) | corpusstudio: Qualitative Results (whole) |
-| corpusstudio: Qualitative Results > Sentence-level Writing Support | examplore_chi18: RESULTS > Qualitative Analysis |
-| corpusstudio: Qualitative Results > Bookmark and User Notes | examplore_chi18: RESULTS > Qualitative Analysis |
-| corpusstudio: Qualitative Results > Tooltips | examplore_chi18: RESULTS > Qualitative Analysis |
-| corpusstudio: Qualitative Results > Use of Features, Especially Across Writing Stages | examplore_chi18: RESULTS > Qualitative Analysis |
-| corpusstudio: Quantitative Results > Task 1: Outline Writing | examplore_chi18: RESULTS > Quantitative Analysis |
-| corpusstudio: Quantitative Results > Task 2: Writing a Section of a Manuscript | examplore_chi18: RESULTS > Quantitative Analysis |
-| corpusstudio: Discussion > Designing a System with Many Retrieved Examples | examplore_chi18: DISCUSSION AND LIMITATIONS |
-| corpusstudio: Discussion > Limitations and Future Work | examplore_chi18: DISCUSSION AND LIMITATIONS |
+| Source | → Target | Caused by (confirmed match) |
+|---|---|---|
+| corpusstudio: Background and Related Work > Writing with External Text | examplore_chi18: RELATED WORK | RELATED WORK (whole) ↔ Background and Related Work (whole) |
+| examplore_chi18: USER STUDY > Methodology | corpusstudio: User Study | USER STUDY (whole) ↔ User Study (whole) |
+| examplore_chi18: RESULTS (whole) | corpusstudio: Qualitative Results (whole) | RESULTS > Qualitative Analysis ↔ Qualitative Results (whole) |
+| corpusstudio: Qualitative Results > Sentence-level Writing Support | examplore_chi18: RESULTS > Qualitative Analysis | RESULTS > Qualitative Analysis ↔ Qualitative Results (whole) |
+| corpusstudio: Qualitative Results > Bookmark and User Notes | examplore_chi18: RESULTS > Qualitative Analysis | RESULTS > Qualitative Analysis ↔ Qualitative Results (whole) |
+| corpusstudio: Qualitative Results > Tooltips | examplore_chi18: RESULTS > Qualitative Analysis | RESULTS > Qualitative Analysis ↔ Qualitative Results (whole) |
+| corpusstudio: Qualitative Results > Use of Features, Especially Across Writing Stages | examplore_chi18: RESULTS > Qualitative Analysis | RESULTS > Qualitative Analysis ↔ Qualitative Results (whole) |
+| corpusstudio: Quantitative Results > Task 1: Outline Writing | examplore_chi18: RESULTS > Quantitative Analysis | RESULTS > Quantitative Analysis ↔ Quantitative Results (whole) |
+| corpusstudio: Quantitative Results > Task 2: Writing a Section of a Manuscript | examplore_chi18: RESULTS > Quantitative Analysis | RESULTS > Quantitative Analysis ↔ Quantitative Results (whole) |
+| corpusstudio: Discussion > Designing a System with Many Retrieved Examples | examplore_chi18: DISCUSSION AND LIMITATIONS | DISCUSSION AND LIMITATIONS (whole) ↔ Discussion (whole) |
+| corpusstudio: Discussion > Limitations and Future Work | examplore_chi18: DISCUSSION AND LIMITATIONS | DISCUSSION AND LIMITATIONS (whole) ↔ Discussion (whole) |
 
 **One-directional matches that survived the filter — forward, examplore_chi18 → corpusstudio (7)**
 
