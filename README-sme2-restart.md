@@ -296,6 +296,31 @@ comparison methodology, whether to treat corpusstudio's whole "Corpus Studio" se
 the counterpart to *all three* of examplore_chi18's top-level sections combined, rather
 than expecting a single best match.
 
+**Root cause, confirmed by the model's own reasoning, not just inferred from the
+mismatch.** Both directional passes independently describe the same underlying fact in
+their own `basis` text, then still resolve it differently. The reverse-direction row
+(`Corpus Studio → SYNTHETIC CODE SKELETON`) says the query "is a single top-level section
+combining scenario + design + implementation, and paper2 splits these into three separate
+sections (SYNTHETIC CODE SKELETON, SCENARIO, SYSTEM ARCHITECTURE AND IMPLEMENTATION) ...
+with secondary correspondence to the SCENARIO and IMPLEMENTATION sections." The
+forward-direction row (`SYSTEM ARCHITECTURE AND IMPLEMENTATION → Corpus Studio`)
+independently says corpusstudio's whole section "combin[es] design and implementation
+details" into one. So this isn't ordinary matcher noise or a coin-flip disagreement —
+both passes agree corpusstudio genuinely bundles three roles that examplore_chi18 keeps
+separate. The Usage Scenario slice of that bundle already resolved cleanly, because it
+has its own subsection and confirmed against SCENARIO on its own. What's left when the
+*whole* "Corpus Studio" section is queried (lead-in text plus every remaining
+subsection, concatenated — see Stage 3's candidate construction above) is an undivided
+mix of "design concept" and "implementation," which doesn't reduce to one target the same
+way twice: the forward pass weights the implementation half and picks SYSTEM ARCHITECTURE
+AND IMPLEMENTATION; the reverse pass weights the design-concept half and picks SYNTHETIC
+CODE SKELETON. Each direction only ever sees its own single query in isolation, with no
+visibility into how the other direction split the same content — so a genuine
+one-to-many correspondence, which Stage 3's own splitting rule ("if a query legitimately
+corresponds to multiple candidates, create a separate output entry for each") exists to
+handle, never gets the chance to trigger, because no single query row spans both
+directions at once.
+
 **Smaller loose ends**, not part of either cluster above but still unresolved:
 
 - `Corpus Studio > Design Goals` → `INTRODUCTION` (corpusstudio has no dedicated Design
