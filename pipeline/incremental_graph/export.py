@@ -6,6 +6,7 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
+from .correspondences import build_correspondences
 from .graph import QuestionGraph
 from .journal import write_json
 from .models import Paper
@@ -69,6 +70,10 @@ def export_revision(dataset_dir: Path, graph: QuestionGraph, papers: list[Paper]
         "categories": normalized_categories,
     })
     write_json(dataset_dir / "graph-replay.json", graph.replay_payload())
+    write_json(
+        dataset_dir / "correspondences.json",
+        build_correspondences(graph, graph.journal.events),
+    )
     write_json(dataset_dir / "final_snapshot.json", {
         "schema_version": 2,
         "mode": "final_snapshot",

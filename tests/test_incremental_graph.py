@@ -234,6 +234,22 @@ class IncrementalGraphTest(unittest.TestCase):
             ]
             self.assertEqual(len(replay["layouts"]["paragraph"]), len(paragraph_nodes))
             self.assertIn("section", replay["hierarchy_layouts"])
+            correspondences = json.loads(
+                (revision / "dataset" / "correspondences.json").read_text(encoding="utf-8")
+            )
+            section_fan_in = [
+                item
+                for row in correspondences["levels"]["section"]
+                for item in row["fan_in"]
+            ]
+            self.assertEqual(len(section_fan_in), 1)
+            self.assertEqual(section_fan_in[0]["target_id"], "a3")
+            self.assertEqual(correspondences["stats"]["section_fan_in_groups"], 1)
+            self.assertEqual(correspondences["stats"]["paragraph_fan_in_groups"], 0)
+            self.assertCountEqual(
+                [claim["status"] for claim in section_fan_in[0]["claims"]],
+                ["confirmed", "one_directional"],
+            )
             descriptor = validate_dataset(revision / "dataset", "incremental", "Incremental")
             self.assertEqual(descriptor["graph_replay_file"], "graph-replay.json")
 

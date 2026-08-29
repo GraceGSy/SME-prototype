@@ -10,6 +10,7 @@ Use this Skill for one directional pass of the incremental question-group graph.
 ## Evidence
 
 - Compare function in the paper's argument, not topic or vocabulary.
+- Different subject domains are expected and are never, by themselves, a reason to reject a role match. If two units do the same structural job, do not disqualify them because their concrete content differs.
 - Read the complete text and question metadata for the focus and every candidate.
 - Questions are reliable evidence but never identity. Complete text wins when a question is too narrow or conflicts with the source.
 - A candidate question group represents all of its members. Judge the group from the complete evidence of every member, not from its generated group question alone.

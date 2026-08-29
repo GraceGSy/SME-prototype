@@ -96,6 +96,10 @@ when the packaged dataset contains a valid `graph-replay.json`. Its optional
 `Show hierarchy` control reveals section-to-subsection edges and switches to an
 ordered hierarchical layout.
 
+Each run also writes `correspondences.json`, a deterministic report combining
+reciprocal groups with section- and paragraph-level fan-in claims. One-way
+claims remain provenance only and never become graph edges.
+
 ## Verification
 
 ```powershell

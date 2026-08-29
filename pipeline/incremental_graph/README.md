@@ -24,6 +24,13 @@ One-way role matches never create graph edges. Their judgments remain in
 was reciprocally absorbed elsewhere, `projected_edge_ignored` records that fact
 without changing graph topology.
 
+`correspondences.json` combines confirmed reciprocal groups with deterministic
+fan-in evidence. Fan-in means two or more focus units or groups independently
+selected the same target in one directional pass. Claims remain individuated and
+are labeled `confirmed` or `one_directional`; the report never changes the graph.
+Paragraph fan-in is not filtered as redundant because sibling paragraphs are
+independent units, not a containment family.
+
 Every group contains at most one unit from a paper. Section and subsection
 members may share a group. Generated questions and containment edges are
 metadata and never contribute to stable group identity.
@@ -78,6 +85,7 @@ events.json
 dataset/graph.json
 dataset/graph_categories.json
 dataset/graph-replay.json
+dataset/correspondences.json
 dataset/final_snapshot.json
 summary.json
 ```
