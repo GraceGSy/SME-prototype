@@ -48,6 +48,7 @@ class RevisionJournal:
             "output_kind": request.output_kind,
             "prompt_ref": request.prompt_ref,
             "context_ref": request.context_ref,
+            "skill_ref": request.skill_ref,
             "candidate_ids": request.allowed_match_ids,
             "fingerprint": result.fingerprint,
             "prompt_hash": result.prompt_hash,

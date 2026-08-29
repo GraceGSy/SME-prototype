@@ -176,6 +176,7 @@ class ViewerDatasetTest(unittest.TestCase):
                 "paper_order": ["paper_a", "paper_b"],
                 "final_graph_hash": "0" * 64,
                 "layouts": {"section": {"group-1": {"x": 0.5, "y": 0.5}}},
+                "hierarchy_layouts": {"section": {"group-1": {"x": 0.5, "y": 0.25}}},
                 "events": [
                     {
                         "sequence": 1,
@@ -196,6 +197,8 @@ class ViewerDatasetTest(unittest.TestCase):
             self.assertTrue((output / "public" / "data" / "graph-replay.json").is_file())
             self.assertTrue((output / "public" / "graph_replay.js").is_file())
             self.assertTrue((output / "public" / "graph_replay.css").is_file())
+            script = (output / "public" / "graph_replay.js").read_text(encoding="utf-8")
+            self.assertIn("graphReplayHierarchy", script)
 
 
 if __name__ == "__main__":

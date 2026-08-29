@@ -146,12 +146,16 @@ class IncrementalGraphTest(unittest.TestCase):
             normalized = load_paper(path, "paper-a", "Paper A")
 
             section = normalized.sections[0]
+            subsection = normalized.sections[1]
             self.assertEqual(section.question, "How does the method work?")
             self.assertEqual(section.ordinal, 1)
             self.assertEqual(section.text, "Method overview.\n\nImplementation details.")
-            self.assertEqual([paragraph.id for paragraph in section.paragraphs], ["3-p1", "3-p2"])
-            self.assertEqual(section.paragraphs[1].label, "Implementation / 0")
-            self.assertEqual(section.paragraphs[1].question, "How was it implemented?")
+            self.assertEqual([paragraph.id for paragraph in section.paragraphs], ["3-p1"])
+            self.assertEqual(subsection.kind, "subsection")
+            self.assertEqual(subsection.parent_id, "3")
+            self.assertEqual(subsection.family_id, "3")
+            self.assertEqual(subsection.ordinal, 2)
+            self.assertEqual(subsection.paragraphs[0].question, "How was it implemented?")
 
     def test_incremental_reconciliation_preserves_ignored_projection_as_provenance(self) -> None:
         group_a = stable_id("section-group", "root", "p1", "a")
@@ -203,7 +207,13 @@ class IncrementalGraphTest(unittest.TestCase):
             replay = json.loads((revision / "dataset" / "graph-replay.json").read_text(encoding="utf-8"))
             self.assertEqual(replay["final_graph_hash"], summary["graph_hash"])
             self.assertIn("section", replay["layouts"])
-            self.assertIn(f"paragraph:{group_a}", replay["layouts"])
+            self.assertIn("paragraph", replay["layouts"])
+            paragraph_nodes = [
+                node for node in runner.question_graph.serialize()["nodes"]
+                if node["level"] == "paragraph"
+            ]
+            self.assertEqual(len(replay["layouts"]["paragraph"]), len(paragraph_nodes))
+            self.assertIn("section", replay["hierarchy_layouts"])
             descriptor = validate_dataset(revision / "dataset", "incremental", "Incremental")
             self.assertEqual(descriptor["graph_replay_file"], "graph-replay.json")
 
@@ -232,6 +242,38 @@ class IncrementalGraphTest(unittest.TestCase):
             graph.add_paper("p5", "P5", 5)
             self.assertEqual(graph.classify("section", 5)[node_id], "alignable_difference")
 
+    def test_paragraph_classification_uses_only_direct_node_membership(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            graph = QuestionGraph(RevisionJournal(Path(directory) / "revision"))
+            for index in range(1, 6):
+                graph.add_paper(f"p{index}", f"P{index}", index)
+
+            structural_group = graph.create_group(
+                level="section",
+                parent_id=None,
+                member_id="s1",
+                paper_id="p1",
+                paper_index=1,
+                ordinal=1,
+            )
+            for index in range(2, 6):
+                graph.add_member(structural_group, f"s{index}", f"p{index}", index, 1)
+
+            paragraph_group = graph.create_group(
+                level="paragraph",
+                parent_id=structural_group,
+                member_id="para1",
+                paper_id="p1",
+                paper_index=1,
+                ordinal=1,
+                owner_group_id=structural_group,
+            )
+
+            self.assertEqual(
+                graph.classify("paragraph", 5)[paragraph_group],
+                "non_alignable_difference",
+            )
+
     def test_rejects_two_members_from_one_paper(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             graph = QuestionGraph(RevisionJournal(Path(directory) / "revision"))
@@ -248,7 +290,7 @@ class IncrementalGraphTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "already contains a member from p1"):
                 graph.add_member(node_id, "s2", "p1", 1, 2)
 
-    def test_canonical_five_paper_dataset_completes_without_semantic_edges(self) -> None:
+    def test_canonical_five_paper_dataset_has_only_hierarchy_edges(self) -> None:
         _, papers = load_manifest(CANONICAL_MANIFEST)
         with tempfile.TemporaryDirectory() as directory:
             revision = Path(directory) / "revision"
@@ -260,13 +302,96 @@ class IncrementalGraphTest(unittest.TestCase):
             summary = runner.run(papers)
 
             self.assertEqual(summary["paper_count"], 5)
-            self.assertEqual(runner.question_graph.graph.number_of_edges(), 0)
+            edges = list(runner.question_graph.graph.edges(data=True))
+            self.assertEqual(len(edges), 87)
+            self.assertTrue(all(data["kind"] == "contains" for _, _, data in edges))
             self.assertTrue(
                 all(len(data["members"]) == 1 for _, data in runner.question_graph.nodes())
             )
             descriptor = validate_dataset(revision / "dataset", "hci-five", "HCI Five")
             self.assertEqual(descriptor["paper_count"], 5)
             self.assertEqual(descriptor["paragraph_count"], 459)
+
+    def test_cross_level_structure_and_family_paragraph_scope(self) -> None:
+        first = Paper(
+            paper_id="p1",
+            title="P1",
+            sections=[
+                Section(
+                    id="s1",
+                    text="Whole section evidence. Subsection evidence.",
+                    family_id="s1",
+                    paragraphs=[Paragraph(id="lead1", text="Lead paragraph")],
+                ),
+                Section(
+                    id="sub1",
+                    text="Subsection evidence.",
+                    kind="subsection",
+                    parent_id="s1",
+                    family_id="s1",
+                    ordinal=2,
+                    paragraphs=[Paragraph(id="detail1", text="Detail paragraph", ordinal=2)],
+                ),
+            ],
+        )
+        second = Paper(
+            paper_id="p2",
+            title="P2",
+            sections=[
+                Section(
+                    id="s2",
+                    text="Second whole section.",
+                    family_id="s2",
+                    paragraphs=[Paragraph(id="lead2", text="Second lead")],
+                ),
+                Section(
+                    id="sub2",
+                    text="Second subsection.",
+                    kind="subsection",
+                    parent_id="s2",
+                    family_id="s2",
+                    ordinal=2,
+                    paragraphs=[Paragraph(id="detail2", text="Second detail", ordinal=2)],
+                ),
+            ],
+        )
+        section_group = stable_id("section-group", "root", "p1", "s1")
+        subsection_group = stable_id("section-group", "root", "p1", "sub1")
+        judge = ScriptedJudge({
+            "p2:section_matching:new_to_group:s2": section_group,
+            "p2:section_matching:new_to_group:sub2": subsection_group,
+            f"p2:section_matching:group_to_new:{section_group}": "s2",
+            f"p2:section_matching:group_to_new:{subsection_group}": "sub2",
+        })
+        with tempfile.TemporaryDirectory() as directory:
+            runner = IncrementalGraphRunner(
+                load_pipeline_config(CONFIG_PATH),
+                judge,
+                Path(directory) / "revision",
+            )
+            runner.run([first, second])
+
+        section_matches = [
+            request for request in judge.requests
+            if request.stage_id == "section_matching" and request.paper_index == 2
+        ]
+        self.assertTrue(section_matches)
+        self.assertTrue(all(request.skill_ref for request in section_matches))
+        paragraph_forward = next(
+            request for request in judge.requests
+            if request.key == "p2:paragraph_matching:new_to_group:lead2"
+        )
+        candidate_units = {
+            member["paragraph_id"]
+            for candidate in paragraph_forward.context["candidates"]
+            for member in candidate["members"]
+        }
+        self.assertEqual(candidate_units, {"lead1", "detail1"})
+        contains = [
+            event for event in runner.journal.events
+            if event["action"] == "edge_created" and event["kind"] == "contains"
+        ]
+        self.assertEqual(len(contains), 2)
 
 
 if __name__ == "__main__":

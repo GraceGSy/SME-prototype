@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterator
 import json
 from pathlib import Path
 import re
@@ -49,41 +48,84 @@ def _from_extracted_sections(payload: list[dict[str, Any]], paper_id: str, title
     sections: list[Section] = []
     used_section_ids: set[str] = set()
     used_paragraph_ids: set[str] = set()
+    structural_ordinal = 0
     for section_index, raw_section in enumerate(payload, start=1):
         section_id = _unique_id(
             _safe_id(raw_section.get("section_number"), f"s{section_index}"),
             used_section_ids,
         )
-        paragraphs: list[Paragraph] = []
-        for paragraph_index, (raw_paragraph, parent_label) in enumerate(
-            _nested_paragraphs(raw_section), start=1
-        ):
-            paragraph_id = _unique_id(f"{section_id}-p{paragraph_index}", used_paragraph_ids)
-            text = str(raw_paragraph.get("text") or "").strip()
-            if not text:
+        paragraph_ordinal = 0
+
+        def build_paragraphs(owner_id: str, raw_paragraphs: list[dict[str, Any]]) -> list[Paragraph]:
+            nonlocal paragraph_ordinal
+            built: list[Paragraph] = []
+            for raw_paragraph in raw_paragraphs:
+                text = str(raw_paragraph.get("text") or "").strip()
+                if not text:
+                    continue
+                paragraph_ordinal += 1
+                paragraph_id = _unique_id(f"{owner_id}-p{len(built) + 1}", used_paragraph_ids)
+                built.append(Paragraph(
+                    id=paragraph_id,
+                    label=str(raw_paragraph.get("paragraph_number", "")).strip(),
+                    text=text,
+                    question=_question(raw_paragraph),
+                    ordinal=paragraph_ordinal,
+                ))
+            return built
+
+        direct_paragraphs = build_paragraphs(section_id, raw_section.get("paragraphs") or [])
+        children: list[Section] = []
+        for subsection_index, raw_subsection in enumerate(raw_section.get("subsections") or [], start=1):
+            subsection_key = (
+                raw_subsection.get("section_number")
+                or raw_subsection.get("section_name")
+                or f"sub{subsection_index}"
+            )
+            subsection_id = _unique_id(
+                f"{section_id}-sub-{_safe_id(subsection_key, f'sub{subsection_index}')}",
+                used_section_ids,
+            )
+            subsection_paragraphs = build_paragraphs(
+                subsection_id, raw_subsection.get("paragraphs") or []
+            )
+            subsection_text = "\n\n".join(paragraph.text for paragraph in subsection_paragraphs)
+            if not subsection_text:
                 continue
-            raw_label = str(raw_paragraph.get("paragraph_number", "")).strip()
-            label = " / ".join(part for part in (parent_label, raw_label) if part)
-            paragraphs.append(Paragraph(
-                id=paragraph_id,
-                label=label,
-                text=text,
-                question=_question(raw_paragraph),
-                ordinal=paragraph_index,
+            children.append(Section(
+                id=subsection_id,
+                label=str(raw_subsection.get("section_name") or subsection_id),
+                text=subsection_text,
+                paragraphs=subsection_paragraphs,
+                question=_question(raw_subsection),
+                ordinal=1,
+                kind="subsection",
+                parent_id=section_id,
+                family_id=section_id,
             ))
-        section_text = "\n\n".join(paragraph.text for paragraph in paragraphs)
-        if not section_text:
-            section_text = str(raw_section.get("text") or "").strip()
-        if not section_text:
+
+        section_text = "\n\n".join(
+            paragraph.text
+            for paragraph in [*direct_paragraphs, *(p for child in children for p in child.paragraphs)]
+        ) or str(raw_section.get("text") or "").strip()
+        if not section_text and not children:
             continue
+        structural_ordinal += 1
+        section_ordinal = structural_ordinal
         sections.append(Section(
             id=section_id,
             label=str(raw_section.get("section_name") or raw_section.get("title") or section_id),
             text=section_text,
-            paragraphs=paragraphs,
+            paragraphs=direct_paragraphs,
             question=_question(raw_section),
-            ordinal=section_index,
+            ordinal=section_ordinal,
+            kind="section",
+            family_id=section_id,
         ))
+        for offset, child in enumerate(children, start=1):
+            child.ordinal = section_ordinal + offset
+        structural_ordinal = section_ordinal + len(children)
+        sections.extend(children)
     return Paper(paper_id=paper_id, title=title, sections=sections)
 
 
@@ -125,6 +167,11 @@ def _from_sectioned_paper(payload: dict[str, Any], paper_id: str, title: str) ->
                 paragraphs=paragraphs,
                 question=_question(raw_section),
                 ordinal=section_index,
+                kind=str(raw_section.get("kind") or "section"),
+                parent_id=raw_section.get("parent_id"),
+                family_id=str(
+                    raw_section.get("family_id") or raw_section.get("parent_id") or section_id
+                ),
             ))
     return Paper(paper_id=paper_id, title=title, sections=sections)
 
@@ -145,14 +192,3 @@ def _question(value: dict[str, Any]) -> str:
         if question:
             return question
     return ""
-
-
-def _nested_paragraphs(section: dict[str, Any]) -> Iterator[tuple[dict[str, Any], str]]:
-    """Yield a top-level section's paragraphs in document reading order."""
-
-    for paragraph in section.get("paragraphs") or []:
-        yield paragraph, ""
-    for subsection in section.get("subsections") or []:
-        subsection_label = str(subsection.get("section_name") or "").strip()
-        for paragraph in subsection.get("paragraphs") or []:
-            yield paragraph, subsection_label

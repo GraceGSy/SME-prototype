@@ -43,7 +43,12 @@ def run_revision(
     revision_number = _next_revision(revisions_dir)
     revision_dir = revisions_dir / f"revision-{revision_number:04d}"
     prompts = PromptRepository(config.prompt_root, config.context_root)
-    judge = AnthropicJudgmentProvider(prompts, config.model, run_dir / "cache")
+    judge = AnthropicJudgmentProvider(
+        prompts,
+        config.model,
+        run_dir / "cache",
+        config.skill_root,
+    )
     runner = IncrementalGraphRunner(
         config,
         judge,
@@ -97,6 +102,8 @@ def validate_manifest(manifest_path: Path) -> dict[str, Any]:
             {
                 "paper_id": paper.paper_id,
                 "sections": len(paper.sections),
+                "top_level_sections": sum(section.kind == "section" for section in paper.sections),
+                "subsections": sum(section.kind == "subsection" for section in paper.sections),
                 "paragraphs": sum(len(section.paragraphs) for section in paper.sections),
                 "missing_section_questions": sum(not section.question for section in paper.sections),
                 "missing_paragraph_questions": sum(

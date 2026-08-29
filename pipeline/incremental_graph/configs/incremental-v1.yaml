@@ -2,6 +2,7 @@ schema_version: 1
 pipeline_id: incremental-question-graph-v1
 prompt_root: ../prompts
 context_root: ../contexts
+skill_root: ../../../skills
 
 model:
   provider: anthropic
@@ -19,6 +20,7 @@ stages:
 
   - id: section_matching
     handler: match_sections
+    skill: directional-section-mapping-by-paragraphs-nested
     prompts:
       new_to_group: section-to-group-match/v1
       group_to_new: group-to-section-match/v1
@@ -44,6 +46,7 @@ stages:
 
   - id: paragraph_matching
     handler: match_paragraphs
+    skill: directional-section-mapping-by-paragraphs-nested
     prompts:
       new_to_group: paragraph-to-group-match/v1
       group_to_new: group-to-paragraph-match/v1

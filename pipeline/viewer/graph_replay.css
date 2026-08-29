@@ -35,9 +35,10 @@
 .graph-replay-scrubber { flex: 1 1 220px; min-width: 160px; accent-color: #1971c2; }
 .graph-replay-counter { min-width: 78px; color: #52616a; font-size: 10px; text-align: right; }
 .graph-replay-body { display: grid; grid-template-columns: minmax(0, 1fr) 290px; min-height: 0; }
-.graph-replay-canvas { position: relative; min-width: 0; overflow: hidden; background: radial-gradient(circle at 18% 12%, #f8fbfc 0, #eef3f5 48%, #e8eef1 100%); }
+.graph-replay-canvas { position: relative; min-width: 0; overflow: auto; background: radial-gradient(circle at 18% 12%, #f8fbfc 0, #eef3f5 48%, #e8eef1 100%); }
 .graph-replay-canvas svg { display: block; width: 100%; height: 100%; }
 .graph-replay-edge { fill: none; stroke: #d18b26; stroke-width: 2; opacity: .78; }
+.graph-replay-edge.contains { stroke: #78909c; stroke-dasharray: 5 4; opacity: .62; }
 .graph-replay-edge.current { stroke: #e67700; stroke-width: 3.5; opacity: 1; }
 .graph-replay-node { cursor: pointer; }
 .graph-replay-node circle { stroke: #fff; stroke-width: 3px; filter: drop-shadow(0 2px 4px rgba(32, 48, 56, .2)); }

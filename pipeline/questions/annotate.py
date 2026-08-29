@@ -1,7 +1,7 @@
 """Annotate nested section JSON with one role-question per section, subsection,
 and paragraph, via a forced Claude tool call.
 
-Walks a skills-pipeline extraction file (section_name, paragraphs, subsections),
+Walks a canonical extraction file (section_name, paragraphs, subsections),
 sends each unit as a paper-order text block, and writes the result back onto
 that same object as question_this_text_answers.
 

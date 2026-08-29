@@ -32,6 +32,7 @@ def load_pipeline_config(path: Path) -> PipelineConfig:
     config = PipelineConfig.model_validate(payload)
     config.prompt_root = (path.parent / config.prompt_root).resolve()
     config.context_root = (path.parent / config.context_root).resolve()
+    config.skill_root = (path.parent / config.skill_root).resolve()
     return config
 
 

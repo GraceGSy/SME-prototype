@@ -101,6 +101,9 @@ def _viewer_paper(paper: Paper) -> dict[str, Any]:
                 "title": section.label,
                 "tag": section.question,
                 "text": section.text,
+                "unit_type": section.kind,
+                "parent_id": section.parent_id,
+                "ordinal": section.ordinal,
                 "prev_relation": "",
                 "next_relation": "",
             }
@@ -113,6 +116,8 @@ def _viewer_paper(paper: Paper) -> dict[str, Any]:
                 "tag": paragraph.question,
                 "text": paragraph.text,
                 "section_id": section.id,
+                "family_id": section.family_id,
+                "ordinal": paragraph.ordinal,
                 "prev_relation": "",
                 "next_relation": "",
             }
@@ -139,6 +144,8 @@ def _viewer_group(
                 "unit_id": unit_id,
                 "section_id": unit_id,
                 "tag": section.question,
+                "unit_type": section.kind,
+                "ordinal": section.ordinal,
             })
         else:
             section, paragraph = paragraph_lookup[(paper_id, unit_id)]
@@ -147,6 +154,8 @@ def _viewer_group(
                 "unit_id": unit_id,
                 "section_id": section.id,
                 "tag": paragraph.question,
+                "unit_type": "paragraph",
+                "ordinal": paragraph.ordinal,
             })
     return {
         "group_id": node_id,

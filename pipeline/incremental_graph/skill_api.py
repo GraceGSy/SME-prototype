@@ -40,6 +40,7 @@ class RunResult:
     value: Any = None
     raw_text: str | None = None
     transport_notes: tuple[str, ...] = ()
+    raw_response: dict[str, Any] | None = None
 
 
 def _decode_json_output(text: str) -> tuple[Any, tuple[str, ...]]:
@@ -90,7 +91,7 @@ def load_api_key(repo_root: Path) -> str:
     raise RuntimeError("No ANTHROPIC_API_KEY was found in the environment or an ancestor .env")
 
 
-def _directory_hash(path: Path) -> str:
+def directory_hash(path: Path) -> str:
     digest = hashlib.sha256()
     for file_path in sorted(path.rglob("*")):
         if not file_path.is_file() or "__pycache__" in file_path.parts or file_path.suffix == ".pyc":
@@ -125,7 +126,7 @@ class ClaudeSkills:
 
         skill_path = skill_path.resolve()
         relative = skill_path.relative_to(self.repo_root).as_posix()
-        fingerprint = _directory_hash(skill_path)
+        fingerprint = directory_hash(skill_path)
         existing = self.state.get(relative)
         if existing and existing.get("source_sha256") == fingerprint:
             return SkillRef(relative, existing["skill_id"], existing["version"], fingerprint)
@@ -276,4 +277,5 @@ class ClaudeSkills:
             value,
             raw_text,
             transport_notes,
+            response.model_dump(mode="json"),
         )

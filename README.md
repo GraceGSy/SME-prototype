@@ -1,7 +1,7 @@
 # SME question-group graph
 
 This repository contains the retained Structural Mapping Engine work: the
-order-dependent question-group graph, Claude extraction and matching harness,
+order-dependent question-group graph, its Claude matching Skill,
 canonical HCI inputs, the Paper Map and Question Groups viewer, Graph Replay,
 and the earlier proposition-graph SME.
 
@@ -11,7 +11,6 @@ and the earlier proposition-graph SME.
 |---|---|
 | `datasets/hci-five-paper/` | Five canonical, question-decorated HCI papers and their ordered manifest |
 | `pipeline/incremental_graph/` | Elena's incremental section and paragraph graph |
-| `pipeline/skill_pipeline/` | Configurable Claude Skills API harness |
 | `pipeline/questions/` | Direct question-annotation commands |
 | `pipeline/viewer/` | Paper Map, Question Groups, Graph Replay, and dataset packaging |
 | `pipeline/graph_sme/` | Earlier proposition-graph SME retained as a separate implementation |
@@ -36,8 +35,8 @@ Validate the checked-in papers without making API calls:
 python -m pipeline.incremental_graph.cli validate datasets/hci-five-paper/manifest.yaml
 ```
 
-The expected input is five papers, 52 non-empty top-level sections, and 459
-paragraphs. Every retained section and paragraph already has a question, so a
+The expected input is five papers, 52 top-level sections, 87 subsections, and
+459 paragraphs. Every retained structural unit and paragraph already has a question, so a
 graph run reuses those questions rather than paying to generate them again.
 
 ## Run the graph
@@ -49,8 +48,8 @@ python -m pipeline.incremental_graph.cli run `
   runs/hci-five-paper
 ```
 
-The run processes papers in manifest order. It still makes model calls for both
-matching directions and for regenerated group questions. Results are immutable
+The run processes papers in manifest order. Directional matching uses the
+checked-in Claude Skill; group questions use structured Anthropic calls. Results are immutable
 under `runs/hci-five-paper/revisions/`; response cache entries are reused by
 content hash.
 
@@ -90,22 +89,9 @@ python -m http.server 8000 --directory site/hci-five-paper/public
 ```
 
 The viewer exposes Question Groups and Paper Map. Graph Replay appears only
-when the packaged dataset contains a valid `graph-replay.json`.
-
-## Claude Skill harness
-
-The harness is separate from the canonical incremental graph. It exercises the
-retained extraction, annotation, and directional matching Skills against the
-configured HCI pair:
-
-```powershell
-$env:ANTHROPIC_API_KEY = "your-key"
-python -m pipeline.skill_pipeline.runner --dataset hci --stage all
-```
-
-Use `--stage questions`, `--stage section_matching`, or
-`--stage section_and_subsection_matching` to run only one stage. Outputs go to
-`runs/skill-pipeline/` and are not source-controlled.
+when the packaged dataset contains a valid `graph-replay.json`. Its optional
+`Show hierarchy` control reveals section-to-subsection edges and switches to an
+ordered hierarchical layout.
 
 ## Verification
 

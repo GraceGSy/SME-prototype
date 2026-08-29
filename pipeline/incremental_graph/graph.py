@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-from collections import defaultdict
 from typing import Any, Iterable
 
 import networkx as nx
@@ -46,12 +45,18 @@ class QuestionGraph:
         paper_id: str,
         paper_index: int,
         ordinal: int,
+        unit_kind: str = "section",
+        parent_unit_id: str | None = None,
+        family_id: str | None = None,
+        owner_group_id: str | None = None,
     ) -> str:
         prefix = "section-group" if level == "section" else "paragraph-group"
         node_id = stable_id(prefix, parent_id or "root", paper_id, member_id)
         if node_id in self.graph:
             raise ValueError(f"Question-group ID collision: {node_id}")
-        member = {"paper_id": paper_id, "unit_id": member_id, "ordinal": ordinal}
+        member = _member(
+            paper_id, member_id, ordinal, unit_kind, parent_unit_id, family_id, owner_group_id
+        )
         self.graph.add_node(
             node_id,
             level=level,
@@ -78,11 +83,17 @@ class QuestionGraph:
         paper_id: str,
         paper_index: int,
         ordinal: int,
+        unit_kind: str = "section",
+        parent_unit_id: str | None = None,
+        family_id: str | None = None,
+        owner_group_id: str | None = None,
     ) -> None:
         members = self.graph.nodes[node_id]["members"]
         if any(existing["paper_id"] == paper_id for existing in members):
             raise ValueError(f"Question group {node_id} already contains a member from {paper_id}")
-        member = {"paper_id": paper_id, "unit_id": member_id, "ordinal": ordinal}
+        member = _member(
+            paper_id, member_id, ordinal, unit_kind, parent_unit_id, family_id, owner_group_id
+        )
         if member in members:
             return
         members.append(member)
@@ -94,12 +105,66 @@ class QuestionGraph:
             member=member,
         )
 
+    def add_hierarchy_edge(
+        self,
+        parent_group_id: str,
+        child_group_id: str,
+        *,
+        paper_id: str,
+        paper_index: int,
+    ) -> None:
+        edge_id = stable_id("contains", paper_id, parent_group_id, child_group_id)
+        if self.graph.has_edge(parent_group_id, child_group_id, edge_id):
+            return
+        self.graph.add_edge(
+            parent_group_id,
+            child_group_id,
+            key=edge_id,
+            edge_id=edge_id,
+            kind="contains",
+            paper_id=paper_id,
+            created_paper_index=paper_index,
+        )
+        self.journal.event(
+            "edge_created",
+            paper_index=paper_index,
+            edge_id=edge_id,
+            source=parent_group_id,
+            target=child_group_id,
+            kind="contains",
+            paper_id=paper_id,
+        )
+
+    def structural_family(self, node_ids: list[str]) -> set[str]:
+        """Return structural groups connected by paper-specific containment edges."""
+
+        structural = nx.Graph()
+        structural.add_nodes_from(self.group_ids("section"))
+        structural.add_edges_from(
+            (source, target)
+            for source, target, data in self.graph.edges(data=True)
+            if data.get("kind") == "contains"
+        )
+        family: set[str] = set()
+        for node_id in node_ids:
+            if node_id in structural:
+                family.update(nx.node_connected_component(structural, node_id))
+        return family
+
+    def paragraph_groups_for_family(self, structural_group_ids: set[str], paper_id: str) -> list[str]:
+        return sorted(
+            node_id
+            for node_id, data in self.nodes("paragraph")
+            if not any(member["paper_id"] == paper_id for member in data["members"])
+            and any(member.get("owner_group_id") in structural_group_ids for member in data["members"])
+        )
+
     def classify(self, level: Level, paper_index: int) -> dict[str, Classification]:
         classifications: dict[str, Classification] = {}
         for node_id, _ in self.nodes(level):
             data = self.graph.nodes[node_id]
             coverage = len({member["paper_id"] for member in data["members"]})
-            denominator = self._classification_denominator(data)
+            denominator = len(self.paper_order)
             if denominator and coverage * 2 >= denominator:
                 classification: Classification = "common_structure"
             elif len(data["members"]) > 1:
@@ -135,7 +200,7 @@ class QuestionGraph:
             attempt_id=attempt_id,
         )
 
-    def members(self, node_id: str) -> list[dict[str, str]]:
+    def members(self, node_id: str) -> list[dict[str, Any]]:
         return list(self.graph.nodes[node_id]["members"])
 
     def nodes(self, level: Level | None = None) -> Iterable[tuple[str, dict[str, Any]]]:
@@ -162,25 +227,15 @@ class QuestionGraph:
             "paper_order": self.paper_order,
             "final_graph_hash": self.graph_hash(),
             "layouts": self._layouts(),
+            "hierarchy_layouts": {"section": _hierarchy_layout(self.graph, self.group_ids("section"))},
             "events": self.journal.events,
         }
 
-    def _classification_denominator(self, node: dict[str, Any]) -> int:
-        if node["level"] == "section":
-            return len(self.paper_order)
-        parent_id = node.get("parent_id")
-        if not parent_id or parent_id not in self.graph:
-            return 0
-        return len({member["paper_id"] for member in self.graph.nodes[parent_id]["members"]})
-
     def _layouts(self) -> dict[str, dict[str, dict[str, float]]]:
-        layouts = {"section": _layout(self.graph, self.group_ids("section"))}
-        parents: dict[str, list[str]] = defaultdict(list)
-        for node_id, data in self.nodes("paragraph"):
-            parents[data["parent_id"]].append(node_id)
-        for parent_id, node_ids in sorted(parents.items()):
-            layouts[f"paragraph:{parent_id}"] = _layout(self.graph, node_ids)
-        return layouts
+        return {
+            "section": _layout(self.group_ids("section")),
+            "paragraph": _layout([node_id for node_id, _ in self.nodes("paragraph")]),
+        }
 
 
 def graph_from_events(events: list[dict[str, Any]]) -> nx.MultiDiGraph:
@@ -207,7 +262,8 @@ def graph_from_events(events: list[dict[str, Any]]) -> nx.MultiDiGraph:
                 key=event["edge_id"],
                 edge_id=event["edge_id"],
                 kind=event["kind"],
-                attempt_id=event["attempt_id"],
+                attempt_id=event.get("attempt_id"),
+                paper_id=event.get("paper_id"),
             )
         elif action == "classification_changed":
             graph.nodes[event["node_id"]]["classification"] = event["classification"]
@@ -216,12 +272,13 @@ def graph_from_events(events: list[dict[str, Any]]) -> nx.MultiDiGraph:
     return graph
 
 
-def _layout(graph: nx.MultiDiGraph, node_ids: list[str]) -> dict[str, dict[str, float]]:
+def _layout(node_ids: list[str]) -> dict[str, dict[str, float]]:
     if not node_ids:
         return {}
     if len(node_ids) == 1:
         return {node_ids[0]: {"x": 0.5, "y": 0.5}}
-    subgraph = graph.subgraph(node_ids).to_undirected()
+    subgraph = nx.Graph()
+    subgraph.add_nodes_from(node_ids)
     positions = nx.spring_layout(subgraph, seed=42, iterations=100)
     xs = [float(point[0]) for point in positions.values()]
     ys = [float(point[1]) for point in positions.values()]
@@ -235,6 +292,59 @@ def _layout(graph: nx.MultiDiGraph, node_ids: list[str]) -> dict[str, dict[str, 
             "y": round(0.08 + 0.84 * (float(positions[node_id][1]) - min_y) / height, 6),
         }
         for node_id in sorted(node_ids)
+    }
+
+
+def _hierarchy_layout(graph: nx.MultiDiGraph, node_ids: list[str]) -> dict[str, dict[str, float]]:
+    hierarchy = nx.DiGraph()
+    hierarchy.add_nodes_from(node_ids)
+    hierarchy.add_edges_from(
+        (source, target)
+        for source, target, data in graph.edges(data=True)
+        if data.get("kind") == "contains" and source in hierarchy and target in hierarchy
+    )
+    if not node_ids:
+        return {}
+    depths = {node_id: 0 for node_id in node_ids}
+    for node_id in nx.topological_sort(hierarchy) if nx.is_directed_acyclic_graph(hierarchy) else node_ids:
+        for child in hierarchy.successors(node_id):
+            depths[child] = max(depths[child], depths[node_id] + 1)
+    max_depth = max(depths.values(), default=0)
+    positions: dict[str, dict[str, float]] = {}
+    for depth in range(max_depth + 1):
+        row = sorted(
+            (node_id for node_id in node_ids if depths[node_id] == depth),
+            key=lambda node_id: (
+                sum(member["ordinal"] for member in graph.nodes[node_id]["members"])
+                / len(graph.nodes[node_id]["members"]),
+                node_id,
+            ),
+        )
+        for index, node_id in enumerate(row, start=1):
+            positions[node_id] = {
+                "x": round(index / (len(row) + 1), 6),
+                "y": round((depth + 1) / (max_depth + 2), 6),
+            }
+    return positions
+
+
+def _member(
+    paper_id: str,
+    unit_id: str,
+    ordinal: int,
+    unit_kind: str,
+    parent_unit_id: str | None,
+    family_id: str | None,
+    owner_group_id: str | None,
+) -> dict[str, Any]:
+    return {
+        "paper_id": paper_id,
+        "unit_id": unit_id,
+        "ordinal": ordinal,
+        "unit_kind": unit_kind,
+        "parent_unit_id": parent_unit_id,
+        "family_id": family_id,
+        "owner_group_id": owner_group_id,
     }
 
 

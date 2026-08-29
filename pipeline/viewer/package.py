@@ -61,6 +61,10 @@ def _validate_optional_graph_replay(dataset_dir: Path, paper_ids: list[str]) -> 
     _require(replay.get("mode") == "incremental_graph_replay", f"{GRAPH_REPLAY_FILE} has an invalid mode")
     _require(replay.get("paper_order") == paper_ids, f"{GRAPH_REPLAY_FILE} paper order disagrees with manifest")
     _require(isinstance(replay.get("layouts"), dict), f"{GRAPH_REPLAY_FILE} has no layouts object")
+    _require(
+        isinstance(replay.get("hierarchy_layouts", {}), dict),
+        f"{GRAPH_REPLAY_FILE} has an invalid hierarchy layouts object",
+    )
     events = replay.get("events")
     _require(isinstance(events, list), f"{GRAPH_REPLAY_FILE} has no events list")
     _require(

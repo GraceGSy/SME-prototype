@@ -1,7 +1,8 @@
 # Incremental question-group graph
 
-This package implements Elena's ordered section and paragraph graph. Model
-calls make bounded matching and question judgments. Python owns input
+This package implements Elena's ordered section, subsection, and paragraph
+graph. A checked-in Claude Skill makes bounded directional matches; ordinary
+structured model calls generate missing unit and group questions. Python owns input
 normalization, IDs, graph mutations, classification, provenance, replay, and
 export.
 
@@ -9,20 +10,22 @@ export.
 
 Papers are inserted in manifest order. For each new paper:
 
-1. Reuse existing section questions or generate missing ones.
-2. Ask each new section for its best existing group or no match.
-3. Ask each existing group for its best section in the new paper or no match.
-4. Add a section to a group only when the two selections are reciprocal.
-5. Create an isolated group for every other new section.
-6. Reclassify groups and regenerate their display questions.
-7. Repeat the same algorithm for paragraphs inside each assigned section group.
+1. Reuse existing questions or generate missing ones for every section and subsection.
+2. Ask each new structural unit for its best existing group or no match.
+3. Ask each existing group for its best section or subsection in the new paper or no match.
+4. Add a unit to a group only when the two selections are reciprocal.
+5. Create an isolated group for every other unit.
+6. Project each paper's section-to-subsection containment as a provenance-bearing edge.
+7. Reclassify groups and regenerate their display questions.
+8. Repeat the reciprocal algorithm for paragraphs across corresponding section families.
 
 One-way role matches never create graph edges. Their judgments remain in
 `match_recorded` provenance events. If an existing group selects a section that
 was reciprocally absorbed elsewhere, `projected_edge_ignored` records that fact
 without changing graph topology.
 
-Every group contains at most one unit from a paper. Generated questions are
+Every group contains at most one unit from a paper. Section and subsection
+members may share a group. Generated questions and containment edges are
 metadata and never contribute to stable group identity.
 
 ## Classification
@@ -36,19 +39,20 @@ non_alignable_difference  not common and group has one member
 ```
 
 The threshold is inclusive. Consequently, a first-paper group is common at
-`1/1`, and a two-paper group remains common at `2/4`. For section groups, every
-inserted paper is eligible. For paragraph groups, eligible papers are the papers
-represented in the parent section group.
+`1/1`, and a two-paper group remains common at `2/4`. Every node is classified
+from its own direct distinct-paper membership against all inserted papers.
+Related family nodes and containment edges never contribute coverage.
 
-Section and paragraph ordinals are retained as provenance for the deferred
-relative-position experiment. No position-based edges are inferred yet.
+Structural and paragraph ordinals are retained. They order the optional
+hierarchical viewer layout but never change matching or classification.
 
 ## Input normalization
 
 The manifest is ordered YAML. Each file may be the canonical object format or
-the checked-in nested extraction format. In nested input, a top-level section's
-lead paragraphs are followed by its subsection paragraphs in reading order.
-Subsections do not become graph-level section nodes.
+the checked-in nested extraction format. A top-level section and each of its
+subsections become independent structural units. The section uses its complete
+descendant text as matching evidence, while every paragraph has one owner:
+lead paragraphs belong to the section and subsection paragraphs to that subsection.
 
 Questions are read from `question_this_text_answers`,
 `question_this_section_answers`, `question`, or `tag`, in that order. Missing
@@ -75,6 +79,7 @@ summary.json
 ```
 
 Attempts and events are authoritative. Graph, category, replay, and viewer files
-are deterministic projections.
+are deterministic projections. Skill source hashes and registered versions are
+recorded with matching attempts.
 
 See the repository README for exact commands using the canonical HCI dataset.

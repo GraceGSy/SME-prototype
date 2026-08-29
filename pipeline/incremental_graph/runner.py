@@ -139,6 +139,14 @@ class IncrementalGraphRunner:
             parent_id=None,
             batch=insertion.section_matches,
         )
+        for unit in insertion.paper.sections:
+            if unit.parent_id:
+                self.question_graph.add_hierarchy_edge(
+                    insertion.section_assignments[unit.parent_id],
+                    insertion.section_assignments[unit.id],
+                    paper_id=insertion.paper.paper_id,
+                    paper_index=insertion.paper_index,
+                )
         return insertion.section_assignments
 
     def _classify_sections(self, stage: StageConfig, insertion: InsertionState) -> dict[str, str]:
@@ -180,22 +188,31 @@ class IncrementalGraphRunner:
         if not insertion.section_assignments:
             raise PipelineError("match_paragraphs requires reconcile_sections to run first")
         results = {}
-        for section in insertion.paper.sections:
-            parent_id = insertion.section_assignments[section.id]
-            if parent_id in insertion.paragraph_matches:
-                raise PipelineError(f"Multiple new sections were assigned to section group {parent_id}")
-            unit_ids = [paragraph.id for paragraph in section.paragraphs]
-            existing = self.question_graph.group_ids("paragraph", parent_id)
-            batch = self._match_units(stage, insertion, "paragraph", parent_id, unit_ids, existing)
-            insertion.paragraph_matches[parent_id] = batch
-            results[parent_id] = self._match_batch_dump(batch)
+        for root in (unit for unit in insertion.paper.sections if unit.kind == "section"):
+            family_units = self._family_units(insertion.paper, root.id)
+            structural_groups = self.question_graph.structural_family(
+                [insertion.section_assignments[unit.id] for unit in family_units]
+            )
+            unit_ids = [paragraph.id for unit in family_units for paragraph in unit.paragraphs]
+            existing = self.question_graph.paragraph_groups_for_family(
+                structural_groups, insertion.paper.paper_id
+            )
+            scope_id = min(structural_groups) if structural_groups else insertion.section_assignments[root.id]
+            batch = self._match_units(stage, insertion, "paragraph", scope_id, unit_ids, existing)
+            insertion.paragraph_matches[root.id] = batch
+            results[root.id] = self._match_batch_dump(batch)
         return results
 
     def _reconcile_paragraphs(self, stage: StageConfig, insertion: InsertionState) -> dict[str, str]:
         if not insertion.paragraph_matches and any(section.paragraphs for section in insertion.paper.sections):
             raise PipelineError("reconcile_paragraphs requires match_paragraphs to run first")
         assignments = {}
-        for parent_id, batch in insertion.paragraph_matches.items():
+        for family_id, batch in insertion.paragraph_matches.items():
+            structural_groups = self.question_graph.structural_family([
+                insertion.section_assignments[unit.id]
+                for unit in self._family_units(insertion.paper, family_id)
+            ])
+            parent_id = min(structural_groups) if structural_groups else None
             assignments.update(self._reconcile(
                 insertion,
                 level="paragraph",
@@ -313,6 +330,7 @@ class IncrementalGraphRunner:
             context_ref=stage.contexts[direction],
             context=context,
             allowed_match_ids=allowed_ids,
+            skill_ref=stage.skill,
             force=self._forced(stage, insertion),
         )
         result = self.judge.judge(request)
@@ -359,6 +377,7 @@ class IncrementalGraphRunner:
                     insertion.paper.paper_id,
                     insertion.paper_index,
                     self._unit_ordinal(insertion.paper.paper_id, unit_id, level),
+                    **self._member_metadata(insertion, unit_id, level),
                 )
             else:
                 group_id = self.question_graph.create_group(
@@ -368,6 +387,7 @@ class IncrementalGraphRunner:
                     paper_id=insertion.paper.paper_id,
                     paper_index=insertion.paper_index,
                     ordinal=self._unit_ordinal(insertion.paper.paper_id, unit_id, level),
+                    **self._member_metadata(insertion, unit_id, level),
                 )
                 assignments[unit_id] = group_id
 
@@ -396,7 +416,15 @@ class IncrementalGraphRunner:
         self._require_prompt(stage)
         results = []
         for group_id, _ in self.question_graph.nodes(level):
-            context = {"scope": self._scope_context(level, self.question_graph.graph.nodes[group_id].get("parent_id")), "group": self._group_context(group_id)}
+            group = self._group_context(group_id)
+            group.pop("classification", None)
+            group.pop("generated_question_metadata", None)
+            context = {
+                "scope": self._scope_context(
+                    level, self.question_graph.graph.nodes[group_id].get("parent_id")
+                ),
+                "group": group,
+            }
             question, attempt_id = self._question(stage, insertion, group_id, context)
             self.question_graph.set_question(group_id, question, insertion.paper_index, attempt_id)
             results.append({"group_id": group_id, "question": question, "attempt_id": attempt_id})
@@ -424,12 +452,35 @@ class IncrementalGraphRunner:
             return self.section_lookup[(paper_id, unit_id)].ordinal
         return self.paragraph_lookup[(paper_id, unit_id)][1].ordinal
 
+    def _member_metadata(self, insertion: InsertionState, unit_id: str, level: str) -> dict[str, Any]:
+        if level == "section":
+            unit = self.section_lookup[(insertion.paper.paper_id, unit_id)]
+            return {
+                "unit_kind": unit.kind,
+                "parent_unit_id": unit.parent_id,
+                "family_id": unit.family_id,
+            }
+        owner, _ = self.paragraph_lookup[(insertion.paper.paper_id, unit_id)]
+        return {
+            "unit_kind": "paragraph",
+            "parent_unit_id": owner.id,
+            "family_id": owner.family_id,
+            "owner_group_id": insertion.section_assignments[owner.id],
+        }
+
+    @staticmethod
+    def _family_units(paper: Paper, family_id: str) -> list[Any]:
+        return [unit for unit in paper.sections if unit.family_id == family_id]
+
     def _section_context(self, paper_id: str, section_id: str) -> dict[str, Any]:
         section = self.section_lookup[(paper_id, section_id)]
         return {
             "paper_id": paper_id,
             "section_id": section.id,
             "section_label": section.label,
+            "unit_kind": section.kind,
+            "parent_unit_id": section.parent_id,
+            "family_id": section.family_id,
             "ordinal": section.ordinal,
             "generated_question_metadata": section.question,
             "full_text": section.text,
@@ -447,6 +498,8 @@ class IncrementalGraphRunner:
             "parent_section": {
                 "section_id": section.id,
                 "section_label": section.label,
+                "unit_kind": section.kind,
+                "family_id": section.family_id,
                 "generated_question_metadata": section.question,
             },
         }
@@ -472,6 +525,8 @@ class IncrementalGraphRunner:
         required = {"new_to_group", "group_to_new"}
         if not required.issubset(stage.prompts) or not required.issubset(stage.contexts):
             raise PipelineError(f"Stage {stage.id} requires new_to_group and group_to_new prompt/context entries")
+        if not stage.skill:
+            raise PipelineError(f"Stage {stage.id} requires a matching Skill")
 
     @staticmethod
     def _match_batch_dump(batch: MatchBatch) -> dict[str, Any]:

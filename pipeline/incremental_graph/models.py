@@ -10,6 +10,7 @@ from pydantic import BaseModel, Field, model_validator
 
 
 Level = Literal["section", "paragraph"]
+StructuralKind = Literal["section", "subsection"]
 Classification = Literal[
     "common_structure",
     "alignable_difference",
@@ -32,6 +33,15 @@ class Section(BaseModel):
     paragraphs: list[Paragraph] = Field(default_factory=list)
     question: str = ""
     ordinal: int = Field(default=1, ge=1)
+    kind: StructuralKind = "section"
+    parent_id: str | None = None
+    family_id: str = ""
+
+    @model_validator(mode="after")
+    def default_family(self) -> "Section":
+        if not self.family_id:
+            self.family_id = self.parent_id or self.id
+        return self
 
 
 class Paper(BaseModel):
@@ -47,6 +57,14 @@ class Paper(BaseModel):
             raise ValueError(f"Paper {self.paper_id} has duplicate section IDs")
         if len(paragraph_ids) != len(set(paragraph_ids)):
             raise ValueError(f"Paper {self.paper_id} has duplicate paragraph IDs")
+        known_sections = set(section_ids)
+        for section in self.sections:
+            if section.parent_id and section.parent_id not in known_sections:
+                raise ValueError(f"Paper {self.paper_id} has unknown parent section {section.parent_id}")
+            if section.kind == "section" and section.parent_id:
+                raise ValueError(f"Top-level section {section.id} cannot have a parent")
+            if section.kind == "subsection" and not section.parent_id:
+                raise ValueError(f"Subsection {section.id} must have a parent")
         return self
 
 
@@ -84,6 +102,7 @@ class StageConfig(BaseModel):
     context: str | None = None
     prompts: dict[str, str] = Field(default_factory=dict)
     contexts: dict[str, str] = Field(default_factory=dict)
+    skill: str | None = None
 
 
 class PipelineConfig(BaseModel):
@@ -91,6 +110,7 @@ class PipelineConfig(BaseModel):
     pipeline_id: str
     prompt_root: Path
     context_root: Path
+    skill_root: Path = Path("skills")
     model: ModelSettings = Field(default_factory=ModelSettings)
     stages: list[StageConfig]
 
@@ -111,6 +131,7 @@ class JudgmentRequest(BaseModel):
     context_ref: str
     context: dict[str, Any]
     allowed_match_ids: list[str] = Field(default_factory=list)
+    skill_ref: str | None = None
     force: bool = False
 
 
