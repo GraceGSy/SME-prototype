@@ -1,0 +1,725 @@
+{
+  "schema_version": 1,
+  "section_pairings_processed": [
+    [
+      "corpusstudio",
+      "examplore_chi18"
+    ]
+  ],
+  "nodes": [
+    {
+      "node_id": "pnode-07ad9214dfd9848c",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "paragraph",
+          "section_name": "Introduction",
+          "section_number": "1",
+          "subsection_name": null,
+          "subsection_number": null,
+          "paragraph_number": 6,
+          "text": "Our results reveal that users felt more confident in their writing when they discovered that other people in their target community have written in a similar way. Inspecting many examples at once was useful for identifying broad structural patterns, especially for sections that typically have more common structure, such as the description of the system implementation details or participants' demographics."
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "pnode-1062b91f45d47c0d",
+      "confirmations": [
+        {
+          "pair": [
+            "corpusstudio",
+            "examplore_chi18"
+          ],
+          "a_unit": {
+            "section_name": "Introduction",
+            "section_number": "1",
+            "subsection_name": null,
+            "subsection_number": null,
+            "paragraph_number": 7,
+            "text": "In summary, we contribute the following: • We designed two novel writing support concepts that make visible emergent patterns at the document-level and sentence-level of a given paper corpus. • We implemented these writing support concepts within CorpusStudio, an interactive writing environment that helps writers retrieve, inspect, generalize from, and reflect on many examples from their target venue • We found that users' writing goals guided their perception of relevance and how they adapted content from the corpus."
+          },
+          "b_unit": {
+            "section_name": "INTRODUCTION",
+            "section_number": null,
+            "subsection_name": null,
+            "subsection_number": null,
+            "paragraph_number": 7,
+            "text": "Our contributions are: • a method for generating an interactive visualization of a distribution of code examples for a given API call • an implementation of this interactive visualization for a set of Java and Android API calls • a within-subjects lab study that shows how this interactive visualization may fill an important role in developers' programming workflows as they use unfamiliar APIs."
+          },
+          "basis_a_to_b": "Both paragraphs occupy the identical structural role: the final paragraph of the Introduction that explicitly enumerates the paper's contributions in a bulleted list. Query's contributions (novel writing support concepts, an implemented tool called CorpusStudio, and findings from a study) directly parallel paper2's contributions (a visualization method, an implementation called EXAMPLORE, and a within-subjects lab study with findings). Both list: (1) a novel technique/concept, (2) its implementation as a named interactive tool, and (3) a user study finding. This is a clear structural match despite different domains (writing support vs. API usage exploration).",
+          "basis_b_to_a": "Both paragraphs serve as the \"contributions\" list at the end of the Introduction, summarizing the paper's key contributions in a bulleted format. The query lists contributions (visualization method, implementation, lab study), and candidate [7] plays the identical structural role, listing CorpusStudio's contributions (writing support concepts, implementation, and user study findings). This is a direct structural match despite differing subject matter (code API visualization vs. writing support tools)."
+        }
+      ],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "paragraph",
+          "section_name": "Introduction",
+          "section_number": "1",
+          "subsection_name": null,
+          "subsection_number": null,
+          "paragraph_number": 7,
+          "text": "In summary, we contribute the following: • We designed two novel writing support concepts that make visible emergent patterns at the document-level and sentence-level of a given paper corpus. • We implemented these writing support concepts within CorpusStudio, an interactive writing environment that helps writers retrieve, inspect, generalize from, and reflect on many examples from their target venue • We found that users' writing goals guided their perception of relevance and how they adapted content from the corpus."
+        },
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "paragraph",
+          "section_name": "INTRODUCTION",
+          "section_number": null,
+          "subsection_name": null,
+          "subsection_number": null,
+          "paragraph_number": 7,
+          "text": "Our contributions are: • a method for generating an interactive visualization of a distribution of code examples for a given API call • an implementation of this interactive visualization for a set of Java and Android API calls • a within-subjects lab study that shows how this interactive visualization may fill an important role in developers' programming workflows as they use unfamiliar APIs."
+        }
+      ],
+      "merge_history": [
+        {
+          "absorbed_node": "pnode-982b743afadf0aaf",
+          "absorbed_members": [
+            {
+              "paper_id": "examplore_chi18",
+              "unit_type": "paragraph",
+              "section_name": "INTRODUCTION",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null,
+              "paragraph_number": 7,
+              "text": "Our contributions are: • a method for generating an interactive visualization of a distribution of code examples for a given API call • an implementation of this interactive visualization for a set of Java and Android API calls • a within-subjects lab study that shows how this interactive visualization may fill an important role in developers' programming workflows as they use unfamiliar APIs."
+            }
+          ],
+          "confirmation": {
+            "pair": [
+              "corpusstudio",
+              "examplore_chi18"
+            ],
+            "a_unit": {
+              "section_name": "Introduction",
+              "section_number": "1",
+              "subsection_name": null,
+              "subsection_number": null,
+              "paragraph_number": 7,
+              "text": "In summary, we contribute the following: • We designed two novel writing support concepts that make visible emergent patterns at the document-level and sentence-level of a given paper corpus. • We implemented these writing support concepts within CorpusStudio, an interactive writing environment that helps writers retrieve, inspect, generalize from, and reflect on many examples from their target venue • We found that users' writing goals guided their perception of relevance and how they adapted content from the corpus."
+            },
+            "b_unit": {
+              "section_name": "INTRODUCTION",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null,
+              "paragraph_number": 7,
+              "text": "Our contributions are: • a method for generating an interactive visualization of a distribution of code examples for a given API call • an implementation of this interactive visualization for a set of Java and Android API calls • a within-subjects lab study that shows how this interactive visualization may fill an important role in developers' programming workflows as they use unfamiliar APIs."
+            },
+            "basis_a_to_b": "Both paragraphs occupy the identical structural role: the final paragraph of the Introduction that explicitly enumerates the paper's contributions in a bulleted list. Query's contributions (novel writing support concepts, an implemented tool called CorpusStudio, and findings from a study) directly parallel paper2's contributions (a visualization method, an implementation called EXAMPLORE, and a within-subjects lab study with findings). Both list: (1) a novel technique/concept, (2) its implementation as a named interactive tool, and (3) a user study finding. This is a clear structural match despite different domains (writing support vs. API usage exploration).",
+            "basis_b_to_a": "Both paragraphs serve as the \"contributions\" list at the end of the Introduction, summarizing the paper's key contributions in a bulleted format. The query lists contributions (visualization method, implementation, lab study), and candidate [7] plays the identical structural role, listing CorpusStudio's contributions (writing support concepts, implementation, and user study findings). This is a direct structural match despite differing subject matter (code API visualization vs. writing support tools)."
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "pnode-14e161c92a90a9d1",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "paragraph",
+          "section_name": "Introduction",
+          "section_number": "1",
+          "subsection_name": null,
+          "subsection_number": null,
+          "paragraph_number": 2,
+          "text": "Prior work motivated the design of writing support tools with social cognitive theories and cognitive apprenticeship theory [18, 19] to help writers learn complex writing skills in a professional setting. While this approach allows novices to learn by mimicking model examples, it also requires expert knowledge to create and annotate these examples, which is often time-consuming and not readily available for many communities."
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "pnode-45ea06d74d8d65d6",
+      "confirmations": [
+        {
+          "pair": [
+            "corpusstudio",
+            "examplore_chi18"
+          ],
+          "a_unit": {
+            "section_name": "Introduction",
+            "section_number": "1",
+            "subsection_name": null,
+            "subsection_number": null,
+            "paragraph_number": 4,
+            "text": "To this end, we implemented CorpusStudio, a writing environment with two novel writing support concepts, one at the document level and one at the sentence level, that help writers learn about the writing styles and expectations of particular audiences. These writing supports are designed to expose writers to as many examples as possible to increase the variety of examples shown to the users—with the cognitive support necessary to help them see the emergent patterns that capture otherwise implicit community-specific writing content and style expectations. Specifically, at the document level, CorpusStudio computes and renders an ordered distribution [15] over section title sequences in prior papers from the community the writer wishes to write for. This gives the writer a sense of common and uncommon section titles and in what relative order they appear in prior papers (Figure 1A). At the sentence level, CorpusStudio retrieves many example sentences from the corpus given the user's draft-in-progress and their current cursor location within it (Figure 1C). Words across these many example sentences are algorithmically highlighted or de-emphasized to help users see any emergent norms and outliers. We also allow authors to capture their thoughts and deductions from viewing these examples with bookmarks and notes."
+          },
+          "b_unit": {
+            "section_name": "INTRODUCTION",
+            "section_number": null,
+            "subsection_name": null,
+            "subsection_number": null,
+            "paragraph_number": 4,
+            "text": "In this paper, we introduce a novel interactive visualization and navigation technique called EXAMPLORE that (1) gives a bird's-eye view of common and uncommon ways in which a community of developers uses an API and (2) allows developers to quickly filter a corpus for concrete code examples that exhibit these various uses. It operates on hundreds of code examples of a given API method, which can be automatically mined from open-source projects or proprietary codebases. It is designed to supplement existing resources: for example, while Stack Overflow can provide explanations and discussions, EXAMPLORE provides quantitative information about how an API call is used in the wild."
+          },
+          "basis_a_to_b": "Both paragraphs introduce the paper's novel tool by name and describe its core capabilities/design at a high level. Query paragraph introduces \"CorpusStudio\" with document-level and sentence-level writing supports that expose writers to many examples with cognitive aids to reveal patterns. Candidate [4] introduces \"EXAMPLORE\" as a novel interactive visualization tool that gives a bird's-eye view of common/uncommon API uses and allows filtering to concrete examples, mined from large corpora. Both play the same structural role: the \"we introduce X\" paragraph naming the system and summarizing its main functionality, right after motivating the problem. Candidate [5] elaborates further mechanistic details (skeleton, highlighting) which is a secondary overlap, but [4] is the closer match as the initial tool-introduction paragraph.",
+          "basis_b_to_a": "Both paragraphs introduce the paper's novel tool and describe its core capabilities. The query introduces EXAMPLORE with its bird's-eye view of API usage patterns and filtering for code examples, positioning it as supplementing existing resources like Stack Overflow. Candidate [4] introduces CorpusStudio with its document-level (ordered distribution over section titles) and sentence-level (example sentence retrieval) writing support concepts designed to expose writers to patterns and examples. Both paragraphs play the same structural role: naming the tool and summarizing its key features that address the problem set up earlier in the introduction."
+        }
+      ],
+      "members": [
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "paragraph",
+          "section_name": "INTRODUCTION",
+          "section_number": null,
+          "subsection_name": null,
+          "subsection_number": null,
+          "paragraph_number": 4,
+          "text": "In this paper, we introduce a novel interactive visualization and navigation technique called EXAMPLORE that (1) gives a bird's-eye view of common and uncommon ways in which a community of developers uses an API and (2) allows developers to quickly filter a corpus for concrete code examples that exhibit these various uses. It operates on hundreds of code examples of a given API method, which can be automatically mined from open-source projects or proprietary codebases. It is designed to supplement existing resources: for example, while Stack Overflow can provide explanations and discussions, EXAMPLORE provides quantitative information about how an API call is used in the wild."
+        },
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "paragraph",
+          "section_name": "Introduction",
+          "section_number": "1",
+          "subsection_name": null,
+          "subsection_number": null,
+          "paragraph_number": 4,
+          "text": "To this end, we implemented CorpusStudio, a writing environment with two novel writing support concepts, one at the document level and one at the sentence level, that help writers learn about the writing styles and expectations of particular audiences. These writing supports are designed to expose writers to as many examples as possible to increase the variety of examples shown to the users—with the cognitive support necessary to help them see the emergent patterns that capture otherwise implicit community-specific writing content and style expectations. Specifically, at the document level, CorpusStudio computes and renders an ordered distribution [15] over section title sequences in prior papers from the community the writer wishes to write for. This gives the writer a sense of common and uncommon section titles and in what relative order they appear in prior papers (Figure 1A). At the sentence level, CorpusStudio retrieves many example sentences from the corpus given the user's draft-in-progress and their current cursor location within it (Figure 1C). Words across these many example sentences are algorithmically highlighted or de-emphasized to help users see any emergent norms and outliers. We also allow authors to capture their thoughts and deductions from viewing these examples with bookmarks and notes."
+        }
+      ],
+      "merge_history": [
+        {
+          "absorbed_node": "pnode-71e490cb3e1694b9",
+          "absorbed_members": [
+            {
+              "paper_id": "corpusstudio",
+              "unit_type": "paragraph",
+              "section_name": "Introduction",
+              "section_number": "1",
+              "subsection_name": null,
+              "subsection_number": null,
+              "paragraph_number": 4,
+              "text": "To this end, we implemented CorpusStudio, a writing environment with two novel writing support concepts, one at the document level and one at the sentence level, that help writers learn about the writing styles and expectations of particular audiences. These writing supports are designed to expose writers to as many examples as possible to increase the variety of examples shown to the users—with the cognitive support necessary to help them see the emergent patterns that capture otherwise implicit community-specific writing content and style expectations. Specifically, at the document level, CorpusStudio computes and renders an ordered distribution [15] over section title sequences in prior papers from the community the writer wishes to write for. This gives the writer a sense of common and uncommon section titles and in what relative order they appear in prior papers (Figure 1A). At the sentence level, CorpusStudio retrieves many example sentences from the corpus given the user's draft-in-progress and their current cursor location within it (Figure 1C). Words across these many example sentences are algorithmically highlighted or de-emphasized to help users see any emergent norms and outliers. We also allow authors to capture their thoughts and deductions from viewing these examples with bookmarks and notes."
+            }
+          ],
+          "confirmation": {
+            "pair": [
+              "corpusstudio",
+              "examplore_chi18"
+            ],
+            "a_unit": {
+              "section_name": "Introduction",
+              "section_number": "1",
+              "subsection_name": null,
+              "subsection_number": null,
+              "paragraph_number": 4,
+              "text": "To this end, we implemented CorpusStudio, a writing environment with two novel writing support concepts, one at the document level and one at the sentence level, that help writers learn about the writing styles and expectations of particular audiences. These writing supports are designed to expose writers to as many examples as possible to increase the variety of examples shown to the users—with the cognitive support necessary to help them see the emergent patterns that capture otherwise implicit community-specific writing content and style expectations. Specifically, at the document level, CorpusStudio computes and renders an ordered distribution [15] over section title sequences in prior papers from the community the writer wishes to write for. This gives the writer a sense of common and uncommon section titles and in what relative order they appear in prior papers (Figure 1A). At the sentence level, CorpusStudio retrieves many example sentences from the corpus given the user's draft-in-progress and their current cursor location within it (Figure 1C). Words across these many example sentences are algorithmically highlighted or de-emphasized to help users see any emergent norms and outliers. We also allow authors to capture their thoughts and deductions from viewing these examples with bookmarks and notes."
+            },
+            "b_unit": {
+              "section_name": "INTRODUCTION",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null,
+              "paragraph_number": 4,
+              "text": "In this paper, we introduce a novel interactive visualization and navigation technique called EXAMPLORE that (1) gives a bird's-eye view of common and uncommon ways in which a community of developers uses an API and (2) allows developers to quickly filter a corpus for concrete code examples that exhibit these various uses. It operates on hundreds of code examples of a given API method, which can be automatically mined from open-source projects or proprietary codebases. It is designed to supplement existing resources: for example, while Stack Overflow can provide explanations and discussions, EXAMPLORE provides quantitative information about how an API call is used in the wild."
+            },
+            "basis_a_to_b": "Both paragraphs introduce the paper's novel tool by name and describe its core capabilities/design at a high level. Query paragraph introduces \"CorpusStudio\" with document-level and sentence-level writing supports that expose writers to many examples with cognitive aids to reveal patterns. Candidate [4] introduces \"EXAMPLORE\" as a novel interactive visualization tool that gives a bird's-eye view of common/uncommon API uses and allows filtering to concrete examples, mined from large corpora. Both play the same structural role: the \"we introduce X\" paragraph naming the system and summarizing its main functionality, right after motivating the problem. Candidate [5] elaborates further mechanistic details (skeleton, highlighting) which is a secondary overlap, but [4] is the closer match as the initial tool-introduction paragraph.",
+            "basis_b_to_a": "Both paragraphs introduce the paper's novel tool and describe its core capabilities. The query introduces EXAMPLORE with its bird's-eye view of API usage patterns and filtering for code examples, positioning it as supplementing existing resources like Stack Overflow. Candidate [4] introduces CorpusStudio with its document-level (ordered distribution over section titles) and sentence-level (example sentence retrieval) writing support concepts designed to expose writers to patterns and examples. Both paragraphs play the same structural role: naming the tool and summarizing its key features that address the problem set up earlier in the introduction."
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "pnode-74eaf6191b858c70",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "paragraph",
+          "section_name": "INTRODUCTION",
+          "section_number": null,
+          "subsection_name": null,
+          "subsection_number": null,
+          "paragraph_number": 5,
+          "text": "EXAMPLORE instantiates a synthetic code skeleton that captures a variety of API usage features, including initializations, enclosing control structures, guard conditions, and other method calls before and after invoking the given API method, etc. This skeleton is designed to be general: it is grounded in how API design is taught in software engineering curricula and how API mining researchers conceptualize their tasks [11, 19, 5]. EXAMPLORE visualizes the statistical distribution of each API usage feature in the skeleton to provide quantitative evidence of each feature in the corpus. The user can select one or more features in the skeleton and, by dynamically filtering mined code examples from the corpus, drill down to concrete, supporting code examples. Color-coordinated highlighting makes it easier for users to recognize the correspondence between features in the skeleton and code segments within each example."
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "pnode-8cb847d48deb9c67",
+      "confirmations": [
+        {
+          "pair": [
+            "corpusstudio",
+            "examplore_chi18"
+          ],
+          "a_unit": {
+            "section_name": "Introduction",
+            "section_number": "1",
+            "subsection_name": null,
+            "subsection_number": null,
+            "paragraph_number": 1,
+            "text": "Given that people commonly learn through examples, providing access to relevant examples can help bridge this gap. However, there are obstacles: viewing too few examples may lead to overfitting and unintentional plagiarism, while viewing too many examples—without sufficient cognitive supports within the interface—may overwhelm the writer."
+          },
+          "b_unit": {
+            "section_name": "INTRODUCTION",
+            "section_number": null,
+            "subsection_name": null,
+            "subsection_number": null,
+            "paragraph_number": 2,
+            "text": "Code-sharing sites like GitHub hold the promise of documenting all the common and uncommon ways of using an API in practice, including many alternative usage scenarios that are not typically shown in curated examples. However, given the large amount of code available online, it is challenging for developers to efficiently browse the enormous volume of search results. It is certainly infeasible for developers to examine more than a few code examples simultaneously. In practice, programmers often investigate a handful of search results and return to their own code due to limited time and attention [3, 23, 5]. Prior work has shown that individual code examples may suffer from API usage violations [29], insecure coding practices [7], unchecked obsolete usage [31], and comprehension difficulties [25]. Therefore, inspecting a few examples may leave out critical safety checks or desirable usage scenarios."
+          },
+          "basis_a_to_b": "The query paragraph identifies a core tension: too few examples risks overfitting/plagiarism, while too many examples without cognitive support overwhelms the writer. This closely mirrors paragraph [2], which describes the analogous tension in the API-learning domain: examining only a few code examples may 'leave out critical safety checks or desirable usage scenarios' (echoing overfitting to limited examples), while 'given the large amount of code available online, it is challenging for developers to efficiently browse the enormous volume of search results... It is certainly infeasible for developers to examine more than a few code examples simultaneously' (echoing the overwhelm from too many examples without support). Both paragraphs articulate the same structural problem: a trade-off between insufficient examples (missing coverage) and excessive examples (overwhelming without proper support), which motivates the respective tools. Other candidates (e.g., 0, 1, 3) discuss related but distinct aspects (general API learning barriers, lack of examples, research questions) that don't capture this specific too-few/too-many tension as directly as [2].",
+          "basis_b_to_a": "The query paragraph identifies a motivating problem: large repositories of examples (code) exist but browsing/inspecting too few examples risks missing important patterns/safety issues, while too many is infeasible given limited time/attention. Paper2 paragraph [1] plays the same structural role: it states that providing examples helps but poses a tension—too few examples risks overfitting/plagiarism while too many overwhelm without cognitive support. Both paragraphs articulate the core 'too few vs too many examples' tradeoff that motivates the paper's approach, making [1] the closest role-based match despite differing domains (code examples vs writing examples)."
+        }
+      ],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "paragraph",
+          "section_name": "Introduction",
+          "section_number": "1",
+          "subsection_name": null,
+          "subsection_number": null,
+          "paragraph_number": 1,
+          "text": "Given that people commonly learn through examples, providing access to relevant examples can help bridge this gap. However, there are obstacles: viewing too few examples may lead to overfitting and unintentional plagiarism, while viewing too many examples—without sufficient cognitive supports within the interface—may overwhelm the writer."
+        },
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "paragraph",
+          "section_name": "INTRODUCTION",
+          "section_number": null,
+          "subsection_name": null,
+          "subsection_number": null,
+          "paragraph_number": 2,
+          "text": "Code-sharing sites like GitHub hold the promise of documenting all the common and uncommon ways of using an API in practice, including many alternative usage scenarios that are not typically shown in curated examples. However, given the large amount of code available online, it is challenging for developers to efficiently browse the enormous volume of search results. It is certainly infeasible for developers to examine more than a few code examples simultaneously. In practice, programmers often investigate a handful of search results and return to their own code due to limited time and attention [3, 23, 5]. Prior work has shown that individual code examples may suffer from API usage violations [29], insecure coding practices [7], unchecked obsolete usage [31], and comprehension difficulties [25]. Therefore, inspecting a few examples may leave out critical safety checks or desirable usage scenarios."
+        }
+      ],
+      "merge_history": [
+        {
+          "absorbed_node": "pnode-f97d26d85bd9e093",
+          "absorbed_members": [
+            {
+              "paper_id": "examplore_chi18",
+              "unit_type": "paragraph",
+              "section_name": "INTRODUCTION",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null,
+              "paragraph_number": 2,
+              "text": "Code-sharing sites like GitHub hold the promise of documenting all the common and uncommon ways of using an API in practice, including many alternative usage scenarios that are not typically shown in curated examples. However, given the large amount of code available online, it is challenging for developers to efficiently browse the enormous volume of search results. It is certainly infeasible for developers to examine more than a few code examples simultaneously. In practice, programmers often investigate a handful of search results and return to their own code due to limited time and attention [3, 23, 5]. Prior work has shown that individual code examples may suffer from API usage violations [29], insecure coding practices [7], unchecked obsolete usage [31], and comprehension difficulties [25]. Therefore, inspecting a few examples may leave out critical safety checks or desirable usage scenarios."
+            }
+          ],
+          "confirmation": {
+            "pair": [
+              "corpusstudio",
+              "examplore_chi18"
+            ],
+            "a_unit": {
+              "section_name": "Introduction",
+              "section_number": "1",
+              "subsection_name": null,
+              "subsection_number": null,
+              "paragraph_number": 1,
+              "text": "Given that people commonly learn through examples, providing access to relevant examples can help bridge this gap. However, there are obstacles: viewing too few examples may lead to overfitting and unintentional plagiarism, while viewing too many examples—without sufficient cognitive supports within the interface—may overwhelm the writer."
+            },
+            "b_unit": {
+              "section_name": "INTRODUCTION",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null,
+              "paragraph_number": 2,
+              "text": "Code-sharing sites like GitHub hold the promise of documenting all the common and uncommon ways of using an API in practice, including many alternative usage scenarios that are not typically shown in curated examples. However, given the large amount of code available online, it is challenging for developers to efficiently browse the enormous volume of search results. It is certainly infeasible for developers to examine more than a few code examples simultaneously. In practice, programmers often investigate a handful of search results and return to their own code due to limited time and attention [3, 23, 5]. Prior work has shown that individual code examples may suffer from API usage violations [29], insecure coding practices [7], unchecked obsolete usage [31], and comprehension difficulties [25]. Therefore, inspecting a few examples may leave out critical safety checks or desirable usage scenarios."
+            },
+            "basis_a_to_b": "The query paragraph identifies a core tension: too few examples risks overfitting/plagiarism, while too many examples without cognitive support overwhelms the writer. This closely mirrors paragraph [2], which describes the analogous tension in the API-learning domain: examining only a few code examples may 'leave out critical safety checks or desirable usage scenarios' (echoing overfitting to limited examples), while 'given the large amount of code available online, it is challenging for developers to efficiently browse the enormous volume of search results... It is certainly infeasible for developers to examine more than a few code examples simultaneously' (echoing the overwhelm from too many examples without support). Both paragraphs articulate the same structural problem: a trade-off between insufficient examples (missing coverage) and excessive examples (overwhelming without proper support), which motivates the respective tools. Other candidates (e.g., 0, 1, 3) discuss related but distinct aspects (general API learning barriers, lack of examples, research questions) that don't capture this specific too-few/too-many tension as directly as [2].",
+            "basis_b_to_a": "The query paragraph identifies a motivating problem: large repositories of examples (code) exist but browsing/inspecting too few examples risks missing important patterns/safety issues, while too many is infeasible given limited time/attention. Paper2 paragraph [1] plays the same structural role: it states that providing examples helps but poses a tension—too few examples risks overfitting/plagiarism while too many overwhelm without cognitive support. Both paragraphs articulate the core 'too few vs too many examples' tradeoff that motivates the paper's approach, making [1] the closest role-based match despite differing domains (code examples vs writing examples)."
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "pnode-9709bbda495bb48c",
+      "confirmations": [
+        {
+          "pair": [
+            "corpusstudio",
+            "examplore_chi18"
+          ],
+          "a_unit": {
+            "section_name": "Introduction",
+            "section_number": "1",
+            "subsection_name": null,
+            "subsection_number": null,
+            "paragraph_number": 5,
+            "text": "We conducted a user study with N=16 participants from the academic community who were actively writing their manuscripts. They used CorpusStudio to draft their paper outline, wrote one to two sections of their manuscript, and answered questionnaires eliciting their overall experience writing within CorpusStudio."
+          },
+          "b_unit": {
+            "section_name": "INTRODUCTION",
+            "section_number": null,
+            "subsection_name": null,
+            "subsection_number": null,
+            "paragraph_number": 6,
+            "text": "We conducted a within-subjects lab study where we asked sixteen Java programmers of various levels of expertise to answer questions about the usage of particular Java APIs based on either (1) searching online for relevant code examples, blogs, and forum posts or (2) using EXAMPLORE to explore one hundred API usage examples mined from GitHub. On average, participants answered significantly more API usage questions correctly, with more concrete details, using EXAMPLORE. This suggests that EXAMPLORE helps users grasp a more comprehensive view of API usage than online search. In a post survey, the majority of participants (13/16) found EXAMPLORE to be more helpful for answering API usage questions than online search, and when using EXAMPLORE, their median level of confidence in their answers was higher."
+          },
+          "basis_a_to_b": "The query paragraph describes a within-subjects/N=16 user study evaluating the paper's tool (CorpusStudio) for a writing task, mirroring paragraph [6], which describes the analogous within-subjects lab study with sixteen participants evaluating EXAMPLORE on API usage questions. Both paragraphs serve the same structural role in the Introduction: summarizing the user study design (participant count, task, comparison) that validates the tool. Paragraph [7] instead lists contributions, and other candidates describe motivation/problem, not the study itself, so [6] is the closest match despite differing outcome details (the query doesn't yet state results, just study setup).",
+          "basis_b_to_a": "Both paragraphs describe the user study conducted to evaluate the tool: query describes a within-subjects study with 16 Java programmers comparing EXAMPLORE vs online search on API usage questions, while candidate [5] describes a study with N=16 academic participants using CorpusStudio to draft their paper. Both play the identical structural role in the Introduction—summarizing the evaluation study's setup (N=16 participants, task performed with the tool). The query's second half (findings: more correct answers, higher confidence) overlaps somewhat with candidate [6] (preview of findings), but the core paragraph role—describing the study's design and participants—most closely matches [5]."
+        }
+      ],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "paragraph",
+          "section_name": "Introduction",
+          "section_number": "1",
+          "subsection_name": null,
+          "subsection_number": null,
+          "paragraph_number": 5,
+          "text": "We conducted a user study with N=16 participants from the academic community who were actively writing their manuscripts. They used CorpusStudio to draft their paper outline, wrote one to two sections of their manuscript, and answered questionnaires eliciting their overall experience writing within CorpusStudio."
+        },
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "paragraph",
+          "section_name": "INTRODUCTION",
+          "section_number": null,
+          "subsection_name": null,
+          "subsection_number": null,
+          "paragraph_number": 6,
+          "text": "We conducted a within-subjects lab study where we asked sixteen Java programmers of various levels of expertise to answer questions about the usage of particular Java APIs based on either (1) searching online for relevant code examples, blogs, and forum posts or (2) using EXAMPLORE to explore one hundred API usage examples mined from GitHub. On average, participants answered significantly more API usage questions correctly, with more concrete details, using EXAMPLORE. This suggests that EXAMPLORE helps users grasp a more comprehensive view of API usage than online search. In a post survey, the majority of participants (13/16) found EXAMPLORE to be more helpful for answering API usage questions than online search, and when using EXAMPLORE, their median level of confidence in their answers was higher."
+        }
+      ],
+      "merge_history": [
+        {
+          "absorbed_node": "pnode-d447cc3df5055a9d",
+          "absorbed_members": [
+            {
+              "paper_id": "examplore_chi18",
+              "unit_type": "paragraph",
+              "section_name": "INTRODUCTION",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null,
+              "paragraph_number": 6,
+              "text": "We conducted a within-subjects lab study where we asked sixteen Java programmers of various levels of expertise to answer questions about the usage of particular Java APIs based on either (1) searching online for relevant code examples, blogs, and forum posts or (2) using EXAMPLORE to explore one hundred API usage examples mined from GitHub. On average, participants answered significantly more API usage questions correctly, with more concrete details, using EXAMPLORE. This suggests that EXAMPLORE helps users grasp a more comprehensive view of API usage than online search. In a post survey, the majority of participants (13/16) found EXAMPLORE to be more helpful for answering API usage questions than online search, and when using EXAMPLORE, their median level of confidence in their answers was higher."
+            }
+          ],
+          "confirmation": {
+            "pair": [
+              "corpusstudio",
+              "examplore_chi18"
+            ],
+            "a_unit": {
+              "section_name": "Introduction",
+              "section_number": "1",
+              "subsection_name": null,
+              "subsection_number": null,
+              "paragraph_number": 5,
+              "text": "We conducted a user study with N=16 participants from the academic community who were actively writing their manuscripts. They used CorpusStudio to draft their paper outline, wrote one to two sections of their manuscript, and answered questionnaires eliciting their overall experience writing within CorpusStudio."
+            },
+            "b_unit": {
+              "section_name": "INTRODUCTION",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null,
+              "paragraph_number": 6,
+              "text": "We conducted a within-subjects lab study where we asked sixteen Java programmers of various levels of expertise to answer questions about the usage of particular Java APIs based on either (1) searching online for relevant code examples, blogs, and forum posts or (2) using EXAMPLORE to explore one hundred API usage examples mined from GitHub. On average, participants answered significantly more API usage questions correctly, with more concrete details, using EXAMPLORE. This suggests that EXAMPLORE helps users grasp a more comprehensive view of API usage than online search. In a post survey, the majority of participants (13/16) found EXAMPLORE to be more helpful for answering API usage questions than online search, and when using EXAMPLORE, their median level of confidence in their answers was higher."
+            },
+            "basis_a_to_b": "The query paragraph describes a within-subjects/N=16 user study evaluating the paper's tool (CorpusStudio) for a writing task, mirroring paragraph [6], which describes the analogous within-subjects lab study with sixteen participants evaluating EXAMPLORE on API usage questions. Both paragraphs serve the same structural role in the Introduction: summarizing the user study design (participant count, task, comparison) that validates the tool. Paragraph [7] instead lists contributions, and other candidates describe motivation/problem, not the study itself, so [6] is the closest match despite differing outcome details (the query doesn't yet state results, just study setup).",
+            "basis_b_to_a": "Both paragraphs describe the user study conducted to evaluate the tool: query describes a within-subjects study with 16 Java programmers comparing EXAMPLORE vs online search on API usage questions, while candidate [5] describes a study with N=16 academic participants using CorpusStudio to draft their paper. Both play the identical structural role in the Introduction—summarizing the evaluation study's setup (N=16 participants, task performed with the tool). The query's second half (findings: more correct answers, higher confidence) overlaps somewhat with candidate [6] (preview of findings), but the core paragraph role—describing the study's design and participants—most closely matches [5]."
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "pnode-9be63eda37de8e46",
+      "confirmations": [
+        {
+          "pair": [
+            "corpusstudio",
+            "examplore_chi18"
+          ],
+          "a_unit": {
+            "section_name": "Introduction",
+            "section_number": "1",
+            "subsection_name": null,
+            "subsection_number": null,
+            "paragraph_number": 0,
+            "text": "Inexperienced researchers often lack knowledge of the implicit writing conventions and structural expectations of particular communities. While existing writing guides offer general advice, they are often too abstract and high-level, making it challenging for junior researchers to apply this guidance in their own work."
+          },
+          "b_unit": {
+            "section_name": "INTRODUCTION",
+            "section_number": null,
+            "subsection_name": null,
+            "subsection_number": null,
+            "paragraph_number": 0,
+            "text": "Learning how to correctly and effectively use existing APIs is a common task — and a core challenge — in software development. It spans all expertise levels from novices to professional software engineers, and all project types from prototypes to production code. The landscape of publicly available APIs is massive and constantly changing, as new APIs are created in response to shifting programmer needs. Within companies, the same is true, perhaps even more so: joining a company can require learning a whole new set of proprietary APIs before a developer becomes an effective contributor to the company codebase. Developers often are stymied by various learning barriers, including overly specific or overly general explanations of API usage, lack of understanding about the interaction between multiple APIs, lack of alternative uses, and difficulty identifying program statements and structures related to an API [11, 19, 5]."
+          },
+          "basis_a_to_b": "The query paragraph is the opening motivation paragraph of the Introduction, describing a learning/knowledge gap problem (junior researchers lacking implicit writing conventions, general guides being too abstract) that motivates the paper's work. Candidate 0 plays the exact same structural role: it is the opening motivation paragraph of paper2's Introduction, describing a learning/knowledge gap problem (developers lacking effective knowledge of APIs, citing barriers like overly general explanations) that motivates EXAMPLORE. Both paragraphs frame a broad, general problem before narrowing to specifics in subsequent paragraphs. No other candidate serves this same 'opening problem statement' role -- others focus on specific sub-problems (examples, code-sharing sites), the tool itself, or contributions.",
+          "basis_b_to_a": "Both paragraphs open their respective Introductions by motivating the work with a general problem statement: paper2's paragraph 0 states that inexperienced researchers lack knowledge of implicit writing conventions and that existing guides are too abstract to help, while the query paragraph states that learning to use APIs effectively is a common, core challenge across expertise levels, citing specific learning barriers. Both serve the identical structural role of the opening 'problem motivation' paragraph of the Introduction section, establishing why the paper's topic (writing support / API learning) is a significant, unmet challenge before proposing a solution. No other candidate paragraph plays this same opening motivating role -- paragraphs 1-3 discuss specific prior approaches (examples, cognitive apprenticeship, language learning literature), paragraph 4 describes the actual system, and paragraphs 5-7 describe the study and contributions."
+        }
+      ],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "paragraph",
+          "section_name": "Introduction",
+          "section_number": "1",
+          "subsection_name": null,
+          "subsection_number": null,
+          "paragraph_number": 0,
+          "text": "Inexperienced researchers often lack knowledge of the implicit writing conventions and structural expectations of particular communities. While existing writing guides offer general advice, they are often too abstract and high-level, making it challenging for junior researchers to apply this guidance in their own work."
+        },
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "paragraph",
+          "section_name": "INTRODUCTION",
+          "section_number": null,
+          "subsection_name": null,
+          "subsection_number": null,
+          "paragraph_number": 0,
+          "text": "Learning how to correctly and effectively use existing APIs is a common task — and a core challenge — in software development. It spans all expertise levels from novices to professional software engineers, and all project types from prototypes to production code. The landscape of publicly available APIs is massive and constantly changing, as new APIs are created in response to shifting programmer needs. Within companies, the same is true, perhaps even more so: joining a company can require learning a whole new set of proprietary APIs before a developer becomes an effective contributor to the company codebase. Developers often are stymied by various learning barriers, including overly specific or overly general explanations of API usage, lack of understanding about the interaction between multiple APIs, lack of alternative uses, and difficulty identifying program statements and structures related to an API [11, 19, 5]."
+        }
+      ],
+      "merge_history": [
+        {
+          "absorbed_node": "pnode-bf9a29f8a24d0bc9",
+          "absorbed_members": [
+            {
+              "paper_id": "examplore_chi18",
+              "unit_type": "paragraph",
+              "section_name": "INTRODUCTION",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null,
+              "paragraph_number": 0,
+              "text": "Learning how to correctly and effectively use existing APIs is a common task — and a core challenge — in software development. It spans all expertise levels from novices to professional software engineers, and all project types from prototypes to production code. The landscape of publicly available APIs is massive and constantly changing, as new APIs are created in response to shifting programmer needs. Within companies, the same is true, perhaps even more so: joining a company can require learning a whole new set of proprietary APIs before a developer becomes an effective contributor to the company codebase. Developers often are stymied by various learning barriers, including overly specific or overly general explanations of API usage, lack of understanding about the interaction between multiple APIs, lack of alternative uses, and difficulty identifying program statements and structures related to an API [11, 19, 5]."
+            }
+          ],
+          "confirmation": {
+            "pair": [
+              "corpusstudio",
+              "examplore_chi18"
+            ],
+            "a_unit": {
+              "section_name": "Introduction",
+              "section_number": "1",
+              "subsection_name": null,
+              "subsection_number": null,
+              "paragraph_number": 0,
+              "text": "Inexperienced researchers often lack knowledge of the implicit writing conventions and structural expectations of particular communities. While existing writing guides offer general advice, they are often too abstract and high-level, making it challenging for junior researchers to apply this guidance in their own work."
+            },
+            "b_unit": {
+              "section_name": "INTRODUCTION",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null,
+              "paragraph_number": 0,
+              "text": "Learning how to correctly and effectively use existing APIs is a common task — and a core challenge — in software development. It spans all expertise levels from novices to professional software engineers, and all project types from prototypes to production code. The landscape of publicly available APIs is massive and constantly changing, as new APIs are created in response to shifting programmer needs. Within companies, the same is true, perhaps even more so: joining a company can require learning a whole new set of proprietary APIs before a developer becomes an effective contributor to the company codebase. Developers often are stymied by various learning barriers, including overly specific or overly general explanations of API usage, lack of understanding about the interaction between multiple APIs, lack of alternative uses, and difficulty identifying program statements and structures related to an API [11, 19, 5]."
+            },
+            "basis_a_to_b": "The query paragraph is the opening motivation paragraph of the Introduction, describing a learning/knowledge gap problem (junior researchers lacking implicit writing conventions, general guides being too abstract) that motivates the paper's work. Candidate 0 plays the exact same structural role: it is the opening motivation paragraph of paper2's Introduction, describing a learning/knowledge gap problem (developers lacking effective knowledge of APIs, citing barriers like overly general explanations) that motivates EXAMPLORE. Both paragraphs frame a broad, general problem before narrowing to specifics in subsequent paragraphs. No other candidate serves this same 'opening problem statement' role -- others focus on specific sub-problems (examples, code-sharing sites), the tool itself, or contributions.",
+            "basis_b_to_a": "Both paragraphs open their respective Introductions by motivating the work with a general problem statement: paper2's paragraph 0 states that inexperienced researchers lack knowledge of implicit writing conventions and that existing guides are too abstract to help, while the query paragraph states that learning to use APIs effectively is a common, core challenge across expertise levels, citing specific learning barriers. Both serve the identical structural role of the opening 'problem motivation' paragraph of the Introduction section, establishing why the paper's topic (writing support / API learning) is a significant, unmet challenge before proposing a solution. No other candidate paragraph plays this same opening motivating role -- paragraphs 1-3 discuss specific prior approaches (examples, cognitive apprenticeship, language learning literature), paragraph 4 describes the actual system, and paragraphs 5-7 describe the study and contributions."
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "pnode-ac3b5a667ecf8b8d",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "paragraph",
+          "section_name": "INTRODUCTION",
+          "section_number": null,
+          "subsection_name": null,
+          "subsection_number": null,
+          "paragraph_number": 1,
+          "text": "One study found that the greatest obstacle to learning an API is \"insufficient or inadequate examples.\" [19] Official documentation is typically dominated by textual descriptions and explanations, often lacking concrete code examples that illustrate API usage. Tutorials and blog posts walk developers through simplified code examples but often without demonstrating alternative uses of an API, which programmers frequently desire when learning unfamiliar APIs [5, 19, 4]."
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "pnode-d4477960b1ec5642",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "paragraph",
+          "section_name": "Introduction",
+          "section_number": "1",
+          "subsection_name": null,
+          "subsection_number": null,
+          "paragraph_number": 3,
+          "text": "Learning from examples has also been extensively covered in the language learning literature. Non-native English speakers (NNES) may hesitate to choose from AI-suggested content because they struggle to evaluate the content's fluency and naturalness [21, 24, 25]. To address this problem, researchers proposed that novices learn by inspecting sentences from a curated corpus such as the Corpus of Contemporary American English (COCA) or English dictionaries [4] to help students learn the correct use of collocations and phrases [35]. To this end, LangSmith proposed a writing support tool for drafting academic NLP papers [20] by generating grammatically correct phrases given the user's current draft along with prior section and paper titles. In contrast, our work surfaces existing text from a relevant peer-reviewed text corpus. Furthermore, by avoiding automatically generated text that may—without the writer's knowledge—cross the line into plagiarism if used verbatim, the writer only sees previously published example sentences and their provenance, retaining informed control."
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "pnode-d8213a75eb8570f6",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "paragraph",
+          "section_name": "INTRODUCTION",
+          "section_number": null,
+          "subsection_name": null,
+          "subsection_number": null,
+          "paragraph_number": 3,
+          "text": "In the software engineering community, there is a growing interest in leveraging a large collection of open source repositories—so-called Big Code—to automatically infer API usage patterns from massive corpora [4, 16, 26, 30]. However, these API usage mining techniques provide limited support to help programmers explore concrete code examples from which API usage patterns are inferred, and understand the commonalities and variances across different uses. To bridge the gap, we aim to visualize hundreds of concrete code examples mined from massive code corpora in a way that reveals their commonalities and variances, and design a navigation model to guide the exploration of these examples. We draw motivation from prior work on visualizing large corpora of related documents, e.g., student coding assignments [8], text [27, 21], and image manipulation tutorials [17], to pose the following research question: How might we extract, align, canonicalize, and display large numbers of usage examples for a given API?"
+        }
+      ],
+      "merge_history": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "pnode-07ad9214dfd9848c",
+      "target": "pnode-9709bbda495bb48c",
+      "key": 0,
+      "basis": "The query paragraph previews key findings from the user study (increased confidence, usefulness of inspecting many examples for identifying structural patterns). Candidate 6 plays the same structural role in paper2's introduction: it previews the user study's findings (users answered more questions correctly, felt more confident, found the tool more helpful than online search). Both paragraphs serve as the 'study findings preview' paragraph within their respective introductions, even though the specific domains (writing examples vs. API usage examples) differ. No other candidate paragraph in the pool discusses study results/findings preview -- others cover motivation, related work, or contributions instead.",
+      "direction": "corpusstudio->examplore_chi18",
+      "kind": "one_directional_match",
+      "pair": [
+        "corpusstudio",
+        "examplore_chi18"
+      ],
+      "source_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Introduction",
+        "section_number": "1",
+        "subsection_name": null,
+        "subsection_number": null,
+        "paragraph_number": 6,
+        "text": "Our results reveal that users felt more confident in their writing when they discovered that other people in their target community have written in a similar way. Inspecting many examples at once was useful for identifying broad structural patterns, especially for sections that typically have more common structure, such as the description of the system implementation details or participants' demographics."
+      },
+      "target_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "INTRODUCTION",
+        "section_number": null,
+        "subsection_name": null,
+        "subsection_number": null,
+        "paragraph_number": 6,
+        "text": "We conducted a within-subjects lab study where we asked sixteen Java programmers of various levels of expertise to answer questions about the usage of particular Java APIs based on either (1) searching online for relevant code examples, blogs, and forum posts or (2) using EXAMPLORE to explore one hundred API usage examples mined from GitHub. On average, participants answered significantly more API usage questions correctly, with more concrete details, using EXAMPLORE. This suggests that EXAMPLORE helps users grasp a more comprehensive view of API usage than online search. In a post survey, the majority of participants (13/16) found EXAMPLORE to be more helpful for answering API usage questions than online search, and when using EXAMPLORE, their median level of confidence in their answers was higher."
+      }
+    },
+    {
+      "source": "pnode-14e161c92a90a9d1",
+      "target": "pnode-ac3b5a667ecf8b8d",
+      "key": 0,
+      "basis": "The query paragraph identifies a limitation of prior approaches (theory-driven writing support requiring expert-curated examples that are time-consuming and scarce) motivating the current work. Candidate [1] plays the same structural role: it critiques prior resources (official documentation, tutorials) for lacking sufficient/adequate concrete examples and alternative uses, which motivates the need for a new approach. Both paragraphs identify a gap in existing example-based learning support (expert-curated examples being limited/costly vs. insufficient/inadequate examples) as the motivating problem for their respective papers' new methods. This is a closer structural match than the other candidates, which either introduce the tool itself (paragraphs 4-7) or describe different motivating problems (large corpora exploration, API mining gaps) rather than the specific 'prior approach has this limitation' framing found in the query.",
+      "direction": "corpusstudio->examplore_chi18",
+      "kind": "one_directional_match",
+      "pair": [
+        "corpusstudio",
+        "examplore_chi18"
+      ],
+      "source_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Introduction",
+        "section_number": "1",
+        "subsection_name": null,
+        "subsection_number": null,
+        "paragraph_number": 2,
+        "text": "Prior work motivated the design of writing support tools with social cognitive theories and cognitive apprenticeship theory [18, 19] to help writers learn complex writing skills in a professional setting. While this approach allows novices to learn by mimicking model examples, it also requires expert knowledge to create and annotate these examples, which is often time-consuming and not readily available for many communities."
+      },
+      "target_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "INTRODUCTION",
+        "section_number": null,
+        "subsection_name": null,
+        "subsection_number": null,
+        "paragraph_number": 1,
+        "text": "One study found that the greatest obstacle to learning an API is \"insufficient or inadequate examples.\" [19] Official documentation is typically dominated by textual descriptions and explanations, often lacking concrete code examples that illustrate API usage. Tutorials and blog posts walk developers through simplified code examples but often without demonstrating alternative uses of an API, which programmers frequently desire when learning unfamiliar APIs [5, 19, 4]."
+      }
+    },
+    {
+      "source": "pnode-74eaf6191b858c70",
+      "target": "pnode-45ea06d74d8d65d6",
+      "key": 0,
+      "basis": "The query paragraph describes EXAMPLORE's core mechanism—a synthetic skeleton capturing API usage features, statistical distribution visualization, and filtering to drill down to concrete examples with highlighted correspondence—paralleling paragraph 4's description of CorpusStudio's own two novel writing support mechanisms (document-level distribution over section titles and sentence-level retrieval/highlighting of example sentences). Both paragraphs serve the same role: introducing 'we implemented/instantiated X, a tool with Y and Z features that let users see distributions and drill into concrete examples with highlighting.' This is the closest structural counterpart in the candidate pool, even though the specific domain (API code examples vs. academic writing examples) differs.",
+      "direction": "examplore_chi18->corpusstudio",
+      "kind": "one_directional_match",
+      "pair": [
+        "corpusstudio",
+        "examplore_chi18"
+      ],
+      "source_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "INTRODUCTION",
+        "section_number": null,
+        "subsection_name": null,
+        "subsection_number": null,
+        "paragraph_number": 5,
+        "text": "EXAMPLORE instantiates a synthetic code skeleton that captures a variety of API usage features, including initializations, enclosing control structures, guard conditions, and other method calls before and after invoking the given API method, etc. This skeleton is designed to be general: it is grounded in how API design is taught in software engineering curricula and how API mining researchers conceptualize their tasks [11, 19, 5]. EXAMPLORE visualizes the statistical distribution of each API usage feature in the skeleton to provide quantitative evidence of each feature in the corpus. The user can select one or more features in the skeleton and, by dynamically filtering mined code examples from the corpus, drill down to concrete, supporting code examples. Color-coordinated highlighting makes it easier for users to recognize the correspondence between features in the skeleton and code segments within each example."
+      },
+      "target_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Introduction",
+        "section_number": "1",
+        "subsection_name": null,
+        "subsection_number": null,
+        "paragraph_number": 4,
+        "text": "To this end, we implemented CorpusStudio, a writing environment with two novel writing support concepts, one at the document level and one at the sentence level, that help writers learn about the writing styles and expectations of particular audiences. These writing supports are designed to expose writers to as many examples as possible to increase the variety of examples shown to the users—with the cognitive support necessary to help them see the emergent patterns that capture otherwise implicit community-specific writing content and style expectations. Specifically, at the document level, CorpusStudio computes and renders an ordered distribution [15] over section title sequences in prior papers from the community the writer wishes to write for. This gives the writer a sense of common and uncommon section titles and in what relative order they appear in prior papers (Figure 1A). At the sentence level, CorpusStudio retrieves many example sentences from the corpus given the user's draft-in-progress and their current cursor location within it (Figure 1C). Words across these many example sentences are algorithmically highlighted or de-emphasized to help users see any emergent norms and outliers. We also allow authors to capture their thoughts and deductions from viewing these examples with bookmarks and notes."
+      }
+    },
+    {
+      "source": "pnode-ac3b5a667ecf8b8d",
+      "target": "pnode-9be63eda37de8e46",
+      "key": 0,
+      "basis": "Both paragraphs open their respective introductions by identifying a core motivating problem: paper1 cites a study showing \"insufficient or inadequate examples\" is the greatest obstacle to learning an API, and criticizes documentation/tutorials for lacking varied concrete examples. Candidate [0] plays the same structural role—stating that existing writing guides are \"too abstract and high-level\" and inexperienced researchers \"lack knowledge of the implicit writing conventions,\" motivating the need for better example-based support. Both paragraphs establish the gap that examples (of APIs vs. of writing) are insufficient or inadequate in current resources, setting up the paper's contribution. This is the closest role match; other candidates address different roles (obstacles of examples in [1], theory-driven design in [2], contributions in [7]).",
+      "direction": "examplore_chi18->corpusstudio",
+      "kind": "one_directional_match",
+      "pair": [
+        "corpusstudio",
+        "examplore_chi18"
+      ],
+      "source_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "INTRODUCTION",
+        "section_number": null,
+        "subsection_name": null,
+        "subsection_number": null,
+        "paragraph_number": 1,
+        "text": "One study found that the greatest obstacle to learning an API is \"insufficient or inadequate examples.\" [19] Official documentation is typically dominated by textual descriptions and explanations, often lacking concrete code examples that illustrate API usage. Tutorials and blog posts walk developers through simplified code examples but often without demonstrating alternative uses of an API, which programmers frequently desire when learning unfamiliar APIs [5, 19, 4]."
+      },
+      "target_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Introduction",
+        "section_number": "1",
+        "subsection_name": null,
+        "subsection_number": null,
+        "paragraph_number": 0,
+        "text": "Inexperienced researchers often lack knowledge of the implicit writing conventions and structural expectations of particular communities. While existing writing guides offer general advice, they are often too abstract and high-level, making it challenging for junior researchers to apply this guidance in their own work."
+      }
+    },
+    {
+      "source": "pnode-d8213a75eb8570f6",
+      "target": "pnode-45ea06d74d8d65d6",
+      "key": 0,
+      "basis": "The query paragraph identifies a gap (existing API mining techniques don't help programmers explore/understand commonalities and variances across code examples) and states the research approach/question of visualizing many examples with a navigation model to reveal patterns. Candidate [4] plays the same structural role: it introduces CorpusStudio's approach (document-level and sentence-level support) designed to expose writers to many examples with cognitive support to help them 'see the emergent patterns' capturing implicit norms—paralleling the query's goal of revealing commonalities/variances across many examples via visualization/navigation. Both paragraphs pivot from a stated problem/gap to describing the concrete system-level solution/approach devised to address it, making this the closest role match despite the differing domains (code API examples vs. academic writing examples).",
+      "direction": "examplore_chi18->corpusstudio",
+      "kind": "one_directional_match",
+      "pair": [
+        "corpusstudio",
+        "examplore_chi18"
+      ],
+      "source_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "INTRODUCTION",
+        "section_number": null,
+        "subsection_name": null,
+        "subsection_number": null,
+        "paragraph_number": 3,
+        "text": "In the software engineering community, there is a growing interest in leveraging a large collection of open source repositories—so-called Big Code—to automatically infer API usage patterns from massive corpora [4, 16, 26, 30]. However, these API usage mining techniques provide limited support to help programmers explore concrete code examples from which API usage patterns are inferred, and understand the commonalities and variances across different uses. To bridge the gap, we aim to visualize hundreds of concrete code examples mined from massive code corpora in a way that reveals their commonalities and variances, and design a navigation model to guide the exploration of these examples. We draw motivation from prior work on visualizing large corpora of related documents, e.g., student coding assignments [8], text [27, 21], and image manipulation tutorials [17], to pose the following research question: How might we extract, align, canonicalize, and display large numbers of usage examples for a given API?"
+      },
+      "target_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Introduction",
+        "section_number": "1",
+        "subsection_name": null,
+        "subsection_number": null,
+        "paragraph_number": 4,
+        "text": "To this end, we implemented CorpusStudio, a writing environment with two novel writing support concepts, one at the document level and one at the sentence level, that help writers learn about the writing styles and expectations of particular audiences. These writing supports are designed to expose writers to as many examples as possible to increase the variety of examples shown to the users—with the cognitive support necessary to help them see the emergent patterns that capture otherwise implicit community-specific writing content and style expectations. Specifically, at the document level, CorpusStudio computes and renders an ordered distribution [15] over section title sequences in prior papers from the community the writer wishes to write for. This gives the writer a sense of common and uncommon section titles and in what relative order they appear in prior papers (Figure 1A). At the sentence level, CorpusStudio retrieves many example sentences from the corpus given the user's draft-in-progress and their current cursor location within it (Figure 1C). Words across these many example sentences are algorithmically highlighted or de-emphasized to help users see any emergent norms and outliers. We also allow authors to capture their thoughts and deductions from viewing these examples with bookmarks and notes."
+      }
+    }
+  ]
+}
