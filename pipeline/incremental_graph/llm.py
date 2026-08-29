@@ -9,7 +9,7 @@ from typing import Protocol
 
 from .configuration import PromptRepository
 from .models import JudgmentRequest, JudgmentResult, ModelSettings
-from .skill_api import ClaudeSkills, directory_hash
+from .skill_api import ClaudeSkills, directory_hash, load_api_key
 
 
 class JudgmentError(RuntimeError):
@@ -107,7 +107,7 @@ class AnthropicJudgmentProvider:
         except ImportError as error:
             raise JudgmentError("Install requirements.txt before running LLM stages") from error
 
-        client = Anthropic()
+        client = Anthropic(api_key=load_api_key(self.skill_root.parent))
         tool_name = "record_question" if request.output_kind == "question" else "record_match"
         request_args = dict(
             model=self.model.name,
