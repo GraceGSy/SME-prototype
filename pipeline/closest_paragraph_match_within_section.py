@@ -136,6 +136,19 @@ actually covers). Never judge from text alone when a question field is present, 
 let the question pre-filter which candidates get their text read -- read every candidate \
 paragraph's text in full before deciding.
 
+The two papers will very often be about completely different subject matter -- that \
+is expected and NEVER on its own a reason to report no match. A difference in \
+domain or subject matter (e.g. one paper is about visualizing code, the other about \
+supporting writing) is not "vocabulary or topic" in the sense excluded above -- it's \
+the normal condition role-based matching exists to see past. If your own reasoning \
+concludes that a candidate paragraph plays a structurally similar role to the query \
+paragraph -- the same job within its section's argument -- that correspondence holds \
+regardless of how different the two papers' subject matter is. Do NOT concede a role \
+match and then disqualify it anyway by citing that the actual content/domain differs; \
+that is vocabulary/topic-based judgment under a different name; the two papers being \
+about genuinely different things is exactly the case this instruction is written for, \
+not an exception to it.
+
 Report exactly ONE match. If the query paragraph's content genuinely touches more than one \
 candidate paragraph, pick whichever candidate most centrally corresponds, and mention the \
 secondary overlap as a brief aside inside `basis` rather than refusing to choose.

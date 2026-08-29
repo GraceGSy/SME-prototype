@@ -134,6 +134,19 @@ paragraphs override it only on a genuine conflict (watch for a question that nam
 every sub-topic but still excludes some kind of content actually present in the \
 paragraphs -- a "type-narrow" question).
 
+The two papers will very often be about completely different subject matter -- that \
+is expected and NEVER on its own a reason to report no match. A difference in \
+domain or subject matter (e.g. one paper is about visualizing code, the other about \
+supporting writing) is not "vocabulary or topic" in the sense excluded above -- it's \
+the normal condition role-based matching exists to see past. If your own reasoning \
+concludes that a candidate plays a structurally similar role to the query -- the \
+same job in its paper's argument -- that correspondence holds regardless of how \
+different the two papers' subject matter is. Do NOT concede a role match and then \
+disqualify it anyway by citing that the actual content/domain differs; that is \
+vocabulary/topic-based judgment under a different name; the two papers being about \
+genuinely different things is exactly the case this instruction is written for, not \
+an exception to it.
+
 A whole-section query matching a paper2 subsection, or a subsection query matching \
 a paper2 whole section, is a completely normal and expected outcome -- do not \
 prefer same-level matches over cross-level ones.
