@@ -549,6 +549,93 @@ class ClosestMatchGraph:
         flagged.sort(key=lambda f: (f["family"]["paper_id"], f["family"]["section_name"] or ""))
         return flagged
 
+    def fan_in_candidates(self) -> list[dict[str, Any]]:
+        """Flags NODES that TWO OR MORE DISTINCT sections/subsections from the SAME
+        other paper each independently chose as their own single closest match --
+        fan-IN onto one target, the mirror image of `one_to_many_candidates()`'s
+        fan-OUT (one section/subsection pointing at 2+ distinct far-side families).
+        Since every unit's own directional pass can only ever name ONE closest match,
+        at most one of a fan-in group's claimants can end up reciprocated (a
+        CONFIRMED member of the target's node); the rest are necessarily left as
+        unreciprocated `one_directional_match` inbound edges.
+
+        This is the section-level sibling of `paragraph_match_graph.
+        ParagraphMatchGraph.fan_in_candidates` -- same discipline, one level up. A
+        real instance, verified by running this method against the examplore_chi18/
+        corpusstudio corpus: corpusstudio's "Implementation Details" (3.4) subsection
+        AND its whole "Data & Processing" section are both independently the closest
+        match for examplore_chi18's whole SYSTEM ARCHITECTURE AND IMPLEMENTATION
+        section (no subsection) -- two distinct corpusstudio units converging on the
+        exact same examplore_chi18 target, neither one confirmed. (An earlier draft of
+        this docstring guessed a different pair for this same target from an
+        un-reverified recollection of an edge's direction -- corrected here against
+        this method's own actual output rather than left standing on a guess.)
+
+        Note this checks something genuinely different from `one_to_many_candidates`,
+        not a stricter/looser version of it: that method coarsens the TARGET side to
+        family granularity (top-level section, ignoring subsection) and pools the
+        SOURCE side into one family's combined evidence; this method sharpens the
+        TARGET to one exact unit and keeps the claiming SOURCE units individuated,
+        with no requirement that they share a family at all. The two can both fire on
+        the same underlying data (as in the example above) without either implying
+        the other.
+
+        Purely a post-hoc read of matches already made; no new API call, no new
+        matching logic, and the graph itself is never modified.
+
+        Returns a list of dicts, one per flagged (node, claiming paper) group:
+          - "target_members": the node's own member(s) NOT belonging to the claiming
+            paper (normally exactly one, in the common two-paper-per-node case; more
+            if this node has absorbed confirmed members from more than two papers
+            across multiple pairs).
+          - "claiming_paper_id": the paper whose distinct units are fanning in.
+          - "claims": one entry per claiming unit -- {"status", "unit", "basis"}.
+            `status` is "confirmed" (this specific claim WAS reciprocated -- it's
+            itself a member of the target's node) or "one_directional" (left
+            stranded). At most one "confirmed" entry ordinarily appears per group;
+            often zero.
+        """
+        claims_by_node: dict[str, dict[str, list[dict[str, Any]]]] = {}
+
+        for node_id, data in self.graph.nodes(data=True):
+            per_paper: dict[str, list[dict[str, Any]]] = claims_by_node.setdefault(node_id, {})
+            for member in data["members"]:
+                per_paper.setdefault(member["paper_id"], []).append(
+                    {"status": "confirmed", "unit": member, "basis": None}
+                )
+
+        for _, target_node, _, data in self.graph.edges(keys=True, data=True):
+            if data.get("kind") != "one_directional_match":
+                continue
+            source_unit = data["source_unit"]
+            per_paper = claims_by_node.setdefault(target_node, {})
+            per_paper.setdefault(source_unit["paper_id"], []).append(
+                {"status": "one_directional", "unit": source_unit, "basis": data.get("basis")}
+            )
+
+        flagged: list[dict[str, Any]] = []
+        for node_id, per_paper in claims_by_node.items():
+            members = self.graph.nodes[node_id]["members"]
+            for claiming_paper_id, claim_list in per_paper.items():
+                if len(claim_list) < 2:
+                    continue
+                flagged.append(
+                    {
+                        "target_members": [m for m in members if m["paper_id"] != claiming_paper_id],
+                        "claiming_paper_id": claiming_paper_id,
+                        "claims": claim_list,
+                    }
+                )
+
+        flagged.sort(
+            key=lambda f: (
+                f["claiming_paper_id"],
+                f["target_members"][0]["paper_id"] if f["target_members"] else "",
+                f["target_members"][0].get("section_name") or "" if f["target_members"] else "",
+            )
+        )
+        return flagged
+
     # -- persistence --------------------------------------------------------
 
     def serialize(self) -> dict[str, Any]:
@@ -618,6 +705,7 @@ class ClosestMatchGraph:
             "singleton_nodes": self.graph.number_of_nodes() - merged_nodes,
             "one_directional_edges": self.graph.number_of_edges(),
             "redundant_one_directional_edges": len(self.redundant_edges()),
+            "fan_in_groups": len(self.fan_in_candidates()),
         }
 
 

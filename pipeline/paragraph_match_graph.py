@@ -530,6 +530,80 @@ class ParagraphMatchGraph:
         flagged.sort(key=lambda f: (f["family"]["paper_id"], f["family"]["section_name"] or "", f["family"]["subsection_name"] or ""))
         return flagged
 
+    def fan_in_candidates(self) -> list[dict[str, Any]]:
+        """Flags NODES that TWO OR MORE DISTINCT paragraphs from the SAME other paper
+        each independently chose as their own single closest match -- fan-IN onto one
+        target, the mirror image of `one_to_many_candidates()`'s fan-OUT (one
+        paragraph pointing at 2+ distinct far-side families). Since every paragraph's
+        own directional pass can only ever name ONE closest match, at most one of a
+        fan-in group's claimants can end up reciprocated (a CONFIRMED member of the
+        target's node); the rest are necessarily left as unreciprocated
+        `one_directional_match` inbound edges. This shows up often at paragraph
+        granularity because papers frequently compress into one paragraph what
+        another spreads across several -- see this module's own docstring and the
+        README's worked example for real instances (three examplore_chi18 Introduction
+        paragraphs (3, 4, 5) all independently choosing corpusstudio's single
+        paragraph 4 as their closest match, with only paragraph 4 reciprocated;
+        two examplore_chi18 paragraphs (0, 1) both choosing corpusstudio's paragraph 0,
+        which reciprocates NEITHER -- its own pick was null).
+
+        Purely a post-hoc read of matches already made; no new API call, no new
+        matching logic, and the graph itself is never modified.
+
+        Returns a list of dicts, one per flagged (node, claiming paper) group:
+          - "target_members": the node's own member(s) NOT belonging to the claiming
+            paper (normally exactly one, in the common two-paper-per-node case; more
+            if this node has absorbed confirmed members from more than two papers
+            across multiple section pairings).
+          - "claiming_paper_id": the paper whose distinct paragraphs are fanning in.
+          - "claims": one entry per claiming paragraph -- {"status", "unit", "basis"}.
+            `status` is "confirmed" (this specific claim WAS reciprocated -- it's
+            itself a member of the target's node) or "one_directional" (left
+            stranded). At most one "confirmed" entry ordinarily appears per group;
+            often zero, when the target's own pick was null or landed elsewhere
+            entirely.
+        """
+        claims_by_node: dict[str, dict[str, list[dict[str, Any]]]] = {}
+
+        for node_id, data in self.graph.nodes(data=True):
+            per_paper: dict[str, list[dict[str, Any]]] = claims_by_node.setdefault(node_id, {})
+            for member in data["members"]:
+                per_paper.setdefault(member["paper_id"], []).append(
+                    {"status": "confirmed", "unit": member, "basis": None}
+                )
+
+        for _, target_node, _, data in self.graph.edges(keys=True, data=True):
+            if data.get("kind") != "one_directional_match":
+                continue
+            source_unit = data["source_unit"]
+            per_paper = claims_by_node.setdefault(target_node, {})
+            per_paper.setdefault(source_unit["paper_id"], []).append(
+                {"status": "one_directional", "unit": source_unit, "basis": data.get("basis")}
+            )
+
+        flagged: list[dict[str, Any]] = []
+        for node_id, per_paper in claims_by_node.items():
+            members = self.graph.nodes[node_id]["members"]
+            for claiming_paper_id, claim_list in per_paper.items():
+                if len(claim_list) < 2:
+                    continue
+                flagged.append(
+                    {
+                        "target_members": [m for m in members if m["paper_id"] != claiming_paper_id],
+                        "claiming_paper_id": claiming_paper_id,
+                        "claims": claim_list,
+                    }
+                )
+
+        flagged.sort(
+            key=lambda f: (
+                f["claiming_paper_id"],
+                f["target_members"][0]["paper_id"] if f["target_members"] else "",
+                f["target_members"][0].get("paragraph_number") if f["target_members"] else -1,
+            )
+        )
+        return flagged
+
     # -- persistence --------------------------------------------------------
 
     def serialize(self) -> dict[str, Any]:
@@ -592,6 +666,7 @@ class ParagraphMatchGraph:
             "singleton_nodes": self.graph.number_of_nodes() - merged_nodes,
             "one_directional_edges": self.graph.number_of_edges(),
             "redundant_one_directional_edges": len(self.redundant_edges()),
+            "fan_in_groups": len(self.fan_in_candidates()),
         }
 
 

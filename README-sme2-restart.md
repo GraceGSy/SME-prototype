@@ -240,6 +240,30 @@ left alone. `.summary()` reports the flagged count as `redundant_one_directional
 nothing is ever pruned automatically, so every flag stays inspectable against its
 `covering_confirmed_node` and original `basis` text.
 
+**`one_to_many_candidates()` flags a family (a section plus its subsections) whose
+combined evidence points at TWO OR MORE DISTINCT far-side families** — a real sign the
+source's content spans more than one role the other paper keeps separate (the "Corpus
+Studio bundles three examplore_chi18 sections into one" pattern documented in the
+worked example below). The far side is judged at family granularity — several
+different far-side units all landing inside the *same* family don't count as "many."
+
+**`fan_in_candidates()` flags a single target unit that TWO OR MORE DISTINCT units from
+the same other paper each independently chose as their own closest match** — the
+mirror image of `one_to_many_candidates()` (fan-*in* vs. fan-*out*), and a genuinely
+different check, not a stricter/looser version of the same one: this method sharpens
+the target down to one exact unit and keeps the claiming source units individuated
+(they don't need to share a family at all), where `one_to_many_candidates()` coarsens
+the target to family granularity and pools the source into one family's evidence. The
+two can both fire on the same data without either implying the other. Since a unit's
+own directional pass can only ever name one closest match, at most one claimant in a
+flagged group can be reciprocated (a confirmed member of the target's node); the rest
+surface as unreciprocated `one_directional_match` edges. Real example, found by running
+this method against the examplore_chi18/corpusstudio corpus: corpusstudio's
+"Implementation Details" (3.4) subsection and its whole "Data & Processing" section are
+both independently the closest match for examplore_chi18's whole SYSTEM ARCHITECTURE
+AND IMPLEMENTATION section — two distinct corpusstudio units converging on one target,
+neither reciprocated. `.summary()` reports the flagged group count as `fan_in_groups`.
+
 Tests: `pipeline/tests/test_closest_match_graph.py` (11 cases — confirmed merges,
 one-directional edges, incremental cross-pair growth, save/load round-tripping,
 idempotent re-processing, and both directions of the redundancy rule plus the
@@ -405,6 +429,62 @@ is that covering confirmed match (from the table above):
 | User Study > Study Procedure | USER STUDY > Methodology |
 | Qualitative Results > Document-level Writing Support | RESULTS (whole) |
 
+### Combining `redundant_edges()` and `fan_in_candidates()`
+
+The two checks overlap but aren't redundant with each other — worked example, using the
+same confirmed matches table above with fan-in convergence added, then filtered against
+`redundant_edges()`.
+
+**Step 1: for each confirmed pair, list every extra one-directional claim
+`fan_in_candidates()` found on either side** — i.e. every other unit that also named one
+side of this confirmed pair as its own closest match:
+
+| examplore_chi18 | corpusstudio | Also independently claimed by (`fan_in_candidates()`) |
+|---|---|---|
+| ABSTRACT | Abstract | — |
+| INTRODUCTION | Introduction | corpusstudio: Corpus Studio > Design Goals |
+| RELATED WORK (whole) | Background and Related Work (whole) | corpusstudio: Background and Related Work > Writing with External Text |
+| SCENARIO: INTERACTING WITH CODE DISTRIBUTIONS | Corpus Studio > Usage Scenario | — |
+| USER STUDY (whole) | User Study (whole) | examplore_chi18: USER STUDY > Methodology |
+| USER STUDY > Participants | User Study > Participants | — |
+| RESULTS > Quantitative Analysis | Quantitative Results (whole) | examplore_chi18: Quantitative Results > Task 1: Outline Writing; Quantitative Results > Task 2: Writing a Section of a Manuscript |
+| RESULTS > Qualitative Analysis | Qualitative Results (whole) | corpusstudio: RESULTS (whole) — examplore_chi18: Qualitative Results > Sentence-level Writing Support; Bookmark and User Notes; Tooltips; Use of Features, Especially Across Writing Stages |
+| DISCUSSION AND LIMITATIONS (whole) | Discussion (whole) | examplore_chi18: Discussion > Designing a System with Many Retrieved Examples; Discussion > Limitations and Future Work |
+| CONCLUSION (whole) | Conclusion (whole) | — |
+| ACKNOWLEDGMENTS | Acknowledgments | — |
+| REFERENCES (empty) | References (empty) | — |
+
+**Step 2: filter out every extra claim that `redundant_edges()` already flags**, since
+most of these turn out to be the exact same edges that check independently catches:
+
+| examplore_chi18 | corpusstudio | Non-redundant fan-in convergence | Filtered out as redundant |
+|---|---|---|---|
+| INTRODUCTION | Introduction | **corpusstudio: Corpus Studio > Design Goals** | — |
+| RELATED WORK (whole) | Background and Related Work (whole) | — | 1 (Writing with External Text) |
+| USER STUDY (whole) | User Study (whole) | — | 1 (Methodology) |
+| RESULTS > Quantitative Analysis | Quantitative Results (whole) | — | 2 (Task 1, Task 2) |
+| RESULTS > Qualitative Analysis | Qualitative Results (whole) | — | 5 (RESULTS whole + 4 subsections) |
+| DISCUSSION AND LIMITATIONS (whole) | Discussion (whole) | — | 2 (both Discussion subsections) |
+
+(Rows with no fan-in at all — ABSTRACT, SCENARIO, USER STUDY > Participants, CONCLUSION,
+ACKNOWLEDGMENTS, REFERENCES — are omitted from this second table; nothing to filter.)
+
+**The one survivor, INTRODUCTION, is structurally different from everything filtered
+out — that's the point of running both checks rather than either alone.** Every
+filtered claim comes from a *sibling subsection of the confirmed partner's own family*
+— e.g. RELATED WORK's extra claim ("Writing with External Text") is a subsection of the
+same "Background and Related Work" section already confirmed, so `redundant_edges()`
+correctly recognizes it as an already-covered refinement, not new information.
+Corpusstudio's "Design Goals," by contrast, lives inside the "Corpus Studio" section (3)
+— a completely different top-level section from "Introduction" (1), the section
+actually confirmed against examplore's INTRODUCTION. `redundant_edges()` only checks a
+claimant's *own family* (its parent section and siblings) for an existing confirmed
+match to the same target; since Design Goals' family is "Corpus Studio," not
+"Introduction," it never looks there and never flags this edge — even though it's
+landing on an already-spoken-for target. This is exactly the gap `fan_in_candidates()`
+is built to catch that `redundant_edges()` structurally cannot: cross-family
+convergence on one target, not just within-family refinement.
+
 ## Stage 5: Paragraph-level closest-match, scoped to one section pairing — `pipeline/closest_paragraph_match_within_section.py`
 
 Once Stage 4 (or a human) has identified a specific section/subsection pairing worth a
@@ -472,8 +552,8 @@ looked once read at paragraph granularity.
 
 `ParagraphMatchGraph`, the paragraph-level sibling of Stage 4's `ClosestMatchGraph` —
 same `nx.MultiDiGraph` wrapper, same confirmed-merge / one-directional-edge /
-`redundant_edges()` / `one_to_many_candidates()` machinery, one nesting level deeper.
-Deliberately a **separate class**, not a generalization of `ClosestMatchGraph`: the two
+`redundant_edges()` / `one_to_many_candidates()` / `fan_in_candidates()` machinery, one
+nesting level deeper. Deliberately a **separate class**, not a generalization of `ClosestMatchGraph`: the two
 graphs' natural accumulation unit differs (one paper pair vs. one section pairing),
 `ClosestMatchGraph` already has real persisted corpus-scale state and a test suite tied
 to its exact 2-level unit schema, and unifying the two would mean turning
@@ -493,7 +573,9 @@ What changes relative to `ClosestMatchGraph`, concretely:
   — is its enclosing section/subsection: `(paper_id, section_name, section_number,
   subsection_name, subsection_number)`, deliberately identical in shape to a
   `ClosestMatchGraph` unit key one level up. A paragraph's "siblings" are the other
-  paragraphs in the same subsection (or section, if none).
+  paragraphs in the same subsection (or section, if none). `fan_in_candidates()`
+  doesn't use family at all — it groups by exact paragraph identity on the target side
+  and doesn't require the claiming paragraphs to share a family on the source side.
 - **`add_pair` becomes `add_section_pairing`**, reflecting that this graph's natural
   accumulation unit is one section pairing's two directional Stage 5 passes, not one
   paper pair.
@@ -532,11 +614,21 @@ section spanning genuinely different topics — the distinction the flag is spec
 built to preserve (see the class's own docstring for the corpusstudio/examplore_chi18
 `Corpus Studio` section-level case this mirrors one level down).
 
+**3 `fan_in_candidates()` groups** — this is the check that actually surfaces the
+paragraph-density mismatch `one_to_many_candidates()` deliberately stays blind to.
+Examplore_chi18 ¶3, ¶4, and ¶5 all independently choose corpusstudio ¶4 as their closest
+match; only ¶4↔¶4 is reciprocated, leaving ¶3 and ¶5 stranded. Examplore_chi18 ¶0 and ¶1
+both choose corpusstudio ¶0 — and corpusstudio ¶0's own pick is **null**, reciprocating
+*neither*. Corpusstudio ¶5 and ¶6 both choose examplore_chi18 ¶6, but examplore_chi18
+¶6's own pick is corpusstudio ¶5, reciprocating only one. `.summary()` reports this as
+`fan_in_groups`.
+
 Confirmed end-to-end: `add_section_pairing`'s stats, `redundant_edges()`,
-`one_to_many_candidates()`, and `save`/`load` round-tripping all check out against this
-real pair, including the null-result and single-direction-only paths (`Corpus Studio >
-Design Goals` against the whole `INTRODUCTION`, fed with an empty reverse-direction
-list, correctly adds one new unmatched node and zero edges rather than erroring).
+`one_to_many_candidates()`, `fan_in_candidates()`, and `save`/`load` round-tripping all
+check out against this real pair, including the null-result and single-direction-only
+paths (`Corpus Studio > Design Goals` against the whole `INTRODUCTION`, fed with an
+empty reverse-direction list, correctly adds one new unmatched node and zero edges
+rather than erroring).
 
 ## Open gaps
 
@@ -547,13 +639,17 @@ list, correctly adds one new unmatched node and zero edges rather than erroring)
   twice by hand (once per direction) and then feeding both files into
   `paragraph_match_graph.py` is still a manual, three-command sequence per section
   pairing.
-- **`redundant_edges()` is available as a library/CLI-summary count, but nothing renders
-  the flagged list to a file yet** — the worked example above was generated by calling it
-  directly in a Python shell, not via a packaged report/export command. Same is true of
-  `ParagraphMatchGraph.redundant_edges()`/`one_to_many_candidates()`.
-- **No test suite yet for Stages 5–6** — `pipeline/tests/test_closest_match_graph.py`
-  covers `ClosestMatchGraph`'s 11 cases, but `closest_paragraph_match_within_section.py`
-  and `paragraph_match_graph.py` have only been exercised against real corpus data in a
+- **`redundant_edges()`/`one_to_many_candidates()`/`fan_in_candidates()` are available as
+  library/CLI-summary counts, but nothing renders the flagged lists to a file yet** — the
+  worked examples above were generated by calling them directly in a Python shell, not
+  via a packaged report/export command. True of both `ClosestMatchGraph` and
+  `ParagraphMatchGraph`.
+- **No test suite yet for `fan_in_candidates()` on either class, or for Stages 5–6 at
+  all** — `pipeline/tests/test_closest_match_graph.py` covers `ClosestMatchGraph`'s
+  original 11 cases (confirmed merges, one-directional edges, redundancy), but not the
+  newer `fan_in_candidates()` method on that class, and
+  `closest_paragraph_match_within_section.py`/`paragraph_match_graph.py` (including its
+  own `fan_in_candidates()`) have only been exercised against real corpus data in a
   Python shell, not a checked-in automated test.
 - **`ParagraphMatchGraph` and `ClosestMatchGraph` are separate, unlinked persisted
   graphs** — a paragraph node carries no explicit reference back to its enclosing
