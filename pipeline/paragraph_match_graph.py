@@ -46,13 +46,27 @@ through from the closest-paragraph-match-batch row). `text` is payload, not iden
 -- it plays no part in `_unit_key`/`stable_node_id`/`_member_key`, purely for
 readability of the persisted graph without cross-referencing the source paper JSON.
 
-A paragraph's "family," for `redundant_edges()`/`one_to_many_candidates()` purposes,
-is its enclosing section/subsection -- (paper_id, section_name, section_number,
-subsection_name, subsection_number) -- deliberately identical in shape to a
-`ClosestMatchGraph` UNIT key one level up. A paragraph's "siblings" are the other
-paragraphs in the same subsection (or section, if no subsection): the direct analog
-of `ClosestMatchGraph`'s "a unit's siblings are the other subsections under the same
-top-level section."
+A paragraph's "family," for `one_to_many_candidates()` purposes, is its enclosing
+section/subsection -- (paper_id, section_name, section_number, subsection_name,
+subsection_number) -- deliberately identical in shape to a `ClosestMatchGraph` UNIT
+key one level up.
+
+Deliberately NO `redundant_edges()` on this class, unlike `ClosestMatchGraph` --
+removed after being ported over mechanically and then found to be actively wrong at
+this granularity, not merely unnecessary. That method's section-level justification
+rests on real containment (a whole section's candidate is literally defined as its
+own paragraphs plus every subsection's, concatenated -- see Stage 3's candidate
+construction -- so a subsection pointing at an already-confirmed whole-section target
+truly is repeating already-counted content). Sibling PARAGRAPHS have no such
+containment relationship: paragraph 3 is not part of paragraph 4, so paragraph 4
+confirming against a target doesn't mean paragraph 3's content was already
+represented there. A mechanical port of the same rule ends up flagging exactly the
+cases that are the real finding at this granularity -- paragraph-density mismatch,
+where one paper compresses into one paragraph what the other needed several to say
+-- as if they were redundant restatements. See the "-- redundancy flagging --"
+comment block just above `one_to_many_candidates()` below for the concrete
+verification (it filtered out all three real fan-in groups found for the
+corpusstudio/examplore_chi18 Introduction pairing).
 
 `one_to_many_candidates()` here answers the paragraph-level version of the same
 question `ClosestMatchGraph`'s answers at the section level: does one paragraph's
@@ -377,56 +391,35 @@ class ParagraphMatchGraph:
         return stats
 
     # -- redundancy flagging ---------------------------------------------------
-
-    def redundant_edges(self) -> list[dict[str, Any]]:
-        """Flag (without removing) one-directional paragraph edges that are
-        redundant given an already-CONFIRMED (bidirectionally merged) match
-        elsewhere in the edge's own source paragraph's family -- its enclosing
-        section/subsection's other paragraphs, within its own paper. Direct
-        one-level-deeper port of `ClosestMatchGraph.redundant_edges` -- see that
-        method's docstring for the full "only an EXACT repeated target counts as
-        redundant" rationale, which applies unchanged here."""
-        family_index: dict[FamilyKey, set[str]] = {}
-        for node_id, data in self.graph.nodes(data=True):
-            for member in data["members"]:
-                family_index.setdefault(self._family_key(member), set()).add(node_id)
-
-        flagged: list[dict[str, Any]] = []
-        for source, target, key, data in self.graph.edges(keys=True, data=True):
-            if data.get("kind") != "one_directional_match":
-                continue
-            source_unit = data["source_unit"]
-            target_unit = data["target_unit"]
-            target_key = self._member_key(target_unit)
-
-            covering_node = None
-            for node_id in family_index.get(self._family_key(source_unit), ()):
-                node_data = self.graph.nodes[node_id]
-                if len(node_data["members"]) <= 1:
-                    continue  # not a confirmed/merged node
-                if any(self._member_key(member) == target_key for member in node_data["members"]):
-                    covering_node = node_id
-                    break
-
-            if covering_node is not None:
-                flagged.append(
-                    {
-                        "source_node": source,
-                        "target_node": target,
-                        "edge_key": key,
-                        "source_unit": source_unit,
-                        "target_unit": target_unit,
-                        "pair": data.get("pair"),
-                        "basis": data.get("basis"),
-                        "covering_confirmed_node": covering_node,
-                        "reason": (
-                            "target is already the confirmed bidirectional match of "
-                            "another paragraph in the source paragraph's own enclosing "
-                            "section/subsection"
-                        ),
-                    }
-                )
-        return flagged
+    #
+    # Deliberately NO `redundant_edges()` on this class -- removed after being
+    # ported over mechanically from `ClosestMatchGraph` and then found, on real
+    # inspection, to be actively wrong at this granularity rather than merely
+    # unnecessary. `ClosestMatchGraph.redundant_edges()`'s justification rests on a
+    # real CONTAINMENT relationship: a "whole section" candidate is *literally
+    # defined* as its own lead-in paragraphs plus every subsection's paragraphs,
+    # concatenated (see closest_section_match_batch.py's candidate construction) --
+    # so a subsection's content is a strict subset of what the whole section already
+    # presented as evidence. If the whole section confirms against target T and the
+    # subsection also points at T, that genuinely is redundant: the same content,
+    # read twice, at two granularities.
+    #
+    # Sibling PARAGRAPHS have no such relationship. Paragraph 3 is not part of
+    # paragraph 4, and paragraph 4 confirming against T does not mean paragraph 3's
+    # content was already represented in that match -- they are independent,
+    # coordinate units that can say completely different things. A mechanical port
+    # of the same rule (source paragraph's "family" = its enclosing section/
+    # subsection's other paragraphs) flags exactly the cases that are actually the
+    # real, substantive finding at this granularity: paragraph-density mismatch,
+    # where one paper compresses into one paragraph what the other needed several
+    # to say. Verified concretely against the corpusstudio/examplore_chi18
+    # Introduction pairing: running the ported `redundant_edges()` against that
+    # pairing's `fan_in_candidates()` output filtered out ALL THREE real fan-in
+    # groups -- including the two already independently confirmed (in the design
+    # discussion this class grew out of) to be genuine density-mismatch findings,
+    # not noise. A filter whose effect is to erase the exact signal a sibling method
+    # exists to surface has failed on its own terms, not merely turned out unneeded
+    # -- so it was removed here rather than kept and simply unused.
 
     def one_to_many_candidates(self) -> list[dict[str, Any]]:
         """Flag paragraph families (a paper's own section/subsection, all its
@@ -665,7 +658,6 @@ class ParagraphMatchGraph:
             "merged_nodes": merged_nodes,
             "singleton_nodes": self.graph.number_of_nodes() - merged_nodes,
             "one_directional_edges": self.graph.number_of_edges(),
-            "redundant_one_directional_edges": len(self.redundant_edges()),
             "fan_in_groups": len(self.fan_in_candidates()),
         }
 

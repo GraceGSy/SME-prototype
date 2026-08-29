@@ -552,8 +552,9 @@ looked once read at paragraph granularity.
 
 `ParagraphMatchGraph`, the paragraph-level sibling of Stage 4's `ClosestMatchGraph` —
 same `nx.MultiDiGraph` wrapper, same confirmed-merge / one-directional-edge /
-`redundant_edges()` / `one_to_many_candidates()` / `fan_in_candidates()` machinery, one
-nesting level deeper. Deliberately a **separate class**, not a generalization of `ClosestMatchGraph`: the two
+`one_to_many_candidates()` / `fan_in_candidates()` machinery, one nesting level deeper
+— **with one deliberate omission: no `redundant_edges()`** (see below). Deliberately a
+**separate class**, not a generalization of `ClosestMatchGraph`: the two
 graphs' natural accumulation unit differs (one paper pair vs. one section pairing),
 `ClosestMatchGraph` already has real persisted corpus-scale state and a test suite tied
 to its exact 2-level unit schema, and unifying the two would mean turning
@@ -569,16 +570,34 @@ What changes relative to `ClosestMatchGraph`, concretely:
 - **Each member carries its own `text`**, unlike a section/subsection unit — you can't
   reconstruct what a paragraph says from its identity tuple without re-reading the
   source JSON, so it's cached inline for a self-contained, readable persisted graph.
-- **A paragraph's "family"** — the unit for `redundant_edges()`/`one_to_many_candidates()`
-  — is its enclosing section/subsection: `(paper_id, section_name, section_number,
+- **A paragraph's "family"** — the unit for `one_to_many_candidates()` — is its
+  enclosing section/subsection: `(paper_id, section_name, section_number,
   subsection_name, subsection_number)`, deliberately identical in shape to a
-  `ClosestMatchGraph` unit key one level up. A paragraph's "siblings" are the other
-  paragraphs in the same subsection (or section, if none). `fan_in_candidates()`
-  doesn't use family at all — it groups by exact paragraph identity on the target side
-  and doesn't require the claiming paragraphs to share a family on the source side.
+  `ClosestMatchGraph` unit key one level up. `fan_in_candidates()` doesn't use family
+  at all — it groups by exact paragraph identity on the target side and doesn't
+  require the claiming paragraphs to share a family on the source side.
 - **`add_pair` becomes `add_section_pairing`**, reflecting that this graph's natural
   accumulation unit is one section pairing's two directional Stage 5 passes, not one
   paper pair.
+- **No `redundant_edges()` on this class, unlike `ClosestMatchGraph` — removed after
+  being ported over mechanically and found to be actively wrong at this granularity,
+  not merely unnecessary.** That method's section-level justification rests on real
+  containment: a whole section's candidate is *literally defined* as its own
+  paragraphs plus every subsection's, concatenated (Stage 3's candidate
+  construction), so a subsection pointing at an already-confirmed whole-section
+  target truly is repeating already-counted content. Sibling *paragraphs* have no
+  such relationship — paragraph 3 is not part of paragraph 4, so paragraph 4
+  confirming against a target doesn't mean paragraph 3's content was already
+  represented there. A mechanical port of the same rule ends up flagging exactly the
+  real finding at this granularity (paragraph-density mismatch — one paper
+  compresses into one paragraph what the other needed several to say) as if it were
+  a redundant restatement. Verified concretely, not just argued: running the ported
+  rule against the corpusstudio/examplore_chi18 Introduction pairing's
+  `fan_in_candidates()` output filtered out **all three** real fan-in groups,
+  including two already established (earlier in the same investigation) as genuine
+  density-mismatch findings, not noise. A filter that erases the exact signal a
+  sibling method exists to surface has failed on its own terms — so it was removed
+  here rather than kept and simply unused.
 
 ```bash
 cd pipeline
@@ -599,14 +618,6 @@ examplore_chi18 ¶7), the tool-introduction paragraph (¶4 ↔ ¶4), the
 few-vs-many-examples tension (corpusstudio ¶1 ↔ examplore_chi18 ¶2), and the user-study
 setup (corpusstudio ¶5 ↔ examplore_chi18 ¶6).
 
-**3 one-directional edges correctly flagged redundant**, all from the same underlying
-cause — paragraph-density mismatch, not weak matching. corpusstudio's Introduction
-consistently compresses into one paragraph what examplore_chi18's spreads across two or
-three (e.g. corpusstudio ¶4 alone covers what examplore_chi18 splits across ¶3/¶4/¶5),
-so multiple examplore_chi18 paragraphs independently converge on the same corpusstudio
-paragraph as their closest match; only the first (reciprocally confirmed) claim on each
-target survives the flag, exactly as designed.
-
 **0 `one_to_many_candidates()` flags** — correctly so. Every link from each family
 lands in the *same* far-side family (each paper's own single Introduction section), so
 this is paragraph-density mismatch *within* one already-agreed section pair, not a
@@ -623,12 +634,11 @@ both choose corpusstudio ¶0 — and corpusstudio ¶0's own pick is **null**, re
 ¶6's own pick is corpusstudio ¶5, reciprocating only one. `.summary()` reports this as
 `fan_in_groups`.
 
-Confirmed end-to-end: `add_section_pairing`'s stats, `redundant_edges()`,
-`one_to_many_candidates()`, `fan_in_candidates()`, and `save`/`load` round-tripping all
-check out against this real pair, including the null-result and single-direction-only
-paths (`Corpus Studio > Design Goals` against the whole `INTRODUCTION`, fed with an
-empty reverse-direction list, correctly adds one new unmatched node and zero edges
-rather than erroring).
+Confirmed end-to-end: `add_section_pairing`'s stats, `one_to_many_candidates()`,
+`fan_in_candidates()`, and `save`/`load` round-tripping all check out against this real
+pair, including the null-result and single-direction-only paths (`Corpus Studio >
+Design Goals` against the whole `INTRODUCTION`, fed with an empty reverse-direction
+list, correctly adds one new unmatched node and zero edges rather than erroring).
 
 ## Open gaps
 
@@ -639,11 +649,12 @@ rather than erroring).
   twice by hand (once per direction) and then feeding both files into
   `paragraph_match_graph.py` is still a manual, three-command sequence per section
   pairing.
-- **`redundant_edges()`/`one_to_many_candidates()`/`fan_in_candidates()` are available as
-  library/CLI-summary counts, but nothing renders the flagged lists to a file yet** — the
-  worked examples above were generated by calling them directly in a Python shell, not
-  via a packaged report/export command. True of both `ClosestMatchGraph` and
-  `ParagraphMatchGraph`.
+- **`redundant_edges()` (on `ClosestMatchGraph`) and `one_to_many_candidates()`/
+  `fan_in_candidates()` (on both classes) are available as library/CLI-summary counts,
+  but nothing renders the flagged lists to a file yet** — the worked examples above
+  were generated by calling them directly in a Python shell, not via a packaged
+  report/export command. Note `redundant_edges()` does **not** exist on
+  `ParagraphMatchGraph` — see Stage 6 for why it was removed rather than kept unused.
 - **No test suite yet for `fan_in_candidates()` on either class, or for Stages 5–6 at
   all** — `pipeline/tests/test_closest_match_graph.py` covers `ClosestMatchGraph`'s
   original 11 cases (confirmed merges, one-directional edges, redundancy), but not the
