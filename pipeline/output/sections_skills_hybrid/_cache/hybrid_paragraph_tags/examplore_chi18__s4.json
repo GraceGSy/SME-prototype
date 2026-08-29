@@ -1,6 +1,0 @@
-{
-  "pa19": "Why introduce a synthetic code skeleton and what inspired its design?",
-  "pa20": "What API usage features make up the skeleton?",
-  "pa21": "What language does the skeleton design target?",
-  "pa22": "How well does the skeleton generalize to other languages?"
-}
