@@ -634,6 +634,42 @@ both choose corpusstudio ¶0 — and corpusstudio ¶0's own pick is **null**, re
 ¶6's own pick is corpusstudio ¶5, reciprocating only one. `.summary()` reports this as
 `fan_in_groups`.
 
+**Combined view: confirmed bidirectional matches plus fan-in convergence, including the
+unreciprocated case.** The 4 confirmed rows below come from iterating merged
+(`len(members) > 1`) nodes; `fan_in_candidates()` has no such filter, so it's the only
+one of the two that can represent a target with zero confirmed partners at all — the
+last row here has nothing to put in the `examplore_chi18` column, because nothing on
+that side ever reciprocated:
+
+| corpusstudio | examplore_chi18 | Also independently claimed by (`fan_in_candidates()`) |
+|---|---|---|
+| ¶1 | ¶2 | — |
+| ¶4 | ¶4 | examplore_chi18 ¶3, examplore_chi18 ¶5 |
+| ¶5 | ¶6 | corpusstudio ¶6 |
+| ¶7 | ¶7 | — |
+| ¶0 *(own pick: null — no confirmed partner)* | *(none)* | examplore_chi18 ¶0, examplore_chi18 ¶1 |
+
+That last row is structurally different from the other four, not just visually — it's
+not a confirmed pair with extra noise layered on top, it's a paragraph that never
+confirmed with anyone, sitting next to two other-paper paragraphs that both
+independently judged it their closest available match. Folding it into the same table
+as the confirmed rows would misrepresent it as "confirmed plus fan-in noise" when it's
+really its own case, invisible to the confirmed-matches view entirely.
+
+**Same data, rendered more compactly** — two columns instead of three, each cell
+listing every paragraph from that paper participating in the cluster, sorted by
+corpusstudio paragraph number. Bold marks the paragraph(s) that are part of the
+confirmed reciprocal pair; unbolded entries are one-directional-only claimants (the
+last row has no bold at all, since nothing there reciprocated):
+
+| corpusstudio | examplore_chi18 |
+|---|---|
+| ¶0 | ¶0, ¶1 |
+| **¶1** | **¶2** |
+| **¶4** | ¶3, **¶4**, ¶5 |
+| **¶5**, ¶6 | **¶6** |
+| **¶7** | **¶7** |
+
 Confirmed end-to-end: `add_section_pairing`'s stats, `one_to_many_candidates()`,
 `fan_in_candidates()`, and `save`/`load` round-tripping all check out against this real
 pair, including the null-result and single-direction-only paths (`Corpus Studio >
