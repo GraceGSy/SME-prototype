@@ -8,7 +8,7 @@
     "paper2_section_number": null,
     "paper2_subsection_name": null,
     "paper2_subsection_number": null,
-    "basis": "Both are Abstract sections summarizing the whole paper: the problem (understanding norms/conventions from many examples - writing norms vs API usage), the proposed system (CorpusStudio vs the interactive visualization/code skeleton tool), and the study results validating the approach. Candidate [0] is explicitly labeled 'Abstract' and plays the identical role of summarizing problem, system, and user study findings, matching the query's role exactly."
+    "basis": "Both are whole-paper Abstracts: they state the motivating problem (learning implicit norms/conventions vs. learning API usage from too many examples), summarize the proposed system's core mechanism (retrieval + visualization of many examples with statistical/structural summarization), and report the evaluation outcome from a user study. This is a direct role match at the same document level."
   },
   {
     "paper1_section_name": "INTRODUCTION",
@@ -19,7 +19,7 @@
     "paper2_section_number": "1",
     "paper2_subsection_name": null,
     "paper2_subsection_number": null,
-    "basis": "The query is the whole Introduction section of paper1 (EXAMPLORE paper), which motivates the problem (learning API usage from examples), critiques prior approaches, previews the proposed tool (EXAMPLORE) and its mechanisms, and summarizes the user study and contributions. This matches candidate [1], the whole Introduction section of paper2 (CorpusStudio paper), which plays the identical role: motivating the problem of learning implicit writing norms, critiquing prior approaches, introducing CorpusStudio and its two writing support concepts, summarizing the user study, and listing contributions. Both are whole-section introductions serving the same structural and rhetorical purpose in their respective papers."
+    "basis": "Both are whole Introduction sections that follow the same rhetorical structure: they identify a learning problem (API usage learning barriers vs. implicit writing norms), motivate why existing resources fail (docs/tutorials lacking examples vs. abstract writing guides), argue for learning from many examples while noting risks of too few/too many examples (overfitting/plagiarism vs. limited code examples/overwhelm), introduce the proposed tool (EXAMPLORE vs. CorpusStudio) and its core mechanisms, preview the user study, and list contributions. This matches candidate [1]'s question 'What problem, proposed system, and study does this introduction motivate and preview for the reader?' precisely, whereas other candidates are either related-work, system-detail, or results sections that play different roles."
   },
   {
     "paper1_section_name": "RELATED WORK",
@@ -30,7 +30,7 @@
     "paper2_section_number": "2",
     "paper2_subsection_name": null,
     "paper2_subsection_number": null,
-    "basis": "The query is paper1's whole \"RELATED WORK\" section, situating EXAMPLORE relative to prior work on collection interfaces, API learning, and API usage mining. The closest role match in paper2 is candidate [2], the whole \"Background and Related Work\" section, which similarly situates CorpusStudio relative to prior work on writing norms, writing support tools, and finding relevant examples. Both are top-level related-work sections that survey multiple sub-areas and contrast the new system against each. (Paper2 also splits this into subsections [3],[4],[5], but the query itself is a whole-section query, so matching the whole related-work section [2] is most appropriate, with the subsections representing finer-grained breakdowns of the same content.)"
+    "basis": "The query is a whole \"RELATED WORK\" section from a different paper (EXAMPLORE) that situates its system relative to prior work on collection-browsing interfaces (Sifter, Delta, WordTree, WordSeer, OverCode), code search/API learning studies, and API usage mining techniques, explaining similarities and differences to justify its own contribution. This plays the same structural role as paper2's whole \"Background and Related Work\" section (candidate 2), which surveys prior work on writing norms, writing support tools, and finding relevant examples, explicitly contrasting with and situating the paper's own contribution (e.g., \"In contrast, our design focuses on...\", \"Our approach proposes...\"). Both are top-level related-work sections comparing/contrasting the current system to multiple strands of prior work. The subsections (3,4,5) are narrower sub-topics of that same section, so the whole-section candidate 2 is the best-fitting counterpart in scope and role, rather than picking one narrower subsection."
   },
   {
     "paper1_section_name": "RELATED WORK",
@@ -39,9 +39,9 @@
     "paper1_subsection_number": null,
     "paper2_section_name": "Background and Related Work",
     "paper2_section_number": "2",
-    "paper2_subsection_name": "Finding Relevant Examples",
-    "paper2_subsection_number": "2.3",
-    "basis": "The query is a Related Work subsection from a different paper (EXAMPLORE) discussing prior interfaces for exploring collections of complex objects (code, images, text) like WordTree, WordSeer, OverCode, Sifter, Delta, and how EXAMPLORE differs. This is a literature-positioning subsection comparing the paper's tool to prior interactive exploration/visualization systems. In paper2 (CorpusStudio), the closest analog is the 'Finding Relevant Examples' subsection (2.3), which similarly positions CorpusStudio relative to prior tools/search engines for finding examples/related work, discussing how existing tools fall short and how the current system differs by integrating search and writing. Both are subsections of a Related Work/Background section contrasting the paper's own system against existing interfaces for browsing/retrieving examples from a corpus. The broader Background and Related Work section (index 2) also covers this, but subsection 5 most specifically parallels the query's narrow focus on comparing interfaces for finding/exploring examples."
+    "paper2_subsection_name": "Writing with External Text",
+    "paper2_subsection_number": "2.2",
+    "basis": "The query is a related-work subsection from EXAMPLORE that surveys prior interfaces for exploring/visualizing large collections of complex objects (image tutorials, text corpora, code corpora like WordTree, WordSeer, OverCode) and explains how EXAMPLORE differs from or builds on them. This plays the same role as paper2's related-work section on prior writing-support/corpus tools -- specifically candidate [4] 'Writing with External Text', which surveys prior systems that use retrieved or corpus-derived text (IntroAssist, Naeem et al., Hui and Sprouse) and explains how CorpusStudio differs (larger scale, computational post-processing). Both are subsections dedicated to comparing the paper's own interface/system against prior interfaces that expose examples/patterns from a corpus of similar objects, contrasting design choices and scale. Candidate [5] focuses on retrieval/search engines for finding related work, which is a narrower/different role, and [3] is about writing norms conceptually, not comparable prior interfaces. [4] is the best structural match: both are 'prior systems that show corpus/example content, and how our system differs' subsections."
   },
   {
     "paper1_section_name": "RELATED WORK",
@@ -52,7 +52,7 @@
     "paper2_section_number": "2",
     "paper2_subsection_name": "Writing with External Text",
     "paper2_subsection_number": "2.2",
-    "basis": "The query is a Related Work subsection specifically about prior research on programmers searching for/learning from code examples, quality issues with individual examples, and the motivation for showing many examples simultaneously (paralleling this paper's EXAMPLORE tool). In paper2, the closest analog in role is section 2.2 'Writing with External Text', which reviews prior work on writing support tools that surface retrieved/generated text and corpus-based examples, and motivates the paper's own approach of showing many examples from a corpus rather than a single generated/retrieved example. Both are the specific related-work subsection that surveys prior work on learning-from-examples systems/tools and their limitations, directly motivating the paper's design of showing many examples at once. This is a closer match than the broader whole 'Background and Related Work' section (index 2) which also covers norms and finding related work (broader scope), or subsection 2.3 which is about search/retrieval tools rather than examples/quality of examples themselves."
+    "basis": "The query is a related-work subsection specifically about how prior research on code example search, quality, and comprehension (viewing few examples, overwhelm, difficulty) motivates the paper's approach of showing many examples simultaneously. This plays the same structural role as candidate [4] 'Writing with External Text', which reviews prior work on writing support tools that surface retrieved/generated text and distinguishes this paper's approach (showing many examples from a corpus) from prior approaches (sentence completions, curated model texts). Both are related-work subsections whose job is to review prior literature on example-based support (code examples vs. text examples), highlighting problems (insecure/hard-to-understand code examples vs. plagiarism/content generation issues) and motivating the paper's design choice to show many examples at once. Candidate [5] 'Finding Relevant Examples' is also plausible but focuses more narrowly on search engines/related-work tools rather than the quality/comprehension/scale-of-examples issues that dominate the query. Candidate [4] is the closest role match since it directly parallels the motivation for surfacing many examples from a corpus and contrasting with other content-generation approaches, mirroring the query's citation of studies motivating simultaneous visualization of many examples."
   },
   {
     "paper1_section_name": "RELATED WORK",
@@ -63,18 +63,18 @@
     "paper2_section_number": "2",
     "paper2_subsection_name": "Writing with External Text",
     "paper2_subsection_number": "2.2",
-    "basis": "The query is a Related Work subsection specifically about prior work on mining/visualizing patterns from a large corpus (API usage mining/visualization tools) and contrasting them with the paper's own approach (EXAMPLORE). This plays the same role as paper2's \"Writing with External Text\" subsection (2.2), which reviews prior writing-support tools that surface retrieved/generated text from corpora and explicitly contrasts them with CorpusStudio's approach (e.g., IntroAssist, Hui and Sprouse). Both are related-work subsections comparing prior corpus-mining/example-surfacing tools to the paper's own novel contribution of visualizing many examples with distributional/statistical support. Other candidates (2.1 on community writing norms, 2.3 on finding relevant examples via search engines) address different aspects of related work not matching this specific mining/visualization comparison."
+    "basis": "The query is a related-work subsection that positions the paper's own retrieval/visualization-of-many-examples system against prior work in its domain (API usage mining/visualization), explicitly contrasting how prior tools visualize mined patterns without traceable concrete examples, versus the paper's contribution. This plays the same role as candidate 4 (\"Writing with External Text\"), which reviews prior writing-support/corpus-based tools (e.g., IntroAssist, Hui and Sprouse) and explains how CorpusStudio differs by surfacing many concrete examples from a large corpus rather than curated/annotated or generated text. Both are the \"related work subsection specifically about prior systems that show/mine examples or patterns from a corpus, and how the current system differs by scale/traceability of examples.\" Candidate 5 (Finding Relevant Examples) is a secondary partial match since it also discusses retrieval-based prior work, but candidate 4 more centrally matches the query's focus on mining/visualizing patterns and providing example traceability."
   },
   {
     "paper1_section_name": "SYNTHETIC CODE SKELETON",
     "paper1_section_number": null,
     "paper1_subsection_name": null,
     "paper1_subsection_number": null,
-    "paper2_section_name": null,
-    "paper2_section_number": null,
-    "paper2_subsection_name": null,
-    "paper2_subsection_number": null,
-    "basis": "The query describes \"synthetic code skeleton,\" a domain-specific concept from an EXAMPLORE-style paper about visualizing Java API usage patterns (declarations, guards, exception handling, etc.) in code examples. This is a completely different paper's core system concept about code example summarization. Paper2 (CorpusStudio) is about writing support for academic prose, with its analogous document/sentence-level concepts being the ordered distribution over section titles (PDC) and sentence retrieval/rendering (candidates 6, 9, 11, 14). While these play a structurally similar \"core system concept\" role in their own paper, none of them address API usage, code examples, or code skeletons -- the specific domain content is entirely unrelated (natural language writing norms vs. Java API usage barriers). The role is superficially similar (a summarization visualization concept) but the actual content and purpose diverge so completely that forcing a match would be inaccurate. No candidate in paper2 plays the role of summarizing code API usage features."
+    "paper2_section_name": "Corpus Studio",
+    "paper2_section_number": "3",
+    "paper2_subsection_name": "System Characteristics",
+    "paper2_subsection_number": "3.3",
+    "basis": "The query describes a core system concept (the \"synthetic code skeleton\") that reifies domain knowledge into a structured visual/interactive representation to help users learn/explore a large corpus of examples—grounded in prior theory about learning barriers (Duala-Ekoko/Robillard, Ko et al.) and detailing the specific structural components (7 API usage features) that make up this representation. This plays the same role as candidate [9] \"System Characteristics,\" which details CorpusStudio's core writing-support concepts (document-level section title distribution and sentence-level retrieval/rendering), grounded in cognitive theories (Variation Theory, Structural Alignment Theory), and enumerates the specific structural/visual components that reify emergent patterns for the user. Both are the central 'what is the concept and what does it summarize/contain' section of their respective systems, theoretically motivated and structurally decomposed. Secondary resonance exists with [6], the parent whole section, but [9] is the more specific, content-matching subsection describing the actual design features analogous to the skeleton's feature list."
   },
   {
     "paper1_section_name": "SCENARIO: INTERACTING WITH CODE DISTRIBUTIONS",
@@ -85,7 +85,7 @@
     "paper2_section_number": "3",
     "paper2_subsection_name": "Usage Scenario",
     "paper2_subsection_number": "3.2",
-    "basis": "The query is a walkthrough scenario describing a persona (Victor) using EXAMPLORE step-by-step to accomplish a task, illustrating the system's features in a concrete narrative. This matches the role of candidate [8] 'Usage Scenario', which similarly presents a persona (Alice) walking through concrete steps of using CorpusStudio (inspecting section titles, retrieving sentences, bookmarking, continuing writing) to illustrate the system's features in practice. Both are scenario/vignette sections whose purpose is to ground the system description in a relatable user story rather than to formally enumerate features (that role belongs to the 'System Characteristics' section [9]) or state design goals ([7])."
+    "basis": "Both texts are narrative \"usage scenario\" walkthroughs featuring a persona (Victor vs. Alice) using the tool step-by-step to illustrate its features in a realistic task context. Candidate [8] 'Usage Scenario' plays exactly this role in paper2 — a concrete illustrative story of a user (Alice) interacting with CorpusStudio's document-level and sentence-level features, paralleling the query's walkthrough of Victor exploring EXAMPLORE's code distribution features. The domains differ (code API patterns vs. writing norms) but the structural role — a persona-driven scenario section demonstrating tool interaction — is the same."
   },
   {
     "paper1_section_name": "SYSTEM ARCHITECTURE AND IMPLEMENTATION",
@@ -96,7 +96,7 @@
     "paper2_section_number": "3",
     "paper2_subsection_name": null,
     "paper2_subsection_number": null,
-    "basis": "The query is a whole-section overview describing EXAMPLORE's system: its design/motivation, features, and implementation pipeline (data collection, post-processing, visualization) in one consolidated architecture section. This mirrors the role of paper2's 'Corpus Studio' whole section [6], which similarly presents the system's design goals, usage scenario, detailed feature descriptions (document-level and sentence-level norm surfacing), and implementation (SvelteKit, WeaviateDB) all under one top-level section. Both queries function as the central 'system description' section of their papers, combining rationale, features, and technical implementation, rather than being split into separate Data Collection/Processing sections as in paper2's section 4. While paper2 splits its data pipeline into a separate 'Data & Processing' section (11-14), the query paper does not have a separate top-level architecture section from an 'implementation' one -- it's one unified whole-section describing the pipeline, most closely matching the encompassing role of section 6 in paper2, which also unifies design and implementation details."
+    "basis": "The query is a whole-section overview describing EXAMPLORE's system pipeline (data collection, post-processing, visualization) — i.e., what the system is, why it was designed, and how its features/implementation work. Candidate [6] 'Corpus Studio' whole-section plays the exact same role in paper2: it introduces CorpusStudio's design goals, retrieval/rendering mechanisms, and implementation details (text embedding, spatial retrieval, rendering modes, SvelteKit/WeaviateDB backend), functioning as the paper's central system description covering data processing through UI. Both are the 'system architecture/implementation' section of their respective papers, describing a multi-stage pipeline from raw data/examples to a processed, visualized form. Secondary partial overlap exists with candidate [11] 'Data & Processing' (which covers corpus collection/preprocessing specifically), but the query's scope—spanning collection, processing, and visualization together as one system description—matches the broader role of [6] rather than the narrower data-only section [11]."
   },
   {
     "paper1_section_name": "SYSTEM ARCHITECTURE AND IMPLEMENTATION",
@@ -105,9 +105,9 @@
     "paper1_subsection_number": null,
     "paper2_section_name": "Data & Processing",
     "paper2_section_number": "4",
-    "paper2_subsection_name": "Pre-processing Documents",
-    "paper2_subsection_number": "4.1",
-    "basis": "The query is a subsection describing how source data (code/API usage examples) is mined and processed from repositories to produce the data used by the system (EXAMPLORE), i.e., a data-collection/preprocessing pipeline step. The closest role match in paper2 is candidate [12] 'Pre-processing Documents' (Section 4.1), which similarly describes how the raw corpus (manuscripts) is processed/split into the units (sentences with metadata) that feed the system's retrieval and rendering features. Both are narrow implementation subsections detailing the mining/extraction process that produces the example data consumed downstream, playing the same structural role within their respective 'Data & Processing'/'Implementation' sections. Other Data & Processing subsections (4.2 embedding, 4.3 section-title clustering) describe later pipeline stages rather than the initial extraction/mining step that the query focuses on."
+    "paper2_subsection_name": null,
+    "paper2_subsection_number": null,
+    "basis": "The query is a subsection describing how source code is mined/processed (AST traversal, program slicing, extracting API usage examples) to build the data used by EXAMPLORE's system. This plays the same role as paper2's 'Data & Processing' section, which describes how the paper corpus was collected and processed (sentence splitting, embedding, section title extraction) to build the data pipeline used by CorpusStudio. Both are the 'how raw source material was mined/processed into the data used by the system' section, sitting within the system architecture/implementation portion of their respective papers. The closest single match is the whole Data & Processing section (index 11) rather than any one narrower subsection like Pre-processing Documents (12) or Embedding Process (13), since the query itself covers the entire mining pipeline in one subsection, analogous to the whole-section granularity of index 11."
   },
   {
     "paper1_section_name": "SYSTEM ARCHITECTURE AND IMPLEMENTATION",
@@ -116,9 +116,9 @@
     "paper1_subsection_number": null,
     "paper2_section_name": "Corpus Studio",
     "paper2_section_number": "3",
-    "paper2_subsection_name": "Implementation Details",
-    "paper2_subsection_number": "3.4",
-    "basis": "The query describes a technical post-processing/normalization step (canonicalizing retrieved code examples for display) that sits within a \"System Architecture and Implementation\" section. The closest analog in paper2 is subsection 3.4 'Implementation Details', which similarly describes technical/implementation choices (embedding, retrieval infrastructure) made to prepare/process data for display within the CorpusStudio system. Both play the role of concrete technical implementation detail supporting the retrieval/rendering pipeline, distinct from higher-level design-goal or feature-description sections. There is also a secondary resemblance to 9's 'Sentence Rendering' subsection (3.3.3) which discusses normalizing/highlighting retrieved text for user consumption, but that section is more about UI design rationale rather than backend implementation, so 10 is the closer match in role."
+    "paper2_subsection_name": "System Characteristics",
+    "paper2_subsection_number": "3.3",
+    "basis": "The query describes a specific implementation-detail subsection about how EXAMPLORE takes retrieved raw code examples and normalizes/post-processes them into a canonical, user-friendly form (rewriting chained calls, canonicalizing variable names, storing usage features in a database for the UI). The closest role match in paper2 is candidate [9] 'System Characteristics' (3.3.3 Surfacing Sentence-level ... Sentence Rendering, Spatial Retrieval), which describes how CorpusStudio processes/renders retrieved raw sentences (colorizing recurring words, greying out repeated words, re-ranking) to make them easier for users to compare and interpret—i.e., the analogous 'post-processing retrieved examples for presentation' step. Both are mid-level implementation subsections describing transformation of raw retrieved content into a normalized, cognitively-supportive display format, distinct from the higher-level retrieval mechanism itself (candidate 13/Embedding) or the pure infra details (candidate 10). Candidate 9 is the best overall match since it covers the rendering/normalization logic for retrieved examples, paralleling EXAMPLORE's post-processing of code examples."
   },
   {
     "paper1_section_name": "SYSTEM ARCHITECTURE AND IMPLEMENTATION",
@@ -127,9 +127,9 @@
     "paper1_subsection_number": null,
     "paper2_section_name": "Corpus Studio",
     "paper2_section_number": "3",
-    "paper2_subsection_name": "System Characteristics",
-    "paper2_subsection_number": "3.3",
-    "basis": "The query describes a specific implementation detail of EXAMPLORE's visualization/interactive updating mechanism (querying MongoDB, instantiating a code skeleton with canonicalized options, updating on user selection) - i.e., a subsection detailing how a particular UI feature is technically implemented and wired to the backend. The closest analog in paper2 is subsection 3.3 'System Characteristics', which similarly details the technical implementation and interactive mechanics of specific UI features (e.g., spatial retrieval, section title clustering via PDC, sentence rendering, re-ranking) - describing how the interface computes and updates its visualizations based on user interaction, paralleling the query's focus on backend-driven interactive visualization updates. Candidate 10 (Implementation Details, using SvelteKit/WeaviateDB) is more about overall infrastructure/tech stack choices rather than the specific visualization-update mechanism, making candidate 9 the better structural/functional match since it covers the detailed feature-by-feature implementation of visualization elements (e.g., 3.3.2's PDC-based rendering with database-backed distributions, and 3.3.3's spatial retrieval triggered by user actions) that closely mirrors the query's description of database-driven, interactively-updated code skeleton visualization."
+    "paper2_subsection_name": "Implementation Details",
+    "paper2_subsection_number": "3.4",
+    "basis": "The query describes a narrow implementation subsection detailing the technical backend (database queries, indices, frontend-backend interaction) that powers a visualization/interactive feature (code skeleton highlighting and updating). This plays the same role as candidate [10] 'Implementation Details' (3.4), which describes the technical infrastructure (SvelteKit web app, WeaviateDB vector database, retrieval implementation) underlying CorpusStudio's interactive features. Both are implementation-detail subsections explaining how the system's data backend supports a specific interactive/visualization feature described elsewhere in the paper, rather than describing the feature's design rationale or user-facing behavior (which would correspond more to candidate [9]'s System Characteristics)."
   },
   {
     "paper1_section_name": "USER STUDY",
@@ -140,18 +140,18 @@
     "paper2_section_number": "5",
     "paper2_subsection_name": null,
     "paper2_subsection_number": null,
-    "basis": "The query is the whole 'USER STUDY' section describing the within-subjects study design, participants (16 Java programmers), tasks, and procedure used to evaluate EXAMPLORE against a baseline. This plays the same role as paper2's whole 'User Study' section (index 15), which describes the within-subjects study design, 16 participants, baseline comparison (Google Docs), tasks, and procedure used to evaluate CorpusStudio. Both are top-level 'User Study' sections covering participants, task design, and procedure (paper2 splits some of this into subsections 16 and 17, but the whole-section match best captures the full scope of the query, which itself bundles participant recruitment and procedure details together rather than separating them)."
+    "basis": "The query is the whole \"USER STUDY\" section from paper1 describing the overall study design: research question, task/question set, API/materials chosen, participant recruitment, procedure, and conditions (EXAMPLORE vs. online search baseline). This matches candidate [15] \"User Study\" (whole section) in paper2, which similarly covers the overall experimental design, comparison conditions (CorpusStudio vs. baseline Google Docs), participant recruitment overview, and task procedure for evaluating CorpusStudio. Both are the top-level \"how the study was designed and run\" section, later broken into Participants and Procedure subsections in paper2 (candidates 16 and 17), which correspond to parts of the query but the query as a whole most closely matches the whole User Study section [15]."
   },
   {
     "paper1_section_name": "USER STUDY",
     "paper1_section_number": null,
     "paper1_subsection_name": "API Methods",
     "paper1_subsection_number": null,
-    "paper2_section_name": null,
-    "paper2_section_number": null,
+    "paper2_section_name": "User Study",
+    "paper2_section_number": "5",
     "paper2_subsection_name": null,
     "paper2_subsection_number": null,
-    "basis": "The query describes a specific methodological choice in paper1's user study: selecting three concrete API methods (Map.get, Activity.findViewById, SQLiteDatabase.query) with varying familiarity to capture a spectrum of programmer exploration behaviors. This is a task/stimulus-selection detail specific to an API-usage-question study. Paper2's User Study section (and its subsections on Participants and Study Procedure) instead describes recruiting HCI writers, corpus tasks (outline writing, section drafting), and general study logistics -- there is no analogous 'selection of study stimuli/examples with varying familiarity' content, since paper2's domain (academic writing support) has no equivalent concept to 'API methods.' No candidate plays the same narrow role of justifying specific task stimuli selection based on familiarity levels, so there is no match.\""
+    "basis": "The query is a narrow subsection describing concrete task materials chosen for a user study (specific API methods selected to span familiarity levels) in a paper about API exploration/programming tools. Paper2's closest analog in role is its User Study section's task design content (e.g., Task 1/Task 2 descriptions choosing outlining and writing tasks, corpus scope, etc.), most centrally embodied in the whole 'User Study' section (index 15) which describes the study design and task/materials choices (e.g., choosing outlining as a task, the corpus/venues used). No paper2 subsection specifically enumerates 'stimulus items chosen for varying familiarity' the way this query does, but the 'User Study' section as a whole plays the same structural role of describing study materials/tasks and rationale for their selection. None of the finer subsections (Participants, Study Procedure) is a better fit since they don't focus on selecting specific test items/materials with rationale for variety, which is closer to the whole section's role of covering task design."
   },
   {
     "paper1_section_name": "USER STUDY",
@@ -162,7 +162,7 @@
     "paper2_section_number": "5",
     "paper2_subsection_name": "Participants",
     "paper2_subsection_number": "5.1",
-    "basis": "Both texts serve identical roles: a 'Participants' subsection within a User Study section describing recruitment (N=16), their background/experience characteristics relevant to the study task, and demographic details. Candidate 16 describes 16 participants recruited via mailing lists, their academic paper writing experience, and frequency of writing—directly paralleling the query's description of 16 CS students recruited via a mailing list with their Java programming experience and relevant background."
+    "basis": "Both are subsections titled/described as \"Participants\" that describe who was recruited for the user study and their relevant characteristics (background, experience level). Candidate [16] plays the exact same role in paper2 (describing the 16 participants recruited, their academic/professional background and experience with the relevant domain), matching the query's role of describing participant recruitment and characteristics for its own user study."
   },
   {
     "paper1_section_name": "USER STUDY",
@@ -171,9 +171,9 @@
     "paper1_subsection_number": null,
     "paper2_section_name": "User Study",
     "paper2_section_number": "5",
-    "paper2_subsection_name": null,
-    "paper2_subsection_number": null,
-    "basis": "The query describes the concrete within-subjects study procedure (training, two counterbalanced tasks comparing the tool vs. a baseline, post-survey) for evaluating a writing/code-exploration support tool. In paper2, the closest role-match is section 5 'User Study' (and its subsection 5.2 'Study Procedure'), which similarly lays out the within-subjects design comparing CorpusStudio to a baseline (Google Docs), counterbalanced task order, tutorial/training via video, two tasks (outline and paper writing), and post-task surveys/interviews. Since the query is itself a 'Methodology' subsection describing procedure, and candidate 17 (5.2 Study Procedure) is the whole-section-level equivalent content, but candidate 15 (whole User Study section) contains the complete methodology (design, procedure, tasks) matching most closely in role and scope. I chose 15 as the most centrally corresponding section, since it includes both the study design overview and detailed procedure paralleling the query's content, while noting 17 (Study Procedure subsection) is a closely related secondary match."
+    "paper2_subsection_name": "Study Procedure",
+    "paper2_subsection_number": "5.2",
+    "basis": "The query describes a within-subjects user study procedure comparing EXAMPLORE with a baseline (online search), including training, tasks, counterbalancing, and post-survey — i.e., the methodology/procedure section of a user study evaluating a writing/exploration support tool against a baseline. This matches candidate [17] 'Study Procedure' (5.2), which similarly details the within-subjects study procedure comparing CorpusStudio to a baseline (Google Docs), including task preparation, tutorial/training, task structure, and post-task surveys/interviews. Both serve the same structural role: describing the concrete procedural steps and study design used to compare the proposed tool against a baseline condition. The candidate [15] 'User Study' (whole section 5) also covers overlapping content (participants + procedure + design rationale), but [17] is the more precise procedural counterpart since the query is specifically a 'Methodology' subsection focused on procedure/design, not participant demographics."
   },
   {
     "paper1_section_name": "RESULTS",
@@ -184,7 +184,7 @@
     "paper2_section_number": "6",
     "paper2_subsection_name": null,
     "paper2_subsection_number": null,
-    "basis": "The query is a whole 'RESULTS' section from paper1 (EXAMPLORE) that reports both quantitative statistics (correct answers, statistical tests) and qualitative findings (post-survey themes, participant quotes, observed behaviors) comparing the tool to a baseline (online search). This combined quantitative+qualitative results role most closely matches paper2's Section 6 'Qualitative Results', which similarly reports themes, participant quotes, and behavioral observations from the user study comparing CorpusStudio to baseline usage. Although paper2 splits results into separate Qualitative (6) and Quantitative (7) sections, the query's content is dominated by qualitative interpretation, survey quotes, and thematic coding (similar to Section 6's structure and role), with the statistical comparisons functioning as supporting evidence much like Section 7 does in paper2. Since the query must be matched as a whole, and its qualitative survey/interview analysis and thematic reporting most centrally mirrors the role of Section 6 (which also references and integrates some quantitative results), that is the closest single match, with a secondary correspondence to Section 7 (Quantitative Results) for the statistical portions."
+    "basis": "The query is a whole RESULTS section reporting both quantitative (correct-answer counts, statistical tests, survey scale ratings) and qualitative (participant quotes, coded themes, feature preferences) findings from a controlled user study comparing EXAMPLORE to a baseline (online search). In paper2, this combined role is split across separate Qualitative Results (6) and Quantitative Results (7) sections. Candidate 18 (whole Qualitative Results section) is the closest single match because it most centrally mirrors the query's largest component: rich thematic, quote-driven participant insights derived from the study (themes like feature usefulness, confidence, terminology alignment, etc.), paralleling the query's qualitative content on critiques, post-survey free responses, and workflow reflections. The query's statistical/quantitative findings (Table 2 results, t-tests, Likert distributions) correspond more to paper2's Quantitative Results (25), but since only one match can be reported and the query is a unified whole-section result report mixing both, section 18 (Qualitative Results) is chosen as the primary counterpart given its similarly broad, whole-section scope synthesizing user behaviors and quotes from the study; the quantitative counterpart (25) is a secondary correspondence."
   },
   {
     "paper1_section_name": "RESULTS",
@@ -195,7 +195,7 @@
     "paper2_section_number": "7",
     "paper2_subsection_name": null,
     "paper2_subsection_number": null,
-    "basis": "The query is a \"Quantitative Analysis\" results subsection reporting statistical comparisons between the proposed tool (EXAMPLORE) and a baseline (online search) on task correctness, confidence, and survey ratings. This plays the same role as paper2's 'Quantitative Results' section (index 25), which reports Mann-Whitney U tests, survey ratings, and comparisons between CorpusStudio and the baseline (Google Docs) across tasks. Both are the quantitative counterpart to a qualitative results section, presenting statistical significance tests and survey/questionnaire outcomes comparing the new system to a baseline. While paper2 splits this into subsections 7.1 and 7.2 for its two tasks, the whole-section candidate 25 best matches the query's combined quantitative comparison content and role as the top-level quantitative results section."
+    "basis": "The query is a quantitative-results subsection reporting statistical comparisons (correctness of answers, significance tests, survey ratings) between the proposed tool (EXAMPLORE) and a baseline (online search). This plays the same role as paper2's 'Quantitative Results' section (7), which similarly reports Mann-Whitney U tests, statistically significant preferences for CorpusStudio over baseline, survey/Likert results, and participant perceptions comparing the tool to a baseline interface. Both are the dedicated quantitative-evaluation section of their respective papers, following qualitative findings, presenting statistical significance tests and survey-based comparisons between tool and baseline. Subsections like 7.1/7.2 give task-specific breakdowns, but the whole-section candidate 25 is the most direct structural counterpart to this query's role as the paper's quantitative comparison-to-baseline section."
   },
   {
     "paper1_section_name": "RESULTS",
@@ -206,7 +206,7 @@
     "paper2_section_number": "6",
     "paper2_subsection_name": null,
     "paper2_subsection_number": null,
-    "basis": "The query is a subsection reporting qualitative/free-response post-survey findings about the tool's strengths, weaknesses, and potential uses (EXAMPLORE), derived from coding participant responses. Candidate 18 ('Qualitative Results', whole section) plays the analogous role in paper2: it reports themes derived from coding user study transcripts/survey responses about CorpusStudio's strengths (e.g., overcoming blank page problem), critiques, and potential future uses—matching the same 'what did qualitative coding of participant feedback reveal about strengths/weaknesses/uses' role. While paper2 splits this into subsections (6.1-6.6) by feature area, the query's content spans multiple themes (feature appreciation, critique, potential workflow uses) similar to the overview paragraph in candidate 18, making the whole section the closest correspondence rather than any single narrower subsection."
+    "basis": "The query is a qualitative-analysis subsection reporting coded post-survey free responses about a tool's (EXAMPLORE) strengths, weaknesses, and potential workflow uses, derived from participant feedback. This plays the same role as candidate [18] 'Qualitative Results' (and its subsections), which reports themes derived from Grounded Theory coding of transcripts/surveys about CorpusStudio's strengths (e.g., overcoming blank page problem, useful features), weaknesses, and potential future uses. Both are the qualitative results section synthesizing open-ended participant feedback into thematic findings about the tool's benefits, shortcomings, and envisioned use cases. While paper2 splits qualitative results into several subsections by feature (document-level, sentence-level, bookmarks, tooltips, stages, anti-plagiarism), the query's content (a single coherent block of coded free-response themes) most closely corresponds to the parent whole-section [18], which serves as the overarching qualitative synthesis analogous to the query's role."
   },
   {
     "paper1_section_name": "DISCUSSION AND LIMITATIONS",
@@ -217,7 +217,7 @@
     "paper2_section_number": "8",
     "paper2_subsection_name": null,
     "paper2_subsection_number": null,
-    "basis": "The query is paper1's overall Discussion section covering study findings, trade-offs (benefits vs. visual complexity/overwhelm), and current limitations (bug-free examples, sorting criteria, future work) in one consolidated section. Candidate 28 (paper2's whole 'Discussion' section) plays the same role: it synthesizes conceptual/empirical insights from the study, discusses design trade-offs (many examples vs. cognitive load), and explicitly includes a Limitations and Future Work subsection. Both are the paper's single top-level discussion section combining reflection, trade-offs, and limitations, rather than being split among Quantitative/Qualitative Results sections. While paper2 splits this content into subsections (8.1-8.5), the whole-section candidate 28 most centrally mirrors the query's combined role of discussing benefits, trade-offs, and limitations together."
+    "basis": "The query is a whole-paper Discussion section (with limitations woven in) summarizing study findings, benefits, trade-offs (visual complexity vs expressive power), and system limitations (stale/low-quality examples, sorting criteria) for EXAMPLORE. Candidate [28] 'Discussion' plays the exact same role in CorpusStudio's paper: it reflects on conceptual/empirical insights from the study, discusses design trade-offs (e.g., showing many examples vs cognitive load), and includes a Limitations subsection about scope/generalizability. Both are the paper's top-level discussion section synthesizing study results and system trade-offs/limitations, making this the closest role match despite being split into subsections in paper2."
   },
   {
     "paper1_section_name": "CONCLUSION",
@@ -228,7 +228,7 @@
     "paper2_section_number": "9",
     "paper2_subsection_name": null,
     "paper2_subsection_number": null,
-    "basis": "The query is paper1's Conclusion section, summarizing the system's core contribution (synthetic code skeleton concept, EXAMPLORE), evaluation findings (user study results showing improved performance/confidence), and future work directions. This matches the role of candidate [34] 'Conclusion', which similarly summarizes CorpusStudio's core contribution (example retrieval integrated into drafting), its distinguishing approach (real examples vs generated text), and the broader interaction model/vision it advances. Both are whole-paper wrap-up sections restating the system's value proposition and evaluation outcome at a high level. While paper1's conclusion also briefly mentions future work (extending to other languages), which somewhat overlaps with paper2's separate 'Limitations and Future Work' subsection [33], the primary role -- a final summary of contribution and results -- is most centrally matched by [34]."
+    "basis": "The query is a whole 'Conclusion' section summarizing the system's contribution (synthetic code skeleton/EXAMPLORE), the evaluation study finding (participants performed better with more confidence), and future directions (extending to other languages/APIs). Candidate [34] plays the identical structural role: it's the paper's Conclusion section, summarizing CorpusStudio's contribution (retrieval at document/sentence level), what the system achieves for writers, and framing the broader interaction model it advances. Both are terminal summary sections restating the system name, core contribution, and evaluation takeaway. While [33] (Limitations and Future Work) covers future directions and [28] covers broader discussion, the Conclusion [34] most centrally matches the query's role as the final wrap-up section."
   },
   {
     "paper1_section_name": "ACKNOWLEDGMENTS",
@@ -239,7 +239,7 @@
     "paper2_section_number": null,
     "paper2_subsection_name": null,
     "paper2_subsection_number": null,
-    "basis": "Both are the paper's Acknowledgments section, crediting contributors/funders. Query lists people acknowledged for contributions and funding grants; candidate 35 similarly lists funding sources (NSF, DFG, Sloan Foundation) and disclaimers. Same role in their respective documents."
+    "basis": "Both sections serve the identical structural role of an Acknowledgments section, crediting contributors/funders. Paper2's index 35 ('Acknowledgments') lists funding sources (NSF grant, DFG, Sloan Fellowship) and disclaimers, exactly matching the role of paper1's ACKNOWLEDGMENTS section which lists collaborators and funding sources (AFRL, NSF grants, Berkeley Institute of Data Science)."
   },
   {
     "paper1_section_name": "REFERENCES",
