@@ -28,6 +28,10 @@ Every group contains at most one unit from a paper. Section and subsection
 members may share a group. Generated questions and containment edges are
 metadata and never contribute to stable group identity.
 
+A singleton group's display question is copied deterministically from its sole
+member. Claude composes a new display question only after a group has multiple
+members.
+
 ## Classification
 
 For a group with `coverage` represented papers and `eligible` papers:

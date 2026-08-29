@@ -90,8 +90,20 @@ class IncrementalGraphTest(unittest.TestCase):
         called_stages = {request.stage_id for request in judge.requests}
         self.assertNotIn("section_questions", called_stages)
         self.assertNotIn("paragraph_questions", called_stages)
-        self.assertIn("section_group_questions", called_stages)
-        self.assertIn("paragraph_group_questions", called_stages)
+        self.assertNotIn("section_group_questions", called_stages)
+        self.assertNotIn("paragraph_group_questions", called_stages)
+        generated_questions = {
+            data["level"]: data["generated_question"]
+            for _, data in runner.question_graph.nodes()
+        }
+        self.assertEqual(generated_questions["section"], "What does the section establish?")
+        self.assertEqual(generated_questions["paragraph"], "What does the paragraph establish?")
+        deterministic_events = [
+            event for event in runner.journal.events
+            if event["action"] == "question_generated"
+        ]
+        self.assertTrue(deterministic_events)
+        self.assertTrue(all(event["source"] == "member_question" for event in deterministic_events))
 
     def test_normalizes_pseudo_sections_with_stable_unique_unit_ids(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -194,6 +206,14 @@ class IncrementalGraphTest(unittest.TestCase):
             self.assertEqual(graph.nodes[group_a]["classification"], "common_structure")
             self.assertEqual(len(graph.nodes[paragraph_group_a]["members"]), 3)
             self.assertEqual(graph.nodes[paragraph_group_a]["classification"], "common_structure")
+            model_group_question_stages = {
+                request.stage_id for request in runner.judge.requests
+                if request.stage_id.endswith("group_questions")
+            }
+            self.assertEqual(
+                model_group_question_stages,
+                {"section_group_questions", "paragraph_group_questions"},
+            )
             self.assertEqual(graph.number_of_edges(), 0)
             ignored = [event for event in runner.journal.events if event["action"] == "projected_edge_ignored"]
             self.assertEqual(len(ignored), 1)

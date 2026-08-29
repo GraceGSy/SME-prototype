@@ -187,7 +187,15 @@ class QuestionGraph:
                 )
         return classifications
 
-    def set_question(self, node_id: str, question: str, paper_index: int, attempt_id: str) -> None:
+    def set_question(
+        self,
+        node_id: str,
+        question: str,
+        paper_index: int,
+        attempt_id: str | None,
+        *,
+        source: str = "model",
+    ) -> None:
         normalized = question.strip()
         previous = self.graph.nodes[node_id].get("generated_question", "")
         self.graph.nodes[node_id]["generated_question"] = normalized
@@ -198,6 +206,7 @@ class QuestionGraph:
             previous=previous,
             question=normalized,
             attempt_id=attempt_id,
+            source=source,
         )
 
     def members(self, node_id: str) -> list[dict[str, Any]]:

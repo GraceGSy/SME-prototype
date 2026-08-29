@@ -51,7 +51,8 @@ python -m pipeline.incremental_graph.cli run `
 
 This processes `abstractexplorer` and `corpusstudio`, the first two manifest
 entries. Omit `--paper-limit 2` to process all five papers. Directional matching uses the
-checked-in Claude Skill; group questions use structured Anthropic calls. Results are immutable
+checked-in Claude Skill; only multi-member group questions use structured Anthropic calls.
+Singleton groups reuse their member question without an API call. Results are immutable
 under `runs/hci-two-paper/revisions/`; response cache entries are reused by
 content hash.
 

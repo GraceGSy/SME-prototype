@@ -417,6 +417,21 @@ class IncrementalGraphRunner:
         results = []
         for group_id, _ in self.question_graph.nodes(level):
             group = self._group_context(group_id)
+            if len(group["members"]) == 1:
+                question = str(group["members"][0]["generated_question_metadata"]).strip()
+                self.question_graph.set_question(
+                    group_id,
+                    question,
+                    insertion.paper_index,
+                    None,
+                    source="member_question",
+                )
+                results.append({
+                    "group_id": group_id,
+                    "question": question,
+                    "source": "member_question",
+                })
+                continue
             group.pop("classification", None)
             group.pop("generated_question_metadata", None)
             context = {
@@ -427,7 +442,12 @@ class IncrementalGraphRunner:
             }
             question, attempt_id = self._question(stage, insertion, group_id, context)
             self.question_graph.set_question(group_id, question, insertion.paper_index, attempt_id)
-            results.append({"group_id": group_id, "question": question, "attempt_id": attempt_id})
+            results.append({
+                "group_id": group_id,
+                "question": question,
+                "source": "model",
+                "attempt_id": attempt_id,
+            })
         return results
 
     def _group_context(self, group_id: str) -> dict[str, Any]:
