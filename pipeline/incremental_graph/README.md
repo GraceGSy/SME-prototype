@@ -28,8 +28,15 @@ without changing graph topology.
 fan-in evidence. Fan-in means two or more focus units or groups independently
 selected the same target in one directional pass. Claims remain individuated and
 are labeled `confirmed` or `one_directional`; the report never changes the graph.
-Paragraph fan-in is not filtered as redundant because sibling paragraphs are
-independent units, not a containment family.
+For sections, one-way claims already covered by a reciprocal member of the same
+section family are marked `redundant` and omitted from the table cells. Paragraph
+claims are never filtered because sibling paragraphs are independent units, not a
+containment family.
+
+`correspondences.md` renders the same rows as one paper per column. Bold entries
+are actual members of a reciprocal node; plain entries are outside nodes making
+non-redundant one-way claims. A row with no bold entries represents entirely
+unreciprocated fan-in anchored to a singleton target node.
 
 Every group contains at most one unit from a paper. Section and subsection
 members may share a group. Generated questions and containment edges are
@@ -86,6 +93,7 @@ dataset/graph.json
 dataset/graph_categories.json
 dataset/graph-replay.json
 dataset/correspondences.json
+dataset/correspondences.md
 dataset/final_snapshot.json
 summary.json
 ```

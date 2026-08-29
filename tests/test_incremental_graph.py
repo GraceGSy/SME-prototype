@@ -253,6 +253,60 @@ class IncrementalGraphTest(unittest.TestCase):
             descriptor = validate_dataset(revision / "dataset", "incremental", "Incremental")
             self.assertEqual(descriptor["graph_replay_file"], "graph-replay.json")
 
+    def test_section_correspondence_table_filters_redundant_family_claims(self) -> None:
+        first = Paper(
+            paper_id="p1",
+            title="P1",
+            sections=[
+                Section(id="s1", label="Method", text="Method", family_id="s1"),
+                Section(
+                    id="sub1",
+                    label="Detail",
+                    text="Detail",
+                    kind="subsection",
+                    parent_id="s1",
+                    family_id="s1",
+                    ordinal=2,
+                ),
+            ],
+        )
+        second = Paper(
+            paper_id="p2",
+            title="P2",
+            sections=[Section(id="s2", label="System", text="System")],
+        )
+        section_group = stable_id("section-group", "root", "p1", "s1")
+        subsection_group = stable_id("section-group", "root", "p1", "sub1")
+        matches = {
+            "p2:section_matching:new_to_group:s2": section_group,
+            f"p2:section_matching:group_to_new:{section_group}": "s2",
+            f"p2:section_matching:group_to_new:{subsection_group}": "s2",
+        }
+
+        with tempfile.TemporaryDirectory() as directory:
+            revision = Path(directory) / "revision"
+            runner = IncrementalGraphRunner(
+                load_pipeline_config(CONFIG_PATH),
+                ScriptedJudge(matches),
+                revision,
+            )
+            runner.run([first, second])
+            report = json.loads(
+                (revision / "dataset" / "correspondences.json").read_text(encoding="utf-8")
+            )
+            markdown = (revision / "dataset" / "correspondences.md").read_text(encoding="utf-8")
+
+        fan_in = next(
+            item
+            for row in report["levels"]["section"]
+            for item in row["fan_in"]
+            if item["target_id"] == "s2"
+        )
+        one_way = next(claim for claim in fan_in["claims"] if claim["status"] == "one_directional")
+        self.assertTrue(one_way["redundant"])
+        self.assertIn("**Method (whole)**", markdown)
+        self.assertNotIn("Method > Detail", markdown)
+
     def test_common_structure_uses_inclusive_half_threshold(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             journal = RevisionJournal(Path(directory) / "revision")

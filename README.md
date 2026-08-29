@@ -96,9 +96,11 @@ when the packaged dataset contains a valid `graph-replay.json`. Its optional
 `Show hierarchy` control reveals section-to-subsection edges and switches to an
 ordered hierarchical layout.
 
-Each run also writes `correspondences.json`, a deterministic report combining
-reciprocal groups with section- and paragraph-level fan-in claims. One-way
-claims remain provenance only and never become graph edges.
+Each run also writes `correspondences.json` and a human-readable
+`correspondences.md`. They combine reciprocal groups with section- and
+paragraph-level fan-in claims while keeping one-way claims out of graph topology.
+Bold table entries are reciprocal node members; plain entries are one-way
+claimants that remain in separate nodes.
 
 ## Verification
 
