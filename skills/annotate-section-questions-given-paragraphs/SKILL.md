@@ -1,6 +1,6 @@
 ---
 name: "annotate-section-questions-given-paragraphs"
-description: "Given a sections-with-paragraph-content.json file (from \"extract-section-paragraphs\"), composes a \"question_this_section_answers\" field for each section entry purely from its already-extracted paragraphs field, without opening or re-reading the source PDF. A hard Step 4 validator blocks completion until every entry has a real question or is verified legitimately empty (paragraphs == []). Saves two output files — sections-with-paragraphs-and-questions.json (full, paragraphs included) and sections-with-questions-only.json (same entries, paragraphs stripped out). Use whenever the user wants section-level role questions added but already has paragraph-level content extracted, wants to avoid re-parsing the PDF, or explicitly says \"based on the paragraphs already extracted\" / \"without going back to the PDF.\" If the user only has sections.json (no paragraphs field) or hasn't extracted paragraphs yet, use \"annotate-section-questions\" instead, which reads the PDF directly."
+description: "Given extracted paragraph content from an academic or narrative document, composes one concise question answered by each section or scene without reopening the source. Questions capture the unit's role in its document, cover all supplied paragraphs, and never answer themselves."
 ---
 
 # Annotate Section Questions (Given Paragraphs)
@@ -30,6 +30,8 @@ For each entry in the input array, read the full `text` of every paragraph in it
 ### Step 2: Compose the question each section answers
 
 Using only the paragraph text just read, write one question that this section exists to answer in the paper's argument — the same role-based framing used throughout this project: ask "what job is this section doing — what does the reader need answered before moving to the next part of the paper?" not "what topic does this section cover?"
+
+For narrative documents, apply the same role test to the unfolding story rather than an academic argument. Ask what uncertainty about the case, characters, evidence, investigation, confrontation, or resolution this unit enables the reader to answer. Avoid generic questions such as "What happens next?" and do not include the answer, culprit, solution, or decisive clue in the question. A whole narrative division and one of its scenes are independent units and each receives a question grounded in all paragraphs supplied for that unit.
 
 - Frame the question around the section's function in the paper's arc, not a restatement of its title or a content summary.
 - **The question must span all of the section's paragraphs, not just the first or most prominent one.** If the paragraphs cover several related jobs (e.g. separate paragraphs for different system components, or different sub-studies), find the broader question that covers all of them, the way `annotate-section-questions` requires spanning all subsections. If the paragraphs are different enough that no single question honestly covers all of them, say so explicitly in the question rather than silently narrowing it.

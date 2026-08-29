@@ -1,18 +1,15 @@
 from __future__ import annotations
 
 import json
-import sys
 import tempfile
 import unittest
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-
-from viewer_dataset import DatasetValidationError, package_dataset, validate_dataset
+from pipeline.viewer.package import DatasetValidationError, package_dataset, validate_dataset
 
 
-PIPELINE_DIR = Path(__file__).resolve().parents[1]
-VIEWER_PATH = PIPELINE_DIR / "viz" / "tag_matches_viewer.html"
+REPO_ROOT = Path(__file__).resolve().parents[1]
+VIEWER_PATH = REPO_ROOT / "pipeline" / "viewer" / "index.html"
 
 
 def write_json(path: Path, value: object) -> None:

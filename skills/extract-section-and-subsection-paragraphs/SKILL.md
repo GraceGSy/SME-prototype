@@ -1,11 +1,6 @@
 ---
 name: "extract-section-and-subsection-paragraphs"
-description: "Given a sections-with-subsections(-excluding-appendices).json file (from \"extract-top-and-second-level-section-names\" or its appendix-excluding sibling) and the PDF it was extracted from, splits each top-level section's text into paragraphs -- nested by subsection when the section has any. A section with subsections gets ONLY its lead-in text (before the first subsection heading) in its own top-level \"paragraphs\" field; each subsection carries its own \"paragraphs\" array. A section with no subsections behaves exactly like \"extract-section-paragraphs\". Includes a hard order-integrity check: if any content follows the last subsection with nowhere correct to go without misrepresenting PDF reading order, this is flagged explicitly to the user rather than silently placed. Use whenever the user wants subsection-nested paragraph content, not just flat per-section paragraphs. For a flat (no-subsections) paragraph extraction, use \"extract-section-paragraphs\" instead."
----
-
----
-name: "extract-section-and-subsection-paragraphs"
-description: "Given a sections-with-subsections(-excluding-appendices).json file (from \"extract-top-and-second-level-section-names\" or its appendix-excluding sibling) and the PDF it was extracted from, splits each top-level section's text into paragraphs -- nested by subsection when the section has any. A section with subsections gets ONLY its lead-in text (before the first subsection heading) in its own top-level \"paragraphs\" field; each subsection carries its own \"paragraphs\" array. A section with no subsections behaves exactly like \"extract-section-paragraphs\". Includes a hard order-integrity check: if any content follows the last subsection with nowhere correct to go without misrepresenting PDF reading order, this is flagged explicitly to the user rather than silently placed. Use whenever the user wants subsection-nested paragraph content, not just flat per-section paragraphs. For a flat (no-subsections) paragraph extraction, use \"extract-section-paragraphs\" instead."
+description: "Extracts section, subsection, and paragraph content from either an academic PDF with an existing section manifest or source-marked narrative XHTML. In narrative mode, Claude extracts the text while using only explicit headings and horizontal-rule separators as scene boundaries. Produces the same strict nested JSON schema for both domains."
 ---
 
 # Extract Section and Subsection Paragraphs
@@ -19,6 +14,30 @@ It reuses `extract-section-paragraphs`'s own text-extraction and paragraph-split
 **This does not judge subsection boundaries itself** — it takes the `subsections` array (names and numbers) as given input from `extract-top-and-second-level-section-names`, and only has to find *where in the body text* each already-identified subsection heading actually starts. If the user hasn't already run that skill (or its appendix-excluding sibling) on this PDF, run it first.
 
 ## Inputs
+
+Choose exactly one mode:
+
+1. **Academic mode:** the existing nested section manifest and source PDF described below.
+2. **Narrative mode:** one XHTML source document whose real divisions are encoded as `h3` headings and/or `hr` separators.
+
+## Narrative mode: explicit boundaries only
+
+Use this mode for fiction or other narrative documents. Claude performs the extraction from the supplied XHTML, subject to these source-grounded boundary rules:
+
+- An explicit `h3` division becomes a top-level section.
+- If no `h3` divisions exist, the complete story becomes one top-level section named from its `h2` title.
+- An `hr` inside a top-level section divides that section into source-backed scenes. `n` separators create `n + 1` scenes.
+- Scene names are metadata assigned in document order: `Scene 1`, `Scene 2`, and so on. Numbering continues across titled divisions.
+- If a section has at least one separator, all its prose belongs to its scene subsections and its top-level `paragraphs` array is empty.
+- If a section has no separator, it has no synthetic subsections and retains its complete prose in `paragraphs`.
+- Read and extract the narrative prose from the XHTML itself. Preserve wording and paragraph order; normalize only markup and whitespace needed to produce plain paragraph text.
+- Exclude document chrome and non-narrative metadata such as navigation, the story heading itself, and colophon material.
+- Never infer a boundary from changes in time, location, speaker, point of view, topic, or plot. Whitespace alone is not a scene separator.
+- A leading, trailing, or consecutive separator is an input-integrity error. Do not fabricate an empty scene.
+- If there is no explicit `hr` separator anywhere in the story, stop rather than inventing scenes.
+- Save the extracted content directly in the strict JSON schema below. Report its section, scene, and paragraph counts.
+
+## Academic-mode inputs
 
 1. A `sections-with-subsections.json` (or `sections-with-subsections-excluding-appendices.json`) file: a JSON array of nested section objects (`section_name`, `section_number`, `subsections: [{section_name, section_number}]`), in the order sections appear in the paper — the output of `extract-top-and-second-level-section-names` or `extract-top-and-second-level-section-names-excluding-appendices`.
 2. The PDF path those sections were extracted from.

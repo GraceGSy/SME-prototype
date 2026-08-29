@@ -18,22 +18,19 @@ import hashlib
 import inspect
 import json
 import os
-import sys
 from pathlib import Path
 from typing import Any, Callable, Optional
 
-_PIPELINE_DIR = Path(__file__).resolve().parent
-if str(_PIPELINE_DIR) not in sys.path:
-    sys.path.insert(0, str(_PIPELINE_DIR))
+from pipeline.cache_utils import cached_system, log_cache_usage
 
-from cache_utils import cached_system, log_cache_usage
-
+REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_MODEL = os.environ.get("SME_EXTRACT_MODEL", "claude-sonnet-5")
-DEFAULT_CACHE_DIR = _PIPELINE_DIR / "output" / "_cache" / "text_questions"
-DEFAULT_INPUT = Path(
-    "/Users/elena/Library/CloudStorage/Dropbox-HarvardUniversity/"
-    "Elena Glassman/SME paper corpora/SME IUI27 paper corpus/"
-    "corpusstudio-sections-with-subsections-and-paragraph-content-no-appendices.json"
+DEFAULT_CACHE_DIR = REPO_ROOT / "runs" / "_cache" / "text_questions"
+DEFAULT_INPUT = (
+    REPO_ROOT
+    / "datasets"
+    / "hci-five-paper"
+    / "corpusstudio-sections-with-subsections-and-paragraph-content-no-appendices.json"
 )
 
 FIELD = "question_this_text_answers"

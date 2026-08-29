@@ -3,12 +3,6 @@ name: "extract-section-paragraphs"
 description: "Given a sections.json file (from \"extract-top-level-section-names\") and the PDF it was extracted from, splits each section's actual text into its constituent paragraphs and adds a \"paragraphs\" array (each with paragraph_number and text) to every entry, saved as a new file sections-with-paragraph-content.json. Use whenever the user wants a paper's paragraphs pulled out per section, \"break this section into paragraphs,\" \"enumerate the paragraphs in each section,\" or as a prerequisite before paragraph-level analysis (e.g. \"what does each paragraph do\"). This is a single-paper building block — it does not compare against another paper, judge paragraphs' purpose, or summarize them. For that, read the paragraphs field this skill produces and reason over it directly, or use \"annotate-section-questions\" for section-level (not paragraph-level) role questions."
 ---
 
----
-name: "extract-section-paragraphs"
-description: "Given a sections.json file (from \"extract-top-level-section-names\") and the PDF it was extracted from, splits each section's actual text into its constituent paragraphs and adds a \"paragraphs\" array (each with paragraph_number and text) to every entry, saved as a new file sections-with-paragraph-content.json. Use whenever the user wants a paper's paragraphs pulled out per section, \"break this section into paragraphs,\" \"enumerate the paragraphs in each section,\" or as a prerequisite before paragraph-level analysis (e.g. \"what does each paragraph do\"). This is a single-paper building block — it does not compare against another paper, judge paragraphs' purpose, or summarize them. For that, read the paragraphs field this skill produces and reason over it directly, or use \"annotate-section-questions\" for section-level (not paragraph-level) role questions."
----
-
-
 # Extract Section Paragraphs
 
 ## What this is (and isn't)

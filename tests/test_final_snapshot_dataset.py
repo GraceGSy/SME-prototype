@@ -1,15 +1,12 @@
 from __future__ import annotations
 
 import json
-import sys
 import tempfile
 import unittest
 import zipfile
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-
-from build_final_snapshot_dataset import build_dataset
+from pipeline.viewer.final_snapshot import build_dataset
 
 
 def write_json(path: Path, value: object) -> None:

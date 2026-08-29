@@ -1,23 +1,20 @@
 from __future__ import annotations
 
 import json
-import sys
 import tempfile
 import unittest
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-
-from incremental_graph.configuration import load_pipeline_config
-from incremental_graph.graph import QuestionGraph, graph_from_events, stable_id
-from incremental_graph.input_data import load_paper
-from incremental_graph.journal import RevisionJournal
-from incremental_graph.models import JudgmentResult, Paper, Paragraph, Section
-from incremental_graph.runner import IncrementalGraphRunner
-from viewer_dataset import validate_dataset
+from pipeline.incremental_graph.configuration import load_pipeline_config
+from pipeline.incremental_graph.graph import QuestionGraph, graph_from_events, stable_id
+from pipeline.incremental_graph.input_data import load_paper
+from pipeline.incremental_graph.journal import RevisionJournal
+from pipeline.incremental_graph.models import JudgmentResult, Paper, Paragraph, Section
+from pipeline.incremental_graph.runner import IncrementalGraphRunner
+from pipeline.viewer.package import validate_dataset
 
 
-CONFIG_PATH = Path(__file__).resolve().parents[1] / "incremental_graph" / "configs" / "incremental-v1.yaml"
+CONFIG_PATH = Path(__file__).resolve().parents[1] / "pipeline" / "incremental_graph" / "configs" / "incremental-v1.yaml"
 
 
 def paper(paper_id: str, sections: list[tuple[str, str, str]]) -> Paper:

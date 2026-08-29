@@ -2,5 +2,4 @@ anthropic>=0.109
 networkx>=2.6
 pydantic>=2
 pdfplumber>=0.10
-ortools>=9.10
 PyYAML>=6

@@ -37,7 +37,7 @@ import re
 import sys
 from pathlib import Path
 
-from schema import PaperGraph
+from .models import PaperGraph
 
 _WORD_RE = re.compile(r"[a-z0-9]+")
 

@@ -8,8 +8,9 @@ import os
 
 from anthropic import Anthropic
 
-from cache_utils import cached_system, log_cache_usage
-from schema import ENTITY_KINDS, SUGGESTED_PREDICATES, PaperGraph
+from pipeline.cache_utils import cached_system, log_cache_usage
+
+from .models import ENTITY_KINDS, SUGGESTED_PREDICATES, PaperGraph
 
 DEFAULT_MODEL = os.environ.get("SME_EXTRACT_MODEL", "claude-sonnet-5")
 

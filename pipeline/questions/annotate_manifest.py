@@ -22,11 +22,7 @@ from pathlib import Path
 
 import yaml
 
-_PIPELINE_DIR = Path(__file__).resolve().parent
-if str(_PIPELINE_DIR) not in sys.path:
-    sys.path.insert(0, str(_PIPELINE_DIR))
-
-from annotate_text_questions import (
+from .annotate import (
     DEFAULT_CACHE_DIR,
     DEFAULT_MODEL,
     annotate_file,

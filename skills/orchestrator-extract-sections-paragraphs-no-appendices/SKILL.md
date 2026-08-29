@@ -3,11 +3,6 @@ name: "orchestrator-extract-sections-paragraphs-no-appendices"
 description: "Variant of \"orchestrator-extract-sections-paragraphs\" that excludes appendices. Always extracts fresh from the PDF via \"extract-top-level-section-names-excluding-appendices\" -> \"extract-section-paragraphs\" -- deliberately no Path A / derive-from-existing-output shortcut, unlike \"orchestrator-extract-sections-paragraphs-questions-no-appendices\", because \"strip-appendices-from-extracted-sections\" requires all four with-questions files and this pipeline never produces them. Produces {paper-name}-sections-no-appendices.json and {paper-name}-sections-with-paragraph-content-no-appendices.json. Does NOT call \"annotate-section-questions-given-paragraphs\". By default, if both -no-appendices files already exist for a paper, this skill skips it and reports it as already complete; pass a recompute/force/redo request to override this. Use for a paper's sections and paragraphs, appendices excluded, without composing questions."
 ---
 
----
-name: "orchestrator-extract-sections-paragraphs-no-appendices"
-description: "Variant of \"orchestrator-extract-sections-paragraphs\" that excludes appendices. Always extracts fresh from the PDF via \"extract-top-level-section-names-excluding-appendices\" -> \"extract-section-paragraphs\" -- deliberately no Path A / derive-from-existing-output shortcut, unlike \"orchestrator-extract-sections-paragraphs-questions-no-appendices\", because \"strip-appendices-from-extracted-sections\" requires all four with-questions files and this pipeline never produces them. Produces {paper-name}-sections-no-appendices.json and {paper-name}-sections-with-paragraph-content-no-appendices.json. Does NOT call \"annotate-section-questions-given-paragraphs\". By default, if both -no-appendices files already exist for a paper, this skill skips it and reports it as already complete; pass a recompute/force/redo request to override this. Use for a paper's sections and paragraphs, appendices excluded, without composing questions."
----
-
 # Extract Sections and Paragraphs, No Questions, Excluding Appendices (Orchestrator)
 
 ## What this is (and isn't)

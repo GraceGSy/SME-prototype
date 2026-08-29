@@ -333,7 +333,7 @@ def main() -> None:
     parser.add_argument(
         "--viewer",
         type=Path,
-        default=Path(__file__).resolve().parent / "viz" / "tag_matches_viewer.html",
+        default=Path(__file__).resolve().parent / "index.html",
     )
     args = parser.parse_args()
     descriptor = package_dataset(args.dataset_dir, args.output_dir, args.viewer, args.dataset_id, args.label)

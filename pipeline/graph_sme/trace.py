@@ -16,13 +16,13 @@ import json
 import sys
 from pathlib import Path
 
-from align_graphs import (
+from .align import (
     build_kernels,
     entity_candidates,
     proposition_candidates,
     score_kernel,
 )
-from schema import PaperGraph
+from .models import PaperGraph
 
 
 def _arc_consistency_trace(

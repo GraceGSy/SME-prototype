@@ -7,7 +7,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from build_final_snapshot_dataset import (
+from .final_snapshot import (
     SnapshotBuildError,
     compact,
     file_sha256,

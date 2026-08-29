@@ -11,8 +11,8 @@ import json
 import sys
 from pathlib import Path
 
-from extract_graph import extract_graph
-from pdf_text import extract_pdf_text
+from .extract import extract_graph
+from .pdf_text import extract_pdf_text
 
 SME_DIR = Path(__file__).resolve().parent.parent
 PAPERS_DIR = SME_DIR / "papers"
