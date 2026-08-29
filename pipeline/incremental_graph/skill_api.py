@@ -138,17 +138,17 @@ class ClaudeSkills:
                     existing["skill_id"], files=files, betas=SKILL_BETAS
                 )
                 skill_id = existing["skill_id"]
-                version = response.version
+                version = _version_id(response, "id", "version")
             except Exception as exc:
                 if getattr(exc, "status_code", None) != 404:
                     raise
                 response = self.client.beta.skills.create(files=files, betas=SKILL_BETAS)
                 skill_id = response.id
-                version = response.latest_version
+                version = _version_id(response, "latest_version_id", "latest_version")
         else:
             response = self.client.beta.skills.create(files=files, betas=SKILL_BETAS)
             skill_id = response.id
-            version = response.latest_version
+            version = _version_id(response, "latest_version_id", "latest_version")
         if not version:
             raise RuntimeError(f"Skills API did not return a version for {relative}")
 
@@ -279,3 +279,13 @@ class ClaudeSkills:
             transport_notes,
             response.model_dump(mode="json"),
         )
+
+
+def _version_id(response: Any, *field_names: str) -> str | None:
+    """Read Skill version IDs across supported Anthropic SDK response shapes."""
+
+    for field_name in field_names:
+        value = getattr(response, field_name, None)
+        if value:
+            return str(value)
+    return None
