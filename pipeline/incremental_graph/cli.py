@@ -24,6 +24,7 @@ def run_revision(
     run_dir: Path,
     config_path: Path,
     *,
+    paper_limit: int | None = None,
     force_paper_index: int | None = None,
     force_stage_id: str | None = None,
 ) -> dict[str, Any]:
@@ -31,6 +32,10 @@ def run_revision(
     config_path = config_path.resolve()
     run_dir = run_dir.resolve()
     _, papers = load_manifest(manifest_path)
+    if paper_limit is not None:
+        if not 1 <= paper_limit <= len(papers):
+            raise ValueError(f"paper limit must be between 1 and {len(papers)}")
+        papers = papers[:paper_limit]
     config = load_pipeline_config(config_path)
     if force_paper_index is not None and not 1 <= force_paper_index <= len(papers):
         raise ValueError(f"paper index must be between 1 and {len(papers)}")
@@ -66,6 +71,7 @@ def run_revision(
         "schema_version": 1,
         "manifest_path": str(manifest_path),
         "config_path": str(config_path),
+        "paper_limit": paper_limit,
         "current_revision": revision_number,
         "current_revision_dir": str(revision_dir),
     }
@@ -80,6 +86,7 @@ def retry_revision(run_dir: Path, paper_index: int, stage_id: str) -> dict[str, 
         Path(metadata["manifest_path"]),
         run_dir,
         Path(metadata["config_path"]),
+        paper_limit=metadata.get("paper_limit"),
         force_paper_index=paper_index,
         force_stage_id=stage_id,
     )
@@ -134,6 +141,11 @@ def main() -> None:
     run_parser.add_argument("manifest", type=Path)
     run_parser.add_argument("run_dir", type=Path)
     run_parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
+    run_parser.add_argument(
+        "--paper-limit",
+        type=int,
+        help="Process only the first N papers in manifest order",
+    )
 
     retry_parser = subparsers.add_parser("retry", help="Retry one stage and replay the ordered corpus")
     retry_parser.add_argument("run_dir", type=Path)
@@ -148,7 +160,12 @@ def main() -> None:
 
     args = parser.parse_args()
     if args.command == "run":
-        summary = run_revision(args.manifest, args.run_dir, args.config)
+        summary = run_revision(
+            args.manifest,
+            args.run_dir,
+            args.config,
+            paper_limit=args.paper_limit,
+        )
         print(json.dumps(summary, indent=2))
     elif args.command == "retry":
         summary = retry_revision(args.run_dir, args.paper_index, args.stage)

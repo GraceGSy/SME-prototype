@@ -45,25 +45,27 @@ graph run reuses those questions rather than paying to generate them again.
 $env:ANTHROPIC_API_KEY = "your-key"
 python -m pipeline.incremental_graph.cli run `
   datasets/hci-five-paper/manifest.yaml `
-  runs/hci-five-paper
+  runs/hci-two-paper `
+  --paper-limit 2
 ```
 
-The run processes papers in manifest order. Directional matching uses the
+This processes `abstractexplorer` and `corpusstudio`, the first two manifest
+entries. Omit `--paper-limit 2` to process all five papers. Directional matching uses the
 checked-in Claude Skill; group questions use structured Anthropic calls. Results are immutable
-under `runs/hci-five-paper/revisions/`; response cache entries are reused by
+under `runs/hci-two-paper/revisions/`; response cache entries are reused by
 content hash.
 
 Inspect the current categories:
 
 ```powershell
-python -m pipeline.incremental_graph.cli categories runs/hci-five-paper
+python -m pipeline.incremental_graph.cli categories runs/hci-two-paper
 ```
 
 Retry one stage and replay the ordered corpus:
 
 ```powershell
 python -m pipeline.incremental_graph.cli retry `
-  runs/hci-five-paper `
+  runs/hci-two-paper `
   --paper-index 3 `
   --stage section_matching
 ```
@@ -73,19 +75,19 @@ python -m pipeline.incremental_graph.cli retry `
 Package the current revision:
 
 ```powershell
-$run = Get-Content runs/hci-five-paper/run.json | ConvertFrom-Json
+$run = Get-Content runs/hci-two-paper/run.json | ConvertFrom-Json
 $dataset = Join-Path $run.current_revision_dir "dataset"
 python -m pipeline.viewer.package `
   $dataset `
-  site/hci-five-paper `
-  --dataset-id hci-five-paper `
-  --label "HCI Five-Paper Graph"
+  site/hci-two-paper `
+  --dataset-id hci-two-paper `
+  --label "HCI Two-Paper Graph"
 ```
 
 Serve it over HTTP, then open `http://localhost:8000`:
 
 ```powershell
-python -m http.server 8000 --directory site/hci-five-paper/public
+python -m http.server 8000 --directory site/hci-two-paper/public
 ```
 
 The viewer exposes Question Groups and Paper Map. Graph Replay appears only
