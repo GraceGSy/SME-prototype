@@ -1,0 +1,2417 @@
+{
+  "schema_version": 1,
+  "paper_pairs_processed": [
+    [
+      "examplore_chi18",
+      "corpusstudio"
+    ]
+  ],
+  "nodes": [
+    {
+      "node_id": "node-0165c9b94f705ccf",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "subsection",
+          "section_name": "SYSTEM ARCHITECTURE AND IMPLEMENTATION",
+          "section_number": null,
+          "subsection_name": "Post-processing",
+          "subsection_number": null
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-07eed72050aed3c2",
+      "confirmations": [
+        {
+          "pair": [
+            "examplore_chi18",
+            "corpusstudio"
+          ],
+          "a_unit": {
+            "section_name": "CONCLUSION",
+            "section_number": null,
+            "subsection_name": null,
+            "subsection_number": null
+          },
+          "b_unit": {
+            "section_name": "Conclusion",
+            "section_number": "9",
+            "subsection_name": null,
+            "subsection_number": null
+          },
+          "basis_a_to_b": "The query is a whole 'Conclusion' section summarizing the system's contribution (synthetic code skeleton/EXAMPLORE), the evaluation study finding (participants performed better with more confidence), and future directions (extending to other languages/APIs). Candidate [34] plays the identical structural role: it's the paper's Conclusion section, summarizing CorpusStudio's contribution (retrieval at document/sentence level), what the system achieves for writers, and framing the broader interaction model it advances. Both are terminal summary sections restating the system name, core contribution, and evaluation takeaway. While [33] (Limitations and Future Work) covers future directions and [28] covers broader discussion, the Conclusion [34] most centrally matches the query's role as the final wrap-up section.",
+          "basis_b_to_a": "The query is the Conclusion section of CorpusStudio, summarizing the system's contribution (retrieval-based writing support integrated into drafting, comparison against curated corpora, preserving attribution) and the broader interaction model it exemplifies. This plays the same structural role as candidate [20] CONCLUSION for EXAMPLORE, which likewise recaps the paper's core contribution (synthetic code skeleton visualization for exploring code examples), summarizes evaluation findings, and gestures at future/broader implications. Both are final wrap-up sections restating what the tool contributes and its significance, rather than detailing specific results (as in RESULTS/DISCUSSION) or introducing the problem (INTRODUCTION/ABSTRACT). Hence index 20 is the clearest role match."
+        }
+      ],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "section",
+          "section_name": "Conclusion",
+          "section_number": "9",
+          "subsection_name": null,
+          "subsection_number": null
+        },
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "section",
+          "section_name": "CONCLUSION",
+          "section_number": null,
+          "subsection_name": null,
+          "subsection_number": null
+        }
+      ],
+      "merge_history": [
+        {
+          "absorbed_node": "node-beb3681829883ae0",
+          "absorbed_members": [
+            {
+              "paper_id": "examplore_chi18",
+              "unit_type": "section",
+              "section_name": "CONCLUSION",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null
+            }
+          ],
+          "confirmation": {
+            "pair": [
+              "examplore_chi18",
+              "corpusstudio"
+            ],
+            "a_unit": {
+              "section_name": "CONCLUSION",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null
+            },
+            "b_unit": {
+              "section_name": "Conclusion",
+              "section_number": "9",
+              "subsection_name": null,
+              "subsection_number": null
+            },
+            "basis_a_to_b": "The query is a whole 'Conclusion' section summarizing the system's contribution (synthetic code skeleton/EXAMPLORE), the evaluation study finding (participants performed better with more confidence), and future directions (extending to other languages/APIs). Candidate [34] plays the identical structural role: it's the paper's Conclusion section, summarizing CorpusStudio's contribution (retrieval at document/sentence level), what the system achieves for writers, and framing the broader interaction model it advances. Both are terminal summary sections restating the system name, core contribution, and evaluation takeaway. While [33] (Limitations and Future Work) covers future directions and [28] covers broader discussion, the Conclusion [34] most centrally matches the query's role as the final wrap-up section.",
+            "basis_b_to_a": "The query is the Conclusion section of CorpusStudio, summarizing the system's contribution (retrieval-based writing support integrated into drafting, comparison against curated corpora, preserving attribution) and the broader interaction model it exemplifies. This plays the same structural role as candidate [20] CONCLUSION for EXAMPLORE, which likewise recaps the paper's core contribution (synthetic code skeleton visualization for exploring code examples), summarizes evaluation findings, and gestures at future/broader implications. Both are final wrap-up sections restating what the tool contributes and its significance, rather than detailing specific results (as in RESULTS/DISCUSSION) or introducing the problem (INTRODUCTION/ABSTRACT). Hence index 20 is the clearest role match."
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "node-0973eff92a51feb0",
+      "confirmations": [
+        {
+          "pair": [
+            "examplore_chi18",
+            "corpusstudio"
+          ],
+          "a_unit": {
+            "section_name": "REFERENCES",
+            "section_number": null,
+            "subsection_name": null,
+            "subsection_number": null
+          },
+          "b_unit": {
+            "section_name": "References",
+            "section_number": null,
+            "subsection_name": null,
+            "subsection_number": null
+          },
+          "basis_a_to_b": "Both are empty placeholder entries with no body paragraphs and no question -- matched via the exact-name fallback for content-empty candidates.",
+          "basis_b_to_a": "Both are empty placeholder entries with no body paragraphs and no question -- matched via the exact-name fallback for content-empty candidates."
+        }
+      ],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "section",
+          "section_name": "References",
+          "section_number": null,
+          "subsection_name": null,
+          "subsection_number": null
+        },
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "section",
+          "section_name": "REFERENCES",
+          "section_number": null,
+          "subsection_name": null,
+          "subsection_number": null
+        }
+      ],
+      "merge_history": [
+        {
+          "absorbed_node": "node-17947fa54d30f500",
+          "absorbed_members": [
+            {
+              "paper_id": "examplore_chi18",
+              "unit_type": "section",
+              "section_name": "REFERENCES",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null
+            }
+          ],
+          "confirmation": {
+            "pair": [
+              "examplore_chi18",
+              "corpusstudio"
+            ],
+            "a_unit": {
+              "section_name": "REFERENCES",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null
+            },
+            "b_unit": {
+              "section_name": "References",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null
+            },
+            "basis_a_to_b": "Both are empty placeholder entries with no body paragraphs and no question -- matched via the exact-name fallback for content-empty candidates.",
+            "basis_b_to_a": "Both are empty placeholder entries with no body paragraphs and no question -- matched via the exact-name fallback for content-empty candidates."
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "node-0b07af2058d51b43",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "subsection",
+          "section_name": "Quantitative Results",
+          "section_number": "7",
+          "subsection_name": "Task 1: Outline Writing",
+          "subsection_number": "7.1"
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-0bc1aff65315a4bd",
+      "confirmations": [
+        {
+          "pair": [
+            "examplore_chi18",
+            "corpusstudio"
+          ],
+          "a_unit": {
+            "section_name": "RESULTS",
+            "section_number": null,
+            "subsection_name": "Qualitative Analysis",
+            "subsection_number": null
+          },
+          "b_unit": {
+            "section_name": "Qualitative Results",
+            "section_number": "6",
+            "subsection_name": null,
+            "subsection_number": null
+          },
+          "basis_a_to_b": "The query is a qualitative-analysis subsection reporting coded post-survey free responses about a tool's (EXAMPLORE) strengths, weaknesses, and potential workflow uses, derived from participant feedback. This plays the same role as candidate [18] 'Qualitative Results' (and its subsections), which reports themes derived from Grounded Theory coding of transcripts/surveys about CorpusStudio's strengths (e.g., overcoming blank page problem, useful features), weaknesses, and potential future uses. Both are the qualitative results section synthesizing open-ended participant feedback into thematic findings about the tool's benefits, shortcomings, and envisioned use cases. While paper2 splits qualitative results into several subsections by feature (document-level, sentence-level, bookmarks, tooltips, stages, anti-plagiarism), the query's content (a single coherent block of coded free-response themes) most closely corresponds to the parent whole-section [18], which serves as the overarching qualitative synthesis analogous to the query's role.",
+          "basis_b_to_a": "The query is the paper's qualitative-analysis section reporting themes, participant quotes, and insights derived from post-study coding of user study transcripts/free responses. Candidate [18] ('Qualitative Analysis') plays the identical role in EXAMPLORE's paper: it reports themes coded from participants' free responses about the interface's strengths, weaknesses, and potential workflow uses (e.g., filtering feature appreciated, confusion about interface, desired future uses), derived via coding of survey/interview data. Both sections serve as the qualitative-findings companion to a quantitative results section, deriving high-level user insights and behavioral patterns from open-ended study data, even though paper1's tool is a writing aid and paper2's is a code example visualizer -- the sectional role (reporting coded qualitative themes from user study responses) is the same."
+        }
+      ],
+      "members": [
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "subsection",
+          "section_name": "RESULTS",
+          "section_number": null,
+          "subsection_name": "Qualitative Analysis",
+          "subsection_number": null
+        },
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "section",
+          "section_name": "Qualitative Results",
+          "section_number": "6",
+          "subsection_name": null,
+          "subsection_number": null
+        }
+      ],
+      "merge_history": [
+        {
+          "absorbed_node": "node-eeb855f4aebf03d4",
+          "absorbed_members": [
+            {
+              "paper_id": "corpusstudio",
+              "unit_type": "section",
+              "section_name": "Qualitative Results",
+              "section_number": "6",
+              "subsection_name": null,
+              "subsection_number": null
+            }
+          ],
+          "confirmation": {
+            "pair": [
+              "examplore_chi18",
+              "corpusstudio"
+            ],
+            "a_unit": {
+              "section_name": "RESULTS",
+              "section_number": null,
+              "subsection_name": "Qualitative Analysis",
+              "subsection_number": null
+            },
+            "b_unit": {
+              "section_name": "Qualitative Results",
+              "section_number": "6",
+              "subsection_name": null,
+              "subsection_number": null
+            },
+            "basis_a_to_b": "The query is a qualitative-analysis subsection reporting coded post-survey free responses about a tool's (EXAMPLORE) strengths, weaknesses, and potential workflow uses, derived from participant feedback. This plays the same role as candidate [18] 'Qualitative Results' (and its subsections), which reports themes derived from Grounded Theory coding of transcripts/surveys about CorpusStudio's strengths (e.g., overcoming blank page problem, useful features), weaknesses, and potential future uses. Both are the qualitative results section synthesizing open-ended participant feedback into thematic findings about the tool's benefits, shortcomings, and envisioned use cases. While paper2 splits qualitative results into several subsections by feature (document-level, sentence-level, bookmarks, tooltips, stages, anti-plagiarism), the query's content (a single coherent block of coded free-response themes) most closely corresponds to the parent whole-section [18], which serves as the overarching qualitative synthesis analogous to the query's role.",
+            "basis_b_to_a": "The query is the paper's qualitative-analysis section reporting themes, participant quotes, and insights derived from post-study coding of user study transcripts/free responses. Candidate [18] ('Qualitative Analysis') plays the identical role in EXAMPLORE's paper: it reports themes coded from participants' free responses about the interface's strengths, weaknesses, and potential workflow uses (e.g., filtering feature appreciated, confusion about interface, desired future uses), derived via coding of survey/interview data. Both sections serve as the qualitative-findings companion to a quantitative results section, deriving high-level user insights and behavioral patterns from open-ended study data, even though paper1's tool is a writing aid and paper2's is a code example visualizer -- the sectional role (reporting coded qualitative themes from user study responses) is the same."
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "node-150dcc8c0d16d3bc",
+      "confirmations": [
+        {
+          "pair": [
+            "examplore_chi18",
+            "corpusstudio"
+          ],
+          "a_unit": {
+            "section_name": "SCENARIO: INTERACTING WITH CODE DISTRIBUTIONS",
+            "section_number": null,
+            "subsection_name": null,
+            "subsection_number": null
+          },
+          "b_unit": {
+            "section_name": "Corpus Studio",
+            "section_number": "3",
+            "subsection_name": "Usage Scenario",
+            "subsection_number": "3.2"
+          },
+          "basis_a_to_b": "Both texts are narrative \"usage scenario\" walkthroughs featuring a persona (Victor vs. Alice) using the tool step-by-step to illustrate its features in a realistic task context. Candidate [8] 'Usage Scenario' plays exactly this role in paper2 — a concrete illustrative story of a user (Alice) interacting with CorpusStudio's document-level and sentence-level features, paralleling the query's walkthrough of Victor exploring EXAMPLORE's code distribution features. The domains differ (code API patterns vs. writing norms) but the structural role — a persona-driven scenario section demonstrating tool interaction — is the same.",
+          "basis_b_to_a": "The query is a walkthrough scenario narrating a persona (Alice) using CorpusStudio step-by-step to accomplish a real task (drafting a paper section), illustrating interface features (browsing clusters, retrieving sentences, filtering) through concrete interaction. Candidate [7] 'SCENARIO: INTERACTING WITH CODE DISTRIBUTIONS' plays the exact same role in paper2: it follows a persona (Victor) through a sequence of interactions with EXAMPLORE (viewing the skeleton, selecting features, filtering examples, drilling into code) to demonstrate the tool's use in practice. Both are narrative usage-scenario sections meant to ground the system's UI features in a realistic task, rather than being an abstract, evaluation, or implementation description."
+        }
+      ],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "subsection",
+          "section_name": "Corpus Studio",
+          "section_number": "3",
+          "subsection_name": "Usage Scenario",
+          "subsection_number": "3.2"
+        },
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "section",
+          "section_name": "SCENARIO: INTERACTING WITH CODE DISTRIBUTIONS",
+          "section_number": null,
+          "subsection_name": null,
+          "subsection_number": null
+        }
+      ],
+      "merge_history": [
+        {
+          "absorbed_node": "node-6dccd183545a1acc",
+          "absorbed_members": [
+            {
+              "paper_id": "examplore_chi18",
+              "unit_type": "section",
+              "section_name": "SCENARIO: INTERACTING WITH CODE DISTRIBUTIONS",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null
+            }
+          ],
+          "confirmation": {
+            "pair": [
+              "examplore_chi18",
+              "corpusstudio"
+            ],
+            "a_unit": {
+              "section_name": "SCENARIO: INTERACTING WITH CODE DISTRIBUTIONS",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null
+            },
+            "b_unit": {
+              "section_name": "Corpus Studio",
+              "section_number": "3",
+              "subsection_name": "Usage Scenario",
+              "subsection_number": "3.2"
+            },
+            "basis_a_to_b": "Both texts are narrative \"usage scenario\" walkthroughs featuring a persona (Victor vs. Alice) using the tool step-by-step to illustrate its features in a realistic task context. Candidate [8] 'Usage Scenario' plays exactly this role in paper2 — a concrete illustrative story of a user (Alice) interacting with CorpusStudio's document-level and sentence-level features, paralleling the query's walkthrough of Victor exploring EXAMPLORE's code distribution features. The domains differ (code API patterns vs. writing norms) but the structural role — a persona-driven scenario section demonstrating tool interaction — is the same.",
+            "basis_b_to_a": "The query is a walkthrough scenario narrating a persona (Alice) using CorpusStudio step-by-step to accomplish a real task (drafting a paper section), illustrating interface features (browsing clusters, retrieving sentences, filtering) through concrete interaction. Candidate [7] 'SCENARIO: INTERACTING WITH CODE DISTRIBUTIONS' plays the exact same role in paper2: it follows a persona (Victor) through a sequence of interactions with EXAMPLORE (viewing the skeleton, selecting features, filtering examples, drilling into code) to demonstrate the tool's use in practice. Both are narrative usage-scenario sections meant to ground the system's UI features in a realistic task, rather than being an abstract, evaluation, or implementation description."
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "node-1b966007636c604f",
+      "confirmations": [
+        {
+          "pair": [
+            "examplore_chi18",
+            "corpusstudio"
+          ],
+          "a_unit": {
+            "section_name": "USER STUDY",
+            "section_number": null,
+            "subsection_name": "Methodology",
+            "subsection_number": null
+          },
+          "b_unit": {
+            "section_name": "User Study",
+            "section_number": "5",
+            "subsection_name": "Study Procedure",
+            "subsection_number": "5.2"
+          },
+          "basis_a_to_b": "The query describes a within-subjects user study procedure comparing EXAMPLORE with a baseline (online search), including training, tasks, counterbalancing, and post-survey — i.e., the methodology/procedure section of a user study evaluating a writing/exploration support tool against a baseline. This matches candidate [17] 'Study Procedure' (5.2), which similarly details the within-subjects study procedure comparing CorpusStudio to a baseline (Google Docs), including task preparation, tutorial/training, task structure, and post-task surveys/interviews. Both serve the same structural role: describing the concrete procedural steps and study design used to compare the proposed tool against a baseline condition. The candidate [15] 'User Study' (whole section 5) also covers overlapping content (participants + procedure + design rationale), but [17] is the more precise procedural counterpart since the query is specifically a 'Methodology' subsection focused on procedure/design, not participant demographics.",
+          "basis_b_to_a": "The query is the 'Study Procedure' subsection detailing the concrete step-by-step protocol (tasks, timing, conditions, counterbalancing) used to run the within-subjects user study evaluating CorpusStudio. Candidate [15] 'Methodology' plays the identical role in paper2: it describes the within-subjects study procedure for EXAMPLORE, including counterbalancing of conditions/API methods, the training session, code exploration tasks, and post-survey, i.e., the step-by-step protocol of the study. Both are procedural walkthroughs of how the study session was structured and administered, distinct from participant description (candidate 14) or API/task selection rationale (candidate 13), making [15] the closest role match."
+        }
+      ],
+      "members": [
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "subsection",
+          "section_name": "USER STUDY",
+          "section_number": null,
+          "subsection_name": "Methodology",
+          "subsection_number": null
+        },
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "subsection",
+          "section_name": "User Study",
+          "section_number": "5",
+          "subsection_name": "Study Procedure",
+          "subsection_number": "5.2"
+        }
+      ],
+      "merge_history": [
+        {
+          "absorbed_node": "node-7c0897ecdd5aa255",
+          "absorbed_members": [
+            {
+              "paper_id": "corpusstudio",
+              "unit_type": "subsection",
+              "section_name": "User Study",
+              "section_number": "5",
+              "subsection_name": "Study Procedure",
+              "subsection_number": "5.2"
+            }
+          ],
+          "confirmation": {
+            "pair": [
+              "examplore_chi18",
+              "corpusstudio"
+            ],
+            "a_unit": {
+              "section_name": "USER STUDY",
+              "section_number": null,
+              "subsection_name": "Methodology",
+              "subsection_number": null
+            },
+            "b_unit": {
+              "section_name": "User Study",
+              "section_number": "5",
+              "subsection_name": "Study Procedure",
+              "subsection_number": "5.2"
+            },
+            "basis_a_to_b": "The query describes a within-subjects user study procedure comparing EXAMPLORE with a baseline (online search), including training, tasks, counterbalancing, and post-survey — i.e., the methodology/procedure section of a user study evaluating a writing/exploration support tool against a baseline. This matches candidate [17] 'Study Procedure' (5.2), which similarly details the within-subjects study procedure comparing CorpusStudio to a baseline (Google Docs), including task preparation, tutorial/training, task structure, and post-task surveys/interviews. Both serve the same structural role: describing the concrete procedural steps and study design used to compare the proposed tool against a baseline condition. The candidate [15] 'User Study' (whole section 5) also covers overlapping content (participants + procedure + design rationale), but [17] is the more precise procedural counterpart since the query is specifically a 'Methodology' subsection focused on procedure/design, not participant demographics.",
+            "basis_b_to_a": "The query is the 'Study Procedure' subsection detailing the concrete step-by-step protocol (tasks, timing, conditions, counterbalancing) used to run the within-subjects user study evaluating CorpusStudio. Candidate [15] 'Methodology' plays the identical role in paper2: it describes the within-subjects study procedure for EXAMPLORE, including counterbalancing of conditions/API methods, the training session, code exploration tasks, and post-survey, i.e., the step-by-step protocol of the study. Both are procedural walkthroughs of how the study session was structured and administered, distinct from participant description (candidate 14) or API/task selection rationale (candidate 13), making [15] the closest role match."
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "node-20c1a2ed11a74a20",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "subsection",
+          "section_name": "Background and Related Work",
+          "section_number": "2",
+          "subsection_name": "Finding Relevant Examples",
+          "subsection_number": "2.3"
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-22f98e6f220dfcdd",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "subsection",
+          "section_name": "Discussion",
+          "section_number": "8",
+          "subsection_name": "Designing a System with Many Retrieved Examples",
+          "subsection_number": "8.2"
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-24449f3ff6a92682",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "subsection",
+          "section_name": "RELATED WORK",
+          "section_number": null,
+          "subsection_name": "Learning APIs with Code Examples",
+          "subsection_number": null
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-268a4958f7f7862c",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "subsection",
+          "section_name": "Data & Processing",
+          "section_number": "4",
+          "subsection_name": "Embedding Process",
+          "subsection_number": "4.2"
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-29a2c97d3d464989",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "subsection",
+          "section_name": "Qualitative Results",
+          "section_number": "6",
+          "subsection_name": "Use of Features, Especially Across Writing Stages",
+          "subsection_number": "6.5"
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-2acd688b2f8b2e7f",
+      "confirmations": [
+        {
+          "pair": [
+            "examplore_chi18",
+            "corpusstudio"
+          ],
+          "a_unit": {
+            "section_name": "DISCUSSION AND LIMITATIONS",
+            "section_number": null,
+            "subsection_name": null,
+            "subsection_number": null
+          },
+          "b_unit": {
+            "section_name": "Discussion",
+            "section_number": "8",
+            "subsection_name": null,
+            "subsection_number": null
+          },
+          "basis_a_to_b": "The query is a whole-paper Discussion section (with limitations woven in) summarizing study findings, benefits, trade-offs (visual complexity vs expressive power), and system limitations (stale/low-quality examples, sorting criteria) for EXAMPLORE. Candidate [28] 'Discussion' plays the exact same role in CorpusStudio's paper: it reflects on conceptual/empirical insights from the study, discusses design trade-offs (e.g., showing many examples vs cognitive load), and includes a Limitations subsection about scope/generalizability. Both are the paper's top-level discussion section synthesizing study results and system trade-offs/limitations, making this the closest role match despite being split into subsections in paper2.",
+          "basis_b_to_a": "Both sections serve the same role: a post-study \"Discussion and Limitations\" that reflects on conceptual/empirical insights from the user study, discusses trade-offs (e.g., visual/cognitive complexity vs. expressive power), and explicitly notes system limitations (e.g., EXAMPLORE's limitation regarding stale/low-quality examples parallels CorpusStudio's discussion of dataset scope limitations). Candidate 19 is explicitly the \"DISCUSSION AND LIMITATIONS\" whole section, discussing what the study revealed, trade-offs between expressive power and visual complexity, and limitations of the corpus/data quality -- structurally matching the query's role of reflecting on conceptual/empirical insights and limitations. Other candidates like RESULTS (16-18) report study findings without the reflective discussion/limitations framing, and CONCLUSION (20) is a wrap-up rather than a discussion of limitations."
+        }
+      ],
+      "members": [
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "section",
+          "section_name": "DISCUSSION AND LIMITATIONS",
+          "section_number": null,
+          "subsection_name": null,
+          "subsection_number": null
+        },
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "section",
+          "section_name": "Discussion",
+          "section_number": "8",
+          "subsection_name": null,
+          "subsection_number": null
+        }
+      ],
+      "merge_history": [
+        {
+          "absorbed_node": "node-9268ce562b95f815",
+          "absorbed_members": [
+            {
+              "paper_id": "corpusstudio",
+              "unit_type": "section",
+              "section_name": "Discussion",
+              "section_number": "8",
+              "subsection_name": null,
+              "subsection_number": null
+            }
+          ],
+          "confirmation": {
+            "pair": [
+              "examplore_chi18",
+              "corpusstudio"
+            ],
+            "a_unit": {
+              "section_name": "DISCUSSION AND LIMITATIONS",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null
+            },
+            "b_unit": {
+              "section_name": "Discussion",
+              "section_number": "8",
+              "subsection_name": null,
+              "subsection_number": null
+            },
+            "basis_a_to_b": "The query is a whole-paper Discussion section (with limitations woven in) summarizing study findings, benefits, trade-offs (visual complexity vs expressive power), and system limitations (stale/low-quality examples, sorting criteria) for EXAMPLORE. Candidate [28] 'Discussion' plays the exact same role in CorpusStudio's paper: it reflects on conceptual/empirical insights from the study, discusses design trade-offs (e.g., showing many examples vs cognitive load), and includes a Limitations subsection about scope/generalizability. Both are the paper's top-level discussion section synthesizing study results and system trade-offs/limitations, making this the closest role match despite being split into subsections in paper2.",
+            "basis_b_to_a": "Both sections serve the same role: a post-study \"Discussion and Limitations\" that reflects on conceptual/empirical insights from the user study, discusses trade-offs (e.g., visual/cognitive complexity vs. expressive power), and explicitly notes system limitations (e.g., EXAMPLORE's limitation regarding stale/low-quality examples parallels CorpusStudio's discussion of dataset scope limitations). Candidate 19 is explicitly the \"DISCUSSION AND LIMITATIONS\" whole section, discussing what the study revealed, trade-offs between expressive power and visual complexity, and limitations of the corpus/data quality -- structurally matching the query's role of reflecting on conceptual/empirical insights and limitations. Other candidates like RESULTS (16-18) report study findings without the reflective discussion/limitations framing, and CONCLUSION (20) is a wrap-up rather than a discussion of limitations."
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "node-2b774a4fdc8a2a6b",
+      "confirmations": [
+        {
+          "pair": [
+            "examplore_chi18",
+            "corpusstudio"
+          ],
+          "a_unit": {
+            "section_name": "USER STUDY",
+            "section_number": null,
+            "subsection_name": null,
+            "subsection_number": null
+          },
+          "b_unit": {
+            "section_name": "User Study",
+            "section_number": "5",
+            "subsection_name": null,
+            "subsection_number": null
+          },
+          "basis_a_to_b": "The query is the whole \"USER STUDY\" section from paper1 describing the overall study design: research question, task/question set, API/materials chosen, participant recruitment, procedure, and conditions (EXAMPLORE vs. online search baseline). This matches candidate [15] \"User Study\" (whole section) in paper2, which similarly covers the overall experimental design, comparison conditions (CorpusStudio vs. baseline Google Docs), participant recruitment overview, and task procedure for evaluating CorpusStudio. Both are the top-level \"how the study was designed and run\" section, later broken into Participants and Procedure subsections in paper2 (candidates 16 and 17), which correspond to parts of the query but the query as a whole most closely matches the whole User Study section [15].",
+          "basis_b_to_a": "Both are the top-level 'User Study' sections describing the overall experimental design, participants, tasks/procedure, and materials used to evaluate the tool (EXAMPLORE vs. CorpusStudio) against a baseline (online search vs. Google Docs) in a within-subjects study. Candidate 12 plays the same overarching role of introducing the study design and methodology as the query, with its subsections (13-15) corresponding to the more granular content (API methods/participants/methodology) that the query bundles together at the whole-section level."
+        }
+      ],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "section",
+          "section_name": "User Study",
+          "section_number": "5",
+          "subsection_name": null,
+          "subsection_number": null
+        },
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "section",
+          "section_name": "USER STUDY",
+          "section_number": null,
+          "subsection_name": null,
+          "subsection_number": null
+        }
+      ],
+      "merge_history": [
+        {
+          "absorbed_node": "node-e9fa3e647e31b23b",
+          "absorbed_members": [
+            {
+              "paper_id": "examplore_chi18",
+              "unit_type": "section",
+              "section_name": "USER STUDY",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null
+            }
+          ],
+          "confirmation": {
+            "pair": [
+              "examplore_chi18",
+              "corpusstudio"
+            ],
+            "a_unit": {
+              "section_name": "USER STUDY",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null
+            },
+            "b_unit": {
+              "section_name": "User Study",
+              "section_number": "5",
+              "subsection_name": null,
+              "subsection_number": null
+            },
+            "basis_a_to_b": "The query is the whole \"USER STUDY\" section from paper1 describing the overall study design: research question, task/question set, API/materials chosen, participant recruitment, procedure, and conditions (EXAMPLORE vs. online search baseline). This matches candidate [15] \"User Study\" (whole section) in paper2, which similarly covers the overall experimental design, comparison conditions (CorpusStudio vs. baseline Google Docs), participant recruitment overview, and task procedure for evaluating CorpusStudio. Both are the top-level \"how the study was designed and run\" section, later broken into Participants and Procedure subsections in paper2 (candidates 16 and 17), which correspond to parts of the query but the query as a whole most closely matches the whole User Study section [15].",
+            "basis_b_to_a": "Both are the top-level 'User Study' sections describing the overall experimental design, participants, tasks/procedure, and materials used to evaluate the tool (EXAMPLORE vs. CorpusStudio) against a baseline (online search vs. Google Docs) in a within-subjects study. Candidate 12 plays the same overarching role of introducing the study design and methodology as the query, with its subsections (13-15) corresponding to the more granular content (API methods/participants/methodology) that the query bundles together at the whole-section level."
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "node-31af51898399ca8f",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "subsection",
+          "section_name": "Discussion",
+          "section_number": "8",
+          "subsection_name": "Limitations and Future Work",
+          "subsection_number": "8.5"
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-342e89c6e2016626",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "subsection",
+          "section_name": "Discussion",
+          "section_number": "8",
+          "subsection_name": "Relevance of Retrieved Sentences",
+          "subsection_number": "8.1"
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-3a8dcca2dde73e03",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "subsection",
+          "section_name": "Background and Related Work",
+          "section_number": "2",
+          "subsection_name": "Community Writing Norms",
+          "subsection_number": "2.1"
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-418d5e8f6bf12658",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "subsection",
+          "section_name": "Quantitative Results",
+          "section_number": "7",
+          "subsection_name": "Task 2: Writing a Section of a Manuscript",
+          "subsection_number": "7.2"
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-42ab35f2ebebc51a",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "subsection",
+          "section_name": "Data & Processing",
+          "section_number": "4",
+          "subsection_name": "Extracting an Ordered Distribution over Section Titles",
+          "subsection_number": "4.3"
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-46f865fe583a8185",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "subsection",
+          "section_name": "Qualitative Results",
+          "section_number": "6",
+          "subsection_name": "Sentence-level Writing Support",
+          "subsection_number": "6.2"
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-4916e3227e874a24",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "subsection",
+          "section_name": "Qualitative Results",
+          "section_number": "6",
+          "subsection_name": "Efficacy of Anti-plagiarism Features",
+          "subsection_number": "6.6"
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-4b83ea89ee8cf6dd",
+      "confirmations": [
+        {
+          "pair": [
+            "examplore_chi18",
+            "corpusstudio"
+          ],
+          "a_unit": {
+            "section_name": "ACKNOWLEDGMENTS",
+            "section_number": null,
+            "subsection_name": null,
+            "subsection_number": null
+          },
+          "b_unit": {
+            "section_name": "Acknowledgments",
+            "section_number": null,
+            "subsection_name": null,
+            "subsection_number": null
+          },
+          "basis_a_to_b": "Both sections serve the identical structural role of an Acknowledgments section, crediting contributors/funders. Paper2's index 35 ('Acknowledgments') lists funding sources (NSF grant, DFG, Sloan Fellowship) and disclaimers, exactly matching the role of paper1's ACKNOWLEDGMENTS section which lists collaborators and funding sources (AFRL, NSF grants, Berkeley Institute of Data Science).",
+          "basis_b_to_a": "Both are the paper's Acknowledgments sections, serving the identical role of crediting funding sources, grants, and contributors/support for the research. Candidate 21 lists grant numbers (AFRL, NSF) and thanks contributors, matching the query's role of disclosing funding and support (NSF grant, DFG, Sloan Fellowship) and disclaimers."
+        }
+      ],
+      "members": [
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "section",
+          "section_name": "ACKNOWLEDGMENTS",
+          "section_number": null,
+          "subsection_name": null,
+          "subsection_number": null
+        },
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "section",
+          "section_name": "Acknowledgments",
+          "section_number": null,
+          "subsection_name": null,
+          "subsection_number": null
+        }
+      ],
+      "merge_history": [
+        {
+          "absorbed_node": "node-9b94f735ff4ae7b2",
+          "absorbed_members": [
+            {
+              "paper_id": "corpusstudio",
+              "unit_type": "section",
+              "section_name": "Acknowledgments",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null
+            }
+          ],
+          "confirmation": {
+            "pair": [
+              "examplore_chi18",
+              "corpusstudio"
+            ],
+            "a_unit": {
+              "section_name": "ACKNOWLEDGMENTS",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null
+            },
+            "b_unit": {
+              "section_name": "Acknowledgments",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null
+            },
+            "basis_a_to_b": "Both sections serve the identical structural role of an Acknowledgments section, crediting contributors/funders. Paper2's index 35 ('Acknowledgments') lists funding sources (NSF grant, DFG, Sloan Fellowship) and disclaimers, exactly matching the role of paper1's ACKNOWLEDGMENTS section which lists collaborators and funding sources (AFRL, NSF grants, Berkeley Institute of Data Science).",
+            "basis_b_to_a": "Both are the paper's Acknowledgments sections, serving the identical role of crediting funding sources, grants, and contributors/support for the research. Candidate 21 lists grant numbers (AFRL, NSF) and thanks contributors, matching the query's role of disclosing funding and support (NSF grant, DFG, Sloan Fellowship) and disclaimers."
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "node-54fadbe5d54d3248",
+      "confirmations": [
+        {
+          "pair": [
+            "examplore_chi18",
+            "corpusstudio"
+          ],
+          "a_unit": {
+            "section_name": "ABSTRACT",
+            "section_number": null,
+            "subsection_name": null,
+            "subsection_number": null
+          },
+          "b_unit": {
+            "section_name": "Abstract",
+            "section_number": null,
+            "subsection_name": null,
+            "subsection_number": null
+          },
+          "basis_a_to_b": "Both are whole-paper Abstracts: they state the motivating problem (learning implicit norms/conventions vs. learning API usage from too many examples), summarize the proposed system's core mechanism (retrieval + visualization of many examples with statistical/structural summarization), and report the evaluation outcome from a user study. This is a direct role match at the same document level.",
+          "basis_b_to_a": "Both texts are the paper's Abstract, serving the same role: stating the motivating problem (difficulty learning implicit API usage norms vs. writing norms from limited examples), introducing the proposed interactive/visualization support concept that summarizes many examples/patterns from a corpus, and reporting the key user-study finding (N=16 in query, sixteen users in candidate) showing improved outcomes using the tool compared to a baseline. This matches candidate [0]'s ABSTRACT, which plays the identical structural role of summarizing problem, approach, and study results, despite the different domain (API code examples vs. writing norms)."
+        }
+      ],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "section",
+          "section_name": "Abstract",
+          "section_number": null,
+          "subsection_name": null,
+          "subsection_number": null
+        },
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "section",
+          "section_name": "ABSTRACT",
+          "section_number": null,
+          "subsection_name": null,
+          "subsection_number": null
+        }
+      ],
+      "merge_history": [
+        {
+          "absorbed_node": "node-7c1235f1650f5c77",
+          "absorbed_members": [
+            {
+              "paper_id": "examplore_chi18",
+              "unit_type": "section",
+              "section_name": "ABSTRACT",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null
+            }
+          ],
+          "confirmation": {
+            "pair": [
+              "examplore_chi18",
+              "corpusstudio"
+            ],
+            "a_unit": {
+              "section_name": "ABSTRACT",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null
+            },
+            "b_unit": {
+              "section_name": "Abstract",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null
+            },
+            "basis_a_to_b": "Both are whole-paper Abstracts: they state the motivating problem (learning implicit norms/conventions vs. learning API usage from too many examples), summarize the proposed system's core mechanism (retrieval + visualization of many examples with statistical/structural summarization), and report the evaluation outcome from a user study. This is a direct role match at the same document level.",
+            "basis_b_to_a": "Both texts are the paper's Abstract, serving the same role: stating the motivating problem (difficulty learning implicit API usage norms vs. writing norms from limited examples), introducing the proposed interactive/visualization support concept that summarizes many examples/patterns from a corpus, and reporting the key user-study finding (N=16 in query, sixteen users in candidate) showing improved outcomes using the tool compared to a baseline. This matches candidate [0]'s ABSTRACT, which plays the identical structural role of summarizing problem, approach, and study results, despite the different domain (API code examples vs. writing norms)."
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "node-56a630a0d986ce2d",
+      "confirmations": [
+        {
+          "pair": [
+            "examplore_chi18",
+            "corpusstudio"
+          ],
+          "a_unit": {
+            "section_name": "RELATED WORK",
+            "section_number": null,
+            "subsection_name": null,
+            "subsection_number": null
+          },
+          "b_unit": {
+            "section_name": "Background and Related Work",
+            "section_number": "2",
+            "subsection_name": null,
+            "subsection_number": null
+          },
+          "basis_a_to_b": "The query is a whole \"RELATED WORK\" section from a different paper (EXAMPLORE) that situates its system relative to prior work on collection-browsing interfaces (Sifter, Delta, WordTree, WordSeer, OverCode), code search/API learning studies, and API usage mining techniques, explaining similarities and differences to justify its own contribution. This plays the same structural role as paper2's whole \"Background and Related Work\" section (candidate 2), which surveys prior work on writing norms, writing support tools, and finding relevant examples, explicitly contrasting with and situating the paper's own contribution (e.g., \"In contrast, our design focuses on...\", \"Our approach proposes...\"). Both are top-level related-work sections comparing/contrasting the current system to multiple strands of prior work. The subsections (3,4,5) are narrower sub-topics of that same section, so the whole-section candidate 2 is the best-fitting counterpart in scope and role, rather than picking one narrower subsection.",
+          "basis_b_to_a": "The query is a whole \"Background and Related Work\" section that situates the paper relative to prior research (here: writing norms and writing support tools), covering multiple subtopics (norms, learning norms, writing tools with generated/retrieved text, writing tools with corpus text, related-work search tools). This plays the same overall role as candidate [2], the whole 'RELATED WORK' section of EXAMPLORE, which similarly surveys and differentiates itself from several categories of prior work (collection-exploration interfaces, API learning research, API mining/visualization). Both are top-level related-work sections synthesizing multiple subsections' worth of content into one holistic contextualization of the paper's contribution. While paper2 also has finer-grained subsections (3,4,5) mirroring the query's own subsections, the query itself is the whole-section object, so the whole-section candidate [2] is the closest structural counterpart."
+        }
+      ],
+      "members": [
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "section",
+          "section_name": "RELATED WORK",
+          "section_number": null,
+          "subsection_name": null,
+          "subsection_number": null
+        },
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "section",
+          "section_name": "Background and Related Work",
+          "section_number": "2",
+          "subsection_name": null,
+          "subsection_number": null
+        }
+      ],
+      "merge_history": [
+        {
+          "absorbed_node": "node-6f426c0f67141406",
+          "absorbed_members": [
+            {
+              "paper_id": "corpusstudio",
+              "unit_type": "section",
+              "section_name": "Background and Related Work",
+              "section_number": "2",
+              "subsection_name": null,
+              "subsection_number": null
+            }
+          ],
+          "confirmation": {
+            "pair": [
+              "examplore_chi18",
+              "corpusstudio"
+            ],
+            "a_unit": {
+              "section_name": "RELATED WORK",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null
+            },
+            "b_unit": {
+              "section_name": "Background and Related Work",
+              "section_number": "2",
+              "subsection_name": null,
+              "subsection_number": null
+            },
+            "basis_a_to_b": "The query is a whole \"RELATED WORK\" section from a different paper (EXAMPLORE) that situates its system relative to prior work on collection-browsing interfaces (Sifter, Delta, WordTree, WordSeer, OverCode), code search/API learning studies, and API usage mining techniques, explaining similarities and differences to justify its own contribution. This plays the same structural role as paper2's whole \"Background and Related Work\" section (candidate 2), which surveys prior work on writing norms, writing support tools, and finding relevant examples, explicitly contrasting with and situating the paper's own contribution (e.g., \"In contrast, our design focuses on...\", \"Our approach proposes...\"). Both are top-level related-work sections comparing/contrasting the current system to multiple strands of prior work. The subsections (3,4,5) are narrower sub-topics of that same section, so the whole-section candidate 2 is the best-fitting counterpart in scope and role, rather than picking one narrower subsection.",
+            "basis_b_to_a": "The query is a whole \"Background and Related Work\" section that situates the paper relative to prior research (here: writing norms and writing support tools), covering multiple subtopics (norms, learning norms, writing tools with generated/retrieved text, writing tools with corpus text, related-work search tools). This plays the same overall role as candidate [2], the whole 'RELATED WORK' section of EXAMPLORE, which similarly surveys and differentiates itself from several categories of prior work (collection-exploration interfaces, API learning research, API mining/visualization). Both are top-level related-work sections synthesizing multiple subsections' worth of content into one holistic contextualization of the paper's contribution. While paper2 also has finer-grained subsections (3,4,5) mirroring the query's own subsections, the query itself is the whole-section object, so the whole-section candidate [2] is the closest structural counterpart."
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "node-5b0b3734b60806ab",
+      "confirmations": [
+        {
+          "pair": [
+            "examplore_chi18",
+            "corpusstudio"
+          ],
+          "a_unit": {
+            "section_name": "RESULTS",
+            "section_number": null,
+            "subsection_name": "Quantitative Analysis",
+            "subsection_number": null
+          },
+          "b_unit": {
+            "section_name": "Quantitative Results",
+            "section_number": "7",
+            "subsection_name": null,
+            "subsection_number": null
+          },
+          "basis_a_to_b": "The query is a quantitative-results subsection reporting statistical comparisons (correctness of answers, significance tests, survey ratings) between the proposed tool (EXAMPLORE) and a baseline (online search). This plays the same role as paper2's 'Quantitative Results' section (7), which similarly reports Mann-Whitney U tests, statistically significant preferences for CorpusStudio over baseline, survey/Likert results, and participant perceptions comparing the tool to a baseline interface. Both are the dedicated quantitative-evaluation section of their respective papers, following qualitative findings, presenting statistical significance tests and survey-based comparisons between tool and baseline. Subsections like 7.1/7.2 give task-specific breakdowns, but the whole-section candidate 25 is the most direct structural counterpart to this query's role as the paper's quantitative comparison-to-baseline section.",
+          "basis_b_to_a": "The query is a \"Quantitative Results\" section reporting statistical survey/questionnaire results (Mann-Whitney U tests, Likert ratings, feature usage counts) comparing a tool condition (CorpusStudio) against a baseline, to demonstrate the tool's benefits for writing tasks. Candidate [17] 'Quantitative Analysis' plays the identical role in EXAMPLORE's paper: it reports statistical test results (paired t-tests) comparing EXAMPLORE vs. online search baseline on correctness, vagueness, and survey ratings of helpfulness/confidence. Both are the quantitative-evaluation subsection following a user study, presenting significance tests and descriptive stats about tool vs. baseline performance. The qualitative/free-response findings in the query (e.g., norm-breaking reflections) are secondary and better match candidate [18] Qualitative Analysis, but the primary content here is the quantitative statistical comparisons, aligning with [17]."
+        }
+      ],
+      "members": [
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "subsection",
+          "section_name": "RESULTS",
+          "section_number": null,
+          "subsection_name": "Quantitative Analysis",
+          "subsection_number": null
+        },
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "section",
+          "section_name": "Quantitative Results",
+          "section_number": "7",
+          "subsection_name": null,
+          "subsection_number": null
+        }
+      ],
+      "merge_history": [
+        {
+          "absorbed_node": "node-9b163941450c96a5",
+          "absorbed_members": [
+            {
+              "paper_id": "corpusstudio",
+              "unit_type": "section",
+              "section_name": "Quantitative Results",
+              "section_number": "7",
+              "subsection_name": null,
+              "subsection_number": null
+            }
+          ],
+          "confirmation": {
+            "pair": [
+              "examplore_chi18",
+              "corpusstudio"
+            ],
+            "a_unit": {
+              "section_name": "RESULTS",
+              "section_number": null,
+              "subsection_name": "Quantitative Analysis",
+              "subsection_number": null
+            },
+            "b_unit": {
+              "section_name": "Quantitative Results",
+              "section_number": "7",
+              "subsection_name": null,
+              "subsection_number": null
+            },
+            "basis_a_to_b": "The query is a quantitative-results subsection reporting statistical comparisons (correctness of answers, significance tests, survey ratings) between the proposed tool (EXAMPLORE) and a baseline (online search). This plays the same role as paper2's 'Quantitative Results' section (7), which similarly reports Mann-Whitney U tests, statistically significant preferences for CorpusStudio over baseline, survey/Likert results, and participant perceptions comparing the tool to a baseline interface. Both are the dedicated quantitative-evaluation section of their respective papers, following qualitative findings, presenting statistical significance tests and survey-based comparisons between tool and baseline. Subsections like 7.1/7.2 give task-specific breakdowns, but the whole-section candidate 25 is the most direct structural counterpart to this query's role as the paper's quantitative comparison-to-baseline section.",
+            "basis_b_to_a": "The query is a \"Quantitative Results\" section reporting statistical survey/questionnaire results (Mann-Whitney U tests, Likert ratings, feature usage counts) comparing a tool condition (CorpusStudio) against a baseline, to demonstrate the tool's benefits for writing tasks. Candidate [17] 'Quantitative Analysis' plays the identical role in EXAMPLORE's paper: it reports statistical test results (paired t-tests) comparing EXAMPLORE vs. online search baseline on correctness, vagueness, and survey ratings of helpfulness/confidence. Both are the quantitative-evaluation subsection following a user study, presenting significance tests and descriptive stats about tool vs. baseline performance. The qualitative/free-response findings in the query (e.g., norm-breaking reflections) are secondary and better match candidate [18] Qualitative Analysis, but the primary content here is the quantitative statistical comparisons, aligning with [17]."
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "node-5d7fc56e54604d0e",
+      "confirmations": [
+        {
+          "pair": [
+            "examplore_chi18",
+            "corpusstudio"
+          ],
+          "a_unit": {
+            "section_name": "INTRODUCTION",
+            "section_number": null,
+            "subsection_name": null,
+            "subsection_number": null
+          },
+          "b_unit": {
+            "section_name": "Introduction",
+            "section_number": "1",
+            "subsection_name": null,
+            "subsection_number": null
+          },
+          "basis_a_to_b": "Both are whole Introduction sections that follow the same rhetorical structure: they identify a learning problem (API usage learning barriers vs. implicit writing norms), motivate why existing resources fail (docs/tutorials lacking examples vs. abstract writing guides), argue for learning from many examples while noting risks of too few/too many examples (overfitting/plagiarism vs. limited code examples/overwhelm), introduce the proposed tool (EXAMPLORE vs. CorpusStudio) and its core mechanisms, preview the user study, and list contributions. This matches candidate [1]'s question 'What problem, proposed system, and study does this introduction motivate and preview for the reader?' precisely, whereas other candidates are either related-work, system-detail, or results sections that play different roles.",
+          "basis_b_to_a": "Both are the paper's Introduction sections, playing the identical structural role: motivating the problem (learning implicit conventions/API usage from too few or too many examples), reviewing the gap in existing tools, introducing the novel interactive system (CorpusStudio vs EXAMPLORE) that summarizes many examples with cognitive supports, previewing the user study design, and listing the paper's contributions. Candidate [1] ('INTRODUCTION') mirrors this exact arc: problem of learning APIs from insufficient examples, prior tools' limitations, introduction of EXAMPLORE as a visualization/navigation solution, summary of the lab study with 16 participants, and a final contributions list -- the same rhetorical structure and role as the query's Introduction."
+        }
+      ],
+      "members": [
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "section",
+          "section_name": "INTRODUCTION",
+          "section_number": null,
+          "subsection_name": null,
+          "subsection_number": null
+        },
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "section",
+          "section_name": "Introduction",
+          "section_number": "1",
+          "subsection_name": null,
+          "subsection_number": null
+        }
+      ],
+      "merge_history": [
+        {
+          "absorbed_node": "node-abefb1c7b75910a8",
+          "absorbed_members": [
+            {
+              "paper_id": "corpusstudio",
+              "unit_type": "section",
+              "section_name": "Introduction",
+              "section_number": "1",
+              "subsection_name": null,
+              "subsection_number": null
+            }
+          ],
+          "confirmation": {
+            "pair": [
+              "examplore_chi18",
+              "corpusstudio"
+            ],
+            "a_unit": {
+              "section_name": "INTRODUCTION",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null
+            },
+            "b_unit": {
+              "section_name": "Introduction",
+              "section_number": "1",
+              "subsection_name": null,
+              "subsection_number": null
+            },
+            "basis_a_to_b": "Both are whole Introduction sections that follow the same rhetorical structure: they identify a learning problem (API usage learning barriers vs. implicit writing norms), motivate why existing resources fail (docs/tutorials lacking examples vs. abstract writing guides), argue for learning from many examples while noting risks of too few/too many examples (overfitting/plagiarism vs. limited code examples/overwhelm), introduce the proposed tool (EXAMPLORE vs. CorpusStudio) and its core mechanisms, preview the user study, and list contributions. This matches candidate [1]'s question 'What problem, proposed system, and study does this introduction motivate and preview for the reader?' precisely, whereas other candidates are either related-work, system-detail, or results sections that play different roles.",
+            "basis_b_to_a": "Both are the paper's Introduction sections, playing the identical structural role: motivating the problem (learning implicit conventions/API usage from too few or too many examples), reviewing the gap in existing tools, introducing the novel interactive system (CorpusStudio vs EXAMPLORE) that summarizes many examples with cognitive supports, previewing the user study design, and listing the paper's contributions. Candidate [1] ('INTRODUCTION') mirrors this exact arc: problem of learning APIs from insufficient examples, prior tools' limitations, introduction of EXAMPLORE as a visualization/navigation solution, summary of the lab study with 16 participants, and a final contributions list -- the same rhetorical structure and role as the query's Introduction."
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "node-66c9c1e0dde3eec2",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "subsection",
+          "section_name": "USER STUDY",
+          "section_number": null,
+          "subsection_name": "API Methods",
+          "subsection_number": null
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-68021f20301ad071",
+      "confirmations": [
+        {
+          "pair": [
+            "examplore_chi18",
+            "corpusstudio"
+          ],
+          "a_unit": {
+            "section_name": "USER STUDY",
+            "section_number": null,
+            "subsection_name": "Participants",
+            "subsection_number": null
+          },
+          "b_unit": {
+            "section_name": "User Study",
+            "section_number": "5",
+            "subsection_name": "Participants",
+            "subsection_number": "5.1"
+          },
+          "basis_a_to_b": "Both are subsections titled/described as \"Participants\" that describe who was recruited for the user study and their relevant characteristics (background, experience level). Candidate [16] plays the exact same role in paper2 (describing the 16 participants recruited, their academic/professional background and experience with the relevant domain), matching the query's role of describing participant recruitment and characteristics for its own user study.",
+          "basis_b_to_a": "The query is a subsection titled 'Participants' under 'User Study', describing the recruitment and characteristics (background, experience, demographics) of the sixteen participants recruited for a lab study. This matches candidate [14], which is also a subsection titled 'Participants' under 'USER STUDY' in paper2, describing the sixteen participants recruited (their academic level, Java experience, prior API familiarity). Both play the identical role: reporting recruitment source and characteristics of the study's participant pool."
+        }
+      ],
+      "members": [
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "subsection",
+          "section_name": "USER STUDY",
+          "section_number": null,
+          "subsection_name": "Participants",
+          "subsection_number": null
+        },
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "subsection",
+          "section_name": "User Study",
+          "section_number": "5",
+          "subsection_name": "Participants",
+          "subsection_number": "5.1"
+        }
+      ],
+      "merge_history": [
+        {
+          "absorbed_node": "node-ed395dbf86bd7884",
+          "absorbed_members": [
+            {
+              "paper_id": "corpusstudio",
+              "unit_type": "subsection",
+              "section_name": "User Study",
+              "section_number": "5",
+              "subsection_name": "Participants",
+              "subsection_number": "5.1"
+            }
+          ],
+          "confirmation": {
+            "pair": [
+              "examplore_chi18",
+              "corpusstudio"
+            ],
+            "a_unit": {
+              "section_name": "USER STUDY",
+              "section_number": null,
+              "subsection_name": "Participants",
+              "subsection_number": null
+            },
+            "b_unit": {
+              "section_name": "User Study",
+              "section_number": "5",
+              "subsection_name": "Participants",
+              "subsection_number": "5.1"
+            },
+            "basis_a_to_b": "Both are subsections titled/described as \"Participants\" that describe who was recruited for the user study and their relevant characteristics (background, experience level). Candidate [16] plays the exact same role in paper2 (describing the 16 participants recruited, their academic/professional background and experience with the relevant domain), matching the query's role of describing participant recruitment and characteristics for its own user study.",
+            "basis_b_to_a": "The query is a subsection titled 'Participants' under 'User Study', describing the recruitment and characteristics (background, experience, demographics) of the sixteen participants recruited for a lab study. This matches candidate [14], which is also a subsection titled 'Participants' under 'USER STUDY' in paper2, describing the sixteen participants recruited (their academic level, Java experience, prior API familiarity). Both play the identical role: reporting recruitment source and characteristics of the study's participant pool."
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "node-83f4a39dbbf6becb",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "section",
+          "section_name": "Corpus Studio",
+          "section_number": "3",
+          "subsection_name": null,
+          "subsection_number": null
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-83f674e861b6f36a",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "subsection",
+          "section_name": "Discussion",
+          "section_number": "8",
+          "subsection_name": "Designing Writing Support for and with Community Integration, not AI Integration",
+          "subsection_number": "8.3"
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-85ddb5b71ef091b0",
+      "confirmations": [
+        {
+          "pair": [
+            "examplore_chi18",
+            "corpusstudio"
+          ],
+          "a_unit": {
+            "section_name": "SYNTHETIC CODE SKELETON",
+            "section_number": null,
+            "subsection_name": null,
+            "subsection_number": null
+          },
+          "b_unit": {
+            "section_name": "Corpus Studio",
+            "section_number": "3",
+            "subsection_name": "System Characteristics",
+            "subsection_number": "3.3"
+          },
+          "basis_a_to_b": "The query describes a core system concept (the \"synthetic code skeleton\") that reifies domain knowledge into a structured visual/interactive representation to help users learn/explore a large corpus of examples—grounded in prior theory about learning barriers (Duala-Ekoko/Robillard, Ko et al.) and detailing the specific structural components (7 API usage features) that make up this representation. This plays the same role as candidate [9] \"System Characteristics,\" which details CorpusStudio's core writing-support concepts (document-level section title distribution and sentence-level retrieval/rendering), grounded in cognitive theories (Variation Theory, Structural Alignment Theory), and enumerates the specific structural/visual components that reify emergent patterns for the user. Both are the central 'what is the concept and what does it summarize/contain' section of their respective systems, theoretically motivated and structurally decomposed. Secondary resonance exists with [6], the parent whole section, but [9] is the more specific, content-matching subsection describing the actual design features analogous to the skeleton's feature list.",
+          "basis_b_to_a": "The query is a subsection describing CorpusStudio's system design/architecture: its theoretical foundations (Variation Theory, Structural Alignment Theory), UI components (text editor, cluster visualization of section titles, sentence retrieval, rendering modes, notes, tooltips), i.e., a detailed \"how the system works and what design principles ground it\" section. In paper2, the closest structural counterpart is the SYNTHETIC CODE SKELETON section (candidate 6), which similarly describes the core visualization concept's theoretical grounding (drawing on studies of API learning barriers/coordination and use barriers) and enumerates the concrete design features/components (the seven usage features) that make up the system's central artifact. Both are 'whole section describing the core design construct and its features/theoretical basis' rather than architecture/pipeline (candidate 8) or scenario walkthrough (candidate 7) or related work (candidates 2-5). While EXAMPLORE's system architecture (candidate 8) covers implementation pipeline, the query is more about the conceptual/theoretical design and feature set of the interface itself, matching candidate 6's role most closely."
+        }
+      ],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "subsection",
+          "section_name": "Corpus Studio",
+          "section_number": "3",
+          "subsection_name": "System Characteristics",
+          "subsection_number": "3.3"
+        },
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "section",
+          "section_name": "SYNTHETIC CODE SKELETON",
+          "section_number": null,
+          "subsection_name": null,
+          "subsection_number": null
+        }
+      ],
+      "merge_history": [
+        {
+          "absorbed_node": "node-9be787d41ef2ad90",
+          "absorbed_members": [
+            {
+              "paper_id": "examplore_chi18",
+              "unit_type": "section",
+              "section_name": "SYNTHETIC CODE SKELETON",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null
+            }
+          ],
+          "confirmation": {
+            "pair": [
+              "examplore_chi18",
+              "corpusstudio"
+            ],
+            "a_unit": {
+              "section_name": "SYNTHETIC CODE SKELETON",
+              "section_number": null,
+              "subsection_name": null,
+              "subsection_number": null
+            },
+            "b_unit": {
+              "section_name": "Corpus Studio",
+              "section_number": "3",
+              "subsection_name": "System Characteristics",
+              "subsection_number": "3.3"
+            },
+            "basis_a_to_b": "The query describes a core system concept (the \"synthetic code skeleton\") that reifies domain knowledge into a structured visual/interactive representation to help users learn/explore a large corpus of examples—grounded in prior theory about learning barriers (Duala-Ekoko/Robillard, Ko et al.) and detailing the specific structural components (7 API usage features) that make up this representation. This plays the same role as candidate [9] \"System Characteristics,\" which details CorpusStudio's core writing-support concepts (document-level section title distribution and sentence-level retrieval/rendering), grounded in cognitive theories (Variation Theory, Structural Alignment Theory), and enumerates the specific structural/visual components that reify emergent patterns for the user. Both are the central 'what is the concept and what does it summarize/contain' section of their respective systems, theoretically motivated and structurally decomposed. Secondary resonance exists with [6], the parent whole section, but [9] is the more specific, content-matching subsection describing the actual design features analogous to the skeleton's feature list.",
+            "basis_b_to_a": "The query is a subsection describing CorpusStudio's system design/architecture: its theoretical foundations (Variation Theory, Structural Alignment Theory), UI components (text editor, cluster visualization of section titles, sentence retrieval, rendering modes, notes, tooltips), i.e., a detailed \"how the system works and what design principles ground it\" section. In paper2, the closest structural counterpart is the SYNTHETIC CODE SKELETON section (candidate 6), which similarly describes the core visualization concept's theoretical grounding (drawing on studies of API learning barriers/coordination and use barriers) and enumerates the concrete design features/components (the seven usage features) that make up the system's central artifact. Both are 'whole section describing the core design construct and its features/theoretical basis' rather than architecture/pipeline (candidate 8) or scenario walkthrough (candidate 7) or related work (candidates 2-5). While EXAMPLORE's system architecture (candidate 8) covers implementation pipeline, the query is more about the conceptual/theoretical design and feature set of the interface itself, matching candidate 6's role most closely."
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "node-8adc42ed8859e18c",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "subsection",
+          "section_name": "Discussion",
+          "section_number": "8",
+          "subsection_name": "Putting Metacognitive Strategies “Ready to Hand”",
+          "subsection_number": "8.4"
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-8e5b852c7e5b559e",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "subsection",
+          "section_name": "Qualitative Results",
+          "section_number": "6",
+          "subsection_name": "Document-level Writing Support",
+          "subsection_number": "6.1"
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-8f49fd3df88feb71",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "subsection",
+          "section_name": "RELATED WORK",
+          "section_number": null,
+          "subsection_name": "Mining and Visualization of API Usage",
+          "subsection_number": null
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-9442b049afa17cb5",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "subsection",
+          "section_name": "Data & Processing",
+          "section_number": "4",
+          "subsection_name": "Pre-processing Documents",
+          "subsection_number": "4.1"
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-96023d7899d657d6",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "subsection",
+          "section_name": "Corpus Studio",
+          "section_number": "3",
+          "subsection_name": "Implementation Details",
+          "subsection_number": "3.4"
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-9c8be2a9788eaed0",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "section",
+          "section_name": "RESULTS",
+          "section_number": null,
+          "subsection_name": null,
+          "subsection_number": null
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-a9fb049aebe1543c",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "subsection",
+          "section_name": "Qualitative Results",
+          "section_number": "6",
+          "subsection_name": "Bookmark and User Notes",
+          "subsection_number": "6.3"
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-b0d563aaa9d16f58",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "subsection",
+          "section_name": "Corpus Studio",
+          "section_number": "3",
+          "subsection_name": "Design Goals",
+          "subsection_number": "3.1"
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-ba1f32843254b02b",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "subsection",
+          "section_name": "SYSTEM ARCHITECTURE AND IMPLEMENTATION",
+          "section_number": null,
+          "subsection_name": "Visualization",
+          "subsection_number": null
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-bc0cd67d1442661b",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "subsection",
+          "section_name": "Background and Related Work",
+          "section_number": "2",
+          "subsection_name": "Writing with External Text",
+          "subsection_number": "2.2"
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-c59a3c1454b1f8df",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "section",
+          "section_name": "SYSTEM ARCHITECTURE AND IMPLEMENTATION",
+          "section_number": null,
+          "subsection_name": null,
+          "subsection_number": null
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-d703900a679fe5f0",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "section",
+          "section_name": "Data & Processing",
+          "section_number": "4",
+          "subsection_name": null,
+          "subsection_number": null
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-dcdde32ef2054b2c",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "subsection",
+          "section_name": "SYSTEM ARCHITECTURE AND IMPLEMENTATION",
+          "section_number": null,
+          "subsection_name": "Data Collection",
+          "subsection_number": null
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-efb24be11680d583",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "corpusstudio",
+          "unit_type": "subsection",
+          "section_name": "Qualitative Results",
+          "section_number": "6",
+          "subsection_name": "Tooltips",
+          "subsection_number": "6.4"
+        }
+      ],
+      "merge_history": []
+    },
+    {
+      "node_id": "node-f02b3df0206ed6da",
+      "confirmations": [],
+      "members": [
+        {
+          "paper_id": "examplore_chi18",
+          "unit_type": "subsection",
+          "section_name": "RELATED WORK",
+          "section_number": null,
+          "subsection_name": "Interfaces for Exploring Collections of Complex Objects",
+          "subsection_number": null
+        }
+      ],
+      "merge_history": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "node-0165c9b94f705ccf",
+      "target": "node-85ddb5b71ef091b0",
+      "key": 0,
+      "basis": "The query describes a specific implementation-detail subsection about how EXAMPLORE takes retrieved raw code examples and normalizes/post-processes them into a canonical, user-friendly form (rewriting chained calls, canonicalizing variable names, storing usage features in a database for the UI). The closest role match in paper2 is candidate [9] 'System Characteristics' (3.3.3 Surfacing Sentence-level ... Sentence Rendering, Spatial Retrieval), which describes how CorpusStudio processes/renders retrieved raw sentences (colorizing recurring words, greying out repeated words, re-ranking) to make them easier for users to compare and interpret—i.e., the analogous 'post-processing retrieved examples for presentation' step. Both are mid-level implementation subsections describing transformation of raw retrieved content into a normalized, cognitively-supportive display format, distinct from the higher-level retrieval mechanism itself (candidate 13/Embedding) or the pure infra details (candidate 10). Candidate 9 is the best overall match since it covers the rendering/normalization logic for retrieved examples, paralleling EXAMPLORE's post-processing of code examples.",
+      "direction": "examplore_chi18->corpusstudio",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "SYSTEM ARCHITECTURE AND IMPLEMENTATION",
+        "section_number": null,
+        "subsection_name": "Post-processing",
+        "subsection_number": null
+      },
+      "target_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Corpus Studio",
+        "section_number": "3",
+        "subsection_name": "System Characteristics",
+        "subsection_number": "3.3"
+      }
+    },
+    {
+      "source": "node-0b07af2058d51b43",
+      "target": "node-5b0b3734b60806ab",
+      "key": 0,
+      "basis": "The query subsection presents quantitative results (statistical tests, participant ratings) comparing the proposed tool (CorpusStudio) against a baseline for a specific study task, drawing on survey/Likert data and correctness/preference statistics. Candidate [17] 'Quantitative Analysis' plays the same role: it reports statistically significant differences (paired t-tests, p-values) comparing EXAMPLORE vs. online search baseline on correctness, confidence, and survey ratings. Both are the quantitative-results subsection of a user study comparing a new interactive visualization tool to a conventional baseline, even though domains differ (writing outlines vs. API code exploration). The qualitative aspects mentioned in the query (e.g., 7.1.4 participant perceptions) are secondary and better match candidate [18], but the primary quantitative-comparison role aligns with [17].",
+      "direction": "corpusstudio->examplore_chi18",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Quantitative Results",
+        "section_number": "7",
+        "subsection_name": "Task 1: Outline Writing",
+        "subsection_number": "7.1"
+      },
+      "target_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "RESULTS",
+        "section_number": null,
+        "subsection_name": "Quantitative Analysis",
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-20c1a2ed11a74a20",
+      "target": "node-24449f3ff6a92682",
+      "key": 0,
+      "basis": "Both play the \"related work on how users currently find/learn from examples, and why it falls short\" role within a Related Work section. Candidate [4] ('Learning APIs with Code Examples') reviews prior work on how programmers search for code examples, showing that search results are hard to browse and limited in coverage, motivating EXAMPLORE's approach of visualizing many examples at once. The query subsection similarly reviews existing search/related-work tools (Google Scholar, citation-context tools, recommendation systems) and argues they surface topically similar but not structurally/analogously relevant snippets, motivating the paper's integrated writing-support design. Both sections critique existing example/reference-finding tools as inadequate for the specific need (comprehensive API usage vs. specific writing conventions) and set up the paper's novel contribution. A secondary link exists to candidate [2]/[3] (broader related-work), but [4] is the most specific and structurally parallel match since it centers on 'finding examples for learning/use' shortcomings, exactly mirroring the query's focus on 'finding relevant examples' shortcomings.",
+      "direction": "corpusstudio->examplore_chi18",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Background and Related Work",
+        "section_number": "2",
+        "subsection_name": "Finding Relevant Examples",
+        "subsection_number": "2.3"
+      },
+      "target_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "RELATED WORK",
+        "section_number": null,
+        "subsection_name": "Learning APIs with Code Examples",
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-22f98e6f220dfcdd",
+      "target": "node-2acd688b2f8b2e7f",
+      "key": 0,
+      "basis": "The query is a discussion subsection reflecting on the design trade-offs of showing many (N=25) retrieved examples at once—balancing cognitive load against the benefit of seeing variation—and lessons learned for future systems. This most closely corresponds to paper2's DISCUSSION AND LIMITATIONS section (index 19), which similarly reflects on the trade-off between EXAMPLORE's expressive power (showing many examples/features at once) and visual complexity/cognitive overload, and draws lessons for future design (e.g., progressive disclosure). Both are the paper's discussion of what was learned about presenting large numbers of examples simultaneously, including the cognitive trade-offs and implications for future system design, rather than being a related-work, results, or implementation section.",
+      "direction": "corpusstudio->examplore_chi18",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Discussion",
+        "section_number": "8",
+        "subsection_name": "Designing a System with Many Retrieved Examples",
+        "subsection_number": "8.2"
+      },
+      "target_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "DISCUSSION AND LIMITATIONS",
+        "section_number": null,
+        "subsection_name": null,
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-24449f3ff6a92682",
+      "target": "node-bc0cd67d1442661b",
+      "key": 0,
+      "basis": "The query is a related-work subsection specifically about how prior research on code example search, quality, and comprehension (viewing few examples, overwhelm, difficulty) motivates the paper's approach of showing many examples simultaneously. This plays the same structural role as candidate [4] 'Writing with External Text', which reviews prior work on writing support tools that surface retrieved/generated text and distinguishes this paper's approach (showing many examples from a corpus) from prior approaches (sentence completions, curated model texts). Both are related-work subsections whose job is to review prior literature on example-based support (code examples vs. text examples), highlighting problems (insecure/hard-to-understand code examples vs. plagiarism/content generation issues) and motivating the paper's design choice to show many examples at once. Candidate [5] 'Finding Relevant Examples' is also plausible but focuses more narrowly on search engines/related-work tools rather than the quality/comprehension/scale-of-examples issues that dominate the query. Candidate [4] is the closest role match since it directly parallels the motivation for surfacing many examples from a corpus and contrasting with other content-generation approaches, mirroring the query's citation of studies motivating simultaneous visualization of many examples.",
+      "direction": "examplore_chi18->corpusstudio",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "RELATED WORK",
+        "section_number": null,
+        "subsection_name": "Learning APIs with Code Examples",
+        "subsection_number": null
+      },
+      "target_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Background and Related Work",
+        "section_number": "2",
+        "subsection_name": "Writing with External Text",
+        "subsection_number": "2.2"
+      }
+    },
+    {
+      "source": "node-268a4958f7f7862c",
+      "target": "node-dcdde32ef2054b2c",
+      "key": 0,
+      "basis": "The query subsection describes a concrete technical process step (embedding sentences with a specific model/parameters to enable retrieval) that sits within a larger 'Data & Processing' section of paper1, analogous in role to paper2's 'Data Collection' subsection (index 9), which describes the concrete technical process (mining/AST traversal/slicing with specific tools) used to prepare the corpus of code examples for later use in the system. Both are implementation-detail subsections describing how raw data is processed/transformed into a form usable by the rest of the pipeline, nested under a broader 'System Architecture and Implementation' / 'Data & Processing' parent section. The closest alternative, 'Post-processing' (index 10), is about normalizing already-extracted segments rather than the initial embedding/preparation step, making 'Data Collection' the better structural analogue for the initial data preparation/embedding step.",
+      "direction": "corpusstudio->examplore_chi18",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Data & Processing",
+        "section_number": "4",
+        "subsection_name": "Embedding Process",
+        "subsection_number": "4.2"
+      },
+      "target_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "SYSTEM ARCHITECTURE AND IMPLEMENTATION",
+        "section_number": null,
+        "subsection_name": "Data Collection",
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-29a2c97d3d464989",
+      "target": "node-0bc1aff65315a4bd",
+      "key": 0,
+      "basis": "The query is a subsection from the Qualitative Results reporting how participants used a tool's features differently across writing stages (early drafting vs. revision) and what strategies they developed to manage feature complexity. This plays the same role as paper2's Qualitative Analysis subsection [18], which reports coded free-response patterns about which features participants found useful, how they envisioned using the tool in their workflows (e.g., \"would use EXAMPLORE to explore unfamiliar APIs,\" feature usage patterns, complaints about complexity/confusion), and future usage scenarios. Both are qualitative findings sections drawing on user study feedback to characterize usage patterns and feature preferences, distinct from the quantitative results (candidate 17) or the overall Results section (16). No other candidate addresses stage-dependent or feature-preference qualitative findings.",
+      "direction": "corpusstudio->examplore_chi18",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Qualitative Results",
+        "section_number": "6",
+        "subsection_name": "Use of Features, Especially Across Writing Stages",
+        "subsection_number": "6.5"
+      },
+      "target_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "RESULTS",
+        "section_number": null,
+        "subsection_name": "Qualitative Analysis",
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-31af51898399ca8f",
+      "target": "node-2acd688b2f8b2e7f",
+      "key": 0,
+      "basis": "The query is a 'Limitations and Future Work' subsection within a Discussion section, reflecting on generalizability of findings (limited participant background, narrow corpus/task scope) and proposing future research directions. Candidate 19, 'DISCUSSION AND LIMITATIONS', plays the same structural role in EXAMPLORE's paper: it discusses trade-offs (e.g., expressive power vs. visual complexity), acknowledges scope limitations (e.g., not guarding against stale/low-quality examples), and suggests future directions (progressive disclosure, alternative sorting criteria, additional information scent). Both sections serve as the paper's closing reflective discussion on caveats and next steps, making this the clearest role match despite differing subject matter (writing support vs. API usage visualization).",
+      "direction": "corpusstudio->examplore_chi18",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Discussion",
+        "section_number": "8",
+        "subsection_name": "Limitations and Future Work",
+        "subsection_number": "8.5"
+      },
+      "target_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "DISCUSSION AND LIMITATIONS",
+        "section_number": null,
+        "subsection_name": null,
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-342e89c6e2016626",
+      "target": "node-0bc1aff65315a4bd",
+      "key": 0,
+      "basis": "The query is a Discussion subsection reflecting on qualitative findings from a user study about what made retrieved content relevant/useful to users, drawing on post-study observations and participant behaviors to characterize the tool's strengths and interpretive nuances. This mirrors candidate [18], 'Qualitative Analysis' under RESULTS, which reports coded free-response patterns about what participants found useful/valuable in EXAMPLORE and how they interpreted the tool's output—both are analyses of how users perceived and made use of the system's results, grounded in qualitative user study data rather than quantitative metrics. Other candidates like [19] (Discussion and Limitations) also touch on interpretive reflection, but that section is more about trade-offs and future improvements to the system itself, whereas the query and [18] both center on characterizing user interpretation/behavior around retrieved/output content.",
+      "direction": "corpusstudio->examplore_chi18",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Discussion",
+        "section_number": "8",
+        "subsection_name": "Relevance of Retrieved Sentences",
+        "subsection_number": "8.1"
+      },
+      "target_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "RESULTS",
+        "section_number": null,
+        "subsection_name": "Qualitative Analysis",
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-3a8dcca2dde73e03",
+      "target": "node-24449f3ff6a92682",
+      "key": 0,
+      "basis": "The query is a Related Work subsection in paper1 establishing why understanding community norms matters and how newcomers learn them (via literature on writer-based/reader-based prose, cognitive apprenticeship, etc.), motivating the paper's approach to supporting learning of implicit norms. This plays the same role as candidate [4] 'Learning APIs with Code Examples', which is a Related Work subsection that surveys prior literature on why learning API usage from examples is hard and motivates EXAMPLORE's approach of visualizing many examples. Both are motivational related-work subsections citing empirical/theoretical studies to justify the paper's core design rationale, even though the domains (writing norms vs. API learning) differ entirely. Other candidates like [2]/[3]/[5] focus specifically on comparing interface designs or mining techniques, which is a different role (differentiating from prior systems) than the motivational 'why this problem matters and how people learn' role played by the query.",
+      "direction": "corpusstudio->examplore_chi18",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Background and Related Work",
+        "section_number": "2",
+        "subsection_name": "Community Writing Norms",
+        "subsection_number": "2.1"
+      },
+      "target_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "RELATED WORK",
+        "section_number": null,
+        "subsection_name": "Learning APIs with Code Examples",
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-418d5e8f6bf12658",
+      "target": "node-5b0b3734b60806ab",
+      "key": 0,
+      "basis": "The query is a subsection reporting quantitative user-study results (NASA-TLX workload, feature usage counts, survey responses on usefulness) for a specific task in a within-subjects study evaluating an interactive tool (CorpusStudio) against a baseline. Candidate [17] 'Quantitative Analysis' plays the same role in EXAMPLORE's paper: it reports quantitative results (correct-answer counts, statistical significance, post-survey confidence ratings) from the within-subjects user study comparing EXAMPLORE to online search. Both are the 'quantitative results' subsection of their respective user studies, presenting statistics, survey ratings, and feature-related findings. The qualitative/free-response content in candidate [18] is a closer match to a different query subsection, not this one, since this query is explicitly framed around quantitative reactions (TLX scores, usage counts, Likert-style survey figures).",
+      "direction": "corpusstudio->examplore_chi18",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Quantitative Results",
+        "section_number": "7",
+        "subsection_name": "Task 2: Writing a Section of a Manuscript",
+        "subsection_number": "7.2"
+      },
+      "target_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "RESULTS",
+        "section_number": null,
+        "subsection_name": "Quantitative Analysis",
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-42ab35f2ebebc51a",
+      "target": "node-0165c9b94f705ccf",
+      "key": 0,
+      "basis": "The query subsection describes the concrete data-processing pipeline step that extracts and clusters raw text (section titles) into canonicalized, ordered distributions with counts to populate an interactive visualization (CorpusStudio). This plays the same role as EXAMPLORE's 'Post-processing' subsection [10], which describes normalizing/canonicalizing raw mined code segments (chained calls, variable names) into canonical options with counts stored for the interface, sitting within the same 'Data Collection/Post-processing/Visualization' pipeline structure. Both are the middle 'processing/canonicalization' step turning raw mined instances into structured, countable options for a visualization tool, rather than the mining/collection step (candidate 9) or the rendering/interaction step (candidate 11).",
+      "direction": "corpusstudio->examplore_chi18",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Data & Processing",
+        "section_number": "4",
+        "subsection_name": "Extracting an Ordered Distribution over Section Titles",
+        "subsection_number": "4.3"
+      },
+      "target_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "SYSTEM ARCHITECTURE AND IMPLEMENTATION",
+        "section_number": null,
+        "subsection_name": "Post-processing",
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-46f865fe583a8185",
+      "target": "node-0bc1aff65315a4bd",
+      "key": 0,
+      "basis": "The query is a qualitative-results subsection reporting participants' benefits, usage patterns, and free-form feedback about specific interface features (color coding, filtering, exploring examples) from a user study, organized around user quotes and coded themes (P1, P2, ...). Candidate [18] 'Qualitative Analysis' plays the same role in paper2: it reports coded free-response patterns from the post-survey about EXAMPLORE's features (e.g., color highlighting, filtering, exploring many examples at once), quoting specific participants (P16, P3, P4, P7) about strengths, desired improvements, and future usage scenarios. Both sections serve as the qualitative counterpart to a quantitative results section, synthesizing user feedback on interaction features of an interactive system. While the query's paragraphs also touch on content-related benefits (related work discovery, terminology alignment) that don't have a direct analog, the overall role -- qualitative synthesis of participant feedback on specific interface/support features -- matches candidate 18 most closely among all candidates (e.g., candidate 16 'RESULTS' is the whole section which combines both quantitative and qualitative, but 18 is the qualitative subsection specifically, a better level-matched candidate).",
+      "direction": "corpusstudio->examplore_chi18",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Qualitative Results",
+        "section_number": "6",
+        "subsection_name": "Sentence-level Writing Support",
+        "subsection_number": "6.2"
+      },
+      "target_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "RESULTS",
+        "section_number": null,
+        "subsection_name": "Qualitative Analysis",
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-4916e3227e874a24",
+      "target": "node-0bc1aff65315a4bd",
+      "key": 0,
+      "basis": "The query is a narrow qualitative-results subsection reporting a specific finding from a user study (anti-plagiarism features' efficacy), part of a paper about a writing-support tool. The closest analog in paper2 is its qualitative analysis of the user study (candidate 18, 'Qualitative Analysis'), which similarly reports specific findings/themes from participants' post-survey/qualitative responses about the tool's features and behaviors (e.g., filtering, color use, confusion), serving the same role of presenting a targeted qualitative finding from the study. No candidate in paper2 addresses plagiarism specifically (different domain), but the role -- a focused qualitative finding subsection within the Results section of a user study -- matches candidate 18 (or its parent whole-section 16) most closely. I pick 18 as it is itself a subsection-level qualitative findings report, matching the query's granularity and role.",
+      "direction": "corpusstudio->examplore_chi18",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Qualitative Results",
+        "section_number": "6",
+        "subsection_name": "Efficacy of Anti-plagiarism Features",
+        "subsection_number": "6.6"
+      },
+      "target_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "RESULTS",
+        "section_number": null,
+        "subsection_name": "Qualitative Analysis",
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-66c9c1e0dde3eec2",
+      "target": "node-2b774a4fdc8a2a6b",
+      "key": 0,
+      "basis": "The query is a narrow subsection describing concrete task materials chosen for a user study (specific API methods selected to span familiarity levels) in a paper about API exploration/programming tools. Paper2's closest analog in role is its User Study section's task design content (e.g., Task 1/Task 2 descriptions choosing outlining and writing tasks, corpus scope, etc.), most centrally embodied in the whole 'User Study' section (index 15) which describes the study design and task/materials choices (e.g., choosing outlining as a task, the corpus/venues used). No paper2 subsection specifically enumerates 'stimulus items chosen for varying familiarity' the way this query does, but the 'User Study' section as a whole plays the same structural role of describing study materials/tasks and rationale for their selection. None of the finer subsections (Participants, Study Procedure) is a better fit since they don't focus on selecting specific test items/materials with rationale for variety, which is closer to the whole section's role of covering task design.",
+      "direction": "examplore_chi18->corpusstudio",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "USER STUDY",
+        "section_number": null,
+        "subsection_name": "API Methods",
+        "subsection_number": null
+      },
+      "target_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "User Study",
+        "section_number": "5",
+        "subsection_name": null,
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-83f4a39dbbf6becb",
+      "target": "node-85ddb5b71ef091b0",
+      "key": 0,
+      "basis": "The query is a broad \"system section\" describing CorpusStudio's core concept (retrieving/rendering corpus examples via a code-skeleton-like structure), its design rationale, and features/implementation in one combined section (labeled Section 3). This most closely mirrors candidate [6] \"SYNTHETIC CODE SKELETON,\" which is the section introducing EXAMPLORE's core representational concept -- summarizing many examples into one structured, navigable view grounded in theory of what users need to learn (analogous to CorpusStudio's design goals grounded in Variation/Structural Alignment Theory). Both serve as the central \"what is our system's core mechanism and why\" section of their papers. While EXAMPLORE splits scenario walkthrough (candidate 7) and implementation (candidate 8) into separate sections, the query section bundles motivation, scenario, design rationale, and implementation together, so no single candidate is an exact structural twin; but the skeleton section is the closest in role as it introduces the core artifact/mechanism representation and its rationale, which is the centerpiece of the query. The scenario-walkthrough portion of the query (Alice) also parallels candidate [7], and the implementation portion parallels candidate [8], but the skeleton concept and its motivating theory is the dominant, defining content of the query section overall.",
+      "direction": "corpusstudio->examplore_chi18",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Corpus Studio",
+        "section_number": "3",
+        "subsection_name": null,
+        "subsection_number": null
+      },
+      "target_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "SYNTHETIC CODE SKELETON",
+        "section_number": null,
+        "subsection_name": null,
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-83f674e861b6f36a",
+      "target": "node-8f49fd3df88feb71",
+      "key": 0,
+      "basis": "The query is a discussion subsection contrasting the paper's design philosophy (surfacing real community examples directly, not AI-generated text) against alternative approaches (AI-based writing assistants), arguing why their non-generative, corpus-grounded approach is preferable. The closest role match in paper2 is the 'Mining and Visualization of API Usage' subsection, which explicitly contrasts EXAMPLORE's approach (instantiating a code skeleton with traceable, concrete examples) against alternative techniques (e.g., Buse et al.'s synthesized human-readable API usage code, GrouMiner's un-parsed synthetic code) that generate/synthesize output rather than preserving traceability to real concrete examples -- paralleling the query's argument that surfacing real examples (vs. AI-generated text) preserves authenticity and community-validated quality. Both passages justify a design choice to ground the system in real, verifiable source material rather than synthesized/generated output. No other candidate makes this specific 'grounded-in-real-examples vs generated/synthesized' argument as its central role; other related-work subsections (interfaces, learning APIs) don't address this generation-vs-retrieval distinction.",
+      "direction": "corpusstudio->examplore_chi18",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Discussion",
+        "section_number": "8",
+        "subsection_name": "Designing Writing Support for and with Community Integration, not AI Integration",
+        "subsection_number": "8.3"
+      },
+      "target_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "RELATED WORK",
+        "section_number": null,
+        "subsection_name": "Mining and Visualization of API Usage",
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-8adc42ed8859e18c",
+      "target": "node-2acd688b2f8b2e7f",
+      "key": 0,
+      "basis": "The query is a discussion subsection reflecting on how the paper's design choices (embedding metacognitive strategies, sidebars, self-reflection notes) relate to prior work and what this means for the interface design going forward. This plays the same role as paper2's DISCUSSION AND LIMITATIONS section, which reflects on what the study/design results reveal about the tool's benefits, trade-offs, and interpretation in light of the design goals (e.g., discussing how EXAMPLORE's visual complexity trade-off relates to design decisions, and connecting results back to broader design principles). Both are reflective 'discussion' sections situated after presenting results, interpreting the significance of design choices rather than introducing new mechanisms or reporting raw results. No candidate in paper2 specifically discusses embedding cognitive/metacognitive strategies into UI the way the query does, but the closest role-match is the discussion section that reflects on design implications.",
+      "direction": "corpusstudio->examplore_chi18",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Discussion",
+        "section_number": "8",
+        "subsection_name": "Putting Metacognitive Strategies “Ready to Hand”",
+        "subsection_number": "8.4"
+      },
+      "target_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "DISCUSSION AND LIMITATIONS",
+        "section_number": null,
+        "subsection_name": null,
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-8e5b852c7e5b559e",
+      "target": "node-150dcc8c0d16d3bc",
+      "key": 0,
+      "basis": "The query is a qualitative-results subsection showing how study participants perceived and used a specific feature (section title distributions) while performing a document-drafting task, including concrete usage narratives and reactions. The closest role-match in paper2 is candidate [7], the 'SCENARIO: INTERACTING WITH CODE DISTRIBUTIONS' section, which similarly walks through how a user (Victor) perceives and interacts with the distribution-based feature of EXAMPLORE (the code skeleton with statistical distributions of options) to accomplish a task—illustrating usage patterns, noticing common vs. uncommon options, and drilling down based on the distribution. Both texts serve as concrete, example-driven illustrations of how users engage with a distributional-summary visualization feature within their respective systems. The query also has secondary overlap with candidate [16]/[18] (qualitative survey results), but the query's dominant content—detailed walkthrough of engaging with the distribution feature during a task—most centrally mirrors the role of the scenario section in paper2.",
+      "direction": "corpusstudio->examplore_chi18",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Qualitative Results",
+        "section_number": "6",
+        "subsection_name": "Document-level Writing Support",
+        "subsection_number": "6.1"
+      },
+      "target_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "SCENARIO: INTERACTING WITH CODE DISTRIBUTIONS",
+        "section_number": null,
+        "subsection_name": null,
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-8f49fd3df88feb71",
+      "target": "node-bc0cd67d1442661b",
+      "key": 0,
+      "basis": "The query is a related-work subsection that positions the paper's own retrieval/visualization-of-many-examples system against prior work in its domain (API usage mining/visualization), explicitly contrasting how prior tools visualize mined patterns without traceable concrete examples, versus the paper's contribution. This plays the same role as candidate 4 (\"Writing with External Text\"), which reviews prior writing-support/corpus-based tools (e.g., IntroAssist, Hui and Sprouse) and explains how CorpusStudio differs by surfacing many concrete examples from a large corpus rather than curated/annotated or generated text. Both are the \"related work subsection specifically about prior systems that show/mine examples or patterns from a corpus, and how the current system differs by scale/traceability of examples.\" Candidate 5 (Finding Relevant Examples) is a secondary partial match since it also discusses retrieval-based prior work, but candidate 4 more centrally matches the query's focus on mining/visualizing patterns and providing example traceability.",
+      "direction": "examplore_chi18->corpusstudio",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "RELATED WORK",
+        "section_number": null,
+        "subsection_name": "Mining and Visualization of API Usage",
+        "subsection_number": null
+      },
+      "target_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Background and Related Work",
+        "section_number": "2",
+        "subsection_name": "Writing with External Text",
+        "subsection_number": "2.2"
+      }
+    },
+    {
+      "source": "node-9442b049afa17cb5",
+      "target": "node-dcdde32ef2054b2c",
+      "key": 0,
+      "basis": "The query describes a specific data-processing sub-step (sentence splitting via LLM, metadata capture) within a larger 'Data & Processing' section, analogous in role to the 'Data Collection' subsection [9] in paper2, which describes a specific data-mining/processing sub-step (extracting and annotating code examples with metadata like type info) within the larger 'System Architecture and Implementation' section. Both are the first concrete technical subsection detailing how raw source material is parsed/processed and annotated with metadata for later use, rather than being an overview (like [8]) or a later processing stage (like [10] Post-processing, which is about normalization/canonicalization rather than initial parsing/metadata capture).",
+      "direction": "corpusstudio->examplore_chi18",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Data & Processing",
+        "section_number": "4",
+        "subsection_name": "Pre-processing Documents",
+        "subsection_number": "4.1"
+      },
+      "target_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "SYSTEM ARCHITECTURE AND IMPLEMENTATION",
+        "section_number": null,
+        "subsection_name": "Data Collection",
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-96023d7899d657d6",
+      "target": "node-c59a3c1454b1f8df",
+      "key": 0,
+      "basis": "The query is an \"Implementation Details\" subsection describing the concrete technical stack, infrastructure, and design/algorithmic choices (web framework, vector DB, kNN retrieval, hybrid vs pure vector search decision) used to build the paper's system. This plays the same role as candidate [8] \"SYSTEM ARCHITECTURE AND IMPLEMENTATION,\" which describes EXAMPLORE's pipeline phases, data storage (MongoDB), and processing/design decisions for implementing the visualization system. Both are implementation-focused sections explaining how the system was built technically, distinct from the introduction, evaluation, or related work sections. The more granular subsections (9,10,11) cover specific pipeline phases (data collection, post-processing, visualization) which are narrower than the query's broader implementation description covering the whole tech stack, so the whole-section candidate [8] is the closest match in role.",
+      "direction": "corpusstudio->examplore_chi18",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Corpus Studio",
+        "section_number": "3",
+        "subsection_name": "Implementation Details",
+        "subsection_number": "3.4"
+      },
+      "target_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "SYSTEM ARCHITECTURE AND IMPLEMENTATION",
+        "section_number": null,
+        "subsection_name": null,
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-9c8be2a9788eaed0",
+      "target": "node-0bc1aff65315a4bd",
+      "key": 0,
+      "basis": "The query is a whole RESULTS section reporting both quantitative (correct-answer counts, statistical tests, survey scale ratings) and qualitative (participant quotes, coded themes, feature preferences) findings from a controlled user study comparing EXAMPLORE to a baseline (online search). In paper2, this combined role is split across separate Qualitative Results (6) and Quantitative Results (7) sections. Candidate 18 (whole Qualitative Results section) is the closest single match because it most centrally mirrors the query's largest component: rich thematic, quote-driven participant insights derived from the study (themes like feature usefulness, confidence, terminology alignment, etc.), paralleling the query's qualitative content on critiques, post-survey free responses, and workflow reflections. The query's statistical/quantitative findings (Table 2 results, t-tests, Likert distributions) correspond more to paper2's Quantitative Results (25), but since only one match can be reported and the query is a unified whole-section result report mixing both, section 18 (Qualitative Results) is chosen as the primary counterpart given its similarly broad, whole-section scope synthesizing user behaviors and quotes from the study; the quantitative counterpart (25) is a secondary correspondence.",
+      "direction": "examplore_chi18->corpusstudio",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "RESULTS",
+        "section_number": null,
+        "subsection_name": null,
+        "subsection_number": null
+      },
+      "target_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Qualitative Results",
+        "section_number": "6",
+        "subsection_name": null,
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-a9fb049aebe1543c",
+      "target": "node-0bc1aff65315a4bd",
+      "key": 0,
+      "basis": "The query is a narrow qualitative-results subsection reporting specific user-study findings about a particular interface feature (bookmarking/notes) drawn from participant free responses/interviews, coded into recurring patterns (P1, P4, P10, etc.). The closest role match in paper2 is candidate [18] 'Qualitative Analysis', which similarly reports coded free-response patterns about specific interface features (e.g., filtering, color-coding, exploring examples) with participant counts and quotes (P16, P4, P3, P7), serving the same function of detailing qualitative feedback on discrete tool features within the results section. Both are sub-parts of a broader qualitative/results discussion drilling into how users engaged with particular features of the system, rather than reporting quantitative accuracy metrics (candidate 17) or the overall study design (candidate 12).",
+      "direction": "corpusstudio->examplore_chi18",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Qualitative Results",
+        "section_number": "6",
+        "subsection_name": "Bookmark and User Notes",
+        "subsection_number": "6.3"
+      },
+      "target_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "RESULTS",
+        "section_number": null,
+        "subsection_name": "Qualitative Analysis",
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-b0d563aaa9d16f58",
+      "target": "node-5d7fc56e54604d0e",
+      "key": 0,
+      "basis": "The query is a \"Design Goals\" subsection that states the high-level motivating goals guiding the design of the paper's tool (Corpus Studio) before describing its architecture/features. The closest role-match in paper2 is the INTRODUCTION section [1], which similarly articulates the motivating problem and the overarching goals/approach that led to EXAMPLORE's design (e.g., \"we aim to visualize hundreds of concrete code examples... to reveal their commonalities and variances\" and posing the research question that shapes the tool's design). While paper2 does not have a dedicated \"Design Goals\" subsection, the SYNTHETIC CODE SKELETON section [6] also partially reflects design rationale, but it is more about the concrete feature set than abstract design goals. The introduction's articulation of the design aim (helping users understand commonalities/variances, drill down to details) is the closest functional counterpart to the query's statement of design goals.",
+      "direction": "corpusstudio->examplore_chi18",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Corpus Studio",
+        "section_number": "3",
+        "subsection_name": "Design Goals",
+        "subsection_number": "3.1"
+      },
+      "target_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "INTRODUCTION",
+        "section_number": null,
+        "subsection_name": null,
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-ba1f32843254b02b",
+      "target": "node-96023d7899d657d6",
+      "key": 0,
+      "basis": "The query describes a narrow implementation subsection detailing the technical backend (database queries, indices, frontend-backend interaction) that powers a visualization/interactive feature (code skeleton highlighting and updating). This plays the same role as candidate [10] 'Implementation Details' (3.4), which describes the technical infrastructure (SvelteKit web app, WeaviateDB vector database, retrieval implementation) underlying CorpusStudio's interactive features. Both are implementation-detail subsections explaining how the system's data backend supports a specific interactive/visualization feature described elsewhere in the paper, rather than describing the feature's design rationale or user-facing behavior (which would correspond more to candidate [9]'s System Characteristics).",
+      "direction": "examplore_chi18->corpusstudio",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "SYSTEM ARCHITECTURE AND IMPLEMENTATION",
+        "section_number": null,
+        "subsection_name": "Visualization",
+        "subsection_number": null
+      },
+      "target_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Corpus Studio",
+        "section_number": "3",
+        "subsection_name": "Implementation Details",
+        "subsection_number": "3.4"
+      }
+    },
+    {
+      "source": "node-bc0cd67d1442661b",
+      "target": "node-56a630a0d986ce2d",
+      "key": 0,
+      "basis": "The query is a related-work subsection that surveys prior tools/approaches (writing with retrieved/generated text, writing with corpus-based text) and positions the paper's own contribution (surfacing large-scale prior text examples) as building on and differing from this prior work. This plays the same role as paper2's overall RELATED WORK section (index 2), which similarly surveys prior interfaces for exploring collections of complex objects, API learning research, and API usage mining, explicitly contrasting each with EXAMPLORE's contribution. Both are literature-review sections structured around 2-3 named subtopics that culminate in stating how the current system differs from and builds upon each line of prior work. While candidates 3, 4, and 5 are the individual subsections of that related work (which could also match at a finer grain), the query itself is a whole subsection encompassing two sub-numbered topics (2.2.1 and 2.2.2), making it closest in scope and role to the full RELATED WORK section rather than any single subsection; nonetheless I note candidates 3-5 are secondary partial matches at finer granularity.",
+      "direction": "corpusstudio->examplore_chi18",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Background and Related Work",
+        "section_number": "2",
+        "subsection_name": "Writing with External Text",
+        "subsection_number": "2.2"
+      },
+      "target_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "RELATED WORK",
+        "section_number": null,
+        "subsection_name": null,
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-c59a3c1454b1f8df",
+      "target": "node-83f4a39dbbf6becb",
+      "key": 0,
+      "basis": "The query is a whole-section overview describing EXAMPLORE's system pipeline (data collection, post-processing, visualization) — i.e., what the system is, why it was designed, and how its features/implementation work. Candidate [6] 'Corpus Studio' whole-section plays the exact same role in paper2: it introduces CorpusStudio's design goals, retrieval/rendering mechanisms, and implementation details (text embedding, spatial retrieval, rendering modes, SvelteKit/WeaviateDB backend), functioning as the paper's central system description covering data processing through UI. Both are the 'system architecture/implementation' section of their respective papers, describing a multi-stage pipeline from raw data/examples to a processed, visualized form. Secondary partial overlap exists with candidate [11] 'Data & Processing' (which covers corpus collection/preprocessing specifically), but the query's scope—spanning collection, processing, and visualization together as one system description—matches the broader role of [6] rather than the narrower data-only section [11].",
+      "direction": "examplore_chi18->corpusstudio",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "SYSTEM ARCHITECTURE AND IMPLEMENTATION",
+        "section_number": null,
+        "subsection_name": null,
+        "subsection_number": null
+      },
+      "target_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Corpus Studio",
+        "section_number": "3",
+        "subsection_name": null,
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-d703900a679fe5f0",
+      "target": "node-c59a3c1454b1f8df",
+      "key": 0,
+      "basis": "The query section describes the data collection and processing pipeline for CorpusStudio (collecting papers, sentence splitting, embedding, clustering) that builds the tool's underlying data pipeline -- a system architecture/implementation description. Candidate [8] 'SYSTEM ARCHITECTURE AND IMPLEMENTATION' plays the same role in EXAMPLORE's paper: it describes the three-phase pipeline (Data Collection, Post-processing, Visualization) for mining and processing code examples into the tool's database, i.e., how raw source material is turned into the structured data the visualization tool relies on. Both sections are the top-level 'how the system's data pipeline was built' sections of their respective papers, covering collection then processing/transformation steps, even though the domains (research paper corpora vs. code examples) differ. The closest sub-level match within it would be 9/10 (Data Collection/Post-processing) but the query as a whole (level=whole, covering multiple pipeline stages) most centrally corresponds to the whole-section candidate 8.",
+      "direction": "corpusstudio->examplore_chi18",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Data & Processing",
+        "section_number": "4",
+        "subsection_name": null,
+        "subsection_number": null
+      },
+      "target_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "SYSTEM ARCHITECTURE AND IMPLEMENTATION",
+        "section_number": null,
+        "subsection_name": null,
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-dcdde32ef2054b2c",
+      "target": "node-d703900a679fe5f0",
+      "key": 0,
+      "basis": "The query is a subsection describing how source code is mined/processed (AST traversal, program slicing, extracting API usage examples) to build the data used by EXAMPLORE's system. This plays the same role as paper2's 'Data & Processing' section, which describes how the paper corpus was collected and processed (sentence splitting, embedding, section title extraction) to build the data pipeline used by CorpusStudio. Both are the 'how raw source material was mined/processed into the data used by the system' section, sitting within the system architecture/implementation portion of their respective papers. The closest single match is the whole Data & Processing section (index 11) rather than any one narrower subsection like Pre-processing Documents (12) or Embedding Process (13), since the query itself covers the entire mining pipeline in one subsection, analogous to the whole-section granularity of index 11.",
+      "direction": "examplore_chi18->corpusstudio",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "SYSTEM ARCHITECTURE AND IMPLEMENTATION",
+        "section_number": null,
+        "subsection_name": "Data Collection",
+        "subsection_number": null
+      },
+      "target_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Data & Processing",
+        "section_number": "4",
+        "subsection_name": null,
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-efb24be11680d583",
+      "target": "node-0bc1aff65315a4bd",
+      "key": 0,
+      "basis": "The query is a subsection reporting qualitative user-study findings about a specific interface feature (tooltips) -- what participants liked, disliked, and how they used it, based on coded free responses/interviews. Candidate [18] 'Qualitative Analysis' plays the exact same role in EXAMPLORE's paper: it reports coded post-survey free responses about specific interface features (e.g., filtering, color-coding, summarized display), noting what participants found useful, what they criticized (e.g., confusing colors, extra effort to read), and how it fit their workflows. Both are the qualitative/feature-level companion to a broader quantitative results section, focused on user reactions to particular UI elements rather than overall system evaluation (candidate [16]) or study methodology (candidates [12]-[15]).",
+      "direction": "corpusstudio->examplore_chi18",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Qualitative Results",
+        "section_number": "6",
+        "subsection_name": "Tooltips",
+        "subsection_number": "6.4"
+      },
+      "target_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "RESULTS",
+        "section_number": null,
+        "subsection_name": "Qualitative Analysis",
+        "subsection_number": null
+      }
+    },
+    {
+      "source": "node-f02b3df0206ed6da",
+      "target": "node-bc0cd67d1442661b",
+      "key": 0,
+      "basis": "The query is a related-work subsection from EXAMPLORE that surveys prior interfaces for exploring/visualizing large collections of complex objects (image tutorials, text corpora, code corpora like WordTree, WordSeer, OverCode) and explains how EXAMPLORE differs from or builds on them. This plays the same role as paper2's related-work section on prior writing-support/corpus tools -- specifically candidate [4] 'Writing with External Text', which surveys prior systems that use retrieved or corpus-derived text (IntroAssist, Naeem et al., Hui and Sprouse) and explains how CorpusStudio differs (larger scale, computational post-processing). Both are subsections dedicated to comparing the paper's own interface/system against prior interfaces that expose examples/patterns from a corpus of similar objects, contrasting design choices and scale. Candidate [5] focuses on retrieval/search engines for finding related work, which is a narrower/different role, and [3] is about writing norms conceptually, not comparable prior interfaces. [4] is the best structural match: both are 'prior systems that show corpus/example content, and how our system differs' subsections.",
+      "direction": "examplore_chi18->corpusstudio",
+      "kind": "one_directional_match",
+      "pair": [
+        "examplore_chi18",
+        "corpusstudio"
+      ],
+      "source_unit": {
+        "paper_id": "examplore_chi18",
+        "section_name": "RELATED WORK",
+        "section_number": null,
+        "subsection_name": "Interfaces for Exploring Collections of Complex Objects",
+        "subsection_number": null
+      },
+      "target_unit": {
+        "paper_id": "corpusstudio",
+        "section_name": "Background and Related Work",
+        "section_number": "2",
+        "subsection_name": "Writing with External Text",
+        "subsection_number": "2.2"
+      }
+    }
+  ]
+}

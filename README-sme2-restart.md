@@ -485,6 +485,59 @@ landing on an already-spoken-for target. This is exactly the gap `fan_in_candida
 is built to catch that `redundant_edges()` structurally cannot: cross-family
 convergence on one target, not just within-family refinement.
 
+#### Bidirectional and (even unrequited) Fan_In Correspondence Table
+
+**Rerun 2026-08-29 after the role-vs-content prompt fix** (see `closest_section_match_batch.py`'s
+`SYSTEM_PROMPT`, corrected to stop conceding a role match and then disqualifying it anyway
+over differing subject matter). Both directional Stage 3 passes were rerun and fed into a
+fresh Stage 4 graph. Confirmed bidirectional matches went from 12 to **14** — the fix changed
+two real outcomes, not just the case that motivated it:
+
+- `Corpus Studio > System Characteristics` ↔ `SYNTHETIC CODE SKELETON` newly confirms —
+  this is exactly the pairing the fix targeted, where the model had previously conceded a
+  "structurally similar core system concept" role match and then disqualified it anyway
+  because "the actual content and purpose diverge so completely."
+- `User Study > Study Procedure` ↔ `USER STUDY > Methodology` also newly confirms — previously
+  a one-directional-only near-miss (see the old "Smaller loose ends" list above), now
+  reciprocated from both directions.
+
+Same compact rendering as the paragraph-level table above: two columns, one row per
+confirmed pair, each cell listing every unit from that paper participating in the row.
+**Bold** marks the confirmed reciprocal pair itself; unbolded entries are non-redundant
+one-directional claimants (already filtered through `redundant_edges()`, same discipline as
+Step 2 above) — a plain, un-bolded entry means it independently pointed at this same target
+but was never reciprocated back:
+
+| examplore_chi18 | corpusstudio |
+|---|---|
+| **ABSTRACT** | **Abstract** |
+| **INTRODUCTION** | **Introduction**, Corpus Studio > Design Goals |
+| **RELATED WORK (whole)** | **Background and Related Work (whole)** |
+| **SYNTHETIC CODE SKELETON**, SYSTEM ARCHITECTURE AND IMPLEMENTATION > Post-processing | **Corpus Studio > System Characteristics** |
+| **SCENARIO: INTERACTING WITH CODE DISTRIBUTIONS** | **Corpus Studio > Usage Scenario**, Qualitative Results > Document-level Writing Support |
+| **USER STUDY > Methodology** | **User Study > Study Procedure** |
+| **USER STUDY (whole)** | **User Study (whole)** |
+| **USER STUDY > Participants** | **User Study > Participants** |
+| **RESULTS > Qualitative Analysis** | **Qualitative Results (whole)**, Discussion > Relevance of Retrieved Sentences |
+| **RESULTS > Quantitative Analysis** | **Quantitative Results (whole)** |
+| **DISCUSSION AND LIMITATIONS** | **Discussion (whole)** |
+| **CONCLUSION** | **Conclusion** |
+| **ACKNOWLEDGMENTS** | **Acknowledgments** |
+| **REFERENCES** | **References** |
+
+Generated directly from `ClosestMatchGraph.load()` + `redundant_edges()` against the live
+`pipeline/closest_match_graph.json`, not hand-transcribed — row order follows
+examplore_chi18's own document order, and the `(whole)`/no-`(whole)` distinction is read
+per-paper from each unit's actual `subsections` list (e.g. examplore_chi18's `CONCLUSION` and
+`DISCUSSION AND LIMITATIONS` genuinely have no subsections, so neither gets a `(whole)` tag,
+even though corpusstudio's `Discussion` does).
+
+**The numbers, tables, and prose above this point** (the "Open questions for discussion"
+narrative, the 12-confirmed-match table, and Steps 1–2) **still reflect the pre-fix run** and
+haven't been updated to match this rerun — worth a follow-up pass if the older narrative is
+still being relied on, since two of its own examples (the SYNTHETIC CODE SKELETON one-directional
+edge and the Study Procedure/Methodology "near-miss") are now stale.
+
 ## Stage 5: Paragraph-level closest-match, scoped to one section pairing — `pipeline/closest_paragraph_match_within_section.py`
 
 Once Stage 4 (or a human) has identified a specific section/subsection pairing worth a
@@ -655,6 +708,8 @@ confirmed with anyone, sitting next to two other-paper paragraphs that both
 independently judged it their closest available match. Folding it into the same table
 as the confirmed rows would misrepresent it as "confirmed plus fan-in noise" when it's
 really its own case, invisible to the confirmed-matches view entirely.
+
+#### Bidirectional and (even unrequited) Fan_In Correspondence Table
 
 **Same data, rendered more compactly** — two columns instead of three, each cell
 listing every paragraph from that paper participating in the cluster, sorted by
