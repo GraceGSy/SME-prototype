@@ -1,31 +1,19 @@
-"""Run stage-1 extraction over the example papers in SME/ and save each
-resulting graph as JSON in SME/pipeline/output/.
-
-Usage:
-    python3 cli.py                     # run on the default example papers
-    python3 cli.py my_paper.pdf ...    # run on specific PDF paths
-"""
+"""Extract proposition graphs from explicitly supplied PDF files."""
 from __future__ import annotations
 
+import argparse
 import json
-import sys
 from pathlib import Path
 
-from .extract import extract_graph
-from .pdf_text import extract_pdf_text
-
-SME_DIR = Path(__file__).resolve().parent.parent
-PAPERS_DIR = SME_DIR / "papers"
 OUTPUT_DIR = Path(__file__).resolve().parent / "output"
-
-DEFAULT_PAPERS = [
-    PAPERS_DIR / "examplore_chi18.pdf",
-    PAPERS_DIR / "mesotext.pdf",
-    PAPERS_DIR / "paralib_uist22.pdf",
-]
 
 
 def run_one(pdf_path: Path) -> None:
+    # Keep optional PDF/model dependencies out of argument parsing so --help
+    # remains available before the project environment is installed.
+    from .extract import extract_graph
+    from .pdf_text import extract_pdf_text
+
     paper_id = pdf_path.stem
     print(f"[{paper_id}] extracting text from {pdf_path.name} ...")
     text = extract_pdf_text(str(pdf_path))
@@ -57,11 +45,12 @@ def write_manifest() -> None:
 
 
 def main() -> None:
-    paths = [Path(p) for p in sys.argv[1:]] or DEFAULT_PAPERS
-    for path in paths:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("pdf", type=Path, nargs="+", help="PDF files to extract")
+    args = parser.parse_args()
+    for path in args.pdf:
         if not path.exists():
-            print(f"skipping {path}: not found", file=sys.stderr)
-            continue
+            parser.error(f"PDF not found: {path}")
         run_one(path)
     OUTPUT_DIR.mkdir(exist_ok=True)
     write_manifest()

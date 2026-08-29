@@ -86,6 +86,30 @@ def current_categories(run_dir: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def validate_manifest(manifest_path: Path) -> dict[str, Any]:
+    """Load and summarize canonical inputs without making model calls."""
+
+    manifest, papers = load_manifest(manifest_path.resolve())
+    return {
+        "schema_version": manifest.schema_version,
+        "paper_order": [paper.paper_id for paper in papers],
+        "papers": [
+            {
+                "paper_id": paper.paper_id,
+                "sections": len(paper.sections),
+                "paragraphs": sum(len(section.paragraphs) for section in paper.sections),
+                "missing_section_questions": sum(not section.question for section in paper.sections),
+                "missing_paragraph_questions": sum(
+                    not paragraph.question
+                    for section in paper.sections
+                    for paragraph in section.paragraphs
+                ),
+            }
+            for paper in papers
+        ],
+    }
+
+
 def _next_revision(revisions_dir: Path) -> int:
     numbers = []
     for path in revisions_dir.iterdir():
@@ -112,6 +136,9 @@ def main() -> None:
     categories_parser = subparsers.add_parser("categories", help="Print current deterministic graph categories")
     categories_parser.add_argument("run_dir", type=Path)
 
+    validate_parser = subparsers.add_parser("validate", help="Validate and summarize a paper manifest")
+    validate_parser.add_argument("manifest", type=Path)
+
     args = parser.parse_args()
     if args.command == "run":
         summary = run_revision(args.manifest, args.run_dir, args.config)
@@ -119,8 +146,10 @@ def main() -> None:
     elif args.command == "retry":
         summary = retry_revision(args.run_dir, args.paper_index, args.stage)
         print(json.dumps(summary, indent=2))
-    else:
+    elif args.command == "categories":
         print(json.dumps(current_categories(args.run_dir), indent=2))
+    else:
+        print(json.dumps(validate_manifest(args.manifest), indent=2))
 
 
 if __name__ == "__main__":

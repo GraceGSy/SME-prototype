@@ -107,13 +107,21 @@ class IncrementalGraphRunner:
         self._require_prompt(stage)
         results = []
         for section in insertion.paper.sections:
+            if section.question:
+                results.append({"section_id": section.id, "question": section.question, "source": "input"})
+                continue
             context = {
                 "paper": {"paper_id": insertion.paper.paper_id, "title": insertion.paper.title},
                 "section": self._section_context(insertion.paper.paper_id, section.id),
             }
             question, attempt_id = self._question(stage, insertion, section.id, context)
             section.question = question
-            results.append({"section_id": section.id, "question": question, "attempt_id": attempt_id})
+            results.append({
+                "section_id": section.id,
+                "question": question,
+                "source": "model",
+                "attempt_id": attempt_id,
+            })
         return results
 
     def _match_sections(self, stage: StageConfig, insertion: InsertionState) -> dict[str, Any]:
@@ -146,6 +154,13 @@ class IncrementalGraphRunner:
         results = []
         for section in insertion.paper.sections:
             for paragraph in section.paragraphs:
+                if paragraph.question:
+                    results.append({
+                        "paragraph_id": paragraph.id,
+                        "question": paragraph.question,
+                        "source": "input",
+                    })
+                    continue
                 context = {
                     "paper": {"paper_id": insertion.paper.paper_id, "title": insertion.paper.title},
                     "section": self._section_context(insertion.paper.paper_id, section.id),
@@ -153,7 +168,12 @@ class IncrementalGraphRunner:
                 }
                 question, attempt_id = self._question(stage, insertion, paragraph.id, context)
                 paragraph.question = question
-                results.append({"paragraph_id": paragraph.id, "question": question, "attempt_id": attempt_id})
+                results.append({
+                    "paragraph_id": paragraph.id,
+                    "question": question,
+                    "source": "model",
+                    "attempt_id": attempt_id,
+                })
         return results
 
     def _match_paragraphs(self, stage: StageConfig, insertion: InsertionState) -> dict[str, Any]:
@@ -325,7 +345,6 @@ class IncrementalGraphRunner:
         batch: MatchBatch,
     ) -> dict[str, str]:
         assignments: dict[str, str] = {}
-        created: set[str] = set()
         reciprocal: dict[str, str] = {}
         for unit_id in batch.new_unit_ids:
             forward = batch.forward.get(unit_id)
@@ -339,6 +358,7 @@ class IncrementalGraphRunner:
                     unit_id,
                     insertion.paper.paper_id,
                     insertion.paper_index,
+                    self._unit_ordinal(insertion.paper.paper_id, unit_id, level),
                 )
             else:
                 group_id = self.question_graph.create_group(
@@ -347,33 +367,14 @@ class IncrementalGraphRunner:
                     member_id=unit_id,
                     paper_id=insertion.paper.paper_id,
                     paper_index=insertion.paper_index,
+                    ordinal=self._unit_ordinal(insertion.paper.paper_id, unit_id, level),
                 )
                 assignments[unit_id] = group_id
-                created.add(unit_id)
-
-        for unit_id, decision in batch.forward.items():
-            if decision.chosen_id and unit_id not in reciprocal:
-                self.question_graph.add_alignable_edge(
-                    assignments[unit_id],
-                    decision.chosen_id,
-                    attempt_id=decision.attempt_id,
-                    paper_index=insertion.paper_index,
-                )
 
         for group_id, decision in batch.reverse.items():
             unit_id = decision.chosen_id
-            if not unit_id:
-                continue
-            if reciprocal.get(unit_id) == group_id:
-                continue
-            if unit_id in created:
-                self.question_graph.add_alignable_edge(
-                    group_id,
-                    assignments[unit_id],
-                    attempt_id=decision.attempt_id,
-                    paper_index=insertion.paper_index,
-                )
-            else:
+            absorbed_group = reciprocal.get(unit_id) if unit_id else None
+            if absorbed_group and absorbed_group != group_id:
                 self.journal.event(
                     "projected_edge_ignored",
                     paper_index=insertion.paper_index,
@@ -381,7 +382,7 @@ class IncrementalGraphRunner:
                     parent_id=parent_id,
                     source_group_id=group_id,
                     selected_unit_id=unit_id,
-                    absorbed_group_id=assignments[unit_id],
+                    absorbed_group_id=absorbed_group,
                     attempt_id=decision.attempt_id,
                 )
         return assignments
@@ -418,12 +419,18 @@ class IncrementalGraphRunner:
             return self._section_context(paper_id, unit_id)
         return self._paragraph_context(paper_id, unit_id)
 
+    def _unit_ordinal(self, paper_id: str, unit_id: str, level: str) -> int:
+        if level == "section":
+            return self.section_lookup[(paper_id, unit_id)].ordinal
+        return self.paragraph_lookup[(paper_id, unit_id)][1].ordinal
+
     def _section_context(self, paper_id: str, section_id: str) -> dict[str, Any]:
         section = self.section_lookup[(paper_id, section_id)]
         return {
             "paper_id": paper_id,
             "section_id": section.id,
             "section_label": section.label,
+            "ordinal": section.ordinal,
             "generated_question_metadata": section.question,
             "full_text": section.text,
         }
@@ -434,6 +441,7 @@ class IncrementalGraphRunner:
             "paper_id": paper_id,
             "paragraph_id": paragraph.id,
             "paragraph_label": paragraph.label,
+            "ordinal": paragraph.ordinal,
             "generated_question_metadata": paragraph.question,
             "full_text": paragraph.text,
             "parent_section": {

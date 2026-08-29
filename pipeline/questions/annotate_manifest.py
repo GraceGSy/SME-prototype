@@ -1,6 +1,6 @@
-"""Run annotate_text_questions.py on every paper JSON listed in a manifest.yaml.
+"""Annotate every paper JSON listed in an incremental-graph manifest.
 
-The manifest shape matches incremental_graph / lean_graph:
+Expected manifest shape:
 
     papers:
       - paper_id: corpusstudio
@@ -10,9 +10,9 @@ The manifest shape matches incremental_graph / lean_graph:
 Relative `file` paths are resolved against the manifest's directory.
 
 Usage:
-    python3 annotate_text_questions_from_manifest.py path/to/manifest.yaml
-    python3 annotate_text_questions_from_manifest.py path/to/manifest.yaml --force
-    python3 annotate_text_questions_from_manifest.py path/to/manifest.yaml --dry-run
+    python -m pipeline.questions.annotate_manifest path/to/manifest.yaml
+    python -m pipeline.questions.annotate_manifest path/to/manifest.yaml --force
+    python -m pipeline.questions.annotate_manifest path/to/manifest.yaml --dry-run
 """
 from __future__ import annotations
 

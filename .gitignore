@@ -7,3 +7,4 @@ venv/
 _cache/
 runs/
 site/
+/pipeline/graph_sme/output/

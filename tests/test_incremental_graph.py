@@ -7,7 +7,7 @@ from pathlib import Path
 
 from pipeline.incremental_graph.configuration import load_pipeline_config
 from pipeline.incremental_graph.graph import QuestionGraph, graph_from_events, stable_id
-from pipeline.incremental_graph.input_data import load_paper
+from pipeline.incremental_graph.input_data import load_manifest, load_paper
 from pipeline.incremental_graph.journal import RevisionJournal
 from pipeline.incremental_graph.models import JudgmentResult, Paper, Paragraph, Section
 from pipeline.incremental_graph.runner import IncrementalGraphRunner
@@ -15,6 +15,7 @@ from pipeline.viewer.package import validate_dataset
 
 
 CONFIG_PATH = Path(__file__).resolve().parents[1] / "pipeline" / "incremental_graph" / "configs" / "incremental-v1.yaml"
+CANONICAL_MANIFEST = Path(__file__).resolve().parents[1] / "datasets" / "hci-five-paper" / "manifest.yaml"
 
 
 def paper(paper_id: str, sections: list[tuple[str, str, str]]) -> Paper:
@@ -36,8 +37,10 @@ def paper(paper_id: str, sections: list[tuple[str, str, str]]) -> Paper:
 class ScriptedJudge:
     def __init__(self, matches: dict[str, str | None]):
         self.matches = matches
+        self.requests = []
 
     def judge(self, request):
+        self.requests.append(request)
         if request.output_kind == "question":
             focus = request.key.rsplit(":", 1)[-1]
             normalized = {"question": f"What does {focus} address?"}
@@ -60,6 +63,36 @@ class ScriptedJudge:
 
 
 class IncrementalGraphTest(unittest.TestCase):
+    def test_reuses_questions_already_present_in_canonical_input(self) -> None:
+        decorated = Paper(
+            paper_id="p1",
+            title="P1",
+            sections=[Section(
+                id="s1",
+                text="Section text",
+                question="What does the section establish?",
+                paragraphs=[Paragraph(
+                    id="p1",
+                    text="Paragraph text",
+                    question="What does the paragraph establish?",
+                )],
+            )],
+        )
+        judge = ScriptedJudge({})
+        with tempfile.TemporaryDirectory() as directory:
+            runner = IncrementalGraphRunner(
+                load_pipeline_config(CONFIG_PATH),
+                judge,
+                Path(directory) / "revision",
+            )
+            runner.run([decorated])
+
+        called_stages = {request.stage_id for request in judge.requests}
+        self.assertNotIn("section_questions", called_stages)
+        self.assertNotIn("paragraph_questions", called_stages)
+        self.assertIn("section_group_questions", called_stages)
+        self.assertIn("paragraph_group_questions", called_stages)
+
     def test_normalizes_pseudo_sections_with_stable_unique_unit_ids(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "paper.json"
@@ -84,9 +117,41 @@ class IncrementalGraphTest(unittest.TestCase):
             self.assertEqual([section.id for section in normalized.sections], ["s1", "s2"])
             self.assertEqual(
                 [paragraph.id for section in normalized.sections for paragraph in section.paragraphs],
-                ["s1-1", "s1-2", "s2-1"],
+                ["s1-p1", "s1-p2", "s2-p1"],
             )
             self.assertEqual(normalized.sections[0].text, "First paragraph.\n\nSecond paragraph.")
+
+    def test_normalizes_nested_paragraphs_and_existing_questions(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "paper.json"
+            path.write_text(json.dumps([{
+                "section_name": "Method",
+                "section_number": "3",
+                "question_this_text_answers": "How does the method work?",
+                "paragraphs": [{
+                    "paragraph_number": 0,
+                    "text": "Method overview.",
+                    "question_this_text_answers": "What is the method overview?",
+                }],
+                "subsections": [{
+                    "section_name": "Implementation",
+                    "paragraphs": [{
+                        "paragraph_number": 0,
+                        "text": "Implementation details.",
+                        "question_this_text_answers": "How was it implemented?",
+                    }],
+                }],
+            }]), encoding="utf-8")
+
+            normalized = load_paper(path, "paper-a", "Paper A")
+
+            section = normalized.sections[0]
+            self.assertEqual(section.question, "How does the method work?")
+            self.assertEqual(section.ordinal, 1)
+            self.assertEqual(section.text, "Method overview.\n\nImplementation details.")
+            self.assertEqual([paragraph.id for paragraph in section.paragraphs], ["3-p1", "3-p2"])
+            self.assertEqual(section.paragraphs[1].label, "Implementation / 0")
+            self.assertEqual(section.paragraphs[1].question, "How was it implemented?")
 
     def test_incremental_reconciliation_preserves_ignored_projection_as_provenance(self) -> None:
         group_a = stable_id("section-group", "root", "p1", "a")
@@ -125,7 +190,7 @@ class IncrementalGraphTest(unittest.TestCase):
             self.assertEqual(graph.nodes[group_a]["classification"], "common_structure")
             self.assertEqual(len(graph.nodes[paragraph_group_a]["members"]), 3)
             self.assertEqual(graph.nodes[paragraph_group_a]["classification"], "common_structure")
-            self.assertFalse(graph.has_edge(group_b, group_a))
+            self.assertEqual(graph.number_of_edges(), 0)
             ignored = [event for event in runner.journal.events if event["action"] == "projected_edge_ignored"]
             self.assertEqual(len(ignored), 1)
             self.assertEqual(ignored[0]["source_group_id"], group_b)
@@ -142,23 +207,66 @@ class IncrementalGraphTest(unittest.TestCase):
             descriptor = validate_dataset(revision / "dataset", "incremental", "Incremental")
             self.assertEqual(descriptor["graph_replay_file"], "graph-replay.json")
 
-    def test_common_structure_can_be_demoted_as_denominator_grows(self) -> None:
+    def test_common_structure_uses_inclusive_half_threshold(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             journal = RevisionJournal(Path(directory) / "revision")
             graph = QuestionGraph(journal)
             graph.add_paper("p1", "P1", 1)
             node_id = graph.create_group(
-                level="section", parent_id=None, member_id="s1", paper_id="p1", paper_index=1
+                level="section",
+                parent_id=None,
+                member_id="s1",
+                paper_id="p1",
+                paper_index=1,
+                ordinal=1,
             )
-            self.assertEqual(graph.classify("section", 1)[node_id], "non_alignable_difference")
+            self.assertEqual(graph.classify("section", 1)[node_id], "common_structure")
 
             graph.add_paper("p2", "P2", 2)
-            graph.add_member(node_id, "s2", "p2", 2)
+            graph.add_member(node_id, "s2", "p2", 2, 1)
             self.assertEqual(graph.classify("section", 2)[node_id], "common_structure")
             graph.add_paper("p3", "P3", 3)
             self.assertEqual(graph.classify("section", 3)[node_id], "common_structure")
             graph.add_paper("p4", "P4", 4)
-            self.assertEqual(graph.classify("section", 4)[node_id], "alignable_difference")
+            self.assertEqual(graph.classify("section", 4)[node_id], "common_structure")
+            graph.add_paper("p5", "P5", 5)
+            self.assertEqual(graph.classify("section", 5)[node_id], "alignable_difference")
+
+    def test_rejects_two_members_from_one_paper(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            graph = QuestionGraph(RevisionJournal(Path(directory) / "revision"))
+            graph.add_paper("p1", "P1", 1)
+            node_id = graph.create_group(
+                level="section",
+                parent_id=None,
+                member_id="s1",
+                paper_id="p1",
+                paper_index=1,
+                ordinal=1,
+            )
+
+            with self.assertRaisesRegex(ValueError, "already contains a member from p1"):
+                graph.add_member(node_id, "s2", "p1", 1, 2)
+
+    def test_canonical_five_paper_dataset_completes_without_semantic_edges(self) -> None:
+        _, papers = load_manifest(CANONICAL_MANIFEST)
+        with tempfile.TemporaryDirectory() as directory:
+            revision = Path(directory) / "revision"
+            runner = IncrementalGraphRunner(
+                load_pipeline_config(CONFIG_PATH),
+                ScriptedJudge({}),
+                revision,
+            )
+            summary = runner.run(papers)
+
+            self.assertEqual(summary["paper_count"], 5)
+            self.assertEqual(runner.question_graph.graph.number_of_edges(), 0)
+            self.assertTrue(
+                all(len(data["members"]) == 1 for _, data in runner.question_graph.nodes())
+            )
+            descriptor = validate_dataset(revision / "dataset", "hci-five", "HCI Five")
+            self.assertEqual(descriptor["paper_count"], 5)
+            self.assertEqual(descriptor["paragraph_count"], 459)
 
 
 if __name__ == "__main__":

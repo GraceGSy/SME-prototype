@@ -19,7 +19,7 @@ def stable_id(prefix: str, *parts: str) -> str:
 
 
 class QuestionGraph:
-    """A thin domain wrapper around a NetworkX directed multigraph."""
+    """Own deterministic question-group state and replay events."""
 
     def __init__(self, journal: RevisionJournal):
         self.graph = nx.MultiDiGraph()
@@ -45,12 +45,13 @@ class QuestionGraph:
         member_id: str,
         paper_id: str,
         paper_index: int,
+        ordinal: int,
     ) -> str:
         prefix = "section-group" if level == "section" else "paragraph-group"
         node_id = stable_id(prefix, parent_id or "root", paper_id, member_id)
         if node_id in self.graph:
             raise ValueError(f"Question-group ID collision: {node_id}")
-        member = {"paper_id": paper_id, "unit_id": member_id}
+        member = {"paper_id": paper_id, "unit_id": member_id, "ordinal": ordinal}
         self.graph.add_node(
             node_id,
             level=level,
@@ -70,9 +71,18 @@ class QuestionGraph:
         )
         return node_id
 
-    def add_member(self, node_id: str, member_id: str, paper_id: str, paper_index: int) -> None:
+    def add_member(
+        self,
+        node_id: str,
+        member_id: str,
+        paper_id: str,
+        paper_index: int,
+        ordinal: int,
+    ) -> None:
         members = self.graph.nodes[node_id]["members"]
-        member = {"paper_id": paper_id, "unit_id": member_id}
+        if any(existing["paper_id"] == paper_id for existing in members):
+            raise ValueError(f"Question group {node_id} already contains a member from {paper_id}")
+        member = {"paper_id": paper_id, "unit_id": member_id, "ordinal": ordinal}
         if member in members:
             return
         members.append(member)
@@ -84,49 +94,15 @@ class QuestionGraph:
             member=member,
         )
 
-    def add_alignable_edge(
-        self,
-        source: str,
-        target: str,
-        *,
-        attempt_id: str,
-        paper_index: int,
-    ) -> str:
-        if self.graph.nodes[source]["level"] != self.graph.nodes[target]["level"]:
-            raise ValueError("Alignable-difference edges cannot cross graph levels")
-        if self.graph.nodes[source].get("parent_id") != self.graph.nodes[target].get("parent_id"):
-            raise ValueError("Paragraph alignments cannot cross section question groups")
-        edge_id = stable_id("edge", source, target, attempt_id)
-        self.graph.add_edge(
-            source,
-            target,
-            key=edge_id,
-            edge_id=edge_id,
-            kind="alignable_difference",
-            attempt_id=attempt_id,
-            created_paper_index=paper_index,
-        )
-        self.journal.event(
-            "edge_created",
-            paper_index=paper_index,
-            edge_id=edge_id,
-            source=source,
-            target=target,
-            kind="alignable_difference",
-            attempt_id=attempt_id,
-        )
-        return edge_id
-
     def classify(self, level: Level, paper_index: int) -> dict[str, Classification]:
         classifications: dict[str, Classification] = {}
         for node_id, _ in self.nodes(level):
             data = self.graph.nodes[node_id]
             coverage = len({member["paper_id"] for member in data["members"]})
             denominator = self._classification_denominator(data)
-            degree = self.graph.in_degree(node_id) + self.graph.out_degree(node_id)
-            if denominator >= 2 and coverage > denominator / 2:
+            if denominator and coverage * 2 >= denominator:
                 classification: Classification = "common_structure"
-            elif coverage >= 2 or degree > 0:
+            elif len(data["members"]) > 1:
                 classification = "alignable_difference"
             else:
                 classification = "non_alignable_difference"

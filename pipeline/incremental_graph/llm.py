@@ -43,14 +43,13 @@ class AnthropicJudgmentProvider:
         try:
             from anthropic import Anthropic
         except ImportError as error:
-            raise JudgmentError("Install pipeline/requirements.txt before running LLM stages") from error
+            raise JudgmentError("Install requirements.txt before running LLM stages") from error
 
         client = Anthropic()
         tool_name = "record_question" if request.output_kind == "question" else "record_match"
-        response = client.messages.create(
+        request_args = dict(
             model=self.model.name,
             max_tokens=self.model.max_tokens,
-            temperature=self.model.temperature,
             system=rendered.system,
             messages=[{"role": "user", "content": rendered.user}],
             tools=[{
@@ -60,6 +59,9 @@ class AnthropicJudgmentProvider:
             }],
             tool_choice={"type": "tool", "name": tool_name},
         )
+        if self.model.temperature is not None:
+            request_args["temperature"] = self.model.temperature
+        response = client.messages.create(**request_args)
         tool_blocks = [block for block in response.content if getattr(block, "type", "") == "tool_use"]
         if len(tool_blocks) != 1:
             raise JudgmentError(f"Expected one {tool_name} tool result; received {len(tool_blocks)}")

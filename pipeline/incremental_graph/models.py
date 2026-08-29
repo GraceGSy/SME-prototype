@@ -22,6 +22,7 @@ class Paragraph(BaseModel):
     label: str = ""
     text: str
     question: str = ""
+    ordinal: int = Field(default=1, ge=1)
 
 
 class Section(BaseModel):
@@ -30,6 +31,7 @@ class Section(BaseModel):
     text: str
     paragraphs: list[Paragraph] = Field(default_factory=list)
     question: str = ""
+    ordinal: int = Field(default=1, ge=1)
 
 
 class Paper(BaseModel):
@@ -72,7 +74,7 @@ class ModelSettings(BaseModel):
     provider: Literal["anthropic"] = "anthropic"
     name: str = "claude-sonnet-5"
     max_tokens: int = 1024
-    temperature: float = 0
+    temperature: float | None = None
 
 
 class StageConfig(BaseModel):
