@@ -597,6 +597,82 @@ class ParagraphMatchGraph:
         )
         return flagged
 
+    def fan_in_correspondence_table(self) -> list[dict[str, Any]]:
+        """The paragraph-level sibling of `ClosestMatchGraph.
+        fan_in_correspondence_table()` -- see that method's docstring for the shared
+        row-inclusion rule (bidirectional node, OR an unreciprocated node still
+        flagged by >= 2 distinct claims from the same other paper -- the
+        "structurally different" last-row case in the README's own worked example)
+        and cell/bold conventions.
+
+        The one structural divergence: NO `redundant_edges()` filtering here. Every
+        one-directional claim on a row's node is included as-is -- see this module's
+        own "-- redundancy flagging --" comment block for why a ported filter would be
+        actively wrong at this granularity (it was verified to erase all three real
+        fan-in groups in the corpusstudio/examplore_chi18 Introduction pairing, not
+        just redundant noise).
+
+        Returns a list of dicts, UNORDERED, same shape as the section-level sibling:
+          - "node_id": the node's graph id.
+          - "cells": {paper_id: [(label, is_bidirectional), ...]}, sorted within each
+            cell by `paragraph_number` ascending -- unlike the section-level sibling
+            (no natural sort order there), a paragraph number gives a real total
+            order, and the README's own worked example interleaves the bidirectional
+            entry among its unreciprocated neighbors this way (e.g. "¶3, **¶4**, ¶5")
+            rather than listing the bidirectional member first.
+
+        A unit's label is always `"¶{paragraph_number}"` -- paragraphs have no
+        "(whole)"-vs-subsection distinction to disambiguate, unlike the section-level
+        sibling.
+        """
+        claims_by_node: dict[str, dict[str, list[dict[str, Any]]]] = {}
+        for node_id, data in self.graph.nodes(data=True):
+            per_paper = claims_by_node.setdefault(node_id, {})
+            for member in data["members"]:
+                per_paper.setdefault(member["paper_id"], []).append({"status": "bidirectional", "unit": member})
+        for _, target_node, _, data in self.graph.edges(keys=True, data=True):
+            if data.get("kind") != "one_directional_match":
+                continue
+            su = data["source_unit"]
+            per_paper = claims_by_node.setdefault(target_node, {})
+            per_paper.setdefault(su["paper_id"], []).append({"status": "one_directional", "unit": su})
+
+        def unit_label(u: dict[str, Any]) -> str:
+            return f"¶{u['paragraph_number']}"
+
+        rows: list[dict[str, Any]] = []
+        for node_id, data in self.graph.nodes(data=True):
+            members = data["members"]
+            is_bidirectional_node = len(members) > 1
+            per_paper = claims_by_node.get(node_id, {})
+            has_fan_in = any(len(claim_list) >= 2 for claim_list in per_paper.values())
+            if not is_bidirectional_node and not has_fan_in:
+                continue
+
+            # (paragraph_number, label, is_bidirectional) per cell, sorted
+            # numerically, then stripped to the (label, is_bidirectional) shape the
+            # renderer wants.
+            raw_cells: dict[str, list[tuple[Optional[int], str, bool]]] = {}
+            for m in members:
+                raw_cells.setdefault(m["paper_id"], []).append(
+                    (m.get("paragraph_number"), unit_label(m), is_bidirectional_node)
+                )
+            for claiming_paper, claim_list in per_paper.items():
+                for c in claim_list:
+                    if c["status"] != "one_directional":
+                        continue
+                    u = c["unit"]
+                    raw_cells.setdefault(claiming_paper, []).append(
+                        (u.get("paragraph_number"), unit_label(u), False)
+                    )
+
+            cells: dict[str, list[tuple[str, bool]]] = {}
+            for pid, entries in raw_cells.items():
+                entries.sort(key=lambda e: (e[0] is None, e[0]))
+                cells[pid] = [(label, is_bidirectional) for _, label, is_bidirectional in entries]
+            rows.append({"node_id": node_id, "cells": cells})
+        return rows
+
     # -- persistence --------------------------------------------------------
 
     def serialize(self) -> dict[str, Any]:

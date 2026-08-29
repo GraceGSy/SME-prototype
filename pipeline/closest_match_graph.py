@@ -636,6 +636,114 @@ class ClosestMatchGraph:
         )
         return flagged
 
+    def fan_in_correspondence_table(self) -> list[dict[str, Any]]:
+        """Build the row data behind the README's "Bidirectional and (even unrequited)
+        Fan_In Correspondence Table" for sections/subsections: one row per node that is
+        either BIDIRECTIONAL (both directions agree, i.e. merged, len(members) > 1) or
+        the target of a `fan_in_candidates()`-style convergence (>= 2 distinct claims
+        from the same other paper) even when never reciprocated -- the same
+        "structurally different, unreciprocated" row the README's paragraph-level
+        worked example calls out (e.g. a target whose own directional pass picked
+        something else, or nothing). Every non-redundant one-directional claim on a
+        row's node is folded into the same row, in the cell of whichever paper made
+        the claim.
+
+        Filters every one-directional claim through `redundant_edges()` first -- a
+        claim whose source unit is already covered by a sibling's bidirectional match
+        to the exact same target is dropped, same discipline as the README's own "Step
+        2: filter out every extra claim that redundant_edges() already flags" worked
+        example. This is the one place this method structurally diverges from its
+        `ParagraphMatchGraph` sibling: that class has no `redundant_edges()` to filter
+        through (see its own module docstring for why), so its version of this table
+        includes every non-empty fan-in claim, unfiltered.
+
+        Returns a list of dicts, UNORDERED -- row order is a presentation choice (e.g.
+        one paper's own document order) this method has no way to make on its own:
+          - "node_id": the node's graph id, for cross-referencing.
+          - "cells": {paper_id: [(label, is_bidirectional), ...]}. `is_bidirectional`
+            is True for every entry only when the node itself is bidirectional
+            (len(members) > 1); on an unreciprocated node (single member, flagged only
+            via fan-in), even that lone member renders unbolded, matching the README's
+            "last row has no bold at all, since nothing there reciprocated" convention.
+            Feed straight into `fan_in_table.render_correspondence_table_markdown` for
+            the README's exact rendering, or consume the structured form directly.
+
+        A unit's label is `"{section_name} > {subsection_name}"` for a subsection, or
+        `"{section_name} (whole)"` for a top-level section IF that (paper_id,
+        section_name) has at least one subsection-level unit anywhere in this graph
+        (as a bidirectional member or one-directional edge endpoint) -- otherwise just
+        `"{section_name}"`, no "(whole)" tag. Derived entirely from this graph's own
+        contents, never by re-reading the source paper JSON.
+
+        Within a cell, a bidirectional member (if any) is listed first, followed by
+        non-redundant one-directional claims in whatever order `fan_in_candidates()`-
+        style iteration encountered them -- no additional sort. This is a deliberate
+        difference from the paragraph-level sibling's numeric-by-paragraph-number sort;
+        section/subsection labels have no natural total order to sort by.
+        """
+        has_subsections: set[tuple[str, str]] = set()
+
+        def note_subsections(u: dict[str, Any]) -> None:
+            if u.get("subsection_name"):
+                has_subsections.add((u["paper_id"], u["section_name"]))
+
+        for _, data in self.graph.nodes(data=True):
+            for m in data["members"]:
+                note_subsections(m)
+        for _, _, data in self.graph.edges(data=True):
+            if data.get("kind") != "one_directional_match":
+                continue
+            note_subsections(data["source_unit"])
+            note_subsections(data["target_unit"])
+
+        def unit_label(u: dict[str, Any]) -> str:
+            if u.get("subsection_name"):
+                return f"{u['section_name']} > {u['subsection_name']}"
+            if (u["paper_id"], u["section_name"]) in has_subsections:
+                return f"{u['section_name']} (whole)"
+            return u["section_name"]
+
+        redundant_keys = {
+            (self._member_key(r["source_unit"]), self._member_key(r["target_unit"]))
+            for r in self.redundant_edges()
+        }
+
+        claims_by_node: dict[str, dict[str, list[dict[str, Any]]]] = {}
+        for node_id, data in self.graph.nodes(data=True):
+            per_paper = claims_by_node.setdefault(node_id, {})
+            for member in data["members"]:
+                per_paper.setdefault(member["paper_id"], []).append({"status": "bidirectional", "unit": member})
+        for source, target, key, data in self.graph.edges(keys=True, data=True):
+            if data.get("kind") != "one_directional_match":
+                continue
+            su = data["source_unit"]
+            per_paper = claims_by_node.setdefault(target, {})
+            per_paper.setdefault(su["paper_id"], []).append(
+                {"status": "one_directional", "unit": su, "target_unit": data["target_unit"]}
+            )
+
+        rows: list[dict[str, Any]] = []
+        for node_id, data in self.graph.nodes(data=True):
+            members = data["members"]
+            is_bidirectional_node = len(members) > 1
+            per_paper = claims_by_node.get(node_id, {})
+            has_fan_in = any(len(claim_list) >= 2 for claim_list in per_paper.values())
+            if not is_bidirectional_node and not has_fan_in:
+                continue
+
+            cells: dict[str, list[tuple[str, bool]]] = {}
+            for m in members:
+                cells.setdefault(m["paper_id"], []).append((unit_label(m), is_bidirectional_node))
+            for claiming_paper, claim_list in per_paper.items():
+                for c in claim_list:
+                    if c["status"] != "one_directional":
+                        continue
+                    if (self._member_key(c["unit"]), self._member_key(c["target_unit"])) in redundant_keys:
+                        continue
+                    cells.setdefault(claiming_paper, []).append((unit_label(c["unit"]), False))
+            rows.append({"node_id": node_id, "cells": cells})
+        return rows
+
     # -- persistence --------------------------------------------------------
 
     def serialize(self) -> dict[str, Any]:
