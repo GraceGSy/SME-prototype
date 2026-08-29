@@ -10,7 +10,7 @@ and the earlier proposition-graph SME.
 | Path | Purpose |
 |---|---|
 | `datasets/hci-five-paper/` | Five canonical, question-decorated HCI papers and their ordered manifest |
-| `pipeline/incremental_graph/` | Elena's incremental section and paragraph graph |
+| `pipeline/incremental_graph/` | Incremental section and paragraph graph |
 | `pipeline/questions/` | Direct question-annotation commands |
 | `pipeline/viewer/` | Paper Map, Question Groups, Graph Replay, and dataset packaging |
 | `pipeline/graph_sme/` | Earlier proposition-graph SME retained as a separate implementation |

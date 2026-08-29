@@ -1,6 +1,6 @@
 # Incremental question-group graph
 
-This package implements Elena's ordered section, subsection, and paragraph
+This package implements the ordered section, subsection, and paragraph
 graph. A checked-in Claude Skill makes bounded directional matches; ordinary
 structured model calls generate missing unit and group questions. Python owns input
 normalization, IDs, graph mutations, classification, provenance, replay, and
