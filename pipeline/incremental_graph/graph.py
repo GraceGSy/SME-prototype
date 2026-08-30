@@ -1,4 +1,4 @@
-"""Deterministic graph mutations, classification, serialization, and replay."""
+"""Deterministic graph mutations, serialization, and replay."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from typing import Any, Iterable
 import networkx as nx
 
 from .journal import RevisionJournal
-from .models import Classification, Level
+from .models import Level
 
 
 def stable_id(prefix: str, *parts: str) -> str:
@@ -49,13 +49,21 @@ class QuestionGraph:
         parent_unit_id: str | None = None,
         family_id: str | None = None,
         owner_group_id: str | None = None,
+        membership_role: str | None = None,
     ) -> str:
         prefix = "section-group" if level == "section" else "paragraph-group"
         node_id = stable_id(prefix, parent_id or "root", paper_id, member_id)
         if node_id in self.graph:
             raise ValueError(f"Question-group ID collision: {node_id}")
         member = _member(
-            paper_id, member_id, ordinal, unit_kind, parent_unit_id, family_id, owner_group_id
+            paper_id,
+            member_id,
+            ordinal,
+            unit_kind,
+            parent_unit_id,
+            family_id,
+            owner_group_id,
+            membership_role,
         )
         self.graph.add_node(
             node_id,
@@ -63,7 +71,6 @@ class QuestionGraph:
             parent_id=parent_id,
             members=[member],
             generated_question="",
-            classification=None,
             created_paper_index=paper_index,
         )
         self.journal.event(
@@ -87,23 +94,145 @@ class QuestionGraph:
         parent_unit_id: str | None = None,
         family_id: str | None = None,
         owner_group_id: str | None = None,
+        membership_role: str | None = None,
     ) -> None:
         members = self.graph.nodes[node_id]["members"]
-        if any(existing["paper_id"] == paper_id for existing in members):
+        if (
+            self.graph.nodes[node_id]["level"] == "section"
+            and any(existing["paper_id"] == paper_id for existing in members)
+        ):
             raise ValueError(f"Question group {node_id} already contains a member from {paper_id}")
         member = _member(
-            paper_id, member_id, ordinal, unit_kind, parent_unit_id, family_id, owner_group_id
+            paper_id,
+            member_id,
+            ordinal,
+            unit_kind,
+            parent_unit_id,
+            family_id,
+            owner_group_id,
+            membership_role,
         )
         if member in members:
             return
         members.append(member)
-        members.sort(key=lambda item: (self.paper_order.index(item["paper_id"]), item["unit_id"]))
+        members.sort(
+            key=lambda item: (
+                self.paper_order.index(item["paper_id"]),
+                item["ordinal"],
+                item["unit_id"],
+            )
+        )
         self.journal.event(
             "member_added",
             paper_index=paper_index,
             node_id=node_id,
             member=member,
         )
+
+    def merge_paragraph_group(
+        self,
+        source_id: str,
+        target_id: str,
+        *,
+        paper_index: int,
+    ) -> list[dict[str, Any]]:
+        """Atomically absorb one adjacent paragraph node into a reciprocal node."""
+
+        source = self.graph.nodes[source_id]
+        target = self.graph.nodes[target_id]
+        if source["level"] != "paragraph" or target["level"] != "paragraph":
+            raise ValueError("Only paragraph groups can be merged")
+        if source.get("parent_id") != target.get("parent_id"):
+            raise ValueError("Paragraph groups must share one structural parent")
+        moved = [{**member, "membership_role": "fan_in"} for member in source["members"]]
+        target["members"].extend(moved)
+        target["members"].sort(
+            key=lambda item: (
+                self.paper_order.index(item["paper_id"]),
+                item["ordinal"],
+                item["unit_id"],
+            )
+        )
+        self.graph.remove_node(source_id)
+        self.journal.event(
+            "node_merged",
+            paper_index=paper_index,
+            source_node_id=source_id,
+            target_node_id=target_id,
+            members=moved,
+            reason="adjacent_paragraph_fan_in",
+        )
+        return moved
+
+    def merge_section_singleton(
+        self,
+        source_id: str,
+        target_id: str,
+        *,
+        paper_index: int,
+        attempt_id: str,
+    ) -> dict[str, Any]:
+        """Absorb one structural singleton and preserve its containment edges."""
+
+        if source_id == target_id:
+            raise ValueError("A structural singleton cannot merge into itself")
+        source = self.graph.nodes[source_id]
+        target = self.graph.nodes[target_id]
+        if source["level"] != "section" or target["level"] != "section":
+            raise ValueError("Only structural groups can be rerepresented")
+        if len(source["members"]) != 1:
+            raise ValueError(f"Rerepresentation source {source_id} is not a singleton")
+        if len(target["members"]) < 2:
+            raise ValueError(f"Rerepresentation target {target_id} is not established")
+
+        member = source["members"][0]
+        if any(
+            existing["paper_id"] == member["paper_id"] for existing in target["members"]
+        ):
+            raise ValueError(
+                f"Question group {target_id} already contains a member from {member['paper_id']}"
+            )
+        incident_edges = [
+            (edge_source, edge_target, data)
+            for edge_source, edge_target, _, data in self.graph.edges(keys=True, data=True)
+            if edge_source == source_id or edge_target == source_id
+        ]
+        unsupported = [
+            data.get("kind")
+            for _, _, data in incident_edges
+            if data.get("kind") != "contains"
+        ]
+        if unsupported:
+            raise ValueError(f"Cannot rewire unsupported edge kinds {unsupported}")
+        target["members"].append(member)
+        target["members"].sort(
+            key=lambda item: (
+                self.paper_order.index(item["paper_id"]),
+                item["ordinal"],
+                item["unit_id"],
+            )
+        )
+        self.graph.remove_node(source_id)
+        self.journal.event(
+            "node_merged",
+            paper_index=paper_index,
+            source_node_id=source_id,
+            target_node_id=target_id,
+            members=[member],
+            reason="structural_rerepresentation",
+            attempt_id=attempt_id,
+        )
+        for edge_source, edge_target, data in incident_edges:
+            replacement_source = target_id if edge_source == source_id else edge_source
+            replacement_target = target_id if edge_target == source_id else edge_target
+            if replacement_source != replacement_target:
+                self.add_hierarchy_edge(
+                    replacement_source,
+                    replacement_target,
+                    paper_id=data["paper_id"],
+                    paper_index=paper_index,
+                )
+        return member
 
     def add_hierarchy_edge(
         self,
@@ -135,57 +264,15 @@ class QuestionGraph:
             paper_id=paper_id,
         )
 
-    def structural_family(self, node_ids: list[str]) -> set[str]:
-        """Return structural groups connected by paper-specific containment edges."""
+    def paragraph_groups_for_section(self, structural_group_id: str, paper_id: str) -> list[str]:
+        """Return paragraph groups owned by one exact structural node."""
 
-        structural = nx.Graph()
-        structural.add_nodes_from(self.group_ids("section"))
-        structural.add_edges_from(
-            (source, target)
-            for source, target, data in self.graph.edges(data=True)
-            if data.get("kind") == "contains"
-        )
-        family: set[str] = set()
-        for node_id in node_ids:
-            if node_id in structural:
-                family.update(nx.node_connected_component(structural, node_id))
-        return family
-
-    def paragraph_groups_for_family(self, structural_group_ids: set[str], paper_id: str) -> list[str]:
         return sorted(
             node_id
             for node_id, data in self.nodes("paragraph")
+            if data.get("parent_id") == structural_group_id
             if not any(member["paper_id"] == paper_id for member in data["members"])
-            and any(member.get("owner_group_id") in structural_group_ids for member in data["members"])
         )
-
-    def classify(self, level: Level, paper_index: int) -> dict[str, Classification]:
-        classifications: dict[str, Classification] = {}
-        for node_id, _ in self.nodes(level):
-            data = self.graph.nodes[node_id]
-            coverage = len({member["paper_id"] for member in data["members"]})
-            denominator = len(self.paper_order)
-            if denominator and coverage * 2 >= denominator:
-                classification: Classification = "common_structure"
-            elif len(data["members"]) > 1:
-                classification = "alignable_difference"
-            else:
-                classification = "non_alignable_difference"
-            classifications[node_id] = classification
-            previous = data.get("classification")
-            data["classification"] = classification
-            if previous != classification:
-                self.journal.event(
-                    "classification_changed",
-                    paper_index=paper_index,
-                    node_id=node_id,
-                    level=level,
-                    previous=previous,
-                    classification=classification,
-                    paper_coverage=coverage,
-                    eligible_papers=denominator,
-                )
-        return classifications
 
     def set_question(
         self,
@@ -260,10 +347,12 @@ def graph_from_events(events: list[dict[str, Any]]) -> nx.MultiDiGraph:
                 parent_id=event.get("parent_id"),
                 members=[event["member"]],
                 generated_question="",
-                classification=None,
             )
         elif action == "member_added":
             graph.nodes[event["node_id"]]["members"].append(event["member"])
+        elif action == "node_merged":
+            graph.nodes[event["target_node_id"]]["members"].extend(event["members"])
+            graph.remove_node(event["source_node_id"])
         elif action == "edge_created":
             graph.add_edge(
                 event["source"],
@@ -274,8 +363,6 @@ def graph_from_events(events: list[dict[str, Any]]) -> nx.MultiDiGraph:
                 attempt_id=event.get("attempt_id"),
                 paper_id=event.get("paper_id"),
             )
-        elif action == "classification_changed":
-            graph.nodes[event["node_id"]]["classification"] = event["classification"]
         elif action == "question_generated":
             graph.nodes[event["node_id"]]["generated_question"] = event["question"]
     return graph
@@ -345,8 +432,9 @@ def _member(
     parent_unit_id: str | None,
     family_id: str | None,
     owner_group_id: str | None,
+    membership_role: str | None,
 ) -> dict[str, Any]:
-    return {
+    member = {
         "paper_id": paper_id,
         "unit_id": unit_id,
         "ordinal": ordinal,
@@ -355,6 +443,9 @@ def _member(
         "family_id": family_id,
         "owner_group_id": owner_group_id,
     }
+    if membership_role is not None:
+        member["membership_role"] = membership_role
+    return member
 
 
 def _json_attrs(value: dict[str, Any]) -> dict[str, Any]:
