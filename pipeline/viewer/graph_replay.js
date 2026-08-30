@@ -1,22 +1,18 @@
 (function () {
   "use strict";
 
-  const CATEGORY_COLORS = {
-    common_structure: "#2b8a6e",
-    alignable_difference: "#e09b32",
-    non_alignable_difference: "#87939a",
-    pending: "#b8c2c7",
-  };
+  const NODE_COLOR = "#52748a";
   const PAPER_COLORS = ["#1971c2", "#e8590c", "#2f9e44", "#9c36b5", "#0b7285", "#c92a2a", "#5f3dc4", "#f08c00"];
   const ACTION_LABELS = {
     paper_added: "Paper added",
     match_recorded: "Match judgment recorded",
     node_created: "Question group created",
     member_added: "Section or paragraph added to group",
+    node_merged: "Question group merged",
     edge_created: "Hierarchy edge added",
-    classification_changed: "Category recomputed",
     question_generated: "Display question generated",
     projected_edge_ignored: "Projected edge ignored",
+    rerepresentation_merge_ignored: "Rerepresentation merge ignored",
   };
 
   let host = null;
@@ -82,9 +78,6 @@
           <div class="graph-replay-paper-strip" aria-label="Jump to paper">${paperDots}</div>
         </div>
         <div class="graph-replay-legend">
-          <span><i style="background:${CATEGORY_COLORS.common_structure}"></i>Common structure</span>
-          <span><i style="background:${CATEGORY_COLORS.alignable_difference}"></i>Alignable difference</span>
-          <span><i style="background:${CATEGORY_COLORS.non_alignable_difference}"></i>Non-alignable difference</span>
           <span>Dashed arrows show section containment when enabled.</span>
         </div>
       </div>
@@ -130,15 +123,21 @@
         level: event.level,
         parentId: event.parent_id || null,
         members: [event.member],
-        classification: null,
         question: "",
       });
     } else if (event.action === "member_added") state.nodes.get(event.node_id)?.members.push(event.member);
+    else if (event.action === "node_merged") {
+      const target = state.nodes.get(event.target_node_id);
+      if (target) target.members.push(...event.members);
+      state.nodes.delete(event.source_node_id);
+      state.edges.forEach((edge, edgeId) => {
+        if (edge.source === event.source_node_id || edge.target === event.source_node_id) {
+          state.edges.delete(edgeId);
+        }
+      });
+    }
     else if (event.action === "edge_created") state.edges.set(event.edge_id, event);
-    else if (event.action === "classification_changed") {
-      const node = state.nodes.get(event.node_id);
-      if (node) node.classification = event.classification;
-    } else if (event.action === "question_generated") {
+    else if (event.action === "question_generated") {
       const node = state.nodes.get(event.node_id);
       if (node) node.question = event.question;
     }
@@ -199,19 +198,20 @@
     }).join("");
     const nodeSvg = visibleNodes.map(node => {
       const position = point(node.nodeId);
-      const active = currentEvent.node_id === node.nodeId || currentEvent.absorbed_group_id === node.nodeId;
+      const active = currentEvent.node_id === node.nodeId
+        || currentEvent.absorbed_group_id === node.nodeId
+        || currentEvent.target_node_id === node.nodeId;
       const selected = selectedNodeId === node.nodeId;
       const classes = `graph-replay-node${active ? " current" : ""}${selected ? " selected" : ""}`;
       const compact = visibleNodes.length > 40;
       const radius = compact ? 9 : node.level === "section" ? 25 : 20;
-      const color = CATEGORY_COLORS[node.classification || "pending"];
       const label = shortText(node.question || node.nodeId, 32);
       const visibleLabel = !compact || active || selected
         ? `<text y="${radius + 16}">${escapeHtml(label)}</text>`
         : "";
       return `<g class="${classes}" data-replay-node="${escapeHtml(node.nodeId)}" transform="translate(${position.x},${position.y})">
         <title>${escapeHtml(node.question || node.nodeId)}</title>
-        <circle r="${radius}" fill="${color}"></circle>
+        <circle r="${radius}" fill="${NODE_COLOR}"></circle>
         <text class="member-count" y="3">${node.members.length}</text>
         ${visibleLabel}
       </g>`;
@@ -238,7 +238,7 @@
     const nodeHtml = selected ? `<section>
       <div class="graph-replay-kicker">Selected group</div>
       <h2>${escapeHtml(selected.question || selected.nodeId)}</h2>
-      <p>${escapeHtml(categoryLabel(selected.classification))} &middot; ${selected.members.length} member${selected.members.length === 1 ? "" : "s"}</p>
+      <p>${selected.members.length} member${selected.members.length === 1 ? "" : "s"}</p>
       <dl class="graph-replay-detail-list">${selected.members.map(member => `<dt>${escapeHtml(member.paper_id)} &middot; ${escapeHtml(member.unit_kind || selected.level)}</dt><dd>${escapeHtml(member.unit_id)}</dd>`).join("")}</dl>
     </section>` : "";
     inspector.innerHTML = eventHtml + nodeHtml;
@@ -249,10 +249,16 @@
     if (event.action === "match_recorded") return event.chosen_id ? `${event.focus_id} selected ${event.chosen_id}.` : `${event.focus_id} selected no match.`;
     if (event.action === "node_created") return `${event.member.paper_id}:${event.member.unit_id} starts a new question group.`;
     if (event.action === "member_added") return `${event.member.paper_id}:${event.member.unit_id} joins ${event.node_id}.`;
+    if (event.action === "node_merged") {
+      const reason = event.reason === "structural_rerepresentation"
+        ? "through structural rerepresentation"
+        : "as adjacent paragraph fan-in";
+      return `${event.source_node_id} joins ${event.target_node_id} ${reason}.`;
+    }
     if (event.action === "edge_created") return `${event.source} points to ${event.target}.`;
-    if (event.action === "classification_changed") return `${event.node_id} is now ${categoryLabel(event.classification)}.`;
     if (event.action === "question_generated") return event.question;
     if (event.action === "projected_edge_ignored") return `The selection was retained as provenance; no ${event.source_group_id} -> ${event.absorbed_group_id} edge was added.`;
+    if (event.action === "rerepresentation_merge_ignored") return `${event.source_group_id} remains a singleton because ${event.target_group_id} already represents ${event.paper_id}.`;
     return "The saved pipeline event has no graph mutation.";
   }
 
@@ -298,10 +304,6 @@
     const position = nodes.map(node => node.nodeId).sort().indexOf(nodeId);
     const angle = (Math.PI * 2 * position) / Math.max(nodes.length, 1) - Math.PI / 2;
     return { x: .5 + .38 * Math.cos(angle), y: .5 + .38 * Math.sin(angle) };
-  }
-
-  function categoryLabel(value) {
-    return (value || "pending").replaceAll("_", " ");
   }
 
   function shortText(value, length) {

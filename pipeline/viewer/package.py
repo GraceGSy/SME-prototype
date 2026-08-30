@@ -78,7 +78,14 @@ def _validate_optional_graph_replay(dataset_dir: Path, paper_ids: list[str]) -> 
             node_id = event.get("node_id")
             _require(bool(node_id) and node_id not in known_nodes, f"{GRAPH_REPLAY_FILE} creates a duplicate node")
             known_nodes.add(node_id)
-        elif action in {"member_added", "classification_changed", "question_generated"}:
+        elif action == "node_merged":
+            _require(
+                event.get("source_node_id") in known_nodes
+                and event.get("target_node_id") in known_nodes,
+                f"{GRAPH_REPLAY_FILE} merges an unknown node",
+            )
+            known_nodes.remove(event["source_node_id"])
+        elif action in {"member_added", "question_generated"}:
             _require(event.get("node_id") in known_nodes, f"{GRAPH_REPLAY_FILE} updates an unknown node")
         elif action == "edge_created":
             _require(
