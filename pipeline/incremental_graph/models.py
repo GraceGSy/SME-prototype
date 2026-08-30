@@ -11,11 +11,7 @@ from pydantic import BaseModel, Field, model_validator
 
 Level = Literal["section", "paragraph"]
 StructuralKind = Literal["section", "subsection"]
-Classification = Literal[
-    "common_structure",
-    "alignable_difference",
-    "non_alignable_difference",
-]
+Phase = Literal["structural", "paragraph"]
 
 
 class Paragraph(BaseModel):
@@ -98,6 +94,7 @@ class ModelSettings(BaseModel):
 class StageConfig(BaseModel):
     id: str
     handler: str
+    phase: Phase
     prompt: str | None = None
     context: str | None = None
     prompts: dict[str, str] = Field(default_factory=dict)

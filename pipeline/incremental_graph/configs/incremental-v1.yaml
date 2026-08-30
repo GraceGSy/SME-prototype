@@ -12,14 +12,17 @@ model:
 stages:
   - id: ingest
     handler: ingest_paper
+    phase: structural
 
   - id: section_questions
     handler: generate_section_questions
+    phase: structural
     prompt: section-question/v1
     context: section-question
 
   - id: section_matching
     handler: match_sections
+    phase: structural
     skill: directional-section-mapping-by-paragraphs-nested
     prompts:
       new_to_group: section-to-group-match/v1
@@ -30,22 +33,23 @@ stages:
 
   - id: section_reconciliation
     handler: reconcile_sections
-
-  - id: section_classification
-    handler: classify_sections
+    phase: structural
 
   - id: section_group_questions
     handler: generate_section_group_questions
+    phase: structural
     prompt: group-question/v1
     context: group-question
 
   - id: paragraph_questions
     handler: generate_paragraph_questions
+    phase: paragraph
     prompt: paragraph-question/v1
     context: paragraph-question
 
   - id: paragraph_matching
     handler: match_paragraphs
+    phase: paragraph
     skill: directional-section-mapping-by-paragraphs-nested
     prompts:
       new_to_group: paragraph-to-group-match/v1
@@ -56,14 +60,10 @@ stages:
 
   - id: paragraph_reconciliation
     handler: reconcile_paragraphs
-
-  - id: paragraph_classification
-    handler: classify_paragraphs
+    phase: paragraph
 
   - id: paragraph_group_questions
     handler: generate_paragraph_group_questions
+    phase: paragraph
     prompt: group-question/v1
     context: group-question
-
-  - id: export
-    handler: export_outputs

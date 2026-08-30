@@ -15,6 +15,7 @@ from .models import (
     MatchBatch,
     MatchDecision,
     Paper,
+    Phase,
     PipelineConfig,
     StageConfig,
 )
@@ -52,27 +53,22 @@ class IncrementalGraphRunner:
             "generate_section_questions": self._generate_section_questions,
             "match_sections": self._match_sections,
             "reconcile_sections": self._reconcile_sections,
-            "classify_sections": self._classify_sections,
             "generate_section_group_questions": self._generate_section_group_questions,
             "generate_paragraph_questions": self._generate_paragraph_questions,
             "match_paragraphs": self._match_paragraphs,
             "reconcile_paragraphs": self._reconcile_paragraphs,
-            "classify_paragraphs": self._classify_paragraphs,
             "generate_paragraph_group_questions": self._generate_paragraph_group_questions,
-            "export_outputs": self._export_outputs,
         }
 
     def run(self, papers: list[Paper]) -> dict[str, Any]:
+        insertions: list[InsertionState] = []
         for paper_index, paper in enumerate(papers, start=1):
             self._register_paper(paper)
             insertion = InsertionState(paper=paper, paper_index=paper_index)
-            for stage in self.config.stages:
-                handler = self.handlers.get(stage.handler)
-                if handler is None:
-                    raise PipelineError(f"Unknown stage handler {stage.handler!r} for stage {stage.id}")
-                result = handler(stage, insertion)
-                insertion.stage_results[stage.id] = result
-                self.journal.stage(paper_index, stage.id, result)
+            insertions.append(insertion)
+            self._run_phase("structural", insertion)
+        for insertion in insertions:
+            self._run_phase("paragraph", insertion)
         self.journal.finalize()
         export_revision(self.revision_dir / "dataset", self.question_graph, self.papers)
         summary = {
@@ -87,6 +83,15 @@ class IncrementalGraphRunner:
         }
         write_json(self.revision_dir / "summary.json", summary)
         return summary
+
+    def _run_phase(self, phase: Phase, insertion: InsertionState) -> None:
+        for stage in (stage for stage in self.config.stages if stage.phase == phase):
+            handler = self.handlers.get(stage.handler)
+            if handler is None:
+                raise PipelineError(f"Unknown stage handler {stage.handler!r} for stage {stage.id}")
+            result = handler(stage, insertion)
+            insertion.stage_results[stage.id] = result
+            self.journal.stage(insertion.paper_index, stage.id, result)
 
     def _register_paper(self, paper: Paper) -> None:
         self.papers.append(paper)
@@ -149,9 +154,6 @@ class IncrementalGraphRunner:
                 )
         return insertion.section_assignments
 
-    def _classify_sections(self, stage: StageConfig, insertion: InsertionState) -> dict[str, str]:
-        return self.question_graph.classify("section", insertion.paper_index)
-
     def _generate_section_group_questions(
         self, stage: StageConfig, insertion: InsertionState
     ) -> list[dict[str, str]]:
@@ -188,55 +190,42 @@ class IncrementalGraphRunner:
         if not insertion.section_assignments:
             raise PipelineError("match_paragraphs requires reconcile_sections to run first")
         results = {}
-        for root in (unit for unit in insertion.paper.sections if unit.kind == "section"):
-            family_units = self._family_units(insertion.paper, root.id)
-            structural_groups = self.question_graph.structural_family(
-                [insertion.section_assignments[unit.id] for unit in family_units]
+        for unit in insertion.paper.sections:
+            structural_group_id = insertion.section_assignments[unit.id]
+            unit_ids = [paragraph.id for paragraph in unit.paragraphs]
+            existing = self.question_graph.paragraph_groups_for_section(
+                structural_group_id, insertion.paper.paper_id
             )
-            unit_ids = [paragraph.id for unit in family_units for paragraph in unit.paragraphs]
-            existing = self.question_graph.paragraph_groups_for_family(
-                structural_groups, insertion.paper.paper_id
+            batch = self._match_units(
+                stage,
+                insertion,
+                "paragraph",
+                structural_group_id,
+                unit_ids,
+                existing,
             )
-            scope_id = min(structural_groups) if structural_groups else insertion.section_assignments[root.id]
-            batch = self._match_units(stage, insertion, "paragraph", scope_id, unit_ids, existing)
-            insertion.paragraph_matches[root.id] = batch
-            results[root.id] = self._match_batch_dump(batch)
+            insertion.paragraph_matches[unit.id] = batch
+            results[unit.id] = self._match_batch_dump(batch)
         return results
 
     def _reconcile_paragraphs(self, stage: StageConfig, insertion: InsertionState) -> dict[str, str]:
         if not insertion.paragraph_matches and any(section.paragraphs for section in insertion.paper.sections):
             raise PipelineError("reconcile_paragraphs requires match_paragraphs to run first")
         assignments = {}
-        for family_id, batch in insertion.paragraph_matches.items():
-            structural_groups = self.question_graph.structural_family([
-                insertion.section_assignments[unit.id]
-                for unit in self._family_units(insertion.paper, family_id)
-            ])
-            parent_id = min(structural_groups) if structural_groups else None
+        for unit_id, batch in insertion.paragraph_matches.items():
             assignments.update(self._reconcile(
                 insertion,
                 level="paragraph",
-                parent_id=parent_id,
+                parent_id=insertion.section_assignments[unit_id],
                 batch=batch,
             ))
         insertion.paragraph_assignments = assignments
         return assignments
 
-    def _classify_paragraphs(self, stage: StageConfig, insertion: InsertionState) -> dict[str, str]:
-        return self.question_graph.classify("paragraph", insertion.paper_index)
-
     def _generate_paragraph_group_questions(
         self, stage: StageConfig, insertion: InsertionState
     ) -> list[dict[str, str]]:
         return self._generate_group_questions(stage, insertion, "paragraph")
-
-    def _export_outputs(self, stage: StageConfig, insertion: InsertionState) -> dict[str, Any]:
-        export_revision(self.revision_dir / "dataset", self.question_graph, self.papers)
-        return {
-            "paper_count": len(self.papers),
-            "graph_hash": self.question_graph.graph_hash(),
-            "event_count": len(self.journal.events),
-        }
 
     def _question(
         self,
@@ -363,23 +352,77 @@ class IncrementalGraphRunner:
         batch: MatchBatch,
     ) -> dict[str, str]:
         assignments: dict[str, str] = {}
-        reciprocal: dict[str, str] = {}
+        reciprocal = self._reciprocal_matches(batch)
+        forward_fan_in = (
+            self._adjacent_paragraph_fan_in(insertion, batch, reciprocal)
+            if level == "paragraph"
+            else {}
+        )
+        reverse_fan_in = {}
+        if level == "paragraph":
+            reverse_fan_in = self._adjacent_existing_group_fan_in(batch, reciprocal)
+            for source_id in sorted(reverse_fan_in):
+                target_id, selected_unit_id, anchors = reverse_fan_in[source_id]
+                moved = self.question_graph.merge_paragraph_group(
+                    source_id,
+                    target_id,
+                    paper_index=insertion.paper_index,
+                )
+                for member in moved:
+                    anchor = anchors[(member["paper_id"], member["unit_id"])]
+                    self.journal.event(
+                        "paragraph_fan_in_added",
+                        paper_index=insertion.paper_index,
+                        inserted_paper_id=insertion.paper.paper_id,
+                        paper_id=member["paper_id"],
+                        node_id=target_id,
+                        parent_id=parent_id,
+                        unit_id=member["unit_id"],
+                        reciprocal_unit_id=anchor["unit_id"],
+                        selected_unit_id=selected_unit_id,
+                        direction="group_to_new",
+                        source_group_id=source_id,
+                        attempt_id=batch.reverse[source_id].attempt_id,
+                    )
         for unit_id in batch.new_unit_ids:
-            forward = batch.forward.get(unit_id)
-            selected_group = forward.chosen_id if forward else None
-            reverse = batch.reverse.get(selected_group) if selected_group else None
-            if reverse and reverse.chosen_id == unit_id:
-                reciprocal[unit_id] = selected_group
+            selected_group = reciprocal.get(unit_id) or forward_fan_in.get(unit_id)
+            if selected_group:
                 assignments[unit_id] = selected_group
+                metadata = self._member_metadata(insertion, unit_id, level)
+                if level == "paragraph":
+                    metadata["membership_role"] = (
+                        "fan_in" if unit_id in forward_fan_in else "core"
+                    )
                 self.question_graph.add_member(
                     selected_group,
                     unit_id,
                     insertion.paper.paper_id,
                     insertion.paper_index,
                     self._unit_ordinal(insertion.paper.paper_id, unit_id, level),
-                    **self._member_metadata(insertion, unit_id, level),
+                    **metadata,
                 )
+                if unit_id in forward_fan_in:
+                    anchor_unit_id = next(
+                        anchor_id
+                        for anchor_id, group_id in reciprocal.items()
+                        if group_id == selected_group
+                    )
+                    self.journal.event(
+                        "paragraph_fan_in_added",
+                        paper_index=insertion.paper_index,
+                        inserted_paper_id=insertion.paper.paper_id,
+                        paper_id=insertion.paper.paper_id,
+                        node_id=selected_group,
+                        parent_id=parent_id,
+                        unit_id=unit_id,
+                        reciprocal_unit_id=anchor_unit_id,
+                        direction="new_to_group",
+                        attempt_id=batch.forward[unit_id].attempt_id,
+                    )
             else:
+                metadata = self._member_metadata(insertion, unit_id, level)
+                if level == "paragraph":
+                    metadata["membership_role"] = "core"
                 group_id = self.question_graph.create_group(
                     level=level,
                     parent_id=parent_id,
@@ -387,11 +430,13 @@ class IncrementalGraphRunner:
                     paper_id=insertion.paper.paper_id,
                     paper_index=insertion.paper_index,
                     ordinal=self._unit_ordinal(insertion.paper.paper_id, unit_id, level),
-                    **self._member_metadata(insertion, unit_id, level),
+                    **metadata,
                 )
                 assignments[unit_id] = group_id
 
         for group_id, decision in batch.reverse.items():
+            if group_id in reverse_fan_in:
+                continue
             unit_id = decision.chosen_id
             absorbed_group = reciprocal.get(unit_id) if unit_id else None
             if absorbed_group and absorbed_group != group_id:
@@ -406,6 +451,88 @@ class IncrementalGraphRunner:
                     attempt_id=decision.attempt_id,
                 )
         return assignments
+
+    @staticmethod
+    def _reciprocal_matches(batch: MatchBatch) -> dict[str, str]:
+        reciprocal: dict[str, str] = {}
+        for unit_id, forward in batch.forward.items():
+            if not forward.chosen_id:
+                continue
+            reverse = batch.reverse.get(forward.chosen_id)
+            if reverse and reverse.chosen_id == unit_id:
+                reciprocal[unit_id] = forward.chosen_id
+        return reciprocal
+
+    def _adjacent_paragraph_fan_in(
+        self,
+        insertion: InsertionState,
+        batch: MatchBatch,
+        reciprocal: dict[str, str],
+    ) -> dict[str, str]:
+        """Attach only one-way paragraphs immediately beside a reciprocal anchor."""
+
+        anchor_by_group = {group_id: unit_id for unit_id, group_id in reciprocal.items()}
+        accepted: dict[str, str] = {}
+        for unit_id, forward in batch.forward.items():
+            selected_group = forward.chosen_id
+            anchor_id = anchor_by_group.get(selected_group or "")
+            if unit_id in reciprocal or anchor_id is None:
+                continue
+            ordinal = self._unit_ordinal(insertion.paper.paper_id, unit_id, "paragraph")
+            anchor_ordinal = self._unit_ordinal(
+                insertion.paper.paper_id, anchor_id, "paragraph"
+            )
+            if abs(ordinal - anchor_ordinal) == 1 and selected_group is not None:
+                accepted[unit_id] = selected_group
+        return accepted
+
+    def _adjacent_existing_group_fan_in(
+        self,
+        batch: MatchBatch,
+        reciprocal: dict[str, str],
+    ) -> dict[
+        str,
+        tuple[str, str, dict[tuple[str, str], dict[str, Any]]],
+    ]:
+        """Find existing paragraph nodes directly adjacent to reciprocal nodes."""
+
+        accepted = {}
+        for source_id, decision in batch.reverse.items():
+            selected_unit_id = decision.chosen_id
+            target_id = reciprocal.get(selected_unit_id or "")
+            if target_id is None or source_id == target_id:
+                continue
+            anchors = self._adjacent_core_anchors(source_id, target_id)
+            if anchors is not None:
+                accepted[source_id] = (target_id, selected_unit_id, anchors)
+        return accepted
+
+    def _adjacent_core_anchors(
+        self,
+        source_id: str,
+        target_id: str,
+    ) -> dict[tuple[str, str], dict[str, Any]] | None:
+        target_members = [
+            member
+            for member in self.question_graph.members(target_id)
+            if member.get("membership_role") != "fan_in"
+        ]
+        anchors = {}
+        for member in self.question_graph.members(source_id):
+            candidates = [
+                target
+                for target in target_members
+                if target["paper_id"] == member["paper_id"]
+                and target.get("owner_group_id") == member.get("owner_group_id")
+                and abs(target["ordinal"] - member["ordinal"]) == 1
+            ]
+            if not candidates:
+                return None
+            anchors[(member["paper_id"], member["unit_id"])] = min(
+                candidates,
+                key=lambda item: (item["ordinal"], item["unit_id"]),
+            )
+        return anchors
 
     def _generate_group_questions(
         self,
@@ -432,7 +559,6 @@ class IncrementalGraphRunner:
                     "source": "member_question",
                 })
                 continue
-            group.pop("classification", None)
             group.pop("generated_question_metadata", None)
             context = {
                 "scope": self._scope_context(
@@ -454,7 +580,6 @@ class IncrementalGraphRunner:
         data = self.question_graph.graph.nodes[group_id]
         return {
             "group_id": group_id,
-            "classification": data.get("classification"),
             "generated_question_metadata": data.get("generated_question", ""),
             "members": [
                 self._unit_context(member["paper_id"], member["unit_id"], data["level"])
@@ -487,10 +612,6 @@ class IncrementalGraphRunner:
             "family_id": owner.family_id,
             "owner_group_id": insertion.section_assignments[owner.id],
         }
-
-    @staticmethod
-    def _family_units(paper: Paper, family_id: str) -> list[Any]:
-        return [unit for unit in paper.sections if unit.family_id == family_id]
 
     def _section_context(self, paper_id: str, section_id: str) -> dict[str, Any]:
         section = self.section_lookup[(paper_id, section_id)]
