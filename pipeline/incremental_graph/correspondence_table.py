@@ -8,7 +8,7 @@ def render_correspondence_table_markdown(
     rows: list[dict[str, Any]],
     paper_order: list[str],
 ) -> str:
-    """Render rows whose cells contain ordered ``(label, is_bidirectional)`` pairs."""
+    """Render rows whose cells contain ordered ``(label, is_reciprocal)`` pairs."""
     header = "| " + " | ".join(paper_order) + " |"
     sep = "|" + "|".join("---" for _ in paper_order) + "|"
     lines = [header, sep]
@@ -35,4 +35,4 @@ def render_correspondence_report_markdown(
         title = "Sections and subsections" if level == "section" else "Paragraphs"
         table = render_correspondence_table_markdown(report["levels"][level], paper_order)
         sections.append(f"## {title}\n\n{table}")
-    return "# Bidirectional and fan-in correspondences\n\n" + "\n\n".join(sections) + "\n"
+    return "# Structural rerepresentation and paragraph correspondences\n\n" + "\n\n".join(sections) + "\n"
