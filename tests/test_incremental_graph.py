@@ -203,9 +203,34 @@ class IncrementalGraphTest(unittest.TestCase):
 
             graph = runner.question_graph.graph
             self.assertEqual(len(graph.nodes[group_a]["members"]), 3)
-            self.assertEqual(graph.nodes[group_a]["classification"], "common_structure")
             self.assertEqual(len(graph.nodes[paragraph_group_a]["members"]), 3)
-            self.assertEqual(graph.nodes[paragraph_group_a]["classification"], "common_structure")
+            self.assertNotIn("classification", graph.nodes[group_a])
+            self.assertNotIn("classification", graph.nodes[paragraph_group_a])
+            p3_paragraph_match = next(
+                request
+                for request in runner.judge.requests
+                if request.key == "p3:paragraph_matching:new_to_group:pa3"
+            )
+            candidate = next(
+                item
+                for item in p3_paragraph_match.context["candidates"]
+                if item["group_id"] == paragraph_group_a
+            )
+            self.assertEqual(
+                {member["paragraph_id"] for member in candidate["members"]},
+                {"pa", "pa2"},
+            )
+            first_paragraph_request = next(
+                index
+                for index, request in enumerate(runner.judge.requests)
+                if request.stage_id.startswith("paragraph_")
+            )
+            last_section_request = max(
+                index
+                for index, request in enumerate(runner.judge.requests)
+                if request.stage_id.startswith("section_")
+            )
+            self.assertLess(last_section_request, first_paragraph_request)
             model_group_question_stages = {
                 request.stage_id for request in runner.judge.requests
                 if request.stage_id.endswith("group_questions")
@@ -242,18 +267,21 @@ class IncrementalGraphTest(unittest.TestCase):
                 for row in correspondences["levels"]["section"]
                 for item in row["fan_in"]
             ]
-            self.assertEqual(len(section_fan_in), 1)
-            self.assertEqual(section_fan_in[0]["target_id"], "a3")
-            self.assertEqual(correspondences["stats"]["section_fan_in_groups"], 1)
+            self.assertEqual(section_fan_in, [])
+            self.assertEqual(correspondences["stats"]["section_fan_in_groups"], 0)
             self.assertEqual(correspondences["stats"]["paragraph_fan_in_groups"], 0)
-            self.assertCountEqual(
-                [claim["status"] for claim in section_fan_in[0]["claims"]],
-                ["confirmed", "one_directional"],
+            self.assertTrue(
+                any(
+                    event["action"] == "match_recorded"
+                    and event["focus_id"] == group_b
+                    and event["chosen_id"] == "a3"
+                    for event in runner.journal.events
+                )
             )
             descriptor = validate_dataset(revision / "dataset", "incremental", "Incremental")
             self.assertEqual(descriptor["graph_replay_file"], "graph-replay.json")
 
-    def test_section_correspondence_table_filters_redundant_family_claims(self) -> None:
+    def test_section_correspondence_table_ignores_unrequited_claims(self) -> None:
         first = Paper(
             paper_id="p1",
             title="P1",
@@ -296,73 +324,10 @@ class IncrementalGraphTest(unittest.TestCase):
             )
             markdown = (revision / "dataset" / "correspondences.md").read_text(encoding="utf-8")
 
-        fan_in = next(
-            item
-            for row in report["levels"]["section"]
-            for item in row["fan_in"]
-            if item["target_id"] == "s2"
-        )
-        one_way = next(claim for claim in fan_in["claims"] if claim["status"] == "one_directional")
-        self.assertTrue(one_way["redundant"])
+        self.assertEqual(report["stats"]["section_fan_in_groups"], 0)
+        self.assertTrue(all(not row["fan_in"] for row in report["levels"]["section"]))
         self.assertIn("**Method (whole)**", markdown)
         self.assertNotIn("Method > Detail", markdown)
-
-    def test_common_structure_uses_inclusive_half_threshold(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            journal = RevisionJournal(Path(directory) / "revision")
-            graph = QuestionGraph(journal)
-            graph.add_paper("p1", "P1", 1)
-            node_id = graph.create_group(
-                level="section",
-                parent_id=None,
-                member_id="s1",
-                paper_id="p1",
-                paper_index=1,
-                ordinal=1,
-            )
-            self.assertEqual(graph.classify("section", 1)[node_id], "common_structure")
-
-            graph.add_paper("p2", "P2", 2)
-            graph.add_member(node_id, "s2", "p2", 2, 1)
-            self.assertEqual(graph.classify("section", 2)[node_id], "common_structure")
-            graph.add_paper("p3", "P3", 3)
-            self.assertEqual(graph.classify("section", 3)[node_id], "common_structure")
-            graph.add_paper("p4", "P4", 4)
-            self.assertEqual(graph.classify("section", 4)[node_id], "common_structure")
-            graph.add_paper("p5", "P5", 5)
-            self.assertEqual(graph.classify("section", 5)[node_id], "alignable_difference")
-
-    def test_paragraph_classification_uses_only_direct_node_membership(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            graph = QuestionGraph(RevisionJournal(Path(directory) / "revision"))
-            for index in range(1, 6):
-                graph.add_paper(f"p{index}", f"P{index}", index)
-
-            structural_group = graph.create_group(
-                level="section",
-                parent_id=None,
-                member_id="s1",
-                paper_id="p1",
-                paper_index=1,
-                ordinal=1,
-            )
-            for index in range(2, 6):
-                graph.add_member(structural_group, f"s{index}", f"p{index}", index, 1)
-
-            paragraph_group = graph.create_group(
-                level="paragraph",
-                parent_id=structural_group,
-                member_id="para1",
-                paper_id="p1",
-                paper_index=1,
-                ordinal=1,
-                owner_group_id=structural_group,
-            )
-
-            self.assertEqual(
-                graph.classify("paragraph", 5)[paragraph_group],
-                "non_alignable_difference",
-            )
 
     def test_rejects_two_members_from_one_paper(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -401,8 +366,16 @@ class IncrementalGraphTest(unittest.TestCase):
             descriptor = validate_dataset(revision / "dataset", "hci-five", "HCI Five")
             self.assertEqual(descriptor["paper_count"], 5)
             self.assertEqual(descriptor["paragraph_count"], 459)
+            self.assertFalse((revision / "dataset" / "graph_categories.json").exists())
+            snapshot = json.loads(
+                (revision / "dataset" / "final_snapshot.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(
+                set(snapshot["stats"]),
+                {"section_question_groups", "paragraph_question_groups"},
+            )
 
-    def test_cross_level_structure_and_family_paragraph_scope(self) -> None:
+    def test_cross_level_structure_and_exact_node_paragraph_scope(self) -> None:
         first = Paper(
             paper_id="p1",
             title="P1",
@@ -476,12 +449,407 @@ class IncrementalGraphTest(unittest.TestCase):
             for candidate in paragraph_forward.context["candidates"]
             for member in candidate["members"]
         }
-        self.assertEqual(candidate_units, {"lead1", "detail1"})
+        self.assertEqual(candidate_units, {"lead1"})
+        detail_forward = next(
+            request for request in judge.requests
+            if request.key == "p2:paragraph_matching:new_to_group:detail2"
+        )
+        detail_candidates = {
+            member["paragraph_id"]
+            for candidate in detail_forward.context["candidates"]
+            for member in candidate["members"]
+        }
+        self.assertEqual(detail_candidates, {"detail1"})
         contains = [
             event for event in runner.journal.events
             if event["action"] == "edge_created" and event["kind"] == "contains"
         ]
         self.assertEqual(len(contains), 2)
+
+    def test_structural_rerepresentation_merges_singleton_before_paragraph_pass(self) -> None:
+        first = Paper(
+            paper_id="p1",
+            title="P1",
+            sections=[
+                Section(
+                    id="shared1",
+                    label="Shared",
+                    text="Shared structural role.",
+                    paragraphs=[Paragraph(id="a1", text="Shared paragraph.")],
+                ),
+                Section(id="unique1", label="Unique", text="Unique structural role."),
+            ],
+        )
+        second = Paper(
+            paper_id="p2",
+            title="P2",
+            sections=[Section(
+                id="shared2",
+                label="Shared",
+                text="Second shared structural role.",
+                paragraphs=[Paragraph(id="b1", text="Second shared paragraph.")],
+            )],
+        )
+        third = Paper(
+            paper_id="p3",
+            title="P3",
+            sections=[
+                Section(
+                    id="root3",
+                    label="Root",
+                    text="Third root.",
+                    paragraphs=[Paragraph(id="c1", text="Third root paragraph.")],
+                ),
+                Section(
+                    id="sub3",
+                    label="Detail",
+                    text="Third detail with the shared structural role.",
+                    kind="subsection",
+                    parent_id="root3",
+                    family_id="root3",
+                    ordinal=2,
+                    paragraphs=[Paragraph(id="c2", text="Third detail paragraph.")],
+                ),
+            ],
+        )
+        target_id = stable_id("section-group", "root", "p1", "shared1")
+        unique_id = stable_id("section-group", "root", "p1", "unique1")
+        root_id = stable_id("section-group", "root", "p3", "root3")
+        subsection_id = stable_id("section-group", "root", "p3", "sub3")
+        matches = {
+            "p2:section_matching:new_to_group:shared2": target_id,
+            f"p2:section_matching:group_to_new:{target_id}": "shared2",
+            f"corpus:section_rerepresentation:singleton_to_group:{subsection_id}": target_id,
+        }
+        judge = ScriptedJudge(matches)
+
+        with tempfile.TemporaryDirectory() as directory:
+            runner = IncrementalGraphRunner(
+                load_pipeline_config(CONFIG_PATH),
+                judge,
+                Path(directory) / "revision",
+            )
+            runner.run([first, second, third])
+
+        self.assertNotIn(subsection_id, runner.question_graph.graph)
+        self.assertEqual(
+            {member["unit_id"] for member in runner.question_graph.members(target_id)},
+            {"shared1", "shared2", "sub3"},
+        )
+        self.assertEqual(
+            runner.insertions_by_paper["p3"].section_assignments["sub3"],
+            target_id,
+        )
+        self.assertNotIn(
+            f"corpus:section_rerepresentation:singleton_to_group:{unique_id}",
+            {request.key for request in judge.requests},
+        )
+        rerepresentation_request = next(
+            request
+            for request in judge.requests
+            if request.key == f"corpus:section_rerepresentation:singleton_to_group:{subsection_id}"
+        )
+        self.assertEqual(rerepresentation_request.allowed_match_ids, [target_id])
+        self.assertEqual(len(rerepresentation_request.context["focus"]["members"]), 1)
+        self.assertTrue(
+            all(len(candidate["members"]) > 1 for candidate in rerepresentation_request.context["candidates"])
+        )
+        regenerated = [
+            request
+            for request in judge.requests
+            if request.stage_id == "section_rerepresentation_questions"
+        ]
+        self.assertEqual(len(regenerated), 1)
+        self.assertEqual(regenerated[0].key, f"p3:section_rerepresentation_questions:{target_id}")
+        self.assertEqual(
+            {member["section_id"] for member in regenerated[0].context["group"]["members"]},
+            {"shared1", "shared2", "sub3"},
+        )
+        paragraph_request = next(
+            request for request in judge.requests
+            if request.key == "p3:paragraph_matching:new_to_group:c2"
+        )
+        self.assertEqual(paragraph_request.context["scope"]["parent_group_id"], target_id)
+        self.assertLess(
+            judge.requests.index(regenerated[0]),
+            judge.requests.index(paragraph_request),
+        )
+        self.assertIn(root_id, runner.question_graph.graph)
+        self.assertEqual(
+            {(source, target) for source, target in runner.question_graph.graph.edges()},
+            {(root_id, target_id)},
+        )
+        merge_event = next(
+            event
+            for event in runner.journal.events
+            if event["action"] == "node_merged"
+            and event.get("reason") == "structural_rerepresentation"
+        )
+        self.assertEqual(merge_event["source_node_id"], subsection_id)
+        replayed = graph_from_events(runner.journal.events)
+        self.assertEqual(set(replayed.nodes), set(runner.question_graph.graph.nodes))
+        self.assertEqual(
+            set(replayed.edges(keys=True)),
+            set(runner.question_graph.graph.edges(keys=True)),
+        )
+
+    def test_structural_rerepresentation_resolves_same_paper_target_conflicts_stably(self) -> None:
+        papers = [
+            Paper(paper_id="p1", title="P1", sections=[Section(id="s1", text="Shared")]),
+            Paper(paper_id="p2", title="P2", sections=[Section(id="s2", text="Shared")]),
+            Paper(
+                paper_id="p3",
+                title="P3",
+                sections=[Section(id="x", text="First"), Section(id="y", text="Second")],
+            ),
+        ]
+        target_id = stable_id("section-group", "root", "p1", "s1")
+        source_ids = sorted([
+            stable_id("section-group", "root", "p3", "x"),
+            stable_id("section-group", "root", "p3", "y"),
+        ])
+        matches = {
+            "p2:section_matching:new_to_group:s2": target_id,
+            f"p2:section_matching:group_to_new:{target_id}": "s2",
+            **{
+                f"corpus:section_rerepresentation:singleton_to_group:{source_id}": target_id
+                for source_id in source_ids
+            },
+        }
+        judge = ScriptedJudge(matches)
+
+        with tempfile.TemporaryDirectory() as directory:
+            runner = IncrementalGraphRunner(
+                load_pipeline_config(CONFIG_PATH),
+                judge,
+                Path(directory) / "revision",
+            )
+            runner.run(papers)
+
+        self.assertNotIn(source_ids[0], runner.question_graph.graph)
+        self.assertIn(source_ids[1], runner.question_graph.graph)
+        self.assertEqual(len(runner.question_graph.members(target_id)), 3)
+        ignored = [
+            event
+            for event in runner.journal.events
+            if event["action"] == "rerepresentation_merge_ignored"
+        ]
+        self.assertEqual(len(ignored), 1)
+        self.assertEqual(ignored[0]["source_group_id"], source_ids[1])
+        rerepresentation_requests = [
+            request for request in judge.requests
+            if request.stage_id == "section_rerepresentation"
+        ]
+        self.assertEqual(len(rerepresentation_requests), 2)
+        self.assertTrue(
+            all(request.allowed_match_ids == [target_id] for request in rerepresentation_requests)
+        )
+        regenerated = [
+            request for request in judge.requests
+            if request.stage_id == "section_rerepresentation_questions"
+        ]
+        self.assertEqual(len(regenerated), 1)
+
+    def test_paragraph_fan_in_accepts_only_immediate_neighbors_of_reciprocal_anchor(self) -> None:
+        first = Paper(
+            paper_id="p1",
+            title="P1",
+            sections=[Section(
+                id="s1",
+                label="Section 1",
+                text="Anchor section",
+                paragraphs=[
+                    Paragraph(id="a2", label="2", text="Distant before", ordinal=2),
+                    Paragraph(id="a3", label="3", text="Before", ordinal=3),
+                    Paragraph(id="a4", label="4", text="Anchor", ordinal=4),
+                    Paragraph(id="a5", label="5", text="After", ordinal=5),
+                    Paragraph(id="a7", label="7", text="Distant after", ordinal=7),
+                ],
+            )],
+        )
+        second = Paper(
+            paper_id="p2",
+            title="P2",
+            sections=[Section(
+                id="s2",
+                label="Section 2",
+                text="Expanded section",
+                paragraphs=[
+                    Paragraph(id="b3", label="3", text="Before", ordinal=3),
+                    Paragraph(id="b4", label="4", text="Reciprocal", ordinal=4),
+                    Paragraph(id="b5", label="5", text="After", ordinal=5),
+                    Paragraph(id="b7", label="7", text="Distant", ordinal=7),
+                ],
+            )],
+        )
+        section_group = stable_id("section-group", "root", "p1", "s1")
+        paragraph_group = stable_id("paragraph-group", section_group, "p1", "a4")
+        a2_group = stable_id("paragraph-group", section_group, "p1", "a2")
+        a3_group = stable_id("paragraph-group", section_group, "p1", "a3")
+        a5_group = stable_id("paragraph-group", section_group, "p1", "a5")
+        a7_group = stable_id("paragraph-group", section_group, "p1", "a7")
+        matches = {
+            "p2:section_matching:new_to_group:s2": section_group,
+            f"p2:section_matching:group_to_new:{section_group}": "s2",
+            "p2:paragraph_matching:new_to_group:b3": paragraph_group,
+            "p2:paragraph_matching:new_to_group:b4": paragraph_group,
+            "p2:paragraph_matching:new_to_group:b5": paragraph_group,
+            "p2:paragraph_matching:new_to_group:b7": paragraph_group,
+            f"p2:paragraph_matching:group_to_new:{paragraph_group}": "b4",
+            f"p2:paragraph_matching:group_to_new:{a2_group}": "b4",
+            f"p2:paragraph_matching:group_to_new:{a3_group}": "b4",
+            f"p2:paragraph_matching:group_to_new:{a5_group}": "b4",
+            f"p2:paragraph_matching:group_to_new:{a7_group}": "b4",
+        }
+
+        with tempfile.TemporaryDirectory() as directory:
+            revision = Path(directory) / "revision"
+            runner = IncrementalGraphRunner(
+                load_pipeline_config(CONFIG_PATH),
+                ScriptedJudge(matches),
+                revision,
+            )
+            runner.run([first, second])
+            report = json.loads(
+                (revision / "dataset" / "correspondences.json").read_text(encoding="utf-8")
+            )
+
+        member_ids = {
+            member["unit_id"] for member in runner.question_graph.members(paragraph_group)
+        }
+        self.assertEqual(member_ids, {"a3", "a4", "a5", "b3", "b4", "b5"})
+        b7_group = next(
+            data
+            for _, data in runner.question_graph.nodes("paragraph")
+            if any(member["unit_id"] == "b7" for member in data["members"])
+        )
+        self.assertEqual([member["unit_id"] for member in b7_group["members"]], ["b7"])
+        fan_in_events = [
+            event for event in runner.journal.events
+            if event["action"] == "paragraph_fan_in_added"
+        ]
+        self.assertEqual(
+            {event["unit_id"] for event in fan_in_events},
+            {"a3", "a5", "b3", "b5"},
+        )
+        merged_sources = [
+            event["source_node_id"]
+            for event in runner.journal.events
+            if event["action"] == "node_merged"
+        ]
+        self.assertEqual(merged_sources, sorted([a3_group, a5_group]))
+        ignored_sources = {
+            event["source_group_id"]
+            for event in runner.journal.events
+            if event["action"] == "projected_edge_ignored"
+            and event["level"] == "paragraph"
+        }
+        self.assertEqual(ignored_sources, {a2_group, a7_group})
+        self.assertTrue(
+            any(
+                event["action"] == "match_recorded"
+                and event["focus_id"] == "b7"
+                and event["chosen_id"] == paragraph_group
+                for event in runner.journal.events
+            )
+        )
+        self.assertEqual(report["stats"]["section_fan_in_groups"], 0)
+        self.assertEqual(report["stats"]["paragraph_fan_in_groups"], 1)
+        self.assertEqual(report["stats"]["paragraph_fan_in_members"], 4)
+        row = next(
+            row for row in report["levels"]["paragraph"]
+            if row["group_id"] == paragraph_group
+        )
+        self.assertEqual(
+            row["cells"]["p1"],
+            [["¶3", False], ["¶4", True], ["¶5", False]],
+        )
+        self.assertEqual(
+            row["cells"]["p2"],
+            [["¶3", False], ["¶4", True], ["¶5", False]],
+        )
+        group_question = next(
+            request for request in runner.judge.requests
+            if request.key == f"p2:paragraph_group_questions:{paragraph_group}"
+        )
+        question_member_ids = {
+            member["paragraph_id"] for member in group_question.context["group"]["members"]
+        }
+        self.assertEqual(
+            question_member_ids,
+            {"a3", "a4", "a5", "b3", "b4", "b5"},
+        )
+        self.assertNotIn("provenance", group_question.context)
+
+    def test_third_paper_matches_nodes_and_merges_adjacent_multi_paper_node(self) -> None:
+        def make_paper(paper_id: str, section_id: str, paragraph_ids: list[str]) -> Paper:
+            return Paper(
+                paper_id=paper_id,
+                title=paper_id.upper(),
+                sections=[Section(
+                    id=section_id,
+                    text="Section text",
+                    paragraphs=[
+                        Paragraph(
+                            id=paragraph_id,
+                            text=f"Paragraph {paragraph_id}",
+                            ordinal=int(paragraph_id[-1]),
+                        )
+                        for paragraph_id in paragraph_ids
+                    ],
+                )],
+            )
+
+        papers = [
+            make_paper("p1", "s1", ["a3", "a4"]),
+            make_paper("p2", "s2", ["b3", "b4"]),
+            make_paper("p3", "s3", ["c4"]),
+        ]
+        section_group = stable_id("section-group", "root", "p1", "s1")
+        adjacent_group = stable_id("paragraph-group", section_group, "p1", "a3")
+        anchor_group = stable_id("paragraph-group", section_group, "p1", "a4")
+        matches = {
+            "p2:section_matching:new_to_group:s2": section_group,
+            f"p2:section_matching:group_to_new:{section_group}": "s2",
+            "p3:section_matching:new_to_group:s3": section_group,
+            f"p3:section_matching:group_to_new:{section_group}": "s3",
+            "p2:paragraph_matching:new_to_group:b3": adjacent_group,
+            "p2:paragraph_matching:new_to_group:b4": anchor_group,
+            f"p2:paragraph_matching:group_to_new:{adjacent_group}": "b3",
+            f"p2:paragraph_matching:group_to_new:{anchor_group}": "b4",
+            "p3:paragraph_matching:new_to_group:c4": anchor_group,
+            f"p3:paragraph_matching:group_to_new:{anchor_group}": "c4",
+            f"p3:paragraph_matching:group_to_new:{adjacent_group}": "c4",
+        }
+
+        with tempfile.TemporaryDirectory() as directory:
+            runner = IncrementalGraphRunner(
+                load_pipeline_config(CONFIG_PATH),
+                ScriptedJudge(matches),
+                Path(directory) / "revision",
+            )
+            runner.run(papers)
+
+        p3_node_match = next(
+            request
+            for request in runner.judge.requests
+            if request.key == f"p3:paragraph_matching:group_to_new:{adjacent_group}"
+        )
+        self.assertEqual(
+            {member["paragraph_id"] for member in p3_node_match.context["focus"]["members"]},
+            {"a3", "b3"},
+        )
+        self.assertNotIn(adjacent_group, runner.question_graph.graph)
+        self.assertEqual(
+            {member["unit_id"] for member in runner.question_graph.members(anchor_group)},
+            {"a3", "a4", "b3", "b4", "c4"},
+        )
+        fan_in_members = {
+            member["unit_id"]
+            for member in runner.question_graph.members(anchor_group)
+            if member.get("membership_role") == "fan_in"
+        }
+        self.assertEqual(fan_in_members, {"a3", "b3"})
 
 
 if __name__ == "__main__":
