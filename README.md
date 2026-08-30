@@ -56,11 +56,13 @@ Singleton groups reuse their member question without an API call. Results are im
 under `runs/hci-two-paper/revisions/`; response cache entries are reused by
 content hash.
 
-Inspect the current categories:
-
-```powershell
-python -m pipeline.incremental_graph.cli categories runs/hci-two-paper
-```
+The pipeline completes section/subsection matching for every selected paper
+and regenerates the structural-node questions. It then runs one rerepresentation
+pass in which structural singletons may join eligible non-singleton nodes, regenerating
+the changed questions once. Paragraphs are matched only inside those finalized
+structural nodes. From the third represented paper onward, each paper is
+matched against existing multi-paper paragraph nodes rather than against one
+paper at a time.
 
 Retry one stage and replay the ordered corpus:
 
@@ -97,10 +99,12 @@ when the packaged dataset contains a valid `graph-replay.json`. Its optional
 ordered hierarchical layout.
 
 Each run also writes `correspondences.json` and a human-readable
-`correspondences.md`. They combine reciprocal groups with section- and
-paragraph-level fan-in claims while keeping one-way claims out of graph topology.
-Bold table entries are reciprocal node members; plain entries are one-way
-claimants that remain in separate nodes.
+`correspondences.md`. Structural rows contain reciprocal matches plus accepted
+rerepresentation merges. Paragraph
+rows may also contain one-way matches immediately adjacent to a reciprocal anchor
+within the exact same section or subsection node. Bold entries are reciprocal;
+plain paragraph entries are accepted adjacent fan-in members. Other unrequited
+matches remain audit-only provenance and never feed later matching or questions.
 
 ## Verification
 

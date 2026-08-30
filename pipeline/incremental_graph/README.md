@@ -3,12 +3,13 @@
 This package implements the ordered section, subsection, and paragraph
 graph. A checked-in Claude Skill makes bounded directional matches; ordinary
 structured model calls generate missing unit and group questions. Python owns input
-normalization, IDs, graph mutations, classification, provenance, replay, and
+normalization, IDs, graph mutations, provenance, replay, and
 export.
 
 ## Graph contract
 
-Papers are inserted in manifest order. For each new paper:
+The pipeline completes structural construction and rerepresentation before
+paragraph processing begins:
 
 1. Reuse existing questions or generate missing ones for every section and subsection.
 2. Ask each new structural unit for its best existing group or no match.
@@ -16,53 +17,62 @@ Papers are inserted in manifest order. For each new paper:
 4. Add a unit to a group only when the two selections are reciprocal.
 5. Create an isolated group for every other unit.
 6. Project each paper's section-to-subsection containment as a provenance-bearing edge.
-7. Reclassify groups and regenerate their display questions.
-8. Repeat the reciprocal algorithm for paragraphs across corresponding section families.
+7. Regenerate structural-node display questions.
 
-One-way role matches never create graph edges. Their judgments remain in
-`match_recorded` provenance events. If an existing group selects a section that
+After every selected paper has completed that structural pass, rerepresentation
+runs once over a frozen graph:
+
+8. Ask each singleton section or subsection node for its best eligible established node or no match.
+9. Merge a selected singleton into that non-singleton node without requiring reciprocity. A candidate is ineligible when it already represents the singleton's paper.
+10. Regenerate each changed structural-node question once. If multiple singletons from one paper select the same node, stable node-ID order accepts the first and retains the later decisions as ignored provenance.
+
+The paragraph pass then processes the rerepresented structural nodes:
+
+11. Seed paragraph nodes from the first represented paper in each structural node.
+12. Match the next paper's paragraphs against the existing paragraph nodes in that exact structural node, in both directions.
+13. Add reciprocal paragraphs to their selected nodes.
+14. Add immediately adjacent one-way fan-in from either side of a reciprocal match.
+15. Leave every other paragraph in an isolated node and generate paragraph-node display questions.
+
+From the third represented paper onward, matching is paper-to-node: each new
+paragraph sees every existing paragraph node, and each existing node is judged
+from the complete evidence of all its members. It is not reduced to pairwise
+paper-to-paper matching.
+
+During initial construction, one-way structural matches leave the graph unchanged.
+An immediately adjacent paragraph fan-in may add a node member under rule 14;
+every other one-way paragraph match also leaves the graph unchanged. Structural
+rerepresentation is the sole one-way exception after construction: a singleton
+may join an established node, but it does not create an edge. All judgments remain
+in `match_recorded` provenance events. If an existing group selects a section that
 was reciprocally absorbed elsewhere, `projected_edge_ignored` records that fact
 without changing graph topology.
 
-`correspondences.json` combines confirmed reciprocal groups with deterministic
-fan-in evidence. Fan-in means two or more focus units or groups independently
-selected the same target in one directional pass. Claims remain individuated and
-are labeled `confirmed` or `one_directional`; the report never changes the graph.
-For sections, one-way claims already covered by a reciprocal member of the same
-section family are marked `redundant` and omitted from the table cells. Paragraph
-claims are never filtered because sibling paragraphs are independent units, not a
-containment family.
+`correspondences.json` contains reciprocal and rerepresented structural nodes and
+paragraph nodes expanded by accepted adjacent fan-in. Structural fan-in is never used. Paragraph
+fan-in is accepted on either side of a reciprocal match and only at ordinal
+distance one from a core member in the exact same structural node. Fan-in cannot
+extend transitively through another fan-in member. When the one-way claimant is
+an existing multi-paper paragraph node, the node is merged atomically only when
+every member is adjacent to a core member from the same paper; nodes are never
+partially split.
 
 `correspondences.md` renders the same rows as one paper per column. Bold entries
-are actual members of a reciprocal node; plain entries are outside nodes making
-non-redundant one-way claims. A row with no bold entries represents entirely
-unreciprocated fan-in anchored to a singleton target node.
+are reciprocal members. Plain structural entries were accepted by rerepresentation;
+plain paragraph entries are accepted adjacent fan-in members of that same node.
+Unrequited selections never appear in the table.
 
-Every group contains at most one unit from a paper. Section and subsection
-members may share a group. Generated questions and containment edges are
-metadata and never contribute to stable group identity.
+Every structural group contains at most one unit from a paper. A paragraph group
+may contain immediately adjacent paragraphs from one paper when they fan into a
+reciprocal anchor. Generated questions and containment edges are metadata and
+never contribute to stable group identity.
 
 A singleton group's display question is copied deterministically from its sole
 member. Claude composes a new display question only after a group has multiple
 members.
 
-## Classification
-
-For a group with `coverage` represented papers and `eligible` papers:
-
-```text
-common_structure          coverage / eligible >= 0.5
-alignable_difference      not common and group has more than one member
-non_alignable_difference  not common and group has one member
-```
-
-The threshold is inclusive. Consequently, a first-paper group is common at
-`1/1`, and a two-paper group remains common at `2/4`. Every node is classified
-from its own direct distinct-paper membership against all inserted papers.
-Related family nodes and containment edges never contribute coverage.
-
 Structural and paragraph ordinals are retained. They order the optional
-hierarchical viewer layout but never change matching or classification.
+hierarchical viewer layout but never change matching.
 
 ## Input normalization
 
@@ -90,7 +100,6 @@ provenance/events.jsonl
 stages/
 events.json
 dataset/graph.json
-dataset/graph_categories.json
 dataset/graph-replay.json
 dataset/correspondences.json
 dataset/correspondences.md
@@ -98,8 +107,14 @@ dataset/final_snapshot.json
 summary.json
 ```
 
-Attempts and events are authoritative. Graph, category, replay, and viewer files
+Attempts and events are authoritative. Graph, replay, and viewer files
 are deterministic projections. Skill source hashes and registered versions are
 recorded with matching attempts.
+
+Unrequited selections remain in `match_recorded` events for audit only. The
+pipeline never reads those provenance records to construct later candidate sets,
+make matching decisions, or generate questions. Later stages consume graph state,
+which contains reciprocal members, accepted structural rerepresentation,
+accepted adjacent paragraph fan-in, and independent singleton nodes.
 
 See the repository README for exact commands using the canonical HCI dataset.
