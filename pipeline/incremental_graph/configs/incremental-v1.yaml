@@ -41,6 +41,21 @@ stages:
     prompt: group-question/v1
     context: group-question
 
+  - id: section_rerepresentation
+    handler: rerepresent_section_singletons
+    phase: rerepresentation
+    skill: directional-section-mapping-by-paragraphs-nested
+    prompts:
+      singleton_to_group: structural-singleton-to-group-match/v1
+    contexts:
+      singleton_to_group: matching
+
+  - id: section_rerepresentation_questions
+    handler: regenerate_rerepresented_section_questions
+    phase: rerepresentation
+    prompt: group-question/v1
+    context: group-question
+
   - id: paragraph_questions
     handler: generate_paragraph_questions
     phase: paragraph

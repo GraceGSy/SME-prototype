@@ -11,7 +11,8 @@ from pydantic import BaseModel, Field, model_validator
 
 Level = Literal["section", "paragraph"]
 StructuralKind = Literal["section", "subsection"]
-Phase = Literal["structural", "paragraph"]
+Phase = Literal["structural", "rerepresentation", "paragraph"]
+MatchDirection = Literal["new_to_group", "group_to_new", "singleton_to_group"]
 
 
 class Paragraph(BaseModel):
@@ -148,7 +149,7 @@ class JudgmentResult(BaseModel):
 class MatchDecision(BaseModel):
     focus_id: str
     chosen_id: str | None
-    direction: Literal["new_to_group", "group_to_new"]
+    direction: MatchDirection
     attempt_id: str
 
 
