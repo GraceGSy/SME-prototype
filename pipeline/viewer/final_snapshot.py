@@ -157,8 +157,10 @@ def load_structure(
                 "row_source": str(row.get("row_source", "")),
             }
 
-        for bucket in ("paragraph_level_common_structure", "paragraph_level_leftovers"):
-            for group_index, group in enumerate(row.get(bucket) or []):
+        for bucket, mapping_groups in row.items():
+            if not bucket.startswith("paragraph_level_") or not isinstance(mapping_groups, list):
+                continue
+            for group_index, group in enumerate(mapping_groups):
                 source_ids: list[str] = []
                 for paper_value in (group.get("papers") or {}).values():
                     source_id = str(paper_value.get("section_number", ""))
@@ -170,7 +172,6 @@ def load_structure(
                     "role": role,
                     "row_position": row_position,
                     "row_source": str(row.get("row_source", "")),
-                    "bucket": bucket,
                     "group_index": group_index,
                     "source_ids": source_ids,
                     "question": str(group.get("question_the_sections_answer") or "").strip(),
@@ -240,7 +241,6 @@ def normalize_group_records(
                 "role_slug": raw_group["role"],
                 "row_position": raw_group["row_position"],
                 "row_source": raw_group["row_source"],
-                "bucket": raw_group["bucket"],
                 "group_index": raw_group["group_index"],
                 "status": raw_group["status"],
                 "basis": raw_group["basis"],

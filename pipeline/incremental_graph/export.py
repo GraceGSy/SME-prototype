@@ -1,8 +1,7 @@
-"""Write deterministic graph, category, and Question Atlas viewer artifacts."""
+"""Write deterministic graph and Question Atlas viewer artifacts."""
 
 from __future__ import annotations
 
-from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
@@ -11,13 +10,6 @@ from .correspondences import build_correspondences
 from .graph import QuestionGraph
 from .journal import write_json
 from .models import Paper
-
-
-CLASSIFICATIONS = (
-    "common_structure",
-    "alignable_difference",
-    "non_alignable_difference",
-)
 
 
 def export_revision(dataset_dir: Path, graph: QuestionGraph, papers: list[Paper]) -> None:
@@ -45,31 +37,17 @@ def export_revision(dataset_dir: Path, graph: QuestionGraph, papers: list[Paper]
     paragraph_groups: list[dict[str, Any]] = []
     paragraph_singletons: list[dict[str, Any]] = []
     section_groups: list[dict[str, Any]] = []
-    categories: dict[str, dict[str, list[str]]] = {
-        "section": defaultdict(list),
-        "paragraph": defaultdict(list),
-    }
     for node_id, data in graph.nodes():
-        categories[data["level"]][data["classification"]].append(node_id)
         group = _viewer_group(node_id, data, section_lookup, paragraph_lookup)
         if data["level"] == "section":
             section_groups.append(group)
-        elif group["paper_coverage"] == 1:
+        elif len({member["paper"] for member in group["members"]}) == 1:
             paragraph_singletons.append(group)
         else:
             paragraph_groups.append(group)
 
-    normalized_categories = {
-        level: {classification: sorted(values.get(classification, [])) for classification in CLASSIFICATIONS}
-        for level, values in categories.items()
-    }
     serialized_graph = graph.serialize()
     write_json(dataset_dir / "graph.json", serialized_graph)
-    write_json(dataset_dir / "graph_categories.json", {
-        "schema_version": 1,
-        "paper_count": len(papers),
-        "categories": normalized_categories,
-    })
     write_json(dataset_dir / "graph-replay.json", graph.replay_payload())
     correspondences = build_correspondences(graph, graph.journal.events, papers)
     write_json(dataset_dir / "correspondences.json", correspondences)
@@ -84,15 +62,6 @@ def export_revision(dataset_dir: Path, graph: QuestionGraph, papers: list[Paper]
         "singletons": paragraph_singletons,
         "section_groups": section_groups,
         "stats": {
-            "common_structures": sum(
-                len(values.get("common_structure", [])) for values in normalized_categories.values()
-            ),
-            "alignable_differences": sum(
-                len(values.get("alignable_difference", [])) for values in normalized_categories.values()
-            ),
-            "non_alignable_differences": sum(
-                len(values.get("non_alignable_difference", [])) for values in normalized_categories.values()
-            ),
             "section_question_groups": len(section_groups),
             "paragraph_question_groups": len(paragraph_groups) + len(paragraph_singletons),
         },
@@ -168,9 +137,7 @@ def _viewer_group(
     return {
         "group_id": node_id,
         "overarching_question": data.get("generated_question") or node_id,
-        "classification": data["classification"],
         "parent_group_id": data.get("parent_id"),
         "members": members,
         "representative_members": members,
-        "paper_coverage": len({member["paper"] for member in members}),
     }

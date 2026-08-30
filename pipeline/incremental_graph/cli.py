@@ -92,12 +92,6 @@ def retry_revision(run_dir: Path, paper_index: int, stage_id: str) -> dict[str, 
     )
 
 
-def current_categories(run_dir: Path) -> dict[str, Any]:
-    metadata = json.loads((run_dir.resolve() / "run.json").read_text(encoding="utf-8"))
-    path = Path(metadata["current_revision_dir"]) / "dataset" / "graph_categories.json"
-    return json.loads(path.read_text(encoding="utf-8"))
-
-
 def validate_manifest(manifest_path: Path) -> dict[str, Any]:
     """Load and summarize canonical inputs without making model calls."""
 
@@ -152,9 +146,6 @@ def main() -> None:
     retry_parser.add_argument("--paper-index", type=int, required=True)
     retry_parser.add_argument("--stage", required=True)
 
-    categories_parser = subparsers.add_parser("categories", help="Print current deterministic graph categories")
-    categories_parser.add_argument("run_dir", type=Path)
-
     validate_parser = subparsers.add_parser("validate", help="Validate and summarize a paper manifest")
     validate_parser.add_argument("manifest", type=Path)
 
@@ -170,8 +161,6 @@ def main() -> None:
     elif args.command == "retry":
         summary = retry_revision(args.run_dir, args.paper_index, args.stage)
         print(json.dumps(summary, indent=2))
-    elif args.command == "categories":
-        print(json.dumps(current_categories(args.run_dir), indent=2))
     else:
         print(json.dumps(validate_manifest(args.manifest), indent=2))
 

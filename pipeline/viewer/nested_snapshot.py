@@ -179,8 +179,10 @@ def load_question_mappings(
 
     for row_position, row in enumerate(rows):
         role = str(row.get("role_slug") or "")
-        for bucket in ("paragraph_level_common_structure", "paragraph_level_leftovers"):
-            for group_position, raw_group in enumerate(row.get(bucket) or []):
+        for bucket, mapping_groups in row.items():
+            if not bucket.startswith("paragraph_level_") or not isinstance(mapping_groups, list):
+                continue
+            for group_position, raw_group in enumerate(mapping_groups):
                 raw_entries += 1
                 question = compact(str(raw_group.get("question_the_sections_answer") or ""))
                 require(bool(question), f"Row {row_position} {bucket} group {group_position} has no question")
@@ -189,7 +191,6 @@ def load_question_mappings(
                     "role_slug": role,
                     "row_position": row_position,
                     "row_source": str(row.get("row_source") or ""),
-                    "bucket": bucket,
                     "group_position": group_position,
                     "status": str(raw_group.get("pairing_status") or raw_group.get("diff_type") or ""),
                     "basis": str(raw_group.get("basis") or ""),
