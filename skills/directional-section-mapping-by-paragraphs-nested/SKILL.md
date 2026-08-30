@@ -1,6 +1,6 @@
 ---
 name: "directional-section-mapping-by-paragraphs-nested"
-description: "Selects the single best structural-role match, or none, between one focus unit or question group and a supplied candidate list. Sections and subsections are peers for matching; paragraph calls are limited to a precomputed section family."
+description: "Selects the single best structural-role match, or none, between one focus unit or question group and a supplied candidate list. Sections and subsections are peers for matching; paragraph calls are limited to one exact section or subsection node."
 ---
 
 # Directional Graph Matching
@@ -15,7 +15,8 @@ Use this Skill for one directional pass of the incremental question-group graph.
 - Questions are reliable evidence but never identity. Complete text wins when a question is too narrow or conflicts with the source.
 - A candidate question group represents all of its members. Judge the group from the complete evidence of every member, not from its generated group question alone.
 - Sections and subsections may match at any level: section-to-section, section-to-subsection, subsection-to-section, or subsection-to-subsection.
-- For paragraph calls, trust the supplied family scope. Do not infer or select a candidate outside it.
+- In a structural rerepresentation call, the focus is a singleton group and every candidate is an established non-singleton group. This pass is one-way and does not require a reciprocal selection.
+- For paragraph calls, trust the supplied exact structural-node scope. Do not infer or select a candidate from its parent, children, siblings, or wider family.
 
 ## Decision
 
@@ -30,4 +31,4 @@ The caller's JSON schema is authoritative. Return exactly:
 }
 ```
 
-Do not create questions, graph edges, groups, or classifications. Those are separate pipeline stages.
+Do not create questions, graph edges, or groups. Those are separate pipeline stages.
