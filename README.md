@@ -69,7 +69,7 @@ Retry one stage and replay the ordered corpus:
 ```powershell
 python -m pipeline.incremental_graph.cli retry `
   runs/hci-two-paper `
-  --paper-index 3 `
+  --paper-index 2 `
   --stage section_matching
 ```
 
