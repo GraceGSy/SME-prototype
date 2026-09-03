@@ -11,6 +11,7 @@ and the earlier proposition-graph SME.
 |---|---|
 | `datasets/hci-five-paper/` | Five canonical, question-decorated HCI papers and their ordered manifest |
 | `pipeline/incremental_graph/` | Incremental section and paragraph graph |
+| `pipeline/skill_pipeline/` | YAML-driven Claude Skills comparison harness |
 | `pipeline/questions/` | Direct question-annotation commands |
 | `pipeline/viewer/` | Paper Map, Question Groups, Graph Replay, and dataset packaging |
 | `pipeline/graph_sme/` | Earlier proposition-graph SME retained as a separate implementation |
@@ -18,6 +19,11 @@ and the earlier proposition-graph SME.
 | `tests/` | Unit and contract tests for the retained code |
 
 Generated runs, model caches, and packaged sites are intentionally ignored.
+
+The Skills comparison harness is documented separately in
+`pipeline/skill_pipeline/README.md`. It prepares Sherlock/HCI inputs, generates
+section and subsection questions, and runs either document-matching Skill
+without applying graph rules.
 
 ## Setup
 

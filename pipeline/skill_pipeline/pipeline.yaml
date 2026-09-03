@@ -1,0 +1,87 @@
+version: claude-skill-harness-v1
+model: claude-sonnet-5
+cache_dir: runs/skill-pipeline/cache
+output_dir: runs/skill-pipeline/results
+
+# Stage order is execution order. A matching implementation is swapped by changing
+# its skill and view here; the runner itself contains no matching judgment.
+stages:
+  - id: extraction
+    kind: extract
+    skill: extraction
+  - id: questions
+    kind: questions
+    skill: questions
+  - id: section_matching
+    kind: match
+    skill: section_matching
+    view: sections
+    max_tokens: 8192
+    validation_attempts: 2
+    output_suffix: section-mapping-by-paragraphs-and-questions
+  - id: section_and_subsection_matching
+    kind: match
+    skill: section_and_subsection_matching
+    view: sections_and_subsections
+    max_tokens: 8192
+    validation_attempts: 3
+    source_batch_size: 1
+    output_suffix: section-mapping-by-paragraphs-nested
+
+skills:
+  extraction: skills/extract-section-and-subsection-paragraphs
+  questions: skills/annotate-section-questions-given-paragraphs
+  section_matching: skills/directional-section-mapping-by-paragraphs-and-questions
+  section_and_subsection_matching: skills/directional-document-mapping-by-paragraphs-nested
+
+datasets:
+  sherlock:
+    question_documents: [wisteria_lodge, bruce_partington_plans]
+    match_pair: [wisteria_lodge, bruce_partington_plans]
+    documents:
+      - id: wisteria_lodge
+        title: The Adventure of Wisteria Lodge
+        xhtml:
+          url: https://raw.githubusercontent.com/standardebooks/arthur-conan-doyle_his-last-bow/8ab7fce0e6f5e7d25cb1de9660b4fa6dd89a933c/src/epub/text/the-adventure-of-wisteria-lodge.xhtml
+          sha256: ba61530992f43d9de378837be2dbb56f90dac4c88b17269305fe78519cb15e1c
+        expected_sections: 2
+        expected_scenes: 5
+      - id: bruce_partington_plans
+        title: The Adventure of the Bruce-Partington Plans
+        xhtml:
+          url: https://raw.githubusercontent.com/standardebooks/arthur-conan-doyle_his-last-bow/8ab7fce0e6f5e7d25cb1de9660b4fa6dd89a933c/src/epub/text/the-adventure-of-the-bruce-partington-plans.xhtml
+          sha256: 5a5ff4ae53e051ccab968c2c85d22b2e453b00af91560ead1f86705369c84fbb
+        expected_sections: 1
+        expected_scenes: 5
+      - id: speckled_band
+        title: The Adventure of the Speckled Band
+        xhtml:
+          url: https://raw.githubusercontent.com/standardebooks/arthur-conan-doyle_the-adventures-of-sherlock-holmes/60f53b2fc44178af326d56f45a5b6d02a8badd68/src/epub/text/the-adventure-of-the-speckled-band.xhtml
+          sha256: b59209c14d19744934312bdb7851a6dc977f31989081b54c790fa9cbaf6596f8
+        expected_sections: 1
+        expected_scenes: 4
+      - id: illustrious_client
+        title: The Adventure of the Illustrious Client
+        xhtml:
+          url: https://raw.githubusercontent.com/standardebooks/arthur-conan-doyle_the-casebook-of-sherlock-holmes/3c706c799bd31fd8e889302bd4160e8e0cababd4/src/epub/text/the-adventure-of-the-illustrious-client.xhtml
+          sha256: 50874b6b75367610c96320f4e8d1b3fd50cb9b89eb3708a7abdf8b261162c1cf
+        expected_sections: 1
+        expected_scenes: 5
+      - id: lady_frances_carfax
+        title: The Disappearance of Lady Frances Carfax
+        xhtml:
+          url: https://raw.githubusercontent.com/standardebooks/arthur-conan-doyle_his-last-bow/8ab7fce0e6f5e7d25cb1de9660b4fa6dd89a933c/src/epub/text/the-disappearance-of-lady-frances-carfax.xhtml
+          sha256: cacd32c1e74285eae3dcbb968db956e5861cf699e0afa708b1da283be4727290
+        expected_sections: 1
+        expected_scenes: 4
+
+  hci:
+    question_documents: [examplore_chi18, corpusstudio]
+    match_pair: [examplore_chi18, corpusstudio]
+    documents:
+      - id: examplore_chi18
+        title: Examplore
+        json: datasets/hci-five-paper/examplore_chi18-sections-with-subsections-and-paragraph-content-no-appendices.json
+      - id: corpusstudio
+        title: CorpusStudio
+        json: datasets/hci-five-paper/corpusstudio-sections-with-subsections-and-paragraph-content-no-appendices.json
