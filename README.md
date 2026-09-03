@@ -20,6 +20,9 @@ and the earlier proposition-graph SME.
 
 Generated runs, model caches, and packaged sites are intentionally ignored.
 
+See [`PIPELINE_FLOW.md`](PIPELINE_FLOW.md) for diagrams of every current local
+stage, Claude judgment, outbound call, artifact, and pipeline boundary.
+
 The Skills comparison harness is documented separately in
 `pipeline/skill_pipeline/README.md`. It prepares Sherlock/HCI inputs, generates
 section and subsection questions, and runs either document-matching Skill
