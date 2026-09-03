@@ -1,9 +1,9 @@
 {
   "type": "object",
   "properties": {
-    "best_match_id": {"type": ["string", "null"]},
-    "reason": {"type": "string"}
+    "target_id": {"type": ["string", "null"]},
+    "basis": {"type": "string", "minLength": 1}
   },
-  "required": ["best_match_id", "reason"],
+  "required": ["target_id", "basis"],
   "additionalProperties": false
 }

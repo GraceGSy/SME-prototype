@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Callable
 
+from ..document import QUESTION_FIELD
 from .export import export_revision
 from .graph import QuestionGraph
 from .journal import RevisionJournal, write_json
@@ -27,7 +28,7 @@ class PipelineError(RuntimeError):
 
 
 class IncrementalGraphRunner:
-    """Run one immutable revision of the incremental question-group graph."""
+    """Run one immutable revision of the incremental node graph."""
 
     def __init__(
         self,
@@ -209,7 +210,7 @@ class IncrementalGraphRunner:
                 stage,
                 insertion,
                 direction="singleton_to_group",
-                focus_id=source_id,
+                source_id=source_id,
                 allowed_ids=candidate_ids,
                 context=context,
                 key_prefix="corpus",
@@ -220,7 +221,7 @@ class IncrementalGraphRunner:
         changed_group_ids: set[str] = set()
         for source_id in singleton_ids:
             decision = decisions.get(source_id)
-            target_id = decision.chosen_id if decision else None
+            target_id = decision.target_id if decision else None
             if target_id is None:
                 continue
             member = self.question_graph.members(source_id)[0]
@@ -366,22 +367,23 @@ class IncrementalGraphRunner:
         self,
         stage: StageConfig,
         insertion: InsertionState,
-        focus_id: str,
+        source_id: str,
         context: dict[str, Any],
     ) -> tuple[str, str]:
         request = JudgmentRequest(
-            key=f"{insertion.paper.paper_id}:{stage.id}:{focus_id}",
+            key=f"{insertion.paper.paper_id}:{stage.id}:{source_id}",
             paper_index=insertion.paper_index,
             stage_id=stage.id,
             output_kind="question",
             prompt_ref=stage.prompt or "",
             context_ref=stage.context or "",
             context=context,
+            skill_ref=stage.skill,
             force=self._forced(stage, insertion),
         )
         result = self.judge.judge(request)
         attempt_id = self.journal.attempt(request, result)
-        return str(result.normalized["question"]).strip(), attempt_id
+        return str(result.normalized[QUESTION_FIELD]).strip(), attempt_id
 
     def _match_units(
         self,
@@ -410,7 +412,7 @@ class IncrementalGraphRunner:
                 stage,
                 insertion,
                 direction="new_to_group",
-                focus_id=unit_id,
+                source_id=unit_id,
                 allowed_ids=existing_group_ids,
                 context=context,
             )
@@ -428,7 +430,7 @@ class IncrementalGraphRunner:
                 stage,
                 insertion,
                 direction="group_to_new",
-                focus_id=group_id,
+                source_id=group_id,
                 allowed_ids=new_unit_ids,
                 context=context,
             )
@@ -441,13 +443,13 @@ class IncrementalGraphRunner:
         insertion: InsertionState,
         *,
         direction: MatchDirection,
-        focus_id: str,
+        source_id: str,
         allowed_ids: list[str],
         context: dict[str, Any],
         key_prefix: str | None = None,
     ) -> MatchDecision:
         request = JudgmentRequest(
-            key=f"{key_prefix or insertion.paper.paper_id}:{stage.id}:{direction}:{focus_id}",
+            key=f"{key_prefix or insertion.paper.paper_id}:{stage.id}:{direction}:{source_id}",
             paper_index=insertion.paper_index,
             stage_id=stage.id,
             output_kind="match",
@@ -460,21 +462,21 @@ class IncrementalGraphRunner:
         )
         result = self.judge.judge(request)
         attempt_id = self.journal.attempt(request, result)
-        chosen_id = result.normalized.get("best_match_id")
+        target_id = result.normalized.get("target_id")
         self.journal.event(
             "match_recorded",
             paper_index=insertion.paper_index,
             level=context["scope"]["level"],
             parent_id=context["scope"].get("parent_group_id"),
             direction=direction,
-            focus_id=focus_id,
-            chosen_id=chosen_id,
+            source_id=source_id,
+            target_id=target_id,
             candidate_ids=allowed_ids,
             attempt_id=attempt_id,
         )
         return MatchDecision(
-            focus_id=focus_id,
-            chosen_id=chosen_id,
+            source_id=source_id,
+            target_id=target_id,
             direction=direction,
             attempt_id=attempt_id,
         )
@@ -573,7 +575,7 @@ class IncrementalGraphRunner:
         for group_id, decision in batch.reverse.items():
             if group_id in reverse_fan_in:
                 continue
-            unit_id = decision.chosen_id
+            unit_id = decision.target_id
             absorbed_group = reciprocal.get(unit_id) if unit_id else None
             if absorbed_group and absorbed_group != group_id:
                 self.journal.event(
@@ -592,11 +594,11 @@ class IncrementalGraphRunner:
     def _reciprocal_matches(batch: MatchBatch) -> dict[str, str]:
         reciprocal: dict[str, str] = {}
         for unit_id, forward in batch.forward.items():
-            if not forward.chosen_id:
+            if not forward.target_id:
                 continue
-            reverse = batch.reverse.get(forward.chosen_id)
-            if reverse and reverse.chosen_id == unit_id:
-                reciprocal[unit_id] = forward.chosen_id
+            reverse = batch.reverse.get(forward.target_id)
+            if reverse and reverse.target_id == unit_id:
+                reciprocal[unit_id] = forward.target_id
         return reciprocal
 
     def _adjacent_paragraph_fan_in(
@@ -610,7 +612,7 @@ class IncrementalGraphRunner:
         anchor_by_group = {group_id: unit_id for unit_id, group_id in reciprocal.items()}
         accepted: dict[str, str] = {}
         for unit_id, forward in batch.forward.items():
-            selected_group = forward.chosen_id
+            selected_group = forward.target_id
             anchor_id = anchor_by_group.get(selected_group or "")
             if unit_id in reciprocal or anchor_id is None:
                 continue
@@ -634,7 +636,7 @@ class IncrementalGraphRunner:
 
         accepted = {}
         for source_id, decision in batch.reverse.items():
-            selected_unit_id = decision.chosen_id
+            selected_unit_id = decision.target_id
             target_id = reciprocal.get(selected_unit_id or "")
             if target_id is None or source_id == target_id:
                 continue
@@ -803,6 +805,8 @@ class IncrementalGraphRunner:
     def _require_prompt(stage: StageConfig) -> None:
         if not stage.prompt or not stage.context:
             raise PipelineError(f"Stage {stage.id} requires prompt and context references")
+        if not stage.skill:
+            raise PipelineError(f"Stage {stage.id} requires a question Skill")
 
     @staticmethod
     def _require_match_prompts(stage: StageConfig) -> None:

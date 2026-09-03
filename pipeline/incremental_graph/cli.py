@@ -1,4 +1,4 @@
-"""Command-line entrypoint for incremental question-group graph runs."""
+"""Command-line entrypoint for incremental node-graph runs."""
 
 from __future__ import annotations
 

@@ -6,6 +6,7 @@ import unittest
 from pathlib import Path
 
 from pipeline.incremental_graph.configuration import load_pipeline_config
+from pipeline.document import QUESTION_FIELD
 from pipeline.incremental_graph.graph import QuestionGraph, graph_from_events, stable_id
 from pipeline.incremental_graph.input_data import load_manifest, load_paper
 from pipeline.incremental_graph.journal import RevisionJournal
@@ -43,11 +44,11 @@ class ScriptedJudge:
         self.requests.append(request)
         if request.output_kind == "question":
             focus = request.key.rsplit(":", 1)[-1]
-            normalized = {"question": f"What does {focus} address?"}
+            normalized = {QUESTION_FIELD: f"What does {focus} address?"}
         else:
             normalized = {
-                "best_match_id": self.matches.get(request.key),
-                "reason": "scripted test decision",
+                "target_id": self.matches.get(request.key),
+                "basis": "scripted test decision",
             }
         return JudgmentResult(
             fingerprint=f"fingerprint-{request.key}",
@@ -105,7 +106,7 @@ class IncrementalGraphTest(unittest.TestCase):
         self.assertTrue(deterministic_events)
         self.assertTrue(all(event["source"] == "member_question" for event in deterministic_events))
 
-    def test_normalizes_pseudo_sections_with_stable_unique_unit_ids(self) -> None:
+    def test_rejects_noncanonical_pseudo_sections(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "paper.json"
             path.write_text(json.dumps([
@@ -124,14 +125,8 @@ class IncrementalGraphTest(unittest.TestCase):
                 },
             ]), encoding="utf-8")
 
-            normalized = load_paper(path, "paper-a", "Paper A")
-
-            self.assertEqual([section.id for section in normalized.sections], ["s1", "s2"])
-            self.assertEqual(
-                [paragraph.id for section in normalized.sections for paragraph in section.paragraphs],
-                ["s1-p1", "s1-p2", "s2-p1"],
-            )
-            self.assertEqual(normalized.sections[0].text, "First paragraph.\n\nSecond paragraph.")
+            with self.assertRaisesRegex(ValueError, "canonical document"):
+                load_paper(path, "paper-a", "Paper A")
 
     def test_normalizes_nested_paragraphs_and_existing_questions(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -162,10 +157,11 @@ class IncrementalGraphTest(unittest.TestCase):
             self.assertEqual(section.question, "How does the method work?")
             self.assertEqual(section.ordinal, 1)
             self.assertEqual(section.text, "Method overview.\n\nImplementation details.")
-            self.assertEqual([paragraph.id for paragraph in section.paragraphs], ["3-p1"])
+            self.assertEqual([paragraph.id for paragraph in section.paragraphs], ["s0001.p0001"])
             self.assertEqual(subsection.kind, "subsection")
-            self.assertEqual(subsection.parent_id, "3")
-            self.assertEqual(subsection.family_id, "3")
+            self.assertEqual(subsection.id, "s0001.ss0001")
+            self.assertEqual(subsection.parent_id, "s0001")
+            self.assertEqual(subsection.family_id, "s0001")
             self.assertEqual(subsection.ordinal, 2)
             self.assertEqual(subsection.paragraphs[0].question, "How was it implemented?")
 
@@ -273,8 +269,8 @@ class IncrementalGraphTest(unittest.TestCase):
             self.assertTrue(
                 any(
                     event["action"] == "match_recorded"
-                    and event["focus_id"] == group_b
-                    and event["chosen_id"] == "a3"
+                    and event["source_id"] == group_b
+                    and event["target_id"] == "a3"
                     for event in runner.journal.events
                 )
             )
@@ -372,7 +368,7 @@ class IncrementalGraphTest(unittest.TestCase):
             )
             self.assertEqual(
                 set(snapshot["stats"]),
-                {"section_question_groups", "paragraph_question_groups"},
+                {"section_nodes", "paragraph_nodes"},
             )
 
     def test_cross_level_structure_and_exact_node_paragraph_scope(self) -> None:
@@ -748,8 +744,8 @@ class IncrementalGraphTest(unittest.TestCase):
         self.assertTrue(
             any(
                 event["action"] == "match_recorded"
-                and event["focus_id"] == "b7"
-                and event["chosen_id"] == paragraph_group
+                and event["source_id"] == "b7"
+                and event["target_id"] == paragraph_group
                 for event in runner.journal.events
             )
         )

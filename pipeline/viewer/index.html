@@ -1123,69 +1123,30 @@ async function loadOptionalGraphReplay(descriptor) {
 
 async function loadAll() {
   const descriptor = await fetchDatasetJson("dataset.json");
+  if (descriptor.schema_version !== 1 || descriptor.mode !== "final_snapshot") {
+    throw new Error("data/dataset.json does not match the canonical viewer contract");
+  }
   const graphReplay = await loadOptionalGraphReplay(descriptor);
-  if (descriptor.schema_version === 2 && descriptor.mode === "final_snapshot") {
-    const manifest = await fetchDatasetJson("manifest.json");
-    if (!Array.isArray(manifest) || !manifest.length) throw new Error("data/manifest.json has no papers");
-    const papers = await Promise.all(manifest.map(entry => fetchDatasetJson(entry.file)));
-    const [links, finalSnapshot] = await Promise.all([
-      fetchDatasetJson("bidirectional_matches.json"),
-      fetchDatasetJson(descriptor.snapshot_file || "final_snapshot.json"),
-    ]);
-    if (![1, 2].includes(finalSnapshot.schema_version) || finalSnapshot.mode !== "final_snapshot") {
-      throw new Error("The final snapshot does not match the Question Atlas snapshot contract");
-    }
-    return {
-      dataset: descriptor,
-      papers,
-      links,
-      finalSnapshot,
-      iterations: {},
-      balances: {},
-      milpDataByVariant: {},
-      epochInitialGroups: null,
-      epochStepData: {},
-      graphReplay,
-    };
-  }
-
-  const epochs = (descriptor.epochs || []).map(Number);
-  if (descriptor.schema_version !== 1 || !epochs.length || epochs.some(n => !Number.isInteger(n) || n < 1)) {
-    throw new Error("data/dataset.json does not match the Question Atlas dataset contract");
-  }
-  const defaultEpoch = Number(descriptor.default_epoch ?? epochs[epochs.length - 1]);
-  if (!epochs.includes(defaultEpoch)) throw new Error("data/dataset.json names an unavailable default epoch");
-  const dataset = { ...descriptor, epochs, default_epoch: defaultEpoch };
-
   const manifest = await fetchDatasetJson("manifest.json");
   if (!Array.isArray(manifest) || !manifest.length) throw new Error("data/manifest.json has no papers");
   const papers = await Promise.all(manifest.map(entry => fetchDatasetJson(entry.file)));
-  const [links, quoteGroups, epochInitialGroups] = await Promise.all([
+  const [links, finalSnapshot] = await Promise.all([
     fetchDatasetJson("bidirectional_matches.json"),
-    fetchDatasetJson("quote_groups.json"),
-    fetchDatasetJson("epoch_matrix1_reassign_refinement/initial_groups.json"),
+    fetchDatasetJson(descriptor.snapshot_file || "final_snapshot.json"),
   ]);
-
-  const epochEntries = await Promise.all(epochs.map(async n => {
-    const prefix = `epoch_matrix1_reassign_refinement/epoch${n}/`;
-    const [estep, mstep, balance] = await Promise.all([
-      fetchDatasetJson(prefix + "estep.json"),
-      fetchDatasetJson(prefix + "mstep.json"),
-      fetchDatasetJson(prefix + "group_balance.json"),
-    ]);
-    return [`epoch${n}`, { estep, mstep, balance }];
-  }));
-
+  if (finalSnapshot.schema_version !== 1 || finalSnapshot.mode !== "final_snapshot") {
+    throw new Error("The final snapshot does not match the canonical viewer contract");
+  }
   return {
-    dataset,
+    dataset: descriptor,
     papers,
     links,
-    iterations: { 0: { groups: quoteGroups.paragraphs || [], meta: null } },
+    finalSnapshot,
+    iterations: {},
     balances: {},
     milpDataByVariant: {},
-    epochInitialGroups,
-    epochStepData: Object.fromEntries(epochEntries),
-    finalSnapshot: null,
+    epochInitialGroups: null,
+    epochStepData: {},
     graphReplay,
   };
 }

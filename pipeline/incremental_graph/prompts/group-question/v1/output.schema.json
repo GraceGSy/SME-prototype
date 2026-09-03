@@ -1,8 +1,8 @@
 {
   "type": "object",
   "properties": {
-    "question": {"type": "string", "minLength": 1}
+    "question_this_text_answers": {"type": "string", "minLength": 1}
   },
-  "required": ["question"],
+  "required": ["question_this_text_answers"],
   "additionalProperties": false
 }

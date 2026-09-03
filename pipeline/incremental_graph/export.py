@@ -56,14 +56,14 @@ def export_revision(dataset_dir: Path, graph: QuestionGraph, papers: list[Paper]
         encoding="utf-8",
     )
     write_json(dataset_dir / "final_snapshot.json", {
-        "schema_version": 2,
+        "schema_version": 1,
         "mode": "final_snapshot",
         "groups": paragraph_groups,
         "singletons": paragraph_singletons,
         "section_groups": section_groups,
         "stats": {
-            "section_question_groups": len(section_groups),
-            "paragraph_question_groups": len(paragraph_groups) + len(paragraph_singletons),
+            "section_nodes": len(section_groups),
+            "paragraph_nodes": len(paragraph_groups) + len(paragraph_singletons),
         },
     })
 

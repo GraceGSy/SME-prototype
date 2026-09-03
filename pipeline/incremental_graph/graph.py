@@ -18,7 +18,7 @@ def stable_id(prefix: str, *parts: str) -> str:
 
 
 class QuestionGraph:
-    """Own deterministic question-group state and replay events."""
+    """Own deterministic node state and replay events."""
 
     def __init__(self, journal: RevisionJournal):
         self.graph = nx.MultiDiGraph()
@@ -54,7 +54,7 @@ class QuestionGraph:
         prefix = "section-group" if level == "section" else "paragraph-group"
         node_id = stable_id(prefix, parent_id or "root", paper_id, member_id)
         if node_id in self.graph:
-            raise ValueError(f"Question-group ID collision: {node_id}")
+            raise ValueError(f"Node ID collision: {node_id}")
         member = _member(
             paper_id,
             member_id,
@@ -101,7 +101,7 @@ class QuestionGraph:
             self.graph.nodes[node_id]["level"] == "section"
             and any(existing["paper_id"] == paper_id for existing in members)
         ):
-            raise ValueError(f"Question group {node_id} already contains a member from {paper_id}")
+            raise ValueError(f"Node {node_id} already contains a member from {paper_id}")
         member = _member(
             paper_id,
             member_id,
@@ -190,7 +190,7 @@ class QuestionGraph:
             existing["paper_id"] == member["paper_id"] for existing in target["members"]
         ):
             raise ValueError(
-                f"Question group {target_id} already contains a member from {member['paper_id']}"
+                f"Node {target_id} already contains a member from {member['paper_id']}"
             )
         incident_edges = [
             (edge_source, edge_target, data)

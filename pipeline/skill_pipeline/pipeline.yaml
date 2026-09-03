@@ -1,7 +1,7 @@
-version: claude-skill-harness-v1
+version: canonical-document-pipeline-v1
 model: claude-sonnet-5
-cache_dir: runs/skill-pipeline/cache
-output_dir: runs/skill-pipeline/results
+cache_dir: runs/document-pipeline/cache
+output_dir: runs/document-pipeline/results
 
 # Stage order is execution order. A matching implementation is swapped by changing
 # its skill and view here; the runner itself contains no matching judgment.
@@ -18,7 +18,6 @@ stages:
     view: sections
     max_tokens: 8192
     validation_attempts: 2
-    output_suffix: section-mapping-by-paragraphs-and-questions
   - id: section_and_subsection_matching
     kind: match
     skill: section_and_subsection_matching
@@ -26,11 +25,10 @@ stages:
     max_tokens: 8192
     validation_attempts: 3
     source_batch_size: 1
-    output_suffix: section-mapping-by-paragraphs-nested
 
 skills:
   extraction: skills/extract-section-and-subsection-paragraphs
-  questions: skills/annotate-section-questions-given-paragraphs
+  questions: skills/generate-question
   section_matching: skills/directional-section-mapping-by-paragraphs-and-questions
   section_and_subsection_matching: skills/directional-document-mapping-by-paragraphs-nested
 
@@ -81,7 +79,7 @@ datasets:
     documents:
       - id: examplore_chi18
         title: Examplore
-        json: datasets/hci-five-paper/examplore_chi18-sections-with-subsections-and-paragraph-content-no-appendices.json
+        json: datasets/hci-five-paper/examplore_chi18.json
       - id: corpusstudio
         title: CorpusStudio
-        json: datasets/hci-five-paper/corpusstudio-sections-with-subsections-and-paragraph-content-no-appendices.json
+        json: datasets/hci-five-paper/corpusstudio.json

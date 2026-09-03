@@ -1,1 +1,1 @@
-"""Static viewer dataset builders and packager."""
+"""Canonical graph-snapshot viewer and packager."""

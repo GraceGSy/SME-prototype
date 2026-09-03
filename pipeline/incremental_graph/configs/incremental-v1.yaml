@@ -17,6 +17,7 @@ stages:
   - id: section_questions
     handler: generate_section_questions
     phase: structural
+    skill: generate-question
     prompt: section-question/v1
     context: section-question
 
@@ -38,6 +39,7 @@ stages:
   - id: section_group_questions
     handler: generate_section_group_questions
     phase: structural
+    skill: generate-question
     prompt: group-question/v1
     context: group-question
 
@@ -53,12 +55,14 @@ stages:
   - id: section_rerepresentation_questions
     handler: regenerate_rerepresented_section_questions
     phase: rerepresentation
+    skill: generate-question
     prompt: group-question/v1
     context: group-question
 
   - id: paragraph_questions
     handler: generate_paragraph_questions
     phase: paragraph
+    skill: generate-question
     prompt: paragraph-question/v1
     context: paragraph-question
 
@@ -80,5 +84,6 @@ stages:
   - id: paragraph_group_questions
     handler: generate_paragraph_group_questions
     phase: paragraph
+    skill: generate-question
     prompt: group-question/v1
     context: group-question

@@ -1,7 +1,7 @@
-# SME question-group graph
+# SME node graph
 
 This repository contains the retained Structural Mapping Engine work: the
-order-dependent question-group graph, its Claude matching Skill,
+order-dependent node graph, its Claude Skills,
 canonical HCI inputs, the Paper Map and Question Groups viewer, Graph Replay,
 and the earlier proposition-graph SME.
 
@@ -10,23 +10,24 @@ and the earlier proposition-graph SME.
 | Path | Purpose |
 |---|---|
 | `datasets/hci-five-paper/` | Five canonical, question-decorated HCI papers and their ordered manifest |
+| `pipeline/document.py` | The sole nested document contract, validation, IDs, and candidate projection |
 | `pipeline/incremental_graph/` | Incremental section and paragraph graph |
-| `pipeline/skill_pipeline/` | YAML-driven Claude Skills comparison harness |
-| `pipeline/questions/` | Direct question-annotation commands |
-| `pipeline/viewer/` | Paper Map, Question Groups, Graph Replay, and dataset packaging |
+| `pipeline/skill_pipeline/` | YAML-driven extraction, question, and pairwise matching pipeline |
+| `pipeline/viewer/` | Paper Map, Question Groups, optional Graph Replay, and canonical snapshot packaging |
 | `pipeline/graph_sme/` | Earlier proposition-graph SME retained as a separate implementation |
-| `skills/` | Only the extraction and matching Skills used by the retained pipelines |
+| `skills/` | Extraction, question, and matching Skills used by the retained pipelines |
 | `tests/` | Unit and contract tests for the retained code |
 
 Generated runs, model caches, and packaged sites are intentionally ignored.
 
-See [`PIPELINE_FLOW.md`](PIPELINE_FLOW.md) for diagrams of every current local
-stage, Claude judgment, outbound call, artifact, and pipeline boundary.
+See [`DATA_CONTRACTS.md`](DATA_CONTRACTS.md) for the canonical JSON and ID
+contracts. See [`PIPELINE_FLOW.md`](PIPELINE_FLOW.md) for the streamlined stage
+and outbound-call diagram.
 
-The Skills comparison harness is documented separately in
+The canonical document pipeline is documented separately in
 `pipeline/skill_pipeline/README.md`. It prepares Sherlock/HCI inputs, generates
-section and subsection questions, and runs either document-matching Skill
-without applying graph rules.
+section and subsection questions, and runs either document-matching Skill. Both
+matching modes use the same IDs and output schema.
 
 ## Setup
 
@@ -59,9 +60,9 @@ python -m pipeline.incremental_graph.cli run `
 ```
 
 This processes `abstractexplorer` and `corpusstudio`, the first two manifest
-entries. Omit `--paper-limit 2` to process all five papers. Directional matching uses the
-checked-in Claude Skill; only multi-member group questions use structured Anthropic calls.
-Singleton groups reuse their member question without an API call. Results are immutable
+entries. Omit `--paper-limit 2` to process all five papers. Every language
+judgment uses a configured Claude Skill; singleton nodes reuse their member
+question without an API call. Results are immutable
 under `runs/hci-two-paper/revisions/`; response cache entries are reused by
 content hash.
 

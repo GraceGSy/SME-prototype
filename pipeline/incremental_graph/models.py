@@ -147,8 +147,8 @@ class JudgmentResult(BaseModel):
 
 
 class MatchDecision(BaseModel):
-    focus_id: str
-    chosen_id: str | None
+    source_id: str
+    target_id: str | None
     direction: MatchDirection
     attempt_id: str
 

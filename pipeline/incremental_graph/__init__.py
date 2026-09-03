@@ -1,4 +1,4 @@
-"""Incremental, provenance-preserving question-group graph pipeline."""
+"""Incremental, provenance-preserving node-graph pipeline."""
 
 from .runner import IncrementalGraphRunner
 

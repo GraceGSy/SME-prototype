@@ -6,9 +6,9 @@
   const ACTION_LABELS = {
     paper_added: "Paper added",
     match_recorded: "Match judgment recorded",
-    node_created: "Question group created",
-    member_added: "Section or paragraph added to group",
-    node_merged: "Question group merged",
+    node_created: "Node created",
+    member_added: "Section or paragraph added to node",
+    node_merged: "Node merged",
     edge_created: "Hierarchy edge added",
     question_generated: "Display question generated",
     projected_edge_ignored: "Projected edge ignored",
@@ -58,8 +58,8 @@
     });
     const scopeOptions = scopeKeys.map(key => {
       const selected = key === scope ? " selected" : "";
-      if (key === "section") return `<option value="section"${selected}>Section question groups</option>`;
-      return `<option value="paragraph"${selected}>Paragraph question groups</option>`;
+      if (key === "section") return `<option value="section"${selected}>Section nodes</option>`;
+      return `<option value="paragraph"${selected}>Paragraph nodes</option>`;
     }).join("");
     const paperDots = papers.map((paper, paperIndex) => `<button type="button" class="graph-replay-paper-step" data-paper-index="${paperIndex + 1}" title="Jump to ${escapeHtml(paper.title || paper.paper_id)}" style="--paper-color:${PAPER_COLORS[paperIndex % PAPER_COLORS.length]}"></button>`).join("");
     host.innerHTML = `<div class="graph-replay">
@@ -173,7 +173,7 @@
       : node.level === "paragraph");
     const visibleIds = new Set(visibleNodes.map(node => node.nodeId));
     if (!visibleNodes.length) {
-      canvas.innerHTML = `<div class="graph-replay-empty">No groups exist in this scope at event ${index}.</div>`;
+      canvas.innerHTML = `<div class="graph-replay-empty">No nodes exist in this scope at event ${index}.</div>`;
       return;
     }
     const width = showHierarchy && scope === "section"
@@ -216,7 +216,7 @@
         ${visibleLabel}
       </g>`;
     }).join("");
-    canvas.innerHTML = `<svg viewBox="0 0 ${width} ${height}" style="width:${width}px" role="img" aria-label="Incremental question-group graph">
+    canvas.innerHTML = `<svg viewBox="0 0 ${width} ${height}" style="width:${width}px" role="img" aria-label="Incremental node graph">
       <defs><marker id="replayArrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#d18b26"></path></marker></defs>
       ${edgeSvg}${nodeSvg}
     </svg>`;
@@ -236,7 +236,7 @@
       ${detailList(event)}
     </section>` : `<section><div class="graph-replay-kicker">Initial state</div><h2>Before the first paper</h2><p>Use Play or Next to begin the deterministic replay.</p></section>`;
     const nodeHtml = selected ? `<section>
-      <div class="graph-replay-kicker">Selected group</div>
+      <div class="graph-replay-kicker">Selected node</div>
       <h2>${escapeHtml(selected.question || selected.nodeId)}</h2>
       <p>${selected.members.length} member${selected.members.length === 1 ? "" : "s"}</p>
       <dl class="graph-replay-detail-list">${selected.members.map(member => `<dt>${escapeHtml(member.paper_id)} &middot; ${escapeHtml(member.unit_kind || selected.level)}</dt><dd>${escapeHtml(member.unit_id)}</dd>`).join("")}</dl>
@@ -246,8 +246,8 @@
 
   function eventSummary(event) {
     if (event.action === "paper_added") return `${event.title || event.paper_id} enters the corpus.`;
-    if (event.action === "match_recorded") return event.chosen_id ? `${event.focus_id} selected ${event.chosen_id}.` : `${event.focus_id} selected no match.`;
-    if (event.action === "node_created") return `${event.member.paper_id}:${event.member.unit_id} starts a new question group.`;
+    if (event.action === "match_recorded") return event.target_id ? `${event.source_id} selected ${event.target_id}.` : `${event.source_id} selected no match.`;
+    if (event.action === "node_created") return `${event.member.paper_id}:${event.member.unit_id} starts a new node.`;
     if (event.action === "member_added") return `${event.member.paper_id}:${event.member.unit_id} joins ${event.node_id}.`;
     if (event.action === "node_merged") {
       const reason = event.reason === "structural_rerepresentation"

@@ -1,120 +1,101 @@
-# Incremental question-group graph
+# Incremental node graph
 
-This package implements the ordered section, subsection, and paragraph
-graph. A checked-in Claude Skill makes bounded directional matches; ordinary
-structured model calls generate missing unit and group questions. Python owns input
-normalization, IDs, graph mutations, provenance, replay, and
-export.
+This package builds the order-dependent section/subsection and paragraph graph.
+Python owns identity, insertion order, candidate scope, reciprocity, mutation,
+provenance, replay, and exports. Configured Claude Skills make only question and
+matching judgments.
 
-## Graph contract
+## Input
 
-The pipeline completes structural construction and rerepresentation before
-paragraph processing begins:
+An ordered YAML manifest points to documents in the sole nested contract in
+[`DATA_CONTRACTS.md`](../../DATA_CONTRACTS.md):
 
-1. Reuse existing questions or generate missing ones for every section and subsection.
-2. Ask each new structural unit for its best existing group or no match.
-3. Ask each existing group for its best section or subsection in the new paper or no match.
-4. Add a unit to a group only when the two selections are reciprocal.
-5. Create an isolated group for every other unit.
-6. Project each paper's section-to-subsection containment as a provenance-bearing edge.
-7. Regenerate structural-node display questions.
-
-After every selected paper has completed that structural pass, rerepresentation
-runs once over a frozen graph:
-
-8. Ask each singleton section or subsection node for its best eligible established node or no match.
-9. Merge a selected singleton into that non-singleton node without requiring reciprocity. A candidate is ineligible when it already represents the singleton's paper.
-10. Regenerate each changed structural-node question once. If multiple singletons from one paper select the same node, stable node-ID order accepts the first and retains the later decisions as ignored provenance.
-
-The paragraph pass then processes the rerepresented structural nodes:
-
-11. Seed paragraph nodes from the first represented paper in each structural node.
-12. Match the next paper's paragraphs against the existing paragraph nodes in that exact structural node, in both directions.
-13. Add reciprocal paragraphs to their selected nodes.
-14. Add immediately adjacent one-way fan-in from either side of a reciprocal match.
-15. Leave every other paragraph in an isolated node and generate paragraph-node display questions.
-
-From the third represented paper onward, matching is paper-to-node: each new
-paragraph sees every existing paragraph node, and each existing node is judged
-from the complete evidence of all its members. It is not reduced to pairwise
-paper-to-paper matching.
-
-During initial construction, one-way structural matches leave the graph unchanged.
-An immediately adjacent paragraph fan-in may add a node member under rule 14;
-every other one-way paragraph match also leaves the graph unchanged. Structural
-rerepresentation is the sole one-way exception after construction: a singleton
-may join an established node, but it does not create an edge. All judgments remain
-in `match_recorded` provenance events. If an existing group selects a section that
-was reciprocally absorbed elsewhere, `projected_edge_ignored` records that fact
-without changing graph topology.
-
-`correspondences.json` contains reciprocal and rerepresented structural nodes and
-paragraph nodes expanded by accepted adjacent fan-in. Structural fan-in is never used. Paragraph
-fan-in is accepted on either side of a reciprocal match and only at ordinal
-distance one from a core member in the exact same structural node. Fan-in cannot
-extend transitively through another fan-in member. When the one-way claimant is
-an existing multi-paper paragraph node, the node is merged atomically only when
-every member is adjacent to a core member from the same paper; nodes are never
-partially split.
-
-`correspondences.md` renders the same rows as one paper per column. Bold entries
-are reciprocal members. Plain structural entries were accepted by rerepresentation;
-plain paragraph entries are accepted adjacent fan-in members of that same node.
-Unrequited selections never appear in the table.
-
-Every structural group contains at most one unit from a paper. A paragraph group
-may contain immediately adjacent paragraphs from one paper when they fan into a
-reciprocal anchor. Generated questions and containment edges are metadata and
-never contribute to stable group identity.
-
-A singleton group's display question is copied deterministically from its sole
-member. Claude composes a new display question only after a group has multiple
-members.
-
-Structural and paragraph ordinals are retained. They order the optional
-hierarchical viewer layout but never change matching.
-
-## Input normalization
-
-The manifest is ordered YAML. Each file may be the canonical object format or
-the checked-in nested extraction format. A top-level section and each of its
-subsections become independent structural units. The section uses its complete
-descendant text as matching evidence, while every paragraph has one owner:
-lead paragraphs belong to the section and subsection paragraphs to that subsection.
-
-Questions are read from `question_this_text_answers`,
-`question_this_section_answers`, `question`, or `tag`, in that order. Missing
-questions are generated by the configured question stage.
-
-## Configuration and provenance
-
-`configs/incremental-v1.yaml` declares stage order. Versioned prompt bundles
-live under `prompts/`; context profiles under `contexts/` select the evidence
-sent to each call. Context overflow fails rather than silently truncating text.
-
-Each immutable revision contains:
-
-```text
-provenance/attempts.jsonl
-provenance/events.jsonl
-stages/
-events.json
-dataset/graph.json
-dataset/graph-replay.json
-dataset/correspondences.json
-dataset/correspondences.md
-dataset/final_snapshot.json
-summary.json
+```yaml
+schema_version: 1
+papers:
+  - paper_id: paper_a
+    title: Paper A
+    file: paper_a.json
 ```
 
-Attempts and events are authoritative. Graph, replay, and viewer files
-are deterministic projections. Skill source hashes and registered versions are
-recorded with matching attempts.
+The shared loader derives section, subsection, and paragraph IDs from source
+positions. It accepts no flat, pseudo-section, or viewer JSON variants.
 
-Unrequited selections remain in `match_recorded` events for audit only. The
-pipeline never reads those provenance records to construct later candidate sets,
-make matching decisions, or generate questions. Later stages consume graph state,
-which contains reciprocal members, accepted structural rerepresentation,
-accepted adjacent paragraph fan-in, and independent singleton nodes.
+## Ordered algorithm
 
-See the repository README for exact commands using the canonical HCI dataset.
+For each paper in manifest order, the structural phase:
+
+1. Reuses or generates one question for every section and subsection.
+2. Matches each new unit to one existing node or none.
+3. Separately matches each existing node to one new unit or none.
+4. Adds reciprocal units to existing nodes and creates singleton nodes for all
+   other units.
+5. Adds deterministic section-to-subsection `contains` edges.
+6. Reuses a singleton member question or generates a shared question for every
+   multi-member node.
+
+After all papers, one structural rerepresentation pass lets singleton nodes
+select eligible established nodes. Accepted selections merge node membership;
+same-paper conflicts remain provenance. No projected match edge is created.
+
+The paragraph phase repeats bidirectional matching inside each exact finalized
+structural node. Reciprocal matches form node cores. A one-way paragraph may
+join only when it is immediately adjacent to a reciprocal anchor; all other
+paragraphs remain singletons. Unabsorbed projected selections remain provenance
+and never become edges.
+
+The matching Skill returns the common judgment fields `target_id` and `basis`.
+The question Skill returns the common field `question_this_text_answers`.
+Questions remain metadata, not identity.
+
+## Configure
+
+[`configs/incremental-v1.yaml`](configs/incremental-v1.yaml) lists every stage in
+execution order and names its Skill, prompt template, context policy, and
+handler. Prompt and context files are adjacent under `prompts/` and `contexts/`.
+Changing those files changes judgment behavior without changing graph rules.
+
+## Commands
+
+Validate canonical inputs without model calls or writes:
+
+```powershell
+python -m pipeline.incremental_graph.cli validate datasets/hci-five-paper/manifest.yaml
+```
+
+Run an immutable revision:
+
+```powershell
+$env:ANTHROPIC_API_KEY = "your-key"
+python -m pipeline.incremental_graph.cli run `
+  datasets/hci-five-paper/manifest.yaml `
+  runs/hci-five-paper
+```
+
+Retry one paper-stage pair by replaying the same ordered corpus:
+
+```powershell
+python -m pipeline.incremental_graph.cli retry `
+  runs/hci-five-paper `
+  --paper-index 2 `
+  --stage section_matching
+```
+
+Each attempt is content-addressed by Skill, prompt, context, schema, model, and
+input evidence. Cached attempts bypass outbound APIs unless the selected stage
+is forced.
+
+## Outputs
+
+Successful revisions are immutable under `<run>/revisions/revision-NNNN/`.
+They include stage checkpoints, complete attempt records, append-only graph
+events, correspondences, and one `dataset/` viewer projection. `run.json` moves
+to the new revision only after success.
+
+Viewer packaging accepts only that projection's `final_snapshot.json` contract.
+`graph-replay.json` is optional and controls whether Graph Replay appears. The
+Paper Map and Question Groups tabs remain the two core UI views.
+
+The current implementation does not yet classify nodes as `common_structure`,
+`alignable_difference`, or `non_alignable_difference`; that deterministic
+traversal remains a separate future graph rule.

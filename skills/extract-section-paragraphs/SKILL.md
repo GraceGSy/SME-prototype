@@ -120,7 +120,7 @@ The file itself is a JSON array of these objects, e.g.:
 ]
 ```
 
-`paragraph_number` is always an integer (not a string), always `0`-indexed, and always resets to `0` at the start of each section's own `paragraphs` array — never a running count across the whole paper. `paragraphs` is `[]` (not `null`, not omitted) for a section with no real body prose, like References. Don't add extra fields to either the section object or the paragraph object — no `page_number`, no `word_count`, no `summary`, nothing beyond what's specified here. Downstream skills (`annotate-section-questions-given-paragraphs`, `directional-section-mapping-by-paragraphs-and-questions`, `extract-section-and-subsection-paragraphs`) are written against exactly this shape.
+`paragraph_number` is always an integer (not a string), always `0`-indexed, and always resets to `0` at the start of each section's own `paragraphs` array — never a running count across the whole paper. `paragraphs` is `[]` (not `null`, not omitted) for a section with no real body prose, like References. Don't add extra fields to either the section object or the paragraph object — no `page_number`, no `word_count`, no `summary`, nothing beyond what's specified here. The active document pipeline uses `extract-section-and-subsection-paragraphs`, which projects these same paragraph rules into the repository's canonical nested document contract before question generation or matching.
 
 ## Common mistakes to avoid
 

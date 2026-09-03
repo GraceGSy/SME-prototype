@@ -1,3 +1,3 @@
-Generate the single concise question answered across this complete question group.
+Generate the single concise question answered across this complete node.
 
 {{context_json}}

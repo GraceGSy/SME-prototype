@@ -95,7 +95,7 @@ For each top-level entry, preserve `section_name` and `section_number` unchanged
 
 ## Output
 
-Save as a JSON array, named `sections-with-subsections-and-paragraph-content.json` if the input was `sections-with-subsections.json`, or `sections-with-subsections-and-paragraph-content-excluding-appendices.json` if the input was `sections-with-subsections-excluding-appendices.json` — same directory as the input unless the user specifies otherwise. Don't overwrite either input file.
+Return the canonical nested JSON array to the destination requested by the caller. The repository pipeline writes it as `<document>.content.json`; do not create an additional flat, question-only, or filename-specific variant. Don't overwrite a source manifest or source document.
 
 Briefly tell the user: how many top-level sections were processed, how many had subsections vs. none, total paragraph count (lead-in + all subsections + flat sections combined), and — prominently, not buried — the results of the Step 5 order-integrity check: how many sections (if any) had real leftover content after their last subsection that needed flagging rather than silent placement, and how many (if any) had a subsection-boundary column-scrambling risk. If zero such cases were found, say so explicitly too, so the user knows the check ran rather than was skipped.
 
@@ -174,6 +174,6 @@ Don't add extra fields anywhere in this structure — no `page_number`, no `word
 - **Restarting `paragraph_number` from a running count across the whole top-level section, instead of resetting to `0` independently for the lead-in and for each subsection.**
 - **Judging subsection boundaries from scratch instead of taking the `subsections` array as given input.** This skill locates *where in the body text* an already-identified subsection starts — it doesn't decide *whether* something is a subsection at all; that's `extract-top-and-second-level-section-names`'s job.
 - **Missing a subsection-boundary column-scrambling risk because it "only" affects paragraph attribution and doesn't look like a within-paragraph merge issue.** Flag it as an order-integrity concern per Step 5, not just as a routine Step 1 extraction note.
-- **Overwriting the input `sections-with-subsections(...).json` file, or using the same filename for both the with-appendices and without-appendices variants of this skill's own output.**
+- **Overwriting the source manifest/document or creating an extra output variant instead of returning the one requested canonical content file.**
 - **Adding extra fields to the strict schema**, including any kind of embedded warning/flag field — order-integrity findings belong in your response text, not the JSON.
 

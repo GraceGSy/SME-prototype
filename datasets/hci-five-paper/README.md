@@ -1,6 +1,7 @@
 # HCI five-paper dataset
 
-`manifest.yaml` defines the canonical insertion order. Each JSON file contains
+`manifest.yaml` defines the canonical insertion order. Each file is named
+`<paper_id>.json` and contains
 non-appendix top-level sections, optional subsections, paragraphs in reading
 order, and precomputed `question_this_text_answers` metadata.
 
