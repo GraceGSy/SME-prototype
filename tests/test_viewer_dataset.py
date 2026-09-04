@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from pipeline.viewer.package import package_dataset
+from pipeline.viewer.package import package_dataset, package_study
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -119,6 +119,34 @@ class ViewerDatasetTest(unittest.TestCase):
             self.assertEqual(descriptor["graph_replay_file"], "graph-replay.json")
             self.assertTrue((output / "public" / "data" / "graph-replay.json").is_file())
             self.assertTrue((output / "public" / "graph_replay.js").is_file())
+
+    def test_packages_participant_routed_study_datasets(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "source"
+            output = root / "site"
+            make_snapshot_dataset(source)
+
+            result = package_study({
+                "sherlock": {
+                    "dataset_dir": source,
+                    "participant_prefix": "SH",
+                    "label": "Sherlock Holmes Stories",
+                },
+                "hci": {
+                    "dataset_dir": source,
+                    "participant_prefix": "HC",
+                    "label": "HCI Academic Papers",
+                },
+            }, output, VIEWER_PATH)
+
+            study = result["study"]
+            self.assertEqual(study["datasets"]["SH"]["dataset_id"], "sherlock")
+            self.assertEqual(study["participant_number_digits"], 3)
+            self.assertTrue((output / "public" / "data" / "study.json").is_file())
+            self.assertTrue((output / "public" / "data" / "hci" / "dataset.json").is_file())
+            viewer = (output / "public" / "index.html").read_text(encoding="utf-8")
+            self.assertIn("participantGateForm", viewer)
 
 
 if __name__ == "__main__":

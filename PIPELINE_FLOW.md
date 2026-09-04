@@ -11,6 +11,7 @@ flowchart TD
     Source{"Configured source"}:::det
     HCI["Canonical HCI JSON"]:::artifact
     Story["Pinned Sherlock XHTML<br/>verified by SHA-256"]:::artifact
+    Legal["Split opinion or dissent PDF<br/>verified by SHA-256"]:::artifact
     Extract["Claude extraction Skill:<br/>source-marked sections, scenes, paragraphs"]:::llm
     Content["One canonical file:<br/>&lt;document&gt;.content.json"]:::artifact
     IDs["Validate schema and derive positional IDs<br/>s0001, s0001.ss0001, ..."]:::det
@@ -27,6 +28,7 @@ flowchart TD
     Config --> Source
     Source -->|json| HCI --> Content
     Source -->|xhtml| Story --> Extract --> Content
+    Source -->|pdf| Legal --> Extract
     Content --> IDs --> Question --> Questions --> View
     View -->|sections| Sections --> Forward
     View -->|sections_and_subsections| Nested --> Forward
@@ -90,6 +92,11 @@ pairwise document matching permits multiple targets, while an insertion-round
 graph judgment selects one existing node or none. They share document, ID,
 question, candidate, and field conventions without pretending those two
 different decisions are interchangeable.
+
+`python -m pipeline.study --dataset <id>` automates the useful handoff: it runs
+document questions, writes the ordered canonical manifest, invokes the graph,
+and packages the viewer. There is no manual file-selection step between those
+systems.
 
 ## Outbound calls
 

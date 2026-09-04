@@ -9,10 +9,11 @@ and the earlier proposition-graph SME.
 
 | Path | Purpose |
 |---|---|
-| `datasets/hci-five-paper/` | Five canonical, question-decorated HCI papers and their ordered manifest |
+| `datasets/` | Tracked raw and canonical content corpora for HCI, Sherlock, and legal documents |
 | `pipeline/document.py` | The sole nested document contract, validation, IDs, and candidate projection |
 | `pipeline/incremental_graph/` | Incremental section and paragraph graph |
 | `pipeline/skill_pipeline/` | YAML-driven extraction, question, and pairwise matching pipeline |
+| `pipeline/study.py` | One-command document-to-graph-to-viewer study build |
 | `pipeline/viewer/` | Paper Map, Question Groups, optional Graph Replay, and canonical snapshot packaging |
 | `pipeline/graph_sme/` | Earlier proposition-graph SME retained as a separate implementation |
 | `skills/` | Extraction, question, and matching Skills used by the retained pipelines |
@@ -28,6 +29,17 @@ The canonical document pipeline is documented separately in
 `pipeline/skill_pipeline/README.md`. It prepares Sherlock/HCI inputs, generates
 section and subsection questions, and runs either document-matching Skill. Both
 matching modes use the same IDs and output schema.
+
+Build a complete corpus graph and viewer without manually creating or handing
+off a graph manifest:
+
+```powershell
+python -m pipeline.study --dataset sherlock
+```
+
+After all four study datasets have completed, `--dataset all` packages them
+behind the participant-ID rule `^(SH|HC|LO|LD)[0-9]{3}$`: `SH` routes to
+Sherlock, `HC` to HCI, `LO` to legal opinions, and `LD` to legal dissents.
 
 ## Setup
 

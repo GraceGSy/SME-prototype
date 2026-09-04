@@ -209,25 +209,15 @@ def validate_dataset(
     }
 
 
-def package_dataset(
-    dataset_dir: Path,
-    output_dir: Path,
-    viewer_path: Path,
-    dataset_id: str,
-    label: str,
-) -> dict[str, Any]:
-    """Create a minimal static Vercel site containing one validated dataset."""
-
-    descriptor = validate_dataset(dataset_dir, dataset_id, label)
+def _require_empty_output(output_dir: Path) -> None:
     if output_dir.exists() and (
         not output_dir.is_dir() or any(output_dir.iterdir())
     ):
         raise DatasetValidationError(f"Output directory must be empty: {output_dir}")
 
-    public_dir = output_dir / "public"
-    data_dir = public_dir / "data"
+
+def _copy_viewer(viewer_path: Path, public_dir: Path) -> None:
     viewer_dir = public_dir / "viz"
-    data_dir.mkdir(parents=True, exist_ok=True)
     viewer_dir.mkdir(parents=True, exist_ok=True)
     shutil.copy2(viewer_path, public_dir / "index.html")
     shutil.copy2(viewer_path, viewer_dir / "tag_matches_viewer.html")
@@ -237,18 +227,33 @@ def package_dataset(
         shutil.copy2(source, public_dir / filename)
         shutil.copy2(source, viewer_dir / filename)
 
+
+def _copy_dataset(
+    dataset_dir: Path,
+    data_dir: Path,
+    descriptor: dict[str, Any],
+) -> None:
+    data_dir.mkdir(parents=True, exist_ok=True)
     manifest = _read_json(dataset_dir / "manifest.json")
-    for filename in COMMON_ROOT_FILES + tuple(entry["file"] for entry in manifest):
+    filenames = COMMON_ROOT_FILES + tuple(entry["file"] for entry in manifest)
+    for filename in filenames:
         shutil.copy2(dataset_dir / filename, data_dir / filename)
-
     shutil.copy2(dataset_dir / SNAPSHOT_FILE, data_dir / SNAPSHOT_FILE)
-
     if descriptor.get("graph_replay_file"):
-        shutil.copy2(dataset_dir / descriptor["graph_replay_file"], data_dir / descriptor["graph_replay_file"])
+        replay_file = descriptor["graph_replay_file"]
+        shutil.copy2(dataset_dir / replay_file, data_dir / replay_file)
+    (data_dir / "dataset.json").write_text(
+        json.dumps(descriptor, indent=2) + "\n",
+        encoding="utf-8",
+    )
 
-    (data_dir / "dataset.json").write_text(json.dumps(descriptor, indent=2) + "\n", encoding="utf-8")
+
+def _write_site_config(output_dir: Path, package_name: str) -> None:
     (output_dir / "package.json").write_text(
-        json.dumps({"name": f"question-atlas-{dataset_id}", "private": True, "version": "1.0.0"}, indent=2) + "\n",
+        json.dumps(
+            {"name": package_name, "private": True, "version": "1.0.0"},
+            indent=2,
+        ) + "\n",
         encoding="utf-8",
     )
     (output_dir / "vercel.json").write_text(
@@ -261,7 +266,71 @@ def package_dataset(
         }, indent=2) + "\n",
         encoding="utf-8",
     )
+
+
+def package_dataset(
+    dataset_dir: Path,
+    output_dir: Path,
+    viewer_path: Path,
+    dataset_id: str,
+    label: str,
+) -> dict[str, Any]:
+    """Create a minimal static Vercel site containing one validated dataset."""
+
+    dataset_dir = dataset_dir.resolve()
+    descriptor = validate_dataset(dataset_dir, dataset_id, label)
+    _require_empty_output(output_dir)
+
+    public_dir = output_dir / "public"
+    data_dir = public_dir / "data"
+    _copy_viewer(viewer_path, public_dir)
+    _copy_dataset(dataset_dir, data_dir, descriptor)
+    _write_site_config(output_dir, f"question-atlas-{dataset_id}")
     return descriptor
+
+
+def package_study(
+    datasets: dict[str, dict[str, Any]],
+    output_dir: Path,
+    viewer_path: Path,
+) -> dict[str, Any]:
+    """Package validated datasets behind a participant-ID routing gate."""
+
+    _require(bool(datasets), "A study package needs at least one dataset")
+    routes: dict[str, dict[str, str]] = {}
+    descriptors: dict[str, dict[str, Any]] = {}
+    prepared: list[tuple[str, Path, dict[str, Any]]] = []
+    for dataset_id, settings in datasets.items():
+        prefix = settings["participant_prefix"]
+        label = settings["label"]
+        _require(bool(re.fullmatch(r"[A-Z]{2}", prefix)), f"Invalid participant prefix: {prefix}")
+        _require(prefix not in routes, f"Duplicate participant prefix: {prefix}")
+        dataset_dir = Path(settings["dataset_dir"]).resolve()
+        descriptor = validate_dataset(dataset_dir, dataset_id, label)
+        routes[prefix] = {"dataset_id": dataset_id, "label": label}
+        descriptors[dataset_id] = descriptor
+        prepared.append((dataset_id, dataset_dir, descriptor))
+
+    _require_empty_output(output_dir)
+    public_dir = output_dir / "public"
+    root_data_dir = public_dir / "data"
+    _copy_viewer(viewer_path, public_dir)
+    for dataset_id, dataset_dir, descriptor in prepared:
+        _copy_dataset(dataset_dir, root_data_dir / dataset_id, descriptor)
+
+    study = {
+        "schema_version": 1,
+        "mode": "participant_routing",
+        "participant_number_digits": 3,
+        "datasets": routes,
+    }
+    root_data_dir.mkdir(parents=True, exist_ok=True)
+    (root_data_dir / "study.json").write_text(
+        json.dumps(study, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    _write_site_config(output_dir, "question-atlas-user-study")
+    return {"study": study, "datasets": descriptors}
 
 
 def main() -> None:
