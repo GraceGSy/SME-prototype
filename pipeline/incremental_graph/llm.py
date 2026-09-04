@@ -146,29 +146,6 @@ class AnthropicJudgmentProvider:
             if not isinstance(question, str) or not question.strip():
                 raise JudgmentError(f"{request.key} returned an empty question")
             return
-        if request.output_kind == "question_batch":
-            questions = value.get("questions")
-            if not isinstance(questions, list):
-                raise JudgmentError(f"{request.key} returned no question list")
-            returned_ids = []
-            for item in questions:
-                if not isinstance(item, dict):
-                    raise JudgmentError(f"{request.key} returned an invalid question item")
-                unit_id = item.get("unit_id")
-                question = item.get(QUESTION_FIELD)
-                if not isinstance(unit_id, str) or not unit_id:
-                    raise JudgmentError(f"{request.key} returned a question without a unit ID")
-                if not isinstance(question, str) or not question.strip():
-                    raise JudgmentError(f"{request.key} returned an empty question for {unit_id}")
-                returned_ids.append(unit_id)
-            if len(returned_ids) != len(set(returned_ids)):
-                raise JudgmentError(f"{request.key} returned duplicate question IDs")
-            if set(returned_ids) != set(request.expected_question_ids):
-                raise JudgmentError(
-                    f"{request.key} returned question IDs {sorted(returned_ids)}; expected "
-                    f"{sorted(request.expected_question_ids)}"
-                )
-            return
         if request.output_kind == "match_batch":
             matches = value.get("matches")
             if not isinstance(matches, list):

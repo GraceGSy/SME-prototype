@@ -95,6 +95,7 @@ class SkillPipelineTest(unittest.TestCase):
 
         stages = {stage["id"]: stage for stage in harness.config["stages"]}
         self.assertEqual(stages["extraction"]["max_tokens"], 32768)
+        self.assertEqual(stages["questions"]["max_tokens"], 256)
         extraction_policy = harness._call_policy(stages["extraction"])
         self.assertEqual(extraction_policy.effort, "low")
         self.assertEqual(extraction_policy.thinking, "disabled")

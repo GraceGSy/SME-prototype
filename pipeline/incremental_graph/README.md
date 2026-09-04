@@ -47,18 +47,18 @@ After all papers, one structural rerepresentation pass lets singleton nodes
 select eligible established nodes. Accepted selections merge node membership;
 same-paper conflicts remain provenance. No projected match edge is created.
 
-The paragraph-question stage sends every missing paragraph from one paper in
-one schema-validated Skill call. Paragraph matching uses one call per direction
-inside each exact finalized structural node. In paragraph-first mode, changed
-multi-member node questions are also generated together in one call.
-Reciprocal matches form node cores. A one-way paragraph may
+The paragraph-question stage sends every missing paragraph in its own
+schema-validated Skill call with a 256-token output ceiling. It sends the focus
+paragraph, its immediate neighbors, and document and parent-section metadata,
+not the full parent text. Multi-member node questions also use one bounded call
+per node. Paragraph matching remains batched with one call per direction inside
+each exact finalized structural node. Reciprocal matches form node cores. A one-way paragraph may
 join only when it is immediately adjacent to a reciprocal anchor; all other
 paragraphs remain singletons. Unabsorbed projected selections remain provenance
 and never become edges.
 
 The matching Skill returns `target_id` and `basis` for each source. The question
-Skill returns `question_this_text_answers` for each requested unit. Batch
-envelopes do not change those common fields. Questions remain metadata, not
+Skill returns `question_this_text_answers`. Questions remain metadata, not
 identity.
 
 ## Configure
@@ -68,9 +68,10 @@ execution order and names its Skill, prompt template, context policy, and
 handler. Its model block also fixes low-effort, non-thinking Skill-call limits,
 including input-token and prompt-size ceilings. Every judgment is one Messages
 API request; `pause_turn` fails rather than replaying model output in another
-request. The same block caps cumulative API responses and tokens per process so
-a large graph cannot silently launch an unbounded call set. Prompt and context
-files are adjacent under `prompts/` and `contexts/`.
+request. The same block caps cumulative API responses and tokens per process;
+its higher response allowance intentionally accommodates per-question calls for
+the five-story corpus. Prompt and context files are adjacent under `prompts/`
+and `contexts/`.
 The stable system and prompt instructions precede five-minute cache breakpoints;
 per-judgment context follows them.
 Changing those files changes judgment behavior without changing graph rules.
@@ -104,7 +105,9 @@ python -m pipeline.incremental_graph.cli retry `
 Each attempt is content-addressed by Skill, prompt, context, schema, model, and
 input evidence. Cached attempts bypass outbound APIs unless the selected stage
 is forced. The configured `max_tokens` value is used as written; the adapter no
-longer silently raises every graph judgment to a 4,096-token minimum.
+longer silently raises every graph judgment to a 4,096-token minimum. This is an
+output ceiling, not forced consumption; each attempt records actual input,
+cache, and output usage from Claude under `raw_response.usage`.
 
 ## Outputs
 

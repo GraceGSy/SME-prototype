@@ -64,7 +64,7 @@ flowchart TD
     Rerepresent["One singleton-to-established<br/>matching pass"]:::llm
     Merge["Apply eligible merges in stable order;<br/>retain rejected selections as provenance"]:::det
     SharedRoot["Assign each one-section document<br/>to one shared corpus root"]:::det
-    ParagraphQuestions["Generate every paragraph question<br/>in one call per paper"]:::llm
+    ParagraphQuestions["Generate each paragraph question<br/>in one bounded call"]:::llm
     Paragraphs["Two directional batched calls per<br/>exact structural node"]:::llm
     ParagraphRules["Apply reciprocal and bounded<br/>adjacent fan-in rules"]:::det
     Export["Deterministically export final_snapshot,<br/>paper files, correspondences, replay"]:::det
@@ -89,6 +89,10 @@ return `question_this_text_answers`; match judgments return `target_id` and
 `basis`. Python supplies complete evidence, constrains IDs, validates output,
 and controls all graph mutation. Match selections that are not accepted by a
 deterministic rule never become graph edges.
+
+Question generation uses one request per section, paragraph, or multi-member
+node. Its per-call output ceiling is configured independently from the larger
+batched matching ceilings.
 
 The pairwise match envelope is intentionally not fed into the incremental graph:
 pairwise document matching permits multiple targets, while an insertion-round

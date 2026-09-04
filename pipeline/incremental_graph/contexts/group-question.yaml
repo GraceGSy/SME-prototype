@@ -1,4 +1,5 @@
 include:
-  - groups
+  - scope
+  - group
 max_characters: 500000
 overflow: fail

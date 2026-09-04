@@ -136,12 +136,11 @@ class JudgmentRequest(BaseModel):
     key: str
     paper_index: int
     stage_id: str
-    output_kind: Literal["question", "question_batch", "match", "match_batch"]
+    output_kind: Literal["question", "match", "match_batch"]
     prompt_ref: str
     context_ref: str
     context: dict[str, Any]
     allowed_match_ids: list[str] = Field(default_factory=list)
-    expected_question_ids: list[str] = Field(default_factory=list)
     expected_match_source_ids: list[str] = Field(default_factory=list)
     skill_ref: str | None = None
     max_tokens: int | None = Field(default=None, gt=0)

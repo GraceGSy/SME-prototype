@@ -1,5 +1,7 @@
 include:
   - paper
-  - paragraphs
-max_characters: 500000
+  - previous_paragraph
+  - paragraph
+  - next_paragraph
+max_characters: 50000
 overflow: fail

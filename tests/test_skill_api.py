@@ -3,7 +3,6 @@ from types import SimpleNamespace
 import tempfile
 import unittest
 
-from pipeline.document import QUESTION_FIELD
 from pipeline.incremental_graph.llm import AnthropicJudgmentProvider, JudgmentError
 from pipeline.incremental_graph.models import JudgmentRequest
 from pipeline.incremental_graph.skill_api import (
@@ -101,23 +100,6 @@ SCHEMA = {
 
 
 class SkillApiTest(unittest.TestCase):
-    def test_batch_question_validation_requires_exact_id_coverage(self) -> None:
-        request = JudgmentRequest(
-            key="paper:questions:batch",
-            paper_index=1,
-            stage_id="questions",
-            output_kind="question_batch",
-            prompt_ref="questions/v1",
-            context_ref="questions",
-            context={},
-            expected_question_ids=["p1", "p2"],
-        )
-
-        with self.assertRaisesRegex(JudgmentError, "expected"):
-            AnthropicJudgmentProvider._validate(request, {
-                "questions": [{"unit_id": "p1", QUESTION_FIELD: "What happened?"}],
-            })
-
     def test_batch_match_validation_rejects_unknown_target(self) -> None:
         request = JudgmentRequest(
             key="paper:matching:batch",

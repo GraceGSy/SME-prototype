@@ -45,16 +45,6 @@ class ScriptedJudge:
         if request.output_kind == "question":
             focus = request.key.rsplit(":", 1)[-1]
             normalized = {QUESTION_FIELD: f"What does {focus} address?"}
-        elif request.output_kind == "question_batch":
-            normalized = {
-                "questions": [
-                    {
-                        "unit_id": unit_id,
-                        QUESTION_FIELD: f"What does {unit_id} address?",
-                    }
-                    for unit_id in request.expected_question_ids
-                ]
-            }
         elif request.output_kind == "match_batch":
             prefix = ":".join(request.key.split(":")[:3])
             normalized = {
@@ -247,7 +237,17 @@ class IncrementalGraphTest(unittest.TestCase):
             request for request in judge.requests if request.stage_id == "paragraph_questions"
         ]
         self.assertEqual(len(paragraph_questions), 2)
-        self.assertTrue(all(request.output_kind == "question_batch" for request in paragraph_questions))
+        self.assertTrue(all(request.output_kind == "question" for request in paragraph_questions))
+        self.assertTrue(all(request.max_tokens == 256 for request in paragraph_questions))
+        expected_context = {
+            "paper",
+            "previous_paragraph",
+            "paragraph",
+            "next_paragraph",
+        }
+        self.assertTrue(
+            all(set(request.context) == expected_context for request in paragraph_questions)
+        )
         paragraph_matches = [
             request
             for request in judge.requests
@@ -261,8 +261,60 @@ class IncrementalGraphTest(unittest.TestCase):
             if request.stage_id == "paragraph_group_questions"
         ]
         self.assertEqual(len(paragraph_group_questions), 1)
-        self.assertEqual(paragraph_group_questions[0].output_kind, "question_batch")
+        self.assertEqual(paragraph_group_questions[0].output_kind, "question")
+        self.assertEqual(paragraph_group_questions[0].max_tokens, 256)
         self.assertEqual(summary["max_granularity"], "paragraph")
+
+    def test_paragraph_questions_use_one_bounded_request_per_paragraph(self) -> None:
+        document = Paper(
+            paper_id="p1",
+            title="P1",
+            sections=[Section(
+                id="s1",
+                label="Whole document",
+                text="First paragraph.\n\nSecond paragraph.",
+                paragraphs=[
+                    Paragraph(id="a1", text="First paragraph."),
+                    Paragraph(id="a2", text="Second paragraph."),
+                ],
+            )],
+        )
+        judge = ScriptedJudge({})
+
+        with tempfile.TemporaryDirectory() as directory:
+            runner = IncrementalGraphRunner(
+                load_pipeline_config(CONFIG_PATH),
+                judge,
+                Path(directory) / "revision",
+                max_granularity="paragraph",
+            )
+            runner.run([document])
+
+        requests = [
+            request
+            for request in judge.requests
+            if request.stage_id == "paragraph_questions"
+        ]
+        self.assertEqual(
+            [request.key for request in requests],
+            [
+                "p1:paragraph_questions:a1",
+                "p1:paragraph_questions:a2",
+            ],
+        )
+        self.assertTrue(all(request.output_kind == "question" for request in requests))
+        self.assertTrue(all(request.max_tokens == 256 for request in requests))
+        self.assertTrue(all("section" not in request.context for request in requests))
+        self.assertIsNone(requests[0].context["previous_paragraph"])
+        self.assertEqual(
+            requests[0].context["next_paragraph"]["full_text"],
+            "Second paragraph.",
+        )
+        self.assertEqual(
+            requests[1].context["previous_paragraph"]["full_text"],
+            "First paragraph.",
+        )
+        self.assertIsNone(requests[1].context["next_paragraph"])
 
     def test_incremental_reconciliation_preserves_ignored_projection_as_provenance(self) -> None:
         group_a = stable_id("section-group", "root", "p1", "a")
@@ -665,13 +717,11 @@ class IncrementalGraphTest(unittest.TestCase):
             regenerated[0].key,
             f"p3:section_rerepresentation_questions:{target_id}",
         )
-        regenerated_group = next(
-            group
-            for group in regenerated[0].context["groups"]
-            if group["unit_id"] == target_id
-        )
         self.assertEqual(
-            {member["section_id"] for member in regenerated_group["group"]["members"]},
+            {
+                member["section_id"]
+                for member in regenerated[0].context["group"]["members"]
+            },
             {"shared1", "shared2", "sub3"},
         )
         paragraph_request = next(
@@ -883,13 +933,8 @@ class IncrementalGraphTest(unittest.TestCase):
             request for request in runner.judge.requests
             if request.key == f"p2:paragraph_group_questions:{paragraph_group}"
         )
-        question_group = next(
-            group
-            for group in group_question.context["groups"]
-            if group["unit_id"] == paragraph_group
-        )
         question_member_ids = {
-            member["paragraph_id"] for member in question_group["group"]["members"]
+            member["paragraph_id"] for member in group_question.context["group"]["members"]
         }
         self.assertEqual(
             question_member_ids,

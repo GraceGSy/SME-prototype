@@ -31,7 +31,7 @@ stages:
   - id: questions
     kind: questions
     skill: questions
-    max_tokens: 512
+    max_tokens: 256
     execution:
       max_input_tokens: 100000
       max_prompt_characters: 150000

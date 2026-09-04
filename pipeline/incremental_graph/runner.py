@@ -18,6 +18,7 @@ from .models import (
     MatchDecision,
     MatchDirection,
     Paper,
+    Paragraph,
     Phase,
     PipelineConfig,
     StageConfig,
@@ -340,43 +341,45 @@ class IncrementalGraphRunner:
             group_ids=rerepresentation["changed_group_ids"],
         )
 
-    def _generate_paragraph_questions(self, stage: StageConfig, insertion: InsertionState) -> list[dict[str, str]]:
+    def _generate_paragraph_questions(
+        self, stage: StageConfig, insertion: InsertionState
+    ) -> list[dict[str, str]]:
         self._require_prompt(stage)
-        results = {}
-        ordered_ids = []
-        missing = []
+        results = []
         for section in insertion.paper.sections:
-            for paragraph in section.paragraphs:
-                ordered_ids.append(paragraph.id)
+            for index, paragraph in enumerate(section.paragraphs):
                 if paragraph.question:
-                    results[paragraph.id] = {
+                    results.append({
                         "paragraph_id": paragraph.id,
                         "question": paragraph.question,
                         "source": "input",
-                    }
+                    })
                     continue
-                missing.append(self._paragraph_context(insertion.paper.paper_id, paragraph.id))
-
-        if not missing:
-            return [results[paragraph_id] for paragraph_id in ordered_ids]
-        questions, attempt_id = self._question_batch(
-            stage,
-            insertion,
-            {"paper": self._paper_context(insertion.paper), "paragraphs": missing},
-            [paragraph["paragraph_id"] for paragraph in missing],
-        )
-        for section in insertion.paper.sections:
-            for paragraph in section.paragraphs:
-                if paragraph.id not in questions:
-                    continue
-                paragraph.question = questions[paragraph.id]
-                results[paragraph.id] = {
+                context = {
+                    "paper": self._paper_context(insertion.paper),
+                    "previous_paragraph": self._paragraph_evidence(
+                        section.paragraphs[index - 1] if index else None
+                    ),
+                    "paragraph": self._paragraph_context(
+                        insertion.paper.paper_id, paragraph.id
+                    ),
+                    "next_paragraph": self._paragraph_evidence(
+                        section.paragraphs[index + 1]
+                        if index + 1 < len(section.paragraphs)
+                        else None
+                    ),
+                }
+                question, attempt_id = self._question(
+                    stage, insertion, paragraph.id, context
+                )
+                paragraph.question = question
+                results.append({
                     "paragraph_id": paragraph.id,
-                    "question": paragraph.question,
+                    "question": question,
                     "source": "model",
                     "attempt_id": attempt_id,
-                }
-        return [results[paragraph_id] for paragraph_id in ordered_ids]
+                })
+        return results
 
     def _match_paragraphs(self, stage: StageConfig, insertion: InsertionState) -> dict[str, Any]:
         if not insertion.section_assignments:
@@ -442,36 +445,6 @@ class IncrementalGraphRunner:
         result = self.judge.judge(request)
         attempt_id = self.journal.attempt(request, result)
         return str(result.normalized[QUESTION_FIELD]).strip(), attempt_id
-
-    def _question_batch(
-        self,
-        stage: StageConfig,
-        insertion: InsertionState,
-        context: dict[str, Any],
-        expected_ids: list[str],
-        key_id: str = "batch",
-    ) -> tuple[dict[str, str], str]:
-        request = JudgmentRequest(
-            key=f"{insertion.paper.paper_id}:{stage.id}:{key_id}",
-            paper_index=insertion.paper_index,
-            stage_id=stage.id,
-            output_kind="question_batch",
-            prompt_ref=stage.prompt or "",
-            context_ref=stage.context or "",
-            context=context,
-            expected_question_ids=expected_ids,
-            skill_ref=stage.skill,
-            max_tokens=stage.max_tokens,
-            max_input_tokens=stage.max_input_tokens,
-            force=self._forced(stage, insertion),
-        )
-        result = self.judge.judge(request)
-        attempt_id = self.journal.attempt(request, result)
-        questions = {
-            item["unit_id"]: str(item[QUESTION_FIELD]).strip()
-            for item in result.normalized["questions"]
-        }
-        return questions, attempt_id
 
     def _match_units(
         self,
@@ -888,8 +861,7 @@ class IncrementalGraphRunner:
         group_ids: list[str] | None = None,
     ) -> list[dict[str, str]]:
         self._require_prompt(stage)
-        results = {}
-        pending = []
+        results = []
         selected_ids = (
             [group_id for group_id, _ in self.question_graph.nodes(level)]
             if group_ids is None
@@ -906,49 +878,32 @@ class IncrementalGraphRunner:
                     None,
                     source="member_question",
                 )
-                results[group_id] = {
+                results.append({
                     "group_id": group_id,
                     "question": question,
                     "source": "member_question",
-                }
+                })
                 continue
             group.pop("generated_question_metadata", None)
-            pending.append({
-                "unit_id": group_id,
+            context = {
                 "scope": self._scope_context(
                     level, self.question_graph.graph.nodes[group_id].get("parent_id")
                 ),
                 "group": group,
-            })
-        if pending:
-            batches = (
-                [pending]
-                if self.max_granularity == "paragraph" and level == "paragraph"
-                else [[group] for group in pending]
+            }
+            question, attempt_id = self._question(
+                stage, insertion, group_id, context
             )
-            for group_batch in batches:
-                expected_ids = [group["unit_id"] for group in group_batch]
-                questions, attempt_id = self._question_batch(
-                    stage,
-                    insertion,
-                    {"groups": group_batch},
-                    expected_ids,
-                    key_id="batch" if len(group_batch) > 1 else expected_ids[0],
-                )
-                for group_id, question in questions.items():
-                    self.question_graph.set_question(
-                        group_id,
-                        question,
-                        insertion.paper_index,
-                        attempt_id,
-                    )
-                    results[group_id] = {
-                        "group_id": group_id,
-                        "question": question,
-                        "source": "model",
-                        "attempt_id": attempt_id,
-                    }
-        return [results[group_id] for group_id in selected_ids]
+            self.question_graph.set_question(
+                group_id, question, insertion.paper_index, attempt_id
+            )
+            results.append({
+                "group_id": group_id,
+                "question": question,
+                "source": "model",
+                "attempt_id": attempt_id,
+            })
+        return results
 
     def _group_context(self, group_id: str) -> dict[str, Any]:
         data = self.question_graph.graph.nodes[group_id]
@@ -1004,6 +959,17 @@ class IncrementalGraphRunner:
     @staticmethod
     def _paper_context(paper: Paper) -> dict[str, str]:
         return {"paper_id": paper.paper_id, "title": paper.title}
+
+    @staticmethod
+    def _paragraph_evidence(paragraph: Paragraph | None) -> dict[str, Any] | None:
+        if paragraph is None:
+            return None
+        return {
+            "paragraph_id": paragraph.id,
+            "paragraph_label": paragraph.label,
+            "ordinal": paragraph.ordinal,
+            "full_text": paragraph.text,
+        }
 
     def _paragraph_context(self, paper_id: str, paragraph_id: str) -> dict[str, Any]:
         section, paragraph = self.paragraph_lookup[(paper_id, paragraph_id)]

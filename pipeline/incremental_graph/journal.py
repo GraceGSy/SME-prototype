@@ -50,7 +50,6 @@ class RevisionJournal:
             "context_ref": request.context_ref,
             "skill_ref": request.skill_ref,
             "candidate_ids": request.allowed_match_ids,
-            "expected_question_ids": request.expected_question_ids,
             "expected_match_source_ids": request.expected_match_source_ids,
             "max_tokens": request.max_tokens,
             "max_input_tokens": request.max_input_tokens,
