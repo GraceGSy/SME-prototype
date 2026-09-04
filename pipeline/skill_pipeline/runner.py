@@ -7,6 +7,7 @@ import hashlib
 import json
 import re
 import urllib.request
+from dataclasses import replace
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Iterable
@@ -202,6 +203,31 @@ def validate_match_records(
     if require_coverage and set(targets_by_source) != source_ids:
         missing = sorted(source_ids - set(targets_by_source))
         raise ValueError(f"Matching omitted {len(missing)} source candidates: {missing}")
+
+
+def combine_duplicate_match_records(
+    matches: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], int]:
+    """Combine repeated evidence for the same source-target match."""
+
+    combined: list[dict[str, Any]] = []
+    by_pair: dict[tuple[str, str | None], dict[str, Any]] = {}
+    bases_by_pair: dict[tuple[str, str | None], set[str]] = {}
+    duplicate_count = 0
+    for match in matches:
+        pair = (match["source_id"], match["target_id"])
+        existing = by_pair.get(pair)
+        if existing is None:
+            record = dict(match)
+            combined.append(record)
+            by_pair[pair] = record
+            bases_by_pair[pair] = {match["basis"]}
+            continue
+        duplicate_count += 1
+        if match["basis"] not in bases_by_pair[pair]:
+            existing["basis"] = f"{existing['basis']}\n\n{match['basis']}"
+            bases_by_pair[pair].add(match["basis"])
+    return combined, duplicate_count
 
 
 def batch_candidates(
@@ -829,7 +855,16 @@ class Harness:
             )
             raise
 
-        matches = result.value["matches"]
+        matches, duplicate_count = combine_duplicate_match_records(result.value["matches"])
+        if duplicate_count:
+            result = replace(
+                result,
+                value={"matches": matches},
+                transport_notes=(
+                    *result.transport_notes,
+                    f"combined {duplicate_count} duplicate source-target records",
+                ),
+            )
         try:
             validate_match_records(matches, source_ids, target_ids)
         except ValueError as error:

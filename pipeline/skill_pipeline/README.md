@@ -113,6 +113,8 @@ workspace spend limit in the Anthropic Console as the account-level backstop.
 Matching validation also makes one attempt per batch. Invalid structured output
 is preserved for inspection and fails the command instead of triggering another
 charged call with the same prompt.
+If one response repeats the same source-target pair, the harness deterministically
+keeps one match and joins its distinct evidence strings in response order.
 
 A failed command can be rerun from the last validated checkpoint without
 duplicating completed calls. Never raise a limit or use `--force` merely because

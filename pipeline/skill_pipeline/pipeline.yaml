@@ -48,7 +48,8 @@ stages:
     view: sections_and_subsections
     max_tokens: 2048
     execution:
-      max_input_tokens: 200000
+      # Whole-section evidence intentionally overlaps subsection evidence.
+      max_input_tokens: 250000
     source_batch_size: 10
 
 skills:

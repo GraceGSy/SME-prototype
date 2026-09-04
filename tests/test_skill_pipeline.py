@@ -20,6 +20,7 @@ from pipeline.skill_pipeline.runner import (
     Harness,
     _match_schema,
     batch_candidates,
+    combine_duplicate_match_records,
     validate_match_records,
     validate_text_completion,
 )
@@ -212,6 +213,20 @@ class SkillPipelineTest(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "Unknown source candidate"):
             validate_match_records(matches, {"s0001"}, {"s0002"})
+
+    def test_duplicate_match_evidence_is_combined_without_loss(self) -> None:
+        matches, duplicate_count = combine_duplicate_match_records([
+            {"source_id": "s0001", "target_id": "s0002", "basis": "First basis."},
+            {"source_id": "s0001", "target_id": "s0002", "basis": "Second basis."},
+            {"source_id": "s0001", "target_id": "s0002", "basis": "Second basis."},
+        ])
+
+        self.assertEqual(duplicate_count, 2)
+        self.assertEqual(matches, [{
+            "source_id": "s0001",
+            "target_id": "s0002",
+            "basis": "First basis.\n\nSecond basis.",
+        }])
 
     def test_match_contract_rejects_null_plus_target(self) -> None:
         matches = [
