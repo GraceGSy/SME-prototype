@@ -9,11 +9,11 @@ interface. Green steps are deterministic. Orange steps are model judgments.
 flowchart TD
     Config["pipeline.yaml: ordered stages, Skills,<br/>datasets, files, views, model"]:::det
     Source{"Configured source"}:::det
-    HCI["Canonical HCI JSON"]:::artifact
+    HCI["HCI paper PDFs"]:::artifact
     Story["Pinned Sherlock XHTML<br/>verified by SHA-256"]:::artifact
     Legal["Split opinion or dissent PDF<br/>verified by SHA-256"]:::artifact
     Extract["Claude extraction Skill:<br/>source-marked sections, scenes, paragraphs"]:::llm
-    Content["One canonical file:<br/>&lt;document&gt;.content.json"]:::artifact
+    Content["Extracted<br/>document.content.json"]:::artifact
     IDs["Validate schema and derive positional IDs<br/>s0001, s0001.ss0001, ..."]:::det
     Question["Claude question Skill once per<br/>non-empty section/subsection"]:::llm
     Questions["Same document shape plus one field:<br/>question_this_text_answers"]:::artifact
@@ -23,25 +23,24 @@ flowchart TD
     Forward["Claude matching Skill: A to B<br/>source_id, target_id, basis"]:::llm
     Reverse["Claude matching Skill: B to A<br/>same schema"]:::llm
     Matches["One checkpointed match envelope<br/>containing both directions"]:::artifact
-    Audit["runs.jsonl, errors.jsonl,<br/>Skill/source/output hashes"]:::artifact
 
     Config --> Source
-    Source -->|json| HCI --> Content
-    Source -->|xhtml| Story --> Extract --> Content
+    Source -->|pdf| HCI --> Extract
+    Source -->|xhtml| Story --> Extract
     Source -->|pdf| Legal --> Extract
+    Extract --> Content
     Content --> IDs --> Question --> Questions --> View
     View -->|sections| Sections --> Forward
     View -->|sections_and_subsections| Nested --> Forward
     Forward --> Reverse --> Matches
-    Extract -.-> Audit
-    Question -.-> Audit
-    Forward -.-> Audit
-    Reverse -.-> Audit
-
     classDef det fill:#e8f5e9,stroke:#2e7d32,color:#163c19;
     classDef llm fill:#fff1dc,stroke:#c46b08,color:#623704;
     classDef artifact fill:#e8eefb,stroke:#3f5f9f,color:#1f3154;
 ```
+
+The harness also writes `runs.jsonl`, `errors.jsonl`, Skill/source/output
+hashes, and stage checkpoints for audit and retry. These records do not alter
+the pipeline flow.
 
 Both matching stages use the same candidate and output contracts. They differ
 only in candidate inclusion and the configured Skill. Candidate views exist in
@@ -61,25 +60,19 @@ flowchart TD
     Merge["Apply eligible merges in stable order;<br/>retain rejected selections as provenance"]:::det
     Paragraphs["Match paragraphs only inside each<br/>exact finalized structural node"]:::llm
     ParagraphRules["Apply reciprocal and bounded<br/>adjacent fan-in rules"]:::det
-    Events["Append attempts and graph events;<br/>checkpoint every stage"]:::artifact
     Export["Deterministically export final_snapshot,<br/>paper files, correspondences, replay"]:::det
     Package["Validate and package one<br/>viewer contract"]:::det
     UI["Question Groups | Paper Map<br/>Graph Replay only if replay exists"]:::artifact
 
     Manifest --> Load --> Structural --> Reconcile --> Contains --> NodeQuestions
     NodeQuestions --> Rerepresent --> Merge --> Paragraphs --> ParagraphRules --> Export --> Package --> UI
-    Structural -.-> Events
-    Reconcile -.-> Events
-    NodeQuestions -.-> Events
-    Rerepresent -.-> Events
-    Merge -.-> Events
-    Paragraphs -.-> Events
-    ParagraphRules -.-> Events
-
     classDef det fill:#e8f5e9,stroke:#2e7d32,color:#163c19;
     classDef llm fill:#fff1dc,stroke:#c46b08,color:#623704;
     classDef artifact fill:#e8eefb,stroke:#3f5f9f,color:#1f3154;
 ```
+
+The graph runner also appends match attempts and graph events and checkpoints
+every stage for audit and retry. These records do not alter graph construction.
 
 Every orange graph step uses a configured Claude Skill. Question judgments
 return `question_this_text_answers`; match judgments return `target_id` and
