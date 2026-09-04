@@ -1,0 +1,366 @@
+OPINION
+
+THACKER, Circuit Judge:
+Stephen Porter (“Appellant”) filed suit alleging that he suffered adverse
+employment action in retaliation for unpopular protected speech. The district court
+dismissed Appellant’s complaint. Upon review, we affirm the dismissal because we find
+that Appellant has failed to allege a causal connection between the only communication
+that is arguably protected under the First Amendment and the alleged adverse employment
+action.
+I.
+A.
+Appellant has been a tenured professor at North Carolina State University
+(“NCSU”) since 2011. He teaches courses in graduate-level statistics and research methods
+in the Department of Educational Leadership, Policy, and Human Development (“the
+Department”), within the College of Education. At the time Appellant was hired, he joined
+the Department’s Higher Education Program Area (“HEPA”). The HEPA is one of several
+degree programs within the Department. The Department offers both a master’s degree
+and a doctoral (“Ph.D.”) program. There are no undergraduate students in the Department.
+Appellant has limited involvement with the master’s degree program; no master’s degree
+advisees; and does not attend events related solely to the master’s degree. Instead,
+Appellant alleges that, prior to suffering adverse employment action, he spent considerable
+time on Higher Education Ph.D. activities, including advising HEPA Ph.D. students;
+serving on HEPA Ph.D. committees; and actively recruiting prospective Ph.D. students.
+
+In 2015, the College of Education created a Scholar Leader Ph.D. program. As part
+of this change, each Ph.D. program within the College of Education became part of the
+Ph.D. Program Area of Study, which is distinct from a Program Area. Appellant alleges
+that the change created, “in theory . . . two separate tracks, with [m]aster’s degrees and
+certificates located within the . . . Program Areas, and all Ph.D. programs located within
+the new Ph.D. Program Areas of Study.” J.A. 11.1 But Appellant alleges that, in practice,
+the new distinctions were ignored and both master’s degree and Ph.D. program matters
+continued to fall within the parameters of the original Program Areas.
+B.
+Appellant’s Complaint alleges that he has been outspoken in recent years
+concerning the focus on “so-called ‘social justice’ affecting academia in general” and “his
+concern that the field of higher education study is abandoning rigorous methodological
+analysis in favor of results-driven work aimed at furthering a highly dogmatic view of
+‘diversity,’ ‘equity,’ and ‘inclusion.’” J.A. 11. In this vein, Appellant identifies three
+statements or communications he made between 2016 and 2018 which, in his view, are
+protected speech. According to Appellant, he was eventually subject to adverse
+employment actions in retaliation for these three communications. Appellant brings his
+claims against the Board of Trustees of NCSU; the Chancellor of NCSU; Mary Ann
+Danowitz, former Dean of the College of Education; John K. Lee, current head of the
+1 Citations to the J.A. refer to the Joint Appendix filed by the parties in this appeal.
+
+Department; Penny A. Pasque, former head of the Department; and Joy Gaston Gayles,
+Professor in the Department and Program Coordinator (collectively, “Appellees”).
+The first communication occurred in spring 2016. Appellant attended a Department
+meeting regarding a proposal to add a question about diversity to student course
+evaluations. Appellant expressed his concern about the proposed question (the “survey
+question incident”) and suggested that the proposal had been made without proper research.
+According to Appellant, the discussion “was amicable in tone, although perhaps
+embarrassing” to the presenter. J.A. 12. In May 2017, NCSU’s Office of Institutional
+Equity and Diversity issued a report which referenced the survey question incident and
+labeled Appellant as a “bully.” Id. Appellee Pasque became head of the Department at the
+beginning of 2017–2018 academic year and discussed the report with Appellant during a
+meeting in November 2017. In January 2018, Appellee Pasque emailed Appellant to
+restate her concerns regarding “bullying” and invited Appellant to respond. Appellee
+Pasque’s email was later included in Appellant’s personnel file without his knowledge.
+The second communication relates to an April 2018 article published in the journal
+Inside Higher Ed. See Colleen Flaherty, Questions About Job Candidate’s Past, Inside
+Higher Ed (Apr. 11, 2018), https://perma.cc/U22C-
+NKKB; https://www.insidehighered.com/news/2018/04/11/anonymous-faculty-members-
+nc-state-object-job-candidate-who-was-ousted-ohio-state (last visited July 5, 2023). The
+article criticized a faculty search committee at NCSU chaired by Alyssa Rockenbach, one
+of Appellant’s colleagues in the Department. The day the article was published, Appellant
+sent an email (the “faculty hiring email”) to all of the Department faculty. The email linked
+
+the article and said, “Did you all see this? . . . This kind of publicity will make sure we
+rocket to number 1 in the rankings. Keep up the good work, Alyssa!” Id. at 15.
+Appellee Pasque met with Appellant about the faculty hiring email the next week
+and asked him about his intent in sending the email. Appellant alleges he was concerned
+that Rockenbach had “cut corners” in vetting a candidate “out of a desire to hire a Black
+scholar whose work focused on racial issues.” J.A. 14. Appellant later learned that
+Appellee Gayles had forwarded the faculty hiring email to Appellee Pasque and expressed
+her dissatisfaction. Appellant also learned that Rockenbach had forwarded the faculty
+hiring email to Appellees Pasque and Danowitz, as well as to the Associate Vice Provost
+for Equal Opportunity and Equity. During a follow up meeting with Appellee Pasque on
+April 24, 2018, Appellant alleges Appellee Pasque told him “she had spoken with the
+administration to find ways to exclude [Appellant] from critical aspects of his job.
+Specifically, she inquired whether [Appellant] had to remain a member of the [HEPA] or
+whether he could be a member of the department without a Program Area.” J.A. 15.
+Nonetheless, Appellant received a good annual evaluation that year, albeit with a notation
+that he, and all faculty, were expected to be collegial.
+The final communication occurred on September 3, 2018, when Appellant
+published a post on his personal blog entitled “ASHE Has Become a Woke Joke.”2 J.A.
+17. Appellant’s “Woke Joke” post mentioned research his colleague had gathered about
+the topics for discussion at an upcoming ASHE conference. According to Appellant, this
+2 “ASHE” refers to the Association for the Study of Higher Education.
+
+research demonstrated that the focus of the conference had shifted from general, post-
+secondary research to social justice. Appellant’s post concluded with his commentary, “I
+prefer conferences where 1) the attendees and presenters are smarter than me and 2) I
+constantly learn new things. That’s why I stopped attending ASHE several years ago . . .”
+Id. at 38. Appellant’s blog post generated controversy on social media.
+As the 2018–2019 academic year began, Appellee Danowitz met with the HEPA
+faculty about potentially hiring a new faculty member. Instead of discussing the candidate
+as planned at a HEPA faculty meeting, Appellee Pasque invited Appellant to a virtual
+meeting on October 15, 2018, with herself, Appellee Gayles, and two others. In that
+meeting, Appellee Pasque proposed that Appellant leave the HEPA and join a new program
+area, the Higher Education Policy Program Area, where Appellee Pasque, Appellant, and
+the new hire would be the only faculty members. Taken together with their April 24, 2018
+meeting, Appellant alleges this was the second time in six months that Appellee Pasque
+had suggested he leave the HEPA. Appellant asserts that the meeting then focused on his
+refusal to leave the HEPA and the impact it had on [the Department’s] ability to bring in
+the new faculty member. “In frustration at this apparent ambush, [Appellant] said ‘Give
+me a f***ing break, folks. I was the one who said [the potential hire] should come. And
+now I’m the bad guy because I don’t want to leave Higher Ed for a non-existent program
+area.’” J.A. 19–20. Appellant received a letter from Appellee Pasque on October 18, 2018,
+chastising him for his use of profanity and expression of frustration at the meeting.
+On November 7, 2018, Appellant received another letter from Appellee Pasque
+expressing concerns about Appellant’s collegiality. The letter highlighted three things: (1)
+
+the 2017 report that referenced the survey question incident and labeled Appellant a bully;
+(2) the faculty hiring email; and (3) Appellant’s use of profanity in response to being asked
+to leave the HEPA. The letter made no mention of Appellant’s “Woke Joke” blog post.
+Rather, Appellee Pasque’s letter indicated that if Appellant “fail[s] to repair the
+relationships among faculty in the Higher Education program” or displays a “lack of
+collegiality” again, Appellant would be removed from the HEPA. J.A. 20.
+One week later, Appellant learned that his “Woke Joke” blog post had been
+criticized by the president of ASHE during her keynote address at the ASHE conference.
+On November 19, 2018, Appellant received an email from Appellee Pasque informing him
+that students in the Department “were having ‘strong reactions’ to the keynote and that the
+department ‘need[ed] to pay attention to’ them.” J.A. 21. Appellee Pasque proposed a
+“community conversation about ASHE” where Appellant would be expected to address
+students’ concerns about his blog. Id. The purpose of the meeting would be “to help
+graduate students reconcile the ‘great teacher’ they knew from NCSU with what they had
+heard about [Appellant] from the president of ASHE.” Id. According to Appellant,
+Appellee Pasque eventually stated that “only two out of about 60 doctoral students spoke
+with her about the matter.” Id. On February 19, 2019, Appellant met with Appellee Pasque
+to discuss the issue further. During that meeting, Appellee Pasque “repeatedly expressed
+her frustration that [Appellant] had not proactively addressed student and faculty concerns
+about ‘what happened at ASHE.’” Id. at 22. Appellee Pasque indicated that this failure to
+act was another example of Appellant’s lack of collegiality.
+
+On July 5, 2019, Appellant received his annual evaluation which notified him that
+Appellee Pasque had removed him from the HEPA because “the Higher Education faculty
+were not able to make concerted progress” on resolving issues within the Program Area.
+J.A. 23. And because being removed from the HEPA “reduced [Appellant’s] departmental
+workload,” Appellant was notified that he “would be expected to teach a fifth course.” Id.
+In July 2019, Appellee Pasque left NCSU and was replaced by Appellee Lee. After
+Appellant filed an internal grievance on August 28, 2019 regarding his removal from the
+HEPA and the added course requirement, Appellee Lee informed Appellant that he would
+not be required to teach the extra course. But the requirement was not removed from
+Appellant’s personnel file. Appellant alleges that, as a consequence of being removed from
+the HEPA, he was barred from attending the HEPA orientation for new Ph.D. students, the
+HEPA welcome cookout, and the HEPA retreat. Appellant also alleges that he was
+excluded from the Diagnostic Advisement Procedure (“DAP”) process for second-year
+Ph.D. students, including for his own advisees.3 According to Appellant, this exclusion
+negatively impacted his ability to advise his students.
+In October 2019, Appellant met with Appellee Lee to discuss his ongoing concerns
+about his exclusion from HEPA Ph.D. activities. Appellant was told he could continue to
+advise Ph.D. students, but that because of his removal from the HEPA, he would likely not
+3 NCSU’s Higher Education Student Handbook provides that a student’s advisor
+should be one of two readers reviewing writing samples submitted by student candidates
+for the DAP and that after those reviews, there should be a meeting of all HEPA faculty
+members to discuss the students going through the DAP.
+
+be able to participate in meetings concerning the DAP process or in reviewing his students’
+dissertation prospectuses. Appellant expressed concern that students would not choose
+him as their advisor if he could not participate in the DAP process or review prospectuses.
+Appellee Lee responded that this was something Appellant would have to talk to students
+about. Appellant also voiced concern that “the process is being set up so that when I go up
+for my post-tenure review a couple of years from now, I’m not going to have any advisees.
+And then you and Dean Danowitz can say well, we need to strip [Appellant] of tenure and
+fire him because he’s not fulfilling his job duties.” J.A. 26. Appellee Lee replied, “Right,
+I hear you.” Id.
+In December 2019, Appellant was prohibited from attending the Ph.D. program
+admissions meeting, which is when advisees are assigned. And in Spring 2020, Appellant
+was barred from attending a Ph.D. student recruitment weekend. Finally, in October 2020,
+some faculty in the Department proposed a new Ph.D. Program Area of Study in Higher
+Education Access, Equity, and Justice. Appellant was not asked whether he would be
+interested in participating in this new Program Area of Study, and all faculty members with
+the exception of Appellant were invited to join. One faculty member who was invited
+declined to join the new Program Area of Study and remained in the Higher Education
+Program Area of Study with Appellant. Appellant and the other faculty member were
+informed in March 2021 that they could make offers of admission to doctoral candidates
+they wanted to advise but that those candidates would be encouraged to switch to the new
+Program Area of Study once they arrived.
+
+C.
+Appellant filed his Complaint on September 14, 2021. The Complaint alleges,
+pursuant to 42 U.S.C. § 1983, Appellant’s First and Fourteenth Amendment rights were
+violated when Appellees removed him from the HEPA, excluded him from HEPA events,
+and did not invite him to join the new Program Area of Study in Higher Education Access,
+Equity, and Justice. In Appellant’s view, the survey question incident, the faculty hiring
+email, and the “Woke Joke” blog post were all protected speech. He argues that Appellees
+unlawfully retaliated against him for those communications.
+Appellant claims that, with the creation of the new Program Area of Study in Higher
+Education Access, Equity, and Justice -- from which he was excluded -- he has been
+effectively siloed into a Program Area of Study that is drained of students and resources.
+According to Appellant, this has severely compromised his ability to perform critical job
+duties, such as advising Ph.D. students, leaving his future at NCSU in jeopardy. Appellees
+moved to dismiss the complaint in its entirety for lack of subject matter jurisdiction and
+failure to state a claim upon which relief can be granted pursuant to Rules 12(b)(1) and
+12(b)(6) of the Federal Rules of Civil Procedure.
+The district court held -- and Appellant does not dispute -- that his claims for
+damages against the Board of Trustees and the individual defendants in their official
+capacities are barred by sovereign and Eleventh Amendment immunity. The court also
+determined that Appellant’s “requests for injunctive relief regarding his permission to join
+the new Higher Education Opportunity, Equity, and Justice Program Area of Study and the
+removal of the requirement that he teach a fifth course are not prospective, and Ex Parte
+
+Young4 does not provide an exception to Eleventh Amendment immunity.” J.A. 47.
+Finally, the district court held that while Appellant’s request for reinstatement may state a
+claim for prospective injunctive relief, Appellant has failed to state a First Amendment
+retaliation claim. And, even if Appellant had plausibly alleged a First Amendment
+retaliation claim, the district court held that the individual defendants would be entitled to
+qualified immunity.
+II.
+We review a dismissal pursuant to Federal Rule of Civil Procedure 12(b)(1) de
+novo. See Balfour Beatty Infrastructure, Inc., v. Mayor and City Council of Baltimore, 855
+F.3d 247, 251 (4th Cir. 2017). Likewise, “[w]e review de novo a district court’s grant of
+dismissal under Federal Rule of Civil Procedure 12(b)(6).” Laurent-Workman v. Wormuth,
+54 F.4th 201, 210 (4th Cir. 2022). “To survive a motion to dismiss, a complaint must
+contain sufficient factual matter, accepted as true, to ‘state a claim to relief that is plausible
+on its face.’” Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009) (quoting Bell Atl. Corp. v.
+Twombly, 550 U.S. 544, 570 (2007)); see also Fed. R. Civ. P. 12(b)(6).
+We review “a qualified immunity-based grant of a motion to dismiss de novo.” Ray
+v. Roane, 948 F.3d 222, 226 (4th Cir. 2020). “To determine whether a complaint should
+survive a qualified immunity-based motion to dismiss, we exercise ‘sound discretion’ in
+following the two-prong inquiry set forth by the Supreme Court, analyzing (1) whether a
+4 Ex Parte Young, 209 U.S. 123 (1908).
+
+constitutional violation occurred and (2) whether the right violated was clearly
+established.” Id. (quoting Pearson v. Callahan, 555 U.S. 223, 236 (2009)).
+III.
+We begin with the district court’s determination that Appellant’s complaint failed
+to state a claim for First Amendment retaliation.
+“When a government employee claims that he was disciplined because of his
+speech, we use a three-prong test to determine if the employee’s rights under the First
+Amendment were violated.” Crouse v. Town of Moncks Corner, 848 F.3d 576, 583 (4th
+Cir. 2017) (citing McVey v. Stacy, 157 F.3d 271, 277 (4th Cir. 1998)). “The first prong
+asks whether the employee ‘was speaking as a citizen upon a matter of public concern or
+as an employee about a matter of personal interest.’” Id. The first prong can be further
+“divided into two inquiries: whether the speech was made as a citizen or pursuant to the
+employee’s duties, Garcetti [v. Ceballos, 547 U.S. 410, 421 (2006)], and whether the
+content of the speech addressed ‘a matter of interest to the community’ rather than
+‘complaints over internal office affairs.’ Connick [v. Myers, 461 U.S. 138, 149 (1983)].”
+Crouse, 848 F.3d at 583.
+The general rule is that “[w]hen public employees make statements pursuant to their
+official duties, the employees are not speaking as citizens for First Amendment purposes,
+and the Constitution does not insulate their communications from employer discipline.”
+Garcetti, 547 U.S. at 421. But when it comes to public employees who, as here, are public
+university professors, the analysis is more nuanced. As this Court has repeatedly
+recognized, the Garcetti rule does not extend to speech by public university faculty
+
+members, acting in their official capacity, that is “related to scholarship or teaching.” Id.
+at 425; see Adams v. Trustees of the Univ. of North Carolina-Wilmington, 640 F.3d 550
+(4th Cir. 2011); see also Lee v. York Cnty. Sch. Div., 484 F.3d 687, 694 n.11 (4th Cir. 2007)
+(explaining that the Supreme Court “did not decide whether [its] analysis would apply in
+the same manner to a case involving speech related to teaching”). Thus, if we determine
+that Appellant was speaking as a public employee, we must then determine whether his
+speech related to “scholarship or teaching.” Adams, 640 F.3d at 563. If it did not, then it
+is unprotected pursuant to Garcetti.
+On the other hand, “[i]f the speech was made as a citizen and addressed a matter of
+public concern, the second prong of the test requires a court to balance the interest of the
+employee in speaking freely with the interest of the government in providing efficient
+services.” Id. (citing Pickering v. Bd. of Educ. of Twp. High Sch. Dist. 205, Will Cnty. Ill.,
+391 U.S. 563, 568 (1968)). Thereafter, if the “court determines that the employee’s interest
+outweighed the government employer’s interest, the third prong requires a determination
+that the employee’s speech caused the disciplinary action.” Crouse, 848 F.3d at 583 (citing
+McVey, 157 F.3d at 277–78). “In order to establish this causal connection, a plaintiff in a
+retaliation case must show, at the very least, that the defendant was aware of her engaging
+in protected activity.” Constantine v. Rectors & Visitors of George Mason Univ., 411 F.3d
+474, 501 (4th Cir. 2005). “Knowledge alone, however, does not establish a causal
+connection.” Price v. Thompson, 380 F.3d 209, 213 (4th Cir. 2004). Though not
+necessarily required, temporal proximity may create the inference of causation. See Penley
+v. McDowell Cnty., Bd. of Educ., 876 F.3d 646, 656 (4th Cir. 2017). “[G]enerally the
+
+passage of time . . . tends to negate the inference of [causation]” and “[w]here a plaintiff
+rests his case on temporal proximity alone, the temporal proximity must be very close.”
+Id. (internal quotation marks and citations omitted). In any event, the “causal requirement
+is ‘rigorous.’” Raub v. Campbell, 785 F.3d 876, 885 (4th Cir. 2015) (quoting Huang v. Bd.
+Of Governors of the Univ. of N.C., 902 F.2d 1134, 1140 (4th Cir. 1990)). “‘[I]t is not
+enough that the protected expression played a role or was a motivating factor in the
+retaliation; claimant must show that ‘but for’ the protected expression the [state actor]
+would not have taken the alleged retaliatory action.’” Id. (alterations in original) (emphasis
+supplied).
+The district court held Appellant “failed to plausibly allege a First Amendment
+retaliation claim” because he failed to “plausibly allege that he ha[d] suffered adverse
+action or that any allegedly protected speech was the ‘but for’ cause of any alleged adverse
+employment action.” J.A. 51. In doing so, the district court assumed, but did not decide,
+that the three communications identified by Appellant were protected. Upon review, we
+have no trouble concluding that at least the survey question incident and the faculty hiring
+email were unprotected speech.
+As to the survey question incident, Appellant’s complaint gives no detail as to the
+content of the speech. Rather, it only alleges that “[c]iting the validity standards of the
+American Educational Research Association, [Appellant] asked [the presenter] about what
+work had gone into the design of the question. Survey methodology is one of [Appellant’s]
+areas of research, and he was concerned that . . . [the question] might be harmful to faculty
+without yielding useful information.” J.A. 12. This amounts to a description of
+
+Appellant’s perspective as to his duties as an employee. Indeed, Appellant himself
+describes the survey question incident as “nothing more than doing his job.” Id. at 13.
+This clearly does not equate to a matter of public concern. Therefore, because Appellant
+was speaking as an employee, we must determine whether his speech related to scholarship
+and teaching. We readily conclude that it did not. Appellant was not teaching a class nor
+was he discussing topics he may teach or write about as part of his employment. Though
+Appellant mentioned that survey methodology was his personal area of study, this is not
+enough to convert the speech, in the context of merely “doing his job,” into a matter of
+scholarship. In excluding “speech related to scholarship and teaching,” the court
+recognized a concern that “the teaching of a public university professor” could become the
+basis for adverse action if it was unprotected pursuant to the general rule. See Garcetti,
+547 U.S. at 425, 438. While Appellant’s speech here was in his capacity as an employee,
+it was not a product of his teaching or scholarship. Therefore, it is unprotected.
+The same is true for the faculty hiring email. There, Appellant’s speech consisted
+of asking, “Did you all see this,” linking the Inside Higher Ed article, and sarcastically
+saying, “This kind of publicity will make sure we rocket to number 1 in the rankings. Keep
+up the good work Alyssa!” J.A. 15. The faculty hiring email expressed no viewpoint and
+made no mention of policy or anything else that might be of public concern. Instead, it
+was an unprofessional attack on one of Appellant’s colleagues, sent only to other faculty
+members within the Department. And it plainly was unrelated to Appellant’s teaching or
+scholarship.
+
+On these facts, we are convinced that both the survey question incident and the
+faculty hiring email are not protected speech. Both instances were wholly internal
+communications and the facts as Appellant alleges them demonstrate that he was speaking
+“as an employee” rather than a citizen. Crouse, 848 F.3d at 583 (citing McVey, 157 F.3d
+at 277). Appellant’s communications addressed “matter[s] of personal interest” and
+“complaints over internal office affairs,” rather than matters of public concern. Id.
+(citations omitted). And, Appellant’s speech was not related to his scholarship or teaching.
+Therefore, neither the survey question incident nor the faculty hiring email are protected
+speech.
+As to the “Woke Joke” blog post, even assuming, as the district court did, that it
+amounted to protected speech, Appellant fails to allege a sufficient causal connection to
+state a claim for retaliation. As to temporal proximity, Appellant published the blog post
+on September 3, 2018. NCSU made no mention of the post until November 19, 2018, when
+Appellee Pasque emailed Appellant about students’ reactions to the ASHE conference.
+And Appellant was not removed from the HEPA until July 5, 2019 -- ten months after the
+blog post was published and nearly eight months after Appellee Pasque first emailed
+Appellant regarding the post. Under these circumstances, temporal proximity is lacking.
+Beyond this, the complaint itself fails to allege that the blog post was the “but for”
+cause of the alleged adverse employment action. See Raub, 785 F.3d at 885. Appellant’s
+complaint makes clear that he was removed from the HEPA because of his ongoing lack
+of collegiality -- not because of the content of his blog post. For example, Appellant was
+labeled as a bully because of the survey question incident. And the complaint admits that
+
+Appellee Pasque “implied there were other claims about [Appellant] in the [2017 report]”
+beyond the survey question incident. J.A. 13. The complaint also alleges that in the
+meeting where Appellant was asked to join a new Program Area, he became “frustrated”
+and said “Give me a f***ing break, folks. . . .” Id. at 19. The complaint alleges that after
+this meeting, Appellant received letters from Appellee Pasque “chastising him for his use
+of profanity and his expressions of frustration” and again “expressing concern about his
+‘collegiality.’” Id. at 20. Continuing on, the complaint admits that Appellant was warned
+that if he “‘fail[ed] to repair the relationships among faculty in the Higher Education
+program’ or display[ed] a ‘lack of collegiality’ again,” he would be removed from the
+HEPA. Id.
+Even as to the “Woke Joke” blog post, the complaint makes clear that Appellee
+Pasque’s concerns were not with the content of the post, but rather with Appellant’s failure
+to “proactively address[] student and faculty concerns about ‘what happened at ASHE.’”
+J.A. at 22. And finally, the complaint alleges that Appellant was removed from the HEPA
+“because ‘the Higher Education faculty were not able to make concerted progress’ on
+resolving issues within the Program Area.” Id. at 23.
+Taking all of this together, we cannot conclude that Appellant has sufficiently
+alleged that the “Woke Joke” blog post was a “but for” cause of his removal from the
+HEPA.
+IV.
+Appellant’s complaint fails to sufficiently allege a First Amendment retaliation
+claim. We hold that the survey question incident and the faculty hiring email were not
+
+protected speech. Even assuming the “Woke Joke” blog post was protected speech,
+Appellant has failed to allege that it was a “but for” cause for any alleged adverse
+employment action. Therefore, the district court’s order dismissing Appellant’s complaint
+for failure to state a claim is
+AFFIRMED.

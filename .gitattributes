@@ -1,1 +1,2 @@
 datasets/sherlock/raw/*.xhtml -text
+datasets/legal/raw/*.txt -text

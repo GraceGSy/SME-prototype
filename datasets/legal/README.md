@@ -1,18 +1,36 @@
 # Legal corpus
 
-`raw/` contains five majority-opinion PDFs and their five paired dissent PDFs,
-already split to the authored document. `content/` contains direct PDF
-extractions produced by the configured Claude extraction Skill.
+`raw/` contains five opinion text files and their five paired dissent text
+files. Each UTF-8 file contains only one authored body, beginning at the
+authoring judge's attribution. Case captions, counsel lists, running headers,
+and page numbers are excluded. Published line wrapping and printed structural
+headings remain for the Claude extraction Skill.
 
-Current extraction checkpoint: `banuelos_jimenez_opinion` and
-`core_optical_opinion` are complete. The API balance was exhausted before
-`lamb_opinion`; rerun the command below after replenishing it. Existing valid
-files are skipped automatically.
+The text was extracted once, without an LLM, from these public combined
+decisions. The explicit author attribution and published page boundary define
+each opinion/dissent split.
+
+| Case | Public decision | Opinion pages | Dissent pages |
+|---|---|---:|---:|
+| Banuelos-Jimenez v. Garland | [Justia](https://law.justia.com/cases/federal/appellate-courts/ca6/22-3331/22-3331-2023-05-10.html) | 1-7 | 8-14 |
+| Core Optical Technologies, LLC v. Nokia Corporation | [Justia](https://law.justia.com/cases/federal/appellate-courts/cafc/23-1001/23-1001-2024-05-21.html) | 3-23 | 25-26 |
+| Lamb v. Kendrick | [Justia](https://law.justia.com/cases/federal/appellate-courts/ca6/21-3390/21-3390-2022-10-26.html) | 2-15 | 16-22 |
+| Porter v. Board of Trustees of North Carolina State University | [Justia](https://law.justia.com/cases/federal/appellate-courts/ca4/22-1712/22-1712-2023-07-06.html) | 3-19 | 20-43 |
+| Westmoreland v. Butler County | [Justia](https://law.justia.com/cases/federal/appellate-courts/ca6/21-5168/21-5168-2022-03-24.html) | 2-12 | 13-33 |
+
+`pipeline/skill_pipeline/pipeline.yaml` pins every text file by SHA-256. The
+pipeline sends these files, rather than PDFs, to the configured legal extraction
+Skill:
 
 ```powershell
 python -m pipeline.skill_pipeline.runner --dataset legal_opinions --stage extraction
 python -m pipeline.skill_pipeline.runner --dataset legal_dissents --stage extraction
 ```
+
+Current extraction checkpoint: `banuelos_jimenez_opinion` and
+`core_optical_opinion` already have valid canonical content files. Ordinary
+reruns skip them. Use `--force` only when intentionally regenerating those
+artifacts from the new text inputs.
 
 Legal extraction uses only printed Roman-numeral and capital-letter divisions.
 It does not infer doctrinal or topical sections. A document with no printed

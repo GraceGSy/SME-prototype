@@ -1,0 +1,318 @@
+OPINION
+
+JULIA SMITH GIBBONS, Circuit Judge.
+Bretton Westmoreland was arrested and
+detained at the Butler County Jail, where he was attacked by another detainee for being a
+“snitch.” Westmoreland sued the jail and Rocky Tyree, an employee, for failure to protect under
+42 U.S.C. § 1983. The district court granted summary judgment to the Butler County Jail and
+Tyree, holding that because Westmoreland did not suffer a constitutional violation, Tyree was
+entitled to qualified immunity and the jail could not be held liable. Westmoreland appeals,
+arguing the district court used the incorrect test to evaluate his claim. Because our court recently
+determined that Kingsley v. Hendrickson, 576 U.S. 389 (2015), requires modification of the
+subjective prong of the deliberate indifference test for pretrial detainees, we vacate the district
+court’s grant of summary judgment and remand Westmoreland’s claims for proceedings
+consistent with Brawner v. Scott County, Tennessee, 14 F.4th 585 (6th Cir. 2021).
+I
+On May 27, 2018, Defendant Butler County Jail (“BCJ”) booked Plaintiff Bretton
+Westmoreland on an active bench warrant for failure to appear. During the booking process,
+Westmoreland signed a document acknowledging he received and understood the rules of BCJ
+and his rights as an inmate—including the process to request separation from other inmates if he
+felt threatened. That same day, Westmoreland requested to be separated from fellow inmate
+Jerry St. Clair. Westmoreland indicated that he knew St. Clair was currently incarcerated at BCJ
+and that St. Clair believed he was a government informant. BCJ documented this request for
+separation, and Westmoreland was assigned to a multi-occupancy general population dormitory
+with six cellmates that did not share common area with St. Clair.
+One week later, around 6:21 P.M. on June 3, 2018, Westmoreland called his mother,
+Tanya Arnold Sublett, and expressed his concerns that St. Clair was telling other inmates
+Westmoreland had “told on him.” DE 26-2, Defs.’ Mot. Summ. J., Page ID 196. The next day,
+St. Clair was permitted to mop floors outside of Westmoreland’s cell. Around 12:22 P.M.,
+
+Westmoreland called Sublett again and told her that St. Clair was near Westmoreland’s
+dormitory and was telling Westmoreland’s cellmates that he was a “rat.” Id. at 196–97.
+Westmoreland claimed his cellmates became “rowdied up” after hearing this, and one inmate in
+particular—Ricky Mullikan—became mad. DE 29, Pl.’s Resp. Defs.’ Mot. Summ. J., Page ID
+243.
+After Westmoreland conveyed this information to his mother, Sublett called BCJ and
+spoke with Tara McMillin, the jail’s Class D Coordinator. McMillin worked in the
+administrative office preparing home and rehab placements for inmates. McMillin testified that
+Sublett informed her something was going on between Westmoreland and St. Clair, and she was
+concerned about Westmoreland’s well-being in his cell. McMillin checked Westmoreland’s
+records and confirmed that he and St. Clair were housed in separate cells. McMillin completed
+an incident report about the phone call, wrote down Sublett’s phone number, and gave a note to
+her supervisor, Tyree. In the incident report, McMillin wrote: “I spoke with Jailer Rocky Tyree
+and explained the issue. I gave him a sticky note with [Sublett’s] phone number and asked him
+to call her.” DE 29, Pl.’s Resp. Defs.’ Mot. Summ. J., Page ID 245.
+Tyree claimed he had spoken to Westmoreland approximately fifteen minutes before
+McMillin informed him of Sublett’s phone call. He stated their conversation lasted for five
+minutes and occurred in the bullpen, during which he asked Westmoreland directly if he wanted
+to be moved out of his cell. Tyree claims that Westmoreland replied “No, I’m fine.” DE 26-2,
+Defs.’ Mot. Summ. J., Page ID 198. Westmoreland, however, denied having any conversation
+with Tyree about being moved from the cell. Tyree stated that because he had spoken with
+Westmoreland, who did not want to be moved, he felt he did not need to follow up on Sublett’s
+phone call. Westmoreland called Sublett again in the afternoon of June 4, and she told him that
+she had called the jail and Tyree would “take care of everything.” DE 29, Pl.’s Resp. Defs.’
+Mot. Summ. J., Page ID 247.
+Around 6:00 P.M. on June 4, 2018, Westmoreland asked Deputy Jesse Kidd if he could
+be moved. Kidd’s incident report indicates that Westmoreland made the request because “he
+couldn’t stand to be in the cell with the other inmates and that they were getting on his nerves.”
+DE 26-2, Defs.’ Mot. Summ. J., Page ID 199. Kidd told Westmoreland that the jail did not move
+
+inmates just because they dislike their cellmates and prepared a report documenting the
+conversation. Westmoreland stated that when he spoke to Kidd, he asked to be moved because
+he “felt like [his cellmates] were going to do something to [him].” DE 29, Pl.’s Resp. Defs.’
+Mot. Summ. J., Page ID 247.
+Westmoreland testified that things escalated after dinner, when other inmates were
+egging on Millikan and turning up music. Between 6:00 P.M. and midnight, BCJ deputies
+visited Westmoreland’s dormitory on seven occasions to monitor the inmates. Sometime after
+midnight, the other inmates shut off the lights, turned up the television, and closed the door.
+Westmoreland sat on a cooler to see everything, and when he turned to speak with another
+inmate, Mullikan attacked him from behind. Westmoreland testified that he stood up to defend
+himself, but two other inmates pushed him away so that Mullikan could strike him again.
+Mullikan struck Westmoreland with his fist and knocked Westmoreland unconscious.
+Westmoreland recalled waking up when a guard came into the cell, and the other inmates
+informed the guard that Westmoreland had slipped in the shower. Westmoreland was reluctant
+to disclose he had been attacked and initially told Tyree he had fallen in the shower before
+acknowledging that he had been assaulted by another inmate.
+A guard took Westmoreland to the jail’s nurse, who examined him, cleaned out his
+mouth, and stated that Tyree needed to be informed. After Tyree arrived, the nurse and Tyree
+took Westmoreland to the Ohio County Hospital emergency room, where the hospital
+determined his jaw was broken and referred him to an oral surgeon. Westmoreland was returned
+to BCJ and placed in a three-man cell. Westmoreland had two surgeries for his injury: braces
+and a plate were installed, and his jaw was wired shut for seven to eight months while he
+subsisted on a liquid diet. He still experiences numbness from the midline of his chin to the mid-
+right side of his jaw, and his face pops and causes pain while eating.
+Westmoreland filed suit against Tyree, McMillin, Kelli Fugate (the Chief Administrative
+Deputy at BCJ), and BCJ (collectively “Defendants”) asserting claims for failure to protect, in
+violation of the Eighth and Fourteenth Amendments and 42 U.S.C. § 1983; negligence and gross
+negligence under Kentucky law; and a violation of Ky. Rev. Stat. § 441.045(3) for allegedly
+releasing him to avoid paying his medical bills. Following discovery, Defendants moved for
+
+summary judgment. Westmoreland voluntarily dismissed his claims against McMillin and
+Fugate.
+The district court applied a two-part deliberate indifference test to determine whether
+Tyree was entitled to qualified immunity and granted Defendants’ motion for summary
+judgment. The court held that under the objective component of the deliberate indifference
+failure-to-protect claim, Westmoreland established he faced a substantial risk of harm because he
+had been identified as a snitch, and he subsequently suffered physical harm during an attack.
+However, under the subjective component, the court held Westmoreland failed to show Tyree
+knew of the substantial risk of harm. Because Tyree was not deliberately indifferent, the court
+held Westmoreland did not suffer a constitutional violation and Tyree was entitled to qualified
+immunity. The district court also granted summary judgment to BCJ, holding that a municipality
+cannot be liable absent an underlying constitutional violation. Finally, the court dismissed
+Westmoreland’s state law claims without prejudice, declining to exercise its discretionary
+pendent jurisdiction over state law claims filed in connection with and arising out of the same
+facts as his § 1983 claim.
+II
+The district court’s grant of summary judgment is reviewed de novo. Equitable Life
+Assur. Soc’y of the United States v. Poe, 143 F.3d 1013, 1015 (6th Cir. 1998). We will affirm
+the district court if the record “shows that there is no genuine dispute as to any material fact and
+that the movant is entitled to judgment as a matter of law.” Fed. R. Civ. P. 56(a). “[W]e view
+the factual evidence in the light most favorable to the nonmoving party, and draw all reasonable
+inferences in that party’s favor.” Burwell v. City of Lansing, Mich., 7 F.4th 456, 462 (6th Cir.
+2021) (citation omitted).
+III
+Qualified immunity shields government actors from civil liability under 42 U.S.C. § 1983
+if “their conduct does not violate clearly established statutory or constitutional rights of which a
+reasonable person would have known.” Harlow v. Fitzgerald, 457 U.S. 800, 818 (1982). To
+determine whether an officer is entitled to qualified immunity, a court must evaluate two
+
+independent questions: (1) whether the actor’s conduct violated a constitutional right, and
+(2) whether that right was clearly established at the time of the incident. Pearson v. Callahan,
+555 U.S. 223, 232 (2009).
+The Eighth Amendment provides an inmate the right to be free from cruel and unusual
+punishment. U.S. Const. amend. VIII. The Supreme Court has established that “prison officials
+have a duty . . . to protect prisoners from violence at the hands of other prisoners.” Farmer v.
+Brennan, 511 U.S. 825, 833 (1994) (citation omitted). “It is not, however, every injury suffered
+by one prisoner at the hands of another that translates into constitutional liability for prison
+officials responsible for the victim’s safety.” Id. at 834. A prison official violates an inmate’s
+rights only if the official is “deliberate[ly] indifferen[t] to inmate health or safety.” Id. (internal
+quotation marks and citation omitted). A deliberate indifference claim under the Eighth
+Amendment has an objective and a subjective component. Richmond v. Huq, 885 F.3d 928,
+937–38 (6th Cir. 2018). Under the objective component, “[f]or a claim . . . based on a failure to
+prevent harm, the inmate must show that he is incarcerated under conditions posing a substantial
+risk of serious harm.” Farmer, 511 U.S. at 834. The subjective component requires an inmate to
+show that the individual defendants (1) were “aware of facts from which the inference could be
+drawn that a substantial risk of serious harm exists”; (2) actually drew the inference; and
+(3) consciously disregarded the risk. Id. at 837, 839; Mangum v. Repp, 674 F. App’x 531, 537
+(6th Cir. 2017).
+The Due Process Clause of the Fourteenth Amendment provides the same protections to
+pretrial detainees. See Richko v. Wayne Cnty., Mich., 819 F.3d 907, 915 (6th Cir. 2016). This
+court has “historically analyzed Fourteenth Amendment pretrial detainee claims and Eighth
+Amendment prisoner claims ‘under the same rubric.’” Richmond, 885 F.3d at 937 (quoting
+Villegas v. Metro. Gov’t of Nashville, 709 F.3d 563, 568 (6th Cir. 2013)). Westmoreland argues,
+however, that a pretrial detainee’s failure-to-protect claim should be governed by a test of
+objective unreasonableness because the Supreme Court’s decision in Kingsley v. Hendrickson,
+576 U.S. 389 (2015), eliminates the subjective element of a deliberate indifference claim.
+In Kingsley, the Court held that, in an excessive-force claim, a pretrial detainee must
+show only that the officers’ use of force was objectively unreasonable and need not show the
+
+officers were subjectively aware their use of force was unreasonable. 576 U.S. at 391–92. In
+holding that the appropriate standard is objective, the Court reiterated the principle that pretrial
+detainees’ constitutional status differs from that of convicted prisoners. Id. at 397–98, 400.
+Kingsley did not, however, address whether an objective standard applies in other Fourteenth
+Amendment pretrial detainment contexts.
+Following the Court’s decision in Kingsley, a circuit split emerged: The Second, Seventh,
+and Ninth Circuits held Kingsley required modification of the subjective component for pretrial
+detainees bringing Fourteenth Amendment deliberate-indifference claims. See Darnell v.
+Pineiro, 849 F.3d 17, 34–35 (2d Cir. 2017) (deliberate indifference to conditions of
+confinement); Miranda v. Cnty. of Lake, 900 F.3d 335, 352 (7th Cir. 2018) (deliberate
+indifference to an inmate’s serious medical needs); Gordon v. Cnty. of Orange, 888 F.3d 1118,
+1124–25 (9th Cir. 2018) (deliberate indifference to decedent’s health or safety). By contrast, the
+Fifth, Eighth, Tenth, and Eleventh Circuits retained the subjective component for deliberate-
+indifference Fourteenth Amendment claims. See Cope v. Cogdill, 3 F.4th 198, 207 & n.7 (5th
+Cir. 2021) (concluding in a footnote that the court is bound by prior precedent applying a
+subjective component); Whitney v. City of St. Louis, 887 F.3d 857, 860 n.4 (8th Cir. 2018)
+(reasoning that “Kingsley does not control because it was an excessive force case, not a
+deliberate indifference case”); Dang by & through Dang v. Sheriff, Seminole Cnty., 871 F.3d
+1272, 1278 n.2 (11th Cir. 2017) (explaining “[w]e cannot and need not reach this question”
+because Kingsley does not squarely conflict with prior precedent and reasoning that, in any
+event, the plaintiff had established only negligence, which is still insufficient under Kingsley);
+Strain v. Regalado, 977 F.3d 984, 991 (10th Cir. 2020) (“We decline to extend Kingsley to
+Fourteenth Amendment deliberate indifference claims.”).
+Our court directly confronted the matter in Brawner v. Scott County, Tennessee, 14 F.4th
+585 (6th Cir. 2021), reh’g en banc denied, 18 F.4th 551 (6th Cir. 2021). In Brawner, we
+“agree[d] with the Second, Seventh, and Ninth Circuits that Kingsley requires modification of the
+subjective prong of the deliberate-indifference test for pretrial detainees.” Id. at 596. In reaching
+this decision, the court reviewed the history of the deliberate-indifference test, noting that in
+Farmer, the Supreme Court adopted the subjective component of the test for deliberate
+
+indifference under the Eighth Amendment based on the language and purposes of that
+amendment, focusing particularly on “punishments.” Id. at 594–96 (citing Farmer, 511 U.S. at
+835–36; 37–38; 40). We held that Kingsley presented a “clear delineation between claims
+brought by convicted prisoners under the Eighth Amendment and claims brought by pretrial
+detainees under the Fourteenth Amendment,” and, accordingly, “applying the same analysis to
+these constitutionally distinct groups is no longer tenable.” Id. at 596.
+Judge Readler wrote in partial dissent from the Brawner majority that whether the
+deliberate indifference framework governs pretrial detainees’ claims after Kingsley should not
+have been decided because it was unnecessary to the outcome of the case. Brawner, 14 F.4th at
+603–05 (Readler, J., concurring in part and dissenting in part). Judge Readler argued that
+Brawner’s extension of Kingsley to deliberate indifference claims should be considered dictum.
+Id. at 604. However, as recently noted in Greene v. Crawford County, Michigan, “[t]he Brawner
+majority expressly considered and rejected the suggestion that its extension of Kingsley was
+dictum” and “[w]e are bound by that decision.” 22 F.4th 593, 607 (6th Cir. 2022).
+Following Brawner, a pretrial detainee establishes deliberate indifference by proving
+“more than negligence but less than subjective intent—something akin to reckless disregard.”
+Brawner, 14 F.4th at 596–97 (quoting Castro v. Cnty. of L.A., 833 F.3d 1060, 1071 (9th Cir.
+2016) (en banc)). A defendant must have acted deliberately (not accidentally) and recklessly “in
+the face of an unjustifiably high risk of harm that is either known or so obvious that it should be
+known.” Id. at 596 (quoting Farmer, 511 U.S. at 836). In Farmer, the Supreme Court “noted
+that recklessness could be defined according to an objective standard akin to that used in the civil
+context, which would not require proof of an official’s actual awareness of the harms associated
+with the challenged conditions.” Darnell, 849 F.3d at 32.
+Here, the district court analyzed Westmoreland’s claims against Tyree and BCJ under the
+Eighth Amendment deliberate indifference standard with both an objective and a subjective
+prong. The district court rejected Westmoreland’s argument that Kingsley changed the standard
+from deliberate indifference to “objective unreasonableness,” noting the Sixth Circuit had not yet
+adopted either view in the existing circuit split on the issue. But our Circuit has now explicitly
+taken the position that a failure-to-protect claim by a pretrial detainee requires only an objective
+
+showing that an individual defendant acted (or failed to act) deliberately and recklessly.
+Brawner, 14 F.4th at 596.
+Brawner did not address the application of this standard to individual officers, however,
+as the county was the only remaining party in that case. Our court has not yet applied the
+objective standard to a failure-to-protect claim against an individual officer, but it has done so for
+claims against individual officers for deliberate indifference to an inmate’s serious medical
+needs. See Greene, 22 F.4th at 609–14; Britt v. Hamilton Cnty., et al., 2022 WL 405847, at *3
+(6th Cir. Feb. 10, 2022); Hyman v. Lewis, --- F.4th ---, 2022 WL 682543, at *2 (6th Cir. Mar. 8,
+2022). Other circuits have applied the objective standard to a pretrial detainee’s failure-to-
+protect claim against an individual officer. In Castro, the en banc Ninth Circuit applied
+Kingsley’s principles to a pretrial detainee’s Fourteenth Amendment failure-to-protect claim
+against an individual officer. 833 F.3d at 1071. The Ninth Circuit explained that to meet the
+standard of “reckless disregard,” the following elements must be met:
+(1) The defendant made an intentional decision with respect to the conditions
+under which the plaintiff was confined;
+(2) Those conditions put the plaintiff at substantial risk of suffering serious
+harm;
+(3) The defendant did not take reasonable available measures to abate that risk,
+even though a reasonable officer in the circumstances would have
+appreciated the high degree of risk involved—making the consequences of
+the defendant’s conduct obvious; and
+(4) By not taking such measures, the defendant caused the plaintiff’s injuries.
+833 F.3d at 1071. Regarding the third element, the Ninth Circuit held that a “defendant’s
+conduct must be objectively unreasonable, a test that will necessarily turn on the facts and
+circumstances of each particular case.” Id. (citing Kingsley, 576 U.S. at 397 (internal quotations
+and citations omitted)). The first, second, and fourth elements of this test match the objective
+prong of the failure-to-protect claim. See Farmer, 511 U.S. at 834. The third element parallels the
+subjective component of the failure-to-protect claim outlined in Farmer, but with updated language
+to comport with the objectiveness required by Kingsley. The Seventh Circuit has also applied
+Kingsley in the failure-to-protect context, holding that a subjective requirement “cannot be
+reconciled with Kingsley’s language, reasoning, and reminder to ‘pay careful attention to the
+
+different status of pretrial detainees.’” Kemp v. Fulton Cnty., 27 F.4th 491 (7th Cir. 2022). Like
+the Ninth and Seventh Circuits, and following our own circuit’s post-Kingsley line of cases, we
+hold that a defendant officer must act intentionally in a manner that puts the plaintiff at substantial
+risk of harm, without taking reasonable steps to abate that risk, and by failing to do so actually
+cause the plaintiff’s injuries.
+As applied to Westmoreland’s claim: First, Tyree made an intentional decision as to
+Westmoreland’s conditions of confinement. When Westmoreland’s mother, Sublett, called BCJ
+and informed McMillin that she thought her son was in danger, McMillin wrote down Sublett’s
+phone number, gave it to Tyree, and asked him to call Sublett. There is a factual dispute about
+whether Tyree spoke to Westmoreland about being moved. Whether Tyree spoke to
+Westmoreland or not, he was advised by McMillin that Sublett had concerns about
+Westmoreland’s well-being and he determined Westmoreland did not need to be moved. This is
+an intentional decision about Westmoreland’s conditions of confinement, meeting the first
+element of the objective test.
+As to the second element, whether the conditions of confinement put Westmoreland at
+substantial risk of suffering serious harm, we have recognized that being identified as a “snitch”
+in prison puts an inmate at substantial risk of assault. See Comstock v. McCrary, 273 F.3d 693,
+699 n.2 (6th Cir. 2001) (acknowledging a prison psychologist’s statement that “a prisoner in
+prison definitely doesn’t want to be labeled a snitch, that’s probably the worst label that you . . .
+could have put on you if you were in prison” (citation omitted)). In Dale v. Poston, 548 F.3d
+563, 569–70 (7th Cir. 2008), the Seventh Circuit addressed the inherent risk faced by snitches in
+prison. The plaintiff sued several prison employees, claiming they violated the Eighth
+Amendment by failing to protect him from an attack by another inmate after he was labeled a
+snitch, and the court noted it is “common knowledge that snitches face unique risks in prison.”
+Id. Here, Westmoreland has established this element by showing that St. Clair identified him as
+a “rat” in front of his cellmates, DE 29, Pl.’s Resp. Defs.’ Mot. Summ. J., Page ID 242, and
+informed other inmates that Westmoreland had “told on him.” DE 26-2, Defs.’ Mot. Summ. J.,
+Page ID 196.
+
+The third element of a pretrial detainee’s failure-to-protect claim against an individual
+officer is that the defendant did not take reasonable available measures to abate the substantial
+risk of serious harm, even though a reasonable officer in the circumstances would have
+appreciated the high degree of risk involved and the obvious consequences of the defendant’s
+conduct. This prong incorporates Kingsley’s holding that “the relevant standard is objective not
+subjective.” 576 U.S. at 395. A pretrial detainee need not prove subjective elements about an
+officer’s actual awareness of the level of risk, but he must prove the officer was more than
+merely negligent; the officer must have acted with “reckless disregard” in the face of “an
+unjustifiably high risk of harm.” Brawner, 14 F.4th at 596 (quoting Farmer, 511 U.S. at 836).
+The district court analyzed Westmoreland’s claim using the deliberate indifference test.
+Although the court held that under the objective prong of a failure-to-protect claim,
+Westmoreland successfully showed he was incarcerated under conditions posing a substantial
+risk of serious harm, it found his claim failed at the subjective prong because Tyree “did not
+possess sufficient knowledge based on [Sublett’s] message to infer a substantial risk of harm
+existed.” DE 31, Op., Page ID 292. The district court must analyze Westmoreland’s claim
+under the objective unreasonableness standard outlined in this third element, viewing the facts in
+the light most favorable to Westmoreland, and determine whether the record is sufficient for a
+jury to conclude that Tyree was deliberately indifferent to Westmoreland’s substantial risk of
+serious harm. If summary judgment is improper as to Tyree, the court must also address the
+issue of qualified immunity. See Burwell, 7 F.4th at 476.
+The fourth element is whether the defendant caused the plaintiff’s injuries by not taking
+reasonable measures. Westmoreland established this element by showing he suffered physical
+harm as a result of being labeled a snitch after St. Clair identified him as a “rat” in front of his
+cellmates; his mother, Sublett, called BCJ to ask that actions be taken to protect Westmoreland;
+Westmoreland was not moved away from his cellmates; and he subsequently suffered a broken
+jaw and lingering issues as a result of an attack by his cellmate.
+
+We vacate the district court’s grant of summary judgment because the analysis of
+whether Tyree was deliberately indifferent should be solely an objective consideration.1 The
+outcome of this analysis is necessary to determine whether Tyree violated a clearly established
+constitutional right, or whether he is entitled to qualified immunity. In turn, whether BCJ is
+liable for Tyree’s actions is contingent on whether a constitutional violation occurred. Under
+Monell, a municipality can be liable under § 1983 when an official “policy or custom” caused a
+violation of the plaintiff's constitutional rights. Monell v. Dep’t of Soc. Serv., 436 U.S. 658, 694–
+95 (1978). “If no constitutional violation by the individual defendants is established, the
+municipal defendants cannot be held liable under § 1983.” Watkins v. City of Battle Creek, 273
+F.3d 682, 687 (6th Cir. 2001) (citation omitted). Accordingly, Westmoreland’s claim against
+BCJ must be addressed after the district court analyzes the claim against Tyree pursuant to the
+new standard. The district court exercised its discretion to dismiss Westmoreland’s pendent state
+law claims under 28 U.S.C. §1367(c) after it granted summary judgment on the federal claims.
+As we vacate the grant of summary judgment on the federal claims, we also vacate the dismissal
+of the state law claims—our normal practice in this setting. See Hale v. Boyle Cnty., 18 F.4th
+845, 855 (6th Cir. 2021) (per curiam).
+IV
+We vacate the district court’s grant of summary judgment and remand Westmoreland’s
+claims for proceedings consistent with our holding that the deliberate indifference test in a
+pretrial detainee’s failure-to-protect claim is an objective determination.
+1In this conclusion, we are cognizant of the district court’s role and the need to consider all the evidence
+and make all reasonable inferences in the light most favorable to Westmoreland.

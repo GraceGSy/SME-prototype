@@ -1,0 +1,195 @@
+DISSENT
+
+NALBANDIAN, Circuit Judge, dissenting.
+The Ohio Department of Rehabilitation and
+Correction (ODRC) has a three-step grievance process. Our precedent says that even if Lamb
+was ultimately prevented from exhausting his administrative remedies, he had to show that he
+made some affirmative efforts to comply with ODRC’s grievance process that were sufficient
+under the circumstances. In my view, Lamb’s affirmative efforts weren’t. So I would affirm the
+district court’s judgment.
+I.
+The majority and I agree on the basic framework for an exhaustion defense in a Prison
+Litigation Reform Act (PLRA) case. To recap, the rules of the road are: (1) A prisoner can
+generally only bring a PLRA action in federal court after exhausting his administrative remedies;
+(2) Exhaustion means that a prisoner has followed the state’s grievance process before filing in
+state court; (3) When a prisoner fails to exhaust, the defendants can raise that failure as an
+affirmative defense under the PLRA; (4) If the defendants raise an exhaustion affirmative
+defense, it’s their burden to show that a prisoner failed to exhaust; and (5) At times, we excuse
+exhaustion, like when the defendants were the ones who prevented the plaintiff from exhausting
+his administrative remedies. See Surles v. Andison, 678 F.3d 452, 455–57 & n.10 (6th Cir. 2012)
+(citations omitted). So far, so good.
+The tricky part of this analysis, especially at summary judgment, relates to step (4)—
+namely, understanding the defendant’s burden on a failure-to-exhaust affirmative defense on
+summary judgment. We’ve said that on summary judgment the defendants “must show that the
+record contains evidence satisfying their burden of persuasion [on the exhaustion defense] and
+that no reasonable jury would be free to disbelieve it.” Does 8–10 v. Snyder, 945 F.3d 951, 961
+(6th Cir. 2019) (altered) (internal citation and quotation marks omitted). And that makes sense.
+If we’re going to cut the plaintiff’s case off at the summary judgment stage based on an
+affirmative defense, it stands to reason that the defendants must show not only that “no genuine
+
+dispute” of material fact exists but also that they would win on an exhaustion defense at trial. Id.
+(quoting Fed. R. Civ. P. 56(a)).
+Our circuit has a burden-shifting analysis that goes like this. Once the defendants have
+raised an affirmative defense of failure to exhaust, we analyze whether the plaintiff has
+“contend[ed] that he was prevented from exhausting his [administrative] remedies . . . .” Surles,
+678 F.3d at 457 n.10. If a plaintiff has “allege[d]” that the defendants somehow blocked his
+access to administrative remedies, id., we then require a plaintiff to produce evidence that he
+made “affirmative efforts to comply with the administrative procedures” nonetheless, Lee v.
+Willey, 789 F.3d 673, 676–77 (6th Cir. 2015) (quoting Napier v. Laurel County, 636 F.3d 218,
+223 (6th Cir. 2011)); Napier, 636 F.3d at 224 (“We are not requiring that a prisoner utilize every
+conceivable channel to grieve their case, but even when a policy is vague, a prisoner must do
+what is required by the grievance policy.”).
+If the plaintiff contended that administrative remedies were unavailable and produced
+evidence that he made affirmative efforts to comply with the grievance process, the burden shifts
+back to the defendants, who must “show that [they] did not interfere with a plaintiff’s ability to
+exhaust his administrative remedies.” Surles, 678 F.3d at 457 n.10. If the defendant meets that
+burden, the plaintiff then must “rebut” that evidence with evidence that those administrative
+remedies were in fact unavailable to him. Napier, 636 F.3d at 226. Then, it’s the district court’s
+call as to whether the defendants proved their exhaustion affirmative defense by the
+preponderance of the evidence. See Lee, 789 F.3d at 677.
+The majority says that we have not adopted a burden-shifting approach to the exhaustion
+affirmative defense under the PLRA. (Majority Op. at 10.) But I don’t think that’s right. After
+the defendants provide evidence that the plaintiff has failed to exhaust, the plaintiff must provide
+evidence that he took “affirmative efforts” to comply with administrative procedures, even if he
+didn’t use them. Lee, 789 F.3d at 677. And that seems like a burden shift to me.
+II.
+Although we differ in our characterization of the exhaustion framework under the PLRA,
+the majority and I both agree that it requires that the plaintiff show that he took affirmative
+
+efforts to comply with the grievance process. (See Majority Op. at 11–13, 15.) I disagree with
+the majority that Lamb’s affirmative efforts were sufficient here.
+We look at a state’s grievance procedure to determine whether a plaintiff took sufficient
+affirmative steps under the circumstances. If Lamb establishes affirmative efforts through his
+presentation of the evidence, we look at the defendants’ evidence to see if there is a genuine
+dispute of material fact on whether the affirmative acts were sufficient.
+The ODRC grievance process has three steps. See Ohio Admin. Code 5120-9-31(J)(1–3).
+First, the inmate must submit an informal complaint to a supervisor within fourteen days of the
+event that gave rise to the complaint. Id. 5120-9-31(J)(1). Prison staff then must issue a
+response in seven days or alternatively waive that response. Id. If the state does not respond
+after the seven days, the Inspector of Institutional Services may grant an additional four calendar
+days for response. Id. So added up, if eleven days have passed from the date of the filing of the
+informal complaint, the state is considered to have waived a response. Id. Second, if the inmate
+doesn’t agree with the prison staff’s response or the state has waived, he can file a formal
+complaint with the Inspector of Institutional Services. Id. 5120-9-31(J)(2). An inmate must file
+this formal complaint within fourteen days of receiving the resolution of (or no response to) his
+informal complaint. Id. The Inspector of Institutional Services has fourteen days from receipt of
+the formal complaint to respond or waives a response after twenty-eight days. Id. Then, under
+the third step of the grievance process, if the plaintiff is still dissatisfied, he can file an appeal to
+the ODRC Office of the Chief Inspector within fourteen days of the resolution or waiver of the
+formal complaint. Id. 5120-9-31(J)(3). And the ODRC Office of the Chief Inspector must
+respond within thirty days of receiving that appeal. Id.
+Here, Lamb exerted no affirmative efforts on step two of the grievance process. Lamb
+explains that he submitted his first informal complaint on April 9, 2018, and a second informal
+complaint on an unspecified date, also in April 2018. Because the incident occurred on April 6,
+2018, Lamb could have theoretically filed his second (or any) informal complaint all the way up
+to April 20, 2018, fourteen days after the incident occurred. Then, the prison staff would have
+theoretically had eleven days to waive a response, creating a May 1, 2018 waiver deadline.
+
+And, in turn, Lamb would have had fourteen days from the waiver deadline to file a formal
+complaint. That would have given Lamb a May 15, 2018 deadline to file his formal complaint.
+But the record reflects that in the over four years since the incident giving rise to this
+lawsuit occurred Lamb never filed a formal complaint under step two of the ODRC grievance
+process. In other words, he took no affirmative steps on this front. He gives several reasons why
+that’s so. He says he was transferred to restrictive housing at Lebanon Correctional Institution
+the day after the incident occurred and he didn’t have access to the online grievance portal or
+ODRC policy manual there. He says that after he had been at Lebanon Correctional Institution
+“for some time and received no response from ODRC” he “began asking correctional officers for
+grievance forms so that” he could “appeal ODRC’s lack of response.” (R. 19-2, Lamb Affidavit,
+at 3.) He says that one of the prison officials “told [him] that it would be a waste of time [to
+appeal] because the time had already passed for [him] to submit an appeal, and because the
+prison did not have any forms.” (Id. at 4.) He says that no correctional staff gave him the
+grievance forms when he asked because they said the forms were unavailable. These contentions
+all go to the ultimate question of whether Lamb was prevented from exhausting his
+administrative remedies. But they don’t solve the affirmative efforts problem that he never says
+anywhere in his affidavit that he ever tried to file a formal complaint in compliance with step
+two.
+So we’re left with the fact that he filed an informal complaint. He didn’t receive a
+response. He didn’t file a formal complaint. So he didn’t make affirmative efforts to follow
+ODRC grievance procedure. See Ohio Admin. Code 5120-9-31(J)(2).
+Further, his affidavit never specifies the months and years when he asked for any forms
+from the officers to establish that he had tried to comply with the mandatory grievance timeline.
+His allegations are vague and not time-specific, spanning the course of over two years, not at all
+tied to the filing of a formal complaint.
+The statements in his affidavit don’t show that he did his part in complying with the
+policy. He never showed that he tried to follow step two but admits that he received the
+grievance policy when he arrived at the prison in 2017. That policy explained the grievance
+
+process deadlines. “[A] prisoner must do what is required by the grievance policy” even when a
+prisoner is not able to “utilize every conceivable channel to grieve their case.” Napier, 636 F.3d
+at 224. And Lamb’s affidavit didn’t establish that he did what was required.
+Even when he asked for forms from different prison officials, it was so that he could
+appeal his case, the third step of the grievance process, not so that he could file a formal
+complaint under step two. In my view, the filing of a single (or maybe two) informal complaints
+is not the kind of affirmative effort that is sufficient under a three-step grievance process with a
+tight timeline.
+Lamb may have in the end been prevented from complying with step two, but he could
+have shown that he tried to comply by asking for forms within the relevant time window under
+the grievance procedure. See Risher v. Lappin, 639 F.3d 236, 240 (6th Cir. 2011) (explaining
+that when an inmate does “not attempt to bypass the administrative grievance process” and
+instead “affirmatively endeavor[s] to comply with it,” a plaintiff has shown affirmative efforts).
+In this case, Lamb didn’t.
+III.
+As a final matter, I’d like to address a point the majority touched on. Our circuit has
+departed from other circuits in how we approach the burden-shifting analysis for exhaustion.
+And I think that was an error on our part. All the circuits agree, as they must per the Supreme
+Court, that the defendants have the ultimate burden of persuasion to establish an exhaustion
+affirmative defense under the PLRA at the summary judgment phase. See Jones v. Bock,
+549 U.S. 199, 212 (2007). Where the circuits disagree is when the burden of production shifts to
+the plaintiff within that analysis.
+I’ve catalogued our approach above. But there’s another way, the path several other
+circuits take. Under their view, the initial burden is on the defendants to establish that a
+grievance process exists that would have been generally available to people in the plaintiff’s
+position. See Mojias v. Johnson, 351 F.3d 606, 609–10 (2d Cir. 2003). If the defendants
+establish this, then the burden of production shifts to the plaintiff to establish by evidence that,
+although a grievance process was available on paper, it still was unavailable in practice because
+
+of other factors, like harassment or threats or abuse from officers. See Albino v. Baca, 747 F.3d
+1162, 1172 (9th Cir. 2014) (en banc). And from this evidence, and any other evidence provided
+by the defendants, other circuits hold, the district court must determine whether the defendants
+met their ultimate burden of proof. See, e.g., Tuckel v. Grover, 660 F.3d 1249, 1254 (10th Cir.
+2011).
+There is a key distinction between that approach and our current one. We put the entire
+burden on the defendants to prove that they did not hinder an inmate’s exhaustion of
+administrative remedies, albeit after the plaintiff shows his affirmative efforts to take advantage
+of the remedies. Other circuits put a burden of production on the plaintiff to show that the
+defendants prevented him from exhausting his administrative remedies. In my view, our
+approach is problematic because we ultimately require defendants to prove the negative: that
+they did not hinder an inmate’s ability use the grievance process. See Piedmont & Arlington Life
+Ins. v. Ewing, 92 U.S. 377, 378 (1875) (“While it may be easy enough to prove the affirmative
+. . . it is next to impossible to prove the negative.”); Boykin v. Fam. Dollar Stores of Mich., LLC,
+3 F.4th 832, 842 (6th Cir. 2021) (“The summary judgment standard does not require [a party] to
+prove a negative.” (quotation omitted)).
+The text of the PLRA and common sense support my view that the other circuits got this
+one right. If we instead required a plaintiff to provide evidence at summary judgment that he
+was prevented from complying with the grievance process, he could point to concrete actions of
+the defendants that led to his inability to exhaust. The plaintiff in that situation would only have
+to prove a positive—some external circumstance made administrative remedies unavailable—
+that is statutorily baked into the PLRA. See Ross v. Blake, 578 U.S. 632, 642 (2016) (explaining
+that the only “textual exception to mandatory exhaustion” is when administrative remedies are
+“unavailable”).
+In enacting the PLRA, Congress “invigorated” the requirement that a plaintiff “must
+exhaust available remedies” under 42 U.S.C. § 1997e(a). Id. at 641–42 (quotation omitted). We
+expect plaintiffs to exhaust, and when they don’t, Congress said they typically don’t have a
+remedy in federal court. So it stands to reason that if they failed to exhaust administrative
+remedies, they’d be the ones who would need to explain why the remedies were unavailable.
+
+And the Supreme Court seems to have implicitly approved of that approach. See Ross, 578 U.S.
+at 648 (remanding for consideration of the plaintiff’s argument that remedies were unavailable to
+him after defendants established that plaintiff had not exhausted).1
+As a beneficial side effect, adopting the other circuits’ approach would eliminate our odd,
+initial inquiry into whether a plaintiff has made “affirmative efforts” to comply with the
+grievance process that are “sufficient under the circumstances . . . .” Napier, 636 F.3d at 223–24
+(quotation omitted). We’ve never really explained what that standard means. It’s opaque at
+least. And it doesn’t contemplate that a plaintiff may be unable to take affirmative efforts at all
+because of threats, intimidation, or fear of other officers.
+IV.
+For these reasons, I would adopt the approach of other circuits in the burden-shifting
+analysis if this were a matter of first impression. But, because I don’t write on a blank
+slate, I acknowledge that our circuit has already set the standard we must apply in this case.
+In doing so, I don’t think Lamb’s affirmative efforts were sufficient under the circumstances.
+So I respectfully dissent.
+1And, in general, burden shifting for affirmative defenses usually requires the plaintiff to prove something
+responsive to the defendants’ initial burden. See, e.g., Adickes v. S. H. Kress & Co., 398 U.S. 144, 156–57 (1970)
+(burden shifting in the summary judgment context adopting that approach); T.S. v. Doe, 742 F.3d 632, 635 (6th Cir.
+2014) (burden shifting in the qualified immunity context adopting that approach); Campbell v. Grand Trunk W. R.R.
+Co., 238 F.3d 772, 775 (6th Cir. 2001) (burden shifting in the statute of limitations context adopting that approach).

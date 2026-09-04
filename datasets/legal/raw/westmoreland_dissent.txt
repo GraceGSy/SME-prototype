@@ -1,0 +1,609 @@
+DISSENT
+
+JOHN K. BUSH, Circuit Judge, dissenting.
+“[C]ourts are particularly ill equipped to deal
+with the[] problems” of jail administration. Shaw v. Murphy, 532 U.S. 223, 229 (2001) (quoting
+Procunier v. Martinez, 416 U.S. 396, 405 (1974)). And “[r]unning a [jail] is an inordinately
+difficult undertaking.” Turner v. Safley, 482 U.S. 78, 84–85 (1987). With that reality in mind, I
+respectfully dissent. The majority invites judicial micromanagement of jailers’ daily affairs with
+a novel test for analyzing pretrial detainees’ Fourteenth Amendment failure-to-protect claims.
+Its decision will create even more confusion in our circuit and for those working in jails. It also
+reaches the wrong result: even under the majority’s test, I would affirm the district court’s grant
+of summary judgment to defendants.
+I.
+After Bretton Westmoreland failed to appear in court, he was apprehended and detained
+on May 27, 2018, in the Butler County Detention Center. There, his cell was separate from that
+of an inmate, Jerry St. Clair, who believed Westmoreland had “ratted” on him during a previous
+incarceration. R. 25-1, Westmoreland Dep., PageID 140; see also R. 26-3, Intake Sheet, PageID
+221. On the morning of June 4, St. Clair voiced his accusation—calling Westmoreland a “rat”—
+while mopping floors outside Westmoreland’s cell. R. 25-1, Westmoreland Dep., PageID 142,
+156. Westmoreland says that this statement “rowdied up” his cellmates—in particular, Ricky
+Mullikan and Adrian Baucum. Id. at 143. Fearing for his safety, Westmoreland called his
+mother that same morning and told her that he thought “something [was] going to happen.” Id.
+at 143–44. He called her again later that day, and she informed him that she had spoken with
+Tara McMillin, a coordinator at the jail, who was going to talk to Rocky Tyree, one of the jailers,
+who would handle the issue. Id. at 145. Westmoreland says that he then asked a guard, Deputy
+Jesse Kidd, to move him from his cell. Id. at 144. According to Kidd, Westmoreland told him
+that “he couldn’t stand to be in the cell with the other inmates and that they were getting on his
+nerves.” R. 26-6, Kidd Incident Report, PageID 233. Kidd denied Westmoreland’s request to be
+
+moved. The deputy testified that he told Westmoreland that “we could not just move him
+because he didn’t like it.” Id.
+Tyree admits that he received a note from McMillin about Westmoreland’s mother’s
+concerns. R. 25-2, Tyree Dep., PageID 162; see also R. 26-4, McMillin Incident Report, PageID
+224. Yet he claims that only fifteen minutes before receiving that note, he had already spoken to
+Westmoreland and Westmoreland denied that he wanted to be moved from his cell. R. 25-2,
+Tyree Dep., PageID 162. Westmoreland, however, claims that this conversation never took
+place, R. 29, Resp. to Mot. for Summ. J., PageID 246, so we assume it did not for the purposes
+of his summary judgment motion. See Jackson v. City of Cleveland, 925 F.3d 793, 806 (6th Cir.
+2019) (citations omitted).1
+Westmoreland also says that on the evening of June 4, his cellmates began to act more
+aggressively toward him. R. 25-1, Westmoreland Dep., PageID 146, 156. While they were
+watching television, Mullikan attacked Westmoreland from behind and broke his jaw. Id. at
+147–48. How jailers were supposed to have known about an impending assault is unclear. The
+note from Westmoreland’s mother only spoke of general concern because of St. Clair’s calling
+Westmoreland a “rat,” not an imminent attack by his cellmates. R. 26-4, McMillin Incident
+Report, PageID 224 (“She said Inmate Jerry St. Clair was now on the floor and was
+causing problems.”). Even Westmoreland admits that he did not know he was in danger of an
+attack at that point. Indeed, he explained that it was “a surprise it happened then.” R. 25-1,
+Westmoreland Dep., PageID 158. And even after he was transported to the hospital for
+treatment of his injuries, the cause of those injuries was not obvious to the jailers. When Tyree
+asked Westmoreland what happened, Westmoreland first asserted that he had fallen in the
+shower. Id. at 148. Only later did he admit that he had been attacked by his cellmate.
+Westmoreland filed a complaint against Tyree, Butler County, and two other jail
+officials—whom he later voluntarily dismissed—under 42 U.S.C. § 1983 for failure to protect
+him in violation of the Eighth and Fourteenth Amendments. He also brought Kentucky state-law
+claims for negligence and gross negligence. The district court granted summary judgment to
+1Westmoreland does concede, however, that Tyree was not responsible for or involved in determining
+Westmoreland’s particular cell or where St. Clair was permitted to mop floors. Oral Arg. at 7:12–7:45.
+
+Tyree and Butler County, the remaining defendants, holding that because Westmoreland had
+failed to show that Tyree knew of a substantial risk of harm, he had not violated the Constitution.
+It also declined to exercise its discretionary pendent jurisdiction over his state-law claims.
+Westmoreland timely appealed.
+II.
+Despite the district court’s thoughtful application of existing precedent to correctly reject
+Westmoreland’s claims, the majority now vacates that decision with a novel multi-factor test that
+it imports from the Ninth Circuit. Maj. Op. at 9–11 (citing Castro v. County of L.A., 833 F.3d
+1060, 1071 (9th Cir. 2016) (en banc), cert. denied, 137 S. Ct. 831 (2017)). Its admittedly “new
+standard” diverges from settled precedent as established by both the Supreme Court and this
+circuit. To illustrate that divergence, I begin by discussing the first principles underlying
+Westmoreland’s claim.
+Because Westmoreland is a pretrial detainee, rather than a convicted prisoner, his claim
+arises under the Fourteenth Amendment rather than the Eighth. Yet a review of the relevant
+precedents concerning the Eighth Amendment—which have long informed the principles
+governing detainee claims under the Fourteenth—provides crucial context.
+The Eighth Amendment’s prohibition against the infliction of “cruel and unusual
+punishments,” U.S. Const. amend. VIII, has been read to require the government to provide
+reasonable safety to those in its care. See DeShaney v. Winnebago Cnty. Dep’t of Soc. Servs.,
+489 U.S. 189, 200 (1989) (citing Estelle v. Gamble, 429 U.S. 97, 103–04 (1976)). In Farmer v.
+Brennan, the Supreme Court articulated a two-pronged test for determining when a prison
+official violates the Eighth Amendment by failing to protect an inmate. 511 U.S. 825, 834
+(1994). First, the failure to prevent harm must be “sufficiently serious”; in other words, the
+condition must pose a “substantial risk of serious harm.” Id. (citations omitted). This
+requirement has been called the “objective” prong of the test. The second requirement, known as
+the “subjective” or “deliberate-indifference” prong, requires that the prison official have a “state
+of mind” that is “‘deliberately indifferent’ to the inmate’s health or safety.” Id. (cleaned up).
+Rejecting an invitation to adopt a solely objective test, the Supreme Court made clear that the
+
+deliberate-indifference prong requires proof that the official “knows of and disregards an
+excessive risk to inmate health or safety.” Id. at 837. In other words, “the official must both be
+aware of facts from which the inference could be drawn that a substantial risk of serious harm
+exists, and he must also draw the inference.” Id. (emphasis added).
+This two-pronged test from Farmer, and the duty to protect from harm, were later
+extended to the pretrial-detainee context. See DeShaney, 489 U.S. at 200 (applying the
+Fourteenth Amendment’s prohibition against the “depriv[ation of] any person of life, liberty, or
+property, without due process of law,” U.S. Const. amend. XIV, in the pretrial-detainee context
+(citing Youngberg v. Romeo, 457 U.S. 307, 315–16 (1982))); see also Beck v. Hamblen County,
+969 F.3d 592, 600–01 (6th Cir. 2020) (“[We] have previously held that Farmer’s test for a
+prisoner’s claim under the Eighth Amendment applies ‘with equal force’ to a pretrial detainee’s
+substantive-due-process claim under the Fourteenth Amendment.” (quoting Richko v. Wayne
+County, 819 F.3d 907, 915 (6th Cir. 2016))). Thus, longstanding Sixth Circuit precedent barred
+a pretrial detainee’s recovery against a jailer unless he could show that the jailer subjectively
+understood the potential for harm.
+Then, in Kingsley, the Supreme Court modified the subjective prong of the two-part test
+for excessive-force claims brought by pretrial detainees under the Fourteenth Amendment.
+Kingsley, 576 U.S. at 400. The Kingsley Court explained that the issue before it was whether,
+“to prove an excessive force claim [under the Fourteenth Amendment], a pretrial detainee must
+show that the officers were subjectively aware that their use of force was unreasonable, or only
+that the officers’ use of that force was objectively unreasonable.” Id. at 392 (emphasis added). It
+outlined two state-of-mind inquiries—the first inquiry is into the official’s “state of mind with
+respect to the bringing about of certain physical consequences in the world,” and the second
+inquiry is into the official’s “state of mind with respect to whether his use of force was
+‘excessive.’” Id. at 395. The Supreme Court explained that “pretrial detainees (unlike convicted
+prisoners) cannot be punished at all, much less ‘maliciously and sadistically,’” so a subjective
+standard would be inappropriate in response to the second state-of-mind inquiry. Id. at 401
+(citations omitted). But while it explained that the degree of force must be viewed objectively,
+
+the force itself must still be the result of an “intentional and knowing act[.]” Id. (emphasis
+added).
+Our circuit recently extended Kingsley to modify the subjective prong of the Farmer test
+in the medical-needs context. See Brawner v. Scott County, 14 F.4th 585, 596 (6th Cir. 2021);
+see also Greene v. Crawford County, 22 F.4th 593, 607 (6th Cir. 2022); Britt v. Hamilton
+County, No. 21-3424, 2022 WL 405847, at *3 (6th Cir. Feb. 10, 2022); Hyman v. Lewis, No. 21-
+2607, --- F.4th ---, 2022 WL 682543, at *2–3 (6th Cir. Mar. 8, 2022). In Brawner, the majority
+posited that “Kingsley requires modification of the subjective prong of the deliberate-
+indifference test for pretrial detainees.” Brawner, 14 F.4th at 596. It concluded that what “is
+required [for a pretrial detainee] to establish deliberate indifference” is that the official “acted
+deliberately (not accidentally), but also recklessly ‘in the face of an unjustifiably high risk of
+harm that is either known or so obvious that it should be known.’” Id. (emphasis added) (quoting
+Farmer, 511 U.S. at 836); see also Greene, 22 F.4th at 606 (“Brawner modified the second
+prong of the deliberate indifference test applied to pretrial detainees to require only
+recklessness[.]”).
+The standard for evaluating medical-needs claims as announced in Brawner should now
+be considered binding precedent. However, I fear that Brawner, as applied by the majority
+opinion, will compound the conflict in our Fourteenth Amendment jurisprudence. The majority
+opinion apparently views Brawner, using a civil-law recklessness standard, as permitting a path
+to recovery that is wholly objective, i.e., not contingent on a finding that an official was
+subjectively aware of some asserted risk. Maj. Op. at 8–11; cf. Brawner, 14 F.4th at 584
+(quoting Estelle, 429 U.S. at 836–37 (defining civil-law recklessness)).2 But this interpretation
+is inconsistent with Farmer and our longstanding adoption of the Farmer test for pretrial
+detainees’ failure-to-protect claims. See Farmer, 511 U.S. at 837–38 (rejecting a wholly
+objective test); see also Barnes v. Ahlman, 140 S. Ct. 2620, 2622 (2020) (Sotomayor, J.,
+2Brawner’s modification of case law has already provoked confusion within our circuit. See Britt, 2022
+WL 405847 at *6 (“[The dissent] claims that we have ‘misapplie[d] the applicable law’ by failing to apply the
+Brawner recklessness standard . . . [b]ut from beginning to end, we have applied the recklessness test for
+determining the existence of deliberate indifference.”); see also id. at *7 (Clay, J., dissenting) (“While the majority
+concedes that Plaintiff’s deliberate indifference claims require us to apply an objective test, it nevertheless compares
+Defendants’ actions, and inactions, to prior cases where we applied a subjective test.”).
+
+dissenting from the grant of stay) (labeling the Farmer test “well-established law” for pretrial
+detainees’ failure-to-protect claims). And as a prudential matter, even assuming Farmer does
+not control here, it is unclear to me how the majority opinion’s application of Brawner differs
+from a mere negligence standard. Compare Restatement (Third) of Torts: Phys. & Emot. Harm
+§ 3 (2010) (defining “negligence” as when a “person does not exercise reasonable care under all
+the circumstances” and explaining that “reasonable care” is “conduct that avoids creating an
+‘unreasonable risk of harm’”), with Brawner, 14 F.4th at 598 (applying the new test and
+concluding that “[the official] recklessly failed to act reasonably to mitigate the risk that the
+serious medical need posed to [the detainee]”), and Britt, 2022 WL 405847 at *3 (describing the
+relevant inquiry as “whether the defendants acted recklessly in response to a danger, ‘even
+though a reasonable official’ in their position would have known about an ‘excessive risk’”
+(citations omitted)). But “liability for negligently inflicted harm,” as the Supreme Court has
+explained, “is categorically beneath the threshold of constitutional due process.” Kingsley,
+576 U.S. at 396 (quoting County of Sacramento v. Lewis, 523 U.S. 833, 849 (1998) (emphasis
+added)).
+True, the Brawner test may not facially look like a mere negligence standard because it
+requires an “excessive risk.” But this hedging makes little difference in practice. Jails are
+inherently risky places to be. See, e.g., Dep’t of Justice, Office of the Inspector General,
+M. Horowitz, Top Management and Performance Challenges Facing the Department of Justice—
+2021 (2021). The background risk at a jail is elevated as compared to the risk present outside of
+it—the risk we may think of when arguing that objective recklessness is not a negligence
+standard. But in a jail, where the risk is already elevated, the standard collapses into de facto
+negligence. Pretrial detainees in every case will now argue that jailers “should have known”
+some harm would materialize.
+Setting aside those concerns for now, though, this case does not present immediately
+analogous circumstances to those in Brawner, which involved a medical-needs claim. Here, a
+failure-to-protect claim is at issue. There is no compelling reason why the former must govern
+the latter. As Westmoreland’s counsel conceded at oral argument, a medical-needs claim
+“differs from [] an excessive-force and failure-to-protect claim.” Oral Arg. at 1:28–1:39.
+
+No Supreme Court precedent—certainly not Kingsley itself—authorizes reimagination of our
+failure-to-protect analysis. And we have never applied Kingsley outside of the medical-needs
+context. So, Brawner does not govern here.
+III.
+Brawner does not compel us to ignore binding precedents for a type of claim—failure-to-
+protect—that was not at issue in Brawner. The discussion below first explains why the
+majority’s new test is not mandated by Supreme Court precedent. The discussion then describes
+why the new test is unworkable and logically inconsistent.
+A. Problems Arising from the Majority’s Application of Kingsley to a Failure-to-Protect
+Claim
+The Supreme Court has not, through Kingsley or otherwise, overruled Farmer or
+overruled the subjective component of the deliberate-indifference test for failure-to-protect
+claims. See, e.g., Maj. Op. at 6–7. And in Kingsley, the Court made clear that its “view that an
+objective standard is appropriate in the context of excessive force claims brought by pretrial
+detainees pursuant to the Fourteenth Amendment” does not address the standard for other claims
+brought under that provision. Kingsley, 576 U.S. at 402 (emphasis added). In particular, the
+Kingsley Court stated that its holding was that courts must use an objective standard for
+determining if “the force deliberately used is . . . excessive.” Id. at 396 (cleaned up). And it has
+stated that we must distinguish excessive-force claims from other types of claims, specifically
+with respect to requirements for proof. See Porter v. Nussle, 534 U.S. 516, 523 (2002).
+The Supreme Court also was clear that liability of an official under Kingsley is limited to
+only those situations involving “an intentional and knowing act.” Kingsley, 576 U.S. at 400
+(emphasis added); see also Brawner v. Scott County, 18 F.4th 551, 555 (6th Cir. 2021) (mem.)
+(Readler, J., dissenting from the denial of rehearing en banc) (explaining that “deliberate” is
+defined as “[d]one with or marked by full consciousness of the nature and effects” (citation
+omitted)). So, as a purely common-sense matter, it is not clear how Kingsley—a case involving
+an action—necessarily applies to cases involving inaction. See id. at 551–57 (Readler, J.,
+
+dissenting from denial of rehearing en banc); see also Brawner, 14 F.4th at 607–08 (Readler, J.,
+concurring in part and dissenting in part).
+It is true that the Brawner majority did apply Kingsley in the medical-needs context,
+which could involve alleged governmental inaction. But I would not extend Kingsley further to
+apply to a failure-to-protect claim in the absence of a clear Supreme Court directive that we do
+so. Agostini v. Felton, 521 U.S. 203, 237 (1997); Rodriguez de Quijas v. Shearson/Am. Exp.,
+Inc., 490 U.S. 477, 484 (1989) (“[We must] leav[e] to this [Supreme] Court the prerogative of
+overruling its own decisions.”); RLR Invs., LLC v. City of Pigeon Forge, 4 F.4th 380, 390 (6th
+Cir. 2021) (“In the Sixth Circuit, a three-judge panel may not overturn a prior decision unless a
+Supreme Court decision ‘mandates modification’ of our precedent.” (citing United States v.
+Moody, 206 F.3d 609, 615 (6th Cir. 2000))). Kingsley, as applied in Brawner, should not be read
+to likewise modify the test for a failure-to-protect claim, which should still be governed by the
+Farmer test.
+B. Problems Arising from the Majority’s Adoption of the Ninth Circuit’s Castro Test
+In addition to my concerns noted above regarding the majority’s failure to apply Farmer,
+there are other problems arising from the majority’s adoption of a new, four-part test for failure-
+to-protect claims under the Fourteenth Amendment. Maj. Op. at 9–11. Under this test, borrowed
+from the Ninth Circuit in Castro, a plaintiff must show four elements to prevail on a failure-to-
+protect claim:
+(1) The defendant made an intentional decision with respect to the conditions
+under which the plaintiff was confined;
+(2) Those conditions put the plaintiff at substantial risk of suffering serious
+harm;
+(3) The defendant did not take reasonable available measures to abate that risk,
+even though a reasonable officer in the circumstances would have
+appreciated the high degree of risk involved—making the consequences of
+the defendant’s conduct obvious; and
+(4) By not taking such measures, the defendant caused the plaintiff’s injuries.
+Maj. Op. at 9 (quoting Castro, 833 F.3d at 1071). The majority attempts to clarify its test by
+stating that it “hold[s]” that a plaintiff must show that “a defendant officer [ ] act[ed]
+
+intentionally in a manner that puts the plaintiff at substantial risk of harm, without taking
+reasonable steps to abate that risk, and by failing to do so actually cause[d] the plaintiff’s
+injuries.” Id. at 10.
+According to the majority, only element 3 introduces something new by reflecting
+Kingsley’s modification of the subjective component of the Farmer test. See Kingsley, 576 U.S.
+at 396. The majority also states that elements 1, 2, and 4 are not new but simply track the
+objective prong of the Farmer test, the component not modified by Kingsley. See Maj. Op. at 9
+(“The first, second, and fourth elements of this test match the objective prong of the failure-to-
+protect claim.” (citing Farmer, 511 U.S. at 834)); but see Farmer, 511 U.S. at 834 (“Our cases
+have held that a prison official violates the Eighth Amendment only when two requirements are
+met.” (emphasis added)).
+In fact, only element 2 tracks the objective component of the Farmer test. See Farmer,
+511 U.S. at 834 (noting that the objective component requires a pretrial detainee to “show that he
+is [detained] under conditions posing a substantial risk of serious harm”); see also Montgomery
+v. Ferentino, No. 20-3114, 2021 WL 3204843, *2 (6th Cir. Feb. 24, 2021) (“To establish a
+constitutional violation based on a failure to protect, an inmate must establish that: (1) ‘the
+failure to protect from risk of harm is objectively ‘sufficiently serious’’; and (2) ‘prison officials
+acted with ‘deliberate indifference’ to inmate health or safety.’” (quoting Bishop v. Hackel,
+636 F.3d 757, 766 (6th Cir. 2011) (quoting Famer, 511 U.S. at 833–34))). Elements 1 and 4 are
+wholly new additions to the objective component of the Farmer test, and it is not clear what their
+purposes are, or how they are to be satisfied, for a claim alleging failure to act.
+It does not logically follow, as the majority argues, that Kingsley, through Brawner,
+requires us to modify the subjective and objective components of the Farmer test. See, e.g.,
+Britt, 2022 WL 405847 at *6 (“That we have relied on pre-Brawner cases for other aspects of the
+deliberate-indifference inquiry is hardly unusual. What would be unusual would be to assume
+that Brawner overruled all of these cases, even those that dealt with other issues and even those
+that relied on alternative grounds when they addressed the state-of-mind inquiry.”). Even if the
+majority were correct that Kingsley and Brawner effect faithful application of those precedents
+for failure-to-protect claims, they would require that we keep the objective prong of the Farmer
+
+standard untouched and only modify the subjective prong—not import wholesale a novel test
+that modifies both. See Wright v. Spaulding, 939 F.3d 695, 700 (6th Cir. 2019) (“[This circuit]
+follows the rule that the holding of a published panel opinion binds all later panels unless
+overruled or abrogated en banc or by the Supreme Court.”).
+Indeed, our circuit has never understood Kingsley to have modified the objective
+component of the test applied to pretrial detainees’ claims. See Greene, 22 F.4th at 607 (“[A]
+plaintiff must ‘present evidence from which a reasonable jury could find that (1) that [the
+detainee] had an objectively serious medical need; and (2) that [the defendant’s] action (or lack
+of action) was intentional (not accidental) and she either (a) acted intentionally to ignore [the
+detainee’s] serious medical need, or (b) recklessly failed to act reasonably to mitigate the risk the
+serious medical need posed to’ the detainee.” (citing Brawner, 14 F.4th at 597)); see also Britt,
+2022 WL 405847 at *3.
+Furthermore, the majority’s new test is not workable as applied to failure-to-protect
+claims.3 It purports to implement Kingsley, but that case involved alleged action—that is,
+excessive force—not alleged inaction, which underlies a failure-to-protect claim. See Castro,
+833 F.3d at 1068–69. When the affirmative act of excessive force is alleged, as the Supreme
+Court explained, it does not matter if the official intended to punish a detainee by his actions.
+The question is if “the force purposefully or knowingly used against him was objectively
+unreasonable.” Kingsley, 576 U.S. at 397. In other words, we can infer punitive intent based on
+an affirmative act’s relationship to a legitimate government objective. See Farmer, 511 U.S. at
+837–38. But inaction—when an official fails to act—does not raise such an inference. If an
+official unknowingly fails to act, even if the failure is objectively unreasonable, the official does
+not violate the Fourteenth Amendment. Griffith v. Franklin County, 975 F.3d 554, 571 (6th Cir.
+2020) (“Whatever Kingsley requires, it is more than negligence.” (quoting Martin v. Warren
+County, 799 F. App’x 329, 338 n.4 (6th Cir. 2020))); see also Lewis, 523 U.S. at 848
+3Perhaps because of these issues, the Ninth Circuit has since limited its sweeping use of an objective
+standard when applied to other failure-to-protect contexts. See, e.g., Herrera v. L.A. Unified Sch. Dist., 18 F.4th
+1156, 1161 (9th Cir. 2021).
+
+(“The Fourteenth Amendment is not a font of tort law to be superimposed upon whatever
+systems.” (cleaned up)).
+C. Logical Inconsistences and Ambiguities within the Majority’s New Test
+Even if we indulged the assumption that Kingsley and Brawner somehow authorize a
+reconfiguration of our failure-to-protect jurisprudence, the majority’s particular method of doing
+so contains several deficiencies. The four-part test contains logical inconsistencies and
+ambiguities. And, not content with these issues, the majority compounds confusion by providing
+its own gloss on what this four-part test entails. I will address the majority’s restatement of its
+four-part test first.
+The majority says that it “hold[s]” that a plaintiff must show that “a defendant
+officer [ ] act[ed] intentionally in a manner that puts the plaintiff at substantial risk of harm,
+without taking reasonable steps to abate that risk, and by failing to do so actually cause[d] the
+plaintiff’s injuries.” Maj. Op. at 10. This sentence could be read two ways. It could be that the
+majority’s clarification is actually the test the majority wants to adopt. If so, the majority
+erroneously believes that by using the words “we hold” it transforms its dicta into a holding. See
+Freed v. Thomas, 976 F.3d 729, 738 (6th Cir. 2020) (“[D]ictum is not converted into holding by
+forceful utterance or by preceding with the words ‘We hold that . . . .’” (quoting Pierre N. Level,
+Judging Under the Constitution: Dicta about Dicta, 81 N.Y.U. L. Rev. 1249, 1257 (2006))).
+A “holding” is defined as “[a] court’s determination of a matter of law pivotal to its decision.”
+Black’s Law Dictionary 849 (10th ed. 2014). The holding in the majority’s opinion would be the
+test that it applies to reach its decision to vacate the district court’s decision—the four-element
+test it adopted from Castro. See Maj. Op. at 10–11. The second way that the majority’s sentence
+could be read is that it is a clarification of certain elements of its four-part test. But its gloss on
+elements 1 and 4 of the four-part test creates even more problems, as explained below.
+Element 1 of the four-part test requires that “[t]he defendant made an intentional decision
+with respect to the conditions under which the plaintiff was confined.” Maj. Op. at 9 (emphasis
+added); see also id. at 10. But it is unclear what the majority means by “intentional.” On one
+hand, “intentional” could mean merely that the official’s actions or inactions were not accidental.
+
+Brawner, 14 F.4th at 597. But then it is unclear how this element is not superfluous given
+element 3. And accidental actions already did not meet the level of a constitutional violation
+pre-Kingsley. On the other hand, element 1 could exist to try to cabin liability to those actions or
+inactions that intentionally created the risky conditions under which the plaintiff was confined.
+This interpretation would require an analysis into the official’s state of mind to determine if the
+official subjectively knew (to intentionally make a decision) of the risky conditions. But that, of
+course, would defeat the majority’s nominal goal of permitting liability even when there is
+merely some risk of which an official “would have” known. See Castro, 833 F.3d at 1087
+(Ikuta, J., dissenting) (“The majority apparently reinstates the deliberate indifference standard
+because it cannot explain how an official’s failure to act could otherwise constitute an intentional
+decision. In other words, the majority has simply dressed up the Farmer test in Kingsley
+language for no apparent reason; it conflates the two standards only to end up where we
+started.”). Elements 1 and 3’s apparent conflict will no doubt engender confusion in any
+practical application.
+In addition, it is not clear which “conditions” element 1 refers to. Is it that the jailer must
+have placed the detainee in that general condition, like a cell, or a more specialized inquiry—that
+the jailer placed the detainee in that particular cell or with that particular person or condition?
+But see Farmer, 511 U.S. at 843. This element also ignores the realities of jail management and
+operations. It is often not the case that the official that assigns a cell to a detainee is also the
+same individual responsible for the monitoring of that cell, the transferring of detainees to
+different cells, hearing detainees’ grievances about their cell conditions, or other decisions that
+arise that affect a detainee’s confinement conditions. See, e.g., Richko, 819 F.3d at 917–21.
+It cannot be the case that element 1 requires each inmate to receive constant attention and
+thus the micro-management of jails. See Florence v. Bd. of Chosen Freeholders of Cnty. of
+Burlington, 566 U.S. 318, 326 (2012) (“[A] regulation impinging on an inmate’s constitutional
+rights must be upheld ‘if it is reasonably related to legitimate penological interests.’” (quoting
+Turner, 482 U.S. at 89)); see also R. 25-4, McMillin Dep., PageID 178 (testifying that the floor
+deputies do checks in the Butler County Detention Center “at least every hour, and it could have
+been more frequent”); see generally R. 26-5, Inmate Check Sheet. Not only would this be an
+
+inappropriate intrusion into jails, but it would also be impractical. See Florence, 566 U.S. at 326
+(“[S]afety and order at these institutions requires the expertise of correctional officials, who must
+have substantial discretion to devise reasonable solutions to the problems they face.”). After all,
+jails admit over eight million inmates a year. See, e.g., Dep’t of Justice, Bureau of Justice
+Statistics, T. Minton & Z. Zeng, Jail Inmates in 2020—Statistical Tables (2021).
+As noted, the majority attempts to “clarify” element 1 by stating that what is required for
+a constitutional violation is that “a defendant officer [ ] act[ed] intentionally in a manner that puts
+the plaintiff at substantial risk of harm.” Maj. Op. at 10. This clarification suffers from the same
+ambiguity as element 1. This restatement could be read to require merely more than accidental
+actions or, by contrast, could be read to necessitate a full subjective analysis. See supra pp. 23–
+24. And, regardless, this restatement is in conflict with element 1. Instead of requiring an
+intentional decision with respect to the pretrial detainee’s conditions, this restatement requires an
+intentional manner that puts the detainee at risk. As the majority does not apply this restatement
+to the facts in reaching its decision, it does not further explain what this means.
+Element 3 of the majority’s four-part test is also logically inconsistent. Similar to the
+Brawner test, element 3 requires that “[t]he defendant did not take reasonable available measures
+to abate that risk, even though a reasonable officer in the circumstances would have appreciated
+the high degree of risk involved—making the consequences of the defendant’s conduct obvious.”
+Maj. Op. at 9; see also id. at 11. Yet as explained above, this element is not consistent with
+Supreme Court precedent and the precedent of our circuit. See supra pp. 19–20. And, like the
+Brawner majority, today’s majority fails to explain how it has not simply instituted a de facto
+negligence standard under the color of “civil recklessness.” See supra pp. 17–18.
+Last, element 4 is a confusing addition. It facially omits a proximate causation
+requirement. See Maj. Op. at 9 (“By not taking such measures, the defendant caused the
+plaintiff’s injuries.”); see also id. at 11; Burrage v. United States, 571 U.S. 204, 212 (2014)
+(“Where there is no textual or contextual indication to the contrary, courts regularly read phrases
+like ‘results from’ to require but-for causality.”). But our precedent for § 1983 claims requires
+proximate causation—not merely cause-in-fact. See Marvaso v. Sanchez, 971 F.3d 599, 606–07
+(6th Cir. 2020) (stating that a plaintiff must establish proximate causation, which is a question of
+
+foreseeability). So, unless the majority’s reference to causation is actually a reference to
+proximate causation, it is unclear how the majority’s test is consistent with basic principles of
+§ 1983 jurisprudence.4
+But even if the majority means proximate causation, the true scope of its test is still far
+from clear. The majority may mean that only a single official may be held liable for a failure-to-
+protect incident, since only that official’s omission was the singular, proximate cause of the
+injury. That interpretation would make some sense, given that the Castro test was itself based on
+a Kingsley-inspired excessive-force instruction. Cf. Castro, 833 F.3d at 1060; Kingsley, 576 U.S.
+at 393–94. And in the context of some of our excessive-force and negligence analyses, we treat
+the official who inflicted the force as the proximate cause of the harm, even if some other
+official’s omission was a cause-in-fact. See, e.g., Smith v. County of Lenawee, 600 F.3d 686, 692
+(6th Cir. 2010). By contrast, however, the majority may be silently codifying a much more
+expansive notion of proximate cause, in which multiple officials may all be held liable for their
+respective inaction. See contra Cabaniss v. City of Riverside, 231 F. App’x 407, 413 (6th Cir.
+2007) (“Only Carlton may be liable for excessive force because he was the officer to administer
+the pepper spray and was assisted by no one else.”). If the latter interpretation is true, it would
+underscore not only the sweeping nature of today’s decision, but also its inconsistency with
+circuit precedent. Nothing about Brawner, and certainly nothing about Kingsley, authorizes
+modification of the usual causation standards to permit that scores of bystanding officials be held
+liable for their supposed omissions. And neither Kingsley nor Brawner purported to change our
+analyses with respect to the objective component of our tests.
+Ducking the question of what the causation standard is under this four-part test, the
+majority then expands element 4, requiring that the defendant officer’s failure “to do so actually
+cause[d] the plaintiff’s injuries.” Maj. Op. at 10. According to Black’s Law Dictionary, “actual
+cause” is “but-for cause” or “cause-in-fact.” Black’s Law Dictionary 43, 265 (10th ed. 2014). If
+this reading of the majority’s standard is accurate, it is inconsistent with our long-standing
+4This is true even for medical-needs claims under the Fourteenth Amendment, where the pretrial detainee
+must show that the official was the proximate cause of the “substantial risk of harm,” even if not the proximate
+cause of the ultimate injury or death. See Blackmore v. Kalamazoo County, 390 F.3d 890, 899–900 (6th Cir. 2004);
+see also Est. of Owensby v. City of Cincinnati, 414 F.3d 596, 604 (6th Cir. 2005).
+
+§ 1983 jurisprudence. See Marvaso, 971 F.3d at 606–07. Whatever the standard is, it is highly
+unclear, and the majority does not attempt to explain what this standard is or how it would be
+applied. Maj. Op. at 11.
+Notwithstanding these concerns, the majority claims that Westmoreland has established
+each of the four elements. Id. at 10–11. I respectfully disagree. Even accepting the validity of
+the new test, Westmoreland has not satisfied many of its requirements, as explained below.
+IV.
+Under 42 U.S.C. § 1983, Westmoreland must show that (1) Tyree violated his
+constitutional right and (2) that the right was “clearly established at the time” of the violation.
+District of Columbia v. Wesby, 138 S. Ct. 577, 589 (2018) (quoting Reichle v. Howards,
+566 U.S. 658, 664 (2012)). Under the majority’s new test, Westmoreland would need to prove
+each of the four elements of that test in order to show that Tyree violated his “clearly
+established” constitutional right. Maj. Op. at 9–11. Yet his claim fails to satisfy at least
+elements 1, 3, and 4.5
+A. Westmoreland Shows No Evidence that Tyree Intentionally Failed to Move him from
+his Cell
+Element 1 of the majority’s test concerns whether Tyree had made an “intentional
+decision with respect to the conditions under which [Westmoreland] was confined.” Maj. Op. at
+10. It is unclear what the majority means by “intentional.” Does this element require that Tyree
+had to intentionally, and not accidentally, fail to move Westmoreland? See id. (“[Tyree]
+determined Westmoreland did not need to be moved.”). Or does this element require more
+specific decisions—that Tyree put Westmoreland in that particular cell or placed him in the cell
+with Mullikan? If the latter, there are no allegations that Tyree placed Westmoreland in that
+particular cell or specifically with Mullikan. See, e.g., Appellant’s Br. at 8. If the former, the
+evidence still does not establish that Tyree intentionally failed to move Westmoreland from his
+5I am inclined to agree with my colleagues that Westmoreland likely has proof to satisfy element 2—the
+condition “put [Westmoreland] at a substantial risk of suffering serious harm”—as being identified as a “snitch”
+would put him at substantial risk of assault. Maj. Op. at 10 (citing Comstock v. McCrary, 273 F.3d 693, 699 n.2 (6th
+Cir. 2001)).
+
+cell. Accepting Westmoreland’s version of events as true, Westmoreland did not tell his mother
+he wanted to be moved from his cell, nor did he tell Tyree. Westmoreland presents no evidence
+showing that Tyree made an intentional decision to not move him from his cell. Whatever
+element 1 requires, Westmoreland lacks proof to satisfy it.6
+B. Westmoreland Shows No Evidence that a Reasonable Official in the Same Circumstances
+would have Appreciated the High Level of Risk Involved—Making the Consequences of
+Failing to Act Obvious
+Westmoreland claims that Tyree fell short of his duty to protect him at three different
+times. First, when Tyree was informed that Westmoreland’s mother called to express concern
+about her son’s safety, he never followed up with Westmoreland. Appellant’s Br. at 11–12.
+Next, when Westmoreland told Deputy Kidd that he feared his cellmates would “do something”
+to him, Tyree did not move him from his cell. Id. at 12. And finally, assuming that Tyree did
+talk to Westmoreland, he should have had that conversation out of earshot of Westmoreland’s
+cellmates. Id. at 10–11, 18–19. Westmoreland concludes that Tyree knew of the risk leaving
+him in his cell posed and still did not move him. Id. at 17–18.
+However, Westmoreland presents no evidence that he ever told Tyree—assuming he
+spoke to him—or his mother that he needed to be moved because he feared he was in danger
+from his cellmates. He proffers no evidence that Tyree knew that Westmoreland told Kidd he
+was concerned about his cellmates. Last, even assuming that Tyree did not speak to
+Westmoreland, St. Clair was not a cellmate of Westmoreland’s, so Tyree was not objectively
+unreasonable in leaving Tyree in his cell—a cell that did not house St. Clair.
+Westmoreland himself admits as much. When asked about the attack, Westmoreland
+testified that he was “surprise[d]” it had happened when it did and that Mullikan had not
+threatened him before the attack. R. 25-1, Westmoreland Dep., PageID 157–58. He also stated
+that he never asked to be transferred to another cell, except in his conversation with Deputy
+6The majority does not apply its restatement of element 1—“a defendant officer must act intentionally in a
+manner that puts the plaintiff at a substantial risk of harm”—to the facts in this case. Maj. Op. at 10. But even if it
+had, Westmoreland has failed to present evidence showing that Tyree intentionally acted in a manner that put him at
+a substantial risk of harm.
+
+Kidd, which Tyree testified he was not aware of prior to the incident. Id. at 156; R. 25-2, Tyree
+Dep., PageID 164–65.
+Attempting to circumvent these issues, Westmoreland tries to link together a chain of
+events—that he would have told Tyree he feared harm from his cellmates if Tyree had pulled
+him out to speak to him and that Tyree still would have left him in this cell. But all
+Westmoreland can show is that his mother was concerned generally about his wellbeing, which
+was passed on to Tyree, and that his cellmates were getting on his nerves. See, e.g., R. 31,
+Memo. Op. & Order, PageID 292 (“Westmoreland’s case at best is that Tyree knew
+Westmoreland’s mother was concerned generally about her son’s wellbeing because St. Clair
+told Westmoreland’s cellmates he was a rat.”); see also R. 25-3, Fugate Dep., PageID 169
+(“[Westmoreland’s mother] was concerned over Jerry St. Clair.”). Westmoreland does not offer
+any evidence that he identified the cellmate he was concerned about, his cellmates in particular,
+or any other evidence that would show that he communicated to the jail officials that he was in
+danger in his cell because of St. Clair’s accusation. See Kemp v. Fulton County, No. 21-1079, ---
+F.4th ---, 2022 WL 575719, at *5 (7th Cir. Feb. 25, 2022) (“The defendants also argue
+persuasively that Kemp did not present any evidence showing that any of them was on notice of
+a serious risk of harm to him. Kemp admitted that he never reported his verbal disagreement
+with [his cellmates] or the ensuing threats to Jail employees, and that prior to the beating, all four
+men had cohabited peacefully for months.”).
+In short, Westmoreland asks us to require jail officials to read minds. His attack, while
+unarguably terrible and traumatic, and Tyree’s alleged failure to talk to him are not enough to
+prove that Tyree violated his constitutional rights. Whatever the majority’s element 3 requires,
+it must be more than negligence. See Kingsley, 576 U.S. at 396 (citations omitted).
+And Westmoreland’s proof does not meet even that threshold.
+C. Westmoreland Shows No Evidence that Tyree was the But-For or Proximate Cause of his
+Injuries
+Element 4 requires that Tyree “caused” Westmoreland’s injuries by failing to take “such
+measures.” Maj. Op. at 9; see also id. at 11. The majority explains that
+
+Westmoreland established this element by showing he suffered physical harm as
+a result of being labeled a snitch after St. Clair identified him as a ‘rat’ in front of
+his cellmates; his mother, Sublett, called BCJ to ask that actions be taken to
+protect Westmoreland; Westmoreland was not moved away from his cellmates;
+and he subsequently suffered a broken jaw and lingering issues as a result of an
+attack by his cellmate.
+Id. at 11 (emphasis added). In other words, Tyree did not move Westmoreland from his
+cellmates after St. Clair identified him as a snitch and Westmoreland’s jaw was broken by his
+cellmate. If element 4 requires proximate causation, it is clear that Westmoreland has not
+offered evidence to satisfy it. In any sense of the word “causation,” these events are too tenuous
+to meet the requirement of proximate cause. See, e.g., CSX Transp., Inc. v. McBride, 564 U.S.
+685, 701 (2011) (“Common-law formulations [of proximate cause] include, [ ] the ‘immediate’
+or ‘nearest’ antecedent test; the ‘efficient, producing cause’ test; the ‘substantial factor’ test; and
+the ‘probable,’ or ‘natural and probable,’ or ‘foreseeable’ consequence test.” (quoting Smith,
+Legal Cause in Actions of Tort, 25 Harv. L. Rev. 103, 106–21 (1911))). It is not a foreseeable
+reaction that leaving Westmoreland in a cell—a cell that he did not request a floor deputy to
+move him from until later in the day, a cell that did not house St. Clair, and a cell that
+Westmoreland never expressed fear about to Tyree—would cause Westmoreland to be attacked.
+See Marvaso, 971 F.3d at 607. It does not logically follow that Westmoreland’s attack was a
+foreseeable event when Westmoreland himself was “surprised” on the timing of the attack.7
+Westmoreland does not present evidence to support a finding of element 4.8
+V.
+Even assuming Westmoreland could meet each of the majority’s four elements to show
+that Tyree violated his constitutional right, he would still need to show that such a right was
+7Compare this to Castro, where the Ninth Circuit explained that there was sufficient evidence to support
+element 4. Castro, 833 F.3d at 1073 (“[The official] failed to respond to [the detainee]’s banging on the window in
+the door of the cell. Jail video of the hallway showed [the detainee] pounding on his cell door for a full minute,
+while [the official] remained unresponsive, seated at a desk nearby. [The official] failed to respond fast enough to
+[an arrestee’s] inappropriate touching of [the detainee].”); contra Kemp, 2022 WL 575719 at *6 (“Without any
+evidence that. . . [the official’s] decision not to wear a hearing aid led to [the detainee]’s injuries, a jury could not
+conclude that [the official]’s actions were objectively unreasonable.”).
+8The majority does not apply its creation of an “actual causation” standard to the facts in the case here.
+Maj. Op. at 10–11.
+
+“clearly established at the time” of the alleged violation. See Wesby, 138 S. Ct. at 589 (citation
+omitted). “Clearly established” means that the law at the time was “sufficiently clear”; put
+simply, that the “existing law . . . placed the constitutionality of the officer’s conduct beyond
+debate.” Id. (quoting Ashcroft v. al-Kidd, 563 U.S. 731, 735 (2011) (cleaned up)). In other
+words, the rule must be “settled law” and “precedent must be clear enough that every reasonable
+official would interpret it to establish the particular rule the plaintiff seeks to apply.” Id. at 590
+(citations omitted). “It is not enough that the rule is suggested by then-existing precedent.” Id.
+As my colleagues concede, the standard under which we analyze pretrial detainees’
+failure-to-protect claims under the Fourteenth Amendment is anything but clear. See Maj. Op. at
+7–9. The federal appellate circuits are split on the applicability of Kingsley. Our own circuit has
+never “applied the objective standard to a failure-to-protect claim against an individual
+officer[.]” Id. at 9. And, as the district court accurately explained, we had “yet to alter the
+standard for failure to protect claims and [ ] continued to apply the deliberate indifference
+standard.” R. 31, Mem. Op. & Order, PageID 287 n.2. Westmoreland cannot show that his right
+was clearly established at the time of Tyree’s alleged inactions. “So long as the alleged violation
+has not been clearly established, the officers receive qualified immunity and the suit can be
+dismissed.” Baxter v. Bracey, 751 F. App’x 869, 871 (6th Cir. 2018), cert. denied, 140 S. Ct.
+1862 (2020).
+Indeed, it is definitionally impossible to deny qualified immunity to Tyree when adopting
+a new test on appeal. See Rivas-Villegas v. Cortesluna, 142 S. Ct. 4, 8 (2021) (per curiam)
+(“Neither [appellee] nor the Court of Appeals identified any Supreme Court case that addresses
+facts like the ones at issue here. Instead, the Court of Appeals relied solely on its precedent in
+LaLonde. Even assuming that Circuit precedent can clearly establish law for purposes of § 1983,
+LaLonde is materially distinguishable and thus does not govern the facts of this case.”); City of
+Tahlequah v. Bond, 142 S. Ct. 9, 12 (2021) (per curiam) (“Neither the panel majority nor the
+respondent have identified a single precedent finding a Fourth Amendment violation under
+similar circumstances. The officers were thus entitled to qualified immunity.”). The Supreme
+Court has reminded us time-and-time again that we ignore this requirement at our own peril.
+See, e.g., Plumhoff v. Rickard, 572 U.S. 765, 778–79 (2014). It is time we heed its warning.
+
+VI.
+As for Butler County, Westmoreland has waived his § 1983 claim against it. Appellant’s
+Br. at 7 n.1 (“Plaintiff no longer appeals the District Court’s dismissal of his 42 U.S.C. § 1983
+claims against Defendant Butler County.”). “[W]aiver is the ‘intentional relinquishment or
+abandonment of a known right.’” United States v. Montgomery, 998 F.3d 693, 697 (6th Cir.
+2021) (cleaned up). And “we may not review waived claims at all.” United States v. Jackson,
+995 F.3d 476, 484 (6th Cir. 2021) (quoting United States v. Hall, 373 F. App’x 588, 591–92 (6th
+Cir. 2010) (citation omitted)). But the majority states that the district court “must” analyze
+“Westmoreland’s claim against BCJ” after it “analyzes the claim against Tyree[.]” Maj. Op. at
+12.
+The majority’s resurrection of Westmoreland’s claim against Butler County distorts our
+proper role as neutral adjudicators. Indeed, “courts are essentially passive instruments of
+government.” United States v. Sineneng-Smith, 140 S. Ct. 1575, 1579 (2020) (quoting United
+States v. Samuels, 808 F.2d 1298, 1301 (8th Cir. 1987) (Arnold, J. concurring in denial of reh’g
+en banc)). We can only decide questions presented by the parties. See id. (citation omitted).
+And Westmoreland affirmatively waived his appeal on his claim against Butler County.
+Westmoreland asked this Court to apply the Kingsley-modified test to his claim against Tyree
+only, a case he was aware of prior to filing his appeal, see Patterson v. State of Alabama,
+294 U.S. 600, 606 (1935), and “our system ‘is designed around the premise that [parties
+represented by competent counsel] know what is best for them, and are responsible for
+advancing the facts and argument entitling them to relief.’” Sineneng-Smith, 140 S. Ct. at 1579
+(quoting Castro v. United States, 540 U.S. 375, 386 (2003) (Scalia, J., concurring in part and
+concurring in judgment)); see also Wood v. Milyard, 566 U.S. 463, 472–73 (2012). I would
+affirm the district court’s judgment on Westmoreland’s claim against Butler County.9
+9Even if Westmoreland had not waived his claim, he forfeited it. Butler County’s liability is not even
+mentioned—besides for one sentence—in either of Westmoreland’s briefs, let alone raised in developed arguments.
+See Jones Bros., Inc. v. Sec’y of Lab., 898 F.3d 669, 677 (6th Cir. 2018) (noting that this circuit has “repeatedly held
+that a party forfeits any allegations that lack developed argument”). And even if we had authority to review such a
+claim against Butler County, it would still fail for lack of an underlying constitutional violation. See Watkins v. City
+of Battle Creek, 273 F.3d 682, 687 (6th Cir. 2001).
+
+VII.
+“[Judges] have a natural tendency to believe that their individual solutions to often
+intractable problems are better and more workable than those of the persons who are actually
+charged with and trained in the running of the particular institution under examination.” Bell v.
+Wolfish, 441 U.S. 520, 562 (1979). But we must confine ourselves to finding constitutional
+violations only after applying our longstanding analyses in this area to the facts before us and
+leave the management of jails to those better capable. I believe the majority applied the wrong
+test to reach the wrong result. For the foregoing reasons, I respectfully dissent.

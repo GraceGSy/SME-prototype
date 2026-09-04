@@ -101,6 +101,11 @@ class SkillPipelineTest(unittest.TestCase):
         self.assertIn("hci", harness.config["datasets"])
         self.assertIn("legal_opinions", harness.config["datasets"])
         self.assertIn("legal_dissents", harness.config["datasets"])
+        for dataset_name in ("legal_opinions", "legal_dissents"):
+            self.assertTrue(all(
+                "text" in document and "pdf" not in document
+                for document in harness.config["datasets"][dataset_name]["documents"]
+            ))
         self.assertEqual(
             {
                 name: settings["participant_prefix"]

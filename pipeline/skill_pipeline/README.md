@@ -29,9 +29,10 @@ documents, question subsets, matching pairs, candidate views, or output paths.
 The runner contains no extraction, question, or matching judgment.
 
 HCI inputs are already-extracted canonical JSON. Sherlock inputs are pinned
-XHTML files. Legal inputs are split opinion/dissent PDFs. XHTML and PDF inputs
-are sent to the configured extraction Skill; Python never infers narrative or
-legal boundaries. Each corpus keeps tracked `raw/` and `content/` artifacts.
+XHTML files. Legal inputs are UTF-8 text files containing one authored opinion
+or dissent. XHTML and legal text inputs are sent to the configured extraction
+Skill; Python never infers narrative or legal boundaries. Each corpus keeps
+tracked `raw/` and `content/` artifacts.
 
 ## Run
 

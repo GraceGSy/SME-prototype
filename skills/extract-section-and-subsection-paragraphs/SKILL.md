@@ -1,6 +1,6 @@
 ---
 name: "extract-section-and-subsection-paragraphs"
-description: "Extracts section, subsection, and paragraph content from an academic PDF and section manifest, a source-marked narrative XHTML file, or a split judicial opinion PDF. Narrative and legal modes use only explicit source markers as structural boundaries. Produces the same strict nested JSON schema for every domain."
+description: "Extracts section, subsection, and paragraph content from an academic PDF and section manifest, a source-marked narrative XHTML file, or the plain text of one judicial opinion or dissent. Narrative and legal modes use only explicit source markers as structural boundaries. Produces the same strict nested JSON schema for every domain."
 ---
 
 # Extract Section and Subsection Paragraphs
@@ -9,9 +9,9 @@ description: "Extracts section, subsection, and paragraph content from an academ
 
 This is the subsection-aware sibling of `extract-section-paragraphs`. That skill splits each top-level section's text into one flat `paragraphs` array. This skill does the same job, but when a top-level section has subsections (per its input's own `subsections` array), it splits that section's text into: the section's own **lead-in** paragraphs (whatever comes before the first subsection's heading) in the top-level entry's own `paragraphs` field, and each **subsection's own** paragraphs nested inside that subsection's own object. A top-level section with no subsections (`subsections: []`) is handled exactly like `extract-section-paragraphs` — its whole text becomes its own flat `paragraphs` array, no lead-in/subsection distinction to make.
 
-It reuses `extract-section-paragraphs`'s own text-extraction and paragraph-splitting machinery wholesale — the `pdftotext -layout`/plain-mode extraction, the line-position and running-header/footer detection, the three paragraph-break signals (blank line, indent, vertical gap), the caption/chart-label exclusion rules, the list-stays-one-paragraph rule. **Consult that skill's SKILL.md directly for the exact mechanics of all of that** — this skill's own Steps 1, 2, and 4 below just point back to it rather than re-deriving it, same pattern `extract-top-and-second-level-section-names` uses relative to `extract-top-level-section-names`. The one genuinely new piece of work this skill adds is Step 3 (locating subsection boundaries within a section) and Step 5 (the order-integrity check).
+In academic mode, it reuses `extract-section-paragraphs`'s own text-extraction and paragraph-splitting machinery wholesale — the `pdftotext -layout`/plain-mode extraction, the line-position and running-header/footer detection, the three paragraph-break signals (blank line, indent, vertical gap), the caption/chart-label exclusion rules, the list-stays-one-paragraph rule. **Consult that skill's SKILL.md directly for the exact mechanics of all of that** — this skill's own academic Steps 1, 2, and 4 below just point back to it rather than re-deriving it, same pattern `extract-top-and-second-level-section-names` uses relative to `extract-top-level-section-names`. The one genuinely new piece of academic-mode work this skill adds is Step 3 (locating subsection boundaries within a section) and Step 5 (the order-integrity check). Narrative and legal modes instead follow their explicit source rules below.
 
-**This does not judge subsection boundaries itself** — it takes the `subsections` array (names and numbers) as given input from `extract-top-and-second-level-section-names`, and only has to find *where in the body text* each already-identified subsection heading actually starts. If the user hasn't already run that skill (or its appendix-excluding sibling) on this PDF, run it first.
+**In academic mode, this does not judge subsection boundaries itself** — it takes the `subsections` array (names and numbers) as given input from `extract-top-and-second-level-section-names`, and only has to find *where in the body text* each already-identified subsection heading actually starts. If the user hasn't already run that skill (or its appendix-excluding sibling) on this PDF, run it first. Narrative and legal modes create structure only from the explicit markers defined below.
 
 ## Inputs
 
@@ -19,7 +19,7 @@ Choose exactly one mode:
 
 1. **Academic mode:** the existing nested section manifest and source PDF described below.
 2. **Narrative mode:** one XHTML source document whose real divisions are encoded as `h3` headings and/or `hr` separators.
-3. **Legal mode:** one PDF already split to contain a single authored judicial opinion or dissent.
+3. **Legal mode:** one UTF-8 text file containing a single authored judicial opinion or dissent.
 
 ## Narrative mode: explicit boundaries only
 
@@ -40,23 +40,24 @@ Use this mode for fiction or other narrative documents. Claude performs the extr
 
 ## Legal mode: explicit divisions only
 
-Use this mode only when the supplied PDF has already been split to one authored
-opinion or dissent. Read the PDF itself; no precomputed section manifest is
-required.
+Use this mode only when the supplied text file has already been split to one
+authored opinion or dissent. Read the text directly; no precomputed section
+manifest is required. Do not run PDF extraction or request page geometry, font,
+or coordinate data.
 
 - Begin at the authored body, normally marked by `OPINION`, `DISSENT`, or the
   authoring judge's attribution. Exclude the case caption, counsel list, filing
   metadata, and other front matter that precedes it.
-- Exclude running case-name headers, page numbers, repeated court chrome, and
-  signature or certificate material that follows the authored document.
+- Exclude any running case-name headers, page numbers, repeated court chrome,
+  and signature or certificate material that remains in the text.
 - A printed Roman-numeral division such as `I.` or `II. Discussion` becomes a
   top-level section. A printed capital-letter division such as `A.` or
   `B. Protected Speech` inside the current Roman-numeral division becomes a
   subsection.
 - Do not promote numbered lists, citations, record references, footnote
   numbers, or sentence-initial abbreviations merely because they resemble a
-  division marker. Confirm a heading from its placement, typography, and
-  sequence in the PDF.
+  division marker. Confirm a heading from its placement and sequence in the
+  source text.
 - The strict schema has two structural levels. Preserve lower-level printed
   divisions as paragraph text inside their enclosing subsection rather than
   inventing a third level.
@@ -74,9 +75,10 @@ required.
 - Keep all authored body prose, including substantive footnote text, quotations,
   and the disposition. Preserve wording and reading order while normalizing
   line wrapping, hyphenation artifacts, encoding artifacts, and whitespace.
-- Use visible paragraph breaks and indentation to reconstruct paragraphs. Do
-  not turn every PDF line into a paragraph, and do not merge distinct quoted or
-  body paragraphs solely because a page break intervenes.
+- Source lines may retain wrapping from the published decision. Use blank
+  lines, preserved indentation, and prose continuity to reconstruct paragraphs.
+  Do not turn every source line into a paragraph, and do not split one paragraph
+  solely because a page break was represented by a blank line.
 - Save the result directly in the strict JSON schema below and report section,
   subsection, and paragraph counts.
 
@@ -85,7 +87,7 @@ required.
 1. A `sections-with-subsections.json` (or `sections-with-subsections-excluding-appendices.json`) file: a JSON array of nested section objects (`section_name`, `section_number`, `subsections: [{section_name, section_number}]`), in the order sections appear in the paper — the output of `extract-top-and-second-level-section-names` or `extract-top-and-second-level-section-names-excluding-appendices`.
 2. The PDF path those sections were extracted from.
 
-## Workflow
+## Academic-mode workflow
 
 ### Step 1: Extract full text, line-position data, and running headers/footers
 

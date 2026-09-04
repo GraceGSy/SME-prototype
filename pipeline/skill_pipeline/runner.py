@@ -31,7 +31,7 @@ from ..incremental_graph.skill_api import ClaudeSkills, RunResult, SkillRef
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CONFIG = Path(__file__).with_name("pipeline.yaml")
 MATCH_FIELDS = {"source_id", "target_id", "basis"}
-SOURCE_KINDS = ("json", "xhtml", "pdf")
+SOURCE_KINDS = ("json", "xhtml", "text", "pdf")
 
 
 def sha256_bytes(value: bytes) -> str:

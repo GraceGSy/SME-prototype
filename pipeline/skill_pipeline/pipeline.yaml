@@ -140,29 +140,29 @@ datasets:
     documents:
       - id: banuelos_jimenez_opinion
         title: Banuelos-Jimenez v. Garland - Opinion
-        pdf:
-          path: datasets/legal/raw/banuelos_jimenez_opinion.pdf
-          sha256: df923deb7752d67c313c8dfae0b82956c337ea00686ccfcc4d5870030d0d944f
+        text:
+          path: datasets/legal/raw/banuelos_jimenez_opinion.txt
+          sha256: 86e2ff7cd15afbc9408630ba9b3169058f352c940747e6df78b49ce6d36b8f13
       - id: core_optical_opinion
         title: Core Optical Technologies, LLC v. Nokia Corporation - Opinion
-        pdf:
-          path: datasets/legal/raw/core_optical_opinion.pdf
-          sha256: 61171a4b889168dd5192e5325a3f4cf7b8e4ce86f4cbd32f165c26ea966a6b40
+        text:
+          path: datasets/legal/raw/core_optical_opinion.txt
+          sha256: 9131193d561399273bf39d6e40e7197c23b715b7fc1c7d6d379cd2b7f0cf7c6d
       - id: lamb_opinion
         title: Lamb v. Kendrick - Opinion
-        pdf:
-          path: datasets/legal/raw/lamb_opinion.pdf
-          sha256: 3d3f6cd5ad77dba96ca7f398c9203c45dc2ffc3eb3464be3182dd302c67a8445
+        text:
+          path: datasets/legal/raw/lamb_opinion.txt
+          sha256: 209d5a127f5bf6f22bd74960b59edc7495ad13c44154b54c57fcdd5f4ac96581
       - id: porter_opinion
         title: Porter v. Board of Trustees of North Carolina State University - Opinion
-        pdf:
-          path: datasets/legal/raw/porter_opinion.pdf
-          sha256: 158c4b71fcf99d7dadc440044896a1df45cb3c74700c00714b2e8ea1d8953b9c
+        text:
+          path: datasets/legal/raw/porter_opinion.txt
+          sha256: 3fb3cf60579f08810b690c0b71fdd23403cf9bf41b4f3bb49c8949ce4a509cd5
       - id: westmoreland_opinion
         title: Westmoreland v. Butler County - Opinion
-        pdf:
-          path: datasets/legal/raw/westmoreland_opinion.pdf
-          sha256: faad60eea9c04c5316f89024bc5b4dce3a6938b56e32b21193012e211a618516
+        text:
+          path: datasets/legal/raw/westmoreland_opinion.txt
+          sha256: 10199e414465d31706ebd0a67349ee5505e826ccf89bbadf06ac0c0ef9739910
 
   legal_dissents:
     content_dir: datasets/legal/content
@@ -176,26 +176,26 @@ datasets:
     documents:
       - id: banuelos_jimenez_dissent
         title: Banuelos-Jimenez v. Garland - Dissent
-        pdf:
-          path: datasets/legal/raw/banuelos_jimenez_dissent.pdf
-          sha256: 579c2b16fcaaa4e86d033508d277308edeaa2fe07e24c3ae24368d547d3d9568
+        text:
+          path: datasets/legal/raw/banuelos_jimenez_dissent.txt
+          sha256: 2d4a2e236b6cf51ddc39ce2766d5942b4a29c0e23d602152fc5b6512046c769a
       - id: core_optical_dissent
         title: Core Optical Technologies, LLC v. Nokia Corporation - Dissent
-        pdf:
-          path: datasets/legal/raw/core_optical_dissent.pdf
-          sha256: 1f0aea10b71d302a7017fd1898b25b6db47056aa0c4a47be9e18798831c5fe8c
+        text:
+          path: datasets/legal/raw/core_optical_dissent.txt
+          sha256: b6305be38e6ac811a487b9be3e46829b4bea77e2274b65ffae13c927154527f9
       - id: lamb_dissent
         title: Lamb v. Kendrick - Dissent
-        pdf:
-          path: datasets/legal/raw/lamb_dissent.pdf
-          sha256: 47399fd3dad284462878b9146654f270adab0d52150fcc765d2fb40c22842047
+        text:
+          path: datasets/legal/raw/lamb_dissent.txt
+          sha256: 3df0f8e3920c4e8b2d44638aed6c5d2307c0f9a42bbc153c05888a88489dc82f
       - id: porter_dissent
         title: Porter v. Board of Trustees of North Carolina State University - Dissent
-        pdf:
-          path: datasets/legal/raw/porter_dissent.pdf
-          sha256: 5bd7d1784ae727ec0c82671b1b5ec7512b6e2753c717cb6b5536065e78da35b8
+        text:
+          path: datasets/legal/raw/porter_dissent.txt
+          sha256: 9f267df2124c7a5a46bb85da8aebe18795e1d5b40189db1feeafe10d55bcbfa4
       - id: westmoreland_dissent
         title: Westmoreland v. Butler County - Dissent
-        pdf:
-          path: datasets/legal/raw/westmoreland_dissent.pdf
-          sha256: 8ba7fd9f15424fda89925c9ef7fdbce11094445e1168c020cd75e25f2d653b45
+        text:
+          path: datasets/legal/raw/westmoreland_dissent.txt
+          sha256: 8a3325d2429fb80ad8aac2c7400a40569552d0a2b0beebb2543d6e75986dcb91

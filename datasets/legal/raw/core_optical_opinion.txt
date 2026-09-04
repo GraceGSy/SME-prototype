@@ -1,0 +1,726 @@
+OPINION
+
+TARANTO, Circuit Judge.
+Between November 2019 and August 2020, Core Opti-
+cal Technologies, LLC filed complaints in the U.S. District
+Court for the Central District of California alleging in-
+fringement of U.S. Patent No. 6,782,211 by three groups of
+defendants led by Nokia Corp., ADVA Optical Networking
+SE, and Cisco Systems, Inc. (collectively, Nokia). In Au-
+gust 2021, Nokia moved for summary judgment, arguing
+that Core Optical lacked standing to assert the ’211 patent
+even though the inventor, Dr. Mark Core, had assigned the
+patent to Core Optical in 2011. Nokia’s argument was that
+the 2011 assignment was ineffective because Dr. Core had
+already assigned the patent rights to TRW Inc., his em-
+ployer at the time of invention, through an August 1990
+employment-associated agreement with TRW. The district
+court agreed with Nokia and therefore granted Nokia sum-
+mary judgment. Core Optical Technologies, LLC v. Nokia
+Corp., No. 19-cv-02190, 2022 WL 4596547 (C.D. Cal. Aug.
+4, 2022) (Decision). Core Optical appeals. We have
+
+jurisdiction under 28 U.S.C. § 1295(a)(1). We vacate the
+district court’s judgment and remand for further proceed-
+ings.
+I
+A
+Dr. Core’s employment at TRW began in August 1990,
+at which time Dr. Core signed a “TRW Invention Agree-
+ment.” J.A. 3515–16, 6760–61. In the agreement, Dr. Core
+agreed to disclose to TRW and automatically assign to
+TRW all of his inventions that “relate to the business or
+activities of TRW” and were “conceived, developed, or re-
+duced to practice” during his employment with TRW. J.A.
+3515. But the agreement included an important exception:
+9. Non-TRW Inventions. I understand that
+this Agreement does not require me to assign to
+TRW my rights to an INVENTION for which no
+equipment, supplies, facility, or trade secret infor-
+mation of TRW was used and which was developed
+entirely on my own time, and (a) which does not re-
+late (1) to the business of TRW or (2) to TRW’s ac-
+tual or demonstrably anticipated research or
+development, or (b) which does not result from any
+work performed by me for TRW. Nevertheless, I
+shall disclose to TRW those INVENTIONS referred
+to in this paragraph 9 to enable TRW to determine
+if it has an interest therein.
+J.A. 3515 (italicized emphasis added).
+In 1993, Dr. Core was accepted into the University of
+California, Irvine’s PhD program and, soon after, was ac-
+cepted into TRW’s fellowship program based on the PhD
+program enrollment. J.A. 6774–75, 6814. Several features
+of the TRW fellowship have been central in this appeal.
+While he was a fellow, Dr. Core continued to work as a sal-
+aried employee at TRW but with a reduction in the number
+of hours he would; and did work, like a non-fellow
+
+employee, on specific TRW-assigned commercial tasks; and
+TRW paid him wages to match the reduced number of such
+hours. J.A. 6770–71. TRW also paid Dr. Core, while he
+was a fellow, a monthly stipend and full employee benefits
+such as medical insurance, sick pay, and pension accrual.
+J.A. 6771, 6774–75. Still further, TRW paid Dr. Core’s tu-
+ition and fees and generally reimbursed him for the costs
+of books and supplies for the PhD program. J.A. 6770,
+6774. As a condition of receiving all those fellowship ben-
+efits, Dr. Core was required to pursue a degree sufficiently
+related to his job responsibilities; meet regularly with a
+TRW sponsor to discuss degree progress; and return to
+TRW for at least one year of full-time employment after
+completing his degree (or instead pay back to TRW certain
+degree-related costs, like the tuition and stipend). J.A.
+3872, 6767–74, 9379–82.
+The summary-judgment record indicates that, in the
+course of his PhD research, Dr. Core conceived of and re-
+duced to practice the invention claimed in the ’211 patent;
+indeed, Dr. Core admitted that his PhD dissertation is “es-
+sentially identical” to the provisional patent application
+that turned into the ’211 patent. J.A. 6787–88. That re-
+search (and the ’211 patent) concerned certain techniques
+for improving optical signaling. The resulting patent de-
+scribed, and claimed in various ways, using “a receiving de-
+vice including a cross polarization interference canceler
+(XPIC)” where “the XPIC optimizes bandwidth efficiency of
+an optical link by enabling the reconstruction of two optical
+signals transmitted with generally orthogonal polarization
+states and routed over a single fiber optic transmission me-
+dium in the same frequency band.” ’211 patent, col. 3, lines
+10–18. The asserted advance was to effectively increase
+the amount of information that can be communicated in a
+particular optically transmitted signal (composed of or-
+thogonal “vertical” and “horizontal” components) by trans-
+mitting and receiving two independent but superimposed
+signals, one on each orthogonal component, and using an
+
+XPIC to reduce or eliminate interference between the two
+orthogonal components upon receipt of the signal. See J.A.
+5219–20 ¶¶ 21–22; see also Core Optical Opening Br. at 7–
+8; Nokia Response Br. at 7–9.
+The provisional patent application that issued as the
+’211 patent was filed on November 5, 1998. J.A. 110. Dr.
+Core’s dissertation was approved and archived on Decem-
+ber 21, 1998, and Dr. Core obtained his PhD on March 19,
+1999. J.A. 6819. Dr. Core’s employment with TRW came
+to an end in August 2000. J.A. 6760. In August 2011, Dr.
+Core executed an assignment of the ’211 patent from him-
+self to Core Optical (his company) and recorded that as-
+signment with the U.S. Patent & Trademark Office. J.A.
+6540–43.
+In some respects, Core Optical and Nokia produced
+competing evidence related to Dr. Core’s PhD research ac-
+tivities and to various potential ownership interests in the
+’211 patent. Core Optical presented evidence that Dr. Core
+was careful not to work on his PhD research while “on the
+clock”1 at TRW and not to use TRW equipment, facilities,
+or supplies when working on his PhD research. See J.A.
+6819; see also J.A. 5225–26 ¶¶ 42–44; J.A. 5238–39 ¶ 87;
+J.A. 5240–41 ¶¶ 93–96; J.A. 6528–31 ¶¶ 6–13. Nokia,
+while disputing the significance of that evidence, does not
+point us to contrary evidence on those points. See, e.g.,
+Nokia Response Br. at 20, 24–25. The record also suggests
+that TRW and its successor Northop Grumman (which ac-
+quired TRW in 2002) did not assert ownership of the ’211
+patent for a very considerable period. Core Optical identi-
+fied evidence that TRW itself did not assert such an
+1 We use this phrase, or its opposite “off the clock,”
+in the sense Core Optical uses them: The phrase “on the
+clock” means time spent working on TRW’s business pro-
+jects, tracked in TRW’s timekeeping system, using TRW’s
+job numbers. See Core Optical Opening Br. at 26–27.
+
+ownership interest, whether in communications with Dr.
+Core or otherwise, and that Dr. Core’s former project man-
+ager at TRW disclaimed any such TRW ownership interest
+directly to Dr. Core. J.A. 5242 ¶ 101; see also J.A. 6530
+¶ 11–12. There is also evidence that Northrop Grumman,
+for its part, despite knowledge of Core Optical’s assertion
+of the ’211 patent in unrelated litigation at least as of 2014,
+J.A. 5242–43 ¶¶ 102–03, did not assert an ownership inter-
+est in the patent at least until, around March 2016, Core
+Optical’s attorneys communicated with Northrop Grum-
+man’s corporate counsel. J.A. 9572–73.
+B
+This litigation began when, between November 2019
+and August 2020, Core Optical filed complaints in the Cen-
+tral District of California alleging infringement of the ’211
+patent by the defendants we call “Nokia” collectively. J.A.
+37–40 (Nokia Corp. et al.); J.A. 64–67 (ADVA Optical Net-
+working SE et al.); J.A. 89–90 (Cisco Systems, Inc.). In Au-
+gust 2021, Nokia moved for summary judgment, asserting
+that Core Optical lacked standing to sue for patent in-
+fringement because Northrop Grumman, not Core Optical,
+owns the ’211 patent as the successor to TRW. The as-
+serted basis for TRW’s ownership was that the patent was
+automatically assigned to TRW under the August 1990 in-
+vention agreement between it and Dr. Core. J.A. 3444–70.
+The district court agreed and granted Nokia summary
+judgment. Decision, at *22. The determinative issue was
+whether the exception stated in the above-quoted para-
+graph 9—to the otherwise-applicable assignment provision
+of the invention agreement—applied to the ’211 patent’s in-
+vention. The district court understood that three require-
+ments had to be met for an invention to come within
+paragraph 9 and thus constitute a “Non-TRW Invention”:
+“1) [N]o equipment, supplies, facility, or trade secret infor-
+mation of TRW were used in the invention process; 2) the
+invention was developed entirely on the employee’s own
+
+time; and 3) (a) the invention does not relate to the busi-
+ness of TRW or to TRW’s actual or demonstrably antici-
+pated research or development, or (b) does not result from
+any work performed by the employee for TRW.” Id. at *10.
+The court concluded that, for requirements (1) and (3), Core
+Optical presented evidence that they were met or could, in
+a factual adjudication, be found to be met. Id. at *10–19.
+The decisive question for summary judgment, then, was
+whether Core Optical could establish that it met require-
+ment (2).
+The district court concluded, as a matter of law, that on
+the evidence of record requirement (2) was not met, war-
+ranting summary judgment of non-ownership by Core Op-
+tical. Id. at *19–21. The court determined that the time
+Dr. Core spent on his PhD research—during which he de-
+veloped the claimed invention—was at least in part “TRW
+[t]ime” and not “entirely” Dr. Core’s “own time.” Id. The
+court found particularly critical that (1) Dr. Core actively
+sought out TRW funding, through the fellowship program,
+to support his PhD research, (2) Dr. Core received such
+funding from TRW, including a monthly stipend, tuition,
+fees, and full-time employee benefits, and (3) TRW benefit-
+ted from Dr. Core’s participation in his PhD program. Id.
+at *20–21. On that basis, the district court concluded that
+the invention agreement’s paragraph 9 was unambiguous
+in not reaching the ’211 patent, which, therefore, Dr. Core
+had automatically assigned to TRW, depriving Core Opti-
+cal of standing to bring the present action. Id. at *21 (in-
+voking the automatic-assignment principle of Filmtec
+Corp. v. Allied-Signal Inc., 939 F.2d 1568, 1570–72 (Fed.
+Cir. 1991)).
+The district court entered final judgments on Septem-
+ber 14, 2022. J.A. 32, 34, 36. Core Optical filed timely no-
+tices of appeal on September 28, 2022, J.A. 10001–02,
+16763, 16848–51, 20281–82, within the thirty days allowed
+by 28 U.S.C. § 2107(a). We have jurisdiction to decide
+these appeals under 28 U.S.C. § 1295(a)(1).
+
+II
+We review the district court’s grant of summary judg-
+ment de novo, following Ninth Circuit law and asking if
+there is no genuine dispute of material fact, so that the mo-
+vant is entitled to judgment as a matter of law when the
+evidence is viewed in the light most favorable to the non-
+movant. Treehouse Avatar LLC v. Valve Corp., 54 F.4th
+709, 714 (Fed. Cir. 2022) (citing Fed. R. Civ. P. 56(a); San
+Diego Police Officers’ Association v. San Diego City Employ-
+ees’ Retirement System, 568 F.3d 725, 733 (9th Cir. 2009);
+Anderson v. Liberty Lobby, Inc., 477 U.S. 242, 255, 257
+(1986)).
+“[I]n a patent infringement action, ‘the plaintiff must
+demonstrate that it held enforceable title to the patent at
+the inception of the lawsuit’ to assert standing.” Abraxis
+Bioscience, Inc. v. Navinta LLC, 625 F.3d 1359, 1364 (Fed.
+Cir. 2010) (quoting Paradise Creations, Inc. v. UV Sales,
+Inc., 315 F.3d 1304, 1309–10 (Fed. Cir. 2003)). “Applica-
+tions for patent, patents, or any interest therein, shall be
+assignable in law by an instrument in writing.” 35 U.S.C.
+§ 261. For a patent-assignment agreement, “state law gov-
+erns the interpretation of contracts generally,” though
+“whether a patent assignment clause creates an automatic
+assignment or merely an obligation to assign is intimately
+bound up with the question of standing in patent cases”
+and is therefore a “matter of federal law.” DDB Technolo-
+gies, L.L.C. v. MLB Advanced Media, L.P., 517 F.3d 1284,
+1290 (Fed. Cir. 2008).
+The 1990 invention agreement does not specify which
+State’s law governs its interpretation. J.A. 3515. But the
+district court applied California contract law, noting that
+both parties had cited California case law as the relevant
+authority in their summary-judgment briefs. See Decision,
+at *10 n.6. On appeal, no party has challenged the choice
+of California contract law, so we follow the district court in
+that respect.
+
+Under California law, “[t]he fundamental goal of con-
+tractual interpretation is to give effect to the mutual inten-
+tion of the parties.” City of Atascadero v. Merrill Lynch,
+Pierce, Fenner & Smith, Inc., 68 Cal. App. 4th 445, 473–74
+(1998) (collecting authorities), as modified on denial of
+reh’g (Jan. 6, 1999). “When a contract is reduced to writing,
+the intention of the parties is to be ascertained from the
+writing alone, if possible.” California Civil Code § 1639.
+But if the language of the written agreement does not un-
+ambiguously establish how the agreement applies on the
+point in dispute, courts may consider other “objective man-
+ifestations” of mutual intent, including “extrinsic evidence
+of such objective matters as the surrounding circumstances
+under which the parties negotiated or entered into the con-
+tract; the object, nature and subject matter of the contract;
+and the subsequent acts and conduct of the parties.” City
+of Atascadero, 68 Cal. App. 4th at 474 (collecting authori-
+ties).
+“When a dispute arises over the meaning of contract
+language, the court must decide whether the language is
+‘reasonably susceptible’ to the interpretations urged by the
+parties.” Badie v. Bank of America, 67 Cal. App. 4th 779,
+798 (1998) (quoting Oceanside 84, Ltd. v. Fidelity Federal
+Bank, 56 Cal. App. 4th 1441, 1448 (1997)). “Whether the
+contract is reasonably susceptible to a party’s interpreta-
+tion can be determined from the language of the contract
+itself or from extrinsic evidence of the parties’ intent.” Id.
+(cleaned up) (quoting Oceanside 84, 56 Cal. App. 4th at
+1448). “If the contract is capable of more than one reason-
+able interpretation, it is ambiguous, and it is the court’s
+task to determine the ultimate construction to be placed on
+the ambiguous language by applying the standard rules of
+interpretation in order to give effect to the mutual inten-
+tion of the parties.” Id. (citations omitted).
+The Ninth Circuit reviews “de novo the determinations
+of whether contract language is ambiguous and ‘whether
+the written contract is reasonably susceptible of a proffered
+
+meaning.’” U.S. Cellular Investment Co. v. GTE Mobilnet,
+Inc., 281 F.3d 929, 934 (9th Cir. 2002) (cleaned up) (first
+citing Tyler v. Cuomo, 236 F.3d 1124, 1134 (9th Cir. 2000);
+and then quoting Brinderson Newberg Joint Venture v. Pa-
+cific Erectors, 971 F.2d 272, 277 (9th Cir. 1992)).
+III
+The district court, concluding that there was no genu-
+ine issue of material fact, held on summary judgment that
+the 1990 invention agreement’s phrase “developed entirely
+on my own time” does not encompass Dr. Core’s PhD re-
+search, which undisputedly led to the invention claimed in
+the ’211 patent. It based that determination on the TRW
+fellowship program that supported Dr. Core to enable him
+to undertake and complete his PhD studies. We conclude
+that the entirely-own-time phrase does not unambiguously
+express a mutual intent to designate either all the time Dr.
+Core spent performing his PhD research as his own time
+(as Core Optical contends) or some of it as partly TRW’s
+time (as the district court, in agreement with Nokia, held).
+Further inquiry into pertinent facts to resolve the ambigu-
+ity is needed. We therefore vacate the district court’s judg-
+ment and remand for further proceedings.2
+2 Besides raising the issue discussed in text, Core
+Optical asks us to hold that the invention agreement, pre-
+dating the invention at issue, did not effect a lawful assign-
+ment of the resulting patent, which, Core Optical urges,
+would require a post-invention act of assignment by Dr.
+Core. Core Optical recognizes that, to adopt this position,
+we would have to overrule Filmtec, 939 F.2d 1568. It suf-
+fices here to say, without suggesting doubt about Filmtec,
+that “[a]s a panel, we are bound by Filmtec; we cannot over-
+rule that holding without en banc action.” Shukh v.
+
+A
+The record before the district court established certain
+facts that are not genuinely disputed for purposes of decid-
+ing the motion for summary judgment. Dr. Core sought
+funding for his PhD studies through TRW’s fellowship pro-
+gram; TRW provided that funding, the PhD studies being
+sufficiently connected to TRW’s business; and TRW ex-
+pected to benefit from Dr. Core’s participation in TRW’s fel-
+lowship program at least through Dr. Core’s return to full-
+time employment for one year after the completion of his
+PhD. See Decision, at *20–21. TRW’s fellowship program
+required Dr. Core’s PhD research to “be in an engineering
+or scientific field of study related to [his] current or antici-
+pated job responsibilities” and also required Dr. Core to
+have an internal TRW “sponsor . . . with whom [he] met
+regularly to discuss [his] educational or research progress.”
+J.A. 6814–15, 9330; Decision, at *5. In at least those ways,
+TRW conditioned the receipt of a substantial benefit (Dr.
+Core’s monthly stipend, PhD tuition, and fees), in part, on
+Dr. Core’s performance of his PhD research, itself of benefit
+to TRW. J.A. 6770–71, 6774–75.
+Core Optical and Nokia offer competing views as to
+what it means for an invention to be “developed entirely on
+[Dr. Core’s] own time.” J.A. 3515. In Core Optical’s view,
+TRW’s time is any time Dr. Core spent working “on the
+clock” on commercial projects at TRW’s specific direction,
+and Dr. Core’s “own time” is everything else (including his
+PhD research). See Core Optical Opening Br. at 21. Nokia,
+by contrast, asserts that TRW’s time also includes any time
+Dr. Core spent participating in the TRW fellowship pro-
+gram, with its substantial support conditional on pursuing
+Seagate Technology, LLC, 803 F.3d 659, 663 (Fed. Cir.
+2015).
+
+the PhD work, reporting on the work, and returning to
+TRW for a period. Nokia Response Br. at 26.
+We conclude that the entirely-own-time phrase does
+not itself decisively compel either interpretation. More
+specifically and narrowly, it does not resolve, as a matter
+of law, the contract dispute about applicability of the
+phrase on the just-noted facts.
+1
+The phrase at the root of the entirely-own-time phrase
+is the somewhat colloquial phrase “on one’s own time”—
+which paragraph 9 uses with “my” instead of “one’s” (be-
+cause it is written in the first person from the employee-
+signatory’s perspective) and then narrows by adding “en-
+tirely.” The invention agreement does not define the
+phrase, but “on one’s own time,” in its most general ordi-
+nary meaning, refers to “in one’s free time,” see On One’s
+Own Time, The Free Dictionary, https://idioms.thefreedic-
+tionary.com/on+one%27s+own+time—carrying an implicit
+reference to some other person and indicating freedom
+from having to account in some way to that other person
+for what the “one” does during the time at issue. In a
+schoolroom, this might be time when a student is free not
+to do teacher-assigned work or to attend to the teacher’s
+instruction. In the employment context that is relevant
+here, it refers to an employee’s not being accountable to the
+employer—through conditions on payment—for what the
+employee does during the time at issue (e.g., when on
+break, after hours), whether pay is an hourly wage or a sal-
+ary. See Time: On One’s Own Time, The New Oxford Amer-
+ican Dictionary 1775 (2001) (“outside working hours;
+without being paid”); Time: On One’s Own Time, Webster’s
+Third New International Dictionary 2395 (2002) (“without
+being paid (has done extra work on his own time)”); On
+One’s Own Time, The Free Dictionary, https://idioms.the-
+freedictionary.com/on+one%27s+own+time.
+
+In the present case, Dr. Core urges that the relevant
+notion of accountability is limited to on-the-clock company-
+assigned work for the hourly pay—so all other time was
+entirely his own. The theory is that his own time was time
+when he was not subject to the type of direction and control
+that characterizes an employment relationship (this direc-
+tion and control not existing when he was working on his
+thesis). Nokia, by contrast, invokes a broader notion of ac-
+countability through employer pay, covering payments
+from TRW conditioned on what Dr. Core did during the
+time at issue—the many hours (perhaps thousands of
+hours from 1993 to 1999) he spent during his PhD studies
+developing the ’211 patent’s invention. The language alone
+does not clearly indicate which accountability notion is the
+appropriate one for this setting.
+In particular, the contract phrase does not compel one
+choice or another between two different perspectives on Dr.
+Core’s PhD studies during the years in question—perspec-
+tives that provide different answers to the question of cov-
+erage on the facts here. Putting aside the on-the-clock
+hours (see supra note 1), Dr. Core was generally free of ac-
+countability to TRW for how he used any particular hour
+or even day: Except perhaps for things like attending class
+at university-specified hours where required to stay in the
+PhD program, he could use particular hours or days any
+way he wished, with no accountability to TRW. But Dr.
+Core was not free to use the entirety of his off-the-clock
+hours any way he wished without accountability to TRW.
+His participation in the fellowship program, with its sub-
+stantial funding, e.g., tuition and a stipend, was dependent
+on his actual pursuit of his PhD research, so he had to
+spend a large chunk of his off-the-clock time in ways for
+which he was accountable, financially, to TRW. The con-
+tract language, “entirely on [his] own time,” allows either
+perspective, though the first would support Core Optical
+and the second would support Nokia.
+
+That ambiguity was not resolved by other documents
+governing TRW’s relationship with Dr. Core. TRW’s fel-
+lowship-related paperwork generally states that the inven-
+tion agreement “will remain in force during the entire
+fellowship.” J.A. 6773, 9382. TRW thus contemplated the
+fellowship program and the invention agreement in con-
+junction with each other. But it did nothing to clarify what
+the relationship was for paragraph 9 (“Non-TRW Inven-
+tions”) generally or the entirely-own-time phrase specifi-
+cally: All it said was that the agreement remains in force
+during the fellowship, without saying how it applies to on-
+the-clock or off-the-clock inventions.
+2
+No case law cited to us provides a resolution of the un-
+certainty. We may limit our discussion to the two state-
+court decisions on which the district court principally re-
+lied; if, as we conclude, those decisions do not resolve the
+issue, neither do other decisions cited by the parties. Nei-
+ther offers an interpretation of a contract provision con-
+taining this language or provides sufficient support, even
+indirectly, to resolve the uncertainty here.
+The district court relied on Cubic Corp. v. Marty, 185
+Cal. App. 3d 438 (1986). There, an employee (Marty) had
+presented to his employer (Cubic) a manuscript laying out
+a technological idea that he developed while an employee
+and that he asserted to be the invention in the dispute that
+ensued, and after the manuscript was provided to Cubic,
+circuitry needed to make the idea work “was developed
+with the aid of a Cubic employee on Cubic time under a
+Cubic funded program.” Id. at 452–53; see id. at 444–45.
+Without telling Cubic, Marty sought and obtained a patent
+on the idea; then, he promptly sought to license it to Cubic,
+which responded by asserting that it owned the patent un-
+der an invention-assignment agreement Marty had signed
+when he became an employee. Id. at 444–45. Marty and
+Cubic soon parted ways, and Cubic sued Marty for breach
+
+of the invention agreement. After the trial court ruled for
+Cubic, the court of appeals affirmed. Id. at 446, 457.
+Unlike the 1990 invention agreement at issue in the
+present case, the invention agreement in Cubic did not in-
+volve entirely-own-time language, id. at 444 (quoting
+agreement), so the decision in Cubic does not pronounce on
+the meaning of that language in a contract. Rather, the
+Cubic case involved a dispute about whether the agree-
+ment there, as applied to the particular facts, was contrary
+to California Labor Code § 2870—a statutory protection for
+employees that, as the parties here agree, contains lan-
+guage similar to that of paragraph 9 of the 1990 TRW in-
+vention agreement, specifically, entirely-own-time
+language.3
+3 California Labor Code § 2870 currently reads (with
+emphasis added):
+(a) Any provision in an employment agreement
+which provides that an employee shall assign, or
+offer to assign, any of his or her rights in an inven-
+tion to his or her employer shall not apply to an in-
+vention that the employee developed entirely on his
+or her own time without using the employer’s
+equipment, supplies, facilities, or trade secret in-
+formation except for those inventions that either:
+(1) Relate at the time of conception or re-
+duction to practice of the invention to the
+employer’s business, or actual or demon-
+strably anticipated research or develop-
+ment of the employer; or
+(2) Result from any work performed by the
+employee for the employer.
+
+The disputed issues of compliance with § 2870 actually
+decided by the court of appeals in Cubic, however, were not
+about the entirely-own-time language. Rather, they were
+about enumerated requirement (1), concerning the relation
+to Cubic’s business—a requirement that is not at issue in
+the appeal before us. Cubic, 185 Cal. App. 3d at 451–53.
+Specifically, the state court of appeals noted that the trial
+court had found the entirely-own-time requirement not to
+be met (by Marty’s manuscript), but the court of appeals
+decided only that “[e]ven if” it were met, requirement (1) of
+the statute was not met. Id. at 453.
+The court of appeals then spoke of the entirely-own-
+time provision while noting that it “need not decide the is-
+sues” raised by that provision. Id. It said that it saw “sub-
+stantial evidence to support the trial court’s conclusion
+Marty did not develop the invention entirely on his own
+time since he used Cubic personnel and funding to add cir-
+cuitry which was necessary to make his invention work.”
+Id. And it added:
+[W]e do not think the Labor Code provisions
+were intended to award an invention to an em-
+ployee who presents an invention to an employer,
+represents the invention is for the employer’s ben-
+efit, actively seeks and obtains company funding to
+refine his invention, uses company time and fund-
+ing to develop his invention while all the time se-
+cretly intending to take out a patent on the
+invention for himself.
+Id.
+See Whitewater West Industries, Ltd. v. Alleshouse, 981
+F.3d 1045, 1047 (Fed. Cir. 2020) (quoting § 2870(a)); Core
+Optical Opening Br. at 21 (noting resemblance); Nokia Re-
+sponse Br. at 11 (same). Though the wording has changed,
+§ 2870(a) was materially the same at the time of Cubic.
+
+Thus, Cubic did not involve the meaning of a contract
+provision containing the here-disputed language or a fel-
+lowship program like the one at issue here. It involved a
+statute that, we have noted, provides protection only for
+employees, not a contract containing both employee and
+employer protections. See Applera Corp.—Applied Biosys-
+tems Group v. Illumina, Inc., 375 F. App’x 12, 17 (Fed. Cir.
+2010) (nonprecedential) (quoted in Decision, at *11). And
+the Cubic court ruled for the employer on facts materially
+stronger for the employer than those present here. In these
+circumstances, we see no basis for finding in Cubic a reso-
+lution of the present contract dispute that supports sum-
+mary judgment.
+The district court also relied on Dimmig v. Workmen’s
+Compensation Appeals Board, 495 P.2d 433 (Cal. 1972),
+but that decision also supplies no sufficient basis to resolve
+the present matter at summary judgment. William Dim-
+mig was killed in an automobile accident while returning
+home from night classes he was taking to obtain a bache-
+lor’s degree, and his survivors sought workers’ compensa-
+tion benefits. The California Supreme Court “annulled”
+the state agency’s denial of the benefits and remanded for
+further proceedings. Id. at 439.
+The governing standard—whether the employee was
+injured in the course of employment—was a statutory one
+that, the court heavily stressed, is subject by legislative di-
+rective to a “‘liberal construction’” in favor of employees.
+Id. at 436–37 (quoting Pacific Indemnity Co. v. Industrial
+Accident Commission, 159 P.2d 625, 628 (Cal. 1945)). In
+explaining the resulting broad standard, the court noted an
+earlier decision finding the standard to be met for “an in-
+jury suffered by a camp counselor while horseback riding
+on her own time” where “‘recreational horseback riding was
+considered by both employer and employee as part of the
+compensation’” and “‘such consideration was the practice of
+the employer.’” Id. at 436 (quoting Reinert v. Industrial
+
+Accident Commission, 294 P.2d 713, 716 (Cal. 1956)). Sur-
+veying cases on certain relevant doctrines, the court stated:
+The rule which emerges from these cases is
+that when the employee engages in a special activ-
+ity which is within the course of his employment,
+and which is reasonably undertaken at the request
+or invitation of the employer, an injury suffered
+while traveling to and from the place of such activ-
+ity is also within the course of employment and is
+compensable.
+Id. at 439.
+The court “concluded that the elements of this test are
+met in the instant case.” Id. The court pointed to the em-
+ployer’s policy of “encouraging its employees to attend col-
+lege and, upon successful completion of a particular course,
+. . . reimburs[ing] the entire cost of tuition and books for
+courses directly related to the employee’s job and 50 per-
+cent of such costs for courses not directly related to the job
+but required for the degree being sought.” Id. at 434. It
+noted the uncontradicted “substantial testimony that Dim-
+mig believed a bachelor’s degree was required for his con-
+tinued employment.” Id. at 435.
+The Dimmig case involved education benefits but not
+an invention agreement or even a statutory provision di-
+rected to invention ownership, let alone one containing the
+entirely-own-time language at issue. It involved a notably
+different statutory context—workers’ compensation—with
+a specific pro-employee construction principle. What the
+California Supreme Court said and decided in Dimmig
+does not carry over to resolve the textual uncertainty pre-
+sent here for summary-judgment purposes.
+B
+We conclude that the 1990 invention agreement “is ca-
+pable of more than one reasonable interpretation,” so in-
+quiry beyond the language of the contract is needed to
+
+“determine the ultimate construction to be placed on the
+ambiguous language,” “applying the standard rules of in-
+terpretation in order to give effect to the mutual intention
+of the parties.” Badie, 67 Cal. App. 4th at 798; see Brown
+v. Goldstein, 34 Cal. App. 5th 418, 432, 438–39 (2019).
+Both Core Optical’s and Nokia’s views of how the years-
+long, TRW-funded research was intended to be treated un-
+der the 1990 invention agreement are plausible on the un-
+disputed facts we have recited, but which is ultimately the
+better view has not been determined with a recognition
+that the contract language lacks an unambiguous meaning
+as applied to the facts. The determination of mutual inten-
+tion appears to call for findings of fact inappropriate for
+summary judgment. Cf. Decision, at *9 n.4 (noting some
+factual disputes). But we leave that procedural point to be
+decided as an initial matter on remand, where the analysis
+will now proceed on the premise that the contract language
+does not itself resolve the matter.
+We do not undertake to identify all facts that, under
+California contract law, might be material. We note the
+evidence that, despite a recorded assignment from Dr. Core
+to Core Optical at the Patent Office, J.A. 6540–43, TRW
+and its successor Northrop Grumman did not assert own-
+ership for a very long time. See J.A. 6835 ¶ 201 (citing J.A.
+5242 ¶ 103) (Core Optical asserting that “[n]either
+Northrop nor TRW has ever claimed to Core Optical or to
+any other entity that it owns the ’211 patent”). Nokia has
+suggested an explanation for the silence (that the value of
+ownership was not worth the costs of establishing it), see
+Oral Arg. at 27:50–29:50, but how to account for the silence
+raises a factual issue that has not been fully explored or
+resolved on the record before us.
+We note, as well, Core Optical’s evidence that Dr.
+Core’s former project manager at TRW affirmatively repre-
+sented to Dr. Core that Dr. Core owned the ’211 patent and
+that TRW maintained no ownership interest in it. J.A.
+6793 ¶ 70; J.A. 5242 ¶ 101; see also J.A. 6530 ¶ 11 (Dr.
+
+Core’s immediate supervisor at TRW expressing a similar
+understanding of the 1990 invention agreement in a 2015
+declaration). Such a representation appears relevant to
+applying the contract language we have concluded is am-
+biguous on the point in dispute. See DDB, 517 F.3d at 1292
+(“Here, evidence that the parties during performance
+agreed that [the employee-inventor’s] work leading to the
+patents in suit was not covered by the agreement would be
+highly relevant, if not dispositive.”). Core Optical’s asser-
+tion about the TRW employee’s representation raises a fac-
+tual issue not fully explored or resolved on the record before
+us.
+In addition, evidence of custom, usage, and practice in
+a field is sometimes relevant to determining mutual intent
+when commonly used language is on its face uncertain in
+meaning. Southern Pacific Transportation Co. v. Santa Fe
+Pacific Pipelines, Inc., 74 Cal. App. 4th 1232, 1244 (1999)
+(“[T]his extrinsic evidence was relevant and admissible to
+prove usage or custom of the industry. . . . Parties are pre-
+sumed to contract pursuant to a fixed and established us-
+age and custom of the trade or industry. Contract terms
+must be interpreted according to any special meaning
+given to them by usage, and technical terms are inter-
+preted as generally understood in the industry.” (citations
+omitted)); see also California Civil Code § 1645 (“Technical
+words are to be interpreted as usually understood by per-
+sons in the profession or business to which they relate, un-
+less clearly used in a different sense.”); Brown, 34 Cal. App.
+5th at 438–39; Varni Bros. Corp. v. Wine World, Inc., 35
+Cal. App. 4th 880, 889 (1995); Midwest Television, Inc. v.
+Scott, Lancaster, Mills & Atha, Inc., 205 Cal. App. 3d 442,
+451 (1988). At least in the abstract, evidence falling within
+this category would seem significant in the present setting
+if similar enough employer-funded education programs are
+common. This is a subject worth exploring on remand.
+
+An additional principle (contra proferentem) may bear
+on the ultimate interpretation of the 1990 invention agree-
+ment. The California Supreme Court has explained:
+[A]mbiguities in written agreements are to be
+construed against their drafters. ([California Civil
+Code] § 1654; [Restatement (Second) of] Contracts,
+§ 206 [(American Law Institute 1981)].) As the Re-
+statement explains, “Where one party chooses the
+terms of a contract, he is likely to provide more
+carefully for the protection of his own interests
+than for those of the other party. He is also more
+likely than the other party to have reason to know
+of uncertainties of meaning. Indeed, he may leave
+meaning deliberately obscure, intending to decide
+at a later date what meaning to assert. In cases of
+doubt, therefore, so long as other factors are not de-
+cisive, there is substantial reason for preferring the
+meaning of the other party.” ([Restatement (Sec-
+ond) of] Contracts, § 206 cmt. a).
+Thus, where . . . the written agreement has
+been prepared entirely by the employer, it is a “well
+established rule of construction” that any ambigui-
+ties must be construed against the drafting em-
+ployer and in favor of the nondrafting employee.
+Moreover, “[t]he rule requiring the resolution of
+ambiguities against the drafting party ‘applies
+with peculiar force in the case of a contract of ad-
+hesion. Here the party of superior bargaining
+power not only prescribes the words of the instru-
+ment but the party who subscribes to it lacks the
+economic strength to change such language.’”
+Sandquist v. Lebo Automotive, Inc., 376 P.3d 506, 514 (Cal.
+2016) (last alteration in original) (most citations omitted).
+The United States Supreme Court, in applying the Federal
+Arbitration Act, 9 U.S.C. §§ 1–16, has described contra
+proferentem as a default rule to be applied when mutual
+
+intention cannot be discerned. See Lamps Plus, Inc. v.
+Varela, 587 U.S. 176, 186–87 (2019). The district court in
+this case should consider the applicability of that principle.
+One final note. Because the ownership question is a
+threshold “jurisdictional issue of standing” separate from
+the merits of Core Optical’s patent-infringement suit, the
+district court has the authority to act as the finder of fact
+“to resolve the jurisdictional issues.” See DDB, 517 F.3d at
+1290–92. In this matter, shifting from summary judgment
+to fact-finding does not involve a shift from judge to jury.
+IV
+For the foregoing reasons, we vacate the district court’s
+judgment and remand for further proceedings consistent
+with this opinion.
+The parties shall bear their own costs.
+VACATED AND REMANDED

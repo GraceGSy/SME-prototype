@@ -11,7 +11,7 @@ flowchart TD
     Source{"Configured source"}:::det
     HCI["HCI paper PDFs"]:::artifact
     Story["Pinned Sherlock XHTML<br/>verified by SHA-256"]:::artifact
-    Legal["Split opinion or dissent PDF<br/>verified by SHA-256"]:::artifact
+    Legal["Authored opinion or dissent text<br/>verified by SHA-256"]:::artifact
     Extract["Claude extraction Skill:<br/>source-marked sections, scenes, paragraphs"]:::llm
     Content["Extracted<br/>document.content.json"]:::artifact
     IDs["Validate schema and derive positional IDs<br/>s0001, s0001.ss0001, ..."]:::det
@@ -27,7 +27,7 @@ flowchart TD
     Config --> Source
     Source -->|pdf| HCI --> Extract
     Source -->|xhtml| Story --> Extract
-    Source -->|pdf| Legal --> Extract
+    Source -->|text| Legal --> Extract
     Extract --> Content
     Content --> IDs --> Question --> Questions --> View
     View -->|sections| Sections --> Forward
