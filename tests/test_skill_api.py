@@ -4,7 +4,9 @@ import tempfile
 import unittest
 
 from pipeline.incremental_graph.skill_api import (
+    CACHEABLE_SYSTEM,
     ClaudeSkills,
+    MESSAGE_BETAS,
     SkillBudgetExceeded,
     SkillCallPolicy,
     SkillRef,
@@ -103,10 +105,15 @@ class SkillApiTest(unittest.TestCase):
         self.assertEqual(call["max_tokens"], 512)
         self.assertEqual(call["thinking"], {"type": "disabled"})
         self.assertEqual(call["output_config"]["effort"], "low")
+        self.assertNotIn("task_budget", call["output_config"])
+        self.assertNotIn("task-budgets-2026-03-13", MESSAGE_BETAS)
+        self.assertEqual(call["system"], CACHEABLE_SYSTEM)
         self.assertEqual(
-            call["output_config"]["task_budget"],
-            {"type": "tokens", "total": 20_000},
+            call["system"][-1]["cache_control"],
+            {"type": "ephemeral"},
         )
+        self.assertNotIn("cache_control", call["tools"][-1])
+        self.assertEqual(call["messages"], [{"role": "user", "content": "prompt"}])
         self.assertEqual(
             call["context_management"]["edits"][0]["type"],
             "clear_tool_uses_20250919",
@@ -114,32 +121,18 @@ class SkillApiTest(unittest.TestCase):
         self.assertEqual(result.usage["request_count"], 1)
         self.assertEqual(result.call_policy, policy.as_dict())
 
-    def test_pause_turn_does_not_continue_without_permission(self) -> None:
-        adapter, messages = _adapter(_Response("response-1", "pause_turn", 100, 20))
-        policy = SkillCallPolicy(max_tokens=512, max_input_tokens=1_000)
-
-        with self.assertRaisesRegex(SkillBudgetExceeded, "continuations are limited to 0"):
-            adapter.run_json([SKILL], "prompt", SCHEMA, policy=policy)
-
-        self.assertEqual(len(messages.calls), 1)
-
-    def test_usage_is_aggregated_across_an_explicit_continuation(self) -> None:
+    def test_pause_turn_never_creates_a_second_request(self) -> None:
         adapter, messages = _adapter(
             _Response("response-1", "pause_turn", 100, 20),
             _Response("response-2", "end_turn", 200, 30),
         )
-        policy = SkillCallPolicy(
-            max_tokens=512,
-            max_input_tokens=1_000,
-            max_continuations=1,
-        )
+        policy = SkillCallPolicy(max_tokens=512, max_input_tokens=1_000)
 
-        result = adapter.run_json([SKILL], "prompt", SCHEMA, policy=policy)
+        with self.assertRaisesRegex(SkillBudgetExceeded, "never sends a follow-up turn"):
+            adapter.run_json([SKILL], "prompt", SCHEMA, policy=policy)
 
-        self.assertEqual(len(messages.calls), 2)
-        self.assertEqual(result.usage["input_tokens"], 300)
-        self.assertEqual(result.usage["output_tokens"], 50)
-        self.assertEqual(result.usage["continuations"], 1)
+        self.assertEqual(len(messages.calls), 1)
+        self.assertEqual(len(messages.responses), 1)
 
     def test_input_usage_limit_fails_closed(self) -> None:
         adapter, _ = _adapter(_Response("response-1", "end_turn", 1_001, 20))

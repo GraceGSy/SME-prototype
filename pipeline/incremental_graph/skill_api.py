@@ -16,20 +16,30 @@ MESSAGE_BETAS = [
     "files-api-2025-04-14",
     "structured-outputs-2025-11-13",
     "context-management-2025-06-27",
-    "task-budgets-2026-03-13",
 ]
 FILE_BETAS = ["files-api-2025-04-14"]
 CODE_EXECUTION_TOOL = {
     "type": "code_execution_20250825",
     "name": "code_execution",
-    "cache_control": {"type": "ephemeral", "ttl": "1h"},
 }
+# Batch calls are adjacent, so the default five-minute TTL avoids pricier
+# one-hour writes while still enabling server-tool-result caching.
+CACHEABLE_SYSTEM = [
+    {
+        "type": "text",
+        "text": (
+            "Use the configured Agent Skill on the complete input in the user message. "
+            "Finish within this single Messages API request and return only the "
+            "schema-constrained result."
+        ),
+        "cache_control": {"type": "ephemeral"},
+    }
+]
 API_TIMEOUT_SECONDS = 30 * 60
-MIN_TASK_BUDGET_TOKENS = 20_000
 
 
 class SkillBudgetExceeded(RuntimeError):
-    """Raised when a Skill call reaches a configured cost or continuation limit."""
+    """Raised when a Skill call reaches a configured hard limit."""
 
     def __init__(
         self,
@@ -45,14 +55,12 @@ class SkillBudgetExceeded(RuntimeError):
 
 @dataclass(frozen=True)
 class SkillCallPolicy:
-    """Hard and advisory limits applied to one complete Skill invocation."""
+    """Hard limits applied to one complete Skill invocation."""
 
     max_tokens: int
     effort: Literal["low", "medium", "high"] = "low"
     thinking: Literal["disabled", "adaptive"] = "disabled"
-    task_budget_tokens: int = MIN_TASK_BUDGET_TOKENS
     max_input_tokens: int = 200_000
-    max_continuations: int = 0
     max_prompt_characters: int = 500_000
     max_attachment_bytes: int = 500_000
     context_management_trigger_tokens: int = 50_000
@@ -68,17 +76,10 @@ class SkillCallPolicy:
         invalid = [name for name, value in positive.items() if value <= 0]
         if invalid:
             raise ValueError(f"Skill call limits must be positive: {', '.join(invalid)}")
-        if self.task_budget_tokens < MIN_TASK_BUDGET_TOKENS:
-            raise ValueError(
-                f"task_budget_tokens must be at least {MIN_TASK_BUDGET_TOKENS}"
-            )
-        if not 0 <= self.max_continuations <= 2:
-            raise ValueError("max_continuations must be between 0 and 2")
 
     def output_config(self, schema: dict[str, Any]) -> dict[str, Any]:
         return {
             "effort": self.effort,
-            "task_budget": {"type": "tokens", "total": self.task_budget_tokens},
             "format": {"type": "json_schema", "schema": schema},
         }
 
@@ -128,27 +129,9 @@ class RunResult:
 
 
 def _decode_json_output(text: str) -> tuple[Any, tuple[str, ...]]:
-    """Decode one JSON value, or merge split matching wrappers in response order."""
-    decoder = json.JSONDecoder()
-    values: list[Any] = []
-    position = 0
-    while position < len(text):
-        while position < len(text) and text[position].isspace():
-            position += 1
-        if position == len(text):
-            break
-        value, position = decoder.raw_decode(text, position)
-        values.append(value)
+    """Decode the one schema-constrained value returned by one request."""
 
-    if len(values) == 1:
-        return values[0], ()
-    if len(values) > 1 and all(
-        isinstance(value, dict) and set(value) == {"matches"} and isinstance(value["matches"], list)
-        for value in values
-    ):
-        matches = [match for value in values for match in value["matches"]]
-        return {"matches": matches}, (f"merged {len(values)} structured matching values",)
-    raise ValueError(f"Expected one structured JSON value, received {len(values)}")
+    return json.loads(text), ()
 
 
 def load_api_key(repo_root: Path) -> str:
@@ -333,71 +316,61 @@ class ClaudeSkills:
         schema: dict[str, Any],
     ) -> tuple[Any, dict[str, Any]]:
         skill_values = [skill.api_value() for skill in skills]
-        container: dict[str, Any] = {"skills": skill_values}
-        responses: list[tuple[str, dict[str, Any]]] = []
-        for continuation in range(policy.max_continuations + 1):
-            self._check_session_budget()
-            kwargs: dict[str, Any] = {
-                "model": self.model,
-                "max_tokens": policy.max_tokens,
-                "betas": MESSAGE_BETAS,
-                "container": container,
-                "messages": messages,
-                "tools": [CODE_EXECUTION_TOOL],
-                "thinking": {"type": policy.thinking},
-                "output_config": policy.output_config(schema),
-                "context_management": {
-                    "edits": [
-                        {
-                            "type": "clear_tool_uses_20250919",
-                            "trigger": {
-                                "type": "input_tokens",
-                                "value": policy.context_management_trigger_tokens,
-                            },
-                            "keep": {"type": "tool_uses", "value": 2},
-                            "clear_at_least": {"type": "input_tokens", "value": 10_000},
-                            "clear_tool_inputs": True,
-                        }
-                    ]
-                },
-            }
-            response = self.client.beta.messages.create(**kwargs)
-            response_usage = response.usage.model_dump(mode="json") if response.usage else {}
-            self._record_session_usage(response_usage, response.id)
-            responses.append((response.id, response_usage))
-            usage = _aggregate_usage(responses)
-            usage["session"] = dict(self.session_usage)
-            input_tokens = _input_token_volume(usage)
-            if input_tokens > policy.max_input_tokens:
+        self._check_session_budget()
+        response = self.client.beta.messages.create(
+            model=self.model,
+            max_tokens=policy.max_tokens,
+            betas=MESSAGE_BETAS,
+            container={"skills": skill_values},
+            system=CACHEABLE_SYSTEM,
+            messages=messages,
+            tools=[CODE_EXECUTION_TOOL],
+            thinking={"type": policy.thinking},
+            output_config=policy.output_config(schema),
+            context_management={
+                "edits": [
+                    {
+                        "type": "clear_tool_uses_20250919",
+                        "trigger": {
+                            "type": "input_tokens",
+                            "value": policy.context_management_trigger_tokens,
+                        },
+                        "keep": {"type": "tool_uses", "value": 2},
+                        "clear_at_least": {"type": "input_tokens", "value": 10_000},
+                        "clear_tool_inputs": True,
+                    }
+                ]
+            },
+        )
+        response_usage = response.usage.model_dump(mode="json") if response.usage else {}
+        self._record_session_usage(response_usage, response.id)
+        usage = _single_response_usage(response.id, response_usage)
+        usage["session"] = dict(self.session_usage)
+        input_tokens = _input_token_volume(usage)
+        if input_tokens > policy.max_input_tokens:
+            raise SkillBudgetExceeded(
+                f"Claude Skill call used {input_tokens:,} input tokens; configured "
+                f"maximum is {policy.max_input_tokens:,}. No output was accepted.",
+                response_id=response.id,
+                usage=usage,
+            )
+        if response.stop_reason == "pause_turn":
+            raise SkillBudgetExceeded(
+                f"Claude response {response.id} paused before completing. The adapter never "
+                "sends a follow-up turn; simplify or split the task before retrying.",
+                response_id=response.id,
+                usage=usage,
+            )
+        if response.stop_reason not in {"end_turn", "stop_sequence"}:
+            if response.stop_reason == "max_tokens":
                 raise SkillBudgetExceeded(
-                    f"Claude Skill call used {input_tokens:,} input tokens; configured "
-                    f"maximum is {policy.max_input_tokens:,}. No continuation or output was accepted.",
+                    f"Claude response {response.id} reached the {policy.max_tokens}-token "
+                    "output limit",
                     response_id=response.id,
                     usage=usage,
                 )
-            if response.stop_reason != "pause_turn":
-                if response.stop_reason not in {"end_turn", "stop_sequence"}:
-                    if response.stop_reason == "max_tokens":
-                        raise SkillBudgetExceeded(
-                            f"Claude response {response.id} reached the {policy.max_tokens}-token "
-                            "output limit",
-                            response_id=response.id,
-                            usage=usage,
-                        )
-                    raise RuntimeError(
-                        f"Claude response {response.id} stopped with {response.stop_reason}"
-                    )
-                return response, usage
-            if continuation == policy.max_continuations:
-                raise SkillBudgetExceeded(
-                    f"Claude response {response.id} paused, but automatic continuations are limited "
-                    f"to {policy.max_continuations}",
-                    response_id=response.id,
-                    usage=usage,
-                )
-            messages.append({"role": "assistant", "content": response.content})
-            container = {"id": response.container.id, "skills": skill_values}
-        raise RuntimeError("Unreachable Skill continuation state")
+            raise RuntimeError(f"Claude response {response.id} stopped with {response.stop_reason}")
+        return response, usage
 
     @staticmethod
     def _validate_prompt(prompt: str, policy: SkillCallPolicy) -> None:
@@ -454,44 +427,14 @@ class ClaudeSkills:
         )
 
 
-def _aggregate_usage(responses: list[tuple[str, dict[str, Any]]]) -> dict[str, Any]:
-    """Aggregate every billable response in one Skill invocation."""
+def _single_response_usage(response_id: str, usage: dict[str, Any]) -> dict[str, Any]:
+    """Keep raw billing fields and make the one-request contract explicit."""
 
-    token_fields = (
-        "input_tokens",
-        "output_tokens",
-        "cache_creation_input_tokens",
-        "cache_read_input_tokens",
-    )
-    aggregate: dict[str, Any] = {
-        field: sum(int(usage.get(field) or 0) for _, usage in responses)
-        for field in token_fields
+    return {
+        **usage,
+        "request_count": 1,
+        "responses": [{"response_id": response_id, "usage": usage}],
     }
-    aggregate["output_tokens_details"] = {
-        "thinking_tokens": sum(
-            int((usage.get("output_tokens_details") or {}).get("thinking_tokens") or 0)
-            for _, usage in responses
-        )
-    }
-    tool_names = {
-        name
-        for _, usage in responses
-        for name in (usage.get("server_tool_use") or {})
-    }
-    aggregate["server_tool_use"] = {
-        name: sum(
-            int((usage.get("server_tool_use") or {}).get(name) or 0)
-            for _, usage in responses
-        )
-        for name in sorted(tool_names)
-    }
-    aggregate["request_count"] = len(responses)
-    aggregate["continuations"] = max(0, len(responses) - 1)
-    aggregate["responses"] = [
-        {"response_id": response_id, "usage": usage}
-        for response_id, usage in responses
-    ]
-    return aggregate
 
 
 def _input_token_volume(usage: dict[str, Any]) -> int:

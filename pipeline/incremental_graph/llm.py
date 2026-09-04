@@ -82,9 +82,7 @@ class AnthropicJudgmentProvider:
                 max_tokens=self.model.max_tokens,
                 effort=self.model.effort,
                 thinking=self.model.thinking,
-                task_budget_tokens=self.model.task_budget_tokens,
                 max_input_tokens=self.model.max_input_tokens,
-                max_continuations=self.model.max_continuations,
                 max_prompt_characters=self.model.max_prompt_characters,
                 context_management_trigger_tokens=(
                     self.model.context_management_trigger_tokens

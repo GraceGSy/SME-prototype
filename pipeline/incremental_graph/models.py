@@ -91,9 +91,7 @@ class ModelSettings(BaseModel):
     max_tokens: int = Field(default=1024, gt=0)
     effort: Literal["low", "medium", "high"] = "low"
     thinking: Literal["disabled", "adaptive"] = "disabled"
-    task_budget_tokens: int = Field(default=20_000, ge=20_000)
     max_input_tokens: int = Field(default=200_000, gt=0)
-    max_continuations: int = Field(default=0, ge=0, le=2)
     max_prompt_characters: int = Field(default=500_000, gt=0)
     context_management_trigger_tokens: int = Field(default=50_000, gt=0)
     max_api_responses_per_process: int = Field(default=200, gt=0)

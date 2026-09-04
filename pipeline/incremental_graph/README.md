@@ -53,10 +53,11 @@ Questions remain metadata, not identity.
 [`configs/incremental-v1.yaml`](configs/incremental-v1.yaml) lists every stage in
 execution order and names its Skill, prompt template, context policy, and
 handler. Its model block also fixes low-effort, non-thinking Skill-call limits,
-including the task budget, input-token ceiling, prompt-size ceiling, and zero
-automatic continuations. The same block caps cumulative API responses and
-tokens per process so a large graph cannot silently launch an unbounded call
-set. Prompt and context files are adjacent under `prompts/` and `contexts/`.
+including input-token and prompt-size ceilings. Every judgment is one Messages
+API request; `pause_turn` fails rather than replaying model output in another
+request. The same block caps cumulative API responses and tokens per process so
+a large graph cannot silently launch an unbounded call set. Prompt and context
+files are adjacent under `prompts/` and `contexts/`.
 Changing those files changes judgment behavior without changing graph rules.
 
 ## Commands

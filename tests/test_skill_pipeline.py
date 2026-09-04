@@ -18,6 +18,7 @@ from pipeline.document import (
 from pipeline.skill_pipeline.runner import (
     DEFAULT_CONFIG,
     Harness,
+    _match_schema,
     batch_candidates,
     validate_match_records,
     validate_text_completion,
@@ -96,9 +97,9 @@ class SkillPipelineTest(unittest.TestCase):
         extraction_policy = harness._call_policy(stages["extraction"])
         self.assertEqual(extraction_policy.effort, "low")
         self.assertEqual(extraction_policy.thinking, "disabled")
-        self.assertEqual(extraction_policy.max_continuations, 0)
-        self.assertEqual(extraction_policy.task_budget_tokens, 50000)
         self.assertEqual(extraction_policy.max_input_tokens, 250000)
+        self.assertNotIn("task_budget_tokens", harness.config["execution"])
+        self.assertNotIn("max_continuations", harness.config["execution"])
         self.assertEqual(harness.config["session_budget"]["max_api_responses"], 100)
         self.assertEqual(stages["section_matching"]["validation_attempts"], 1)
         self.assertEqual(
@@ -162,6 +163,16 @@ class SkillPipelineTest(unittest.TestCase):
             self.assertNotIn(QUESTION_FIELD, content[0])
             self.assertIn("file: source.content.json", (output / "manifest.yaml").read_text())
 
+    def test_extraction_skill_has_only_directly_bundled_domain_guides(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        skill_dir = root / "skills" / "extract-section-and-subsection-paragraphs"
+        entrypoint = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
+
+        for guide in ("NARRATIVE.md", "LEGAL.md", "ACADEMIC.md"):
+            self.assertIn(guide, entrypoint)
+            self.assertTrue((skill_dir / guide).is_file())
+        self.assertNotIn("extract-section-paragraphs", entrypoint)
+
     def test_candidate_batches_are_stable_and_complete(self) -> None:
         candidates = matching_candidates(_document(), NESTED_VIEW)
         self.assertEqual(batch_candidates(candidates, 1), [[candidates[0]], [candidates[1]]])
@@ -182,6 +193,21 @@ class SkillPipelineTest(unittest.TestCase):
         ]
 
         validate_match_records(matches, {"s0001"}, {"s0002", "s0003"})
+
+    def test_match_schema_stays_constant_across_candidate_pools(self) -> None:
+        schema = _match_schema()
+
+        entry = schema["properties"]["matches"]["items"]
+        self.assertEqual(entry["properties"]["source_id"]["type"], "string")
+        self.assertEqual(entry["properties"]["target_id"]["type"], ["string", "null"])
+
+    def test_match_validation_rejects_ids_outside_the_candidate_pool(self) -> None:
+        matches = [
+            {"source_id": "unknown", "target_id": "s0002", "basis": "Shared role."},
+        ]
+
+        with self.assertRaisesRegex(ValueError, "Unknown source candidate"):
+            validate_match_records(matches, {"s0001"}, {"s0002"})
 
     def test_match_contract_rejects_null_plus_target(self) -> None:
         matches = [

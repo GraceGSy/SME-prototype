@@ -141,12 +141,14 @@ def _content_schema() -> dict[str, Any]:
     }
 
 
-def _match_schema(source_ids: set[str], target_ids: set[str]) -> dict[str, Any]:
+def _match_schema() -> dict[str, Any]:
+    """Return a stable schema; deterministic validation enforces candidate IDs."""
+
     entry = {
         "type": "object",
         "properties": {
-            "source_id": {"enum": sorted(source_ids)},
-            "target_id": {"enum": [None, *sorted(target_ids)]},
+            "source_id": {"type": "string", "minLength": 1},
+            "target_id": {"type": ["string", "null"]},
             "basis": {"type": "string", "minLength": 1},
         },
         "required": ["source_id", "target_id", "basis"],
@@ -797,7 +799,7 @@ class Harness:
             f"target_document_id: {target_document_id}\n"
             f"target_candidates:\n{json.dumps(target_candidates, ensure_ascii=False)}"
         )
-        schema = _match_schema(source_ids, target_ids)
+        schema = _match_schema()
 
         for attempt in range(1, stage["validation_attempts"] + 1):
             try:

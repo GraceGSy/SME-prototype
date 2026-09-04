@@ -3,15 +3,12 @@ model: claude-sonnet-5
 cache_dir: runs/document-pipeline/cache
 output_dir: runs/document-pipeline/results
 
-# Every Skill call is low-effort, non-thinking, and non-continuing by default.
-# Task budgets steer the server-side agent loop; max_tokens and the local input
-# limit fail closed if a call still behaves abnormally.
+# Every Skill judgment is exactly one Messages API request. The harness never
+# replays Claude's response as a follow-up turn.
 execution:
   effort: low
   thinking: disabled
-  task_budget_tokens: 20000
   max_input_tokens: 150000
-  max_continuations: 0
   max_prompt_characters: 500000
   max_attachment_bytes: 500000
   context_management_trigger_tokens: 50000
@@ -30,7 +27,6 @@ stages:
     skill: extraction
     max_tokens: 32768
     execution:
-      task_budget_tokens: 50000
       max_input_tokens: 250000
   - id: questions
     kind: questions

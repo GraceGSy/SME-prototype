@@ -77,23 +77,34 @@ repeating the complete target pool for every individual source. The current
 Sherlock pair therefore needs one request per direction.
 Extraction returns schema-constrained JSON directly; the deterministic harness
 validates and writes it. Claude is never asked to create and reread an output
-file in its container.
+file in its container. The Skill has one short entrypoint and bundled domain
+guides, so it reads only the selected narrative, legal, or academic rules and
+never searches for a sibling Skill absent from its container.
 
-Every call uses the YAML execution policy. The checked-in defaults use low
-effort, disable adaptive thinking, set an advisory server-side task budget, cap
-generated tokens and accepted input-token usage, clear stale tool results, reject
-oversized prompts and attachments, and permit no automatic `pause_turn`
-continuation. The SDK's own retries are also disabled. Usage is aggregated over
-every explicitly permitted continuation and written beside the exact call
-policy in `runs.jsonl`; a budget failure is written to `errors.jsonl` with the
-usage observed before the harness stopped. A separate process-wide budget stops
-the command before it can silently issue more than 100 responses or exceed the
-configured cumulative input/output ceilings.
+Every call uses the YAML execution policy. One judgment makes exactly one
+Messages API request containing the pinned Skill and complete input. The adapter
+never appends Claude's response to a client-managed conversation: `pause_turn`
+fails with recorded usage instead of causing a follow-up request. The defaults
+use low effort, disable adaptive thinking, cap generated tokens and accepted
+input-token usage, clear old server-tool results after 50,000 input tokens while
+retaining the two newest tool uses, and reject oversized prompts and attachments.
+The SDK's retries are also disabled.
 
-Anthropic's task budget is advisory. The hard local ceilings can prevent a
-continuation or later request, but they cannot undo the cost of an in-flight
-server-tool response already returned by Anthropic. Keep a workspace spend limit
-in the Anthropic Console as the final account-level backstop.
+The fixed system prefix has an explicit five-minute cache breakpoint. When the
+prefix meets the model's cache-size threshold, this caches the stable tool/Skill
+prefix across nearby calls. It also enables Anthropic's automatic caching of
+code-execution results inside its server-side loop. Per-document content remains
+after that breakpoint. Matching uses one
+stable output schema; deterministic validation, rather than per-call schema
+enums, enforces candidate IDs. Identical complete judgments are additionally
+served from the harness's durable content-addressed cache without an API call.
+
+Usage and the exact call policy are written to `runs.jsonl`; a limit failure is
+written to `errors.jsonl` with the usage observed before the harness stopped. A
+separate process-wide budget stops the command before it can silently issue more
+than 100 responses or exceed the configured cumulative input/output ceilings.
+These local ceilings cannot undo the cost of the one in-flight request. Keep a
+workspace spend limit in the Anthropic Console as the account-level backstop.
 
 Matching validation also makes one attempt per batch. Invalid structured output
 is preserved for inspection and fails the command instead of triggering another

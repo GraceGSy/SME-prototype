@@ -42,8 +42,9 @@ The harness also writes `runs.jsonl`, `errors.jsonl`, Skill/source/output
 hashes, and stage checkpoints for audit and retry. These records do not alter
 the pipeline flow. Extraction returns structured JSON to Python rather than
 having Claude create and reread an output file. Every model call uses the
-configured effort, thinking, advisory task budget, prompt, attachment,
-input-token, output-token, and continuation limits.
+configured effort, thinking, prompt, attachment, input-token, and output-token
+limits. Each judgment is one Messages API request; the adapter never sends the
+response back as a follow-up turn.
 
 Both matching stages use the same candidate and output contracts. They differ
 only in candidate inclusion and the configured Skill. Candidate views exist in
