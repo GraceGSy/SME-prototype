@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import warnings
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Iterable, Literal
@@ -22,6 +23,7 @@ CODE_EXECUTION_TOOL = {
     "type": "code_execution_20250825",
     "name": "code_execution",
 }
+FIVE_MINUTE_CACHE = {"type": "ephemeral"}
 # Batch calls are adjacent, so the default five-minute TTL avoids pricier
 # one-hour writes while still enabling server-tool-result caching.
 CACHEABLE_SYSTEM = [
@@ -32,7 +34,7 @@ CACHEABLE_SYSTEM = [
             "Finish within this single Messages API request and return only the "
             "schema-constrained result."
         ),
-        "cache_control": {"type": "ephemeral"},
+        "cache_control": FIVE_MINUTE_CACHE,
     }
 ]
 API_TIMEOUT_SECONDS = 30 * 60
@@ -251,9 +253,11 @@ class ClaudeSkills:
         schema: dict[str, Any],
         *,
         policy: SkillCallPolicy,
+        cacheable_prompt: str | None = None,
     ) -> RunResult:
-        self._validate_prompt(prompt, policy)
-        messages: list[dict[str, Any]] = [{"role": "user", "content": prompt}]
+        self._validate_prompt(prompt, policy, cacheable_prompt)
+        content = _prompt_content(prompt, cacheable_prompt)
+        messages: list[dict[str, Any]] = [{"role": "user", "content": content}]
         return self._run_structured(skills, messages, schema, policy)
 
     def run_json_file(
@@ -264,10 +268,11 @@ class ClaudeSkills:
         schema: dict[str, Any],
         *,
         policy: SkillCallPolicy,
+        cacheable_prompt: str | None = None,
     ) -> RunResult:
         """Run a Skill over one attachment and return schema-constrained JSON."""
 
-        self._validate_prompt(prompt, policy)
+        self._validate_prompt(prompt, policy, cacheable_prompt)
         size = input_path.stat().st_size
         if size > policy.max_attachment_bytes:
             raise SkillBudgetExceeded(
@@ -275,16 +280,26 @@ class ClaudeSkills:
                 f"{policy.max_attachment_bytes}"
             )
         uploaded = self.client.beta.files.upload(file=input_path, betas=FILE_BETAS)
-        messages = [
-            {
-                "role": "user",
-                "content": [
-                    {"type": "text", "text": prompt},
-                    {"type": "container_upload", "file_id": uploaded.id},
-                ],
-            }
-        ]
-        return self._run_structured([skill], messages, schema, policy)
+        try:
+            messages = [
+                {
+                    "role": "user",
+                    "content": [
+                        *_prompt_content(prompt, cacheable_prompt),
+                        {"type": "container_upload", "file_id": uploaded.id},
+                    ],
+                }
+            ]
+            return self._run_structured([skill], messages, schema, policy)
+        finally:
+            try:
+                self.client.beta.files.delete(uploaded.id, betas=FILE_BETAS)
+            except Exception as error:
+                warnings.warn(
+                    f"Could not delete temporary Anthropic file {uploaded.id}: {error}",
+                    RuntimeWarning,
+                    stacklevel=2,
+                )
 
     def _run_structured(
         self,
@@ -373,10 +388,15 @@ class ClaudeSkills:
         return response, usage
 
     @staticmethod
-    def _validate_prompt(prompt: str, policy: SkillCallPolicy) -> None:
-        if len(prompt) > policy.max_prompt_characters:
+    def _validate_prompt(
+        prompt: str,
+        policy: SkillCallPolicy,
+        cacheable_prompt: str | None = None,
+    ) -> None:
+        total_characters = len(prompt) + len(cacheable_prompt or "")
+        if total_characters > policy.max_prompt_characters:
             raise SkillBudgetExceeded(
-                f"Skill prompt is {len(prompt)} characters; configured maximum is "
+                f"Skill prompt is {total_characters} characters; configured maximum is "
                 f"{policy.max_prompt_characters}"
             )
 
@@ -435,6 +455,22 @@ def _single_response_usage(response_id: str, usage: dict[str, Any]) -> dict[str,
         "request_count": 1,
         "responses": [{"response_id": response_id, "usage": usage}],
     }
+
+
+def _prompt_content(prompt: str, cacheable_prompt: str | None) -> list[dict[str, Any]]:
+    """Place reusable instructions before per-judgment data in one user turn."""
+
+    content: list[dict[str, Any]] = []
+    if cacheable_prompt:
+        content.append(
+            {
+                "type": "text",
+                "text": cacheable_prompt,
+                "cache_control": FIVE_MINUTE_CACHE,
+            }
+        )
+    content.append({"type": "text", "text": prompt})
+    return content
 
 
 def _input_token_volume(usage: dict[str, Any]) -> int:

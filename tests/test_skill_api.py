@@ -59,6 +59,19 @@ class _Messages:
         return self.responses.pop(0)
 
 
+class _Files:
+    def __init__(self) -> None:
+        self.uploads: list[dict] = []
+        self.deletions: list[tuple[str, list[str]]] = []
+
+    def upload(self, **kwargs) -> SimpleNamespace:
+        self.uploads.append(kwargs)
+        return SimpleNamespace(id="file-1")
+
+    def delete(self, file_id: str, *, betas: list[str]) -> None:
+        self.deletions.append((file_id, betas))
+
+
 def _adapter(*responses: _Response) -> tuple[ClaudeSkills, _Messages]:
     messages = _Messages(list(responses))
     adapter = object.__new__(ClaudeSkills)
@@ -70,7 +83,7 @@ def _adapter(*responses: _Response) -> tuple[ClaudeSkills, _Messages]:
         "output_tokens": 0,
     }
     adapter.client = SimpleNamespace(
-        beta=SimpleNamespace(messages=messages, files=SimpleNamespace())
+        beta=SimpleNamespace(messages=messages, files=_Files())
     )
     return adapter, messages
 
@@ -113,13 +126,33 @@ class SkillApiTest(unittest.TestCase):
             {"type": "ephemeral"},
         )
         self.assertNotIn("cache_control", call["tools"][-1])
-        self.assertEqual(call["messages"], [{"role": "user", "content": "prompt"}])
+        self.assertEqual(
+            call["messages"],
+            [{"role": "user", "content": [{"type": "text", "text": "prompt"}]}],
+        )
         self.assertEqual(
             call["context_management"]["edits"][0]["type"],
             "clear_tool_uses_20250919",
         )
         self.assertEqual(result.usage["request_count"], 1)
         self.assertEqual(result.call_policy, policy.as_dict())
+
+    def test_cacheable_instructions_precede_dynamic_input_in_one_turn(self) -> None:
+        adapter, messages = _adapter(_Response("response-1", "end_turn", 100, 20))
+
+        adapter.run_json(
+            [SKILL],
+            "dynamic input",
+            SCHEMA,
+            policy=SkillCallPolicy(max_tokens=512),
+            cacheable_prompt="stable instructions",
+        )
+
+        content = messages.calls[0]["messages"][0]["content"]
+        self.assertEqual(len(messages.calls), 1)
+        self.assertEqual(content[0]["text"], "stable instructions")
+        self.assertEqual(content[0]["cache_control"], {"type": "ephemeral"})
+        self.assertEqual(content[1], {"type": "text", "text": "dynamic input"})
 
     def test_pause_turn_never_creates_a_second_request(self) -> None:
         adapter, messages = _adapter(
@@ -153,6 +186,31 @@ class SkillApiTest(unittest.TestCase):
 
             with self.assertRaisesRegex(SkillBudgetExceeded, "configured maximum is 4"):
                 adapter.run_json_file(SKILL, "prompt", path, SCHEMA, policy=policy)
+
+    def test_uploaded_file_is_deleted_after_single_request(self) -> None:
+        adapter, messages = _adapter(_Response("response-1", "end_turn", 100, 20))
+        policy = SkillCallPolicy(max_tokens=512, max_attachment_bytes=100)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "source.txt"
+            path.write_text("source", encoding="utf-8")
+
+            result = adapter.run_json_file(
+                SKILL,
+                "dynamic input",
+                path,
+                SCHEMA,
+                policy=policy,
+                cacheable_prompt="stable instructions",
+            )
+
+        files = adapter.client.beta.files
+        self.assertEqual(result.usage["request_count"], 1)
+        self.assertEqual(len(messages.calls), 1)
+        self.assertEqual(len(files.uploads), 1)
+        self.assertEqual(files.deletions, [("file-1", ["files-api-2025-04-14"])])
+        content = messages.calls[0]["messages"][0]["content"]
+        self.assertEqual(content[0]["cache_control"], {"type": "ephemeral"})
+        self.assertEqual(content[-1], {"type": "container_upload", "file_id": "file-1"})
 
     def test_process_call_limit_stops_before_another_request(self) -> None:
         adapter, messages = _adapter(_Response("response-1", "end_turn", 100, 20))

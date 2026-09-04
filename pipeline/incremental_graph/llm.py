@@ -73,10 +73,9 @@ class AnthropicJudgmentProvider:
                 ),
             )
         skill = self.skills.register(skill_path)
-        prompt = f"{rendered.system}\n\n{rendered.user}"
         response = self.skills.run_json(
             [skill],
-            prompt,
+            rendered.user,
             rendered.schema,
             policy=SkillCallPolicy(
                 max_tokens=self.model.max_tokens,
@@ -88,6 +87,7 @@ class AnthropicJudgmentProvider:
                     self.model.context_management_trigger_tokens
                 ),
             ),
+            cacheable_prompt=rendered.system,
         )
         normalized = dict(response.value)
         model = {

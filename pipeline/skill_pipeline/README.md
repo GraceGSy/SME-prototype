@@ -3,7 +3,7 @@
 This is the single extraction, question-generation, and pairwise-matching
 pipeline for HCI papers, Sherlock Holmes stories, and judicial opinions. Claude Skills make
 language judgments. Python fixes stage order, IDs, candidate construction,
-coverage, validation, retry, checkpointing, and provenance.
+coverage, validation, failure, checkpointing, and provenance.
 
 ## Contract
 
@@ -89,12 +89,16 @@ use low effort, disable adaptive thinking, cap generated tokens and accepted
 input-token usage, clear old server-tool results after 50,000 input tokens while
 retaining the two newest tool uses, and reject oversized prompts and attachments.
 The SDK's retries are also disabled.
+Files uploaded for extraction are deleted after the request completes or fails.
+Skill registration and attachment upload/delete are control-plane requests, not
+additional model turns; an unchanged Skill reuses its pinned registered version.
 
 The fixed system prefix has an explicit five-minute cache breakpoint. When the
 prefix meets the model's cache-size threshold, this caches the stable tool/Skill
 prefix across nearby calls. It also enables Anthropic's automatic caching of
-code-execution results inside its server-side loop. Per-document content remains
-after that breakpoint. Matching uses one
+code-execution results inside its server-side loop. Each stage's reusable
+instructions have a second breakpoint; document and candidate data follow it.
+Matching uses one
 stable output schema; deterministic validation, rather than per-call schema
 enums, enforces candidate IDs. Identical complete judgments are additionally
 served from the harness's durable content-addressed cache without an API call.

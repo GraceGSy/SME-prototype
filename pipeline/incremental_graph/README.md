@@ -58,6 +58,8 @@ API request; `pause_turn` fails rather than replaying model output in another
 request. The same block caps cumulative API responses and tokens per process so
 a large graph cannot silently launch an unbounded call set. Prompt and context
 files are adjacent under `prompts/` and `contexts/`.
+The stable system and prompt instructions precede five-minute cache breakpoints;
+per-judgment context follows them.
 Changing those files changes judgment behavior without changing graph rules.
 
 ## Commands

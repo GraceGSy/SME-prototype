@@ -101,11 +101,8 @@ class SkillPipelineTest(unittest.TestCase):
         self.assertNotIn("task_budget_tokens", harness.config["execution"])
         self.assertNotIn("max_continuations", harness.config["execution"])
         self.assertEqual(harness.config["session_budget"]["max_api_responses"], 100)
-        self.assertEqual(stages["section_matching"]["validation_attempts"], 1)
-        self.assertEqual(
-            stages["section_and_subsection_matching"]["validation_attempts"],
-            1,
-        )
+        self.assertNotIn("validation_attempts", stages["section_matching"])
+        self.assertNotIn("validation_attempts", stages["section_and_subsection_matching"])
         self.assertEqual(
             stages["section_and_subsection_matching"]["source_batch_size"],
             10,
@@ -141,6 +138,13 @@ class SkillPipelineTest(unittest.TestCase):
             (root / harness.config["skills"][stage["skill"]]).is_dir()
             for stage in harness.config["stages"]
         ))
+
+    def test_config_rejects_retrying_one_judgment(self) -> None:
+        harness = Harness(DEFAULT_CONFIG)
+        harness.config["stages"][0]["validation_attempts"] = 2
+
+        with self.assertRaisesRegex(ValueError, "one judgment always makes one request"):
+            harness._validate_config()
 
     def test_prepares_content_only_corpus_with_canonical_names(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

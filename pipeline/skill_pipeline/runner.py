@@ -240,6 +240,11 @@ class Harness:
         for stage in self.config["stages"]:
             if stage["skill"] not in self.config["skills"]:
                 raise ValueError(f"Unknown Skill key on stage {stage['id']}")
+            if "validation_attempts" in stage:
+                raise ValueError(
+                    f"Stage {stage['id']} cannot configure validation_attempts; "
+                    "one judgment always makes one request"
+                )
             self._call_policy(stage)
             if stage["kind"] == "match" and stage.get("view") not in {
                 SECTIONS_VIEW,
@@ -447,7 +452,7 @@ class Harness:
                 source_path = self._source_path(dataset_name, document, source_kind)
                 extraction_skill = extraction_skill or self._skill(extraction_stage)
                 mode = "narrative" if source_kind == "xhtml" else "legal"
-                prompt = (
+                instructions = (
                     f"Use the attached extraction Skill exactly as written in {mode} mode. "
                     "Extract only source-marked structural boundaries and their paragraphs. "
                     "Read the attached source once, then return the canonical document directly "
@@ -461,6 +466,7 @@ class Harness:
                         source_path,
                         _content_schema(),
                         policy=self._call_policy(extraction_stage),
+                        cacheable_prompt=instructions,
                     )
                 except Exception as error:
                     self._log_error(
@@ -525,10 +531,12 @@ class Harness:
                 skill = skill or self._skill(question_stage)
                 candidate = unit.candidate()
                 candidate.pop(QUESTION_FIELD)
-                prompt = (
+                instructions = (
                     "Use the attached question-generation Skill exactly as written. "
                     "The supplied candidate contains the complete evidence for one section or "
-                    "subsection. Return only the required JSON object.\n\n"
+                    "subsection. Return only the required JSON object."
+                )
+                prompt = (
                     f"document_id: {document_id}\n"
                     f"document_title: {documents[document_id]['title']}\n"
                     f"candidate:\n{json.dumps(candidate, ensure_ascii=False)}"
@@ -539,6 +547,7 @@ class Harness:
                         prompt,
                         _question_schema(),
                         policy=self._call_policy(question_stage),
+                        cacheable_prompt=instructions,
                     )
                 except Exception as error:
                     self._log_error(
@@ -789,11 +798,13 @@ class Harness:
     ) -> tuple[list[dict[str, Any]], RunResult]:
         source_ids = {candidate["unit_id"] for candidate in source_candidates}
         target_ids = {candidate["unit_id"] for candidate in target_candidates}
-        prompt = (
+        instructions = (
             "Use the attached matching Skill exactly as written for one directional pass. "
             "The harness has deterministically built the candidates. Judge every source candidate "
             "against the complete target pool. Multiple target records or one null record are valid. "
-            "Return at least one record for every source_id.\n\n"
+            "Return at least one record for every source_id."
+        )
+        prompt = (
             f"source_document_id: {source_document_id}\n"
             f"source_candidates:\n{json.dumps(source_candidates, ensure_ascii=False)}\n\n"
             f"target_document_id: {target_document_id}\n"
@@ -801,56 +812,46 @@ class Harness:
         )
         schema = _match_schema()
 
-        for attempt in range(1, stage["validation_attempts"] + 1):
-            try:
-                result = self._api().run_json(
-                    [skill],
-                    prompt,
-                    schema,
-                    policy=self._call_policy(stage),
-                )
-            except Exception as error:
-                status = getattr(error, "status_code", None)
-                transient = status in {408, 409, 429} or (
-                    isinstance(status, int) and status >= 500
-                )
-                self._log_error(
-                    dataset_name,
-                    f"{stage['id']}:{source_document_id}-to-{target_document_id}:batch-{batch_index}",
-                    error,
-                    {"attempt": attempt, "batch": f"{batch_index}/{batch_count}"},
-                )
-                if not transient or attempt == stage["validation_attempts"]:
-                    raise
-                continue
+        try:
+            result = self._api().run_json(
+                [skill],
+                prompt,
+                schema,
+                policy=self._call_policy(stage),
+                cacheable_prompt=instructions,
+            )
+        except Exception as error:
+            self._log_error(
+                dataset_name,
+                f"{stage['id']}:{source_document_id}-to-{target_document_id}:batch-{batch_index}",
+                error,
+                {"batch": f"{batch_index}/{batch_count}"},
+            )
+            raise
 
-            matches = result.value["matches"]
-            try:
-                validate_match_records(matches, source_ids, target_ids)
-            except ValueError as error:
-                rejected_path = output_path.with_name(
-                    f"{output_path.stem}.{source_document_id}-to-{target_document_id}."
-                    f"batch-{batch_index:02d}.rejected-{result.response_id}.json"
-                )
-                write_json(rejected_path, result.value)
-                self._log(
-                    dataset_name,
-                    f"{stage['id']}:{source_document_id}-to-{target_document_id}:batch-{batch_index}:rejected",
-                    result,
-                    [skill],
-                    inputs=[source_path, target_path],
-                    outputs=[rejected_path],
-                    detail={
-                        "attempt": attempt,
-                        "batch": f"{batch_index}/{batch_count}",
-                        "validation_error": str(error),
-                    },
-                )
-                if attempt == stage["validation_attempts"]:
-                    raise
-                continue
-            return matches, result
-        raise RuntimeError("unreachable")
+        matches = result.value["matches"]
+        try:
+            validate_match_records(matches, source_ids, target_ids)
+        except ValueError as error:
+            rejected_path = output_path.with_name(
+                f"{output_path.stem}.{source_document_id}-to-{target_document_id}."
+                f"batch-{batch_index:02d}.rejected-{result.response_id}.json"
+            )
+            write_json(rejected_path, result.value)
+            self._log(
+                dataset_name,
+                f"{stage['id']}:{source_document_id}-to-{target_document_id}:batch-{batch_index}:rejected",
+                result,
+                [skill],
+                inputs=[source_path, target_path],
+                outputs=[rejected_path],
+                detail={
+                    "batch": f"{batch_index}/{batch_count}",
+                    "validation_error": str(error),
+                },
+            )
+            raise
+        return matches, result
 
     def run(self, dataset_names: list[str], stage_id: str) -> None:
         stages = self.config["stages"]
