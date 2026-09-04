@@ -168,6 +168,37 @@ class SkillPipelineTest(unittest.TestCase):
             self.assertNotIn(QUESTION_FIELD, content[0])
             self.assertIn("file: source.content.json", (output / "manifest.yaml").read_text())
 
+    def test_prepares_one_section_paragraph_corpus(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "story.content.json"
+            source.write_text(json.dumps(_document()), encoding="utf-8")
+            manifest = root / "manifest.yaml"
+            manifest.write_text(
+                "schema_version: 1\npapers:\n"
+                "  - paper_id: story\n"
+                "    title: Whole Story\n"
+                "    file: story.content.json\n",
+                encoding="utf-8",
+            )
+            output = root / "whole-story"
+
+            self.assertEqual(
+                prepare_content_corpus(manifest, output, whole_section=True),
+                1,
+            )
+
+            content = json.loads((output / "story.content.json").read_text(encoding="utf-8"))
+            self.assertEqual(len(content), 1)
+            self.assertEqual(content[0]["section_name"], "Whole Story")
+            self.assertEqual(content[0]["subsections"], [])
+            self.assertEqual(
+                [paragraph["paragraph_number"] for paragraph in content[0]["paragraphs"]],
+                list(range(len(content[0]["paragraphs"]))),
+            )
+            prepared_manifest = (output / "manifest.yaml").read_text(encoding="utf-8")
+            self.assertIn("max_granularity: paragraph", prepared_manifest)
+
     def test_extraction_skill_has_only_directly_bundled_domain_guides(self) -> None:
         root = Path(__file__).resolve().parents[1]
         skill_dir = root / "skills" / "extract-section-and-subsection-paragraphs"

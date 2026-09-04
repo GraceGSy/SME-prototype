@@ -86,6 +86,30 @@ def strip_questions(value: Any) -> Any:
     return value
 
 
+def flatten_to_single_section(
+    document: list[dict[str, Any]],
+    section_name: str,
+) -> list[dict[str, Any]]:
+    """Copy every paragraph into one ordered top-level section."""
+
+    validate_document(document)
+    paragraphs = []
+    for unit in iter_structural_units(document):
+        for paragraph in unit.own_paragraphs:
+            paragraphs.append({
+                "paragraph_number": len(paragraphs),
+                "text": paragraph["text"],
+            })
+    if not paragraphs:
+        raise ValueError("A flattened document must contain at least one paragraph")
+    return [{
+        "section_name": section_name,
+        "section_number": None,
+        "paragraphs": paragraphs,
+        "subsections": [],
+    }]
+
+
 def section_unit_id(section_index: int) -> str:
     return f"s{section_index + 1:04d}"
 

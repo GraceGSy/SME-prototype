@@ -1,0 +1,18 @@
+schema_version: 1
+max_granularity: paragraph
+papers:
+- paper_id: speckled_band
+  title: The Adventure of the Speckled Band
+  file: speckled_band.content.json
+- paper_id: wisteria_lodge
+  title: The Adventure of Wisteria Lodge
+  file: wisteria_lodge.content.json
+- paper_id: bruce_partington_plans
+  title: The Adventure of the Bruce-Partington Plans
+  file: bruce_partington_plans.content.json
+- paper_id: lady_frances_carfax
+  title: The Disappearance of Lady Frances Carfax
+  file: lady_frances_carfax.content.json
+- paper_id: illustrious_client
+  title: The Adventure of the Illustrious Client
+  file: illustrious_client.content.json
