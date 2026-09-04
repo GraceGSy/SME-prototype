@@ -27,10 +27,11 @@ python -m pipeline.skill_pipeline.runner --dataset legal_opinions --stage extrac
 python -m pipeline.skill_pipeline.runner --dataset legal_dissents --stage extraction
 ```
 
-Current extraction checkpoint: `banuelos_jimenez_opinion` and
-`core_optical_opinion` already have valid canonical content files. Ordinary
-reruns skip them. Use `--force` only when intentionally regenerating those
-artifacts from the new text inputs.
+All ten configured opinions and dissents have canonical content files. Ordinary
+reruns skip them. The first `porter_dissent` response omitted four final body
+paragraphs after page-spanning footnotes; those exact source paragraphs were
+restored under printed subsection `II.C`, and the harness now rejects any legal
+extraction that does not preserve its source's final passage.
 
 Legal extraction uses only printed Roman-numeral and capital-letter divisions.
 It does not infer doctrinal or topical sections. A document with no printed

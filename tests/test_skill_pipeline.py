@@ -20,6 +20,7 @@ from pipeline.skill_pipeline.runner import (
     Harness,
     batch_candidates,
     validate_match_records,
+    validate_text_completion,
 )
 from pipeline.prepare_content_corpus import prepare_content_corpus
 
@@ -91,7 +92,7 @@ class SkillPipelineTest(unittest.TestCase):
         harness = Harness(DEFAULT_CONFIG)
 
         stages = {stage["id"]: stage for stage in harness.config["stages"]}
-        self.assertEqual(stages["extraction"]["max_tokens"], 32768)
+        self.assertEqual(stages["extraction"]["max_tokens"], 65536)
         self.assertEqual(stages["section_matching"]["view"], SECTIONS_VIEW)
         self.assertEqual(
             stages["section_and_subsection_matching"]["view"],
@@ -148,6 +149,15 @@ class SkillPipelineTest(unittest.TestCase):
     def test_candidate_batches_are_stable_and_complete(self) -> None:
         candidates = matching_candidates(_document(), NESTED_VIEW)
         self.assertEqual(batch_candidates(candidates, 1), [[candidates[0]], [candidates[1]]])
+
+    def test_text_extraction_must_preserve_the_final_source_passage(self) -> None:
+        document = _document()
+        ending = "one two three four five six seven eight nine ten eleven twelve"
+        document[0]["subsections"][0]["paragraphs"][0]["text"] = ending
+
+        validate_text_completion(document, f"Front matter.\n{ending}")
+        with self.assertRaisesRegex(ValueError, "final source passage"):
+            validate_text_completion(document, f"Front matter.\n{ending} thirteen")
 
     def test_one_match_contract_allows_multiple_targets(self) -> None:
         matches = [

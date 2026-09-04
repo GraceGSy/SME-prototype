@@ -79,6 +79,10 @@ or coordinate data.
   lines, preserved indentation, and prose continuity to reconstruct paragraphs.
   Do not turn every source line into a paragraph, and do not split one paragraph
   solely because a page break was represented by a blank line.
+- Footnotes can interrupt a paragraph at a page boundary. After extracting the
+  footnote text, resume the authored body that follows it; a footnote is not the
+  end of the opinion or dissent. Before saving, verify that the final authored
+  sentence in the source is present in the output.
 - Save the result directly in the strict JSON schema below and report section,
   subsection, and paragraph counts.
 

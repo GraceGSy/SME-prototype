@@ -61,6 +61,36 @@ def validate_story_shape(document: list[dict[str, Any]], config: dict[str, Any])
         raise ValueError("Scenes must be numbered once in document order")
 
 
+def validate_text_completion(document: list[dict[str, Any]], source_text: str) -> None:
+    """Require the extracted paragraphs to preserve the source's final passage."""
+
+    source_lines = [line.strip() for line in source_text.splitlines() if line.strip()]
+    source_tail: list[str] = []
+    while source_lines and len(re.findall(r"\w+", " ".join(source_tail))) < 8:
+        source_tail.insert(0, source_lines.pop())
+    source_tokens = re.findall(
+        r"\w+",
+        re.sub(r"-\s+", "", " ".join(source_tail)).casefold(),
+    )
+    paragraph_text = " ".join(
+        paragraph["text"]
+        for section in document
+        for paragraphs in (
+            section["paragraphs"],
+            *(subsection["paragraphs"] for subsection in section["subsections"]),
+        )
+        for paragraph in paragraphs
+    )
+    output_tokens = re.findall(r"\w+", paragraph_text.casefold())
+    window_size = len(source_tokens)
+    expected = source_tokens[-window_size:]
+    if not expected or not any(
+        output_tokens[index:index + window_size] == expected
+        for index in range(len(output_tokens) - window_size + 1)
+    ):
+        raise ValueError("Extracted content is missing the final source passage")
+
+
 def _question_schema() -> dict[str, Any]:
     return {
         "type": "object",
@@ -334,15 +364,18 @@ class Harness:
         extraction_skill: SkillRef | None = None
 
         for document in dataset["documents"]:
+            source_kind = next(kind for kind in SOURCE_KINDS if kind in document)
             output_path = self._content_path(directory, document["id"])
             if output_path.exists() and not self.force:
                 content = read_json(output_path)
                 validate_document(content)
-                if "xhtml" in document:
+                if source_kind == "xhtml":
                     validate_story_shape(content, document)
+                if source_kind == "text":
+                    source_path = self._source_path(dataset_name, document, source_kind)
+                    validate_text_completion(content, source_path.read_text(encoding="utf-8"))
                 continue
 
-            source_kind = next(kind for kind in SOURCE_KINDS if kind in document)
             if source_kind == "json":
                 source_path = ROOT / document["json"]
                 content = strip_questions(read_json(source_path))
@@ -378,6 +411,8 @@ class Harness:
             validate_document(content)
             if source_kind == "xhtml":
                 validate_story_shape(content, document)
+            if source_kind == "text":
+                validate_text_completion(content, source_path.read_text(encoding="utf-8"))
             write_json(output_path, content)
             if result is not None and extraction_skill is not None:
                 self._log(
