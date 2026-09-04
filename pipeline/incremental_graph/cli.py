@@ -31,7 +31,7 @@ def run_revision(
     manifest_path = manifest_path.resolve()
     config_path = config_path.resolve()
     run_dir = run_dir.resolve()
-    _, papers = load_manifest(manifest_path)
+    manifest, papers = load_manifest(manifest_path)
     if paper_limit is not None:
         if not 1 <= paper_limit <= len(papers):
             raise ValueError(f"paper limit must be between 1 and {len(papers)}")
@@ -58,6 +58,7 @@ def run_revision(
         config,
         judge,
         revision_dir,
+        max_granularity=manifest.max_granularity,
         force_paper_index=force_paper_index,
         force_stage_id=force_stage_id,
     )
@@ -71,6 +72,7 @@ def run_revision(
         "schema_version": 1,
         "manifest_path": str(manifest_path),
         "config_path": str(config_path),
+        "max_granularity": manifest.max_granularity,
         "paper_limit": paper_limit,
         "current_revision": revision_number,
         "current_revision_dir": str(revision_dir),
@@ -98,6 +100,7 @@ def validate_manifest(manifest_path: Path) -> dict[str, Any]:
     manifest, papers = load_manifest(manifest_path.resolve())
     return {
         "schema_version": manifest.schema_version,
+        "max_granularity": manifest.max_granularity,
         "paper_order": [paper.paper_id for paper in papers],
         "papers": [
             {
@@ -106,7 +109,12 @@ def validate_manifest(manifest_path: Path) -> dict[str, Any]:
                 "top_level_sections": sum(section.kind == "section" for section in paper.sections),
                 "subsections": sum(section.kind == "subsection" for section in paper.sections),
                 "paragraphs": sum(len(section.paragraphs) for section in paper.sections),
-                "missing_section_questions": sum(not section.question for section in paper.sections),
+                "section_questions_required": manifest.max_granularity != "paragraph",
+                "missing_section_questions": (
+                    sum(not section.question for section in paper.sections)
+                    if manifest.max_granularity != "paragraph"
+                    else 0
+                ),
                 "missing_paragraph_questions": sum(
                     not paragraph.question
                     for section in paper.sections

@@ -1,8 +1,19 @@
 {
   "type": "object",
   "properties": {
-    "question_this_text_answers": {"type": "string", "minLength": 1}
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "unit_id": {"type": "string", "minLength": 1},
+          "question_this_text_answers": {"type": "string", "minLength": 1}
+        },
+        "required": ["unit_id", "question_this_text_answers"],
+        "additionalProperties": false
+      }
+    }
   },
-  "required": ["question_this_text_answers"],
+  "required": ["questions"],
   "additionalProperties": false
 }

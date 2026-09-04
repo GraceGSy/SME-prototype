@@ -21,6 +21,15 @@ papers:
 The shared loader derives section, subsection, and paragraph IDs from source
 positions. It accepts no flat, pseudo-section, or viewer JSON variants.
 
+The manifest may set `max_granularity`:
+
+- `section` is the default. Only top-level sections become structural nodes;
+  explicit subsection paragraphs remain ordered within their parent section.
+- `subsection` preserves both section and subsection structural nodes.
+- `paragraph` requires one top-level section per document. The runner places
+  those sections in one deterministic shared root, skips every structural
+  judgment, and starts with paragraph questions and matching.
+
 ## Ordered algorithm
 
 For each paper in manifest order, the structural phase:
@@ -38,15 +47,19 @@ After all papers, one structural rerepresentation pass lets singleton nodes
 select eligible established nodes. Accepted selections merge node membership;
 same-paper conflicts remain provenance. No projected match edge is created.
 
-The paragraph phase repeats bidirectional matching inside each exact finalized
-structural node. Reciprocal matches form node cores. A one-way paragraph may
+The paragraph-question stage sends every missing paragraph from one paper in
+one schema-validated Skill call. Paragraph matching uses one call per direction
+inside each exact finalized structural node. In paragraph-first mode, changed
+multi-member node questions are also generated together in one call.
+Reciprocal matches form node cores. A one-way paragraph may
 join only when it is immediately adjacent to a reciprocal anchor; all other
 paragraphs remain singletons. Unabsorbed projected selections remain provenance
 and never become edges.
 
-The matching Skill returns the common judgment fields `target_id` and `basis`.
-The question Skill returns the common field `question_this_text_answers`.
-Questions remain metadata, not identity.
+The matching Skill returns `target_id` and `basis` for each source. The question
+Skill returns `question_this_text_answers` for each requested unit. Batch
+envelopes do not change those common fields. Questions remain metadata, not
+identity.
 
 ## Configure
 

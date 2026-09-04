@@ -11,6 +11,7 @@ from pydantic import BaseModel, Field, model_validator
 
 Level = Literal["section", "paragraph"]
 StructuralKind = Literal["section", "subsection"]
+Granularity = Literal["section", "subsection", "paragraph"]
 Phase = Literal["structural", "rerepresentation", "paragraph"]
 MatchDirection = Literal["new_to_group", "group_to_new", "singleton_to_group"]
 
@@ -73,6 +74,7 @@ class PaperManifestEntry(BaseModel):
 
 class PaperManifest(BaseModel):
     schema_version: int = 1
+    max_granularity: Granularity = "section"
     papers: list[PaperManifestEntry]
 
     @model_validator(mode="after")
@@ -109,6 +111,8 @@ class StageConfig(BaseModel):
     prompts: dict[str, str] = Field(default_factory=dict)
     contexts: dict[str, str] = Field(default_factory=dict)
     skill: str | None = None
+    max_tokens: int | None = Field(default=None, gt=0)
+    max_input_tokens: int | None = Field(default=None, gt=0)
 
 
 class PipelineConfig(BaseModel):
@@ -132,12 +136,16 @@ class JudgmentRequest(BaseModel):
     key: str
     paper_index: int
     stage_id: str
-    output_kind: Literal["question", "match"]
+    output_kind: Literal["question", "question_batch", "match", "match_batch"]
     prompt_ref: str
     context_ref: str
     context: dict[str, Any]
     allowed_match_ids: list[str] = Field(default_factory=list)
+    expected_question_ids: list[str] = Field(default_factory=list)
+    expected_match_source_ids: list[str] = Field(default_factory=list)
     skill_ref: str | None = None
+    max_tokens: int | None = Field(default=None, gt=0)
+    max_input_tokens: int | None = Field(default=None, gt=0)
     force: bool = False
 
 

@@ -1,4 +1,5 @@
 schema_version: 1
+max_granularity: subsection
 papers:
   - paper_id: speckled_band
     title: The Adventure of the Speckled Band

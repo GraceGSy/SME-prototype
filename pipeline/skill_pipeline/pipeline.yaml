@@ -78,6 +78,7 @@ study:
 datasets:
   sherlock:
     content_dir: datasets/sherlock/content
+    max_granularity: paragraph
     # Start with the first two stories in publication order. Append later IDs
     # here only after the current run has been reviewed.
     question_documents:
@@ -128,6 +129,7 @@ datasets:
 
   hci:
     content_dir: datasets/hci-five-paper/content
+    max_granularity: subsection
     question_documents:
       - abstractexplorer
       - corpusstudio
@@ -154,6 +156,7 @@ datasets:
 
   legal_opinions:
     content_dir: datasets/legal/content
+    max_granularity: section
     question_documents:
       - banuelos_jimenez_opinion
       - core_optical_opinion
@@ -190,6 +193,7 @@ datasets:
 
   legal_dissents:
     content_dir: datasets/legal/content
+    max_granularity: section
     question_documents:
       - banuelos_jimenez_dissent
       - core_optical_dissent

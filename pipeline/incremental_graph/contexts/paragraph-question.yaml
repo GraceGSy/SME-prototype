@@ -1,6 +1,5 @@
 include:
   - paper
-  - section
-  - paragraph
-max_characters: 0
+  - paragraphs
+max_characters: 500000
 overflow: fail

@@ -73,11 +73,16 @@ stages:
     skill: generate-question
     prompt: paragraph-question/v1
     context: paragraph-question
+    max_tokens: 16384
+    max_input_tokens: 250000
 
   - id: paragraph_matching
     handler: match_paragraphs
     phase: paragraph
     skill: directional-section-mapping-by-paragraphs-nested
+    max_tokens: 32768
+    # Two complete Sherlock stories render to about 402k prompt characters.
+    max_input_tokens: 350000
     prompts:
       new_to_group: paragraph-to-group-match/v1
       group_to_new: group-to-paragraph-match/v1
@@ -95,3 +100,5 @@ stages:
     skill: generate-question
     prompt: group-question/v1
     context: group-question
+    max_tokens: 16384
+    max_input_tokens: 350000

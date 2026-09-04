@@ -278,6 +278,12 @@ class Harness:
             }:
                 raise ValueError(f"Unknown match view on stage {stage['id']}")
         for name, dataset in self.config["datasets"].items():
+            if dataset.get("max_granularity", "section") not in {
+                "section",
+                "subsection",
+                "paragraph",
+            }:
+                raise ValueError(f"Dataset {name} has an invalid max_granularity")
             ids = [document["id"] for document in dataset["documents"]]
             if len(ids) != len(set(ids)):
                 raise ValueError(f"Duplicate document id in {name}")

@@ -78,10 +78,10 @@ class AnthropicJudgmentProvider:
             rendered.user,
             rendered.schema,
             policy=SkillCallPolicy(
-                max_tokens=self.model.max_tokens,
+                max_tokens=request.max_tokens or self.model.max_tokens,
                 effort=self.model.effort,
                 thinking=self.model.thinking,
-                max_input_tokens=self.model.max_input_tokens,
+                max_input_tokens=request.max_input_tokens or self.model.max_input_tokens,
                 max_prompt_characters=self.model.max_prompt_characters,
                 context_management_trigger_tokens=(
                     self.model.context_management_trigger_tokens
@@ -92,6 +92,10 @@ class AnthropicJudgmentProvider:
         normalized = dict(response.value)
         model = {
             **self.model.model_dump(mode="json"),
+            "effective_max_tokens": request.max_tokens or self.model.max_tokens,
+            "effective_max_input_tokens": (
+                request.max_input_tokens or self.model.max_input_tokens
+            ),
             "skill": {
                 "path": skill.path,
                 "skill_id": skill.skill_id,
@@ -128,6 +132,8 @@ class AnthropicJudgmentProvider:
             "context_hash": rendered.context_hash,
             "schema_hash": rendered.schema_hash,
             "model": self.model.model_dump(mode="json"),
+            "max_tokens": request.max_tokens or self.model.max_tokens,
+            "max_input_tokens": request.max_input_tokens or self.model.max_input_tokens,
             "skill_hash": skill_hash,
         }
         encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
@@ -139,6 +145,55 @@ class AnthropicJudgmentProvider:
             question = value.get(QUESTION_FIELD)
             if not isinstance(question, str) or not question.strip():
                 raise JudgmentError(f"{request.key} returned an empty question")
+            return
+        if request.output_kind == "question_batch":
+            questions = value.get("questions")
+            if not isinstance(questions, list):
+                raise JudgmentError(f"{request.key} returned no question list")
+            returned_ids = []
+            for item in questions:
+                if not isinstance(item, dict):
+                    raise JudgmentError(f"{request.key} returned an invalid question item")
+                unit_id = item.get("unit_id")
+                question = item.get(QUESTION_FIELD)
+                if not isinstance(unit_id, str) or not unit_id:
+                    raise JudgmentError(f"{request.key} returned a question without a unit ID")
+                if not isinstance(question, str) or not question.strip():
+                    raise JudgmentError(f"{request.key} returned an empty question for {unit_id}")
+                returned_ids.append(unit_id)
+            if len(returned_ids) != len(set(returned_ids)):
+                raise JudgmentError(f"{request.key} returned duplicate question IDs")
+            if set(returned_ids) != set(request.expected_question_ids):
+                raise JudgmentError(
+                    f"{request.key} returned question IDs {sorted(returned_ids)}; expected "
+                    f"{sorted(request.expected_question_ids)}"
+                )
+            return
+        if request.output_kind == "match_batch":
+            matches = value.get("matches")
+            if not isinstance(matches, list):
+                raise JudgmentError(f"{request.key} returned no match list")
+            returned_ids = []
+            for item in matches:
+                if not isinstance(item, dict):
+                    raise JudgmentError(f"{request.key} returned an invalid match item")
+                source_id = item.get("source_id")
+                target_id = item.get("target_id")
+                if not isinstance(source_id, str) or not source_id:
+                    raise JudgmentError(f"{request.key} returned a match without a source ID")
+                if target_id is not None and target_id not in request.allowed_match_ids:
+                    raise JudgmentError(
+                        f"{request.key} selected {target_id!r}; allowed values are "
+                        f"{request.allowed_match_ids} or null"
+                    )
+                returned_ids.append(source_id)
+            if len(returned_ids) != len(set(returned_ids)):
+                raise JudgmentError(f"{request.key} returned duplicate match source IDs")
+            if set(returned_ids) != set(request.expected_match_source_ids):
+                raise JudgmentError(
+                    f"{request.key} returned source IDs {sorted(returned_ids)}; expected "
+                    f"{sorted(request.expected_match_source_ids)}"
+                )
             return
         chosen = value.get("target_id")
         if chosen is not None and chosen not in request.allowed_match_ids:

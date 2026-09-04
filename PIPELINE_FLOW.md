@@ -54,22 +54,28 @@ memory, so no flat or nested duplicate input files are written.
 
 ```mermaid
 flowchart TD
-    Manifest["Ordered manifest plus the same<br/>canonical document JSON"]:::artifact
+    Manifest["Ordered manifest, max_granularity,<br/>and canonical document JSON"]:::artifact
     Load["Shared validation and positional IDs"]:::det
+    Mode{"max_granularity"}:::det
     Structural["For each paper: section/subsection<br/>questions and matching"]:::llm
     Reconcile["Reciprocal matches add members;<br/>otherwise create singleton nodes"]:::det
     Contains["Add source-backed contains edges"]:::det
     NodeQuestions["Generate questions for<br/>changed multi-member nodes"]:::llm
     Rerepresent["One singleton-to-established<br/>matching pass"]:::llm
     Merge["Apply eligible merges in stable order;<br/>retain rejected selections as provenance"]:::det
-    Paragraphs["Match paragraphs only inside each<br/>exact finalized structural node"]:::llm
+    SharedRoot["Assign each one-section document<br/>to one shared corpus root"]:::det
+    ParagraphQuestions["Generate every paragraph question<br/>in one call per paper"]:::llm
+    Paragraphs["Two directional batched calls per<br/>exact structural node"]:::llm
     ParagraphRules["Apply reciprocal and bounded<br/>adjacent fan-in rules"]:::det
     Export["Deterministically export final_snapshot,<br/>paper files, correspondences, replay"]:::det
     Package["Validate and package one<br/>viewer contract"]:::det
     UI["Question Groups | Paper Map<br/>Graph Replay only if replay exists"]:::artifact
 
-    Manifest --> Load --> Structural --> Reconcile --> Contains --> NodeQuestions
-    NodeQuestions --> Rerepresent --> Merge --> Paragraphs --> ParagraphRules --> Export --> Package --> UI
+    Manifest --> Load --> Mode
+    Mode -->|section or subsection| Structural --> Reconcile --> Contains --> NodeQuestions
+    NodeQuestions --> Rerepresent --> Merge --> ParagraphQuestions
+    Mode -->|paragraph| SharedRoot --> ParagraphQuestions
+    ParagraphQuestions --> Paragraphs --> ParagraphRules --> Export --> Package --> UI
     classDef det fill:#e8f5e9,stroke:#2e7d32,color:#163c19;
     classDef llm fill:#fff1dc,stroke:#c46b08,color:#623704;
     classDef artifact fill:#e8eefb,stroke:#3f5f9f,color:#1f3154;
@@ -90,10 +96,11 @@ graph judgment selects one existing node or none. They share document, ID,
 question, candidate, and field conventions without pretending those two
 different decisions are interchangeable.
 
-`python -m pipeline.study --dataset <id>` automates the useful handoff: it runs
-document questions, writes the ordered canonical manifest, invokes the graph,
-and packages the viewer. There is no manual file-selection step between those
-systems.
+`python -m pipeline.study --dataset <id>` automates the useful handoff. Section
+and subsection modes run document questions before graphing. Paragraph mode
+reuses extraction, flattens each document deterministically, and lets the graph
+runner generate paragraph questions. Both paths write the ordered manifest,
+invoke the graph, and package the viewer without manual file selection.
 
 ## Outbound calls
 

@@ -30,6 +30,11 @@ The canonical document pipeline is documented separately in
 section and subsection questions, and runs either document-matching Skill. Both
 matching modes use the same IDs and output schema.
 
+The study builder sets graph granularity per corpus. Sherlock uses whole-story
+paragraph mode, while HCI preserves sections and subsections. Paragraph
+questions are generated in one validated Skill call per paper rather than one
+call per paragraph.
+
 Build a complete corpus graph and viewer without manually creating or handing
 off a graph manifest:
 

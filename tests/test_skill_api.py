@@ -3,6 +3,9 @@ from types import SimpleNamespace
 import tempfile
 import unittest
 
+from pipeline.document import QUESTION_FIELD
+from pipeline.incremental_graph.llm import AnthropicJudgmentProvider, JudgmentError
+from pipeline.incremental_graph.models import JudgmentRequest
 from pipeline.incremental_graph.skill_api import (
     CACHEABLE_SYSTEM,
     ClaudeSkills,
@@ -98,6 +101,41 @@ SCHEMA = {
 
 
 class SkillApiTest(unittest.TestCase):
+    def test_batch_question_validation_requires_exact_id_coverage(self) -> None:
+        request = JudgmentRequest(
+            key="paper:questions:batch",
+            paper_index=1,
+            stage_id="questions",
+            output_kind="question_batch",
+            prompt_ref="questions/v1",
+            context_ref="questions",
+            context={},
+            expected_question_ids=["p1", "p2"],
+        )
+
+        with self.assertRaisesRegex(JudgmentError, "expected"):
+            AnthropicJudgmentProvider._validate(request, {
+                "questions": [{"unit_id": "p1", QUESTION_FIELD: "What happened?"}],
+            })
+
+    def test_batch_match_validation_rejects_unknown_target(self) -> None:
+        request = JudgmentRequest(
+            key="paper:matching:batch",
+            paper_index=1,
+            stage_id="matching",
+            output_kind="match_batch",
+            prompt_ref="matching/v1",
+            context_ref="matching",
+            context={},
+            allowed_match_ids=["g1"],
+            expected_match_source_ids=["p1"],
+        )
+
+        with self.assertRaisesRegex(JudgmentError, "allowed values"):
+            AnthropicJudgmentProvider._validate(request, {
+                "matches": [{"source_id": "p1", "target_id": "g2", "basis": "No."}],
+            })
+
     def test_reads_current_and_legacy_skill_version_fields(self) -> None:
         self.assertEqual(
             _version_id(SimpleNamespace(latest_version_id="current"), "latest_version_id", "latest_version"),

@@ -1,11 +1,14 @@
 ---
 name: "directional-section-mapping-by-paragraphs-nested"
-description: "Selects the single best structural-role match, or none, between one focus unit or node and a supplied candidate list. Sections and subsections are peers for matching; paragraph calls are limited to one exact section or subsection node."
+description: "Selects the single best structural-role match, or none, for each supplied focus unit or node. Sections and subsections are peers for matching; paragraph calls are limited to one exact structural node."
 ---
 
 # Directional Graph Matching
 
-Use this Skill for one directional pass of the incremental node graph. The caller supplies one `focus`, every allowed `candidate`, and a fixed `scope`. Return one target ID or `null`. The reverse direction is a separate call.
+Use this Skill for one directional pass of the incremental node graph. The
+caller supplies one `focus` or a focus array, every allowed `candidate`, and a
+fixed `scope`. Select one target ID or `null` independently for each focus. The
+reverse direction is a separate call.
 
 ## Evidence
 
@@ -20,7 +23,10 @@ Use this Skill for one directional pass of the incremental node graph. The calle
 
 ## Decision
 
-Choose the single candidate with the strongest complete-role correspondence. Return `null` when no candidate is a defensible match. Never split one focus across multiple candidates and never choose a merely topical or least-bad match.
+For each focus, choose the single candidate with the strongest complete-role
+correspondence. Return `null` when no candidate is a defensible match. Never
+split one focus across multiple candidates and never choose a merely topical or
+least-bad match.
 
 The caller's JSON schema is authoritative. Return exactly:
 
@@ -32,3 +38,6 @@ The caller's JSON schema is authoritative. Return exactly:
 ```
 
 Do not create questions, graph edges, or nodes. Those are separate pipeline stages.
+
+For a batched call, follow the caller's schema and return every supplied source
+ID exactly once. Do not combine, omit, reorder, or invent source IDs.

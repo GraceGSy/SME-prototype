@@ -1,3 +1,3 @@
-Generate the single concise question implicitly answered by the focus paragraph.
+Generate one concise question implicitly answered by each supplied paragraph.
 
 {{context_json}}

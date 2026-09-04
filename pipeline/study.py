@@ -11,6 +11,7 @@ from typing import Any
 
 import yaml
 
+from .document import flatten_to_single_section, read_json, write_json
 from .incremental_graph.cli import DEFAULT_CONFIG as GRAPH_CONFIG
 from .incremental_graph.cli import run_revision
 from .skill_pipeline.runner import DEFAULT_CONFIG as DOCUMENT_CONFIG
@@ -33,16 +34,33 @@ def _next_build(directory: Path) -> Path:
 
 def _write_graph_manifest(harness: Harness, dataset_name: str, run_root: Path) -> Path:
     dataset = harness.config["datasets"][dataset_name]
+    max_granularity = dataset.get("max_granularity", "section")
     input_dir = run_root / dataset_name / "input"
     input_dir.mkdir(parents=True, exist_ok=True)
     question_dir = ROOT / harness.config["output_dir"] / dataset_name
+    content_dir = (
+        ROOT / dataset["content_dir"]
+        if max_granularity == "paragraph"
+        else None
+    )
+    documents = {document["id"]: document for document in dataset["documents"]}
+    selected_ids = dataset.get("question_documents", list(documents))
     papers = []
-    for document in dataset["documents"]:
+    for document_id in selected_ids:
+        document = documents[document_id]
         filename = f"{document['id']}.json"
-        shutil.copy2(
-            question_dir / f"{document['id']}.questions.json",
-            input_dir / filename,
-        )
+        if max_granularity == "paragraph":
+            assert content_dir is not None
+            content = read_json(content_dir / f"{document['id']}.content.json")
+            write_json(
+                input_dir / filename,
+                flatten_to_single_section(content, document["title"]),
+            )
+        else:
+            shutil.copy2(
+                question_dir / f"{document['id']}.questions.json",
+                input_dir / filename,
+            )
         papers.append({
             "paper_id": document["id"],
             "title": document["title"],
@@ -51,7 +69,11 @@ def _write_graph_manifest(harness: Harness, dataset_name: str, run_root: Path) -
     manifest_path = input_dir / "manifest.yaml"
     manifest_path.write_text(
         yaml.safe_dump(
-            {"schema_version": 1, "papers": papers},
+            {
+                "schema_version": 1,
+                "max_granularity": max_granularity,
+                "papers": papers,
+            },
             sort_keys=False,
             allow_unicode=True,
         ),
@@ -69,7 +91,11 @@ def build_dataset(
 
     study = harness.config["study"]
     run_root = ROOT / study["run_root"]
-    harness.questions(dataset_name)
+    dataset = harness.config["datasets"][dataset_name]
+    if dataset.get("max_granularity", "section") == "paragraph":
+        harness.prepare(dataset_name)
+    else:
+        harness.questions(dataset_name)
     manifest_path = _write_graph_manifest(harness, dataset_name, run_root)
     graph_run_dir = run_root / dataset_name / "graph"
     summary = run_revision(manifest_path, graph_run_dir, graph_config)

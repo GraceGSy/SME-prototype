@@ -47,6 +47,15 @@ each `paragraphs` array. A content file omits all question fields; a questioned
 file requires the field on every section and subsection. Empty structural units
 use `null`.
 
+## Manifest granularity
+
+An ordered graph manifest accepts `max_granularity: section`, `subsection`, or
+`paragraph`. The default is `section`. Section mode collapses explicit
+subsection paragraphs into their top-level parent for graph scope. Subsection
+mode preserves both structural levels. Paragraph mode requires each input to
+contain exactly one top-level section with no subsections, assigns those
+sections to one deterministic corpus root, and bypasses structural LLM calls.
+
 ## Identity
 
 Python derives IDs from array positions:
