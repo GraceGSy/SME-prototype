@@ -8,6 +8,16 @@ model:
   provider: anthropic
   name: claude-sonnet-5
   max_tokens: 1024
+  effort: low
+  thinking: disabled
+  task_budget_tokens: 20000
+  max_input_tokens: 200000
+  max_continuations: 0
+  max_prompt_characters: 500000
+  context_management_trigger_tokens: 50000
+  max_api_responses_per_process: 200
+  max_session_input_tokens: 2000000
+  max_session_output_tokens: 100000
 
 stages:
   - id: ingest

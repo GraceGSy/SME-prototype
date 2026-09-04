@@ -25,7 +25,13 @@ from ..document import (
     validate_document,
     write_json,
 )
-from ..incremental_graph.skill_api import ClaudeSkills, RunResult, SkillRef
+from ..incremental_graph.skill_api import (
+    ClaudeSkills,
+    RunResult,
+    SkillCallPolicy,
+    SkillRef,
+    SkillSessionBudget,
+)
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -97,6 +103,41 @@ def _question_schema() -> dict[str, Any]:
         "properties": {QUESTION_FIELD: {"type": ["string", "null"]}},
         "required": [QUESTION_FIELD],
         "additionalProperties": False,
+    }
+
+
+def _content_schema() -> dict[str, Any]:
+    paragraph = {
+        "type": "object",
+        "properties": {
+            "paragraph_number": {"type": "integer", "minimum": 0},
+            "text": {"type": "string", "minLength": 1},
+        },
+        "required": ["paragraph_number", "text"],
+        "additionalProperties": False,
+    }
+    subsection = {
+        "type": "object",
+        "properties": {
+            "section_name": {"type": "string", "minLength": 1},
+            "section_number": {"type": ["string", "null"]},
+            "paragraphs": {"type": "array", "items": paragraph},
+        },
+        "required": ["section_name", "section_number", "paragraphs"],
+        "additionalProperties": False,
+    }
+    return {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+            "type": "object",
+            "properties": {
+                **subsection["properties"],
+                "subsections": {"type": "array", "items": subsection},
+            },
+            "required": [*subsection["required"], "subsections"],
+            "additionalProperties": False,
+        },
     }
 
 
@@ -187,12 +228,17 @@ class Harness:
         self._validate_config()
 
     def _validate_config(self) -> None:
+        try:
+            SkillSessionBudget(**self.config.get("session_budget", {}))
+        except (TypeError, ValueError) as error:
+            raise ValueError(f"Invalid Skill session budget: {error}") from error
         stage_ids = [stage["id"] for stage in self.config["stages"]]
         if len(stage_ids) != len(set(stage_ids)):
             raise ValueError("Stage ids must be unique")
         for stage in self.config["stages"]:
             if stage["skill"] not in self.config["skills"]:
                 raise ValueError(f"Unknown Skill key on stage {stage['id']}")
+            self._call_policy(stage)
             if stage["kind"] == "match" and stage.get("view") not in {
                 SECTIONS_VIEW,
                 NESTED_VIEW,
@@ -235,11 +281,24 @@ class Harness:
                 ROOT,
                 self.cache / "skill-registry.json",
                 self.config["model"],
+                session_budget=SkillSessionBudget(
+                    **self.config.get("session_budget", {})
+                ),
             )
         return self.api
 
     def _skill(self, stage: dict[str, Any]) -> SkillRef:
         return self._api().register(ROOT / self.config["skills"][stage["skill"]])
+
+    def _call_policy(self, stage: dict[str, Any]) -> SkillCallPolicy:
+        options = {
+            **self.config.get("execution", {}),
+            **stage.get("execution", {}),
+        }
+        try:
+            return SkillCallPolicy(max_tokens=int(stage["max_tokens"]), **options)
+        except (KeyError, TypeError, ValueError) as error:
+            raise ValueError(f"Invalid execution policy on stage {stage['id']}: {error}") from error
 
     def _stage(self, kind: str) -> dict[str, Any]:
         return next(stage for stage in self.config["stages"] if stage["kind"] == kind)
@@ -291,6 +350,7 @@ class Harness:
             "response_id": result.response_id,
             "stop_reason": result.stop_reason,
             "usage": result.usage,
+            "call_policy": result.call_policy,
             "transport_notes": list(result.transport_notes),
             "skills": [skill.__dict__ for skill in skills],
             "inputs": [
@@ -322,6 +382,7 @@ class Harness:
             "status_code": getattr(error, "status_code", None),
             "request_id": getattr(error, "request_id", None),
             "message": str(error),
+            "usage": getattr(error, "usage", {}),
             "detail": detail,
         }
         self.output.mkdir(parents=True, exist_ok=True)
@@ -387,16 +448,17 @@ class Harness:
                 prompt = (
                     f"Use the attached extraction Skill exactly as written in {mode} mode. "
                     "Extract only source-marked structural boundaries and their paragraphs. "
-                    f"Use code execution to write /mnt/data/{output_path.name}, then expose that "
-                    "JSON file as the response attachment. Do not paste the document inline."
+                    "Read the attached source once, then return the canonical document directly "
+                    "through the provided structured-output schema. Do not create an output file "
+                    "or return explanatory prose."
                 )
                 try:
-                    result, payload = self._api().run_file(
+                    result = self._api().run_json_file(
                         extraction_skill,
                         prompt,
                         source_path,
-                        output_path.name,
-                        max_tokens=extraction_stage.get("max_tokens", 8192),
+                        _content_schema(),
+                        policy=self._call_policy(extraction_stage),
                     )
                 except Exception as error:
                     self._log_error(
@@ -406,7 +468,7 @@ class Harness:
                         {"source": source_path.relative_to(ROOT).as_posix()},
                     )
                     raise
-                content = json.loads(payload.decode("utf-8"))
+                content = result.value
 
             validate_document(content)
             if source_kind == "xhtml":
@@ -474,7 +536,7 @@ class Harness:
                         [skill],
                         prompt,
                         _question_schema(),
-                        max_tokens=512,
+                        policy=self._call_policy(question_stage),
                     )
                 except Exception as error:
                     self._log_error(
@@ -743,7 +805,7 @@ class Harness:
                     [skill],
                     prompt,
                     schema,
-                    max_tokens=stage["max_tokens"],
+                    policy=self._call_policy(stage),
                 )
             except Exception as error:
                 status = getattr(error, "status_code", None)

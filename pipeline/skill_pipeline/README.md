@@ -25,8 +25,9 @@ candidates, while `sections_and_subsections` includes them.
 ## Configure
 
 Edit [`pipeline.yaml`](pipeline.yaml) to change ordered stages, Skills, model,
-documents, question subsets, matching pairs, candidate views, or output paths.
-The runner contains no extraction, question, or matching judgment.
+documents, question subsets, matching pairs, candidate views, execution limits,
+or output paths. The runner contains no extraction, question, or matching
+judgment.
 
 HCI inputs are already-extracted canonical JSON. Sherlock inputs are pinned
 XHTML files. Legal inputs are UTF-8 text files containing one authored opinion
@@ -71,9 +72,37 @@ Content files live in each dataset's configured tracked `content_dir`:
 Each matching-stage file holds both directions in one envelope. It is updated
 atomically after every valid source batch, so reruns resume from source IDs
 already present. `--force` deliberately starts each selected artifact again.
-Individual Claude calls allow up to 30 minutes and disable the SDK's hidden
-automatic retries; a failed command can be rerun from the last validated file
-checkpoint without duplicating an in-flight non-deterministic call.
+The nested stage batches up to ten remaining source candidates, rather than
+repeating the complete target pool for every individual source. The current
+Sherlock pair therefore needs one request per direction.
+Extraction returns schema-constrained JSON directly; the deterministic harness
+validates and writes it. Claude is never asked to create and reread an output
+file in its container.
+
+Every call uses the YAML execution policy. The checked-in defaults use low
+effort, disable adaptive thinking, set an advisory server-side task budget, cap
+generated tokens and accepted input-token usage, clear stale tool results, reject
+oversized prompts and attachments, and permit no automatic `pause_turn`
+continuation. The SDK's own retries are also disabled. Usage is aggregated over
+every explicitly permitted continuation and written beside the exact call
+policy in `runs.jsonl`; a budget failure is written to `errors.jsonl` with the
+usage observed before the harness stopped. A separate process-wide budget stops
+the command before it can silently issue more than 100 responses or exceed the
+configured cumulative input/output ceilings.
+
+Anthropic's task budget is advisory. The hard local ceilings can prevent a
+continuation or later request, but they cannot undo the cost of an in-flight
+server-tool response already returned by Anthropic. Keep a workspace spend limit
+in the Anthropic Console as the final account-level backstop.
+
+Matching validation also makes one attempt per batch. Invalid structured output
+is preserved for inspection and fails the command instead of triggering another
+charged call with the same prompt.
+
+A failed command can be rerun from the last validated checkpoint without
+duplicating completed calls. Never raise a limit or use `--force` merely because
+a call exhausted its budget; inspect the prompt, Skill behavior, and recorded
+usage first.
 Use `--force` after changing a source file, Skill, model, or candidate view;
 ordinary reruns assume an existing validated artifact is the intended
 checkpoint.

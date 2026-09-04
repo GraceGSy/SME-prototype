@@ -4,9 +4,9 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, Literal
 
 
 SKILL_BETAS = ["skills-2025-10-02"]
@@ -15,10 +15,92 @@ MESSAGE_BETAS = [
     "skills-2025-10-02",
     "files-api-2025-04-14",
     "structured-outputs-2025-11-13",
+    "context-management-2025-06-27",
+    "task-budgets-2026-03-13",
 ]
 FILE_BETAS = ["files-api-2025-04-14"]
-CODE_EXECUTION_TOOL = {"type": "code_execution_20250825", "name": "code_execution"}
+CODE_EXECUTION_TOOL = {
+    "type": "code_execution_20250825",
+    "name": "code_execution",
+    "cache_control": {"type": "ephemeral", "ttl": "1h"},
+}
 API_TIMEOUT_SECONDS = 30 * 60
+MIN_TASK_BUDGET_TOKENS = 20_000
+
+
+class SkillBudgetExceeded(RuntimeError):
+    """Raised when a Skill call reaches a configured cost or continuation limit."""
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        response_id: str | None = None,
+        usage: dict[str, Any] | None = None,
+    ) -> None:
+        super().__init__(message)
+        self.response_id = response_id
+        self.usage = usage or {}
+
+
+@dataclass(frozen=True)
+class SkillCallPolicy:
+    """Hard and advisory limits applied to one complete Skill invocation."""
+
+    max_tokens: int
+    effort: Literal["low", "medium", "high"] = "low"
+    thinking: Literal["disabled", "adaptive"] = "disabled"
+    task_budget_tokens: int = MIN_TASK_BUDGET_TOKENS
+    max_input_tokens: int = 200_000
+    max_continuations: int = 0
+    max_prompt_characters: int = 500_000
+    max_attachment_bytes: int = 500_000
+    context_management_trigger_tokens: int = 50_000
+
+    def __post_init__(self) -> None:
+        positive = {
+            "max_tokens": self.max_tokens,
+            "max_input_tokens": self.max_input_tokens,
+            "max_prompt_characters": self.max_prompt_characters,
+            "max_attachment_bytes": self.max_attachment_bytes,
+            "context_management_trigger_tokens": self.context_management_trigger_tokens,
+        }
+        invalid = [name for name, value in positive.items() if value <= 0]
+        if invalid:
+            raise ValueError(f"Skill call limits must be positive: {', '.join(invalid)}")
+        if self.task_budget_tokens < MIN_TASK_BUDGET_TOKENS:
+            raise ValueError(
+                f"task_budget_tokens must be at least {MIN_TASK_BUDGET_TOKENS}"
+            )
+        if not 0 <= self.max_continuations <= 2:
+            raise ValueError("max_continuations must be between 0 and 2")
+
+    def output_config(self, schema: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "effort": self.effort,
+            "task_budget": {"type": "tokens", "total": self.task_budget_tokens},
+            "format": {"type": "json_schema", "schema": schema},
+        }
+
+    def as_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
+class SkillSessionBudget:
+    """Process-local ceiling across many individually bounded Skill calls."""
+
+    max_api_responses: int = 100
+    max_input_tokens: int = 2_000_000
+    max_output_tokens: int = 100_000
+
+    def __post_init__(self) -> None:
+        if min(
+            self.max_api_responses,
+            self.max_input_tokens,
+            self.max_output_tokens,
+        ) <= 0:
+            raise ValueError("Skill session budget values must be positive")
 
 
 @dataclass(frozen=True)
@@ -42,6 +124,7 @@ class RunResult:
     raw_text: str | None = None
     transport_notes: tuple[str, ...] = ()
     raw_response: dict[str, Any] | None = None
+    call_policy: dict[str, Any] | None = None
 
 
 def _decode_json_output(text: str) -> tuple[Any, tuple[str, ...]]:
@@ -113,7 +196,14 @@ def _atomic_json(path: Path, value: Any) -> None:
 
 
 class ClaudeSkills:
-    def __init__(self, repo_root: Path, state_path: Path, model: str) -> None:
+    def __init__(
+        self,
+        repo_root: Path,
+        state_path: Path,
+        model: str,
+        *,
+        session_budget: SkillSessionBudget | None = None,
+    ) -> None:
         from anthropic import Anthropic
 
         self.repo_root = repo_root
@@ -124,6 +214,12 @@ class ClaudeSkills:
             timeout=API_TIMEOUT_SECONDS,
             max_retries=0,
         )
+        self.session_budget = session_budget or SkillSessionBudget()
+        self.session_usage = {
+            "api_responses": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+        }
         self.state = json.loads(state_path.read_text(encoding="utf-8")) if state_path.exists() else {}
 
     def register(self, skill_path: Path) -> SkillRef:
@@ -171,25 +267,30 @@ class ClaudeSkills:
         prompt: str,
         schema: dict[str, Any],
         *,
-        max_tokens: int,
+        policy: SkillCallPolicy,
     ) -> RunResult:
+        self._validate_prompt(prompt, policy)
         messages: list[dict[str, Any]] = [{"role": "user", "content": prompt}]
-        response = self._run(skills, messages, max_tokens=max_tokens, schema=schema)
-        text = "".join(block.text for block in response.content if getattr(block, "type", "") == "text")
-        if not text.strip():
-            raise RuntimeError(f"Claude response {response.id} contained no structured text output")
-        value, notes = _decode_json_output(text)
-        return self._result(response, value, raw_text=text, transport_notes=notes)
+        return self._run_structured(skills, messages, schema, policy)
 
-    def run_file(
+    def run_json_file(
         self,
         skill: SkillRef,
         prompt: str,
         input_path: Path,
-        expected_filename: str,
+        schema: dict[str, Any],
         *,
-        max_tokens: int = 2048,
-    ) -> tuple[RunResult, bytes]:
+        policy: SkillCallPolicy,
+    ) -> RunResult:
+        """Run a Skill over one attachment and return schema-constrained JSON."""
+
+        self._validate_prompt(prompt, policy)
+        size = input_path.stat().st_size
+        if size > policy.max_attachment_bytes:
+            raise SkillBudgetExceeded(
+                f"Attachment {input_path.name} is {size} bytes; configured maximum is "
+                f"{policy.max_attachment_bytes}"
+            )
         uploaded = self.client.beta.files.upload(file=input_path, betas=FILE_BETAS)
         messages = [
             {
@@ -200,34 +301,27 @@ class ClaudeSkills:
                 ],
             }
         ]
-        response = self._run([skill], messages, max_tokens=max_tokens)
-        generated: list[tuple[str, str, bytes]] = []
-        for file_id in self._file_ids(response):
-            metadata = self.client.beta.files.retrieve_metadata(file_id=file_id, betas=FILE_BETAS)
-            if not metadata.filename.lower().endswith(".json"):
-                continue
-            download = self.client.beta.files.download(file_id=file_id, betas=FILE_BETAS)
-            data = download.read() if hasattr(download, "read") else download.content
-            generated.append((file_id, metadata.filename, data))
-            if metadata.filename == expected_filename:
-                return self._result(response), data
-        if len(generated) == 1:
-            _, filename, data = generated[0]
-            return (
-                self._result(
-                    response,
-                    transport_notes=(f"accepted generated JSON file {filename!r}",),
-                ),
-                data,
-            )
-        available = [filename for _, filename, _ in generated]
-        response_text = "".join(
-            block.text for block in response.content if getattr(block, "type", "") == "text"
-        ).strip()
-        raise RuntimeError(
-            f"Claude response {response.id} did not expose one usable JSON file "
-            f"for {expected_filename!r}; JSON attachments={available}, "
-            f"response_text={response_text[-500:]!r}"
+        return self._run_structured([skill], messages, schema, policy)
+
+    def _run_structured(
+        self,
+        skills: Iterable[SkillRef],
+        messages: list[dict[str, Any]],
+        schema: dict[str, Any],
+        policy: SkillCallPolicy,
+    ) -> RunResult:
+        response, usage = self._run(skills, messages, policy=policy, schema=schema)
+        text = "".join(block.text for block in response.content if getattr(block, "type", "") == "text")
+        if not text.strip():
+            raise RuntimeError(f"Claude response {response.id} contained no structured text output")
+        value, notes = _decode_json_output(text)
+        return self._result(
+            response,
+            value,
+            usage=usage,
+            policy=policy,
+            raw_text=text,
+            transport_notes=notes,
         )
 
     def _run(
@@ -235,73 +329,180 @@ class ClaudeSkills:
         skills: Iterable[SkillRef],
         messages: list[dict[str, Any]],
         *,
-        max_tokens: int,
-        schema: dict[str, Any] | None = None,
-    ) -> Any:
+        policy: SkillCallPolicy,
+        schema: dict[str, Any],
+    ) -> tuple[Any, dict[str, Any]]:
         skill_values = [skill.api_value() for skill in skills]
         container: dict[str, Any] = {"skills": skill_values}
-        for _ in range(10):
+        responses: list[tuple[str, dict[str, Any]]] = []
+        for continuation in range(policy.max_continuations + 1):
+            self._check_session_budget()
             kwargs: dict[str, Any] = {
                 "model": self.model,
-                "max_tokens": max_tokens,
+                "max_tokens": policy.max_tokens,
                 "betas": MESSAGE_BETAS,
                 "container": container,
                 "messages": messages,
                 "tools": [CODE_EXECUTION_TOOL],
+                "thinking": {"type": policy.thinking},
+                "output_config": policy.output_config(schema),
+                "context_management": {
+                    "edits": [
+                        {
+                            "type": "clear_tool_uses_20250919",
+                            "trigger": {
+                                "type": "input_tokens",
+                                "value": policy.context_management_trigger_tokens,
+                            },
+                            "keep": {"type": "tool_uses", "value": 2},
+                            "clear_at_least": {"type": "input_tokens", "value": 10_000},
+                            "clear_tool_inputs": True,
+                        }
+                    ]
+                },
             }
-            if schema is not None:
-                kwargs["output_config"] = {
-                    "format": {"type": "json_schema", "schema": schema},
-                    "effort": "medium",
-                }
             response = self.client.beta.messages.create(**kwargs)
+            response_usage = response.usage.model_dump(mode="json") if response.usage else {}
+            self._record_session_usage(response_usage, response.id)
+            responses.append((response.id, response_usage))
+            usage = _aggregate_usage(responses)
+            usage["session"] = dict(self.session_usage)
+            input_tokens = _input_token_volume(usage)
+            if input_tokens > policy.max_input_tokens:
+                raise SkillBudgetExceeded(
+                    f"Claude Skill call used {input_tokens:,} input tokens; configured "
+                    f"maximum is {policy.max_input_tokens:,}. No continuation or output was accepted.",
+                    response_id=response.id,
+                    usage=usage,
+                )
             if response.stop_reason != "pause_turn":
                 if response.stop_reason not in {"end_turn", "stop_sequence"}:
-                    raise RuntimeError(f"Claude response {response.id} stopped with {response.stop_reason}")
-                return response
+                    if response.stop_reason == "max_tokens":
+                        raise SkillBudgetExceeded(
+                            f"Claude response {response.id} reached the {policy.max_tokens}-token "
+                            "output limit",
+                            response_id=response.id,
+                            usage=usage,
+                        )
+                    raise RuntimeError(
+                        f"Claude response {response.id} stopped with {response.stop_reason}"
+                    )
+                return response, usage
+            if continuation == policy.max_continuations:
+                raise SkillBudgetExceeded(
+                    f"Claude response {response.id} paused, but automatic continuations are limited "
+                    f"to {policy.max_continuations}",
+                    response_id=response.id,
+                    usage=usage,
+                )
             messages.append({"role": "assistant", "content": response.content})
             container = {"id": response.container.id, "skills": skill_values}
-        raise RuntimeError("Claude Skill run exceeded ten pause_turn continuations")
+        raise RuntimeError("Unreachable Skill continuation state")
 
     @staticmethod
-    def _file_ids(response: Any) -> list[str]:
-        payload = response.model_dump(mode="json")
-        found: list[str] = []
+    def _validate_prompt(prompt: str, policy: SkillCallPolicy) -> None:
+        if len(prompt) > policy.max_prompt_characters:
+            raise SkillBudgetExceeded(
+                f"Skill prompt is {len(prompt)} characters; configured maximum is "
+                f"{policy.max_prompt_characters}"
+            )
 
-        def visit(value: Any) -> None:
-            if isinstance(value, dict):
-                file_id = value.get("file_id")
-                if isinstance(file_id, str) and file_id not in found:
-                    found.append(file_id)
-                for child in value.values():
-                    visit(child)
-            elif isinstance(value, list):
-                for child in value:
-                    visit(child)
+    def _check_session_budget(self) -> None:
+        if self.session_usage["api_responses"] >= self.session_budget.max_api_responses:
+            raise SkillBudgetExceeded(
+                f"Skill process reached its {self.session_budget.max_api_responses}-response limit",
+                usage={"session": dict(self.session_usage)},
+            )
 
-        visit(payload.get("content", []))
-        return found
+    def _record_session_usage(self, usage: dict[str, Any], response_id: str) -> None:
+        self.session_usage["api_responses"] += 1
+        self.session_usage["input_tokens"] += _input_token_volume(usage)
+        self.session_usage["output_tokens"] += int(usage.get("output_tokens") or 0)
+        if (
+            self.session_usage["input_tokens"] > self.session_budget.max_input_tokens
+            or self.session_usage["output_tokens"] > self.session_budget.max_output_tokens
+        ):
+            raise SkillBudgetExceeded(
+                "Skill process exceeded its cumulative token budget after response "
+                f"{response_id}: {self.session_usage['input_tokens']:,} input and "
+                f"{self.session_usage['output_tokens']:,} output tokens",
+                response_id=response_id,
+                usage={"session": dict(self.session_usage)},
+            )
 
     @staticmethod
     def _result(
         response: Any,
         value: Any = None,
         *,
+        usage: dict[str, Any] | None = None,
+        policy: SkillCallPolicy | None = None,
         raw_text: str | None = None,
         transport_notes: tuple[str, ...] = (),
     ) -> RunResult:
         container_id = getattr(getattr(response, "container", None), "id", None)
-        usage = response.usage.model_dump(mode="json") if response.usage else {}
         return RunResult(
             response.id,
             response.stop_reason,
-            usage,
+            usage or {},
             container_id,
             value,
             raw_text,
             transport_notes,
             response.model_dump(mode="json"),
+            policy.as_dict() if policy else None,
         )
+
+
+def _aggregate_usage(responses: list[tuple[str, dict[str, Any]]]) -> dict[str, Any]:
+    """Aggregate every billable response in one Skill invocation."""
+
+    token_fields = (
+        "input_tokens",
+        "output_tokens",
+        "cache_creation_input_tokens",
+        "cache_read_input_tokens",
+    )
+    aggregate: dict[str, Any] = {
+        field: sum(int(usage.get(field) or 0) for _, usage in responses)
+        for field in token_fields
+    }
+    aggregate["output_tokens_details"] = {
+        "thinking_tokens": sum(
+            int((usage.get("output_tokens_details") or {}).get("thinking_tokens") or 0)
+            for _, usage in responses
+        )
+    }
+    tool_names = {
+        name
+        for _, usage in responses
+        for name in (usage.get("server_tool_use") or {})
+    }
+    aggregate["server_tool_use"] = {
+        name: sum(
+            int((usage.get("server_tool_use") or {}).get(name) or 0)
+            for _, usage in responses
+        )
+        for name in sorted(tool_names)
+    }
+    aggregate["request_count"] = len(responses)
+    aggregate["continuations"] = max(0, len(responses) - 1)
+    aggregate["responses"] = [
+        {"response_id": response_id, "usage": usage}
+        for response_id, usage in responses
+    ]
+    return aggregate
+
+
+def _input_token_volume(usage: dict[str, Any]) -> int:
+    return sum(
+        int(usage.get(field) or 0)
+        for field in (
+            "input_tokens",
+            "cache_creation_input_tokens",
+            "cache_read_input_tokens",
+        )
+    )
 
 
 def _version_id(response: Any, *field_names: str) -> str | None:

@@ -21,6 +21,11 @@ Choose exactly one mode:
 2. **Narrative mode:** one XHTML source document whose real divisions are encoded as `h3` headings and/or `hr` separators.
 3. **Legal mode:** one UTF-8 text file containing a single authored judicial opinion or dissent.
 
+The API caller supplies a strict structured-output schema and writes the
+validated result itself. Read the attached source, but do not use code execution
+to create, reread, or attach the final JSON file. Return the JSON value directly
+without a prose summary.
+
 ## Narrative mode: explicit boundaries only
 
 Use this mode for fiction or other narrative documents. Claude performs the extraction from the supplied XHTML, subject to these source-grounded boundary rules:
@@ -36,7 +41,7 @@ Use this mode for fiction or other narrative documents. Claude performs the extr
 - Never infer a boundary from changes in time, location, speaker, point of view, topic, or plot. Whitespace alone is not a scene separator.
 - A leading, trailing, or consecutive separator is an input-integrity error. Do not fabricate an empty scene.
 - If there is no explicit `hr` separator anywhere in the story, stop rather than inventing scenes.
-- Save the extracted content directly in the strict JSON schema below. Report its section, scene, and paragraph counts.
+- Return the extracted content directly through the strict JSON schema below.
 
 ## Legal mode: explicit divisions only
 
@@ -83,8 +88,7 @@ or coordinate data.
   footnote text, resume the authored body that follows it; a footnote is not the
   end of the opinion or dissent. Before saving, verify that the final authored
   sentence in the source is present in the output.
-- Save the result directly in the strict JSON schema below and report section,
-  subsection, and paragraph counts.
+- Return the result directly through the strict JSON schema below.
 
 ## Academic-mode inputs
 
@@ -144,9 +148,11 @@ For each top-level entry, preserve `section_name` and `section_number` unchanged
 
 ## Output
 
-Return the canonical nested JSON array to the destination requested by the caller. The repository pipeline writes it as `<document>.content.json`; do not create an additional flat, question-only, or filename-specific variant. Don't overwrite a source manifest or source document.
-
-Briefly tell the user: how many top-level sections were processed, how many had subsections vs. none, total paragraph count (lead-in + all subsections + flat sections combined), and — prominently, not buried — the results of the Step 5 order-integrity check: how many sections (if any) had real leftover content after their last subsection that needed flagging rather than silent placement, and how many (if any) had a subsection-boundary column-scrambling risk. If zero such cases were found, say so explicitly too, so the user knows the check ran rather than was skipped.
+Return the canonical nested JSON array through the caller's structured-output
+schema. The repository pipeline validates and writes it as
+`<document>.content.json`; do not create a file, an additional flat or
+question-only variant, or explanatory output. Don't overwrite a source manifest
+or source document.
 
 ### Output schema (strict)
 

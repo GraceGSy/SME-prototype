@@ -3,29 +3,59 @@ model: claude-sonnet-5
 cache_dir: runs/document-pipeline/cache
 output_dir: runs/document-pipeline/results
 
+# Every Skill call is low-effort, non-thinking, and non-continuing by default.
+# Task budgets steer the server-side agent loop; max_tokens and the local input
+# limit fail closed if a call still behaves abnormally.
+execution:
+  effort: low
+  thinking: disabled
+  task_budget_tokens: 20000
+  max_input_tokens: 150000
+  max_continuations: 0
+  max_prompt_characters: 500000
+  max_attachment_bytes: 500000
+  context_management_trigger_tokens: 50000
+
+# A single command cannot silently issue thousands of individually valid calls.
+session_budget:
+  max_api_responses: 100
+  max_input_tokens: 2000000
+  max_output_tokens: 100000
+
 # Stage order is execution order. A matching implementation is swapped by changing
 # its skill and view here; the runner itself contains no matching judgment.
 stages:
   - id: extraction
     kind: extract
     skill: extraction
-    max_tokens: 65536
+    max_tokens: 32768
+    execution:
+      task_budget_tokens: 50000
+      max_input_tokens: 250000
   - id: questions
     kind: questions
     skill: questions
+    max_tokens: 512
+    execution:
+      max_input_tokens: 100000
+      max_prompt_characters: 150000
   - id: section_matching
     kind: match
     skill: section_matching
     view: sections
-    max_tokens: 8192
-    validation_attempts: 2
+    max_tokens: 4096
+    execution:
+      max_input_tokens: 200000
+    validation_attempts: 1
   - id: section_and_subsection_matching
     kind: match
     skill: section_and_subsection_matching
     view: sections_and_subsections
-    max_tokens: 8192
-    validation_attempts: 3
-    source_batch_size: 1
+    max_tokens: 2048
+    execution:
+      max_input_tokens: 200000
+    validation_attempts: 1
+    source_batch_size: 10
 
 skills:
   extraction: skills/extract-section-and-subsection-paragraphs

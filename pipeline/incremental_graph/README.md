@@ -52,7 +52,11 @@ Questions remain metadata, not identity.
 
 [`configs/incremental-v1.yaml`](configs/incremental-v1.yaml) lists every stage in
 execution order and names its Skill, prompt template, context policy, and
-handler. Prompt and context files are adjacent under `prompts/` and `contexts/`.
+handler. Its model block also fixes low-effort, non-thinking Skill-call limits,
+including the task budget, input-token ceiling, prompt-size ceiling, and zero
+automatic continuations. The same block caps cumulative API responses and
+tokens per process so a large graph cannot silently launch an unbounded call
+set. Prompt and context files are adjacent under `prompts/` and `contexts/`.
 Changing those files changes judgment behavior without changing graph rules.
 
 ## Commands
@@ -83,7 +87,8 @@ python -m pipeline.incremental_graph.cli retry `
 
 Each attempt is content-addressed by Skill, prompt, context, schema, model, and
 input evidence. Cached attempts bypass outbound APIs unless the selected stage
-is forced.
+is forced. The configured `max_tokens` value is used as written; the adapter no
+longer silently raises every graph judgment to a 4,096-token minimum.
 
 ## Outputs
 

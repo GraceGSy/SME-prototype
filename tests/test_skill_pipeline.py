@@ -92,7 +92,23 @@ class SkillPipelineTest(unittest.TestCase):
         harness = Harness(DEFAULT_CONFIG)
 
         stages = {stage["id"]: stage for stage in harness.config["stages"]}
-        self.assertEqual(stages["extraction"]["max_tokens"], 65536)
+        self.assertEqual(stages["extraction"]["max_tokens"], 32768)
+        extraction_policy = harness._call_policy(stages["extraction"])
+        self.assertEqual(extraction_policy.effort, "low")
+        self.assertEqual(extraction_policy.thinking, "disabled")
+        self.assertEqual(extraction_policy.max_continuations, 0)
+        self.assertEqual(extraction_policy.task_budget_tokens, 50000)
+        self.assertEqual(extraction_policy.max_input_tokens, 250000)
+        self.assertEqual(harness.config["session_budget"]["max_api_responses"], 100)
+        self.assertEqual(stages["section_matching"]["validation_attempts"], 1)
+        self.assertEqual(
+            stages["section_and_subsection_matching"]["validation_attempts"],
+            1,
+        )
+        self.assertEqual(
+            stages["section_and_subsection_matching"]["source_batch_size"],
+            10,
+        )
         self.assertEqual(stages["section_matching"]["view"], SECTIONS_VIEW)
         self.assertEqual(
             stages["section_and_subsection_matching"]["view"],
