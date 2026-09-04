@@ -77,14 +77,21 @@ study:
 datasets:
   sherlock:
     content_dir: datasets/sherlock/content
+    # Start with the first two stories in publication order. Append later IDs
+    # here only after the current run has been reviewed.
     question_documents:
-      - wisteria_lodge
-      - bruce_partington_plans
       - speckled_band
-      - illustrious_client
-      - lady_frances_carfax
-    match_pair: [wisteria_lodge, bruce_partington_plans]
+      - wisteria_lodge
+    match_pair: [speckled_band, wisteria_lodge]
     documents:
+      - id: speckled_band
+        title: The Adventure of the Speckled Band
+        xhtml:
+          path: datasets/sherlock/raw/speckled_band.xhtml
+          url: https://raw.githubusercontent.com/standardebooks/arthur-conan-doyle_the-adventures-of-sherlock-holmes/60f53b2fc44178af326d56f45a5b6d02a8badd68/src/epub/text/the-adventure-of-the-speckled-band.xhtml
+          sha256: b59209c14d19744934312bdb7851a6dc977f31989081b54c790fa9cbaf6596f8
+        expected_sections: 1
+        expected_scenes: 4
       - id: wisteria_lodge
         title: The Adventure of Wisteria Lodge
         xhtml:
@@ -101,12 +108,12 @@ datasets:
           sha256: 5a5ff4ae53e051ccab968c2c85d22b2e453b00af91560ead1f86705369c84fbb
         expected_sections: 1
         expected_scenes: 5
-      - id: speckled_band
-        title: The Adventure of the Speckled Band
+      - id: lady_frances_carfax
+        title: The Disappearance of Lady Frances Carfax
         xhtml:
-          path: datasets/sherlock/raw/speckled_band.xhtml
-          url: https://raw.githubusercontent.com/standardebooks/arthur-conan-doyle_the-adventures-of-sherlock-holmes/60f53b2fc44178af326d56f45a5b6d02a8badd68/src/epub/text/the-adventure-of-the-speckled-band.xhtml
-          sha256: b59209c14d19744934312bdb7851a6dc977f31989081b54c790fa9cbaf6596f8
+          path: datasets/sherlock/raw/lady_frances_carfax.xhtml
+          url: https://raw.githubusercontent.com/standardebooks/arthur-conan-doyle_his-last-bow/8ab7fce0e6f5e7d25cb1de9660b4fa6dd89a933c/src/epub/text/the-disappearance-of-lady-frances-carfax.xhtml
+          sha256: cacd32c1e74285eae3dcbb968db956e5861cf699e0afa708b1da283be4727290
         expected_sections: 1
         expected_scenes: 4
       - id: illustrious_client
@@ -117,14 +124,6 @@ datasets:
           sha256: 50874b6b75367610c96320f4e8d1b3fd50cb9b89eb3708a7abdf8b261162c1cf
         expected_sections: 1
         expected_scenes: 5
-      - id: lady_frances_carfax
-        title: The Disappearance of Lady Frances Carfax
-        xhtml:
-          path: datasets/sherlock/raw/lady_frances_carfax.xhtml
-          url: https://raw.githubusercontent.com/standardebooks/arthur-conan-doyle_his-last-bow/8ab7fce0e6f5e7d25cb1de9660b4fa6dd89a933c/src/epub/text/the-disappearance-of-lady-frances-carfax.xhtml
-          sha256: cacd32c1e74285eae3dcbb968db956e5861cf699e0afa708b1da283be4727290
-        expected_sections: 1
-        expected_scenes: 4
 
   hci:
     content_dir: datasets/hci-five-paper/content
