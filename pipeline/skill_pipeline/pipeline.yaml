@@ -9,6 +9,7 @@ stages:
   - id: extraction
     kind: extract
     skill: extraction
+    max_tokens: 32768
   - id: questions
     kind: questions
     skill: questions
@@ -32,14 +33,38 @@ skills:
   section_matching: skills/directional-section-mapping-by-paragraphs-and-questions
   section_and_subsection_matching: skills/directional-document-mapping-by-paragraphs-nested
 
+study:
+  run_root: runs/studies
+  site_dir: site/user-study
+  datasets:
+    sherlock:
+      participant_prefix: SH
+      label: Sherlock Holmes Stories
+    hci:
+      participant_prefix: HC
+      label: HCI Academic Papers
+    legal_opinions:
+      participant_prefix: LO
+      label: Legal Opinions
+    legal_dissents:
+      participant_prefix: LD
+      label: Legal Dissents
+
 datasets:
   sherlock:
-    question_documents: [wisteria_lodge, bruce_partington_plans]
+    content_dir: datasets/sherlock/content
+    question_documents:
+      - wisteria_lodge
+      - bruce_partington_plans
+      - speckled_band
+      - illustrious_client
+      - lady_frances_carfax
     match_pair: [wisteria_lodge, bruce_partington_plans]
     documents:
       - id: wisteria_lodge
         title: The Adventure of Wisteria Lodge
         xhtml:
+          path: datasets/sherlock/raw/wisteria_lodge.xhtml
           url: https://raw.githubusercontent.com/standardebooks/arthur-conan-doyle_his-last-bow/8ab7fce0e6f5e7d25cb1de9660b4fa6dd89a933c/src/epub/text/the-adventure-of-wisteria-lodge.xhtml
           sha256: ba61530992f43d9de378837be2dbb56f90dac4c88b17269305fe78519cb15e1c
         expected_sections: 2
@@ -47,6 +72,7 @@ datasets:
       - id: bruce_partington_plans
         title: The Adventure of the Bruce-Partington Plans
         xhtml:
+          path: datasets/sherlock/raw/bruce_partington_plans.xhtml
           url: https://raw.githubusercontent.com/standardebooks/arthur-conan-doyle_his-last-bow/8ab7fce0e6f5e7d25cb1de9660b4fa6dd89a933c/src/epub/text/the-adventure-of-the-bruce-partington-plans.xhtml
           sha256: 5a5ff4ae53e051ccab968c2c85d22b2e453b00af91560ead1f86705369c84fbb
         expected_sections: 1
@@ -54,6 +80,7 @@ datasets:
       - id: speckled_band
         title: The Adventure of the Speckled Band
         xhtml:
+          path: datasets/sherlock/raw/speckled_band.xhtml
           url: https://raw.githubusercontent.com/standardebooks/arthur-conan-doyle_the-adventures-of-sherlock-holmes/60f53b2fc44178af326d56f45a5b6d02a8badd68/src/epub/text/the-adventure-of-the-speckled-band.xhtml
           sha256: b59209c14d19744934312bdb7851a6dc977f31989081b54c790fa9cbaf6596f8
         expected_sections: 1
@@ -61,6 +88,7 @@ datasets:
       - id: illustrious_client
         title: The Adventure of the Illustrious Client
         xhtml:
+          path: datasets/sherlock/raw/illustrious_client.xhtml
           url: https://raw.githubusercontent.com/standardebooks/arthur-conan-doyle_the-casebook-of-sherlock-holmes/3c706c799bd31fd8e889302bd4160e8e0cababd4/src/epub/text/the-adventure-of-the-illustrious-client.xhtml
           sha256: 50874b6b75367610c96320f4e8d1b3fd50cb9b89eb3708a7abdf8b261162c1cf
         expected_sections: 1
@@ -68,18 +96,106 @@ datasets:
       - id: lady_frances_carfax
         title: The Disappearance of Lady Frances Carfax
         xhtml:
+          path: datasets/sherlock/raw/lady_frances_carfax.xhtml
           url: https://raw.githubusercontent.com/standardebooks/arthur-conan-doyle_his-last-bow/8ab7fce0e6f5e7d25cb1de9660b4fa6dd89a933c/src/epub/text/the-disappearance-of-lady-frances-carfax.xhtml
           sha256: cacd32c1e74285eae3dcbb968db956e5861cf699e0afa708b1da283be4727290
         expected_sections: 1
         expected_scenes: 4
 
   hci:
-    question_documents: [examplore_chi18, corpusstudio]
+    content_dir: datasets/hci-five-paper/content
+    question_documents:
+      - abstractexplorer
+      - corpusstudio
+      - examplore_chi18
+      - mesotext
+      - paralib_uist22
     match_pair: [examplore_chi18, corpusstudio]
     documents:
-      - id: examplore_chi18
-        title: Examplore
-        json: datasets/hci-five-paper/examplore_chi18.json
+      - id: abstractexplorer
+        title: AbstractExplorer
+        json: datasets/hci-five-paper/content/abstractexplorer.content.json
       - id: corpusstudio
         title: CorpusStudio
-        json: datasets/hci-five-paper/corpusstudio.json
+        json: datasets/hci-five-paper/content/corpusstudio.content.json
+      - id: examplore_chi18
+        title: Examplore
+        json: datasets/hci-five-paper/content/examplore_chi18.content.json
+      - id: mesotext
+        title: Mesotext
+        json: datasets/hci-five-paper/content/mesotext.content.json
+      - id: paralib_uist22
+        title: Paralib
+        json: datasets/hci-five-paper/content/paralib_uist22.content.json
+
+  legal_opinions:
+    content_dir: datasets/legal/content
+    question_documents:
+      - banuelos_jimenez_opinion
+      - core_optical_opinion
+      - lamb_opinion
+      - porter_opinion
+      - westmoreland_opinion
+    match_pair: [banuelos_jimenez_opinion, core_optical_opinion]
+    documents:
+      - id: banuelos_jimenez_opinion
+        title: Banuelos-Jimenez v. Garland - Opinion
+        pdf:
+          path: datasets/legal/raw/banuelos_jimenez_opinion.pdf
+          sha256: df923deb7752d67c313c8dfae0b82956c337ea00686ccfcc4d5870030d0d944f
+      - id: core_optical_opinion
+        title: Core Optical Technologies, LLC v. Nokia Corporation - Opinion
+        pdf:
+          path: datasets/legal/raw/core_optical_opinion.pdf
+          sha256: 61171a4b889168dd5192e5325a3f4cf7b8e4ce86f4cbd32f165c26ea966a6b40
+      - id: lamb_opinion
+        title: Lamb v. Kendrick - Opinion
+        pdf:
+          path: datasets/legal/raw/lamb_opinion.pdf
+          sha256: 3d3f6cd5ad77dba96ca7f398c9203c45dc2ffc3eb3464be3182dd302c67a8445
+      - id: porter_opinion
+        title: Porter v. Board of Trustees of North Carolina State University - Opinion
+        pdf:
+          path: datasets/legal/raw/porter_opinion.pdf
+          sha256: 158c4b71fcf99d7dadc440044896a1df45cb3c74700c00714b2e8ea1d8953b9c
+      - id: westmoreland_opinion
+        title: Westmoreland v. Butler County - Opinion
+        pdf:
+          path: datasets/legal/raw/westmoreland_opinion.pdf
+          sha256: faad60eea9c04c5316f89024bc5b4dce3a6938b56e32b21193012e211a618516
+
+  legal_dissents:
+    content_dir: datasets/legal/content
+    question_documents:
+      - banuelos_jimenez_dissent
+      - core_optical_dissent
+      - lamb_dissent
+      - porter_dissent
+      - westmoreland_dissent
+    match_pair: [banuelos_jimenez_dissent, core_optical_dissent]
+    documents:
+      - id: banuelos_jimenez_dissent
+        title: Banuelos-Jimenez v. Garland - Dissent
+        pdf:
+          path: datasets/legal/raw/banuelos_jimenez_dissent.pdf
+          sha256: 579c2b16fcaaa4e86d033508d277308edeaa2fe07e24c3ae24368d547d3d9568
+      - id: core_optical_dissent
+        title: Core Optical Technologies, LLC v. Nokia Corporation - Dissent
+        pdf:
+          path: datasets/legal/raw/core_optical_dissent.pdf
+          sha256: 1f0aea10b71d302a7017fd1898b25b6db47056aa0c4a47be9e18798831c5fe8c
+      - id: lamb_dissent
+        title: Lamb v. Kendrick - Dissent
+        pdf:
+          path: datasets/legal/raw/lamb_dissent.pdf
+          sha256: 47399fd3dad284462878b9146654f270adab0d52150fcc765d2fb40c22842047
+      - id: porter_dissent
+        title: Porter v. Board of Trustees of North Carolina State University - Dissent
+        pdf:
+          path: datasets/legal/raw/porter_dissent.pdf
+          sha256: 5bd7d1784ae727ec0c82671b1b5ec7512b6e2753c717cb6b5536065e78da35b8
+      - id: westmoreland_dissent
+        title: Westmoreland v. Butler County - Dissent
+        pdf:
+          path: datasets/legal/raw/westmoreland_dissent.pdf
+          sha256: 8ba7fd9f15424fda89925c9ef7fdbce11094445e1168c020cd75e25f2d653b45

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import copy
+import json
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -19,6 +21,7 @@ from pipeline.skill_pipeline.runner import (
     batch_candidates,
     validate_match_records,
 )
+from pipeline.prepare_content_corpus import prepare_content_corpus
 
 
 def _document() -> list[dict]:
@@ -88,6 +91,7 @@ class SkillPipelineTest(unittest.TestCase):
         harness = Harness(DEFAULT_CONFIG)
 
         stages = {stage["id"]: stage for stage in harness.config["stages"]}
+        self.assertEqual(stages["extraction"]["max_tokens"], 32768)
         self.assertEqual(stages["section_matching"]["view"], SECTIONS_VIEW)
         self.assertEqual(
             stages["section_and_subsection_matching"]["view"],
@@ -95,11 +99,46 @@ class SkillPipelineTest(unittest.TestCase):
         )
         self.assertIn("sherlock", harness.config["datasets"])
         self.assertIn("hci", harness.config["datasets"])
+        self.assertIn("legal_opinions", harness.config["datasets"])
+        self.assertIn("legal_dissents", harness.config["datasets"])
+        self.assertEqual(
+            {
+                name: settings["participant_prefix"]
+                for name, settings in harness.config["study"]["datasets"].items()
+            },
+            {
+                "sherlock": "SH",
+                "hci": "HC",
+                "legal_opinions": "LO",
+                "legal_dissents": "LD",
+            },
+        )
         root = Path(__file__).resolve().parents[1]
         self.assertTrue(all(
             (root / harness.config["skills"][stage["skill"]]).is_dir()
             for stage in harness.config["stages"]
         ))
+
+    def test_prepares_content_only_corpus_with_canonical_names(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "source.json"
+            source.write_text(json.dumps(_document()), encoding="utf-8")
+            manifest = root / "manifest.yaml"
+            manifest.write_text(
+                "schema_version: 1\npapers:\n"
+                "  - paper_id: sample\n"
+                "    title: Sample\n"
+                "    file: source.json\n",
+                encoding="utf-8",
+            )
+            output = root / "content"
+
+            self.assertEqual(prepare_content_corpus(manifest, output), 1)
+
+            content = json.loads((output / "source.content.json").read_text(encoding="utf-8"))
+            self.assertNotIn(QUESTION_FIELD, content[0])
+            self.assertIn("file: source.content.json", (output / "manifest.yaml").read_text())
 
     def test_candidate_batches_are_stable_and_complete(self) -> None:
         candidates = matching_candidates(_document(), NESTED_VIEW)

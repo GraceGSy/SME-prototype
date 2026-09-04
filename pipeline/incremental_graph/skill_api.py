@@ -18,6 +18,7 @@ MESSAGE_BETAS = [
 ]
 FILE_BETAS = ["files-api-2025-04-14"]
 CODE_EXECUTION_TOOL = {"type": "code_execution_20250825", "name": "code_execution"}
+API_TIMEOUT_SECONDS = 30 * 60
 
 
 @dataclass(frozen=True)
@@ -118,7 +119,11 @@ class ClaudeSkills:
         self.repo_root = repo_root
         self.state_path = state_path
         self.model = model
-        self.client = Anthropic(api_key=load_api_key(repo_root))
+        self.client = Anthropic(
+            api_key=load_api_key(repo_root),
+            timeout=API_TIMEOUT_SECONDS,
+            max_retries=0,
+        )
         self.state = json.loads(state_path.read_text(encoding="utf-8")) if state_path.exists() else {}
 
     def register(self, skill_path: Path) -> SkillRef:
@@ -196,15 +201,33 @@ class ClaudeSkills:
             }
         ]
         response = self._run([skill], messages, max_tokens=max_tokens)
+        generated: list[tuple[str, str, bytes]] = []
         for file_id in self._file_ids(response):
             metadata = self.client.beta.files.retrieve_metadata(file_id=file_id, betas=FILE_BETAS)
-            if metadata.filename != expected_filename:
+            if not metadata.filename.lower().endswith(".json"):
                 continue
             download = self.client.beta.files.download(file_id=file_id, betas=FILE_BETAS)
             data = download.read() if hasattr(download, "read") else download.content
-            return self._result(response), data
+            generated.append((file_id, metadata.filename, data))
+            if metadata.filename == expected_filename:
+                return self._result(response), data
+        if len(generated) == 1:
+            _, filename, data = generated[0]
+            return (
+                self._result(
+                    response,
+                    transport_notes=(f"accepted generated JSON file {filename!r}",),
+                ),
+                data,
+            )
+        available = [filename for _, filename, _ in generated]
+        response_text = "".join(
+            block.text for block in response.content if getattr(block, "type", "") == "text"
+        ).strip()
         raise RuntimeError(
-            f"Claude response {response.id} did not expose the expected generated file {expected_filename!r}"
+            f"Claude response {response.id} did not expose one usable JSON file "
+            f"for {expected_filename!r}; JSON attachments={available}, "
+            f"response_text={response_text[-500:]!r}"
         )
 
     def _run(

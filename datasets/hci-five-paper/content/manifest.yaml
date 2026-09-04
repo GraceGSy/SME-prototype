@@ -1,0 +1,17 @@
+schema_version: 1
+papers:
+- paper_id: abstractexplorer
+  title: AbstractExplorer
+  file: abstractexplorer.content.json
+- paper_id: corpusstudio
+  title: CorpusStudio
+  file: corpusstudio.content.json
+- paper_id: examplore_chi18
+  title: Examplore (CHI 2018)
+  file: examplore_chi18.content.json
+- paper_id: mesotext
+  title: Mesotext
+  file: mesotext.content.json
+- paper_id: paralib_uist22
+  title: Paralib (UIST 2022)
+  file: paralib_uist22.content.json

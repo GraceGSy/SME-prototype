@@ -1,0 +1,17 @@
+schema_version: 1
+papers:
+  - paper_id: banuelos_jimenez_opinion
+    title: Banuelos-Jimenez v. Garland - Opinion
+    file: content/banuelos_jimenez_opinion.content.json
+  - paper_id: core_optical_opinion
+    title: Core Optical Technologies, LLC v. Nokia Corporation - Opinion
+    file: content/core_optical_opinion.content.json
+  - paper_id: lamb_opinion
+    title: Lamb v. Kendrick - Opinion
+    file: content/lamb_opinion.content.json
+  - paper_id: porter_opinion
+    title: Porter v. Board of Trustees of North Carolina State University - Opinion
+    file: content/porter_opinion.content.json
+  - paper_id: westmoreland_opinion
+    title: Westmoreland v. Butler County - Opinion
+    file: content/westmoreland_opinion.content.json

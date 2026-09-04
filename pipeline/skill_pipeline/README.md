@@ -1,7 +1,7 @@
 # Canonical document pipeline
 
 This is the single extraction, question-generation, and pairwise-matching
-pipeline for both HCI papers and Sherlock Holmes stories. Claude Skills make
+pipeline for HCI papers, Sherlock Holmes stories, and judicial opinions. Claude Skills make
 language judgments. Python fixes stage order, IDs, candidate construction,
 coverage, validation, retry, checkpointing, and provenance.
 
@@ -29,8 +29,9 @@ documents, question subsets, matching pairs, candidate views, or output paths.
 The runner contains no extraction, question, or matching judgment.
 
 HCI inputs are already-extracted canonical JSON. Sherlock inputs are pinned
-XHTML files and are sent to the configured extraction Skill; Python never
-infers narrative scene boundaries.
+XHTML files. Legal inputs are split opinion/dissent PDFs. XHTML and PDF inputs
+are sent to the configured extraction Skill; Python never infers narrative or
+legal boundaries. Each corpus keeps tracked `raw/` and `content/` artifacts.
 
 ## Run
 
@@ -46,10 +47,22 @@ python -m pipeline.skill_pipeline.runner --dataset sherlock --stage section_and_
 
 Replace `sherlock` with `hci`, or use `--dataset all --stage all`.
 
-Generated files live under `runs/document-pipeline/results/<dataset>/`:
+To continue from content through the incremental graph and packaged viewer with
+no manual manifest handoff, run:
+
+```powershell
+python -m pipeline.study --dataset sherlock
+```
+
+Use `--dataset all` only after every configured corpus has been reviewed. It
+also creates the participant-routed study package. Pairwise matching remains an
+independent diagnostic stage because its many-to-many document comparison is
+not a valid graph-insertion input.
+
+Question and matching files live under `runs/document-pipeline/results/<dataset>/`.
+Content files live in each dataset's configured tracked `content_dir`:
 
 ```text
-<document>.content.json
 <document>.questions.json
 <document-a>--<document-b>.<matching-stage>.json
 ```
@@ -57,6 +70,9 @@ Generated files live under `runs/document-pipeline/results/<dataset>/`:
 Each matching-stage file holds both directions in one envelope. It is updated
 atomically after every valid source batch, so reruns resume from source IDs
 already present. `--force` deliberately starts each selected artifact again.
+Individual Claude calls allow up to 30 minutes and disable the SDK's hidden
+automatic retries; a failed command can be rerun from the last validated file
+checkpoint without duplicating an in-flight non-deterministic call.
 Use `--force` after changing a source file, Skill, model, or candidate view;
 ordinary reruns assume an existing validated artifact is the intended
 checkpoint.

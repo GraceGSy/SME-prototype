@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
@@ -30,6 +31,7 @@ from ..incremental_graph.skill_api import ClaudeSkills, RunResult, SkillRef
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CONFIG = Path(__file__).with_name("pipeline.yaml")
 MATCH_FIELDS = {"source_id", "target_id", "basis"}
+SOURCE_KINDS = ("json", "xhtml", "pdf")
 
 
 def sha256_bytes(value: bytes) -> str:
@@ -178,10 +180,24 @@ class Harness:
             if len(dataset["match_pair"]) != 2:
                 raise ValueError(f"Dataset {name} match_pair must contain exactly two ids")
             for document in dataset["documents"]:
-                if ("json" in document) == ("xhtml" in document):
+                sources = [kind for kind in SOURCE_KINDS if kind in document]
+                if len(sources) != 1:
                     raise ValueError(
-                        f"Document {name}/{document['id']} needs exactly one json or xhtml source"
+                        f"Document {name}/{document['id']} needs exactly one "
+                        f"{', '.join(SOURCE_KINDS)} source"
                     )
+        study_datasets = self.config.get("study", {}).get("datasets", {})
+        unknown = set(study_datasets) - set(self.config["datasets"])
+        if unknown:
+            raise ValueError(f"Study selects unknown dataset {sorted(unknown)[0]}")
+        prefixes = [settings.get("participant_prefix") for settings in study_datasets.values()]
+        if any(
+            not isinstance(prefix, str) or not re.fullmatch(r"[A-Z]{2}", prefix)
+            for prefix in prefixes
+        ):
+            raise ValueError("Study participant prefixes must be two uppercase letters")
+        if len(prefixes) != len(set(prefixes)):
+            raise ValueError("Study participant prefixes must be unique")
 
     def _api(self) -> ClaudeSkills:
         if self.api is None:
@@ -200,6 +216,10 @@ class Harness:
 
     def _dataset_dir(self, dataset_name: str) -> Path:
         return self.output / dataset_name
+
+    def _content_dir(self, dataset_name: str) -> Path:
+        configured = self.config["datasets"][dataset_name].get("content_dir")
+        return ROOT / configured if configured else self._dataset_dir(dataset_name)
 
     @staticmethod
     def _document_map(dataset: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -241,6 +261,7 @@ class Harness:
             "response_id": result.response_id,
             "stop_reason": result.stop_reason,
             "usage": result.usage,
+            "transport_notes": list(result.transport_notes),
             "skills": [skill.__dict__ for skill in skills],
             "inputs": [
                 {"path": path.relative_to(ROOT).as_posix(), "sha256": sha256_file(path)}
@@ -277,15 +298,20 @@ class Harness:
         with (self.output / "errors.jsonl").open("a", encoding="utf-8") as stream:
             stream.write(json.dumps(record, ensure_ascii=False) + "\n")
 
-    def _source_path(self, dataset_name: str, document: dict[str, Any]) -> Path:
-        source = document["xhtml"]
+    def _source_path(
+        self,
+        dataset_name: str,
+        document: dict[str, Any],
+        source_kind: str,
+    ) -> Path:
+        source = document[source_kind]
         expected_hash = source["sha256"]
         if "path" in source:
             path = ROOT / source["path"]
         else:
             directory = self.cache / dataset_name / "sources"
             directory.mkdir(parents=True, exist_ok=True)
-            path = directory / f"{document['id']}.xhtml"
+            path = directory / f"{document['id']}.{source_kind}"
             if not path.exists() or sha256_file(path) != expected_hash:
                 request = urllib.request.Request(
                     source["url"],
@@ -302,7 +328,7 @@ class Harness:
         if dataset_name in self.prepared:
             return
         dataset = self.config["datasets"][dataset_name]
-        directory = self._dataset_dir(dataset_name)
+        directory = self._content_dir(dataset_name)
         directory.mkdir(parents=True, exist_ok=True)
         extraction_stage = stage or self._stage("extract")
         extraction_skill: SkillRef | None = None
@@ -316,29 +342,41 @@ class Harness:
                     validate_story_shape(content, document)
                 continue
 
-            if "json" in document:
+            source_kind = next(kind for kind in SOURCE_KINDS if kind in document)
+            if source_kind == "json":
                 source_path = ROOT / document["json"]
                 content = strip_questions(read_json(source_path))
                 result = None
             else:
-                source_path = self._source_path(dataset_name, document)
+                source_path = self._source_path(dataset_name, document, source_kind)
                 extraction_skill = extraction_skill or self._skill(extraction_stage)
+                mode = "narrative" if source_kind == "xhtml" else "legal"
                 prompt = (
-                    "Use the attached extraction Skill exactly as written in narrative mode. "
-                    "Extract only source-marked divisions and scenes plus their paragraphs. "
-                    f"Save the canonical nested JSON to /mnt/data/{output_path.name} and return it."
+                    f"Use the attached extraction Skill exactly as written in {mode} mode. "
+                    "Extract only source-marked structural boundaries and their paragraphs. "
+                    f"Use code execution to write /mnt/data/{output_path.name}, then expose that "
+                    "JSON file as the response attachment. Do not paste the document inline."
                 )
-                result, payload = self._api().run_file(
-                    extraction_skill,
-                    prompt,
-                    source_path,
-                    output_path.name,
-                    max_tokens=8192,
-                )
+                try:
+                    result, payload = self._api().run_file(
+                        extraction_skill,
+                        prompt,
+                        source_path,
+                        output_path.name,
+                        max_tokens=extraction_stage.get("max_tokens", 8192),
+                    )
+                except Exception as error:
+                    self._log_error(
+                        dataset_name,
+                        f"{extraction_stage['id']}:{document['id']}",
+                        error,
+                        {"source": source_path.relative_to(ROOT).as_posix()},
+                    )
+                    raise
                 content = json.loads(payload.decode("utf-8"))
 
             validate_document(content)
-            if "xhtml" in document:
+            if source_kind == "xhtml":
                 validate_story_shape(content, document)
             write_json(output_path, content)
             if result is not None and extraction_skill is not None:
@@ -361,11 +399,13 @@ class Harness:
         self.prepare(dataset_name)
         question_stage = stage or self._stage("questions")
         directory = self._dataset_dir(dataset_name)
+        content_directory = self._content_dir(dataset_name)
+        directory.mkdir(parents=True, exist_ok=True)
         documents = self._document_map(dataset)
         skill: SkillRef | None = None
 
         for document_id in dataset["question_documents"]:
-            content_path = self._content_path(directory, document_id)
+            content_path = self._content_path(content_directory, document_id)
             output_path = self._questions_path(directory, document_id)
             content = read_json(content_path)
             annotated = (
@@ -394,12 +434,21 @@ class Harness:
                     f"document_title: {documents[document_id]['title']}\n"
                     f"candidate:\n{json.dumps(candidate, ensure_ascii=False)}"
                 )
-                result = self._api().run_json(
-                    [skill],
-                    prompt,
-                    _question_schema(),
-                    max_tokens=512,
-                )
+                try:
+                    result = self._api().run_json(
+                        [skill],
+                        prompt,
+                        _question_schema(),
+                        max_tokens=512,
+                    )
+                except Exception as error:
+                    self._log_error(
+                        dataset_name,
+                        f"questions:{document_id}:{unit.unit_id}",
+                        error,
+                        {"input": content_path.relative_to(ROOT).as_posix()},
+                    )
+                    raise
                 question = result.value[QUESTION_FIELD]
                 if not isinstance(question, str) or not question.strip():
                     raise ValueError(

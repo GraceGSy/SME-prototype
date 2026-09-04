@@ -1,0 +1,17 @@
+schema_version: 1
+papers:
+  - paper_id: banuelos_jimenez_dissent
+    title: Banuelos-Jimenez v. Garland - Dissent
+    file: content/banuelos_jimenez_dissent.content.json
+  - paper_id: core_optical_dissent
+    title: Core Optical Technologies, LLC v. Nokia Corporation - Dissent
+    file: content/core_optical_dissent.content.json
+  - paper_id: lamb_dissent
+    title: Lamb v. Kendrick - Dissent
+    file: content/lamb_dissent.content.json
+  - paper_id: porter_dissent
+    title: Porter v. Board of Trustees of North Carolina State University - Dissent
+    file: content/porter_dissent.content.json
+  - paper_id: westmoreland_dissent
+    title: Westmoreland v. Butler County - Dissent
+    file: content/westmoreland_dissent.content.json

@@ -1,6 +1,6 @@
 ---
 name: "extract-section-and-subsection-paragraphs"
-description: "Extracts section, subsection, and paragraph content from either an academic PDF with an existing section manifest or source-marked narrative XHTML. In narrative mode, Claude extracts the text while using only explicit headings and horizontal-rule separators as scene boundaries. Produces the same strict nested JSON schema for both domains."
+description: "Extracts section, subsection, and paragraph content from an academic PDF and section manifest, a source-marked narrative XHTML file, or a split judicial opinion PDF. Narrative and legal modes use only explicit source markers as structural boundaries. Produces the same strict nested JSON schema for every domain."
 ---
 
 # Extract Section and Subsection Paragraphs
@@ -19,6 +19,7 @@ Choose exactly one mode:
 
 1. **Academic mode:** the existing nested section manifest and source PDF described below.
 2. **Narrative mode:** one XHTML source document whose real divisions are encoded as `h3` headings and/or `hr` separators.
+3. **Legal mode:** one PDF already split to contain a single authored judicial opinion or dissent.
 
 ## Narrative mode: explicit boundaries only
 
@@ -36,6 +37,48 @@ Use this mode for fiction or other narrative documents. Claude performs the extr
 - A leading, trailing, or consecutive separator is an input-integrity error. Do not fabricate an empty scene.
 - If there is no explicit `hr` separator anywhere in the story, stop rather than inventing scenes.
 - Save the extracted content directly in the strict JSON schema below. Report its section, scene, and paragraph counts.
+
+## Legal mode: explicit divisions only
+
+Use this mode only when the supplied PDF has already been split to one authored
+opinion or dissent. Read the PDF itself; no precomputed section manifest is
+required.
+
+- Begin at the authored body, normally marked by `OPINION`, `DISSENT`, or the
+  authoring judge's attribution. Exclude the case caption, counsel list, filing
+  metadata, and other front matter that precedes it.
+- Exclude running case-name headers, page numbers, repeated court chrome, and
+  signature or certificate material that follows the authored document.
+- A printed Roman-numeral division such as `I.` or `II. Discussion` becomes a
+  top-level section. A printed capital-letter division such as `A.` or
+  `B. Protected Speech` inside the current Roman-numeral division becomes a
+  subsection.
+- Do not promote numbered lists, citations, record references, footnote
+  numbers, or sentence-initial abbreviations merely because they resemble a
+  division marker. Confirm a heading from its placement, typography, and
+  sequence in the PDF.
+- The strict schema has two structural levels. Preserve lower-level printed
+  divisions as paragraph text inside their enclosing subsection rather than
+  inventing a third level.
+- Preserve heading wording when present. Put the printed division marker
+  without its trailing punctuation in `section_number`. For a marker with no
+  title, use `Part I`, `Part II`, `Part A`, and so on as the required
+  `section_name` metadata.
+- If authored prose appears after the opinion/dissent marker but before the
+  first Roman-numeral division, place it in a top-level section named exactly
+  `Opinion` or `Dissent`, with `section_number: null`. The document start is the
+  boundary; do not infer a semantic title for that prose.
+- If there are no printed Roman-numeral divisions, the complete authored body
+  is one top-level `Opinion` or `Dissent` section with no subsections. Never
+  infer sections from changes in issue, doctrine, speaker, or topic.
+- Keep all authored body prose, including substantive footnote text, quotations,
+  and the disposition. Preserve wording and reading order while normalizing
+  line wrapping, hyphenation artifacts, encoding artifacts, and whitespace.
+- Use visible paragraph breaks and indentation to reconstruct paragraphs. Do
+  not turn every PDF line into a paragraph, and do not merge distinct quoted or
+  body paragraphs solely because a page break intervenes.
+- Save the result directly in the strict JSON schema below and report section,
+  subsection, and paragraph counts.
 
 ## Academic-mode inputs
 
