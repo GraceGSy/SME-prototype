@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Literal
+from typing import Annotated, Any, Literal
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, BeforeValidator, ConfigDict, Field, model_validator
 
 
 Level = Literal["section", "paragraph"]
@@ -16,7 +16,23 @@ Phase = Literal["structural", "rerepresentation", "paragraph"]
 MatchDirection = Literal["new_to_group", "group_to_new", "singleton_to_group"]
 
 
-class Paragraph(BaseModel):
+class StrictModel(BaseModel):
+    """Reject unknown fields and coercion at application boundaries."""
+
+    model_config = ConfigDict(extra="forbid", strict=True)
+
+
+def _schema_version(value: Any) -> int:
+    if type(value) is not int or value != 1:
+        raise ValueError("Only integer schema_version 1 is supported")
+    return value
+
+
+SchemaVersion = Annotated[int, BeforeValidator(_schema_version)]
+WirePath = Annotated[Path, BeforeValidator(lambda value: Path(value) if isinstance(value, str) else value)]
+
+
+class Paragraph(StrictModel):
     id: str
     label: str = ""
     text: str
@@ -24,7 +40,7 @@ class Paragraph(BaseModel):
     ordinal: int = Field(default=1, ge=1)
 
 
-class Section(BaseModel):
+class Section(StrictModel):
     id: str
     label: str = ""
     text: str
@@ -42,7 +58,7 @@ class Section(BaseModel):
         return self
 
 
-class Paper(BaseModel):
+class Paper(StrictModel):
     paper_id: str
     title: str
     sections: list[Section]
@@ -66,14 +82,14 @@ class Paper(BaseModel):
         return self
 
 
-class PaperManifestEntry(BaseModel):
+class PaperManifestEntry(StrictModel):
     paper_id: str
     title: str
-    file: Path
+    file: WirePath
 
 
-class PaperManifest(BaseModel):
-    schema_version: int = 1
+class PaperManifest(StrictModel):
+    schema_version: SchemaVersion = 1
     max_granularity: Granularity = "section"
     papers: list[PaperManifestEntry]
 
@@ -87,7 +103,7 @@ class PaperManifest(BaseModel):
         return self
 
 
-class ModelSettings(BaseModel):
+class ModelSettings(StrictModel):
     provider: Literal["anthropic"] = "anthropic"
     name: str = "claude-sonnet-5"
     max_tokens: int = Field(default=1024, gt=0)
@@ -102,7 +118,7 @@ class ModelSettings(BaseModel):
     temperature: float | None = None
 
 
-class StageConfig(BaseModel):
+class StageConfig(StrictModel):
     id: str
     handler: str
     phase: Phase
@@ -115,12 +131,12 @@ class StageConfig(BaseModel):
     max_input_tokens: int | None = Field(default=None, gt=0)
 
 
-class PipelineConfig(BaseModel):
-    schema_version: int = 1
+class PipelineConfig(StrictModel):
+    schema_version: SchemaVersion = 1
     pipeline_id: str
-    prompt_root: Path
-    context_root: Path
-    skill_root: Path = Path("skills")
+    prompt_root: WirePath
+    context_root: WirePath
+    skill_root: WirePath = Path("skills")
     model: ModelSettings = Field(default_factory=ModelSettings)
     stages: list[StageConfig]
 
@@ -132,7 +148,7 @@ class PipelineConfig(BaseModel):
         return self
 
 
-class JudgmentRequest(BaseModel):
+class JudgmentRequest(StrictModel):
     key: str
     paper_index: int
     stage_id: str
@@ -148,7 +164,7 @@ class JudgmentRequest(BaseModel):
     force: bool = False
 
 
-class JudgmentResult(BaseModel):
+class JudgmentResult(StrictModel):
     fingerprint: str
     normalized: dict[str, Any]
     raw_response: dict[str, Any]
@@ -161,7 +177,7 @@ class JudgmentResult(BaseModel):
     cache_hit: bool = False
 
 
-class MatchDecision(BaseModel):
+class MatchDecision(StrictModel):
     source_id: str
     target_id: str | None
     direction: MatchDirection

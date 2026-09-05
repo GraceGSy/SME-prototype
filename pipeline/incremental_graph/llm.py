@@ -254,6 +254,8 @@ class AnthropicJudgmentProvider:
     @staticmethod
     def _validate(request: JudgmentRequest, value: dict) -> None:
         if request.output_kind == "question":
+            if not isinstance(value, dict) or set(value) != {QUESTION_FIELD}:
+                raise JudgmentError(f"{request.key} requires exactly {QUESTION_FIELD}")
             question = value.get(QUESTION_FIELD)
             if not isinstance(question, str) or not question.strip():
                 raise JudgmentError(f"{request.key} returned an empty question")
@@ -284,7 +286,13 @@ class AnthropicJudgmentProvider:
                     f"{sorted(request.expected_match_source_ids)}"
                 )
             return
-        chosen = value.get("target_id")
+        if not isinstance(value, dict) or set(value) != {"target_id", "basis"}:
+            raise JudgmentError(f"{request.key} requires exactly target_id and basis")
+        if not isinstance(value["basis"], str) or not value["basis"].strip():
+            raise JudgmentError(f"{request.key} requires a non-empty basis")
+        chosen = value["target_id"]
+        if chosen is not None and not isinstance(chosen, str):
+            raise JudgmentError(f"{request.key} requires a string target_id or explicit null")
         if chosen is not None and chosen not in request.allowed_match_ids:
             raise JudgmentError(
                 f"{request.key} selected {chosen!r}; allowed values are {request.allowed_match_ids} or null"

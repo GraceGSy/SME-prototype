@@ -266,7 +266,7 @@ def _validate_paragraph(
     unexpected = set(paragraph) - _PARAGRAPH_FIELDS
     if unexpected:
         raise ValueError(f"{label} has unsupported fields: {sorted(unexpected)}")
-    if paragraph.get("paragraph_number") != expected_number:
+    if type(paragraph.get("paragraph_number")) is not int or paragraph["paragraph_number"] != expected_number:
         raise ValueError(f"{label} number must be zero-indexed and contiguous")
     if not isinstance(paragraph.get("text"), str) or not paragraph["text"].strip():
         raise ValueError(f"{label} needs non-empty text")
