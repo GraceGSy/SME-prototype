@@ -13,6 +13,7 @@ from pipeline.incremental_graph.skill_api import (
     SkillCallPolicy,
     SkillRef,
     SkillSessionBudget,
+    _credential_registry,
     _version_id,
 )
 
@@ -100,6 +101,18 @@ SCHEMA = {
 
 
 class SkillApiTest(unittest.TestCase):
+    def test_skill_registry_is_scoped_without_storing_api_keys(self) -> None:
+        legacy = {"skills/test": {"skill_id": "skill-1"}}
+
+        document, first_registry, migrated = _credential_registry(legacy, "key-one")
+        _, second_registry, _ = _credential_registry(document, "key-two")
+
+        self.assertTrue(migrated)
+        self.assertEqual(first_registry, legacy)
+        self.assertEqual(second_registry, {})
+        self.assertNotIn("key-one", str(document))
+        self.assertNotIn("key-two", str(document))
+
     def test_batch_match_validation_rejects_unknown_target(self) -> None:
         request = JudgmentRequest(
             key="paper:matching:batch",

@@ -180,6 +180,27 @@ def _atomic_json(path: Path, value: Any) -> None:
     temporary.replace(path)
 
 
+def _credential_registry(
+    state: dict[str, Any],
+    api_key: str,
+) -> tuple[dict[str, Any], dict[str, Any], bool]:
+    """Return one non-secret, credential-scoped Skill registry."""
+
+    credential_id = hashlib.sha256(api_key.encode("utf-8")).hexdigest()
+    accounts = state.get("accounts")
+    if state.get("schema_version") == 1 and isinstance(accounts, dict):
+        registry = accounts.setdefault(credential_id, {})
+        if not isinstance(registry, dict):
+            raise ValueError("Credential Skill registry must be a JSON object")
+        return state, registry, False
+
+    document = {
+        "schema_version": 1,
+        "accounts": {credential_id: state} if state else {credential_id: {}},
+    }
+    return document, document["accounts"][credential_id], bool(state)
+
+
 class ClaudeSkills:
     def __init__(
         self,
@@ -194,8 +215,9 @@ class ClaudeSkills:
         self.repo_root = repo_root
         self.state_path = state_path
         self.model = model
+        api_key = load_api_key(repo_root)
         self.client = Anthropic(
-            api_key=load_api_key(repo_root),
+            api_key=api_key,
             timeout=API_TIMEOUT_SECONDS,
             max_retries=0,
         )
@@ -205,7 +227,14 @@ class ClaudeSkills:
             "input_tokens": 0,
             "output_tokens": 0,
         }
-        self.state = json.loads(state_path.read_text(encoding="utf-8")) if state_path.exists() else {}
+        stored_state = (
+            json.loads(state_path.read_text(encoding="utf-8"))
+            if state_path.exists()
+            else {}
+        )
+        self.state_document, self.state, migrated = _credential_registry(stored_state, api_key)
+        if migrated:
+            _atomic_json(self.state_path, self.state_document)
 
     def register(self, skill_path: Path) -> SkillRef:
         from anthropic.lib import files_from_dir
@@ -243,7 +272,7 @@ class ClaudeSkills:
             "version": version,
             "source_sha256": fingerprint,
         }
-        _atomic_json(self.state_path, self.state)
+        _atomic_json(self.state_path, self.state_document)
         return SkillRef(relative, skill_id, version, fingerprint)
 
     def run_json(
