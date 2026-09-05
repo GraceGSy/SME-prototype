@@ -55,6 +55,12 @@ invented causal or analogical relations.
 
 A third paper is matched to the existing multi-paper nodes. It does not trigger
 a general global reassessment of all earlier unmatched paragraph pairs.
+The current rerepresentation pass runs once after the entire structural insertion
+sequence, not after each paper in a multi-paper start/add command. It only moves
+structural singletons into established groups; it cannot split or revise an
+existing shared group. Paragraph-only mode skips it entirely. This is narrower
+than the proposed per-addition global realignment and must not be described as
+implementing that proposal.
 
 ## Module Boundaries
 

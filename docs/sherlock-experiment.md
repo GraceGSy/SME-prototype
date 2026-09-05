@@ -10,7 +10,13 @@ One-focus calls improve isolation and auditability, but the saved judgments stil
 contain source-grounding and role-consistency failures. More matches would not,
 by itself, establish improvement.
 
-The reviewed local artifacts are ignored, not portable tracked fixtures:
+The reviewed artifacts are archived, not portable tracked fixtures. The verified
+local archive is `../../archives/SME-prototype-elena-clean/20260905T185723Z/`
+relative to this document's directory. It contains `runs.zip`, `site.zip`, and
+`index.json` with per-file SHA-256 hashes. Originals were moved into
+`originals/runs/` and `originals/site/` because deletion was blocked; generated
+clutter was also moved outside the checkout. The paths below are their original
+checkout locations, not active run directories:
 
 | Run | Observed result |
 |---|---|
@@ -30,12 +36,17 @@ and neither run has a human-labeled gold set.
    In the diagnostic input, that center is Watson's question; Holmes's answer
    is `s0001.p0010`. Correct neighboring context did not guarantee correct
    center attribution.
-2. **Inconsistent abstraction:** some rationales accept broad truth-revelation
-   roles while others demand an exact conversational beat. The test lacks an
-   adjudicated level of abstraction.
-3. **Participant-role mismatch:** comparing Holmes securing the snake with
-   villains deciding to murder someone as neutralizing danger overlooks who is
-   acting, who is threatened, and the direction of the causal relation.
+2. **Variable abstraction:** some rationales accept broad truth-revelation roles
+   while others demand an exact conversational beat. This is not automatically a
+   defect: the intended method permits LLM judgment. Evaluate whether each chosen
+   abstraction is supported on both sides rather than enforcing a fixed taxonomy.
+3. **Insufficiently justified role correspondence:** attempt `attempt-000023`
+   compares Holmes securing the snake with villains deciding to murder someone
+   as neutralizing danger. Hero-to-villain mapping is not inherently wrong; both
+   could occupy an agent role in a threat-removal relation. The rationale does
+   not establish that mapping carefully and describes both as immediate physical
+   resolution although one is retrospective plotting. This is a disputed
+   judgment to adjudicate, not proof that different moral roles prohibit analogy.
 4. **Fragmented units:** a printed paragraph can contain only a question, a
    response, or part of a causal explanation. Neighbor windows help interpret
    it but do not change the unit being aligned.
@@ -82,6 +93,48 @@ there is no general pass that rematches all old unmatched paragraph pairs.
 A third paper can therefore create new correspondences without repairing the
 original mistakes. It cannot turn Watson's question into Holmes's answer.
 
+The current pass is structural-only, once after the full insertion sequence,
+and one-way. It only joins singletons to established non-singleton nodes, does
+not revise existing shared groups, and is skipped in paragraph-only Sherlock
+runs. Consequently, those runs do not test the proposed per-addition paragraph
+rerepresentation mechanism at all. Keeping reciprocal top-1 acceptance is a
+reasonable precision-oriented experiment; reciprocity between passages alone
+does not check consistency among their internal relational arguments.
+
+Before relaxing top-1 or building a solver, test a bounded rerepresentation pass
+at the intended level and timing. Include a missed bridge, a wrong early shared
+group, and a no-match control. Specify whether existing memberships can change:
+if only singleton attachment is allowed, some early errors cannot be repaired
+by construction. This is proposed work, not an implemented algorithm change.
+
+## Three Fragmentation Strategies
+
+1. **Keep paragraphs; interpret centers in context.** Strengthen center labels
+   and evidence attribution while leaving paragraph membership unchanged. This
+   is the cheapest baseline and avoids segmentation errors, but a question and
+   its separately printed answer still cannot be aligned as one explanatory act.
+2. **Match minimal functional blocks.** Prepare a separate, stored view of
+   small contiguous spans such as question/answer, claim/justification, or
+   observation/inference. Preserve every original paragraph ID and exact text;
+   define non-overlapping ownership for the first experiment. Start with a small
+   maximum span and compare against the paragraph baseline, not automatic merging
+   whenever matching fails. This can handle all three domains without a fixed
+   domain-specific role taxonomy, but misses nonlocal dependencies and clauses
+   with multiple roles inside one paragraph.
+3. **Match explicit relational representations.** Represent predicates, argument
+   bindings, and links such as causes/justifies/contradicts, each grounded in
+   exact source spans. Align these relations and their connected systems rather
+   than treating printed paragraphs as the basic units. This is closest to
+   Gentner's representation and systematicity assumptions, but adds extraction
+   errors and consistency machinery. It is an experiment, not a reason to
+   resurrect the deleted proposition pipeline.
+
+Strategy 3 is the closest theoretical fit; strategy 2 is my best practical
+hypothesis across narrative, academic, and legal data, not a measured result.
+Test strategy 1 first with the revised prompts, then strategy 2 only on failures
+where the intended function actually spans a paragraph boundary. Keep canonical
+source extraction unchanged and store any accepted derived representation once.
+
 ## Smallest Useful Next Experiment
 
 1. Select a small reviewable set from narrative, academic, and legal documents,
@@ -104,8 +157,12 @@ original mistakes. It cannot turn Watson's question into Holmes's answer.
    Measure whether bridges repair adjudicated failures, not just whether the
    shared-node count rises.
 
-The domain-neutral prompt revision in this cleanup asks for center evidence and
-preserved participant roles, and removes narrative-only/batched instructions.
+The revised prompts prioritize role, relational structure, then content similarity.
+Here content similarity means topic/vocabulary overlap, not ignoring source
+meaning; relational structure is not document formatting. Matching windows now
+render in previous/under-consideration/next order rather than alphabetical order.
+The basis asks for exact center excerpts and corresponding relational roles,
+while permitting differing moral status and judgment about abstraction level.
 Its semantic effectiveness is **unvalidated**. Deterministic tests cover
 contracts and graph behavior; real users and live-model quality remain separate
 evaluation requirements.
