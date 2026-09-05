@@ -55,6 +55,12 @@ def extract_document(
         raise ValueError("Raw input must be .pdf, .txt, or .xhtml; canonical JSON needs no extraction")
     if not isinstance(title, str) or not title.strip():
         raise ValueError("A non-empty document title is required")
+    policy = SkillCallPolicy(
+        max_tokens=32768, max_input_tokens=250000,
+        max_attachment_bytes=20_000_000 if source.suffix == ".pdf" else 500_000,
+    )
+    if source.stat().st_size > policy.max_attachment_bytes:
+        raise ValueError(f"Source exceeds the {policy.max_attachment_bytes}-byte extraction limit")
     raw = source.read_bytes()
     client = client or ClaudeSkills(ROOT, ROOT / "runs/extraction/skill-registry.json", model)
     skill = client.register(SKILL)
@@ -63,7 +69,7 @@ def extract_document(
         f"Extract the attached document: {title}",
         source,
         content_schema(),
-        policy=SkillCallPolicy(max_tokens=32768, max_input_tokens=250000),
+        policy=policy,
         cacheable_prompt=(
             f"Use the attached extraction Skill in {domain} mode. Preserve only "
             "source-marked structural boundaries and the original paragraphs. "

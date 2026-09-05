@@ -26,6 +26,10 @@ class NewDocumentTest(unittest.TestCase):
                 args, kwargs = client.run_json_file.call_args
                 self.assertIn("Source", args[1])
                 self.assertIn(f"{domain} mode", kwargs["cacheable_prompt"])
+                if extension == "pdf":
+                    largest_fixture = max(path.stat().st_size for path in
+                        (Path(__file__).resolve().parents[1] / "datasets/hci-five-paper/raw").glob("*.pdf"))
+                    self.assertGreaterEqual(kwargs["policy"].max_attachment_bytes, largest_fixture)
                 with self.assertRaises(FileExistsError):
                     extract_document(source, output, domain=domain, title="Source", client=client)
                 self.assertEqual(client.run_json_file.call_count, 1)
