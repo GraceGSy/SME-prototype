@@ -9,11 +9,13 @@ import shutil
 from pathlib import Path
 from typing import Any
 
+from jsonschema import Draft202012Validator, ValidationError
 
-COMMON_ROOT_FILES = ("manifest.json", "bidirectional_matches.json")
+
+COMMON_ROOT_FILES = ("manifest.json",)
 SNAPSHOT_FILE = "final_snapshot.json"
 GRAPH_REPLAY_FILE = "graph-replay.json"
-VIEWER_ASSETS = ("graph_replay.js", "graph_replay.css")
+VIEWER_ASSETS = {"dist/app.js": "app.js", "styles.css": "styles.css", "graph_replay.css": "graph_replay.css"}
 
 
 class DatasetValidationError(ValueError):
@@ -34,18 +36,28 @@ def _require(condition: bool, message: str) -> None:
         raise DatasetValidationError(message)
 
 
-def _validate_members(
-    groups: list[dict[str, Any]],
-    units: set[str],
-    source: str,
-    unit_label: str = "paragraph",
-) -> None:
+def _validate_contract(name: str, value: Any) -> None:
+    schema_path = Path(__file__).parent / "dist" / "contracts.json"
+    _require(schema_path.is_file(), "Build viewer contracts first: npm run build:viewer")
+    schemas = _read_json(schema_path)
+    try:
+        Draft202012Validator(schemas[name]).validate(value)
+    except ValidationError as error:
+        raise DatasetValidationError(f"{name} contract at {list(error.absolute_path)}: {error.message}") from error
+
+
+def _validate_members(groups: list[dict[str, Any]], units: set[str], source: str) -> None:
+    seen: set[str] = set()
+    group_ids: set[str] = set()
     for group in groups:
-        _require(bool(group.get("group_id")), f"{source} has a group without group_id")
-        for field in ("members", "representative_members"):
-            for member in group.get(field, []):
-                key = f"{member.get('paper')}:{member.get('unit_id')}"
-                _require(key in units, f"{source} references unknown {unit_label} {key}")
+        _require(group["group_id"] not in group_ids, f"{source} has duplicate group IDs")
+        group_ids.add(group["group_id"])
+        for member in group["members"]:
+            key = f"{member['paper']}:{member['unit_id']}"
+            _require(key in units, f"{source} references unknown unit {key}")
+            _require(key not in seen, f"{source} assigns {key} more than once")
+            seen.add(key)
+    _require(seen == units, f"{source} does not account for every unit")
 
 
 def _validate_optional_graph_replay(dataset_dir: Path, paper_ids: list[str]) -> dict[str, Any]:
@@ -53,6 +65,7 @@ def _validate_optional_graph_replay(dataset_dir: Path, paper_ids: list[str]) -> 
     if not path.is_file():
         return {}
     replay = _read_json(path)
+    _validate_contract("replay", replay)
     _require(replay.get("schema_version") == 1, f"{GRAPH_REPLAY_FILE} has an unsupported schema version")
     _require(replay.get("mode") == "incremental_graph_replay", f"{GRAPH_REPLAY_FILE} has an invalid mode")
     _require(replay.get("paper_order") == paper_ids, f"{GRAPH_REPLAY_FILE} paper order disagrees with manifest")
@@ -105,6 +118,7 @@ def validate_dataset(
 
     dataset_dir = dataset_dir.resolve()
     manifest = _read_json(dataset_dir / "manifest.json")
+    _validate_contract("manifest", manifest)
     _require(isinstance(manifest, list) and manifest, "manifest.json must contain an ordered paper list")
 
     paper_ids: list[str] = []
@@ -117,6 +131,7 @@ def validate_dataset(
         _require(bool(paper_id and paper_file), "Every manifest entry needs paper_id and file")
         _require(paper_id not in paper_ids, f"Duplicate paper_id in manifest: {paper_id}")
         paper = _read_json(dataset_dir / paper_file)
+        _validate_contract("paper", paper)
         _require(paper.get("paper_id") == paper_id, f"{paper_file} does not match paper_id {paper_id}")
         _require(isinstance(paper.get("sections"), list), f"{paper_file} has no sections list")
         _require(isinstance(paper.get("paragraphs"), list), f"{paper_file} has no paragraphs list")
@@ -149,28 +164,15 @@ def validate_dataset(
         paragraph_units.update(f"{paper_id}:{unit_id}" for unit_id in paragraph_ids)
         paragraph_count += len(paragraph_ids)
 
-    links = _read_json(dataset_dir / "bidirectional_matches.json")
-    for granularity, units in (("sections", section_units), ("paragraphs", paragraph_units)):
-        _require(
-            isinstance(links.get(granularity), list),
-            f"bidirectional_matches.json has no {granularity} list",
-        )
-        for link in links[granularity]:
-            left = f"{link.get('paper_a')}:{link.get('section_a')}"
-            right = f"{link.get('paper_b')}:{link.get('section_b')}"
-            _require(
-                left in units and right in units,
-                f"bidirectional_matches.json references unknown units {left}, {right}",
-            )
-
-    normalized_id = dataset_id or dataset_dir.name
+    resolved_id = dataset_id or dataset_dir.name
     _require(
-        bool(re.fullmatch(r"[a-z0-9][a-z0-9_-]*", normalized_id)),
+        bool(re.fullmatch(r"[a-z0-9][a-z0-9_-]*", resolved_id)),
         "dataset_id must use lowercase letters, numbers, dashes, or underscores",
     )
     replay_descriptor = _validate_optional_graph_replay(dataset_dir, paper_ids)
 
     snapshot = _read_json(dataset_dir / SNAPSHOT_FILE)
+    _validate_contract("snapshot", snapshot)
     shared_groups = snapshot.get("groups")
     singleton_groups = snapshot.get("singletons")
     section_groups = snapshot.get("section_groups")
@@ -179,9 +181,8 @@ def validate_dataset(
     _require(isinstance(shared_groups, list), f"{SNAPSHOT_FILE} has no shared groups list")
     _require(isinstance(singleton_groups, list), f"{SNAPSHOT_FILE} has no singleton list")
     _require(isinstance(section_groups, list), f"{SNAPSHOT_FILE} has no section groups list")
-    _validate_members(shared_groups, paragraph_units, SNAPSHOT_FILE)
-    _validate_members(singleton_groups, paragraph_units, SNAPSHOT_FILE)
-    _validate_members(section_groups, section_units, SNAPSHOT_FILE, "section")
+    _validate_members(shared_groups + singleton_groups, paragraph_units, SNAPSHOT_FILE)
+    _validate_members(section_groups, section_units, SNAPSHOT_FILE)
 
     for group in shared_groups:
         represented_papers = {member.get("paper") for member in group.get("members", [])}
@@ -199,8 +200,8 @@ def validate_dataset(
     return {
         "schema_version": 1,
         "mode": "final_snapshot",
-        "dataset_id": normalized_id,
-        "label": label or normalized_id.replace("-", " ").replace("_", " ").title(),
+        "dataset_id": resolved_id,
+        "label": label or resolved_id.replace("-", " ").replace("_", " ").title(),
         "paper_count": len(paper_ids),
         "paragraph_count": paragraph_count,
         "snapshot_file": SNAPSHOT_FILE,
@@ -217,15 +218,14 @@ def _require_empty_output(output_dir: Path) -> None:
 
 
 def _copy_viewer(viewer_path: Path, public_dir: Path) -> None:
-    viewer_dir = public_dir / "viz"
-    viewer_dir.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(viewer_path, public_dir / "index.html")
-    shutil.copy2(viewer_path, viewer_dir / "tag_matches_viewer.html")
-    for filename in VIEWER_ASSETS:
-        source = viewer_path.parent / filename
-        _require(source.is_file(), f"Missing viewer asset: {source}")
-        shutil.copy2(source, public_dir / filename)
-        shutil.copy2(source, viewer_dir / filename)
+    assets = [(viewer_path, "index.html")] + [
+        (viewer_path.parent / source, target) for source, target in VIEWER_ASSETS.items()
+    ]
+    for source, _ in assets:
+        _require(source.is_file(), f"Missing viewer asset: {source}; run npm run build:viewer")
+    public_dir.mkdir(parents=True, exist_ok=True)
+    for source, target in assets:
+        shutil.copy2(source, public_dir / target)
 
 
 def _copy_dataset(

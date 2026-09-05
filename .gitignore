@@ -7,4 +7,7 @@ venv/
 _cache/
 runs/
 site/
-/pipeline/graph_sme/output/
+node_modules/
+pipeline/viewer/dist/
+output/
+playwright-report/

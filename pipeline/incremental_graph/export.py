@@ -32,7 +32,6 @@ def export_revision(dataset_dir: Path, graph: QuestionGraph, papers: list[Paper]
         manifest.append({"paper_id": paper.paper_id, "title": paper.title, "file": filename})
         write_json(dataset_dir / filename, _viewer_paper(paper))
     write_json(dataset_dir / "manifest.json", manifest)
-    write_json(dataset_dir / "bidirectional_matches.json", {"sections": [], "paragraphs": []})
 
     paragraph_groups: list[dict[str, Any]] = []
     paragraph_singletons: list[dict[str, Any]] = []
@@ -81,8 +80,6 @@ def _viewer_paper(paper: Paper) -> dict[str, Any]:
                 "unit_type": section.kind,
                 "parent_id": section.parent_id,
                 "ordinal": section.ordinal,
-                "prev_relation": "",
-                "next_relation": "",
             }
             for section in paper.sections
         ],
@@ -95,8 +92,6 @@ def _viewer_paper(paper: Paper) -> dict[str, Any]:
                 "section_id": section.id,
                 "family_id": section.family_id,
                 "ordinal": paragraph.ordinal,
-                "prev_relation": "",
-                "next_relation": "",
             }
             for section in paper.sections
             for paragraph in section.paragraphs
@@ -139,5 +134,4 @@ def _viewer_group(
         "overarching_question": data.get("generated_question") or node_id,
         "parent_group_id": data.get("parent_id"),
         "members": members,
-        "representative_members": members,
     }

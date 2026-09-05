@@ -1,0 +1,16 @@
+{
+  "name": "question-atlas-viewer",
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build:viewer": "npm run typecheck && esbuild pipeline/viewer/build.ts --bundle --platform=node --packages=external --format=esm --outfile=pipeline/viewer/dist/build.mjs && node pipeline/viewer/dist/build.mjs",
+    "test:viewer": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "esbuild": "0.28.2",
+    "typescript": "7.0.2",
+    "zod": "4.5.4",
+    "@types/node": "22.20.1"
+  }
+}

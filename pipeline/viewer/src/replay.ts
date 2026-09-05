@@ -1,9 +1,12 @@
-(function () {
-  "use strict";
+import type { Paper, Replay, ReplayEvent } from "./contracts";
+import { element, escapeHtml, preview as shortText } from "./dom";
+import { reduceEvents, type ReplayNode, type ReplayState } from "./replay-state";
 
+export function mountReplay(host: HTMLElement, replay: Replay, papers: Paper[]) {
   const NODE_COLOR = "#52748a";
   const PAPER_COLORS = ["#1971c2", "#e8590c", "#2f9e44", "#9c36b5", "#0b7285", "#c92a2a", "#5f3dc4", "#f08c00"];
-  const ACTION_LABELS = {
+  const ACTION_LABELS: Record<string, string> = {
+    paragraph_fan_in_added: "Adjacent paragraph included",
     paper_added: "Paper added",
     match_recorded: "Match judgment recorded",
     node_created: "Node created",
@@ -15,35 +18,12 @@
     rerepresentation_merge_ignored: "Rerepresentation merge ignored",
   };
 
-  let host = null;
-  let replay = null;
-  let papers = [];
   let index = 0;
-  let scope = "section";
-  let selectedNodeId = null;
-  let timer = null;
+  let scope: "section" | "paragraph" = "section";
+  let selectedNodeId: string | null = null;
+  let timer: number | null = null;
   let speed = 500;
   let showHierarchy = false;
-
-  function mount(container, replayData, paperData) {
-    destroy();
-    host = container;
-    replay = replayData;
-    papers = paperData || [];
-    index = 0;
-    scope = "section";
-    selectedNodeId = null;
-    showHierarchy = false;
-    renderShell();
-  }
-
-  function destroy() {
-    stop();
-    host = null;
-    replay = null;
-    papers = [];
-    selectedNodeId = null;
-  }
 
   function resize() {
     if (host && replay) renderGraph(currentState());
@@ -91,62 +71,28 @@
   }
 
   function bindControls() {
-    byId("graphReplayScope").addEventListener("change", event => { scope = event.target.value; selectedNodeId = null; render(); });
-    byId("graphReplayHierarchy").addEventListener("change", event => { showHierarchy = event.target.checked; render(); });
+    byId<HTMLSelectElement>("graphReplayScope").addEventListener("change", event => { scope = (event.currentTarget as HTMLSelectElement).value as "section" | "paragraph"; selectedNodeId = null; render(); });
+    byId("graphReplayHierarchy").addEventListener("change", event => { showHierarchy = (event.currentTarget as HTMLInputElement).checked; render(); });
     byId("graphReplayStart").addEventListener("click", () => seek(0));
     byId("graphReplayPrevious").addEventListener("click", () => seek(index - 1));
     byId("graphReplayPlay").addEventListener("click", togglePlay);
     byId("graphReplayNext").addEventListener("click", () => seek(index + 1));
     byId("graphReplayEnd").addEventListener("click", () => seek(replay.events.length));
-    byId("graphReplayScrubber").addEventListener("input", event => seek(Number(event.target.value), false));
-    byId("graphReplaySpeed").addEventListener("change", event => { speed = Number(event.target.value); if (timer) { stop(); start(); } });
-    host.querySelectorAll("[data-paper-index]").forEach(button => {
+    byId<HTMLInputElement>("graphReplayScrubber").addEventListener("input", event => seek(Number((event.currentTarget as HTMLInputElement | HTMLSelectElement).value), false));
+    byId("graphReplaySpeed").addEventListener("change", event => { speed = Number((event.currentTarget as HTMLInputElement | HTMLSelectElement).value); if (timer) { stop(); start(); } });
+    host.querySelectorAll<HTMLElement>("[data-paper-index]").forEach(button => {
       button.addEventListener("click", () => jumpToPaper(Number(button.dataset.paperIndex)));
     });
   }
 
   function currentState() {
-    return reduceEvents(index);
-  }
-
-  function reduceEvents(endIndex) {
-    const state = { papers: [], nodes: new Map(), edges: new Map() };
-    replay.events.slice(0, endIndex).forEach(event => applyEvent(state, event));
-    return state;
-  }
-
-  function applyEvent(state, event) {
-    if (event.action === "paper_added") state.papers.push(event.paper_id);
-    else if (event.action === "node_created") {
-      state.nodes.set(event.node_id, {
-        nodeId: event.node_id,
-        level: event.level,
-        parentId: event.parent_id || null,
-        members: [event.member],
-        question: "",
-      });
-    } else if (event.action === "member_added") state.nodes.get(event.node_id)?.members.push(event.member);
-    else if (event.action === "node_merged") {
-      const target = state.nodes.get(event.target_node_id);
-      if (target) target.members.push(...event.members);
-      state.nodes.delete(event.source_node_id);
-      state.edges.forEach((edge, edgeId) => {
-        if (edge.source === event.source_node_id || edge.target === event.source_node_id) {
-          state.edges.delete(edgeId);
-        }
-      });
-    }
-    else if (event.action === "edge_created") state.edges.set(event.edge_id, event);
-    else if (event.action === "question_generated") {
-      const node = state.nodes.get(event.node_id);
-      if (node) node.question = event.question;
-    }
+    return reduceEvents(replay.events, index);
   }
 
   function render() {
     if (!host || !replay) return;
     const state = currentState();
-    byId("graphReplayScrubber").value = String(index);
+    byId<HTMLInputElement>("graphReplayScrubber").value = String(index);
     byId("graphReplayCounter").textContent = `${index} / ${replay.events.length}`;
     byId("graphReplayStart").disabled = index === 0;
     byId("graphReplayPrevious").disabled = index === 0;
@@ -155,14 +101,14 @@
     byId("graphReplayPlay").textContent = timer ? "Pause" : "Play";
     byId("graphReplayPlay").classList.toggle("active", Boolean(timer));
     byId("graphReplayHierarchy").disabled = scope !== "section";
-    host.querySelectorAll("[data-paper-index]").forEach(button => {
+    host.querySelectorAll<HTMLElement>("[data-paper-index]").forEach(button => {
       button.classList.toggle("reached", Number(button.dataset.paperIndex) <= state.papers.length);
     });
     renderGraph(state);
     renderInspector(state);
   }
 
-  function renderGraph(state) {
+  function renderGraph(state: ReplayState) {
     const canvas = byId("graphReplayCanvas");
     if (!canvas) return;
     const layout = showHierarchy && scope === "section"
@@ -180,8 +126,8 @@
       ? Math.max(canvas.clientWidth, visibleNodes.length * 15, 620)
       : Math.max(canvas.clientWidth, 620);
     const height = Math.max(canvas.clientHeight, 440);
-    const currentEvent = replay.events[index - 1] || {};
-    const point = nodeId => {
+    const currentEvent = replay.events[index - 1];
+    const point = (nodeId: string) => {
       const saved = layout[nodeId] || fallbackPoint(nodeId, visibleNodes);
       return { x: 54 + saved.x * (width - 108), y: 46 + saved.y * (height - 92) };
     };
@@ -192,15 +138,16 @@
     const edgeSvg = edges.map(edge => {
       const source = point(edge.source);
       const target = point(edge.target);
-      const active = currentEvent.edge_id === edge.edge_id ? " current" : "";
+      const active = currentEvent && "edge_id" in currentEvent && currentEvent.edge_id === edge.edge_id ? " current" : "";
       const kind = edge.kind === "contains" ? " contains" : "";
       return `<line class="graph-replay-edge${kind}${active}" x1="${source.x}" y1="${source.y}" x2="${target.x}" y2="${target.y}" marker-end="url(#replayArrow)"></line>`;
     }).join("");
     const nodeSvg = visibleNodes.map(node => {
       const position = point(node.nodeId);
-      const active = currentEvent.node_id === node.nodeId
-        || currentEvent.absorbed_group_id === node.nodeId
-        || currentEvent.target_node_id === node.nodeId;
+      const active = currentEvent && (
+        ("node_id" in currentEvent && currentEvent.node_id === node.nodeId)
+        || ("absorbed_group_id" in currentEvent && currentEvent.absorbed_group_id === node.nodeId)
+        || ("target_node_id" in currentEvent && currentEvent.target_node_id === node.nodeId));
       const selected = selectedNodeId === node.nodeId;
       const classes = `graph-replay-node${active ? " current" : ""}${selected ? " selected" : ""}`;
       const compact = visibleNodes.length > 40;
@@ -220,12 +167,12 @@
       <defs><marker id="replayArrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#d18b26"></path></marker></defs>
       ${edgeSvg}${nodeSvg}
     </svg>`;
-    canvas.querySelectorAll("[data-replay-node]").forEach(node => {
-      node.addEventListener("click", () => { selectedNodeId = node.dataset.replayNode; render(); });
+    canvas.querySelectorAll<SVGElement>("[data-replay-node]").forEach(node => {
+      node.addEventListener("click", () => { selectedNodeId = node.dataset.replayNode!; render(); });
     });
   }
 
-  function renderInspector(state) {
+  function renderInspector(state: ReplayState) {
     const inspector = byId("graphReplayInspector");
     const event = replay.events[index - 1];
     const selected = selectedNodeId ? state.nodes.get(selectedNodeId) : null;
@@ -244,7 +191,7 @@
     inspector.innerHTML = eventHtml + nodeHtml;
   }
 
-  function eventSummary(event) {
+  function eventSummary(event: ReplayEvent): string {
     if (event.action === "paper_added") return `${event.title || event.paper_id} enters the corpus.`;
     if (event.action === "match_recorded") return event.target_id ? `${event.source_id} selected ${event.target_id}.` : `${event.source_id} selected no match.`;
     if (event.action === "node_created") return `${event.member.paper_id}:${event.member.unit_id} starts a new node.`;
@@ -262,20 +209,20 @@
     return "The saved pipeline event has no graph mutation.";
   }
 
-  function detailList(event) {
+  function detailList(event: ReplayEvent): string {
     const omitted = new Set(["sequence", "event_id", "action", "candidate_ids", "member", "question", "previous"]);
     const rows = Object.entries(event).filter(([key, value]) => !omitted.has(key) && value !== null && value !== "")
       .map(([key, value]) => `<dt>${escapeHtml(key.replaceAll("_", " "))}</dt><dd>${escapeHtml(typeof value === "object" ? JSON.stringify(value) : String(value))}</dd>`).join("");
     return rows ? `<dl class="graph-replay-detail-list">${rows}</dl>` : "";
   }
 
-  function seek(nextIndex, stopPlayback = true) {
+  function seek(nextIndex: number, stopPlayback = true) {
     if (stopPlayback) stop();
     index = Math.max(0, Math.min(replay.events.length, nextIndex));
     render();
   }
 
-  function jumpToPaper(paperIndex) {
+  function jumpToPaper(paperIndex: number) {
     const eventIndex = replay.events.findIndex(event => event.action === "paper_added" && event.paper_index === paperIndex);
     if (eventIndex >= 0) seek(eventIndex + 1);
   }
@@ -300,24 +247,17 @@
     timer = null;
   }
 
-  function fallbackPoint(nodeId, nodes) {
+  function fallbackPoint(nodeId: string, nodes: ReplayNode[]) {
     const position = nodes.map(node => node.nodeId).sort().indexOf(nodeId);
     const angle = (Math.PI * 2 * position) / Math.max(nodes.length, 1) - Math.PI / 2;
     return { x: .5 + .38 * Math.cos(angle), y: .5 + .38 * Math.sin(angle) };
   }
 
-  function shortText(value, length) {
-    const text = String(value || "").replace(/\s+/g, " ").trim();
-    return text.length > length ? `${text.slice(0, length - 3)}...` : text;
+
+  function byId<T extends HTMLElement = HTMLButtonElement>(id: string): T {
+    return element<T>(`#${id}`, host);
   }
 
-  function escapeHtml(value) {
-    return String(value ?? "").replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" })[character]);
-  }
-
-  function byId(id) {
-    return host?.querySelector(`#${id}`);
-  }
-
-  window.GraphReplayView = { mount, destroy, resize };
-}());
+  renderShell();
+  return { destroy: stop, resize };
+}
