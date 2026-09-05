@@ -7,12 +7,11 @@ from pathlib import Path
 
 import yaml
 
+from pipeline.files import read_json, write_json
 from pipeline.document import (
     flatten_to_single_section,
-    read_json,
     strip_questions,
     validate_document,
-    write_json,
 )
 
 

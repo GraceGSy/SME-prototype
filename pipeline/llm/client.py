@@ -11,6 +11,8 @@ from typing import Any, Iterable, Literal
 
 from jsonschema import Draft202012Validator, ValidationError
 
+from ..files import directory_hash, write_json
+
 
 SKILL_BETAS = ["skills-2025-10-02"]
 MESSAGE_BETAS = [
@@ -155,26 +157,6 @@ def load_api_key(repo_root: Path) -> str:
     raise RuntimeError("No ANTHROPIC_API_KEY was found in the environment or an ancestor .env")
 
 
-def directory_hash(path: Path) -> str:
-    digest = hashlib.sha256()
-    for file_path in sorted(path.rglob("*")):
-        if not file_path.is_file() or "__pycache__" in file_path.parts or file_path.suffix == ".pyc":
-            continue
-        relative = file_path.relative_to(path).as_posix()
-        digest.update(relative.encode("utf-8"))
-        digest.update(b"\0")
-        digest.update(file_path.read_bytes())
-        digest.update(b"\0")
-    return digest.hexdigest()
-
-
-def _atomic_json(path: Path, value: Any) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    temporary.replace(path)
-
-
 def _credential_registry(
     state: dict[str, Any], api_key: str,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
@@ -277,7 +259,7 @@ class ClaudeSkills:
             "version": version,
             "source_sha256": fingerprint,
         }
-        _atomic_json(self.state_path, self.state_document)
+        write_json(self.state_path, self.state_document)
         return SkillRef(relative, skill_id, version, fingerprint)
 
     def run_json(

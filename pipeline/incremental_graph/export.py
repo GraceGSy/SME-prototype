@@ -8,7 +8,7 @@ from typing import Any
 from .correspondence_table import render_correspondence_report_markdown
 from .correspondences import build_correspondences
 from .graph import QuestionGraph
-from .journal import write_json
+from ..files import write_json
 from .models import Paper
 
 

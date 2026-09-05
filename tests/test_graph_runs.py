@@ -8,7 +8,7 @@ from unittest.mock import patch
 
 import yaml
 
-from pipeline.document import write_json
+from pipeline.files import write_json
 from pipeline.incremental_graph.runs import start_graph, add_papers, retry_graph
 from test_incremental_graph import CONFIG_PATH, ScriptedJudge
 

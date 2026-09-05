@@ -8,13 +8,13 @@ from pathlib import Path
 from typing import Protocol
 
 from ..document import QUESTION_FIELD
+from ..files import directory_hash
 from .configuration import PromptRepository
 from .models import JudgmentRequest, JudgmentResult, ModelSettings
 from ..llm.client import (
     ClaudeSkills,
     SkillCallPolicy,
     SkillSessionBudget,
-    directory_hash,
 )
 
 

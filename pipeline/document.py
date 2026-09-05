@@ -7,9 +7,7 @@ array positions so model-generated labels and questions never become identity.
 from __future__ import annotations
 
 import copy
-import json
 from dataclasses import dataclass
-from pathlib import Path
 from typing import Any, Iterator, Literal
 
 
@@ -89,22 +87,6 @@ class StructuralUnit:
             "paragraphs": copy.deepcopy(self.evidence),
             QUESTION_FIELD: self.question,
         }
-
-
-def read_json(path: Path) -> Any:
-    return json.loads(path.read_text(encoding="utf-8"))
-
-
-def write_json(path: Path, value: Any) -> None:
-    """Atomically write readable UTF-8 JSON."""
-
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(
-        json.dumps(value, indent=2, ensure_ascii=False) + "\n",
-        encoding="utf-8",
-    )
-    temporary.replace(path)
 
 
 def strip_questions(value: Any) -> Any:

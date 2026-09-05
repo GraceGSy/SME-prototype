@@ -11,7 +11,8 @@ from .configuration import validate_pipeline_config
 from .evidence import Evidence
 from .match_rules import reciprocal_matches, adjacent_paragraph_fan_in, adjacent_core_anchors
 from .graph import QuestionGraph
-from .journal import RevisionJournal, write_json
+from .journal import RevisionJournal
+from ..files import write_json
 from .llm import JudgmentProvider
 from .models import (
     Granularity,

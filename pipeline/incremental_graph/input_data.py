@@ -7,11 +7,11 @@ from typing import Any
 
 import yaml
 
+from ..files import read_json
 from ..document import (
     QUESTION_FIELD,
     iter_structural_units,
     paragraph_unit_id,
-    read_json,
     validate_document,
 )
 from .models import Granularity, Paper, PaperManifest, Paragraph, Section
