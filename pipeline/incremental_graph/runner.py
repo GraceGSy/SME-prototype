@@ -7,6 +7,8 @@ from typing import Any, Callable
 
 from ..document import QUESTION_FIELD
 from .export import export_revision
+from .evidence import Evidence
+from .match_rules import reciprocal_matches, adjacent_paragraph_fan_in, adjacent_core_anchors
 from .graph import QuestionGraph
 from .journal import RevisionJournal, write_json
 from .llm import JudgmentProvider
@@ -18,7 +20,6 @@ from .models import (
     MatchDecision,
     MatchDirection,
     Paper,
-    Paragraph,
     Phase,
     PipelineConfig,
     StageConfig,
@@ -53,9 +54,7 @@ class IncrementalGraphRunner:
         self.question_graph = QuestionGraph(self.journal)
         self.papers: list[Paper] = []
         self.insertions_by_paper: dict[str, InsertionState] = {}
-        self.section_lookup: dict[tuple[str, str], Any] = {}
-        self.paragraph_lookup: dict[tuple[str, str], tuple[Any, Any]] = {}
-        self.paragraph_positions: dict[tuple[str, str], int] = {}
+        self.evidence = Evidence(self.question_graph)
         self.shared_root_id: str | None = None
         self.handlers: dict[str, Callable[[StageConfig, InsertionState], Any]] = {
             "ingest_paper": self._ingest_paper,
@@ -119,11 +118,7 @@ class IncrementalGraphRunner:
 
     def _register_paper(self, paper: Paper) -> None:
         self.papers.append(paper)
-        for section in paper.sections:
-            self.section_lookup[(paper.paper_id, section.id)] = section
-            for position, paragraph in enumerate(section.paragraphs):
-                self.paragraph_lookup[(paper.paper_id, paragraph.id)] = (section, paragraph)
-                self.paragraph_positions[(paper.paper_id, paragraph.id)] = position
+        self.evidence.register(paper)
 
     def _ingest_paper(self, stage: StageConfig, insertion: InsertionState) -> dict[str, Any]:
         self.question_graph.add_paper(insertion.paper.paper_id, insertion.paper.title, insertion.paper_index)
@@ -175,7 +170,7 @@ class IncrementalGraphRunner:
                 continue
             context = {
                 "paper": {"paper_id": insertion.paper.paper_id, "title": insertion.paper.title},
-                "section": self._section_context(insertion.paper.paper_id, section.id),
+                "section": self.evidence.section_context(insertion.paper.paper_id, section.id),
             }
             question, attempt_id = self._question(stage, insertion, section.id, context)
             section.question = question
@@ -248,11 +243,11 @@ class IncrementalGraphRunner:
                 continue
             context = {
                 "scope": {
-                    **self._scope_context("section", None),
+                    **self.evidence.scope_context("section", None),
                     "match_mode": "rerepresentation",
                 },
-                "focus": self._group_context(source_id),
-                "candidates": [self._group_context(group_id) for group_id in candidate_ids],
+                "focus": self.evidence.group_context(source_id),
+                "candidates": [self.evidence.group_context(group_id) for group_id in candidate_ids],
             }
             decisions[source_id] = self._match(
                 stage,
@@ -358,14 +353,14 @@ class IncrementalGraphRunner:
                     })
                     continue
                 context = {
-                    "paper": self._paper_context(insertion.paper),
-                    "previous_paragraph": self._paragraph_evidence(
+                    "paper": self.evidence.paper_context(insertion.paper),
+                    "previous_paragraph": self.evidence.paragraph_evidence(
                         section.paragraphs[index - 1] if index else None
                     ),
-                    "paragraph": self._paragraph_context(
+                    "paragraph": self.evidence.paragraph_context(
                         insertion.paper.paper_id, paragraph.id
                     ),
-                    "next_paragraph": self._paragraph_evidence(
+                    "next_paragraph": self.evidence.paragraph_evidence(
                         section.paragraphs[index + 1]
                         if index + 1 < len(section.paragraphs)
                         else None
@@ -467,16 +462,16 @@ class IncrementalGraphRunner:
                 existing_group_ids,
             )
         batch = MatchBatch(existing_group_ids=existing_group_ids, new_unit_ids=new_unit_ids)
-        scope = self._scope_context(level, parent_id)
-        group_candidates = [self._group_context(group_id) for group_id in existing_group_ids]
-        unit_candidates = [self._unit_context(insertion.paper.paper_id, unit_id, level) for unit_id in new_unit_ids]
+        scope = self.evidence.scope_context(level, parent_id)
+        group_candidates = [self.evidence.group_context(group_id) for group_id in existing_group_ids]
+        unit_candidates = [self.evidence.unit_context(insertion.paper.paper_id, unit_id, level) for unit_id in new_unit_ids]
 
         for unit_id in new_unit_ids:
             if not existing_group_ids:
                 continue
             context = {
                 "scope": scope,
-                "focus": self._unit_context(insertion.paper.paper_id, unit_id, level),
+                "focus": self.evidence.unit_context(insertion.paper.paper_id, unit_id, level),
                 "candidates": group_candidates,
             }
             decision = self._match(
@@ -494,7 +489,7 @@ class IncrementalGraphRunner:
                 continue
             context = {
                 "scope": scope,
-                "focus": self._group_context(group_id),
+                "focus": self.evidence.group_context(group_id),
                 "candidates": unit_candidates,
             }
             decision = self._match(
@@ -524,13 +519,13 @@ class IncrementalGraphRunner:
         )
         if not new_unit_ids or not existing_group_ids:
             return batch
-        scope = self._scope_context("paragraph", parent_id)
+        scope = self.evidence.scope_context("paragraph", parent_id)
         group_candidates = [
-            self._paragraph_group_match_context(group_id, selection_id=group_id)
+            self.evidence.paragraph_group_match_context(group_id, selection_id=group_id)
             for group_id in existing_group_ids
         ]
         unit_candidates = [
-            self._paragraph_match_context(
+            self.evidence.paragraph_match_context(
                 insertion.paper.paper_id,
                 unit_id,
                 selection_id=unit_id,
@@ -547,7 +542,7 @@ class IncrementalGraphRunner:
                 allowed_ids=existing_group_ids,
                 context={
                     "scope": scope,
-                    "focus": self._paragraph_match_context(
+                    "focus": self.evidence.paragraph_match_context(
                         insertion.paper.paper_id, unit_id
                     ),
                     "candidates": group_candidates,
@@ -563,7 +558,7 @@ class IncrementalGraphRunner:
                 allowed_ids=new_unit_ids,
                 context={
                     "scope": scope,
-                    "focus": self._paragraph_group_match_context(group_id),
+                    "focus": self.evidence.paragraph_group_match_context(group_id),
                     "candidates": unit_candidates,
                 },
             )
@@ -624,9 +619,12 @@ class IncrementalGraphRunner:
         batch: MatchBatch,
     ) -> dict[str, str]:
         assignments: dict[str, str] = {}
-        reciprocal = self._reciprocal_matches(batch)
+        reciprocal = reciprocal_matches(batch)
         forward_fan_in = (
-            self._adjacent_paragraph_fan_in(insertion, batch, reciprocal)
+            adjacent_paragraph_fan_in(batch, reciprocal, {
+                unit_id: self.evidence.unit_ordinal(insertion.paper.paper_id, unit_id, "paragraph")
+                for unit_id in batch.new_unit_ids
+            })
             if level == "paragraph"
             else {}
         )
@@ -660,7 +658,7 @@ class IncrementalGraphRunner:
             selected_group = reciprocal.get(unit_id) or forward_fan_in.get(unit_id)
             if selected_group:
                 assignments[unit_id] = selected_group
-                metadata = self._member_metadata(insertion, unit_id, level)
+                metadata = self.evidence.member_metadata(insertion, unit_id, level)
                 if level == "paragraph":
                     metadata["membership_role"] = (
                         "fan_in" if unit_id in forward_fan_in else "core"
@@ -670,7 +668,7 @@ class IncrementalGraphRunner:
                     unit_id,
                     insertion.paper.paper_id,
                     insertion.paper_index,
-                    self._unit_ordinal(insertion.paper.paper_id, unit_id, level),
+                    self.evidence.unit_ordinal(insertion.paper.paper_id, unit_id, level),
                     **metadata,
                 )
                 if unit_id in forward_fan_in:
@@ -692,7 +690,7 @@ class IncrementalGraphRunner:
                         attempt_id=batch.forward[unit_id].attempt_id,
                     )
             else:
-                metadata = self._member_metadata(insertion, unit_id, level)
+                metadata = self.evidence.member_metadata(insertion, unit_id, level)
                 if level == "paragraph":
                     metadata["membership_role"] = "core"
                 group_id = self.question_graph.create_group(
@@ -701,7 +699,7 @@ class IncrementalGraphRunner:
                     member_id=unit_id,
                     paper_id=insertion.paper.paper_id,
                     paper_index=insertion.paper_index,
-                    ordinal=self._unit_ordinal(insertion.paper.paper_id, unit_id, level),
+                    ordinal=self.evidence.unit_ordinal(insertion.paper.paper_id, unit_id, level),
                     **metadata,
                 )
                 assignments[unit_id] = group_id
@@ -724,40 +722,6 @@ class IncrementalGraphRunner:
                 )
         return assignments
 
-    @staticmethod
-    def _reciprocal_matches(batch: MatchBatch) -> dict[str, str]:
-        reciprocal: dict[str, str] = {}
-        for unit_id, forward in batch.forward.items():
-            if not forward.target_id:
-                continue
-            reverse = batch.reverse.get(forward.target_id)
-            if reverse and reverse.target_id == unit_id:
-                reciprocal[unit_id] = forward.target_id
-        return reciprocal
-
-    def _adjacent_paragraph_fan_in(
-        self,
-        insertion: InsertionState,
-        batch: MatchBatch,
-        reciprocal: dict[str, str],
-    ) -> dict[str, str]:
-        """Attach only one-way paragraphs immediately beside a reciprocal anchor."""
-
-        anchor_by_group = {group_id: unit_id for unit_id, group_id in reciprocal.items()}
-        accepted: dict[str, str] = {}
-        for unit_id, forward in batch.forward.items():
-            selected_group = forward.target_id
-            anchor_id = anchor_by_group.get(selected_group or "")
-            if unit_id in reciprocal or anchor_id is None:
-                continue
-            ordinal = self._unit_ordinal(insertion.paper.paper_id, unit_id, "paragraph")
-            anchor_ordinal = self._unit_ordinal(
-                insertion.paper.paper_id, anchor_id, "paragraph"
-            )
-            if abs(ordinal - anchor_ordinal) == 1 and selected_group is not None:
-                accepted[unit_id] = selected_group
-        return accepted
-
     def _adjacent_existing_group_fan_in(
         self,
         batch: MatchBatch,
@@ -774,37 +738,10 @@ class IncrementalGraphRunner:
             target_id = reciprocal.get(selected_unit_id or "")
             if target_id is None or source_id == target_id:
                 continue
-            anchors = self._adjacent_core_anchors(source_id, target_id)
+            anchors = adjacent_core_anchors(self.question_graph.members(source_id), self.question_graph.members(target_id))
             if anchors is not None:
                 accepted[source_id] = (target_id, selected_unit_id, anchors)
         return accepted
-
-    def _adjacent_core_anchors(
-        self,
-        source_id: str,
-        target_id: str,
-    ) -> dict[tuple[str, str], dict[str, Any]] | None:
-        target_members = [
-            member
-            for member in self.question_graph.members(target_id)
-            if member.get("membership_role") != "fan_in"
-        ]
-        anchors = {}
-        for member in self.question_graph.members(source_id):
-            candidates = [
-                target
-                for target in target_members
-                if target["paper_id"] == member["paper_id"]
-                and target.get("owner_group_id") == member.get("owner_group_id")
-                and abs(target["ordinal"] - member["ordinal"]) == 1
-            ]
-            if not candidates:
-                return None
-            anchors[(member["paper_id"], member["unit_id"])] = min(
-                candidates,
-                key=lambda item: (item["ordinal"], item["unit_id"]),
-            )
-        return anchors
 
     def _generate_group_questions(
         self,
@@ -822,7 +759,7 @@ class IncrementalGraphRunner:
             else sorted(group_ids)
         )
         for group_id in selected_ids:
-            group = self._group_context(group_id)
+            group = self.evidence.group_context(group_id)
             if len(group["members"]) == 1:
                 question = str(group["members"][0]["generated_question_metadata"]).strip()
                 self.question_graph.set_question(
@@ -840,8 +777,8 @@ class IncrementalGraphRunner:
                 continue
             group.pop("generated_question_metadata", None)
             context = {
-                "scope": self._scope_context(
-                    level, self.question_graph.graph.nodes[group_id].get("parent_id")
+                "scope": self.evidence.scope_context(
+                    level, self.question_graph.node(group_id).get("parent_id")
                 ),
                 "group": group,
             }
@@ -858,153 +795,6 @@ class IncrementalGraphRunner:
                 "attempt_id": attempt_id,
             })
         return results
-
-    def _group_context(self, group_id: str) -> dict[str, Any]:
-        data = self.question_graph.graph.nodes[group_id]
-        return {
-            "group_id": group_id,
-            "generated_question_metadata": data.get("generated_question", ""),
-            "members": [
-                self._unit_context(member["paper_id"], member["unit_id"], data["level"])
-                for member in data["members"]
-            ],
-        }
-
-    def _unit_context(self, paper_id: str, unit_id: str, level: str) -> dict[str, Any]:
-        if level == "section":
-            return self._section_context(paper_id, unit_id)
-        return self._paragraph_context(paper_id, unit_id)
-
-    def _unit_ordinal(self, paper_id: str, unit_id: str, level: str) -> int:
-        if level == "section":
-            return self.section_lookup[(paper_id, unit_id)].ordinal
-        return self.paragraph_lookup[(paper_id, unit_id)][1].ordinal
-
-    def _member_metadata(self, insertion: InsertionState, unit_id: str, level: str) -> dict[str, Any]:
-        if level == "section":
-            unit = self.section_lookup[(insertion.paper.paper_id, unit_id)]
-            return {
-                "unit_kind": unit.kind,
-                "parent_unit_id": unit.parent_id,
-                "family_id": unit.family_id,
-            }
-        owner, _ = self.paragraph_lookup[(insertion.paper.paper_id, unit_id)]
-        return {
-            "unit_kind": "paragraph",
-            "parent_unit_id": owner.id,
-            "family_id": owner.family_id,
-            "owner_group_id": insertion.section_assignments[owner.id],
-        }
-
-    def _section_context(self, paper_id: str, section_id: str) -> dict[str, Any]:
-        section = self.section_lookup[(paper_id, section_id)]
-        return {
-            "paper_id": paper_id,
-            "section_id": section.id,
-            "section_label": section.label,
-            "unit_kind": section.kind,
-            "parent_unit_id": section.parent_id,
-            "family_id": section.family_id,
-            "ordinal": section.ordinal,
-            "generated_question_metadata": section.question,
-            "full_text": section.text,
-        }
-
-    @staticmethod
-    def _paper_context(paper: Paper) -> dict[str, str]:
-        return {"paper_id": paper.paper_id, "title": paper.title}
-
-    @staticmethod
-    def _paragraph_evidence(paragraph: Paragraph | None) -> dict[str, Any] | None:
-        if paragraph is None:
-            return None
-        return {
-            "paragraph_id": paragraph.id,
-            "paragraph_label": paragraph.label,
-            "ordinal": paragraph.ordinal,
-            "full_text": paragraph.text,
-        }
-
-    def _paragraph_context(self, paper_id: str, paragraph_id: str) -> dict[str, Any]:
-        section, paragraph = self.paragraph_lookup[(paper_id, paragraph_id)]
-        return {
-            "paper_id": paper_id,
-            "paragraph_id": paragraph.id,
-            "paragraph_label": paragraph.label,
-            "ordinal": paragraph.ordinal,
-            "generated_question_metadata": paragraph.question,
-            "full_text": paragraph.text,
-            "parent_section": {
-                "section_id": section.id,
-                "section_label": section.label,
-                "unit_kind": section.kind,
-                "family_id": section.family_id,
-                "generated_question_metadata": section.question,
-            },
-        }
-
-    def _paragraph_match_context(
-        self,
-        paper_id: str,
-        paragraph_id: str,
-        *,
-        selection_id: str | None = None,
-    ) -> dict[str, Any]:
-        """Return paragraph evidence without leaking focus identity or position."""
-
-        section, paragraph = self.paragraph_lookup[(paper_id, paragraph_id)]
-        position = self.paragraph_positions[(paper_id, paragraph_id)]
-        context = {
-            "previous_paragraph": self._neighbor_text(
-                section.paragraphs[position - 1] if position else None
-            ),
-            "paragraph": {
-                "generated_question_metadata": paragraph.question,
-                "full_text": paragraph.text,
-            },
-            "next_paragraph": self._neighbor_text(
-                section.paragraphs[position + 1]
-                if position + 1 < len(section.paragraphs)
-                else None
-            ),
-        }
-        if selection_id is not None:
-            context["selection_id"] = selection_id
-        return context
-
-    def _paragraph_group_match_context(
-        self,
-        group_id: str,
-        *,
-        selection_id: str | None = None,
-    ) -> dict[str, Any]:
-        """Return a paragraph node's evidence with only an optional output handle."""
-
-        data = self.question_graph.graph.nodes[group_id]
-        context = {
-            "generated_question_metadata": data.get("generated_question", ""),
-            "members": [
-                self._paragraph_match_context(member["paper_id"], member["unit_id"])
-                for member in data["members"]
-            ],
-        }
-        if selection_id is not None:
-            context["selection_id"] = selection_id
-        return context
-
-    @staticmethod
-    def _neighbor_text(paragraph: Paragraph | None) -> dict[str, str] | None:
-        if paragraph is None:
-            return None
-        return {"full_text": paragraph.text}
-
-    def _scope_context(self, level: str, parent_id: str | None) -> dict[str, Any]:
-        scope = {"level": level, "parent_group_id": parent_id}
-        if parent_id:
-            scope["parent_group_question_metadata"] = self.question_graph.graph.nodes[parent_id].get(
-                "generated_question", ""
-            )
-        return scope
 
     def _forced(self, stage: StageConfig, insertion: InsertionState) -> bool:
         return self.force_paper_index == insertion.paper_index and self.force_stage_id == stage.id

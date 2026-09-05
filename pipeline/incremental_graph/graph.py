@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+from copy import deepcopy
 import json
 from typing import Any, Iterable
 
@@ -297,7 +298,11 @@ class QuestionGraph:
         )
 
     def members(self, node_id: str) -> list[dict[str, Any]]:
-        return list(self.graph.nodes[node_id]["members"])
+        return deepcopy(self.graph.nodes[node_id]["members"])
+
+    def node(self, node_id: str) -> dict[str, Any]:
+        """Return a snapshot; callers cannot mutate graph state outside its methods."""
+        return deepcopy(self.graph.nodes[node_id])
 
     def nodes(self, level: Level | None = None) -> Iterable[tuple[str, dict[str, Any]]]:
         for node_id, data in sorted(self.graph.nodes(data=True)):
