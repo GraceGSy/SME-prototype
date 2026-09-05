@@ -3,7 +3,7 @@ from types import SimpleNamespace
 import tempfile
 import unittest
 
-from pipeline.incremental_graph.skill_api import (
+from pipeline.llm.client import (
     CACHEABLE_SYSTEM,
     ClaudeSkills,
     MESSAGE_BETAS,

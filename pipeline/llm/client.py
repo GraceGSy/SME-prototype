@@ -1,4 +1,4 @@
-"""Small Anthropic Skills API adapter with local version and run provenance."""
+"""Shared Claude Skill transport for source extraction and graph judgments."""
 from __future__ import annotations
 
 import hashlib

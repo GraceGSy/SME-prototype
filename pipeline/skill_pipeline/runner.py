@@ -26,7 +26,7 @@ from ..document import (
     validate_document,
     write_json,
 )
-from ..incremental_graph.skill_api import (
+from ..llm.client import (
     ClaudeSkills,
     RunResult,
     SkillCallPolicy,

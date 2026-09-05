@@ -10,7 +10,7 @@ from typing import Protocol
 from ..document import QUESTION_FIELD
 from .configuration import PromptRepository
 from .models import JudgmentRequest, JudgmentResult, ModelSettings
-from .skill_api import (
+from ..llm.client import (
     ClaudeSkills,
     SkillCallPolicy,
     SkillSessionBudget,
