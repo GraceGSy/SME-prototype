@@ -12,7 +12,6 @@ from pipeline.llm.client import (
     SkillRef,
     SkillSessionBudget,
     _credential_registry,
-    _version_id,
 )
 
 
@@ -100,26 +99,35 @@ SCHEMA = {
 
 class SkillApiTest(unittest.TestCase):
     def test_skill_registry_is_scoped_without_storing_api_keys(self) -> None:
-        legacy = {"skills/test": {"skill_id": "skill-1"}}
-
-        document, first_registry, migrated = _credential_registry(legacy, "key-one")
-        _, second_registry, _ = _credential_registry(document, "key-two")
-
-        self.assertTrue(migrated)
-        self.assertEqual(first_registry, legacy)
+        state = {"schema_version": 1, "accounts": {}}
+        document, first_registry = _credential_registry(state, "key-one")
+        first_registry["skills/test"] = {"skill_id": "skill-1", "version": "v1", "source_sha256": "0" * 64}
+        _, second_registry = _credential_registry(document, "key-two")
         self.assertEqual(second_registry, {})
         self.assertNotIn("key-one", str(document))
         self.assertNotIn("key-two", str(document))
 
-    def test_reads_current_and_legacy_skill_version_fields(self) -> None:
-        self.assertEqual(
-            _version_id(SimpleNamespace(latest_version_id="current"), "latest_version_id", "latest_version"),
-            "current",
-        )
-        self.assertEqual(
-            _version_id(SimpleNamespace(version="legacy"), "id", "version"),
-            "legacy",
-        )
+    def test_registry_rejects_legacy_and_malformed_shapes(self) -> None:
+        for state in ({}, {"skills/test": {"skill_id": "legacy"}},
+                      {"schema_version": "1", "accounts": {}},
+                      {"schema_version": 1, "accounts": {}, "extra": True},
+                      {"schema_version": 1, "accounts": {"not-a-hash": {}}}):
+            with self.subTest(state=state), self.assertRaises(ValueError):
+                _credential_registry(state, "key")
+
+    def test_transport_rejects_malformed_json_instead_of_repairing_it(self) -> None:
+        for text in ('```json\\n{"answer":"ok"}\\n```', '{"answer": 7}', '{"answer":"ok", "extra":true}'):
+            adapter, messages = _adapter(_Response("response-1", "end_turn", 100, 20, text=text))
+            with self.subTest(text=text), self.assertRaises(ValueError):
+                adapter.run_json([SKILL], "prompt", SCHEMA, policy=SkillCallPolicy(max_tokens=512))
+            self.assertEqual(len(messages.calls), 1)
+
+    def test_exhausted_token_budget_blocks_the_next_call(self) -> None:
+        adapter, messages = _adapter(_Response("unused", "end_turn", 1, 1))
+        adapter.session_usage["input_tokens"] = adapter.session_budget.max_input_tokens
+        with self.assertRaises(SkillBudgetExceeded):
+            adapter.run_json([SKILL], "prompt", SCHEMA, policy=SkillCallPolicy(max_tokens=512))
+        self.assertEqual(messages.calls, [])
 
     def test_every_call_applies_low_cost_defaults(self) -> None:
         adapter, messages = _adapter(_Response("response-1", "end_turn", 100, 20))
@@ -230,7 +238,7 @@ class SkillApiTest(unittest.TestCase):
         adapter.session_budget = SkillSessionBudget(max_api_responses=1)
         adapter.session_usage["api_responses"] = 1
 
-        with self.assertRaisesRegex(SkillBudgetExceeded, "1-response limit"):
+        with self.assertRaisesRegex(SkillBudgetExceeded, "response or observed-token limit"):
             adapter.run_json(
                 [SKILL],
                 "prompt",

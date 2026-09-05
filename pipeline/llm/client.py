@@ -9,6 +9,8 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Iterable, Literal
 
+from jsonschema import Draft202012Validator, ValidationError
+
 
 SKILL_BETAS = ["skills-2025-10-02"]
 MESSAGE_BETAS = [
@@ -41,7 +43,7 @@ API_TIMEOUT_SECONDS = 30 * 60
 
 
 class SkillBudgetExceeded(RuntimeError):
-    """Raised when a Skill call reaches a configured hard limit."""
+    """Raised when a request bound or observed-usage limit is reached."""
 
     def __init__(
         self,
@@ -57,7 +59,7 @@ class SkillBudgetExceeded(RuntimeError):
 
 @dataclass(frozen=True)
 class SkillCallPolicy:
-    """Hard limits applied to one complete Skill invocation."""
+    """Request bounds and post-response usage guards; not a guaranteed spend cap."""
 
     max_tokens: int
     effort: Literal["low", "medium", "high"] = "low"
@@ -125,15 +127,8 @@ class RunResult:
     container_id: str | None
     value: Any = None
     raw_text: str | None = None
-    transport_notes: tuple[str, ...] = ()
     raw_response: dict[str, Any] | None = None
     call_policy: dict[str, Any] | None = None
-
-
-def _decode_json_output(text: str) -> tuple[Any, tuple[str, ...]]:
-    """Decode the one schema-constrained value returned by one request."""
-
-    return json.loads(text), ()
 
 
 def load_api_key(repo_root: Path) -> str:
@@ -181,24 +176,36 @@ def _atomic_json(path: Path, value: Any) -> None:
 
 
 def _credential_registry(
-    state: dict[str, Any],
-    api_key: str,
-) -> tuple[dict[str, Any], dict[str, Any], bool]:
-    """Return one non-secret, credential-scoped Skill registry."""
+    state: dict[str, Any], api_key: str,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Read the current registry only; legacy caches must be discarded explicitly."""
 
-    credential_id = hashlib.sha256(api_key.encode("utf-8")).hexdigest()
-    accounts = state.get("accounts")
-    if state.get("schema_version") == 1 and isinstance(accounts, dict):
-        registry = accounts.setdefault(credential_id, {})
-        if not isinstance(registry, dict):
-            raise ValueError("Credential Skill registry must be a JSON object")
-        return state, registry, False
-
-    document = {
-        "schema_version": 1,
-        "accounts": {credential_id: state} if state else {credential_id: {}},
+    skill_record = {
+        "type": "object", "additionalProperties": False,
+        "required": ["skill_id", "version", "source_sha256"],
+        "properties": {
+            "skill_id": {"type": "string", "minLength": 1},
+            "version": {"type": "string", "minLength": 1},
+            "source_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        },
     }
-    return document, document["accounts"][credential_id], bool(state)
+    schema = {
+        "type": "object", "additionalProperties": False,
+        "required": ["schema_version", "accounts"],
+        "properties": {
+            "schema_version": {"const": 1},
+            "accounts": {
+                "type": "object", "propertyNames": {"pattern": "^[a-f0-9]{64}$"},
+                "additionalProperties": {"type": "object", "additionalProperties": skill_record},
+            },
+        },
+    }
+    try:
+        Draft202012Validator(schema).validate(state)
+    except ValidationError as error:
+        raise ValueError("Unsupported or malformed Skill registry; discard this cache explicitly") from error
+    credential_id = hashlib.sha256(api_key.encode("utf-8")).hexdigest()
+    return state, state["accounts"].setdefault(credential_id, {})
 
 
 class ClaudeSkills:
@@ -230,11 +237,9 @@ class ClaudeSkills:
         stored_state = (
             json.loads(state_path.read_text(encoding="utf-8"))
             if state_path.exists()
-            else {}
+            else {"schema_version": 1, "accounts": {}}
         )
-        self.state_document, self.state, migrated = _credential_registry(stored_state, api_key)
-        if migrated:
-            _atomic_json(self.state_path, self.state_document)
+        self.state_document, self.state = _credential_registry(stored_state, api_key)
 
     def register(self, skill_path: Path) -> SkillRef:
         from anthropic.lib import files_from_dir
@@ -253,17 +258,17 @@ class ClaudeSkills:
                     existing["skill_id"], files=files, betas=SKILL_BETAS
                 )
                 skill_id = existing["skill_id"]
-                version = _version_id(response, "id", "version")
+                version = response.id
             except Exception as exc:
                 if getattr(exc, "status_code", None) != 404:
                     raise
                 response = self.client.beta.skills.create(files=files, betas=SKILL_BETAS)
                 skill_id = response.id
-                version = _version_id(response, "latest_version_id", "latest_version")
+                version = response.latest_version_id
         else:
             response = self.client.beta.skills.create(files=files, betas=SKILL_BETAS)
             skill_id = response.id
-            version = _version_id(response, "latest_version_id", "latest_version")
+            version = response.latest_version_id
         if not version:
             raise RuntimeError(f"Skills API did not return a version for {relative}")
 
@@ -308,6 +313,7 @@ class ClaudeSkills:
                 f"Attachment {input_path.name} is {size} bytes; configured maximum is "
                 f"{policy.max_attachment_bytes}"
             )
+        self._check_session_budget()
         uploaded = self.client.beta.files.upload(file=input_path, betas=FILE_BETAS)
         try:
             messages = [
@@ -341,14 +347,17 @@ class ClaudeSkills:
         text = "".join(block.text for block in response.content if getattr(block, "type", "") == "text")
         if not text.strip():
             raise RuntimeError(f"Claude response {response.id} contained no structured text output")
-        value, notes = _decode_json_output(text)
+        value = json.loads(text)
+        try:
+            Draft202012Validator(schema).validate(value)
+        except ValidationError as error:
+            raise ValueError(f"Claude response {response.id} violates the requested schema") from error
         return self._result(
             response,
             value,
             usage=usage,
             policy=policy,
             raw_text=text,
-            transport_notes=notes,
         )
 
     def _run(
@@ -430,9 +439,13 @@ class ClaudeSkills:
             )
 
     def _check_session_budget(self) -> None:
-        if self.session_usage["api_responses"] >= self.session_budget.max_api_responses:
+        if (
+            self.session_usage["api_responses"] >= self.session_budget.max_api_responses
+            or self.session_usage["input_tokens"] >= self.session_budget.max_input_tokens
+            or self.session_usage["output_tokens"] >= self.session_budget.max_output_tokens
+        ):
             raise SkillBudgetExceeded(
-                f"Skill process reached its {self.session_budget.max_api_responses}-response limit",
+                "Skill process reached its response or observed-token limit",
                 usage={"session": dict(self.session_usage)},
             )
 
@@ -460,7 +473,6 @@ class ClaudeSkills:
         usage: dict[str, Any] | None = None,
         policy: SkillCallPolicy | None = None,
         raw_text: str | None = None,
-        transport_notes: tuple[str, ...] = (),
     ) -> RunResult:
         container_id = getattr(getattr(response, "container", None), "id", None)
         return RunResult(
@@ -470,7 +482,6 @@ class ClaudeSkills:
             container_id,
             value,
             raw_text,
-            transport_notes,
             response.model_dump(mode="json"),
             policy.as_dict() if policy else None,
         )
@@ -511,13 +522,3 @@ def _input_token_volume(usage: dict[str, Any]) -> int:
             "cache_read_input_tokens",
         )
     )
-
-
-def _version_id(response: Any, *field_names: str) -> str | None:
-    """Read Skill version IDs across supported Anthropic SDK response shapes."""
-
-    for field_name in field_names:
-        value = getattr(response, field_name, None)
-        if value:
-            return str(value)
-    return None
