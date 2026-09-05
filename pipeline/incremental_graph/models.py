@@ -83,7 +83,7 @@ class Paper(StrictModel):
 
 
 class PaperManifestEntry(StrictModel):
-    paper_id: str
+    paper_id: str = Field(pattern=r"^[a-zA-Z0-9][a-zA-Z0-9_-]*$")
     title: str
     file: WirePath
 
