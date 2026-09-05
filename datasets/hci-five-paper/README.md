@@ -6,12 +6,13 @@ is named `<paper_id>.json` and contains
 non-appendix top-level sections, optional subsections, paragraphs in reading
 order, and precomputed `question_this_text_answers` metadata.
 
-`content/` is the tracked, content-only baseline. Regenerate it deterministically
-without calling a model:
+`content/` is the tracked content-only baseline; the root JSON files retain
+precomputed questions for reproducible question-reuse tests. These are deliberate
+prepared variants, not interchangeable input schemas. Precomputed questions are
+not a human gold standard.
 
-```powershell
-python -m pipeline.prepare_content_corpus datasets/hci-five-paper/manifest.yaml datasets/hci-five-paper/content
-```
+No preparation runs automatically. The one-shot utility is retained under
+`helpers/prepare_content_corpus.py`; existing content should be reused.
 
 The incremental graph represents every top-level section and subsection as a
 structural unit. Whole-section matching evidence includes its descendants, but

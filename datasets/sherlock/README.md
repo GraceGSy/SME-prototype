@@ -13,8 +13,8 @@ section questions, section matching, and structural rerepresentation.
 
 The manifest is ordered by first publication: `speckled_band`,
 `wisteria_lodge`, `bruce_partington_plans`, `lady_frances_carfax`, then
-`illustrious_client`. The document pipeline currently selects the first two so
-their output can be reviewed before later stories are enabled.
+`illustrious_client`. The graph consumes exactly the entries in the supplied
+manifest, in that order; it does not silently limit a run to two stories.
 
 Review an extraction by opening its `*.content.json` beside the matching XHTML.
 The required checks are paragraph fidelity and order, exclusion of book chrome,
@@ -26,11 +26,7 @@ python -m pipeline.incremental_graph.cli validate datasets/sherlock/manifest.yam
 python -m pipeline.incremental_graph.cli validate datasets/sherlock/whole-story/manifest.yaml
 ```
 
-Regenerate the whole-story derivative without an API call:
-
-```powershell
-python -m pipeline.prepare_content_corpus `
-  datasets/sherlock/manifest.yaml `
-  datasets/sherlock/whole-story `
-  --whole-section
-```
+Whole-story preparation was performed once. Its helper remains in
+`helpers/prepare_content_corpus.py` for explicit future use, never runtime
+normalization. Read [the experiment assessment](../../docs/sherlock-experiment.md)
+before using graph outputs as evidence of method quality.

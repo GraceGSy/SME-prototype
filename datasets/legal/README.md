@@ -18,20 +18,15 @@ each opinion/dissent split.
 | Porter v. Board of Trustees of North Carolina State University | [Justia](https://law.justia.com/cases/federal/appellate-courts/ca4/22-1712/22-1712-2023-07-06.html) | 3-19 | 20-43 |
 | Westmoreland v. Butler County | [Justia](https://law.justia.com/cases/federal/appellate-courts/ca6/21-5168/21-5168-2022-03-24.html) | 2-12 | 13-33 |
 
-`pipeline/skill_pipeline/pipeline.yaml` pins every text file by SHA-256. The
-pipeline sends these files, rather than PDFs, to the configured legal extraction
-Skill:
+All ten opinions and dissents already have prepared content. Reuse these files;
+the graph pipeline never extracts them again. New legal documents use the
+explicit `pipeline.extraction` command with `--domain legal`.
 
-```powershell
-python -m pipeline.skill_pipeline.runner --dataset legal_opinions --stage extraction
-python -m pipeline.skill_pipeline.runner --dataset legal_dissents --stage extraction
-```
-
-All ten configured opinions and dissents have canonical content files. Ordinary
-reruns skip them. The first `porter_dissent` response omitted four final body
-paragraphs after page-spanning footnotes; those exact source paragraphs were
-restored under printed subsection `II.C`, and the harness now rejects any legal
-extraction that does not preserve its source's final passage.
+Historical provenance: the first `porter_dissent` extraction omitted four final
+body paragraphs after page-spanning footnotes. Those source paragraphs were
+restored once under printed subsection `II.C`. This is not a runtime repair
+path. New text extraction has a final-passage presence check, which is not a
+complete fidelity assessment.
 
 Legal extraction uses only printed Roman-numeral and capital-letter divisions.
 It does not infer doctrinal or topical sections. A document with no printed
