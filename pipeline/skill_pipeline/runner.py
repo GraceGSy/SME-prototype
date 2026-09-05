@@ -483,7 +483,10 @@ class Harness:
             else:
                 source_path = self._source_path(dataset_name, document, source_kind)
                 extraction_skill = extraction_skill or self._skill(extraction_stage)
-                mode = "narrative" if source_kind == "xhtml" else "legal"
+                mode = dataset["domain"]
+                if mode not in {"narrative", "legal", "academic"}:
+                    raise ValueError(f"Unknown extraction domain: {mode}")
+                prompt = f"Extract the attached document: {document['title']}"
                 instructions = (
                     f"Use the attached extraction Skill exactly as written in {mode} mode. "
                     "Extract only source-marked structural boundaries and their paragraphs. "
