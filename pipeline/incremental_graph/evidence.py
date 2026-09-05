@@ -123,9 +123,9 @@ class Evidence:
             "previous_paragraph": self.neighbor_text(
                 section.paragraphs[position - 1] if position else None
             ),
-            "paragraph": {
-                "generated_question_metadata": paragraph.question,
+            "paragraph_under_consideration": {
                 "full_text": paragraph.text,
+                "generated_question_metadata": paragraph.question,
             },
             "next_paragraph": self.neighbor_text(
                 section.paragraphs[position + 1] if position + 1 < len(section.paragraphs) else None

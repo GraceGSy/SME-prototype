@@ -61,3 +61,41 @@ class ConfigurationTest(unittest.TestCase):
                     PromptRepository(config.prompt_root, root).render(
                         "section-question/v1", "test", {"paper": {}, "section": {}}
                     )
+
+    def test_matching_windows_render_in_reading_order_in_both_directions(self):
+        config = load_pipeline_config(CONFIG_PATH)
+        repository = PromptRepository(config.prompt_root, config.context_root)
+        window = {
+            "previous_paragraph": {"full_text": "The witness finishes speaking."},
+            "paragraph_under_consideration": {"full_text": "Why did he return?"},
+            "next_paragraph": {"full_text": "He returned to recover the evidence."},
+        }
+        group = {"members": [window]}
+        for prompt, focus, candidate in (
+            ("paragraph-to-group-match/v1", window, group),
+            ("group-to-paragraph-match/v1", group, window),
+        ):
+            with self.subTest(prompt=prompt):
+                rendered = repository.render(
+                    prompt,
+                    "matching",
+                    {
+                        "scope": {"level": "paragraph"},
+                        "focus": focus,
+                        "candidates": [{**candidate, "selection_id": "allowed"}],
+                    },
+                )
+                # Check the actual JSON, not similarly worded instructions above it.
+                payload = rendered.user[rendered.user.index("{\n") :]
+                self.assertLess(payload.index('"focus"'), payload.index('"candidates"'))
+                self.assertLess(
+                    payload.index('"previous_paragraph"'),
+                    payload.index('"paragraph_under_consideration"'),
+                )
+                self.assertLess(
+                    payload.index('"paragraph_under_consideration"'),
+                    payload.index('"next_paragraph"'),
+                )
+                self.assertIn("paragraph_under_consideration", rendered.system)
+                self.assertIn("role first", rendered.system)
+                self.assertIn("context only", rendered.system)

@@ -392,7 +392,7 @@ class IncrementalGraphTest(unittest.TestCase):
             forward.context["focus"],
             {
                 "previous_paragraph": {"full_text": "B before."},
-                "paragraph": {
+                "paragraph_under_consideration": {
                     "generated_question_metadata": "What does b2 address?",
                     "full_text": "B middle.",
                 },
@@ -402,7 +402,7 @@ class IncrementalGraphTest(unittest.TestCase):
         candidate = next(
             item
             for item in forward.context["candidates"]
-            if item["members"][0]["paragraph"]["full_text"] == "A middle."
+            if item["members"][0]["paragraph_under_consideration"]["full_text"] == "A middle."
         )
         self.assertIn(candidate["selection_id"], forward.allowed_match_ids)
         member = candidate["members"][0]
@@ -411,6 +411,35 @@ class IncrementalGraphTest(unittest.TestCase):
         self.assertFalse(
             {"paper_id", "paragraph_id", "paragraph_label", "ordinal", "selection_id"} & set(member)
         )
+        reverse = next(
+            request
+            for request in judge.requests
+            if request.key == f"p2:paragraph_matching:group_to_new:{candidate['selection_id']}"
+        )
+        self.assertEqual(reverse.context["focus"]["members"], candidate["members"])
+        self.assertNotIn("selection_id", reverse.context["focus"])
+        self.assertEqual(
+            {item["selection_id"] for item in reverse.context["candidates"]},
+            {"b1", "b2", "b3"},
+        )
+        for index, item in enumerate(reverse.context["candidates"]):
+            self.assertEqual(
+                list(item),
+                [
+                    "previous_paragraph",
+                    "paragraph_under_consideration",
+                    "next_paragraph",
+                    "selection_id",
+                ],
+            )
+            self.assertEqual(
+                set(item["paragraph_under_consideration"]),
+                {"full_text", "generated_question_metadata"},
+            )
+            if index == 0:
+                self.assertIsNone(item["previous_paragraph"])
+            if index == 2:
+                self.assertIsNone(item["next_paragraph"])
 
     def test_incremental_reconciliation_preserves_ignored_projection_as_provenance(self) -> None:
         group_a = stable_id("section-group", "root", "p1", "a")
@@ -460,7 +489,10 @@ class IncrementalGraphTest(unittest.TestCase):
                 if item["selection_id"] == paragraph_group_a
             )
             self.assertEqual(
-                {member["paragraph"]["full_text"] for member in candidate["members"]},
+                {
+                    member["paragraph_under_consideration"]["full_text"]
+                    for member in candidate["members"]
+                },
                 {"Paragraph for shared method"},
             )
             first_paragraph_request = next(
@@ -698,7 +730,7 @@ class IncrementalGraphTest(unittest.TestCase):
             if request.key == "p2:paragraph_matching:new_to_group:lead2"
         )
         candidate_units = {
-            member["paragraph"]["full_text"]
+            member["paragraph_under_consideration"]["full_text"]
             for candidate in paragraph_forward.context["candidates"]
             for member in candidate["members"]
         }
@@ -709,7 +741,7 @@ class IncrementalGraphTest(unittest.TestCase):
             if request.key == "p2:paragraph_matching:new_to_group:detail2"
         )
         detail_candidates = {
-            member["paragraph"]["full_text"]
+            member["paragraph_under_consideration"]["full_text"]
             for candidate in detail_forward.context["candidates"]
             for member in candidate["members"]
         }
@@ -1107,7 +1139,10 @@ class IncrementalGraphTest(unittest.TestCase):
         )
         focus_group = p3_node_match.context["focus"]
         self.assertEqual(
-            {member["paragraph"]["full_text"] for member in focus_group["members"]},
+            {
+                member["paragraph_under_consideration"]["full_text"]
+                for member in focus_group["members"]
+            },
             {"Paragraph a3", "Paragraph b3"},
         )
         self.assertNotIn(adjacent_group, runner.question_graph.graph)

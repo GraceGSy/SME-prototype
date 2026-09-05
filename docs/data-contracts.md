@@ -68,6 +68,11 @@ conversion.
 
 One request contains one focus and the complete eligible candidate pool.
 The focus has no selectable identity. Candidate IDs are output handles.
+Paragraph evidence uses `previous_paragraph`, `paragraph_under_consideration`,
+and `next_paragraph` in reading order. Only the paragraph under consideration is
+matched; neighbors are context, with null at a structural owner's boundary.
+Neither focus nor member windows expose paragraph IDs, numbers, or labels.
+Source text and generated metadata are not rewritten to remove numbers in prose.
 The exact response is:
 
 ```json

@@ -75,7 +75,8 @@ class PromptRepository:
                 f"Context {context_ref} requests unavailable fields: {unknown}"
             )
         filtered = {field: context[field] for field in included}
-        context_json = json.dumps(filtered, indent=2, ensure_ascii=False, sort_keys=True)
+        # Evidence order is intentional: focus before candidates, previous/center/next.
+        context_json = json.dumps(filtered, indent=2, ensure_ascii=False)
         self._validate_context_size(context_ref, context_config, context_json)
 
         if self._PLACEHOLDER not in user_template:
