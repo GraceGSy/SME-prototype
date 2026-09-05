@@ -5,14 +5,16 @@ from __future__ import annotations
 import hashlib
 import json
 import re
-from copy import deepcopy
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
+
+from pydantic import Field
+from jsonschema import Draft202012Validator
 
 import yaml
 
-from .models import PipelineConfig
+from .models import PipelineConfig, StrictModel
 
 
 class ConfigurationError(ValueError):
@@ -33,6 +35,7 @@ def load_pipeline_config(path: Path) -> PipelineConfig:
     config.prompt_root = (path.parent / config.prompt_root).resolve()
     config.context_root = (path.parent / config.context_root).resolve()
     config.skill_root = (path.parent / config.skill_root).resolve()
+    validate_pipeline_config(config)
     return config
 
 
@@ -66,22 +69,20 @@ class PromptRepository:
             raise ConfigurationError(f"Invalid output schema for {prompt_ref}: {error}") from error
 
         context_config = self._load_context(context_ref)
-        included = context_config.get("include", list(context))
+        included = context_config.include
         unknown = [field for field in included if field not in context]
         if unknown:
             raise ConfigurationError(f"Context {context_ref} requests unavailable fields: {unknown}")
-        filtered = {field: deepcopy(context[field]) for field in included}
-        for path in context_config.get("exclude", []):
-            self._remove_path(filtered, str(path).split("."))
+        filtered = {field: context[field] for field in included}
         context_json = json.dumps(filtered, indent=2, ensure_ascii=False, sort_keys=True)
         self._validate_context_size(context_ref, context_config, context_json)
 
         if self._PLACEHOLDER not in user_template:
             raise ConfigurationError(f"Prompt {prompt_ref}/user.md must contain {self._PLACEHOLDER}")
-        user = user_template.replace(self._PLACEHOLDER, context_json)
-        unresolved = re.findall(r"{{[^{}]+}}", user)
+        unresolved = re.findall(r"{{[^{}]+}}", user_template.replace(self._PLACEHOLDER, ""))
         if unresolved:
             raise ConfigurationError(f"Prompt {prompt_ref} has unresolved placeholders: {unresolved}")
+        user = user_template.replace(self._PLACEHOLDER, context_json)
         return RenderedPrompt(
             system=system,
             user=user,
@@ -91,23 +92,18 @@ class PromptRepository:
             schema_hash=_sha256_text(schema_text),
         )
 
-    def _load_context(self, context_ref: str) -> dict[str, Any]:
+    def _load_context(self, context_ref: str) -> ContextConfig:
         path = self.context_root / f"{context_ref}.yaml"
         try:
-            payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+            payload = yaml.safe_load(path.read_text(encoding="utf-8"))
         except (OSError, yaml.YAMLError) as error:
             raise ConfigurationError(f"Could not load context {context_ref}: {error}") from error
-        if not isinstance(payload, dict):
-            raise ConfigurationError(f"Context {context_ref} must be a YAML object")
-        return payload
+        return ContextConfig.model_validate(payload)
 
     @staticmethod
-    def _validate_context_size(context_ref: str, config: dict[str, Any], context_json: str) -> None:
-        maximum = int(config.get("max_characters") or 0)
+    def _validate_context_size(context_ref: str, config: ContextConfig, context_json: str) -> None:
+        maximum = config.max_characters
         if maximum and len(context_json) > maximum:
-            policy = config.get("overflow", "fail")
-            if policy != "fail":
-                raise ConfigurationError(f"Unsupported overflow policy in {context_ref}: {policy}")
             raise ConfigurationError(
                 f"Context {context_ref} is {len(context_json)} characters; configured maximum is {maximum}"
             )
@@ -119,20 +115,50 @@ class PromptRepository:
         except OSError as error:
             raise ConfigurationError(f"Could not read {path}: {error}") from error
 
-    @classmethod
-    def _remove_path(cls, value: Any, parts: list[str]) -> None:
-        if not parts:
-            return
-        head, *tail = parts
-        if isinstance(value, list):
-            if head != "*":
-                raise ConfigurationError("List fields in context exclude paths must use '*'")
-            for item in value:
-                cls._remove_path(item, tail)
-            return
-        if not isinstance(value, dict) or head not in value:
-            return
-        if tail:
-            cls._remove_path(value[head], tail)
-        else:
-            del value[head]
+
+class ContextConfig(StrictModel):
+    include: list[str] = Field(min_length=1)
+    max_characters: int = Field(ge=0)
+    overflow: Literal["fail"]
+
+
+# The implemented algorithm has one dependency order, not a general workflow engine.
+STAGE_ORDER = (
+    ("ingest", "ingest_paper", "structural"),
+    ("section_questions", "generate_section_questions", "structural"),
+    ("section_matching", "match_sections", "structural"),
+    ("section_reconciliation", "reconcile_sections", "structural"),
+    ("section_group_questions", "generate_section_group_questions", "structural"),
+    ("section_rerepresentation", "rerepresent_section_singletons", "rerepresentation"),
+    ("section_rerepresentation_questions", "regenerate_rerepresented_section_questions", "rerepresentation"),
+    ("paragraph_questions", "generate_paragraph_questions", "paragraph"),
+    ("paragraph_matching", "match_paragraphs", "paragraph"),
+    ("paragraph_reconciliation", "reconcile_paragraphs", "paragraph"),
+    ("paragraph_group_questions", "generate_paragraph_group_questions", "paragraph"),
+)
+
+
+def validate_pipeline_config(config: PipelineConfig) -> None:
+    if tuple((stage.id, stage.handler, stage.phase) for stage in config.stages) != STAGE_ORDER:
+        raise ConfigurationError("Stages must follow the implemented algorithm's exact dependency order")
+    repository = PromptRepository(config.prompt_root, config.context_root)
+    for stage in config.stages:
+        references: list[tuple[str, str]] = []
+        if stage.handler in {"match_sections", "match_paragraphs", "rerepresent_section_singletons"}:
+            directions = {"singleton_to_group"} if stage.handler == "rerepresent_section_singletons" else {"new_to_group", "group_to_new"}
+            if set(stage.prompts) != directions or set(stage.contexts) != directions or stage.prompt or stage.context:
+                raise ConfigurationError(f"Stage {stage.id} requires exactly these directions: {sorted(directions)}")
+            references = [(stage.prompts[key], stage.contexts[key]) for key in sorted(directions)]
+        elif stage.handler.startswith(("generate_", "regenerate_")):
+            if not stage.prompt or not stage.context or stage.prompts or stage.contexts:
+                raise ConfigurationError(f"Stage {stage.id} requires one prompt and context")
+            references = [(stage.prompt, stage.context)]
+        elif stage.prompt or stage.context or stage.prompts or stage.contexts or stage.skill:
+            raise ConfigurationError(f"Deterministic stage {stage.id} does not accept model settings")
+        if references:
+            if not stage.skill or not (config.skill_root / stage.skill / "SKILL.md").is_file():
+                raise ConfigurationError(f"Stage {stage.id} references a missing Skill")
+            for prompt, context in references:
+                spec = repository._load_context(context)
+                rendered = repository.render(prompt, context, {field: None for field in spec.include})
+                Draft202012Validator.check_schema(rendered.schema)

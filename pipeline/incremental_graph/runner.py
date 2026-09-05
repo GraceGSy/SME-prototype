@@ -7,6 +7,7 @@ from typing import Any, Callable
 
 from ..document import QUESTION_FIELD
 from .export import export_revision
+from .configuration import validate_pipeline_config
 from .evidence import Evidence
 from .match_rules import reciprocal_matches, adjacent_paragraph_fan_in, adjacent_core_anchors
 from .graph import QuestionGraph
@@ -43,6 +44,7 @@ class IncrementalGraphRunner:
         force_paper_index: int | None = None,
         force_stage_id: str | None = None,
     ):
+        validate_pipeline_config(config)
         self.config = config
         self.judge = judge
         self.revision_dir = revision_dir
