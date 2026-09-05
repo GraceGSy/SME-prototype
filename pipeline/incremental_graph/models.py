@@ -115,7 +115,6 @@ class ModelSettings(StrictModel):
     max_api_responses_per_process: int = Field(default=200, gt=0)
     max_session_input_tokens: int = Field(default=2_000_000, gt=0)
     max_session_output_tokens: int = Field(default=100_000, gt=0)
-    temperature: float | None = None
 
 
 class StageConfig(StrictModel):
@@ -152,12 +151,11 @@ class JudgmentRequest(StrictModel):
     key: str
     paper_index: int
     stage_id: str
-    output_kind: Literal["question", "match", "match_batch"]
+    output_kind: Literal["question", "match"]
     prompt_ref: str
     context_ref: str
     context: dict[str, Any]
     allowed_match_ids: list[str] = Field(default_factory=list)
-    expected_match_source_ids: list[str] = Field(default_factory=list)
     skill_ref: str | None = None
     max_tokens: int | None = Field(default=None, gt=0)
     max_input_tokens: int | None = Field(default=None, gt=0)

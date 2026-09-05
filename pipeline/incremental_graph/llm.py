@@ -4,13 +4,11 @@ from __future__ import annotations
 
 import hashlib
 import json
-from copy import deepcopy
-from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Protocol
 
 from ..document import QUESTION_FIELD
-from .configuration import PromptRepository, RenderedPrompt
+from .configuration import PromptRepository
 from .models import JudgmentRequest, JudgmentResult, ModelSettings
 from .skill_api import (
     ClaudeSkills,
@@ -22,108 +20,6 @@ from .skill_api import (
 
 class JudgmentError(RuntimeError):
     """Raised when a model response does not satisfy the requested contract."""
-
-
-@dataclass(frozen=True)
-class _BatchAliases:
-    source_ids: dict[str, str]
-    target_ids: dict[str, str]
-
-
-def _alias_batch_request(
-    request: JudgmentRequest,
-) -> tuple[JudgmentRequest, _BatchAliases | None]:
-    """Give batched choices short IDs while retaining stable IDs as evidence."""
-
-    if request.output_kind != "match_batch":
-        return request, None
-
-    focus = request.context.get("focus")
-    candidates = request.context.get("candidates")
-    if not isinstance(focus, list) or len(focus) != len(request.expected_match_source_ids):
-        raise JudgmentError(f"{request.key} has inconsistent batched focus units")
-    if not isinstance(candidates, list) or len(candidates) != len(request.allowed_match_ids):
-        raise JudgmentError(f"{request.key} has inconsistent batched candidates")
-
-    source_ids = {
-        f"S{index:04d}": stable_id
-        for index, stable_id in enumerate(request.expected_match_source_ids, start=1)
-    }
-    target_ids = {
-        f"T{index:04d}": stable_id
-        for index, stable_id in enumerate(request.allowed_match_ids, start=1)
-    }
-    context = deepcopy(request.context)
-    for item, alias in zip(context["focus"], source_ids, strict=True):
-        if not isinstance(item, dict):
-            raise JudgmentError(f"{request.key} has an invalid batched focus unit")
-        item["selection_id"] = alias
-    for item, alias in zip(context["candidates"], target_ids, strict=True):
-        if not isinstance(item, dict):
-            raise JudgmentError(f"{request.key} has an invalid batched candidate")
-        item["selection_id"] = alias
-
-    aliased = request.model_copy(update={
-        "context": context,
-        "expected_match_source_ids": list(source_ids),
-        "allowed_match_ids": list(target_ids),
-    })
-    return aliased, _BatchAliases(source_ids=source_ids, target_ids=target_ids)
-
-
-def _restore_batch_ids(value: dict, aliases: _BatchAliases | None) -> dict:
-    if aliases is None:
-        return value
-    restored = dict(value)
-    restored["matches"] = [
-        {
-            **item,
-            "source_id": aliases.source_ids[item["source_id"]],
-            "target_id": (
-                aliases.target_ids[item["target_id"]]
-                if item.get("target_id") is not None
-                else None
-            ),
-        }
-        for item in value["matches"]
-    ]
-    return restored
-
-
-def _constrain_batch_schema(schema: dict, request: JudgmentRequest) -> dict:
-    """Restrict structured batch IDs to the aliases supplied in this request."""
-
-    if request.output_kind != "match_batch":
-        return schema
-    constrained = deepcopy(schema)
-    properties = constrained["properties"]["matches"]["items"]["properties"]
-    properties["source_id"] = {
-        "type": "string",
-        "enum": request.expected_match_source_ids,
-    }
-    properties["target_id"] = {
-        "anyOf": [
-            {"type": "string", "enum": request.allowed_match_ids},
-            {"type": "null"},
-        ]
-    }
-    return constrained
-
-
-def _specialize_rendered_prompt(
-    rendered: RenderedPrompt,
-    request: JudgmentRequest,
-) -> RenderedPrompt:
-    if request.output_kind != "match_batch":
-        return rendered
-    schema = _constrain_batch_schema(rendered.schema, request)
-    return replace(
-        rendered,
-        schema=schema,
-        schema_hash=hashlib.sha256(
-            json.dumps(schema, sort_keys=True, separators=(",", ":")).encode("utf-8")
-        ).hexdigest(),
-    )
 
 
 class JudgmentProvider(Protocol):
@@ -149,20 +45,18 @@ class AnthropicJudgmentProvider:
         cache_dir.mkdir(parents=True, exist_ok=True)
 
     def judge(self, request: JudgmentRequest) -> JudgmentResult:
-        api_request, aliases = _alias_batch_request(request)
         rendered = self.prompts.render(
-            api_request.prompt_ref,
-            api_request.context_ref,
-            api_request.context,
+            request.prompt_ref,
+            request.context_ref,
+            request.context,
         )
-        rendered = _specialize_rendered_prompt(rendered, api_request)
         skill_path = self.skill_root / request.skill_ref if request.skill_ref else None
         if not skill_path:
             raise JudgmentError(f"Every LLM judgment requires a configured Skill: {request.key}")
         if not skill_path.is_dir():
             raise JudgmentError(f"Skill directory does not exist: {skill_path}")
         skill_hash = directory_hash(skill_path)
-        fingerprint = self._fingerprint(api_request, rendered, skill_hash)
+        fingerprint = self._fingerprint(request, rendered, skill_hash)
         cache_path = self.cache_dir / f"{fingerprint}.json"
         if cache_path.is_file() and not request.force:
             payload = json.loads(cache_path.read_text(encoding="utf-8"))
@@ -219,9 +113,8 @@ class AnthropicJudgmentProvider:
             "usage": response.usage,
         }
 
-        self._validate(api_request, api_normalized)
-        normalized = _restore_batch_ids(api_normalized, aliases)
-        self._validate(request, normalized)
+        self._validate(request, api_normalized)
+        normalized = api_normalized
         result = JudgmentResult(
             fingerprint=fingerprint,
             normalized=normalized,
@@ -259,32 +152,6 @@ class AnthropicJudgmentProvider:
             question = value.get(QUESTION_FIELD)
             if not isinstance(question, str) or not question.strip():
                 raise JudgmentError(f"{request.key} returned an empty question")
-            return
-        if request.output_kind == "match_batch":
-            matches = value.get("matches")
-            if not isinstance(matches, list):
-                raise JudgmentError(f"{request.key} returned no match list")
-            returned_ids = []
-            for item in matches:
-                if not isinstance(item, dict):
-                    raise JudgmentError(f"{request.key} returned an invalid match item")
-                source_id = item.get("source_id")
-                target_id = item.get("target_id")
-                if not isinstance(source_id, str) or not source_id:
-                    raise JudgmentError(f"{request.key} returned a match without a source ID")
-                if target_id is not None and target_id not in request.allowed_match_ids:
-                    raise JudgmentError(
-                        f"{request.key} selected {target_id!r}; allowed values are "
-                        f"{request.allowed_match_ids} or null"
-                    )
-                returned_ids.append(source_id)
-            if len(returned_ids) != len(set(returned_ids)):
-                raise JudgmentError(f"{request.key} returned duplicate match source IDs")
-            if set(returned_ids) != set(request.expected_match_source_ids):
-                raise JudgmentError(
-                    f"{request.key} returned source IDs {sorted(returned_ids)}; expected "
-                    f"{sorted(request.expected_match_source_ids)}"
-                )
             return
         if not isinstance(value, dict) or set(value) != {"target_id", "basis"}:
             raise JudgmentError(f"{request.key} requires exactly target_id and basis")

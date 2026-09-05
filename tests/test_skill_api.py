@@ -3,8 +3,6 @@ from types import SimpleNamespace
 import tempfile
 import unittest
 
-from pipeline.incremental_graph.llm import AnthropicJudgmentProvider, JudgmentError
-from pipeline.incremental_graph.models import JudgmentRequest
 from pipeline.incremental_graph.skill_api import (
     CACHEABLE_SYSTEM,
     ClaudeSkills,
@@ -112,24 +110,6 @@ class SkillApiTest(unittest.TestCase):
         self.assertEqual(second_registry, {})
         self.assertNotIn("key-one", str(document))
         self.assertNotIn("key-two", str(document))
-
-    def test_batch_match_validation_rejects_unknown_target(self) -> None:
-        request = JudgmentRequest(
-            key="paper:matching:batch",
-            paper_index=1,
-            stage_id="matching",
-            output_kind="match_batch",
-            prompt_ref="matching/v1",
-            context_ref="matching",
-            context={},
-            allowed_match_ids=["g1"],
-            expected_match_source_ids=["p1"],
-        )
-
-        with self.assertRaisesRegex(JudgmentError, "allowed values"):
-            AnthropicJudgmentProvider._validate(request, {
-                "matches": [{"source_id": "p1", "target_id": "g2", "basis": "No."}],
-            })
 
     def test_reads_current_and_legacy_skill_version_fields(self) -> None:
         self.assertEqual(
