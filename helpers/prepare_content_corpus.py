@@ -7,7 +7,7 @@ from pathlib import Path
 
 import yaml
 
-from .document import (
+from pipeline.document import (
     flatten_to_single_section,
     read_json,
     strip_questions,

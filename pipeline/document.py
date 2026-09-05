@@ -23,6 +23,41 @@ _SUBSECTION_FIELDS = {"section_name", "section_number", "paragraphs", QUESTION_F
 _SECTION_FIELDS = {*_SUBSECTION_FIELDS, "subsections"}
 
 
+def content_schema() -> dict[str, Any]:
+    paragraph = {
+        "type": "object",
+        "properties": {
+            "paragraph_number": {"type": "integer", "minimum": 0},
+            "text": {"type": "string", "minLength": 1},
+        },
+        "required": ["paragraph_number", "text"],
+        "additionalProperties": False,
+    }
+    subsection = {
+        "type": "object",
+        "properties": {
+            "section_name": {"type": "string", "minLength": 1},
+            "section_number": {"type": ["string", "null"]},
+            "paragraphs": {"type": "array", "items": paragraph},
+        },
+        "required": ["section_name", "section_number", "paragraphs"],
+        "additionalProperties": False,
+    }
+    return {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+            "type": "object",
+            "properties": {
+                **subsection["properties"],
+                "subsections": {"type": "array", "items": subsection},
+            },
+            "required": [*subsection["required"], "subsections"],
+            "additionalProperties": False,
+        },
+    }
+
+
 @dataclass(frozen=True)
 class StructuralUnit:
     """One section or subsection plus its deterministic identity and evidence."""
