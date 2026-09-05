@@ -29,8 +29,13 @@ export function reduceEvents(events: ReplayEvent[], endIndex = events.length): R
         break;
       case "node_created":
         if (state.nodes.has(event.node_id)) throw new Error("Replay creates a node twice");
-        state.nodes.set(event.node_id, { nodeId: event.node_id, level: event.level,
-          parentId: event.parent_id, members: [event.member], question: "" });
+        state.nodes.set(event.node_id, {
+          nodeId: event.node_id,
+          level: event.level,
+          parentId: event.parent_id,
+          members: [event.member],
+          question: "",
+        });
         break;
       case "member_added":
         node(event.node_id).members.push(event.member);
@@ -40,7 +45,8 @@ export function reduceEvents(events: ReplayEvent[], endIndex = events.length): R
         node(event.target_node_id).members.push(...event.members);
         state.nodes.delete(event.source_node_id);
         for (const [id, edge] of state.edges) {
-          if (edge.source === event.source_node_id || edge.target === event.source_node_id) state.edges.delete(id);
+          if (edge.source === event.source_node_id || edge.target === event.source_node_id)
+            state.edges.delete(id);
         }
         break;
       case "edge_created":

@@ -9,13 +9,13 @@ from typing import Protocol
 
 from ..document import QUESTION_FIELD
 from ..files import directory_hash
-from .configuration import PromptRepository
-from .models import JudgmentRequest, JudgmentResult, ModelSettings
 from ..llm.client import (
     ClaudeSkills,
     SkillCallPolicy,
     SkillSessionBudget,
 )
+from .configuration import PromptRepository
+from .models import JudgmentRequest, JudgmentResult, ModelSettings
 
 
 class JudgmentError(RuntimeError):
@@ -87,9 +87,7 @@ class AnthropicJudgmentProvider:
                 thinking=self.model.thinking,
                 max_input_tokens=request.max_input_tokens or self.model.max_input_tokens,
                 max_prompt_characters=self.model.max_prompt_characters,
-                context_management_trigger_tokens=(
-                    self.model.context_management_trigger_tokens
-                ),
+                context_management_trigger_tokens=(self.model.context_management_trigger_tokens),
             ),
             cacheable_prompt=rendered.system,
         )
@@ -97,9 +95,7 @@ class AnthropicJudgmentProvider:
         model = {
             **self.model.model_dump(mode="json"),
             "effective_max_tokens": request.max_tokens or self.model.max_tokens,
-            "effective_max_input_tokens": (
-                request.max_input_tokens or self.model.max_input_tokens
-            ),
+            "effective_max_input_tokens": (request.max_input_tokens or self.model.max_input_tokens),
             "skill": {
                 "path": skill.path,
                 "skill_id": skill.skill_id,

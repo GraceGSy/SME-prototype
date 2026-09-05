@@ -5,12 +5,16 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from pipeline.viewer.package import package_dataset, package_study, validate_dataset, DatasetValidationError
-from pipeline.incremental_graph.models import Paper, Section, Paragraph
+from pipeline.incremental_graph.export import export_revision
 from pipeline.incremental_graph.graph import QuestionGraph
 from pipeline.incremental_graph.journal import RevisionJournal
-from pipeline.incremental_graph.export import export_revision
-
+from pipeline.incremental_graph.models import Paper, Paragraph, Section
+from pipeline.viewer.package import (
+    DatasetValidationError,
+    package_dataset,
+    package_study,
+    validate_dataset,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 VIEWER_PATH = REPO_ROOT / "pipeline" / "viewer" / "index.html"
@@ -23,24 +27,64 @@ def write_json(path: Path, value: object) -> None:
 
 def make_snapshot_dataset(root: Path) -> None:
     papers = [
-        Paper(paper_id="paper_a", title="Paper A", sections=[Section(
-            id="sa1", label="Section A", text="Section A", paragraphs=[
-                Paragraph(id="pa1", text="Shared A", question="What is shared?"),
-                Paragraph(id="pa2", text="Unique A", question="What is unique?", ordinal=2),
-            ])]),
-        Paper(paper_id="paper_b", title="Paper B", sections=[Section(
-            id="sb1", label="Section B", text="Section B", paragraphs=[
-                Paragraph(id="pb1", text="Shared B", question="What is shared?"),
-            ])]),
+        Paper(
+            paper_id="paper_a",
+            title="Paper A",
+            sections=[
+                Section(
+                    id="sa1",
+                    label="Section A",
+                    text="Section A",
+                    paragraphs=[
+                        Paragraph(id="pa1", text="Shared A", question="What is shared?"),
+                        Paragraph(id="pa2", text="Unique A", question="What is unique?", ordinal=2),
+                    ],
+                )
+            ],
+        ),
+        Paper(
+            paper_id="paper_b",
+            title="Paper B",
+            sections=[
+                Section(
+                    id="sb1",
+                    label="Section B",
+                    text="Section B",
+                    paragraphs=[
+                        Paragraph(id="pb1", text="Shared B", question="What is shared?"),
+                    ],
+                )
+            ],
+        ),
     ]
     graph = QuestionGraph(RevisionJournal(root.parent / "fixture-provenance"))
     graph.add_paper("paper_a", "Paper A", 1)
-    section = graph.create_group(level="section", parent_id=None, member_id="sa1",
-                                 paper_id="paper_a", paper_index=1, ordinal=1)
-    shared = graph.create_group(level="paragraph", parent_id=section, member_id="pa1",
-                                paper_id="paper_a", paper_index=1, ordinal=1, unit_kind="paragraph")
-    single = graph.create_group(level="paragraph", parent_id=section, member_id="pa2",
-                                paper_id="paper_a", paper_index=1, ordinal=2, unit_kind="paragraph")
+    section = graph.create_group(
+        level="section",
+        parent_id=None,
+        member_id="sa1",
+        paper_id="paper_a",
+        paper_index=1,
+        ordinal=1,
+    )
+    shared = graph.create_group(
+        level="paragraph",
+        parent_id=section,
+        member_id="pa1",
+        paper_id="paper_a",
+        paper_index=1,
+        ordinal=1,
+        unit_kind="paragraph",
+    )
+    single = graph.create_group(
+        level="paragraph",
+        parent_id=section,
+        member_id="pa2",
+        paper_id="paper_a",
+        paper_index=1,
+        ordinal=2,
+        unit_kind="paragraph",
+    )
     graph.add_paper("paper_b", "Paper B", 2)
     graph.add_member(section, "sb1", "paper_b", 2, 1)
     graph.add_member(shared, "pb1", "paper_b", 2, 1, unit_kind="paragraph")
@@ -88,18 +132,22 @@ class ViewerDatasetTest(unittest.TestCase):
             output = root / "site"
             make_snapshot_dataset(source)
 
-            result = package_study({
-                "sherlock": {
-                    "dataset_dir": source,
-                    "participant_prefix": "SH",
-                    "label": "Sherlock Holmes Stories",
+            result = package_study(
+                {
+                    "sherlock": {
+                        "dataset_dir": source,
+                        "participant_prefix": "SH",
+                        "label": "Sherlock Holmes Stories",
+                    },
+                    "hci": {
+                        "dataset_dir": source,
+                        "participant_prefix": "HC",
+                        "label": "HCI Academic Papers",
+                    },
                 },
-                "hci": {
-                    "dataset_dir": source,
-                    "participant_prefix": "HC",
-                    "label": "HCI Academic Papers",
-                },
-            }, output, VIEWER_PATH)
+                output,
+                VIEWER_PATH,
+            )
 
             study = result["study"]
             self.assertEqual(study["datasets"]["SH"]["dataset_id"], "sherlock")

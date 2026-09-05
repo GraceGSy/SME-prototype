@@ -16,35 +16,36 @@ def build_correspondences(
 ) -> dict[str, Any]:
     """Return shared nodes with one-way additions distinguished from reciprocity."""
 
-    fan_in_events = [
-        event for event in events if event["action"] == "paragraph_fan_in_added"
-    ]
+    fan_in_events = [event for event in events if event["action"] == "paragraph_fan_in_added"]
     fan_in_by_node: dict[str, list[dict[str, Any]]] = defaultdict(list)
     fan_in_members: set[tuple[str, str]] = set()
     for event in fan_in_events:
         member = _find_member(graph, event["node_id"], event["paper_id"], event["unit_id"])
         fan_in_members.add((event["paper_id"], event["unit_id"]))
-        fan_in_by_node[event["node_id"]].append({
-            "paper_index": event["paper_index"],
-            "inserted_paper_id": event.get("inserted_paper_id", event["paper_id"]),
-            "claiming_paper_id": event["paper_id"],
-            "direction": event["direction"],
-            "target_id": event["node_id"],
-            "reciprocal_unit_id": event["reciprocal_unit_id"],
-            "claims": [{
-                "source_id": event["unit_id"],
-                "sources": [member],
-                "status": "accepted_adjacent",
-                "redundant": False,
-                "attempt_id": event["attempt_id"],
-            }],
-        })
+        fan_in_by_node[event["node_id"]].append(
+            {
+                "paper_index": event["paper_index"],
+                "inserted_paper_id": event.get("inserted_paper_id", event["paper_id"]),
+                "claiming_paper_id": event["paper_id"],
+                "direction": event["direction"],
+                "target_id": event["node_id"],
+                "reciprocal_unit_id": event["reciprocal_unit_id"],
+                "claims": [
+                    {
+                        "source_id": event["unit_id"],
+                        "sources": [member],
+                        "status": "accepted_adjacent",
+                        "redundant": False,
+                        "attempt_id": event["attempt_id"],
+                    }
+                ],
+            }
+        )
 
     rerepresented_members = {
         (member["paper_id"], member["unit_id"])
         for event in events
-        if event["action"] == "node_merged"
-        and event.get("reason") == "structural_rerepresentation"
+        if event["action"] == "node_merged" and event.get("reason") == "structural_rerepresentation"
         for member in event["members"]
     }
     one_way_members = fan_in_members | rerepresented_members
@@ -56,16 +57,20 @@ def build_correspondences(
             continue
         cells: dict[str, list[tuple[str, bool]]] = defaultdict(list)
         for member in data["members"]:
-            cells[member["paper_id"]].append((
-                _label(labels, data["level"], member),
-                (member["paper_id"], member["unit_id"]) not in one_way_members,
-            ))
-        levels[data["level"]].append({
-            "group_id": group_id,
-            "members": data["members"],
-            "fan_in": fan_in_by_node.get(group_id, []),
-            "cells": dict(cells),
-        })
+            cells[member["paper_id"]].append(
+                (
+                    _label(labels, data["level"], member),
+                    (member["paper_id"], member["unit_id"]) not in one_way_members,
+                )
+            )
+        levels[data["level"]].append(
+            {
+                "group_id": group_id,
+                "members": data["members"],
+                "fan_in": fan_in_by_node.get(group_id, []),
+                "cells": dict(cells),
+            }
+        )
 
     return {
         "schema_version": 2,
@@ -73,9 +78,7 @@ def build_correspondences(
         "stats": {
             "section_fan_in_groups": 0,
             "section_rerepresented_members": len(rerepresented_members),
-            "paragraph_fan_in_groups": sum(
-                bool(row["fan_in"]) for row in levels["paragraph"]
-            ),
+            "paragraph_fan_in_groups": sum(bool(row["fan_in"]) for row in levels["paragraph"]),
             "paragraph_fan_in_members": len(fan_in_events),
             "section_correspondence_rows": len(levels["section"]),
             "paragraph_correspondence_rows": len(levels["paragraph"]),

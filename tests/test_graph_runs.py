@@ -1,31 +1,49 @@
 """Offline integration of prepared documents, ordered runs, and immutable revisions."""
 
 import json
+import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
-import unittest
 from unittest.mock import patch
 
 import yaml
+from test_incremental_graph import CONFIG_PATH, ScriptedJudge
 
 from pipeline.files import write_json
-from pipeline.incremental_graph.runs import start_graph, add_papers, retry_graph
-from test_incremental_graph import CONFIG_PATH, ScriptedJudge
+from pipeline.incremental_graph.runs import add_papers, retry_graph, start_graph
 
 
 def manifest(root: Path, ids: list[str], name: str) -> Path:
     for paper_id in ids:
-        write_json(root / f"{paper_id}.json", [{
-            "section_name": paper_id, "section_number": None, "subsections": [],
-            "question_this_text_answers": "What happens?",
-            "paragraphs": [{"paragraph_number": 0, "text": f"Evidence from {paper_id}.",
-                            "question_this_text_answers": "What happens?"}],
-        }])
+        write_json(
+            root / f"{paper_id}.json",
+            [
+                {
+                    "section_name": paper_id,
+                    "section_number": None,
+                    "subsections": [],
+                    "question_this_text_answers": "What happens?",
+                    "paragraphs": [
+                        {
+                            "paragraph_number": 0,
+                            "text": f"Evidence from {paper_id}.",
+                            "question_this_text_answers": "What happens?",
+                        }
+                    ],
+                }
+            ],
+        )
     path = root / f"{name}.yaml"
-    path.write_text(yaml.safe_dump({
-        "schema_version": 1, "max_granularity": "paragraph",
-        "papers": [{"paper_id": i, "title": i, "file": f"{i}.json"} for i in ids],
-    }), encoding="utf8")
+    path.write_text(
+        yaml.safe_dump(
+            {
+                "schema_version": 1,
+                "max_granularity": "paragraph",
+                "papers": [{"paper_id": i, "title": i, "file": f"{i}.json"} for i in ids],
+            }
+        ),
+        encoding="utf8",
+    )
     return path
 
 
@@ -36,7 +54,10 @@ class GraphRunTest(unittest.TestCase):
             first = manifest(root, ["a", "b"], "first")
             third = manifest(root, ["c"], "third")
             run = root / "run"
-            with patch("pipeline.incremental_graph.runs.AnthropicJudgmentProvider", return_value=ScriptedJudge({})):
+            with patch(
+                "pipeline.incremental_graph.runs.AnthropicJudgmentProvider",
+                return_value=ScriptedJudge({}),
+            ):
                 initial = start_graph(first, run, CONFIG_PATH)
                 original = (Path(initial["dataset_dir"]) / "a.json").read_bytes()
                 (root / "a.json").write_text("malformed external source after initial run")
@@ -52,7 +73,10 @@ class GraphRunTest(unittest.TestCase):
             root = Path(directory)
             one = manifest(root, ["a"], "one")
             two = manifest(root, ["a", "b"], "two")
-            with patch("pipeline.incremental_graph.runs.AnthropicJudgmentProvider", return_value=ScriptedJudge({})) as provider:
+            with patch(
+                "pipeline.incremental_graph.runs.AnthropicJudgmentProvider",
+                return_value=ScriptedJudge({}),
+            ) as provider:
                 with self.assertRaisesRegex(ValueError, "at least two"):
                     start_graph(one, root / "invalid", CONFIG_PATH)
                 provider.assert_not_called()
@@ -67,15 +91,23 @@ class GraphRunTest(unittest.TestCase):
         with TemporaryDirectory() as directory:
             root = Path(directory)
             source = manifest(root, ["a", "b"], "source")
+
             class BrokenJudge:
                 def judge(self, request):
                     raise RuntimeError("intentional break")
-            with patch("pipeline.incremental_graph.runs.AnthropicJudgmentProvider", return_value=BrokenJudge()):
+
+            with patch(
+                "pipeline.incremental_graph.runs.AnthropicJudgmentProvider",
+                return_value=BrokenJudge(),
+            ):
                 with self.assertRaisesRegex(RuntimeError, "intentional break"):
                     start_graph(source, root / "run", CONFIG_PATH)
             state = json.loads((root / "run/run.json").read_text())
             self.assertIsNone(state["current_revision"])
-            with patch("pipeline.incremental_graph.runs.AnthropicJudgmentProvider", return_value=ScriptedJudge({})):
+            with patch(
+                "pipeline.incremental_graph.runs.AnthropicJudgmentProvider",
+                return_value=ScriptedJudge({}),
+            ):
                 result = retry_graph(root / "run")
             self.assertEqual(result["paper_order"], ["a", "b"])
             self.assertEqual(len(list((root / "run/revisions").iterdir())), 2)
@@ -84,7 +116,10 @@ class GraphRunTest(unittest.TestCase):
         with TemporaryDirectory() as directory:
             root = Path(directory)
             source = manifest(root, ["a", "b"], "source")
-            with patch("pipeline.incremental_graph.runs.AnthropicJudgmentProvider", return_value=ScriptedJudge({})) as provider:
+            with patch(
+                "pipeline.incremental_graph.runs.AnthropicJudgmentProvider",
+                return_value=ScriptedJudge({}),
+            ) as provider:
                 start_graph(source, root / "run", CONFIG_PATH)
                 frozen = root / "run/inputs/revision-0001/paper-0001.json"
                 document = json.loads(frozen.read_text())
@@ -99,7 +134,10 @@ class GraphRunTest(unittest.TestCase):
         with TemporaryDirectory() as directory:
             root = Path(directory)
             source = manifest(root, ["a", "b"], "source")
-            with patch("pipeline.incremental_graph.runs.AnthropicJudgmentProvider", return_value=ScriptedJudge({})) as provider:
+            with patch(
+                "pipeline.incremental_graph.runs.AnthropicJudgmentProvider",
+                return_value=ScriptedJudge({}),
+            ) as provider:
                 start_graph(source, root / "run", CONFIG_PATH)
                 provider.reset_mock()
                 with patch("pipeline.incremental_graph.runs._policy_hash", return_value="changed"):

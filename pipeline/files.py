@@ -1,4 +1,5 @@
 """Small shared filesystem operations; no document or model policy."""
+
 from __future__ import annotations
 
 import hashlib
@@ -26,7 +27,11 @@ def write_json(path: Path, value: Any) -> None:
 def directory_hash(path: Path) -> str:
     digest = hashlib.sha256()
     for file_path in sorted(path.rglob("*")):
-        if not file_path.is_file() or "__pycache__" in file_path.parts or file_path.suffix == ".pyc":
+        if (
+            not file_path.is_file()
+            or "__pycache__" in file_path.parts
+            or file_path.suffix == ".pyc"
+        ):
             continue
         relative = file_path.relative_to(path).as_posix()
         digest.update(relative.encode("utf-8"))

@@ -6,7 +6,9 @@ import { mountReplay } from "./replay";
 import { reduceEvents } from "./replay-state";
 import { mountTutorial, type View } from "./tutorial";
 
-element("#useToolButton").addEventListener("click", () => { element("#tutorialWelcome").hidden = true; });
+element("#useToolButton").addEventListener("click", () => {
+  element("#tutorialWelcome").hidden = true;
+});
 
 async function main(): Promise<void> {
   const { descriptor, model, replay } = await loadDataset();
@@ -19,7 +21,11 @@ async function main(): Promise<void> {
   const paperMap = new PaperMapView(host, model);
   let replayView: ReturnType<typeof mountReplay> | null = null;
   let view: View = "groups";
-  const labels: Record<View, string> = { groups: "Question Groups", "paper-map": "Paper Map", "graph-replay": "Graph Replay" };
+  const labels: Record<View, string> = {
+    groups: "Question Groups",
+    "paper-map": "Paper Map",
+    "graph-replay": "Graph Replay",
+  };
   const switchView = (next: View): void => {
     replayView?.destroy();
     replayView = null;
@@ -55,6 +61,7 @@ main().catch((error: unknown) => {
   const message = document.createElement("div");
   message.className = "empty-state";
   message.setAttribute("role", "alert");
-  message.textContent = "Could not load viewer data: " + (error instanceof Error ? error.message : String(error));
+  message.textContent =
+    "Could not load viewer data: " + (error instanceof Error ? error.message : String(error));
   element("#stage").replaceChildren(message);
 });

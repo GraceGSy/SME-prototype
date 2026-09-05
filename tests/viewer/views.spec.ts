@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test("groups, paper map, replay, and tutorial work on canonical exports", async ({ page }) => {
   const errors: string[] = [];
-  page.on("pageerror", error => errors.push(error.message));
+  page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/single/public/");
   await expect(page.locator("#tutorialLoading")).toHaveText("Ready");
   await page.getByRole("button", { name: "Use Tool", exact: true }).click();
@@ -25,7 +25,8 @@ test("groups, paper map, replay, and tutorial work on canonical exports", async 
   await page.locator("#graphReplayScope").selectOption("paragraph");
   await expect(page.locator(".graph-replay-node")).toHaveCount(2);
   await page.getByRole("button", { name: "Tutorial", exact: true }).click();
-  for (let i = 0; i < 7; i++) await page.getByRole("button", { name: "Next Step", exact: true }).click();
+  for (let i = 0; i < 7; i++)
+    await page.getByRole("button", { name: "Next Step", exact: true }).click();
   await page.getByRole("button", { name: "Finish", exact: true }).click();
   await expect(page.locator("#tutorialLayer")).toBeHidden();
   expect(errors).toEqual([]);
@@ -42,7 +43,9 @@ test("participant gate rejects lowercase instead of normalizing", async ({ page 
 });
 
 test("malformed present replay is an error, not a hidden tab", async ({ page }) => {
-  await page.route("**/graph-replay.json", route => route.fulfill({ json: { schema_version: 999 } }));
+  await page.route("**/graph-replay.json", (route) =>
+    route.fulfill({ json: { schema_version: 999 } }),
+  );
   await page.goto("/single/public/");
   await expect(page.getByRole("alert")).toContainText("Could not load viewer data");
 });

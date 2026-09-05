@@ -1,4 +1,11 @@
-import { descriptorSchema, manifestSchema, paperSchema, replaySchema, snapshotSchema, studySchema } from "./contracts";
+import {
+  descriptorSchema,
+  manifestSchema,
+  paperSchema,
+  replaySchema,
+  snapshotSchema,
+  studySchema,
+} from "./contracts";
 import type { Replay, Routes } from "./contracts";
 import { element } from "./dom";
 import { buildModel } from "./model";
@@ -28,7 +35,7 @@ async function datasetBase(root: URL): Promise<URL> {
   gate.hidden = false;
   welcome.hidden = true;
   input.focus();
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     const submit = (event: SubmitEvent): void => {
       event.preventDefault();
       try {
@@ -39,7 +46,8 @@ async function datasetBase(root: URL): Promise<URL> {
         welcome.hidden = false;
         resolve(new URL(id + "/", root));
       } catch (error) {
-        element("#participantGateError").textContent = error instanceof Error ? error.message : "Invalid participant ID";
+        element("#participantGateError").textContent =
+          error instanceof Error ? error.message : "Invalid participant ID";
       }
     };
     form.addEventListener("submit", submit);
@@ -53,21 +61,28 @@ export async function loadDataset() {
   const papers = [];
   for (const entry of manifest) {
     const paper = paperSchema.parse(await readJson(entry.file, base));
-    if (paper.paper_id !== entry.paper_id || paper.title !== entry.title) throw new Error("Manifest disagrees with paper");
+    if (paper.paper_id !== entry.paper_id || paper.title !== entry.title)
+      throw new Error("Manifest disagrees with paper");
     papers.push(paper);
   }
   const snapshot = snapshotSchema.parse(await readJson(descriptor.snapshot_file, base));
   const model = buildModel(papers, snapshot);
-  if (descriptor.paper_count !== papers.length || descriptor.paragraph_count !== model.paragraphs.size) {
+  if (
+    descriptor.paper_count !== papers.length ||
+    descriptor.paragraph_count !== model.paragraphs.size
+  ) {
     throw new Error("Dataset counts disagree with contents");
   }
   let replay: Replay | null = null;
   if (descriptor.graph_replay_file) {
     replay = replaySchema.parse(await readJson(descriptor.graph_replay_file, base));
-    if (JSON.stringify(replay.paper_order) !== JSON.stringify(papers.map(paper => paper.paper_id))) {
+    if (
+      JSON.stringify(replay.paper_order) !== JSON.stringify(papers.map((paper) => paper.paper_id))
+    ) {
       throw new Error("Replay paper order disagrees with manifest");
     }
-    if (replay.events.some((event, index) => event.sequence !== index + 1)) throw new Error("Replay event sequence is not contiguous");
+    if (replay.events.some((event, index) => event.sequence !== index + 1))
+      throw new Error("Replay event sequence is not contiguous");
   }
   return { descriptor, model, replay };
 }

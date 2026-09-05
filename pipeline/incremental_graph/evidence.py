@@ -1,4 +1,5 @@
 """Construct source-grounded evidence payloads; no model calls or graph mutations."""
+
 from __future__ import annotations
 
 from typing import Any
@@ -42,7 +43,9 @@ class Evidence:
             return self.section_lookup[(paper_id, unit_id)].ordinal
         return self.paragraph_lookup[(paper_id, unit_id)][1].ordinal
 
-    def member_metadata(self, insertion: InsertionState, unit_id: str, level: str) -> dict[str, Any]:
+    def member_metadata(
+        self, insertion: InsertionState, unit_id: str, level: str
+    ) -> dict[str, Any]:
         if level == "section":
             unit = self.section_lookup[(insertion.paper.paper_id, unit_id)]
             return {
@@ -125,9 +128,7 @@ class Evidence:
                 "full_text": paragraph.text,
             },
             "next_paragraph": self.neighbor_text(
-                section.paragraphs[position + 1]
-                if position + 1 < len(section.paragraphs)
-                else None
+                section.paragraphs[position + 1] if position + 1 < len(section.paragraphs) else None
             ),
         }
         if selection_id is not None:

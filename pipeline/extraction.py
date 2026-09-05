@@ -4,14 +4,13 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-from pathlib import Path
 import re
+from pathlib import Path
 from typing import Any, Literal
 
-from .files import write_json, directory_hash
 from .document import content_schema, strip_questions, validate_document
+from .files import directory_hash, write_json
 from .llm.client import ClaudeSkills, SkillCallPolicy
-
 
 ROOT = Path(__file__).resolve().parents[1]
 SKILL = ROOT / "skills" / "extract-section-and-subsection-paragraphs"
@@ -29,7 +28,7 @@ def validate_source_tail(document: list[dict[str, Any]], source: str) -> None:
     )
     actual = re.findall(r"\w+", text.casefold())
     if not expected or not any(
-        actual[index:index + len(expected)] == expected
+        actual[index : index + len(expected)] == expected
         for index in range(len(actual) - len(expected) + 1)
     ):
         raise ValueError("Extraction is missing the final source passage")
@@ -52,11 +51,14 @@ def extract_document(
     if domain not in {"academic", "legal", "narrative"}:
         raise ValueError(f"Unsupported extraction domain: {domain}")
     if source.suffix not in {".pdf", ".txt", ".xhtml"}:
-        raise ValueError("Raw input must be .pdf, .txt, or .xhtml; canonical JSON needs no extraction")
+        raise ValueError(
+            "Raw input must be .pdf, .txt, or .xhtml; canonical JSON needs no extraction"
+        )
     if not isinstance(title, str) or not title.strip():
         raise ValueError("A non-empty document title is required")
     policy = SkillCallPolicy(
-        max_tokens=32768, max_input_tokens=250000,
+        max_tokens=32768,
+        max_input_tokens=250000,
         max_attachment_bytes=20_000_000 if source.suffix == ".pdf" else 500_000,
     )
     if source.stat().st_size > policy.max_attachment_bytes:
@@ -83,17 +85,20 @@ def extract_document(
         raise ValueError("Extraction must return content only, without generated questions")
     if source.suffix == ".txt":
         validate_source_tail(content, raw.decode("utf-8"))
-    write_json(provenance, {
-        "schema_version": 1,
-        "source": str(source),
-        "source_sha256": hashlib.sha256(raw).hexdigest(),
-        "domain": domain,
-        "title": title,
-        "model": model,
-        "skill_sha256": directory_hash(SKILL),
-        "response_id": result.response_id,
-        "usage": result.usage,
-    })
+    write_json(
+        provenance,
+        {
+            "schema_version": 1,
+            "source": str(source),
+            "source_sha256": hashlib.sha256(raw).hexdigest(),
+            "domain": domain,
+            "title": title,
+            "model": model,
+            "skill_sha256": directory_hash(SKILL),
+            "response_id": result.response_id,
+            "usage": result.usage,
+        },
+    )
     write_json(output, content)
     return output
 
@@ -106,7 +111,11 @@ def main() -> None:
     parser.add_argument("--title", required=True)
     parser.add_argument("--model", default="claude-sonnet-5")
     args = parser.parse_args()
-    print(extract_document(args.source, args.output, domain=args.domain, title=args.title, model=args.model))
+    print(
+        extract_document(
+            args.source, args.output, domain=args.domain, title=args.title, model=args.model
+        )
+    )
 
 
 if __name__ == "__main__":

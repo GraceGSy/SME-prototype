@@ -5,13 +5,12 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from pipeline.incremental_graph.configuration import load_pipeline_config
 from pipeline.document import QUESTION_FIELD
+from pipeline.incremental_graph.configuration import load_pipeline_config
 from pipeline.incremental_graph.graph import QuestionGraph, graph_from_events, stable_id
 from pipeline.incremental_graph.input_data import load_manifest, load_paper
 from pipeline.incremental_graph.journal import RevisionJournal
 from pipeline.incremental_graph.models import (
-    JudgmentRequest,
     JudgmentResult,
     Paper,
     Paragraph,
@@ -20,9 +19,16 @@ from pipeline.incremental_graph.models import (
 from pipeline.incremental_graph.runner import IncrementalGraphRunner
 from pipeline.viewer.package import validate_dataset
 
-
-CONFIG_PATH = Path(__file__).resolve().parents[1] / "pipeline" / "incremental_graph" / "configs" / "incremental-v1.yaml"
-CANONICAL_MANIFEST = Path(__file__).resolve().parents[1] / "datasets" / "hci-five-paper" / "manifest.yaml"
+CONFIG_PATH = (
+    Path(__file__).resolve().parents[1]
+    / "pipeline"
+    / "incremental_graph"
+    / "configs"
+    / "incremental-v1.yaml"
+)
+CANONICAL_MANIFEST = (
+    Path(__file__).resolve().parents[1] / "datasets" / "hci-five-paper" / "manifest.yaml"
+)
 
 
 def paper(paper_id: str, sections: list[tuple[str, str, str]]) -> Paper:
@@ -74,16 +80,20 @@ class IncrementalGraphTest(unittest.TestCase):
         decorated = Paper(
             paper_id="p1",
             title="P1",
-            sections=[Section(
-                id="s1",
-                text="Section text",
-                question="What does the section establish?",
-                paragraphs=[Paragraph(
-                    id="p1",
-                    text="Paragraph text",
-                    question="What does the paragraph establish?",
-                )],
-            )],
+            sections=[
+                Section(
+                    id="s1",
+                    text="Section text",
+                    question="What does the section establish?",
+                    paragraphs=[
+                        Paragraph(
+                            id="p1",
+                            text="Paragraph text",
+                            question="What does the paragraph establish?",
+                        )
+                    ],
+                )
+            ],
         )
         judge = ScriptedJudge({})
         with tempfile.TemporaryDirectory() as directory:
@@ -100,14 +110,12 @@ class IncrementalGraphTest(unittest.TestCase):
         self.assertNotIn("section_group_questions", called_stages)
         self.assertNotIn("paragraph_group_questions", called_stages)
         generated_questions = {
-            data["level"]: data["generated_question"]
-            for _, data in runner.question_graph.nodes()
+            data["level"]: data["generated_question"] for _, data in runner.question_graph.nodes()
         }
         self.assertEqual(generated_questions["section"], "What does the section establish?")
         self.assertEqual(generated_questions["paragraph"], "What does the paragraph establish?")
         deterministic_events = [
-            event for event in runner.journal.events
-            if event["action"] == "question_generated"
+            event for event in runner.journal.events if event["action"] == "question_generated"
         ]
         self.assertTrue(deterministic_events)
         self.assertTrue(all(event["source"] == "member_question" for event in deterministic_events))
@@ -115,21 +123,28 @@ class IncrementalGraphTest(unittest.TestCase):
     def test_rejects_noncanonical_pseudo_sections(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "paper.json"
-            path.write_text(json.dumps([
-                {
-                    "section_name": "Introduction",
-                    "section_number": None,
-                    "paragraphs": [
-                        {"paragraph_number": 1, "text": "First paragraph."},
-                        {"paragraph_number": 2, "text": "Second paragraph."},
-                    ],
-                },
-                {
-                    "section_name": "Discussion",
-                    "section_number": None,
-                    "paragraphs": [{"paragraph_number": 1, "text": "Discussion paragraph."}],
-                },
-            ]), encoding="utf-8")
+            path.write_text(
+                json.dumps(
+                    [
+                        {
+                            "section_name": "Introduction",
+                            "section_number": None,
+                            "paragraphs": [
+                                {"paragraph_number": 1, "text": "First paragraph."},
+                                {"paragraph_number": 2, "text": "Second paragraph."},
+                            ],
+                        },
+                        {
+                            "section_name": "Discussion",
+                            "section_number": None,
+                            "paragraphs": [
+                                {"paragraph_number": 1, "text": "Discussion paragraph."}
+                            ],
+                        },
+                    ]
+                ),
+                encoding="utf-8",
+            )
 
             with self.assertRaisesRegex(ValueError, "canonical document"):
                 load_paper(path, "paper-a", "Paper A")
@@ -137,24 +152,37 @@ class IncrementalGraphTest(unittest.TestCase):
     def test_normalizes_nested_paragraphs_and_existing_questions(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "paper.json"
-            path.write_text(json.dumps([{
-                "section_name": "Method",
-                "section_number": "3",
-                "question_this_text_answers": "How does the method work?",
-                "paragraphs": [{
-                    "paragraph_number": 0,
-                    "text": "Method overview.",
-                    "question_this_text_answers": "What is the method overview?",
-                }],
-                "subsections": [{
-                    "section_name": "Implementation",
-                    "paragraphs": [{
-                        "paragraph_number": 0,
-                        "text": "Implementation details.",
-                        "question_this_text_answers": "How was it implemented?",
-                    }],
-                }],
-            }]), encoding="utf-8")
+            path.write_text(
+                json.dumps(
+                    [
+                        {
+                            "section_name": "Method",
+                            "section_number": "3",
+                            "question_this_text_answers": "How does the method work?",
+                            "paragraphs": [
+                                {
+                                    "paragraph_number": 0,
+                                    "text": "Method overview.",
+                                    "question_this_text_answers": "What is the method overview?",
+                                }
+                            ],
+                            "subsections": [
+                                {
+                                    "section_name": "Implementation",
+                                    "paragraphs": [
+                                        {
+                                            "paragraph_number": 0,
+                                            "text": "Implementation details.",
+                                            "question_this_text_answers": "How was it implemented?",
+                                        }
+                                    ],
+                                }
+                            ],
+                        }
+                    ]
+                ),
+                encoding="utf-8",
+            )
 
             normalized = load_paper(
                 path,
@@ -179,16 +207,25 @@ class IncrementalGraphTest(unittest.TestCase):
     def test_section_granularity_collapses_subsection_paragraphs(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "paper.json"
-            path.write_text(json.dumps([{
-                "section_name": "Method",
-                "section_number": "3",
-                "paragraphs": [{"paragraph_number": 0, "text": "Overview."}],
-                "subsections": [{
-                    "section_name": "Implementation",
-                    "section_number": "3.1",
-                    "paragraphs": [{"paragraph_number": 0, "text": "Details."}],
-                }],
-            }]), encoding="utf-8")
+            path.write_text(
+                json.dumps(
+                    [
+                        {
+                            "section_name": "Method",
+                            "section_number": "3",
+                            "paragraphs": [{"paragraph_number": 0, "text": "Overview."}],
+                            "subsections": [
+                                {
+                                    "section_name": "Implementation",
+                                    "section_number": "3.1",
+                                    "paragraphs": [{"paragraph_number": 0, "text": "Details."}],
+                                }
+                            ],
+                        }
+                    ]
+                ),
+                encoding="utf-8",
+            )
 
             normalized = load_paper(path, "paper-a", "Paper A")
 
@@ -206,10 +243,12 @@ class IncrementalGraphTest(unittest.TestCase):
         ]
         shared_root = stable_id("section-group", "root", "p1", "s1")
         paragraph_group = stable_id("paragraph-group", shared_root, "p1", "a1")
-        judge = ScriptedJudge({
-            "p2:paragraph_matching:new_to_group:b1": paragraph_group,
-            f"p2:paragraph_matching:group_to_new:{paragraph_group}": "b1",
-        })
+        judge = ScriptedJudge(
+            {
+                "p2:paragraph_matching:new_to_group:b1": paragraph_group,
+                f"p2:paragraph_matching:group_to_new:{paragraph_group}": "b1",
+            }
+        )
 
         with tempfile.TemporaryDirectory() as directory:
             runner = IncrementalGraphRunner(
@@ -250,9 +289,7 @@ class IncrementalGraphTest(unittest.TestCase):
         self.assertEqual(len(paragraph_matches), 2)
         self.assertTrue(all(request.output_kind == "match" for request in paragraph_matches))
         forward_match = next(
-            request
-            for request in paragraph_matches
-            if ":new_to_group:" in request.key
+            request for request in paragraph_matches if ":new_to_group:" in request.key
         )
         self.assertNotIn("selection_id", forward_match.context["focus"])
         self.assertEqual(
@@ -260,9 +297,7 @@ class IncrementalGraphTest(unittest.TestCase):
             paragraph_group,
         )
         paragraph_group_questions = [
-            request
-            for request in judge.requests
-            if request.stage_id == "paragraph_group_questions"
+            request for request in judge.requests if request.stage_id == "paragraph_group_questions"
         ]
         self.assertEqual(len(paragraph_group_questions), 1)
         self.assertEqual(paragraph_group_questions[0].output_kind, "question")
@@ -273,15 +308,17 @@ class IncrementalGraphTest(unittest.TestCase):
         document = Paper(
             paper_id="p1",
             title="P1",
-            sections=[Section(
-                id="s1",
-                label="Whole document",
-                text="First paragraph.\n\nSecond paragraph.",
-                paragraphs=[
-                    Paragraph(id="a1", text="First paragraph."),
-                    Paragraph(id="a2", text="Second paragraph."),
-                ],
-            )],
+            sections=[
+                Section(
+                    id="s1",
+                    label="Whole document",
+                    text="First paragraph.\n\nSecond paragraph.",
+                    paragraphs=[
+                        Paragraph(id="a1", text="First paragraph."),
+                        Paragraph(id="a2", text="Second paragraph."),
+                    ],
+                )
+            ],
         )
         judge = ScriptedJudge({})
 
@@ -295,9 +332,7 @@ class IncrementalGraphTest(unittest.TestCase):
             runner.run([document])
 
         requests = [
-            request
-            for request in judge.requests
-            if request.stage_id == "paragraph_questions"
+            request for request in judge.requests if request.stage_id == "paragraph_questions"
         ]
         self.assertEqual(
             [request.key for request in requests],
@@ -329,11 +364,13 @@ class IncrementalGraphTest(unittest.TestCase):
             return Paper(
                 paper_id=paper_id,
                 title=paper_id.upper(),
-                sections=[Section(
-                    id=f"{prefix}-section",
-                    text="\n\n".join(paragraph.text for paragraph in paragraphs),
-                    paragraphs=paragraphs,
-                )],
+                sections=[
+                    Section(
+                        id=f"{prefix}-section",
+                        text="\n\n".join(paragraph.text for paragraph in paragraphs),
+                        paragraphs=paragraphs,
+                    )
+                ],
             )
 
         judge = ScriptedJudge({})
@@ -372,8 +409,7 @@ class IncrementalGraphTest(unittest.TestCase):
         self.assertEqual(member["previous_paragraph"]["full_text"], "A before.")
         self.assertEqual(member["next_paragraph"]["full_text"], "A after.")
         self.assertFalse(
-            {"paper_id", "paragraph_id", "paragraph_label", "ordinal", "selection_id"}
-            & set(member)
+            {"paper_id", "paragraph_id", "paragraph_label", "ordinal", "selection_id"} & set(member)
         )
 
     def test_incremental_reconciliation_preserves_ignored_projection_as_provenance(self) -> None:
@@ -424,10 +460,7 @@ class IncrementalGraphTest(unittest.TestCase):
                 if item["selection_id"] == paragraph_group_a
             )
             self.assertEqual(
-                {
-                    member["paragraph"]["full_text"]
-                    for member in candidate["members"]
-                },
+                {member["paragraph"]["full_text"] for member in candidate["members"]},
                 {"Paragraph for shared method"},
             )
             first_paragraph_request = next(
@@ -442,7 +475,8 @@ class IncrementalGraphTest(unittest.TestCase):
             )
             self.assertLess(last_section_request, first_paragraph_request)
             model_group_question_stages = {
-                request.stage_id for request in runner.judge.requests
+                request.stage_id
+                for request in runner.judge.requests
                 if request.stage_id.endswith("group_questions")
             }
             self.assertEqual(
@@ -450,7 +484,11 @@ class IncrementalGraphTest(unittest.TestCase):
                 {"section_group_questions", "paragraph_group_questions"},
             )
             self.assertEqual(graph.number_of_edges(), 0)
-            ignored = [event for event in runner.journal.events if event["action"] == "projected_edge_ignored"]
+            ignored = [
+                event
+                for event in runner.journal.events
+                if event["action"] == "projected_edge_ignored"
+            ]
             self.assertEqual(len(ignored), 1)
             self.assertEqual(ignored[0]["source_group_id"], group_b)
             self.assertEqual(ignored[0]["absorbed_group_id"], group_a)
@@ -459,12 +497,15 @@ class IncrementalGraphTest(unittest.TestCase):
             self.assertEqual(set(replayed.nodes), set(graph.nodes))
             self.assertEqual(set(replayed.edges(keys=True)), set(graph.edges(keys=True)))
             self.assertEqual(summary["graph_hash"], runner.question_graph.graph_hash())
-            replay = json.loads((revision / "dataset" / "graph-replay.json").read_text(encoding="utf-8"))
+            replay = json.loads(
+                (revision / "dataset" / "graph-replay.json").read_text(encoding="utf-8")
+            )
             self.assertEqual(replay["final_graph_hash"], summary["graph_hash"])
             self.assertIn("section", replay["layouts"])
             self.assertIn("paragraph", replay["layouts"])
             paragraph_nodes = [
-                node for node in runner.question_graph.serialize()["nodes"]
+                node
+                for node in runner.question_graph.serialize()["nodes"]
                 if node["level"] == "paragraph"
             ]
             self.assertEqual(len(replay["layouts"]["paragraph"]), len(paragraph_nodes))
@@ -473,9 +514,7 @@ class IncrementalGraphTest(unittest.TestCase):
                 (revision / "dataset" / "correspondences.json").read_text(encoding="utf-8")
             )
             section_fan_in = [
-                item
-                for row in correspondences["levels"]["section"]
-                for item in row["fan_in"]
+                item for row in correspondences["levels"]["section"] for item in row["fan_in"]
             ]
             self.assertEqual(section_fan_in, [])
             self.assertEqual(correspondences["stats"]["section_fan_in_groups"], 0)
@@ -630,12 +669,14 @@ class IncrementalGraphTest(unittest.TestCase):
         )
         section_group = stable_id("section-group", "root", "p1", "s1")
         subsection_group = stable_id("section-group", "root", "p1", "sub1")
-        judge = ScriptedJudge({
-            "p2:section_matching:new_to_group:s2": section_group,
-            "p2:section_matching:new_to_group:sub2": subsection_group,
-            f"p2:section_matching:group_to_new:{section_group}": "s2",
-            f"p2:section_matching:group_to_new:{subsection_group}": "sub2",
-        })
+        judge = ScriptedJudge(
+            {
+                "p2:section_matching:new_to_group:s2": section_group,
+                "p2:section_matching:new_to_group:sub2": subsection_group,
+                f"p2:section_matching:group_to_new:{section_group}": "s2",
+                f"p2:section_matching:group_to_new:{subsection_group}": "sub2",
+            }
+        )
         with tempfile.TemporaryDirectory() as directory:
             runner = IncrementalGraphRunner(
                 load_pipeline_config(CONFIG_PATH),
@@ -645,13 +686,15 @@ class IncrementalGraphTest(unittest.TestCase):
             runner.run([first, second])
 
         section_matches = [
-            request for request in judge.requests
+            request
+            for request in judge.requests
             if request.stage_id == "section_matching" and request.paper_index == 2
         ]
         self.assertTrue(section_matches)
         self.assertTrue(all(request.skill_ref for request in section_matches))
         paragraph_forward = next(
-            request for request in judge.requests
+            request
+            for request in judge.requests
             if request.key == "p2:paragraph_matching:new_to_group:lead2"
         )
         candidate_units = {
@@ -661,7 +704,8 @@ class IncrementalGraphTest(unittest.TestCase):
         }
         self.assertEqual(candidate_units, {"Lead paragraph"})
         detail_forward = next(
-            request for request in judge.requests
+            request
+            for request in judge.requests
             if request.key == "p2:paragraph_matching:new_to_group:detail2"
         )
         detail_candidates = {
@@ -671,7 +715,8 @@ class IncrementalGraphTest(unittest.TestCase):
         }
         self.assertEqual(detail_candidates, {"Detail paragraph"})
         contains = [
-            event for event in runner.journal.events
+            event
+            for event in runner.journal.events
             if event["action"] == "edge_created" and event["kind"] == "contains"
         ]
         self.assertEqual(len(contains), 2)
@@ -693,12 +738,14 @@ class IncrementalGraphTest(unittest.TestCase):
         second = Paper(
             paper_id="p2",
             title="P2",
-            sections=[Section(
-                id="shared2",
-                label="Shared",
-                text="Second shared structural role.",
-                paragraphs=[Paragraph(id="b1", text="Second shared paragraph.")],
-            )],
+            sections=[
+                Section(
+                    id="shared2",
+                    label="Shared",
+                    text="Second shared structural role.",
+                    paragraphs=[Paragraph(id="b1", text="Second shared paragraph.")],
+                )
+            ],
         )
         third = Paper(
             paper_id="p3",
@@ -762,7 +809,10 @@ class IncrementalGraphTest(unittest.TestCase):
         self.assertEqual(rerepresentation_request.allowed_match_ids, [target_id])
         self.assertEqual(len(rerepresentation_request.context["focus"]["members"]), 1)
         self.assertTrue(
-            all(len(candidate["members"]) > 1 for candidate in rerepresentation_request.context["candidates"])
+            all(
+                len(candidate["members"]) > 1
+                for candidate in rerepresentation_request.context["candidates"]
+            )
         )
         regenerated = [
             request
@@ -775,14 +825,12 @@ class IncrementalGraphTest(unittest.TestCase):
             f"p3:section_rerepresentation_questions:{target_id}",
         )
         self.assertEqual(
-            {
-                member["section_id"]
-                for member in regenerated[0].context["group"]["members"]
-            },
+            {member["section_id"] for member in regenerated[0].context["group"]["members"]},
             {"shared1", "shared2", "sub3"},
         )
         paragraph_request = next(
-            request for request in judge.requests
+            request
+            for request in judge.requests
             if request.key == "p3:paragraph_matching:new_to_group:c2"
         )
         self.assertEqual(paragraph_request.context["scope"]["parent_group_id"], target_id)
@@ -820,10 +868,12 @@ class IncrementalGraphTest(unittest.TestCase):
             ),
         ]
         target_id = stable_id("section-group", "root", "p1", "s1")
-        source_ids = sorted([
-            stable_id("section-group", "root", "p3", "x"),
-            stable_id("section-group", "root", "p3", "y"),
-        ])
+        source_ids = sorted(
+            [
+                stable_id("section-group", "root", "p3", "x"),
+                stable_id("section-group", "root", "p3", "y"),
+            ]
+        )
         matches = {
             "p2:section_matching:new_to_group:s2": target_id,
             f"p2:section_matching:group_to_new:{target_id}": "s2",
@@ -853,15 +903,15 @@ class IncrementalGraphTest(unittest.TestCase):
         self.assertEqual(len(ignored), 1)
         self.assertEqual(ignored[0]["source_group_id"], source_ids[1])
         rerepresentation_requests = [
-            request for request in judge.requests
-            if request.stage_id == "section_rerepresentation"
+            request for request in judge.requests if request.stage_id == "section_rerepresentation"
         ]
         self.assertEqual(len(rerepresentation_requests), 2)
         self.assertTrue(
             all(request.allowed_match_ids == [target_id] for request in rerepresentation_requests)
         )
         regenerated = [
-            request for request in judge.requests
+            request
+            for request in judge.requests
             if request.stage_id == "section_rerepresentation_questions"
         ]
         self.assertEqual(len(regenerated), 1)
@@ -870,33 +920,37 @@ class IncrementalGraphTest(unittest.TestCase):
         first = Paper(
             paper_id="p1",
             title="P1",
-            sections=[Section(
-                id="s1",
-                label="Section 1",
-                text="Anchor section",
-                paragraphs=[
-                    Paragraph(id="a2", label="2", text="Distant before", ordinal=2),
-                    Paragraph(id="a3", label="3", text="Before", ordinal=3),
-                    Paragraph(id="a4", label="4", text="Anchor", ordinal=4),
-                    Paragraph(id="a5", label="5", text="After", ordinal=5),
-                    Paragraph(id="a7", label="7", text="Distant after", ordinal=7),
-                ],
-            )],
+            sections=[
+                Section(
+                    id="s1",
+                    label="Section 1",
+                    text="Anchor section",
+                    paragraphs=[
+                        Paragraph(id="a2", label="2", text="Distant before", ordinal=2),
+                        Paragraph(id="a3", label="3", text="Before", ordinal=3),
+                        Paragraph(id="a4", label="4", text="Anchor", ordinal=4),
+                        Paragraph(id="a5", label="5", text="After", ordinal=5),
+                        Paragraph(id="a7", label="7", text="Distant after", ordinal=7),
+                    ],
+                )
+            ],
         )
         second = Paper(
             paper_id="p2",
             title="P2",
-            sections=[Section(
-                id="s2",
-                label="Section 2",
-                text="Expanded section",
-                paragraphs=[
-                    Paragraph(id="b3", label="3", text="Before", ordinal=3),
-                    Paragraph(id="b4", label="4", text="Reciprocal", ordinal=4),
-                    Paragraph(id="b5", label="5", text="After", ordinal=5),
-                    Paragraph(id="b7", label="7", text="Distant", ordinal=7),
-                ],
-            )],
+            sections=[
+                Section(
+                    id="s2",
+                    label="Section 2",
+                    text="Expanded section",
+                    paragraphs=[
+                        Paragraph(id="b3", label="3", text="Before", ordinal=3),
+                        Paragraph(id="b4", label="4", text="Reciprocal", ordinal=4),
+                        Paragraph(id="b5", label="5", text="After", ordinal=5),
+                        Paragraph(id="b7", label="7", text="Distant", ordinal=7),
+                    ],
+                )
+            ],
         )
         section_group = stable_id("section-group", "root", "p1", "s1")
         paragraph_group = stable_id("paragraph-group", section_group, "p1", "a4")
@@ -941,8 +995,7 @@ class IncrementalGraphTest(unittest.TestCase):
         )
         self.assertEqual([member["unit_id"] for member in b7_group["members"]], ["b7"])
         fan_in_events = [
-            event for event in runner.journal.events
-            if event["action"] == "paragraph_fan_in_added"
+            event for event in runner.journal.events if event["action"] == "paragraph_fan_in_added"
         ]
         self.assertEqual(
             {event["unit_id"] for event in fan_in_events},
@@ -957,8 +1010,7 @@ class IncrementalGraphTest(unittest.TestCase):
         ignored_sources = {
             event["source_group_id"]
             for event in runner.journal.events
-            if event["action"] == "projected_edge_ignored"
-            and event["level"] == "paragraph"
+            if event["action"] == "projected_edge_ignored" and event["level"] == "paragraph"
         }
         self.assertEqual(ignored_sources, {a2_group, a7_group})
         self.assertTrue(
@@ -973,8 +1025,7 @@ class IncrementalGraphTest(unittest.TestCase):
         self.assertEqual(report["stats"]["paragraph_fan_in_groups"], 1)
         self.assertEqual(report["stats"]["paragraph_fan_in_members"], 4)
         row = next(
-            row for row in report["levels"]["paragraph"]
-            if row["group_id"] == paragraph_group
+            row for row in report["levels"]["paragraph"] if row["group_id"] == paragraph_group
         )
         self.assertEqual(
             row["cells"]["p1"],
@@ -985,7 +1036,8 @@ class IncrementalGraphTest(unittest.TestCase):
             [["¶3", False], ["¶4", True], ["¶5", False]],
         )
         group_question = next(
-            request for request in runner.judge.requests
+            request
+            for request in runner.judge.requests
             if request.key == f"p2:paragraph_group_questions:{paragraph_group}"
         )
         question_member_ids = {
@@ -1002,18 +1054,20 @@ class IncrementalGraphTest(unittest.TestCase):
             return Paper(
                 paper_id=paper_id,
                 title=paper_id.upper(),
-                sections=[Section(
-                    id=section_id,
-                    text="Section text",
-                    paragraphs=[
-                        Paragraph(
-                            id=paragraph_id,
-                            text=f"Paragraph {paragraph_id}",
-                            ordinal=int(paragraph_id[-1]),
-                        )
-                        for paragraph_id in paragraph_ids
-                    ],
-                )],
+                sections=[
+                    Section(
+                        id=section_id,
+                        text="Section text",
+                        paragraphs=[
+                            Paragraph(
+                                id=paragraph_id,
+                                text=f"Paragraph {paragraph_id}",
+                                ordinal=int(paragraph_id[-1]),
+                            )
+                            for paragraph_id in paragraph_ids
+                        ],
+                    )
+                ],
             )
 
         papers = [
@@ -1049,15 +1103,11 @@ class IncrementalGraphTest(unittest.TestCase):
         p3_node_match = next(
             request
             for request in runner.judge.requests
-            if request.key
-            == f"p3:paragraph_matching:group_to_new:{adjacent_group}"
+            if request.key == f"p3:paragraph_matching:group_to_new:{adjacent_group}"
         )
         focus_group = p3_node_match.context["focus"]
         self.assertEqual(
-            {
-                member["paragraph"]["full_text"]
-                for member in focus_group["members"]
-            },
+            {member["paragraph"]["full_text"] for member in focus_group["members"]},
             {"Paragraph a3", "Paragraph b3"},
         )
         self.assertNotIn(adjacent_group, runner.question_graph.graph)

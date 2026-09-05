@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": [
-      "ES2022",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "types": ["node"],
     "moduleResolution": "Bundler",
@@ -15,9 +11,5 @@
     "noEmit": true,
     "skipLibCheck": true
   },
-  "include": [
-    "pipeline/viewer/**/*.ts",
-    "tests/viewer/**/*.ts",
-    "playwright.config.ts"
-  ]
+  "include": ["pipeline/viewer/**/*.ts", "tests/viewer/**/*.ts", "playwright.config.ts"]
 }

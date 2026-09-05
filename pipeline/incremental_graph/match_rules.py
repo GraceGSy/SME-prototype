@@ -1,4 +1,5 @@
 """Pure reciprocal-core and immediate-neighbor acceptance rules."""
+
 from typing import Any
 
 from .models import MatchBatch
@@ -13,6 +14,7 @@ def reciprocal_matches(batch: MatchBatch) -> dict[str, str]:
         if reverse and reverse.target_id == unit_id:
             reciprocal[unit_id] = forward.target_id
     return reciprocal
+
 
 def adjacent_paragraph_fan_in(
     batch: MatchBatch,
@@ -34,14 +36,13 @@ def adjacent_paragraph_fan_in(
             accepted[unit_id] = selected_group
     return accepted
 
+
 def adjacent_core_anchors(
     source_members: list[dict[str, Any]],
     target_members: list[dict[str, Any]],
 ) -> dict[tuple[str, str], dict[str, Any]] | None:
     target_members = [
-        member
-        for member in target_members
-        if member.get("membership_role") != "fan_in"
+        member for member in target_members if member.get("membership_role") != "fan_in"
     ]
     anchors = {}
     for member in source_members:

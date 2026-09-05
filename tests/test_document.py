@@ -4,11 +4,15 @@ import copy
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
+
+from pipeline.document import (
+    QUESTION_FIELD,
+    iter_structural_units,
+    strip_questions,
+    validate_document,
+)
 from pipeline.files import write_json
 from pipeline.incremental_graph.input_data import load_paper
-
-from pipeline.document import (QUESTION_FIELD,
-    iter_structural_units, strip_questions, validate_document)
 
 
 def _document() -> list[dict]:

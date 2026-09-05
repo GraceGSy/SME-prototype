@@ -8,7 +8,6 @@ from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, BeforeValidator, ConfigDict, Field, model_validator
 
-
 Level = Literal["section", "paragraph"]
 StructuralKind = Literal["section", "subsection"]
 Granularity = Literal["section", "subsection", "paragraph"]
@@ -29,7 +28,9 @@ def _schema_version(value: Any) -> int:
 
 
 SchemaVersion = Annotated[int, BeforeValidator(_schema_version)]
-WirePath = Annotated[Path, BeforeValidator(lambda value: Path(value) if isinstance(value, str) else value)]
+WirePath = Annotated[
+    Path, BeforeValidator(lambda value: Path(value) if isinstance(value, str) else value)
+]
 
 
 class Paragraph(StrictModel):
@@ -66,7 +67,9 @@ class Paper(StrictModel):
     @model_validator(mode="after")
     def validate_unit_ids(self) -> "Paper":
         section_ids = [section.id for section in self.sections]
-        paragraph_ids = [paragraph.id for section in self.sections for paragraph in section.paragraphs]
+        paragraph_ids = [
+            paragraph.id for section in self.sections for paragraph in section.paragraphs
+        ]
         if len(section_ids) != len(set(section_ids)):
             raise ValueError(f"Paper {self.paper_id} has duplicate section IDs")
         if len(paragraph_ids) != len(set(paragraph_ids)):
@@ -74,7 +77,9 @@ class Paper(StrictModel):
         known_sections = set(section_ids)
         for section in self.sections:
             if section.parent_id and section.parent_id not in known_sections:
-                raise ValueError(f"Paper {self.paper_id} has unknown parent section {section.parent_id}")
+                raise ValueError(
+                    f"Paper {self.paper_id} has unknown parent section {section.parent_id}"
+                )
             if section.kind == "section" and section.parent_id:
                 raise ValueError(f"Top-level section {section.id} cannot have a parent")
             if section.kind == "subsection" and not section.parent_id:

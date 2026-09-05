@@ -9,7 +9,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Iterator, Literal
 
-
 QUESTION_FIELD = "question_this_text_answers"
 
 _PARAGRAPH_FIELDS = {"paragraph_number", "text", QUESTION_FIELD}
@@ -64,14 +63,13 @@ class StructuralUnit:
     own_paragraphs: list[dict[str, Any]]
     evidence: list[dict[str, str]]
 
+
 def strip_questions(value: Any) -> Any:
     """Remove question metadata without changing document content or order."""
 
     if isinstance(value, dict):
         return {
-            key: strip_questions(child)
-            for key, child in value.items()
-            if key != QUESTION_FIELD
+            key: strip_questions(child) for key, child in value.items() if key != QUESTION_FIELD
         }
     if isinstance(value, list):
         return [strip_questions(child) for child in value]
@@ -111,9 +109,7 @@ def iter_structural_units(document: list[dict[str, Any]]) -> Iterator[Structural
         section_evidence = _paragraph_evidence(section_id, section["paragraphs"])
         for subsection_index, subsection in enumerate(section["subsections"]):
             subsection_id = subsection_unit_id(section_index, subsection_index)
-            section_evidence.extend(
-                _paragraph_evidence(subsection_id, subsection["paragraphs"])
-            )
+            section_evidence.extend(_paragraph_evidence(subsection_id, subsection["paragraphs"]))
         yield StructuralUnit(
             unit_id=section_id,
             unit_type="section",
@@ -215,7 +211,10 @@ def _validate_paragraph(
     unexpected = set(paragraph) - _PARAGRAPH_FIELDS
     if unexpected:
         raise ValueError(f"{label} has unsupported fields: {sorted(unexpected)}")
-    if type(paragraph.get("paragraph_number")) is not int or paragraph["paragraph_number"] != expected_number:
+    if (
+        type(paragraph.get("paragraph_number")) is not int
+        or paragraph["paragraph_number"] != expected_number
+    ):
         raise ValueError(f"{label} number must be zero-indexed and contiguous")
     if not isinstance(paragraph.get("text"), str) or not paragraph["text"].strip():
         raise ValueError(f"{label} needs non-empty text")

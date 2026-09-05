@@ -1,4 +1,5 @@
 """Shared Claude Skill transport for source extraction and graph judgments."""
+
 from __future__ import annotations
 
 import hashlib
@@ -12,7 +13,6 @@ from typing import Any, Iterable, Literal
 from jsonschema import Draft202012Validator, ValidationError
 
 from ..files import directory_hash, write_json
-
 
 SKILL_BETAS = ["skills-2025-10-02"]
 MESSAGE_BETAS = [
@@ -102,11 +102,14 @@ class SkillSessionBudget:
     max_output_tokens: int = 100_000
 
     def __post_init__(self) -> None:
-        if min(
-            self.max_api_responses,
-            self.max_input_tokens,
-            self.max_output_tokens,
-        ) <= 0:
+        if (
+            min(
+                self.max_api_responses,
+                self.max_input_tokens,
+                self.max_output_tokens,
+            )
+            <= 0
+        ):
             raise ValueError("Skill session budget values must be positive")
 
 
@@ -158,12 +161,14 @@ def load_api_key(repo_root: Path) -> str:
 
 
 def _credential_registry(
-    state: dict[str, Any], api_key: str,
+    state: dict[str, Any],
+    api_key: str,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """Read the current registry only; legacy caches must be discarded explicitly."""
 
     skill_record = {
-        "type": "object", "additionalProperties": False,
+        "type": "object",
+        "additionalProperties": False,
         "required": ["skill_id", "version", "source_sha256"],
         "properties": {
             "skill_id": {"type": "string", "minLength": 1},
@@ -172,12 +177,14 @@ def _credential_registry(
         },
     }
     schema = {
-        "type": "object", "additionalProperties": False,
+        "type": "object",
+        "additionalProperties": False,
         "required": ["schema_version", "accounts"],
         "properties": {
             "schema_version": {"const": 1},
             "accounts": {
-                "type": "object", "propertyNames": {"pattern": "^[a-f0-9]{64}$"},
+                "type": "object",
+                "propertyNames": {"pattern": "^[a-f0-9]{64}$"},
                 "additionalProperties": {"type": "object", "additionalProperties": skill_record},
             },
         },
@@ -185,7 +192,9 @@ def _credential_registry(
     try:
         Draft202012Validator(schema).validate(state)
     except ValidationError as error:
-        raise ValueError("Unsupported or malformed Skill registry; discard this cache explicitly") from error
+        raise ValueError(
+            "Unsupported or malformed Skill registry; discard this cache explicitly"
+        ) from error
     credential_id = hashlib.sha256(api_key.encode("utf-8")).hexdigest()
     return state, state["accounts"].setdefault(credential_id, {})
 
@@ -326,14 +335,18 @@ class ClaudeSkills:
         policy: SkillCallPolicy,
     ) -> RunResult:
         response, usage = self._run(skills, messages, policy=policy, schema=schema)
-        text = "".join(block.text for block in response.content if getattr(block, "type", "") == "text")
+        text = "".join(
+            block.text for block in response.content if getattr(block, "type", "") == "text"
+        )
         if not text.strip():
             raise RuntimeError(f"Claude response {response.id} contained no structured text output")
         value = json.loads(text)
         try:
             Draft202012Validator(schema).validate(value)
         except ValidationError as error:
-            raise ValueError(f"Claude response {response.id} violates the requested schema") from error
+            raise ValueError(
+                f"Claude response {response.id} violates the requested schema"
+            ) from error
         return self._result(
             response,
             value,

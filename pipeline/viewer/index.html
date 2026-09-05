@@ -1,79 +1,128 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<title>SME Viewer</title>
-<link rel="icon" href="data:,">
-<link rel="stylesheet" href="./graph_replay.css">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="./styles.css">
-
-</head>
-<body class="tutorial-welcome-open">
-
-<header>
-  <h1 id="viewerTitle">SME Viewer</h1>
-  <div id="granularityTabs" style="display:flex;gap:2px;"></div>
-  <button type="button" class="tutorial-launch-button" id="restartTutorial">Tutorial</button>
-</header>
-<div id="legend">Groups are model judgments about shared conceptual roles, not validated equivalences. Inspect the original passages; unmatched passages remain as singletons.</div>
-<div id="stage"><div class="empty-state">Loading...</div></div>
-<div class="paper-map-question-preview" id="paperMapQuestionPreview" role="tooltip" aria-hidden="true">
-  <div class="paper-map-question-preview-text" id="paperMapQuestionPreviewText"></div>
-  <div class="paper-map-question-preview-meta" id="paperMapQuestionPreviewMeta"></div>
-</div>
-
-<div class="participant-gate" id="participantGate" role="dialog" aria-modal="true" aria-labelledby="participantGateTitle" hidden>
-  <section class="participant-gate-card">
-    <h2 id="participantGateTitle">Enter participant ID</h2>
-    <p>Your participant ID selects the assigned document set. Enter the five-character ID provided by the study coordinator.</p>
-    <form class="participant-gate-form" id="participantGateForm">
-      <label for="participantIdInput">Participant ID</label>
-      <div class="participant-gate-row">
-        <input id="participantIdInput" name="participant_id" type="text" inputmode="text" maxlength="5" autocomplete="off" autocapitalize="off" required>
-        <button type="submit" class="tutorial-button primary">Continue</button>
-      </div>
-      <div class="participant-gate-error" id="participantGateError" role="alert"></div>
-    </form>
-  </section>
-</div>
-
-<div class="tutorial-welcome" id="tutorialWelcome" role="dialog" aria-modal="true" aria-labelledby="tutorialWelcomeTitle">
-  <section class="tutorial-welcome-card">
-    <div class="tutorial-welcome-eyebrow">Question Atlas</div>
-    <h2 id="tutorialWelcomeTitle">Explore connections across papers</h2>
-    <p>Take a short guided tour of the two complementary views, or open the tool directly if you already know your way around.</p>
-    <div class="tutorial-welcome-features">
-      <div class="tutorial-welcome-feature"><strong>Question Groups</strong>Inspect paragraphs from different papers that answer a shared question.</div>
-      <div class="tutorial-welcome-feature"><strong>Paper Map</strong>See where each question appears within the structure of every paper.</div>
+  <head>
+    <meta charset="utf-8" />
+    <title>SME Viewer</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./graph_replay.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="tutorial-welcome-open">
+    <header>
+      <h1 id="viewerTitle">SME Viewer</h1>
+      <div id="granularityTabs" style="display: flex; gap: 2px"></div>
+      <button type="button" class="tutorial-launch-button" id="restartTutorial">Tutorial</button>
+    </header>
+    <div id="legend">
+      Groups are model judgments about shared conceptual roles, not validated equivalences. Inspect
+      the original passages; unmatched passages remain as singletons.
     </div>
-    <div class="tutorial-welcome-actions">
-      <button type="button" class="tutorial-button" id="useToolButton">Use Tool</button>
-      <button type="button" class="tutorial-button primary" id="startTutorialButton" disabled>Start Tutorial</button>
+    <div id="stage"><div class="empty-state">Loading...</div></div>
+    <div
+      class="paper-map-question-preview"
+      id="paperMapQuestionPreview"
+      role="tooltip"
+      aria-hidden="true"
+    >
+      <div class="paper-map-question-preview-text" id="paperMapQuestionPreviewText"></div>
+      <div class="paper-map-question-preview-meta" id="paperMapQuestionPreviewMeta"></div>
     </div>
-    <div class="tutorial-loading" id="tutorialLoading" role="status">Loading paper data…</div>
-  </section>
-</div>
 
-<div class="tutorial-layer" id="tutorialLayer" aria-hidden="true" hidden>
-  <div class="tutorial-spotlight" id="tutorialSpotlight" aria-hidden="true"></div>
-  <section class="tutorial-card" id="tutorialCard" role="dialog" aria-labelledby="tutorialStepTitle">
-    <div class="tutorial-card-top">
-      <span class="tutorial-progress" id="tutorialProgress"></span>
-      <button type="button" class="tutorial-exit" id="tutorialExit">Exit tutorial</button>
+    <div
+      class="participant-gate"
+      id="participantGate"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="participantGateTitle"
+      hidden
+    >
+      <section class="participant-gate-card">
+        <h2 id="participantGateTitle">Enter participant ID</h2>
+        <p>
+          Your participant ID selects the assigned document set. Enter the five-character ID
+          provided by the study coordinator.
+        </p>
+        <form class="participant-gate-form" id="participantGateForm">
+          <label for="participantIdInput">Participant ID</label>
+          <div class="participant-gate-row">
+            <input
+              id="participantIdInput"
+              name="participant_id"
+              type="text"
+              inputmode="text"
+              maxlength="5"
+              autocomplete="off"
+              autocapitalize="off"
+              required
+            />
+            <button type="submit" class="tutorial-button primary">Continue</button>
+          </div>
+          <div class="participant-gate-error" id="participantGateError" role="alert"></div>
+        </form>
+      </section>
     </div>
-    <h2 id="tutorialStepTitle"></h2>
-    <p id="tutorialStepBody"></p>
-    
-    <div class="tutorial-card-actions">
-      <button type="button" class="tutorial-button" id="tutorialPrevious">Previous Step</button>
-      <div class="tutorial-card-actions-right">
-        <button type="button" class="tutorial-button primary" id="tutorialNext">Next Step</button>
-      </div>
-    </div>
-  </section>
-</div>
 
-<script type="module" src="./app.js"></script>
-</body>
+    <div
+      class="tutorial-welcome"
+      id="tutorialWelcome"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="tutorialWelcomeTitle"
+    >
+      <section class="tutorial-welcome-card">
+        <div class="tutorial-welcome-eyebrow">Question Atlas</div>
+        <h2 id="tutorialWelcomeTitle">Explore connections across papers</h2>
+        <p>
+          Take a short guided tour of the two complementary views, or open the tool directly if you
+          already know your way around.
+        </p>
+        <div class="tutorial-welcome-features">
+          <div class="tutorial-welcome-feature">
+            <strong>Question Groups</strong>Inspect paragraphs from different papers that answer a
+            shared question.
+          </div>
+          <div class="tutorial-welcome-feature">
+            <strong>Paper Map</strong>See where each question appears within the structure of every
+            paper.
+          </div>
+        </div>
+        <div class="tutorial-welcome-actions">
+          <button type="button" class="tutorial-button" id="useToolButton">Use Tool</button>
+          <button type="button" class="tutorial-button primary" id="startTutorialButton" disabled>
+            Start Tutorial
+          </button>
+        </div>
+        <div class="tutorial-loading" id="tutorialLoading" role="status">Loading paper data…</div>
+      </section>
+    </div>
+
+    <div class="tutorial-layer" id="tutorialLayer" aria-hidden="true" hidden>
+      <div class="tutorial-spotlight" id="tutorialSpotlight" aria-hidden="true"></div>
+      <section
+        class="tutorial-card"
+        id="tutorialCard"
+        role="dialog"
+        aria-labelledby="tutorialStepTitle"
+      >
+        <div class="tutorial-card-top">
+          <span class="tutorial-progress" id="tutorialProgress"></span>
+          <button type="button" class="tutorial-exit" id="tutorialExit">Exit tutorial</button>
+        </div>
+        <h2 id="tutorialStepTitle"></h2>
+        <p id="tutorialStepBody"></p>
+
+        <div class="tutorial-card-actions">
+          <button type="button" class="tutorial-button" id="tutorialPrevious">Previous Step</button>
+          <div class="tutorial-card-actions-right">
+            <button type="button" class="tutorial-button primary" id="tutorialNext">
+              Next Step
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script type="module" src="./app.js"></script>
+  </body>
 </html>

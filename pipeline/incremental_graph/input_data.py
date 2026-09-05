@@ -7,13 +7,13 @@ from typing import Any
 
 import yaml
 
-from ..files import read_json
 from ..document import (
     QUESTION_FIELD,
     iter_structural_units,
     paragraph_unit_id,
     validate_document,
 )
+from ..files import read_json
 from .models import Granularity, Paper, PaperManifest, Paragraph, Section
 
 
@@ -79,26 +79,30 @@ def _from_canonical_document(
         paragraphs: list[Paragraph] = []
         for paragraph_index, raw_paragraph in enumerate(unit.own_paragraphs):
             paragraph_ordinals[family_id] = paragraph_ordinals.get(family_id, 0) + 1
-            paragraphs.append(Paragraph(
-                id=paragraph_unit_id(unit.unit_id, paragraph_index),
-                label=str(raw_paragraph["paragraph_number"]),
-                text=raw_paragraph["text"],
-                question=_question(raw_paragraph),
-                ordinal=paragraph_ordinals[family_id],
-            ))
+            paragraphs.append(
+                Paragraph(
+                    id=paragraph_unit_id(unit.unit_id, paragraph_index),
+                    label=str(raw_paragraph["paragraph_number"]),
+                    text=raw_paragraph["text"],
+                    question=_question(raw_paragraph),
+                    ordinal=paragraph_ordinals[family_id],
+                )
+            )
 
         structural_ordinal += 1
-        sections.append(Section(
-            id=unit.unit_id,
-            label=unit.name,
-            text="\n\n".join(paragraph["text"] for paragraph in unit.evidence),
-            paragraphs=paragraphs,
-            question=_question(unit.source),
-            ordinal=structural_ordinal,
-            kind=unit.unit_type,
-            parent_id=unit.parent_unit_id,
-            family_id=family_id,
-        ))
+        sections.append(
+            Section(
+                id=unit.unit_id,
+                label=unit.name,
+                text="\n\n".join(paragraph["text"] for paragraph in unit.evidence),
+                paragraphs=paragraphs,
+                question=_question(unit.source),
+                ordinal=structural_ordinal,
+                kind=unit.unit_type,
+                parent_id=unit.parent_unit_id,
+                family_id=family_id,
+            )
+        )
     return Paper(paper_id=paper_id, title=title, sections=sections)
 
 
@@ -115,29 +119,32 @@ def _from_section_documents(
         family = [
             unit
             for unit in units
-            if unit.unit_id == section_unit.unit_id
-            or unit.parent_unit_id == section_unit.unit_id
+            if unit.unit_id == section_unit.unit_id or unit.parent_unit_id == section_unit.unit_id
         ]
         paragraphs = []
         for unit in family:
             for paragraph_index, raw_paragraph in enumerate(unit.own_paragraphs):
-                paragraphs.append(Paragraph(
-                    id=paragraph_unit_id(unit.unit_id, paragraph_index),
-                    label=str(raw_paragraph["paragraph_number"]),
-                    text=raw_paragraph["text"],
-                    question=_question(raw_paragraph),
-                    ordinal=len(paragraphs) + 1,
-                ))
-        sections.append(Section(
-            id=section_unit.unit_id,
-            label=section_unit.name,
-            text="\n\n".join(paragraph["text"] for paragraph in section_unit.evidence),
-            paragraphs=paragraphs,
-            question=_question(section_unit.source),
-            ordinal=len(sections) + 1,
-            kind="section",
-            family_id=section_unit.unit_id,
-        ))
+                paragraphs.append(
+                    Paragraph(
+                        id=paragraph_unit_id(unit.unit_id, paragraph_index),
+                        label=str(raw_paragraph["paragraph_number"]),
+                        text=raw_paragraph["text"],
+                        question=_question(raw_paragraph),
+                        ordinal=len(paragraphs) + 1,
+                    )
+                )
+        sections.append(
+            Section(
+                id=section_unit.unit_id,
+                label=section_unit.name,
+                text="\n\n".join(paragraph["text"] for paragraph in section_unit.evidence),
+                paragraphs=paragraphs,
+                question=_question(section_unit.source),
+                ordinal=len(sections) + 1,
+                kind="section",
+                family_id=section_unit.unit_id,
+            )
+        )
     return Paper(paper_id=paper_id, title=title, sections=sections)
 
 

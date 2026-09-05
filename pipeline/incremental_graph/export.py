@@ -5,19 +5,17 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
+from ..files import write_json
 from .correspondence_table import render_correspondence_report_markdown
 from .correspondences import build_correspondences
 from .graph import QuestionGraph
-from ..files import write_json
 from .models import Paper
 
 
 def export_revision(dataset_dir: Path, graph: QuestionGraph, papers: list[Paper]) -> None:
     dataset_dir.mkdir(parents=True, exist_ok=True)
     section_lookup = {
-        (paper.paper_id, section.id): section
-        for paper in papers
-        for section in paper.sections
+        (paper.paper_id, section.id): section for paper in papers for section in paper.sections
     }
     paragraph_lookup = {
         (paper.paper_id, paragraph.id): (section, paragraph)
@@ -54,17 +52,20 @@ def export_revision(dataset_dir: Path, graph: QuestionGraph, papers: list[Paper]
         render_correspondence_report_markdown(correspondences, graph.paper_order),
         encoding="utf-8",
     )
-    write_json(dataset_dir / "final_snapshot.json", {
-        "schema_version": 1,
-        "mode": "final_snapshot",
-        "groups": paragraph_groups,
-        "singletons": paragraph_singletons,
-        "section_groups": section_groups,
-        "stats": {
-            "section_nodes": len(section_groups),
-            "paragraph_nodes": len(paragraph_groups) + len(paragraph_singletons),
+    write_json(
+        dataset_dir / "final_snapshot.json",
+        {
+            "schema_version": 1,
+            "mode": "final_snapshot",
+            "groups": paragraph_groups,
+            "singletons": paragraph_singletons,
+            "section_groups": section_groups,
+            "stats": {
+                "section_nodes": len(section_groups),
+                "paragraph_nodes": len(paragraph_groups) + len(paragraph_singletons),
+            },
         },
-    })
+    )
 
 
 def _viewer_paper(paper: Paper) -> dict[str, Any]:
@@ -111,24 +112,28 @@ def _viewer_group(
         unit_id = member["unit_id"]
         if data["level"] == "section":
             section = section_lookup[(paper_id, unit_id)]
-            members.append({
-                "paper": paper_id,
-                "unit_id": unit_id,
-                "section_id": unit_id,
-                "tag": section.question,
-                "unit_type": section.kind,
-                "ordinal": section.ordinal,
-            })
+            members.append(
+                {
+                    "paper": paper_id,
+                    "unit_id": unit_id,
+                    "section_id": unit_id,
+                    "tag": section.question,
+                    "unit_type": section.kind,
+                    "ordinal": section.ordinal,
+                }
+            )
         else:
             section, paragraph = paragraph_lookup[(paper_id, unit_id)]
-            members.append({
-                "paper": paper_id,
-                "unit_id": unit_id,
-                "section_id": section.id,
-                "tag": paragraph.question,
-                "unit_type": "paragraph",
-                "ordinal": paragraph.ordinal,
-            })
+            members.append(
+                {
+                    "paper": paper_id,
+                    "unit_id": unit_id,
+                    "section_id": section.id,
+                    "tag": paragraph.question,
+                    "unit_type": "paragraph",
+                    "ordinal": paragraph.ordinal,
+                }
+            )
     return {
         "group_id": node_id,
         "overarching_question": data.get("generated_question") or node_id,

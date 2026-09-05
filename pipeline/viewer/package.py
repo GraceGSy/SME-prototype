@@ -11,11 +11,14 @@ from typing import Any
 
 from jsonschema import Draft202012Validator, ValidationError
 
-
 COMMON_ROOT_FILES = ("manifest.json",)
 SNAPSHOT_FILE = "final_snapshot.json"
 GRAPH_REPLAY_FILE = "graph-replay.json"
-VIEWER_ASSETS = {"dist/app.js": "app.js", "styles.css": "styles.css", "graph_replay.css": "graph_replay.css"}
+VIEWER_ASSETS = {
+    "dist/app.js": "app.js",
+    "styles.css": "styles.css",
+    "graph_replay.css": "graph_replay.css",
+}
 
 
 class DatasetValidationError(ValueError):
@@ -43,7 +46,9 @@ def _validate_contract(name: str, value: Any) -> None:
     try:
         Draft202012Validator(schemas[name]).validate(value)
     except ValidationError as error:
-        raise DatasetValidationError(f"{name} contract at {list(error.absolute_path)}: {error.message}") from error
+        raise DatasetValidationError(
+            f"{name} contract at {list(error.absolute_path)}: {error.message}"
+        ) from error
 
 
 def _validate_members(groups: list[dict[str, Any]], units: set[str], source: str) -> None:
@@ -66,9 +71,16 @@ def _validate_optional_graph_replay(dataset_dir: Path, paper_ids: list[str]) -> 
         return {}
     replay = _read_json(path)
     _validate_contract("replay", replay)
-    _require(replay.get("schema_version") == 1, f"{GRAPH_REPLAY_FILE} has an unsupported schema version")
-    _require(replay.get("mode") == "incremental_graph_replay", f"{GRAPH_REPLAY_FILE} has an invalid mode")
-    _require(replay.get("paper_order") == paper_ids, f"{GRAPH_REPLAY_FILE} paper order disagrees with manifest")
+    _require(
+        replay.get("schema_version") == 1, f"{GRAPH_REPLAY_FILE} has an unsupported schema version"
+    )
+    _require(
+        replay.get("mode") == "incremental_graph_replay", f"{GRAPH_REPLAY_FILE} has an invalid mode"
+    )
+    _require(
+        replay.get("paper_order") == paper_ids,
+        f"{GRAPH_REPLAY_FILE} paper order disagrees with manifest",
+    )
     _require(isinstance(replay.get("layouts"), dict), f"{GRAPH_REPLAY_FILE} has no layouts object")
     _require(
         isinstance(replay.get("hierarchy_layouts", {}), dict),
@@ -85,7 +97,10 @@ def _validate_optional_graph_replay(dataset_dir: Path, paper_ids: list[str]) -> 
         action = event.get("action")
         if action == "node_created":
             node_id = event.get("node_id")
-            _require(bool(node_id) and node_id not in known_nodes, f"{GRAPH_REPLAY_FILE} creates a duplicate node")
+            _require(
+                bool(node_id) and node_id not in known_nodes,
+                f"{GRAPH_REPLAY_FILE} creates a duplicate node",
+            )
             known_nodes.add(node_id)
         elif action == "node_merged":
             _require(
@@ -95,7 +110,9 @@ def _validate_optional_graph_replay(dataset_dir: Path, paper_ids: list[str]) -> 
             )
             known_nodes.remove(event["source_node_id"])
         elif action in {"member_added", "question_generated"}:
-            _require(event.get("node_id") in known_nodes, f"{GRAPH_REPLAY_FILE} updates an unknown node")
+            _require(
+                event.get("node_id") in known_nodes, f"{GRAPH_REPLAY_FILE} updates an unknown node"
+            )
         elif action == "edge_created":
             _require(
                 event.get("source") in known_nodes and event.get("target") in known_nodes,
@@ -119,7 +136,9 @@ def validate_dataset(
     dataset_dir = dataset_dir.resolve()
     manifest = _read_json(dataset_dir / "manifest.json")
     _validate_contract("manifest", manifest)
-    _require(isinstance(manifest, list) and manifest, "manifest.json must contain an ordered paper list")
+    _require(
+        isinstance(manifest, list) and manifest, "manifest.json must contain an ordered paper list"
+    )
 
     paper_ids: list[str] = []
     paragraph_units: set[str] = set()
@@ -132,7 +151,9 @@ def validate_dataset(
         _require(paper_id not in paper_ids, f"Duplicate paper_id in manifest: {paper_id}")
         paper = _read_json(dataset_dir / paper_file)
         _validate_contract("paper", paper)
-        _require(paper.get("paper_id") == paper_id, f"{paper_file} does not match paper_id {paper_id}")
+        _require(
+            paper.get("paper_id") == paper_id, f"{paper_file} does not match paper_id {paper_id}"
+        )
         _require(isinstance(paper.get("sections"), list), f"{paper_file} has no sections list")
         _require(isinstance(paper.get("paragraphs"), list), f"{paper_file} has no paragraphs list")
 
@@ -143,8 +164,7 @@ def validate_dataset(
             f"{paper_file} has duplicate or missing section IDs",
         )
         _require(
-            None not in paragraph_ids
-            and len(paragraph_ids) == len(paper["paragraphs"]),
+            None not in paragraph_ids and len(paragraph_ids) == len(paper["paragraphs"]),
             f"{paper_file} has duplicate or missing paragraph IDs",
         )
         for section in paper["sections"]:
@@ -176,7 +196,9 @@ def validate_dataset(
     shared_groups = snapshot.get("groups")
     singleton_groups = snapshot.get("singletons")
     section_groups = snapshot.get("section_groups")
-    _require(snapshot.get("schema_version") == 1, f"{SNAPSHOT_FILE} has an unsupported schema version")
+    _require(
+        snapshot.get("schema_version") == 1, f"{SNAPSHOT_FILE} has an unsupported schema version"
+    )
     _require(snapshot.get("mode") == "final_snapshot", f"{SNAPSHOT_FILE} has an invalid mode")
     _require(isinstance(shared_groups, list), f"{SNAPSHOT_FILE} has no shared groups list")
     _require(isinstance(singleton_groups, list), f"{SNAPSHOT_FILE} has no singleton list")
@@ -211,9 +233,7 @@ def validate_dataset(
 
 
 def _require_empty_output(output_dir: Path) -> None:
-    if output_dir.exists() and (
-        not output_dir.is_dir() or any(output_dir.iterdir())
-    ):
+    if output_dir.exists() and (not output_dir.is_dir() or any(output_dir.iterdir())):
         raise DatasetValidationError(f"Output directory must be empty: {output_dir}")
 
 
@@ -253,17 +273,26 @@ def _write_site_config(output_dir: Path, package_name: str) -> None:
         json.dumps(
             {"name": package_name, "private": True, "version": "1.0.0"},
             indent=2,
-        ) + "\n",
+        )
+        + "\n",
         encoding="utf-8",
     )
     (output_dir / "vercel.json").write_text(
-        json.dumps({
-            "version": 2,
-            "headers": [{
-                "source": "/data/(.*)",
-                "headers": [{"key": "Cache-Control", "value": "public, max-age=0, must-revalidate"}],
-            }],
-        }, indent=2) + "\n",
+        json.dumps(
+            {
+                "version": 2,
+                "headers": [
+                    {
+                        "source": "/data/(.*)",
+                        "headers": [
+                            {"key": "Cache-Control", "value": "public, max-age=0, must-revalidate"}
+                        ],
+                    }
+                ],
+            },
+            indent=2,
+        )
+        + "\n",
         encoding="utf-8",
     )
 
@@ -345,7 +374,9 @@ def main() -> None:
         default=Path(__file__).resolve().parent / "index.html",
     )
     args = parser.parse_args()
-    descriptor = package_dataset(args.dataset_dir, args.output_dir, args.viewer, args.dataset_id, args.label)
+    descriptor = package_dataset(
+        args.dataset_dir, args.output_dir, args.viewer, args.dataset_id, args.label
+    )
     print(
         f"Packaged {descriptor['label']}: {descriptor['paper_count']} papers, "
         f"{descriptor['paragraph_count']} paragraphs, final snapshot"

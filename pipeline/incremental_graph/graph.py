@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import hashlib
-from copy import deepcopy
 import json
+from copy import deepcopy
 from typing import Any, Iterable
 
 import networkx as nx
@@ -98,9 +98,8 @@ class QuestionGraph:
         membership_role: str | None = None,
     ) -> None:
         members = self.graph.nodes[node_id]["members"]
-        if (
-            self.graph.nodes[node_id]["level"] == "section"
-            and any(existing["paper_id"] == paper_id for existing in members)
+        if self.graph.nodes[node_id]["level"] == "section" and any(
+            existing["paper_id"] == paper_id for existing in members
         ):
             raise ValueError(f"Node {node_id} already contains a member from {paper_id}")
         member = _member(
@@ -187,9 +186,7 @@ class QuestionGraph:
             raise ValueError(f"Rerepresentation target {target_id} is not established")
 
         member = source["members"][0]
-        if any(
-            existing["paper_id"] == member["paper_id"] for existing in target["members"]
-        ):
+        if any(existing["paper_id"] == member["paper_id"] for existing in target["members"]):
             raise ValueError(
                 f"Node {target_id} already contains a member from {member['paper_id']}"
             )
@@ -199,9 +196,7 @@ class QuestionGraph:
             if edge_source == source_id or edge_target == source_id
         ]
         unsupported = [
-            data.get("kind")
-            for _, _, data in incident_edges
-            if data.get("kind") != "contains"
+            data.get("kind") for _, _, data in incident_edges if data.get("kind") != "contains"
         ]
         if unsupported:
             raise ValueError(f"Cannot rewire unsupported edge kinds {unsupported}")
@@ -315,10 +310,17 @@ class QuestionGraph:
             {"source": source, "target": target, "key": key, **_json_attrs(data)}
             for source, target, key, data in sorted(self.graph.edges(keys=True, data=True))
         ]
-        return {"schema_version": 1, "paper_order": self.paper_order, "nodes": nodes, "edges": edges}
+        return {
+            "schema_version": 1,
+            "paper_order": self.paper_order,
+            "nodes": nodes,
+            "edges": edges,
+        }
 
     def graph_hash(self) -> str:
-        payload = json.dumps(self.serialize(), sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+        payload = json.dumps(
+            self.serialize(), sort_keys=True, separators=(",", ":"), ensure_ascii=False
+        )
         return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
     def replay_payload(self) -> dict[str, Any]:
@@ -328,7 +330,9 @@ class QuestionGraph:
             "paper_order": self.paper_order,
             "final_graph_hash": self.graph_hash(),
             "layouts": self._layouts(),
-            "hierarchy_layouts": {"section": _hierarchy_layout(self.graph, self.group_ids("section"))},
+            "hierarchy_layouts": {
+                "section": _hierarchy_layout(self.graph, self.group_ids("section"))
+            },
             "events": self.journal.events,
         }
 
@@ -407,7 +411,9 @@ def _hierarchy_layout(graph: nx.MultiDiGraph, node_ids: list[str]) -> dict[str, 
     if not node_ids:
         return {}
     depths = {node_id: 0 for node_id in node_ids}
-    for node_id in nx.topological_sort(hierarchy) if nx.is_directed_acyclic_graph(hierarchy) else node_ids:
+    for node_id in (
+        nx.topological_sort(hierarchy) if nx.is_directed_acyclic_graph(hierarchy) else node_ids
+    ):
         for child in hierarchy.successors(node_id):
             depths[child] = max(depths[child], depths[node_id] + 1)
     max_depth = max(depths.values(), default=0)

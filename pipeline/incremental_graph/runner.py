@@ -6,14 +6,14 @@ from pathlib import Path
 from typing import Any, Callable
 
 from ..document import QUESTION_FIELD
-from .export import export_revision
+from ..files import write_json
 from .configuration import validate_pipeline_config
 from .evidence import Evidence
-from .match_rules import reciprocal_matches, adjacent_paragraph_fan_in, adjacent_core_anchors
+from .export import export_revision
 from .graph import QuestionGraph
 from .journal import RevisionJournal
-from ..files import write_json
 from .llm import JudgmentProvider
+from .match_rules import adjacent_core_anchors, adjacent_paragraph_fan_in, reciprocal_matches
 from .models import (
     Granularity,
     InsertionState,
@@ -124,7 +124,9 @@ class IncrementalGraphRunner:
         self.evidence.register(paper)
 
     def _ingest_paper(self, stage: StageConfig, insertion: InsertionState) -> dict[str, Any]:
-        self.question_graph.add_paper(insertion.paper.paper_id, insertion.paper.title, insertion.paper_index)
+        self.question_graph.add_paper(
+            insertion.paper.paper_id, insertion.paper.title, insertion.paper_index
+        )
         result = {
             "paper_id": insertion.paper.paper_id,
             "sections": len(insertion.paper.sections),
@@ -164,12 +166,16 @@ class IncrementalGraphRunner:
         insertion.section_assignments[section.id] = self.shared_root_id
         return self.shared_root_id
 
-    def _generate_section_questions(self, stage: StageConfig, insertion: InsertionState) -> list[dict[str, str]]:
+    def _generate_section_questions(
+        self, stage: StageConfig, insertion: InsertionState
+    ) -> list[dict[str, str]]:
         self._require_prompt(stage)
         results = []
         for section in insertion.paper.sections:
             if section.question:
-                results.append({"section_id": section.id, "question": section.question, "source": "input"})
+                results.append(
+                    {"section_id": section.id, "question": section.question, "source": "input"}
+                )
                 continue
             context = {
                 "paper": {"paper_id": insertion.paper.paper_id, "title": insertion.paper.title},
@@ -177,18 +183,22 @@ class IncrementalGraphRunner:
             }
             question, attempt_id = self._question(stage, insertion, section.id, context)
             section.question = question
-            results.append({
-                "section_id": section.id,
-                "question": question,
-                "source": "model",
-                "attempt_id": attempt_id,
-            })
+            results.append(
+                {
+                    "section_id": section.id,
+                    "question": question,
+                    "source": "model",
+                    "attempt_id": attempt_id,
+                }
+            )
         return results
 
     def _match_sections(self, stage: StageConfig, insertion: InsertionState) -> dict[str, Any]:
         existing = self.question_graph.group_ids("section")
         unit_ids = [section.id for section in insertion.paper.sections]
-        insertion.section_matches = self._match_units(stage, insertion, "section", None, unit_ids, existing)
+        insertion.section_matches = self._match_units(
+            stage, insertion, "section", None, unit_ids, existing
+        )
         return self._match_batch_dump(insertion.section_matches)
 
     def _reconcile_sections(self, stage: StageConfig, insertion: InsertionState) -> dict[str, str]:
@@ -222,12 +232,8 @@ class IncrementalGraphRunner:
 
         self._require_match_direction(stage, "singleton_to_group")
         frozen_nodes = list(self.question_graph.nodes("section"))
-        singleton_ids = [
-            node_id for node_id, data in frozen_nodes if len(data["members"]) == 1
-        ]
-        established_ids = [
-            node_id for node_id, data in frozen_nodes if len(data["members"]) > 1
-        ]
+        singleton_ids = [node_id for node_id, data in frozen_nodes if len(data["members"]) == 1]
+        established_ids = [node_id for node_id, data in frozen_nodes if len(data["members"]) > 1]
         decisions: dict[str, MatchDecision] = {}
         candidates_by_singleton: dict[str, list[str]] = {}
 
@@ -349,11 +355,13 @@ class IncrementalGraphRunner:
         for section in insertion.paper.sections:
             for index, paragraph in enumerate(section.paragraphs):
                 if paragraph.question:
-                    results.append({
-                        "paragraph_id": paragraph.id,
-                        "question": paragraph.question,
-                        "source": "input",
-                    })
+                    results.append(
+                        {
+                            "paragraph_id": paragraph.id,
+                            "question": paragraph.question,
+                            "source": "input",
+                        }
+                    )
                     continue
                 context = {
                     "paper": self.evidence.paper_context(insertion.paper),
@@ -369,16 +377,16 @@ class IncrementalGraphRunner:
                         else None
                     ),
                 }
-                question, attempt_id = self._question(
-                    stage, insertion, paragraph.id, context
-                )
+                question, attempt_id = self._question(stage, insertion, paragraph.id, context)
                 paragraph.question = question
-                results.append({
-                    "paragraph_id": paragraph.id,
-                    "question": question,
-                    "source": "model",
-                    "attempt_id": attempt_id,
-                })
+                results.append(
+                    {
+                        "paragraph_id": paragraph.id,
+                        "question": question,
+                        "source": "model",
+                        "attempt_id": attempt_id,
+                    }
+                )
         return results
 
     def _match_paragraphs(self, stage: StageConfig, insertion: InsertionState) -> dict[str, Any]:
@@ -403,17 +411,23 @@ class IncrementalGraphRunner:
             results[unit.id] = self._match_batch_dump(batch)
         return results
 
-    def _reconcile_paragraphs(self, stage: StageConfig, insertion: InsertionState) -> dict[str, str]:
-        if not insertion.paragraph_matches and any(section.paragraphs for section in insertion.paper.sections):
+    def _reconcile_paragraphs(
+        self, stage: StageConfig, insertion: InsertionState
+    ) -> dict[str, str]:
+        if not insertion.paragraph_matches and any(
+            section.paragraphs for section in insertion.paper.sections
+        ):
             raise PipelineError("reconcile_paragraphs requires match_paragraphs to run first")
         assignments = {}
         for unit_id, batch in insertion.paragraph_matches.items():
-            assignments.update(self._reconcile(
-                insertion,
-                level="paragraph",
-                parent_id=insertion.section_assignments[unit_id],
-                batch=batch,
-            ))
+            assignments.update(
+                self._reconcile(
+                    insertion,
+                    level="paragraph",
+                    parent_id=insertion.section_assignments[unit_id],
+                    batch=batch,
+                )
+            )
         insertion.paragraph_assignments = assignments
         return assignments
 
@@ -466,8 +480,13 @@ class IncrementalGraphRunner:
             )
         batch = MatchBatch(existing_group_ids=existing_group_ids, new_unit_ids=new_unit_ids)
         scope = self.evidence.scope_context(level, parent_id)
-        group_candidates = [self.evidence.group_context(group_id) for group_id in existing_group_ids]
-        unit_candidates = [self.evidence.unit_context(insertion.paper.paper_id, unit_id, level) for unit_id in new_unit_ids]
+        group_candidates = [
+            self.evidence.group_context(group_id) for group_id in existing_group_ids
+        ]
+        unit_candidates = [
+            self.evidence.unit_context(insertion.paper.paper_id, unit_id, level)
+            for unit_id in new_unit_ids
+        ]
 
         for unit_id in new_unit_ids:
             if not existing_group_ids:
@@ -624,10 +643,16 @@ class IncrementalGraphRunner:
         assignments: dict[str, str] = {}
         reciprocal = reciprocal_matches(batch)
         forward_fan_in = (
-            adjacent_paragraph_fan_in(batch, reciprocal, {
-                unit_id: self.evidence.unit_ordinal(insertion.paper.paper_id, unit_id, "paragraph")
-                for unit_id in batch.new_unit_ids
-            })
+            adjacent_paragraph_fan_in(
+                batch,
+                reciprocal,
+                {
+                    unit_id: self.evidence.unit_ordinal(
+                        insertion.paper.paper_id, unit_id, "paragraph"
+                    )
+                    for unit_id in batch.new_unit_ids
+                },
+            )
             if level == "paragraph"
             else {}
         )
@@ -663,9 +688,7 @@ class IncrementalGraphRunner:
                 assignments[unit_id] = selected_group
                 metadata = self.evidence.member_metadata(insertion, unit_id, level)
                 if level == "paragraph":
-                    metadata["membership_role"] = (
-                        "fan_in" if unit_id in forward_fan_in else "core"
-                    )
+                    metadata["membership_role"] = "fan_in" if unit_id in forward_fan_in else "core"
                 self.question_graph.add_member(
                     selected_group,
                     unit_id,
@@ -741,7 +764,9 @@ class IncrementalGraphRunner:
             target_id = reciprocal.get(selected_unit_id or "")
             if target_id is None or source_id == target_id:
                 continue
-            anchors = adjacent_core_anchors(self.question_graph.members(source_id), self.question_graph.members(target_id))
+            anchors = adjacent_core_anchors(
+                self.question_graph.members(source_id), self.question_graph.members(target_id)
+            )
             if anchors is not None:
                 accepted[source_id] = (target_id, selected_unit_id, anchors)
         return accepted
@@ -772,11 +797,13 @@ class IncrementalGraphRunner:
                     None,
                     source="member_question",
                 )
-                results.append({
-                    "group_id": group_id,
-                    "question": question,
-                    "source": "member_question",
-                })
+                results.append(
+                    {
+                        "group_id": group_id,
+                        "question": question,
+                        "source": "member_question",
+                    }
+                )
                 continue
             group.pop("generated_question_metadata", None)
             context = {
@@ -785,18 +812,16 @@ class IncrementalGraphRunner:
                 ),
                 "group": group,
             }
-            question, attempt_id = self._question(
-                stage, insertion, group_id, context
+            question, attempt_id = self._question(stage, insertion, group_id, context)
+            self.question_graph.set_question(group_id, question, insertion.paper_index, attempt_id)
+            results.append(
+                {
+                    "group_id": group_id,
+                    "question": question,
+                    "source": "model",
+                    "attempt_id": attempt_id,
+                }
             )
-            self.question_graph.set_question(
-                group_id, question, insertion.paper_index, attempt_id
-            )
-            results.append({
-                "group_id": group_id,
-                "question": question,
-                "source": "model",
-                "attempt_id": attempt_id,
-            })
         return results
 
     def _forced(self, stage: StageConfig, insertion: InsertionState) -> bool:
@@ -813,7 +838,9 @@ class IncrementalGraphRunner:
     def _require_match_prompts(stage: StageConfig) -> None:
         required = {"new_to_group", "group_to_new"}
         if not required.issubset(stage.prompts) or not required.issubset(stage.contexts):
-            raise PipelineError(f"Stage {stage.id} requires new_to_group and group_to_new prompt/context entries")
+            raise PipelineError(
+                f"Stage {stage.id} requires new_to_group and group_to_new prompt/context entries"
+            )
         if not stage.skill:
             raise PipelineError(f"Stage {stage.id} requires a matching Skill")
 

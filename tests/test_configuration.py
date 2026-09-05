@@ -1,14 +1,16 @@
 """Configuration mistakes must fail before a model client or run directory exists."""
+
+import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
-import unittest
 from unittest.mock import patch
-import yaml
 
-from pipeline.incremental_graph.configuration import load_pipeline_config, PromptRepository
-from pipeline.incremental_graph.runs import start_graph
+import yaml
 from test_graph_runs import manifest
 from test_incremental_graph import CONFIG_PATH
+
+from pipeline.incremental_graph.configuration import PromptRepository, load_pipeline_config
+from pipeline.incremental_graph.runs import start_graph
 
 
 class ConfigurationTest(unittest.TestCase):
@@ -18,7 +20,10 @@ class ConfigurationTest(unittest.TestCase):
                 root = Path(directory)
                 config = load_pipeline_config(CONFIG_PATH).model_dump(mode="json")
                 if corruption == "order":
-                    config["stages"][1], config["stages"][2] = config["stages"][2], config["stages"][1]
+                    config["stages"][1], config["stages"][2] = (
+                        config["stages"][2],
+                        config["stages"][1],
+                    )
                 elif corruption == "handler":
                     config["stages"][1]["handler"] = "not_a_handler"
                 elif corruption == "prompt":
@@ -37,17 +42,22 @@ class ConfigurationTest(unittest.TestCase):
     def test_source_braces_are_not_treated_as_template_instructions(self):
         config = load_pipeline_config(CONFIG_PATH)
         rendered = PromptRepository(config.prompt_root, config.context_root).render(
-            "section-question/v1", "section-question",
-            {"paper": {"title": "Title"}, "section": {"full_text": "{{literal_source}}"}})
+            "section-question/v1",
+            "section-question",
+            {"paper": {"title": "Title"}, "section": {"full_text": "{{literal_source}}"}},
+        )
         self.assertIn("{{literal_source}}", rendered.user)
 
     def test_context_configuration_rejects_typos_and_coercion(self):
         config = load_pipeline_config(CONFIG_PATH)
-        for content in ("include: [paper, section]\nmax_characters: '10'\noverflow: fail\n",
-                        "include: [paper, section]\nmax_characters: 0\noverflow: fail\nexclude: []\n"):
+        for content in (
+            "include: [paper, section]\nmax_characters: '10'\noverflow: fail\n",
+            "include: [paper, section]\nmax_characters: 0\noverflow: fail\nexclude: []\n",
+        ):
             with self.subTest(content=content), TemporaryDirectory() as directory:
                 root = Path(directory)
                 (root / "test.yaml").write_text(content)
                 with self.assertRaises(ValueError):
                     PromptRepository(config.prompt_root, root).render(
-                        "section-question/v1", "test", {"paper": {}, "section": {}})
+                        "section-question/v1", "test", {"paper": {}, "section": {}}
+                    )

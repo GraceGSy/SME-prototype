@@ -6,8 +6,8 @@ import json
 from pathlib import Path
 from typing import Any
 
-from .models import JudgmentRequest, JudgmentResult
 from ..files import write_json
+from .models import JudgmentRequest, JudgmentResult
 
 
 class RevisionJournal:

@@ -9,10 +9,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal
 
-from pydantic import Field
-from jsonschema import Draft202012Validator
-
 import yaml
+from jsonschema import Draft202012Validator
+from pydantic import Field
 
 from .models import PipelineConfig, StrictModel
 
@@ -72,16 +71,22 @@ class PromptRepository:
         included = context_config.include
         unknown = [field for field in included if field not in context]
         if unknown:
-            raise ConfigurationError(f"Context {context_ref} requests unavailable fields: {unknown}")
+            raise ConfigurationError(
+                f"Context {context_ref} requests unavailable fields: {unknown}"
+            )
         filtered = {field: context[field] for field in included}
         context_json = json.dumps(filtered, indent=2, ensure_ascii=False, sort_keys=True)
         self._validate_context_size(context_ref, context_config, context_json)
 
         if self._PLACEHOLDER not in user_template:
-            raise ConfigurationError(f"Prompt {prompt_ref}/user.md must contain {self._PLACEHOLDER}")
+            raise ConfigurationError(
+                f"Prompt {prompt_ref}/user.md must contain {self._PLACEHOLDER}"
+            )
         unresolved = re.findall(r"{{[^{}]+}}", user_template.replace(self._PLACEHOLDER, ""))
         if unresolved:
-            raise ConfigurationError(f"Prompt {prompt_ref} has unresolved placeholders: {unresolved}")
+            raise ConfigurationError(
+                f"Prompt {prompt_ref} has unresolved placeholders: {unresolved}"
+            )
         user = user_template.replace(self._PLACEHOLDER, context_json)
         return RenderedPrompt(
             system=system,
@@ -130,7 +135,11 @@ STAGE_ORDER = (
     ("section_reconciliation", "reconcile_sections", "structural"),
     ("section_group_questions", "generate_section_group_questions", "structural"),
     ("section_rerepresentation", "rerepresent_section_singletons", "rerepresentation"),
-    ("section_rerepresentation_questions", "regenerate_rerepresented_section_questions", "rerepresentation"),
+    (
+        "section_rerepresentation_questions",
+        "regenerate_rerepresented_section_questions",
+        "rerepresentation",
+    ),
     ("paragraph_questions", "generate_paragraph_questions", "paragraph"),
     ("paragraph_matching", "match_paragraphs", "paragraph"),
     ("paragraph_reconciliation", "reconcile_paragraphs", "paragraph"),
@@ -140,25 +149,46 @@ STAGE_ORDER = (
 
 def validate_pipeline_config(config: PipelineConfig) -> None:
     if tuple((stage.id, stage.handler, stage.phase) for stage in config.stages) != STAGE_ORDER:
-        raise ConfigurationError("Stages must follow the implemented algorithm's exact dependency order")
+        raise ConfigurationError(
+            "Stages must follow the implemented algorithm's exact dependency order"
+        )
     repository = PromptRepository(config.prompt_root, config.context_root)
     for stage in config.stages:
         references: list[tuple[str, str]] = []
-        if stage.handler in {"match_sections", "match_paragraphs", "rerepresent_section_singletons"}:
-            directions = {"singleton_to_group"} if stage.handler == "rerepresent_section_singletons" else {"new_to_group", "group_to_new"}
-            if set(stage.prompts) != directions or set(stage.contexts) != directions or stage.prompt or stage.context:
-                raise ConfigurationError(f"Stage {stage.id} requires exactly these directions: {sorted(directions)}")
+        if stage.handler in {
+            "match_sections",
+            "match_paragraphs",
+            "rerepresent_section_singletons",
+        }:
+            directions = (
+                {"singleton_to_group"}
+                if stage.handler == "rerepresent_section_singletons"
+                else {"new_to_group", "group_to_new"}
+            )
+            if (
+                set(stage.prompts) != directions
+                or set(stage.contexts) != directions
+                or stage.prompt
+                or stage.context
+            ):
+                raise ConfigurationError(
+                    f"Stage {stage.id} requires exactly these directions: {sorted(directions)}"
+                )
             references = [(stage.prompts[key], stage.contexts[key]) for key in sorted(directions)]
         elif stage.handler.startswith(("generate_", "regenerate_")):
             if not stage.prompt or not stage.context or stage.prompts or stage.contexts:
                 raise ConfigurationError(f"Stage {stage.id} requires one prompt and context")
             references = [(stage.prompt, stage.context)]
         elif stage.prompt or stage.context or stage.prompts or stage.contexts or stage.skill:
-            raise ConfigurationError(f"Deterministic stage {stage.id} does not accept model settings")
+            raise ConfigurationError(
+                f"Deterministic stage {stage.id} does not accept model settings"
+            )
         if references:
             if not stage.skill or not (config.skill_root / stage.skill / "SKILL.md").is_file():
                 raise ConfigurationError(f"Stage {stage.id} references a missing Skill")
             for prompt, context in references:
                 spec = repository._load_context(context)
-                rendered = repository.render(prompt, context, {field: None for field in spec.include})
+                rendered = repository.render(
+                    prompt, context, {field: None for field in spec.include}
+                )
                 Draft202012Validator.check_schema(rendered.schema)

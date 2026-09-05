@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from .input_data import load_manifest
-from .runs import DEFAULT_CONFIG, start_graph, add_papers, retry_graph
+from .runs import DEFAULT_CONFIG, add_papers, retry_graph, start_graph
 
 
 def validate_manifest(manifest_path: Path) -> dict[str, Any]:
