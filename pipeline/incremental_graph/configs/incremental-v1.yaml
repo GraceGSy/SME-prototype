@@ -34,7 +34,7 @@ stages:
   - id: section_matching
     handler: match_sections
     phase: structural
-    skill: directional-section-mapping-by-paragraphs-nested
+    skill: match-role
     prompts:
       new_to_group: section-to-group-match/v1
       group_to_new: group-to-section-match/v1
@@ -57,7 +57,7 @@ stages:
   - id: section_rerepresentation
     handler: rerepresent_section_singletons
     phase: rerepresentation
-    skill: directional-section-mapping-by-paragraphs-nested
+    skill: match-role
     prompts:
       singleton_to_group: structural-singleton-to-group-match/v1
     contexts:
@@ -83,7 +83,7 @@ stages:
   - id: paragraph_matching
     handler: match_paragraphs
     phase: paragraph
-    skill: directional-section-mapping-by-paragraphs-nested
+    skill: match-role
     max_tokens: 512
     # Each request compares one focus paragraph against the allowed pool.
     max_input_tokens: 150000
