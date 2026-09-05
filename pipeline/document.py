@@ -6,15 +6,11 @@ array positions so model-generated labels and questions never become identity.
 
 from __future__ import annotations
 
-import copy
 from dataclasses import dataclass
 from typing import Any, Iterator, Literal
 
 
 QUESTION_FIELD = "question_this_text_answers"
-SECTIONS_VIEW = "sections"
-NESTED_VIEW = "sections_and_subsections"
-CandidateView = Literal["sections", "sections_and_subsections"]
 
 _PARAGRAPH_FIELDS = {"paragraph_number", "text", QUESTION_FIELD}
 _SUBSECTION_FIELDS = {"section_name", "section_number", "paragraphs", QUESTION_FIELD}
@@ -63,31 +59,10 @@ class StructuralUnit:
     unit_id: str
     unit_type: Literal["section", "subsection"]
     name: str
-    number: str | None
     parent_unit_id: str | None
-    parent_name: str | None
     source: dict[str, Any]
     own_paragraphs: list[dict[str, Any]]
     evidence: list[dict[str, str]]
-
-    @property
-    def question(self) -> str | None:
-        return self.source.get(QUESTION_FIELD)
-
-    def candidate(self) -> dict[str, Any]:
-        """Return the one candidate shape used by every document matcher."""
-
-        return {
-            "unit_id": self.unit_id,
-            "unit_type": self.unit_type,
-            "name": self.name,
-            "number": self.number,
-            "parent_unit_id": self.parent_unit_id,
-            "parent_name": self.parent_name,
-            "paragraphs": copy.deepcopy(self.evidence),
-            QUESTION_FIELD: self.question,
-        }
-
 
 def strip_questions(value: Any) -> Any:
     """Remove question metadata without changing document content or order."""
@@ -101,30 +76,6 @@ def strip_questions(value: Any) -> Any:
     if isinstance(value, list):
         return [strip_questions(child) for child in value]
     return value
-
-
-def flatten_to_single_section(
-    document: list[dict[str, Any]],
-    section_name: str,
-) -> list[dict[str, Any]]:
-    """Copy every paragraph into one ordered top-level section."""
-
-    validate_document(document)
-    paragraphs = []
-    for unit in iter_structural_units(document):
-        for paragraph in unit.own_paragraphs:
-            paragraphs.append({
-                "paragraph_number": len(paragraphs),
-                "text": paragraph["text"],
-            })
-    if not paragraphs:
-        raise ValueError("A flattened document must contain at least one paragraph")
-    return [{
-        "section_name": section_name,
-        "section_number": None,
-        "paragraphs": paragraphs,
-        "subsections": [],
-    }]
 
 
 def section_unit_id(section_index: int) -> str:
@@ -167,9 +118,7 @@ def iter_structural_units(document: list[dict[str, Any]]) -> Iterator[Structural
             unit_id=section_id,
             unit_type="section",
             name=section["section_name"],
-            number=section.get("section_number"),
             parent_unit_id=None,
-            parent_name=None,
             source=section,
             own_paragraphs=section["paragraphs"],
             evidence=section_evidence,
@@ -180,28 +129,11 @@ def iter_structural_units(document: list[dict[str, Any]]) -> Iterator[Structural
                 unit_id=subsection_id,
                 unit_type="subsection",
                 name=subsection["section_name"],
-                number=subsection.get("section_number"),
                 parent_unit_id=section_id,
-                parent_name=section["section_name"],
                 source=subsection,
                 own_paragraphs=subsection["paragraphs"],
                 evidence=_paragraph_evidence(subsection_id, subsection["paragraphs"]),
             )
-
-
-def matching_candidates(
-    document: list[dict[str, Any]],
-    view: CandidateView,
-) -> list[dict[str, Any]]:
-    """Project a canonical document into the configured matching view."""
-
-    if view not in {SECTIONS_VIEW, NESTED_VIEW}:
-        raise ValueError(f"Unknown candidate view: {view}")
-    return [
-        unit.candidate()
-        for unit in iter_structural_units(document)
-        if view == NESTED_VIEW or unit.unit_type == "section"
-    ]
 
 
 def validate_document(

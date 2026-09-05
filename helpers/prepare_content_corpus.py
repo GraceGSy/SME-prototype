@@ -4,15 +4,40 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+from typing import Any
 
 import yaml
 
 from pipeline.files import read_json, write_json
 from pipeline.document import (
-    flatten_to_single_section,
+    iter_structural_units,
     strip_questions,
     validate_document,
 )
+
+
+def flatten_to_single_section(
+    document: list[dict[str, Any]],
+    section_name: str,
+) -> list[dict[str, Any]]:
+    """Copy every paragraph into one ordered top-level section."""
+
+    validate_document(document)
+    paragraphs = []
+    for unit in iter_structural_units(document):
+        for paragraph in unit.own_paragraphs:
+            paragraphs.append({
+                "paragraph_number": len(paragraphs),
+                "text": paragraph["text"],
+            })
+    if not paragraphs:
+        raise ValueError("A flattened document must contain at least one paragraph")
+    return [{
+        "section_name": section_name,
+        "section_number": None,
+        "paragraphs": paragraphs,
+        "subsections": [],
+    }]
 
 
 def prepare_content_corpus(

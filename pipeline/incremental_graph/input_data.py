@@ -82,7 +82,7 @@ def _from_canonical_document(
             paragraphs.append(Paragraph(
                 id=paragraph_unit_id(unit.unit_id, paragraph_index),
                 label=str(raw_paragraph["paragraph_number"]),
-                text=raw_paragraph["text"].strip(),
+                text=raw_paragraph["text"],
                 question=_question(raw_paragraph),
                 ordinal=paragraph_ordinals[family_id],
             ))
@@ -124,7 +124,7 @@ def _from_section_documents(
                 paragraphs.append(Paragraph(
                     id=paragraph_unit_id(unit.unit_id, paragraph_index),
                     label=str(raw_paragraph["paragraph_number"]),
-                    text=raw_paragraph["text"].strip(),
+                    text=raw_paragraph["text"],
                     question=_question(raw_paragraph),
                     ordinal=len(paragraphs) + 1,
                 ))

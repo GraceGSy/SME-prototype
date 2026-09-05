@@ -2,9 +2,13 @@
 
 import copy
 import unittest
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from pipeline.files import write_json
+from pipeline.incremental_graph.input_data import load_paper
 
-from pipeline.document import (NESTED_VIEW, QUESTION_FIELD, SECTIONS_VIEW,
-    iter_structural_units, matching_candidates, strip_questions, validate_document)
+from pipeline.document import (QUESTION_FIELD,
+    iter_structural_units, strip_questions, validate_document)
 
 
 def _document() -> list[dict]:
@@ -27,22 +31,23 @@ def _document() -> list[dict]:
 
 
 class CanonicalDocumentTest(unittest.TestCase):
-    def test_one_candidate_contract_supports_both_views(self) -> None:
-        sections = matching_candidates(_document(), SECTIONS_VIEW)
-        nested = matching_candidates(_document(), NESTED_VIEW)
+    def test_graph_loading_preserves_source_whitespace(self):
+        document = _document()
+        text = "  Evidence\n    with original spacing.  "
+        document[0]["paragraphs"][0]["text"] = text
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "document.json"
+            write_json(path, document)
+            for granularity in ("section", "subsection"):
+                paper = load_paper(path, "paper", "Paper", granularity)
+                self.assertEqual(paper.sections[0].paragraphs[0].text, text)
 
-        self.assertEqual(len(sections), 1)
-        self.assertEqual(len(nested), 2)
-        self.assertEqual(sections[0], nested[0])
-        self.assertEqual(nested[0]["unit_id"], "s0001")
-        self.assertEqual(nested[0]["unit_type"], "section")
-        self.assertEqual(
-            [paragraph["text"] for paragraph in nested[0]["paragraphs"]],
-            ["Lead-in.", "Theme evidence."],
-        )
-        self.assertEqual(nested[1]["unit_id"], "s0001.ss0001")
-        self.assertEqual(nested[1]["parent_unit_id"], "s0001")
-        self.assertEqual(nested[1]["name"], "Qualitative Findings")
+    def test_structural_evidence_retains_descendants_and_exact_ownership(self):
+        units = list(iter_structural_units(_document()))
+        self.assertEqual([unit.unit_id for unit in units], ["s0001", "s0001.ss0001"])
+        self.assertEqual([p["text"] for p in units[0].evidence], ["Lead-in.", "Theme evidence."])
+        self.assertEqual([p["text"] for p in units[0].own_paragraphs], ["Lead-in."])
+        self.assertEqual(units[1].parent_unit_id, "s0001")
 
     def test_ids_depend_on_position_not_question_or_label(self) -> None:
         changed = copy.deepcopy(_document())
