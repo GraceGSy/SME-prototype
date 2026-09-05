@@ -86,7 +86,9 @@ stages:
     skill: directional-section-mapping-by-paragraphs-nested
     max_tokens: 32768
     # Two complete Sherlock stories render to about 402k prompt characters.
-    max_input_tokens: 350000
+    # Includes Anthropic's input, cache-write, and cache-read usage fields.
+    # The full two-story calls measured up to about 516k combined tokens.
+    max_input_tokens: 600000
     prompts:
       new_to_group: paragraph-to-group-match/v1
       group_to_new: group-to-paragraph-match/v1

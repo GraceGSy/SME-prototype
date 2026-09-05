@@ -5,12 +5,24 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from pipeline.incremental_graph.configuration import load_pipeline_config
+from pipeline.incremental_graph.configuration import RenderedPrompt, load_pipeline_config
 from pipeline.document import QUESTION_FIELD
 from pipeline.incremental_graph.graph import QuestionGraph, graph_from_events, stable_id
 from pipeline.incremental_graph.input_data import load_manifest, load_paper
 from pipeline.incremental_graph.journal import RevisionJournal
-from pipeline.incremental_graph.models import JudgmentResult, Paper, Paragraph, Section
+from pipeline.incremental_graph.llm import (
+    _alias_batch_request,
+    _constrain_batch_schema,
+    _restore_batch_ids,
+    _specialize_rendered_prompt,
+)
+from pipeline.incremental_graph.models import (
+    JudgmentRequest,
+    JudgmentResult,
+    Paper,
+    Paragraph,
+    Section,
+)
 from pipeline.incremental_graph.runner import IncrementalGraphRunner
 from pipeline.viewer.package import validate_dataset
 
@@ -76,6 +88,85 @@ class ScriptedJudge:
 
 
 class IncrementalGraphTest(unittest.TestCase):
+    def test_batch_aliases_preserve_stable_graph_ids(self) -> None:
+        request = JudgmentRequest(
+            key="p2:paragraph_matching:new_to_group:root:batch",
+            paper_index=2,
+            stage_id="paragraph_matching",
+            output_kind="match_batch",
+            prompt_ref="paragraph-to-group-match/v1",
+            context_ref="matching",
+            context={
+                "scope": {"level": "paragraph"},
+                "focus": [{"paragraph_id": "paragraph-stable"}],
+                "candidates": [{"group_id": "group-stable"}],
+            },
+            expected_match_source_ids=["paragraph-stable"],
+            allowed_match_ids=["group-stable"],
+        )
+
+        aliased, aliases = _alias_batch_request(request)
+
+        self.assertEqual(aliased.expected_match_source_ids, ["S0001"])
+        self.assertEqual(aliased.allowed_match_ids, ["T0001"])
+        self.assertEqual(aliased.context["focus"][0]["selection_id"], "S0001")
+        self.assertEqual(aliased.context["focus"][0]["paragraph_id"], "paragraph-stable")
+        self.assertEqual(aliased.context["candidates"][0]["selection_id"], "T0001")
+        constrained_schema = _constrain_batch_schema(
+            {
+                "properties": {
+                    "matches": {
+                        "items": {
+                            "properties": {
+                                "source_id": {"type": "string"},
+                                "target_id": {"type": ["string", "null"]},
+                            }
+                        }
+                    }
+                }
+            },
+            aliased,
+        )
+        properties = constrained_schema["properties"]["matches"]["items"]["properties"]
+        self.assertEqual(properties["source_id"]["enum"], ["S0001"])
+        self.assertEqual(
+            properties["target_id"]["anyOf"],
+            [
+                {"type": "string", "enum": ["T0001"]},
+                {"type": "null"},
+            ],
+        )
+        rendered = RenderedPrompt(
+            system="system",
+            user="user",
+            schema={"type": "object"},
+            prompt_hash="prompt-hash",
+            context_hash="context-hash",
+            schema_hash="original-schema-hash",
+        )
+        question_request = request.model_copy(update={
+            "output_kind": "question",
+            "expected_match_source_ids": [],
+            "allowed_match_ids": [],
+        })
+        self.assertIs(_specialize_rendered_prompt(rendered, question_request), rendered)
+        self.assertEqual(
+            _restore_batch_ids({
+                "matches": [{
+                    "source_id": "S0001",
+                    "target_id": "T0001",
+                    "basis": "same role",
+                }]
+            }, aliases),
+            {
+                "matches": [{
+                    "source_id": "paragraph-stable",
+                    "target_id": "group-stable",
+                    "basis": "same role",
+                }]
+            },
+        )
+
     def test_reuses_questions_already_present_in_canonical_input(self) -> None:
         decorated = Paper(
             paper_id="p1",
