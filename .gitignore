@@ -11,3 +11,5 @@ node_modules/
 pipeline/viewer/dist/
 output/
 playwright-report/
+.playwright-cli/
+.ruff_cache/
