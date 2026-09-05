@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from importlib.metadata import version
 from pathlib import Path
 from typing import Annotated, Any, Literal
 
@@ -36,12 +37,18 @@ class RunState(StrictModel):
     revision_count: int = Field(default=0, ge=0)
     current_revision: RevisionId | None = None
     latest_revision: RevisionId | None = None
+    input_sha256: dict[RevisionId, str] = Field(default_factory=dict)
 
 
 def _policy_hash(config: PipelineConfig) -> str:
+    pipeline = Path(__file__).resolve().parents[1]
+    source_files = [*Path(__file__).parent.glob("*.py"),
+                    pipeline / "document.py", pipeline / "files.py", pipeline / "llm/client.py"]
     assets = {
         "config": config.model_dump(mode="json"),
-        "algorithm": directory_hash(Path(__file__).parent),
+        "code": {path.relative_to(pipeline).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+                 for path in sorted(source_files)},
+        "dependencies": {name: version(name) for name in ("anthropic", "networkx", "pydantic", "PyYAML")},
         "prompts": directory_hash(config.prompt_root),
         "contexts": directory_hash(config.context_root),
         "skills": {name: directory_hash(config.skill_root / name)
@@ -62,6 +69,13 @@ def _state(run_dir: Path) -> RunState:
     return state
 
 
+def _saved_inputs(run_dir: Path, state: RunState, revision: str) -> tuple[PaperManifest, list[Any]]:
+    input_dir = run_dir / "inputs" / revision
+    if state.input_sha256.get(revision) != directory_hash(input_dir):
+        raise ValueError("Saved inputs changed; do not mix edited documents into an existing run")
+    return _inputs(input_dir / "manifest.yaml")
+
+
 def start_graph(manifest_path: Path, run_dir: Path, config_path: Path = DEFAULT_CONFIG) -> dict[str, Any]:
     manifest, documents = _inputs(manifest_path)
     if len(manifest.papers) < 2:
@@ -78,7 +92,7 @@ def add_papers(manifest_path: Path, run_dir: Path) -> dict[str, Any]:
     state = _state(run_dir)
     if state.latest_revision != state.current_revision or state.current_revision is None:
         raise ValueError("Retry the unfinished revision before adding papers")
-    previous, documents = _inputs(run_dir / "inputs" / state.current_revision / "manifest.yaml")
+    previous, documents = _saved_inputs(run_dir, state, state.current_revision)
     incoming, added = _inputs(manifest_path)
     if incoming.max_granularity != state.max_granularity:
         raise ValueError("Added papers must use the graph's existing max_granularity")
@@ -94,7 +108,7 @@ def retry_graph(run_dir: Path, *, paper_index: int | None = None, stage_id: str 
     state = _state(run_dir)
     if state.latest_revision is None:
         raise ValueError("There is no revision to retry")
-    manifest, documents = _inputs(run_dir / "inputs" / state.latest_revision / "manifest.yaml")
+    manifest, documents = _saved_inputs(run_dir, state, state.latest_revision)
     if (paper_index is None) != (stage_id is None):
         raise ValueError("Provide both paper index and stage, or neither")
     if paper_index is not None and not 1 <= paper_index <= len(manifest.papers):
@@ -122,6 +136,7 @@ def _execute(
         "schema_version": 1, "max_granularity": state.max_granularity, "papers": entries,
     }, sort_keys=False), encoding="utf8")
     state.latest_revision = revision
+    state.input_sha256[revision] = directory_hash(input_dir)
     write_json(run_dir / "run.json", state.model_dump(mode="json"))
     _, papers = load_manifest(frozen_manifest)
     config = state.config

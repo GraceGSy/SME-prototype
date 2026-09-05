@@ -79,3 +79,30 @@ class GraphRunTest(unittest.TestCase):
                 result = retry_graph(root / "run")
             self.assertEqual(result["paper_order"], ["a", "b"])
             self.assertEqual(len(list((root / "run/revisions").iterdir())), 2)
+
+    def test_saved_input_tampering_is_rejected_before_any_judgment(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = manifest(root, ["a", "b"], "source")
+            with patch("pipeline.incremental_graph.runs.AnthropicJudgmentProvider", return_value=ScriptedJudge({})) as provider:
+                start_graph(source, root / "run", CONFIG_PATH)
+                frozen = root / "run/inputs/revision-0001/paper-0001.json"
+                document = json.loads(frozen.read_text())
+                document[0]["paragraphs"][0]["text"] = "Changed but still valid."
+                write_json(frozen, document)
+                provider.reset_mock()
+                with self.assertRaisesRegex(ValueError, "Saved inputs changed"):
+                    retry_graph(root / "run")
+                provider.assert_not_called()
+
+    def test_policy_change_requires_a_new_run(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = manifest(root, ["a", "b"], "source")
+            with patch("pipeline.incremental_graph.runs.AnthropicJudgmentProvider", return_value=ScriptedJudge({})) as provider:
+                start_graph(source, root / "run", CONFIG_PATH)
+                provider.reset_mock()
+                with patch("pipeline.incremental_graph.runs._policy_hash", return_value="changed"):
+                    with self.assertRaisesRegex(ValueError, "start a new run"):
+                        retry_graph(root / "run")
+                provider.assert_not_called()
