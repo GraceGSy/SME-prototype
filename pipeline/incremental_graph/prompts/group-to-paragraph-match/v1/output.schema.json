@@ -1,20 +1,9 @@
 {
   "type": "object",
   "properties": {
-    "matches": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "source_id": {"type": "string", "minLength": 1},
-          "target_id": {"type": ["string", "null"]},
-          "basis": {"type": "string", "minLength": 1}
-        },
-        "required": ["source_id", "target_id", "basis"],
-        "additionalProperties": false
-      }
-    }
+    "target_id": {"type": ["string", "null"]},
+    "basis": {"type": "string", "minLength": 1}
   },
-  "required": ["matches"],
+  "required": ["target_id", "basis"],
   "additionalProperties": false
 }

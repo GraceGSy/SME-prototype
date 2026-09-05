@@ -345,7 +345,17 @@ class IncrementalGraphTest(unittest.TestCase):
             if request.stage_id == "paragraph_matching" and request.paper_index == 2
         ]
         self.assertEqual(len(paragraph_matches), 2)
-        self.assertTrue(all(request.output_kind == "match_batch" for request in paragraph_matches))
+        self.assertTrue(all(request.output_kind == "match" for request in paragraph_matches))
+        forward_match = next(
+            request
+            for request in paragraph_matches
+            if ":new_to_group:" in request.key
+        )
+        self.assertNotIn("selection_id", forward_match.context["focus"])
+        self.assertEqual(
+            forward_match.context["candidates"][0]["selection_id"],
+            paragraph_group,
+        )
         paragraph_group_questions = [
             request
             for request in judge.requests
@@ -407,6 +417,62 @@ class IncrementalGraphTest(unittest.TestCase):
         )
         self.assertIsNone(requests[1].context["next_paragraph"])
 
+    def test_paragraph_matching_uses_identity_free_neighbor_windows(self) -> None:
+        def story(paper_id: str, prefix: str) -> Paper:
+            paragraphs = [
+                Paragraph(id=f"{prefix}{index}", text=f"{prefix.upper()} {label}.", ordinal=index)
+                for index, label in enumerate(("before", "middle", "after"), start=1)
+            ]
+            return Paper(
+                paper_id=paper_id,
+                title=paper_id.upper(),
+                sections=[Section(
+                    id=f"{prefix}-section",
+                    text="\n\n".join(paragraph.text for paragraph in paragraphs),
+                    paragraphs=paragraphs,
+                )],
+            )
+
+        judge = ScriptedJudge({})
+        with tempfile.TemporaryDirectory() as directory:
+            runner = IncrementalGraphRunner(
+                load_pipeline_config(CONFIG_PATH),
+                judge,
+                Path(directory) / "revision",
+                max_granularity="paragraph",
+            )
+            runner.run([story("p1", "a"), story("p2", "b")])
+
+        forward = next(
+            request
+            for request in judge.requests
+            if request.key == "p2:paragraph_matching:new_to_group:b2"
+        )
+        self.assertEqual(
+            forward.context["focus"],
+            {
+                "previous_paragraph": {"full_text": "B before."},
+                "paragraph": {
+                    "generated_question_metadata": "What does b2 address?",
+                    "full_text": "B middle.",
+                },
+                "next_paragraph": {"full_text": "B after."},
+            },
+        )
+        candidate = next(
+            item
+            for item in forward.context["candidates"]
+            if item["members"][0]["paragraph"]["full_text"] == "A middle."
+        )
+        self.assertIn(candidate["selection_id"], forward.allowed_match_ids)
+        member = candidate["members"][0]
+        self.assertEqual(member["previous_paragraph"]["full_text"], "A before.")
+        self.assertEqual(member["next_paragraph"]["full_text"], "A after.")
+        self.assertFalse(
+            {"paper_id", "paragraph_id", "paragraph_label", "ordinal", "selection_id"}
+            & set(member)
+        )
+
     def test_incremental_reconciliation_preserves_ignored_projection_as_provenance(self) -> None:
         group_a = stable_id("section-group", "root", "p1", "a")
         group_b = stable_id("section-group", "root", "p1", "b")
@@ -447,18 +513,19 @@ class IncrementalGraphTest(unittest.TestCase):
             p3_paragraph_match = next(
                 request
                 for request in runner.judge.requests
-                if request.stage_id == "paragraph_matching"
-                and request.key.startswith("p3:paragraph_matching:new_to_group:")
-                and any(item["paragraph_id"] == "pa3" for item in request.context["focus"])
+                if request.key == "p3:paragraph_matching:new_to_group:pa3"
             )
             candidate = next(
                 item
                 for item in p3_paragraph_match.context["candidates"]
-                if item["group_id"] == paragraph_group_a
+                if item["selection_id"] == paragraph_group_a
             )
             self.assertEqual(
-                {member["paragraph_id"] for member in candidate["members"]},
-                {"pa", "pa2"},
+                {
+                    member["paragraph"]["full_text"]
+                    for member in candidate["members"]
+                },
+                {"Paragraph for shared method"},
             )
             first_paragraph_request = next(
                 index
@@ -682,28 +749,24 @@ class IncrementalGraphTest(unittest.TestCase):
         self.assertTrue(all(request.skill_ref for request in section_matches))
         paragraph_forward = next(
             request for request in judge.requests
-            if request.stage_id == "paragraph_matching"
-            and request.key.startswith("p2:paragraph_matching:new_to_group:")
-            and any(item["paragraph_id"] == "lead2" for item in request.context["focus"])
+            if request.key == "p2:paragraph_matching:new_to_group:lead2"
         )
         candidate_units = {
-            member["paragraph_id"]
+            member["paragraph"]["full_text"]
             for candidate in paragraph_forward.context["candidates"]
             for member in candidate["members"]
         }
-        self.assertEqual(candidate_units, {"lead1"})
+        self.assertEqual(candidate_units, {"Lead paragraph"})
         detail_forward = next(
             request for request in judge.requests
-            if request.stage_id == "paragraph_matching"
-            and request.key.startswith("p2:paragraph_matching:new_to_group:")
-            and any(item["paragraph_id"] == "detail2" for item in request.context["focus"])
+            if request.key == "p2:paragraph_matching:new_to_group:detail2"
         )
         detail_candidates = {
-            member["paragraph_id"]
+            member["paragraph"]["full_text"]
             for candidate in detail_forward.context["candidates"]
             for member in candidate["members"]
         }
-        self.assertEqual(detail_candidates, {"detail1"})
+        self.assertEqual(detail_candidates, {"Detail paragraph"})
         contains = [
             event for event in runner.journal.events
             if event["action"] == "edge_created" and event["kind"] == "contains"
@@ -817,9 +880,7 @@ class IncrementalGraphTest(unittest.TestCase):
         )
         paragraph_request = next(
             request for request in judge.requests
-            if request.stage_id == "paragraph_matching"
-            and request.key.startswith("p3:paragraph_matching:new_to_group:")
-            and any(item["paragraph_id"] == "c2" for item in request.context["focus"])
+            if request.key == "p3:paragraph_matching:new_to_group:c2"
         )
         self.assertEqual(paragraph_request.context["scope"]["parent_group_id"], target_id)
         self.assertLess(
@@ -1085,18 +1146,16 @@ class IncrementalGraphTest(unittest.TestCase):
         p3_node_match = next(
             request
             for request in runner.judge.requests
-            if request.stage_id == "paragraph_matching"
-            and request.key.startswith("p3:paragraph_matching:group_to_new:")
-            and any(item["group_id"] == adjacent_group for item in request.context["focus"])
+            if request.key
+            == f"p3:paragraph_matching:group_to_new:{adjacent_group}"
         )
-        focus_group = next(
-            item
-            for item in p3_node_match.context["focus"]
-            if item["group_id"] == adjacent_group
-        )
+        focus_group = p3_node_match.context["focus"]
         self.assertEqual(
-            {member["paragraph_id"] for member in focus_group["members"]},
-            {"a3", "b3"},
+            {
+                member["paragraph"]["full_text"]
+                for member in focus_group["members"]
+            },
+            {"Paragraph a3", "Paragraph b3"},
         )
         self.assertNotIn(adjacent_group, runner.question_graph.graph)
         self.assertEqual(

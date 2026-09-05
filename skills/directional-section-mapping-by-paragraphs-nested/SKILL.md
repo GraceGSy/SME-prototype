@@ -20,6 +20,8 @@ reverse direction is a separate call.
 - Sections and subsections may match at any level: section-to-section, section-to-subsection, subsection-to-section, or subsection-to-subsection.
 - In a structural rerepresentation call, the focus is a singleton group and every candidate is an established non-singleton group. This pass is one-way and does not require a reciprocal selection.
 - For paragraph calls, trust the supplied exact structural-node scope. Do not infer or select a candidate from its parent, children, siblings, or wider family.
+- For paragraph calls, use neighboring paragraphs only to disambiguate the center paragraph. Match the center paragraphs themselves.
+- Selection IDs are opaque output handles. Never treat an ID, ordinal, label, or array position as evidence of correspondence.
 
 ## Decision
 

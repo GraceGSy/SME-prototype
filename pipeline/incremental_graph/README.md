@@ -51,11 +51,14 @@ The paragraph-question stage sends every missing paragraph in its own
 schema-validated Skill call with a 256-token output ceiling. It sends the focus
 paragraph, its immediate neighbors, and document and parent-section metadata,
 not the full parent text. Multi-member node questions also use one bounded call
-per node. Paragraph matching remains batched with one call per direction inside
-each exact finalized structural node. Reciprocal matches form node cores. A one-way paragraph may
-join only when it is immediately adjacent to a reciprocal anchor; all other
-paragraphs remain singletons. Unabsorbed projected selections remain provenance
-and never become edges.
+per node. Paragraph matching uses one focus paragraph per Skill call in each
+direction inside each exact finalized structural node. The focus and its member
+evidence omit IDs, labels, and ordinals; only candidates expose a `selection_id`
+that Claude can return. Immediate neighbors provide context on both sides but
+are not themselves matched. Reciprocal matches form node cores. A one-way
+paragraph may join only when it is immediately adjacent to a reciprocal anchor;
+all other paragraphs remain singletons. Unabsorbed projected selections remain
+provenance and never become edges.
 
 The matching Skill returns `target_id` and `basis` for each source. The question
 Skill returns `question_this_text_answers`. Questions remain metadata, not

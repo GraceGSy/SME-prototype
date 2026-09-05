@@ -55,6 +55,7 @@ class IncrementalGraphRunner:
         self.insertions_by_paper: dict[str, InsertionState] = {}
         self.section_lookup: dict[tuple[str, str], Any] = {}
         self.paragraph_lookup: dict[tuple[str, str], tuple[Any, Any]] = {}
+        self.paragraph_positions: dict[tuple[str, str], int] = {}
         self.shared_root_id: str | None = None
         self.handlers: dict[str, Callable[[StageConfig, InsertionState], Any]] = {
             "ingest_paper": self._ingest_paper,
@@ -120,8 +121,9 @@ class IncrementalGraphRunner:
         self.papers.append(paper)
         for section in paper.sections:
             self.section_lookup[(paper.paper_id, section.id)] = section
-            for paragraph in section.paragraphs:
+            for position, paragraph in enumerate(section.paragraphs):
                 self.paragraph_lookup[(paper.paper_id, paragraph.id)] = (section, paragraph)
+                self.paragraph_positions[(paper.paper_id, paragraph.id)] = position
 
     def _ingest_paper(self, stage: StageConfig, insertion: InsertionState) -> dict[str, Any]:
         self.question_graph.add_paper(insertion.paper.paper_id, insertion.paper.title, insertion.paper_index)
@@ -514,7 +516,7 @@ class IncrementalGraphRunner:
         new_unit_ids: list[str],
         existing_group_ids: list[str],
     ) -> MatchBatch:
-        """Match all paragraphs in one structural scope using two requests."""
+        """Match one focus paragraph per request in both directions."""
 
         batch = MatchBatch(
             existing_group_ids=existing_group_ids,
@@ -523,97 +525,49 @@ class IncrementalGraphRunner:
         if not new_unit_ids or not existing_group_ids:
             return batch
         scope = self._scope_context("paragraph", parent_id)
-        batch.forward = self._match_direction_batch(
-            stage,
-            insertion,
-            direction="new_to_group",
-            source_ids=new_unit_ids,
-            allowed_ids=existing_group_ids,
-            context={
-                "scope": scope,
-                "focus": [
-                    self._paragraph_context(insertion.paper.paper_id, unit_id)
-                    for unit_id in new_unit_ids
-                ],
-                "candidates": [
-                    self._group_context(group_id) for group_id in existing_group_ids
-                ],
-            },
-        )
-        batch.reverse = self._match_direction_batch(
-            stage,
-            insertion,
-            direction="group_to_new",
-            source_ids=existing_group_ids,
-            allowed_ids=new_unit_ids,
-            context={
-                "scope": scope,
-                "focus": [
-                    self._group_context(group_id) for group_id in existing_group_ids
-                ],
-                "candidates": [
-                    self._paragraph_context(insertion.paper.paper_id, unit_id)
-                    for unit_id in new_unit_ids
-                ],
-            },
-        )
-        return batch
+        group_candidates = [
+            self._paragraph_group_match_context(group_id, selection_id=group_id)
+            for group_id in existing_group_ids
+        ]
+        unit_candidates = [
+            self._paragraph_match_context(
+                insertion.paper.paper_id,
+                unit_id,
+                selection_id=unit_id,
+            )
+            for unit_id in new_unit_ids
+        ]
 
-    def _match_direction_batch(
-        self,
-        stage: StageConfig,
-        insertion: InsertionState,
-        *,
-        direction: MatchDirection,
-        source_ids: list[str],
-        allowed_ids: list[str],
-        context: dict[str, Any],
-    ) -> dict[str, MatchDecision]:
-        request = JudgmentRequest(
-            key=(
-                f"{insertion.paper.paper_id}:{stage.id}:{direction}:"
-                f"{context['scope'].get('parent_group_id') or 'root'}:batch"
-            ),
-            paper_index=insertion.paper_index,
-            stage_id=stage.id,
-            output_kind="match_batch",
-            prompt_ref=stage.prompts[direction],
-            context_ref=stage.contexts[direction],
-            context=context,
-            allowed_match_ids=allowed_ids,
-            expected_match_source_ids=source_ids,
-            skill_ref=stage.skill,
-            max_tokens=stage.max_tokens,
-            max_input_tokens=stage.max_input_tokens,
-            force=self._forced(stage, insertion),
-        )
-        result = self.judge.judge(request)
-        attempt_id = self.journal.attempt(request, result)
-        targets = {
-            item["source_id"]: item.get("target_id")
-            for item in result.normalized["matches"]
-        }
-        decisions = {}
-        for source_id in source_ids:
-            target_id = targets[source_id]
-            self.journal.event(
-                "match_recorded",
-                paper_index=insertion.paper_index,
-                level=context["scope"]["level"],
-                parent_id=context["scope"].get("parent_group_id"),
-                direction=direction,
-                source_id=source_id,
-                target_id=target_id,
-                candidate_ids=allowed_ids,
-                attempt_id=attempt_id,
+        for unit_id in new_unit_ids:
+            batch.forward[unit_id] = self._match(
+                stage,
+                insertion,
+                direction="new_to_group",
+                source_id=unit_id,
+                allowed_ids=existing_group_ids,
+                context={
+                    "scope": scope,
+                    "focus": self._paragraph_match_context(
+                        insertion.paper.paper_id, unit_id
+                    ),
+                    "candidates": group_candidates,
+                },
             )
-            decisions[source_id] = MatchDecision(
-                source_id=source_id,
-                target_id=target_id,
-                direction=direction,
-                attempt_id=attempt_id,
+
+        for group_id in existing_group_ids:
+            batch.reverse[group_id] = self._match(
+                stage,
+                insertion,
+                direction="group_to_new",
+                source_id=group_id,
+                allowed_ids=new_unit_ids,
+                context={
+                    "scope": scope,
+                    "focus": self._paragraph_group_match_context(group_id),
+                    "candidates": unit_candidates,
+                },
             )
-        return decisions
+        return batch
 
     def _match(
         self,
@@ -988,6 +942,61 @@ class IncrementalGraphRunner:
                 "generated_question_metadata": section.question,
             },
         }
+
+    def _paragraph_match_context(
+        self,
+        paper_id: str,
+        paragraph_id: str,
+        *,
+        selection_id: str | None = None,
+    ) -> dict[str, Any]:
+        """Return paragraph evidence without leaking focus identity or position."""
+
+        section, paragraph = self.paragraph_lookup[(paper_id, paragraph_id)]
+        position = self.paragraph_positions[(paper_id, paragraph_id)]
+        context = {
+            "previous_paragraph": self._neighbor_text(
+                section.paragraphs[position - 1] if position else None
+            ),
+            "paragraph": {
+                "generated_question_metadata": paragraph.question,
+                "full_text": paragraph.text,
+            },
+            "next_paragraph": self._neighbor_text(
+                section.paragraphs[position + 1]
+                if position + 1 < len(section.paragraphs)
+                else None
+            ),
+        }
+        if selection_id is not None:
+            context["selection_id"] = selection_id
+        return context
+
+    def _paragraph_group_match_context(
+        self,
+        group_id: str,
+        *,
+        selection_id: str | None = None,
+    ) -> dict[str, Any]:
+        """Return a paragraph node's evidence with only an optional output handle."""
+
+        data = self.question_graph.graph.nodes[group_id]
+        context = {
+            "generated_question_metadata": data.get("generated_question", ""),
+            "members": [
+                self._paragraph_match_context(member["paper_id"], member["unit_id"])
+                for member in data["members"]
+            ],
+        }
+        if selection_id is not None:
+            context["selection_id"] = selection_id
+        return context
+
+    @staticmethod
+    def _neighbor_text(paragraph: Paragraph | None) -> dict[str, str] | None:
+        if paragraph is None:
+            return None
+        return {"full_text": paragraph.text}
 
     def _scope_context(self, level: str, parent_id: str | None) -> dict[str, Any]:
         scope = {"level": level, "parent_group_id": parent_id}
