@@ -279,9 +279,10 @@ class ClaudeSkills:
         *,
         policy: SkillCallPolicy,
         cacheable_prompt: str | None = None,
+        cacheable_context: str | None = None,
     ) -> RunResult:
-        self._validate_prompt(prompt, policy, cacheable_prompt)
-        content = _prompt_content(prompt, cacheable_prompt)
+        self._validate_prompt(prompt, policy, cacheable_prompt, cacheable_context)
+        content = _prompt_content(prompt, cacheable_prompt, cacheable_context)
         messages: list[dict[str, Any]] = [{"role": "user", "content": content}]
         return self._run_structured(skills, messages, schema, policy)
 
@@ -425,8 +426,9 @@ class ClaudeSkills:
         prompt: str,
         policy: SkillCallPolicy,
         cacheable_prompt: str | None = None,
+        cacheable_context: str | None = None,
     ) -> None:
-        total_characters = len(prompt) + len(cacheable_prompt or "")
+        total_characters = len(prompt) + len(cacheable_prompt or "") + len(cacheable_context or "")
         if total_characters > policy.max_prompt_characters:
             raise SkillBudgetExceeded(
                 f"Skill prompt is {total_characters} characters; configured maximum is "
@@ -492,18 +494,21 @@ def _single_response_usage(response_id: str, usage: dict[str, Any]) -> dict[str,
     }
 
 
-def _prompt_content(prompt: str, cacheable_prompt: str | None) -> list[dict[str, Any]]:
-    """Place reusable instructions before per-judgment data in one user turn."""
+def _prompt_content(
+    prompt: str, cacheable_prompt: str | None, cacheable_context: str | None = None
+) -> list[dict[str, Any]]:
+    """Cache instructions and evidence before the changing focus in one user turn."""
 
     content: list[dict[str, Any]] = []
-    if cacheable_prompt:
-        content.append(
-            {
-                "type": "text",
-                "text": cacheable_prompt,
-                "cache_control": FIVE_MINUTE_CACHE,
-            }
-        )
+    for prefix in (cacheable_prompt, cacheable_context):
+        if prefix:
+            content.append(
+                {
+                    "type": "text",
+                    "text": prefix,
+                    "cache_control": FIVE_MINUTE_CACHE,
+                }
+            )
     content.append({"type": "text", "text": prompt})
     return content
 

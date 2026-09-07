@@ -90,6 +90,7 @@ class AnthropicJudgmentProvider:
                 context_management_trigger_tokens=(self.model.context_management_trigger_tokens),
             ),
             cacheable_prompt=rendered.system,
+            cacheable_context=rendered.cacheable_context,
         )
         api_normalized = dict(response.value)
         model = {
@@ -116,7 +117,10 @@ class AnthropicJudgmentProvider:
             normalized=normalized,
             raw_response=raw_response,
             rendered_system=rendered.system,
-            rendered_user=rendered.user,
+            # Preserve all user evidence in the existing text provenance contract.
+            rendered_user="\n\n".join(
+                block for block in (rendered.cacheable_context, rendered.user) if block
+            ),
             prompt_hash=rendered.prompt_hash,
             context_hash=rendered.context_hash,
             schema_hash=rendered.schema_hash,

@@ -101,6 +101,47 @@ old experiment-specific action-gating machinery. Participant routing remains
 available through `package_study`; it is not random assignment, telemetry, or
 a completed user-study infrastructure.
 
+## Prompt Caching
+
+Graph judgments still use native Claude Skills and code execution. Skill files
+are not copied into the system prompt. Matching context declares `cache_prefix:
+[scope, candidates]`: the transport sends cached task instructions, then cached
+scope/candidates, then the changing focus without a cache marker. This applies
+to both directions at both levels, including singleton realignment. Complete
+eligible pools and neighbor windows are preserved, not shortened or normalized.
+Question prompts keep unique evidence uncached rather than paying to write a
+large prefix that will not repeat.
+
+Existing cache markers also enable Anthropic's automatic caching of code
+execution results within a Skill request's server-side iterations, as documented
+in [server-tool caching](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-use-with-prompt-caching).
+This does not guarantee that a Skill's on-demand instruction-file read will be
+reused across separate judgments. Container state is independent of prompt
+caching; containers and tool histories are not carried between judgments.
+
+The existing system breakpoint and the two user-prefix breakpoints use the
+five-minute TTL. This leaves one of the four explicit breakpoint slots free.
+According to [Anthropic's caching documentation](https://platform.claude.com/docs/en/build-with-claude/prompt-caching),
+cache reuse requires an identical preceding prefix and the model's minimum
+token length. Changing scope, candidates, instructions, or model settings can
+prevent reuse; merely changing the focus no longer invalidates the pool prefix.
+Realignment pools can differ because eligibility depends on paper membership.
+Five minutes is measured from request start, so long-running Skill calls can
+still outlast the cache. No longer TTL or extra warm-up request is enabled.
+
+`rendered_user` in provenance joins the candidate-prefix and dynamic-focus text
+blocks with two newlines. `rendered_system` retains the task instructions sent
+in the first user block. Full context still participates in local result-cache
+identity, and prompt identity includes the configured prefix partition. Cached
+evidence still counts toward prompt-size and observed-token guards.
+
+Offline tests verify request layout, evidence preservation, and invalidation,
+not Anthropic cache hits or matching quality. For a live run, measure
+`cache_read_input_tokens / (input_tokens + cache_creation_input_tokens +
+cache_read_input_tokens)` on actual API responses. Exclude local result-cache
+hits: their raw usage is historical provenance, not a new bill. Server-tool
+iterations can contribute usage too, so this is not purely cross-request reuse.
+
 ## Strictness
 
 Reject unsupported versions, wrong types, unknown fields, missing decisions,

@@ -2,5 +2,8 @@ include:
   - scope
   - focus
   - candidates
+cache_prefix:
+  - scope
+  - candidates
 max_characters: 0
 overflow: fail

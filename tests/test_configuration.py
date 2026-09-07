@@ -53,6 +53,8 @@ class ConfigurationTest(unittest.TestCase):
         for content in (
             "include: [paper, section]\nmax_characters: '10'\noverflow: fail\n",
             "include: [paper, section]\nmax_characters: 0\noverflow: fail\nexclude: []\n",
+            "include: [paper, section]\nmax_characters: 0\noverflow: fail\ncache_prefix: [typo]\n",
+            "include: [paper, section]\nmax_characters: 0\noverflow: fail\ncache_prefix: [paper, paper]\n",
         ):
             with self.subTest(content=content), TemporaryDirectory() as directory:
                 root = Path(directory)
@@ -86,16 +88,16 @@ class ConfigurationTest(unittest.TestCase):
                     },
                 )
                 # Check the actual JSON, not similarly worded instructions above it.
-                payload = rendered.user[rendered.user.index("{\n") :]
-                self.assertLess(payload.index('"focus"'), payload.index('"candidates"'))
-                self.assertLess(
-                    payload.index('"previous_paragraph"'),
-                    payload.index('"paragraph_under_consideration"'),
-                )
-                self.assertLess(
-                    payload.index('"paragraph_under_consideration"'),
-                    payload.index('"next_paragraph"'),
-                )
+                for block in (rendered.cacheable_context, rendered.user):
+                    payload = block[block.index("{\n") :]
+                    self.assertLess(
+                        payload.index('"previous_paragraph"'),
+                        payload.index('"paragraph_under_consideration"'),
+                    )
+                    self.assertLess(
+                        payload.index('"paragraph_under_consideration"'),
+                        payload.index('"next_paragraph"'),
+                    )
                 self.assertIn("paragraph_under_consideration", rendered.system)
                 self.assertIn("role first", rendered.system)
                 self.assertIn("context only", rendered.system)

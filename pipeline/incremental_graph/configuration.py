@@ -11,7 +11,7 @@ from typing import Any, Literal
 
 import yaml
 from jsonschema import Draft202012Validator
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from .models import PipelineConfig, StrictModel
 
@@ -42,6 +42,7 @@ def load_pipeline_config(path: Path) -> PipelineConfig:
 class RenderedPrompt:
     system: str
     user: str
+    cacheable_context: str | None
     schema: dict[str, Any]
     prompt_hash: str
     context_hash: str
@@ -75,9 +76,25 @@ class PromptRepository:
                 f"Context {context_ref} requests unavailable fields: {unknown}"
             )
         filtered = {field: context[field] for field in included}
-        # Evidence order is intentional: focus before candidates, previous/center/next.
+        # Preserve evidence reading order, especially previous/center/next windows.
         context_json = json.dumps(filtered, indent=2, ensure_ascii=False)
         self._validate_context_size(context_ref, context_config, context_json)
+        prefix_fields = context_config.cache_prefix
+        cacheable_context = (
+            "Shared context for this judgment:\n\n"
+            + json.dumps(
+                {field: filtered[field] for field in prefix_fields},
+                indent=2,
+                ensure_ascii=False,
+            )
+            if prefix_fields
+            else None
+        )
+        dynamic_json = json.dumps(
+            {field: value for field, value in filtered.items() if field not in prefix_fields},
+            indent=2,
+            ensure_ascii=False,
+        )
 
         if self._PLACEHOLDER not in user_template:
             raise ConfigurationError(
@@ -88,12 +105,15 @@ class PromptRepository:
             raise ConfigurationError(
                 f"Prompt {prompt_ref} has unresolved placeholders: {unresolved}"
             )
-        user = user_template.replace(self._PLACEHOLDER, context_json)
+        user = user_template.replace(self._PLACEHOLDER, dynamic_json)
         return RenderedPrompt(
             system=system,
             user=user,
+            cacheable_context=cacheable_context,
             schema=schema,
-            prompt_hash=_sha256_text(system + "\0" + user_template),
+            prompt_hash=_sha256_text(
+                system + "\0" + user_template + "\0" + json.dumps(prefix_fields)
+            ),
             context_hash=_sha256_text(context_json),
             schema_hash=_sha256_text(schema_text),
         )
@@ -124,8 +144,17 @@ class PromptRepository:
 
 class ContextConfig(StrictModel):
     include: list[str] = Field(min_length=1)
+    cache_prefix: list[str] = Field(default_factory=list)
     max_characters: int = Field(ge=0)
     overflow: Literal["fail"]
+
+    @model_validator(mode="after")
+    def validate_cache_prefix(self) -> "ContextConfig":
+        if len(set(self.cache_prefix)) != len(self.cache_prefix) or not set(
+            self.cache_prefix
+        ).issubset(self.include):
+            raise ValueError("cache_prefix must contain unique included context fields")
+        return self
 
 
 # The implemented algorithm has one dependency order, not a general workflow engine.

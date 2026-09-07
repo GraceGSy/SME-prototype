@@ -96,6 +96,41 @@ SCHEMA = {
 
 
 class SkillApiTest(unittest.TestCase):
+    def test_native_skill_caches_candidate_prefix_before_changing_focus(self):
+        adapter, messages = _adapter(_Response("direct", "end_turn", 100, 20))
+        adapter.run_json(
+            [SKILL],
+            "Focus",
+            SCHEMA,
+            policy=SkillCallPolicy(max_tokens=512),
+            cacheable_prompt="Task instructions",
+            cacheable_context="Candidate corpus",
+        )
+        call = messages.calls[0]
+        self.assertEqual(call["container"], {"skills": [SKILL.api_value()]})
+        self.assertEqual(call["tools"][0]["name"], "code_execution")
+        self.assertEqual(call["betas"], MESSAGE_BETAS)
+        self.assertEqual(call["system"], CACHEABLE_SYSTEM)
+        content = call["messages"][0]["content"]
+        self.assertEqual(content[0]["text"], "Task instructions")
+        self.assertEqual(content[0]["cache_control"], {"type": "ephemeral"})
+        self.assertEqual(content[1]["text"], "Candidate corpus")
+        self.assertEqual(content[1]["cache_control"], {"type": "ephemeral"})
+        self.assertEqual(content[2], {"type": "text", "text": "Focus"})
+
+    def test_cached_candidate_text_still_counts_toward_prompt_limit(self):
+        adapter, messages = _adapter()
+        with self.assertRaises(SkillBudgetExceeded):
+            adapter.run_json(
+                [SKILL],
+                "focus",
+                SCHEMA,
+                policy=SkillCallPolicy(max_tokens=512, max_prompt_characters=10),
+                cacheable_prompt="rules",
+                cacheable_context="large pool",
+            )
+        self.assertEqual(messages.calls, [])
+
     def test_skill_registry_is_scoped_without_storing_api_keys(self) -> None:
         state = {"schema_version": 1, "accounts": {}}
         document, first_registry = _credential_registry(state, "key-one")
