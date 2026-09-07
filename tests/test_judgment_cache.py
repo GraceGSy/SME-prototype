@@ -141,7 +141,10 @@ class JudgmentCacheTest(unittest.TestCase):
             self.assertTrue(provider().judge(request).cache_hit)
             self.assertEqual(client.return_value.run_json.call_count, 1)
             call = client.return_value.run_json.call_args
-            self.assertEqual(call.args[2]["properties"]["target_id"]["enum"], ["group", None])
+            self.assertEqual(
+                call.args[2]["properties"]["target_id"],
+                {"anyOf": [{"type": "string", "enum": ["group"]}, {"type": "null"}]},
+            )
             self.assertIn("Repeated corpus", call.kwargs["cacheable_context"])
             self.assertNotIn("Repeated corpus", call.args[1])
             self.assertIn("Repeated corpus", first.rendered_user)
@@ -174,6 +177,6 @@ class JudgmentCacheTest(unittest.TestCase):
             self.assertFalse(validator.is_valid({"target_id": "paper-group", "basis": "Role"}))
             request.allowed_match_ids = []
             second = provider.render_request(request)
-            self.assertEqual(second.schema["properties"]["target_id"]["enum"], [None])
+            self.assertEqual(second.schema["properties"]["target_id"], {"type": "null"})
             self.assertNotEqual(first.schema_hash, second.schema_hash)
-            self.assertEqual(first.schema["properties"]["target_id"]["enum"], ["group", None])
+            self.assertEqual(first.schema["properties"]["target_id"]["anyOf"][0]["enum"], ["group"])

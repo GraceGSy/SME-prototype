@@ -56,7 +56,16 @@ class AnthropicJudgmentProvider:
         )
         if request.output_kind == "match":
             schema = deepcopy(rendered.schema)
-            schema["properties"]["target_id"]["enum"] = [*request.allowed_match_ids, None]
+            schema["properties"]["target_id"] = (
+                {
+                    "anyOf": [
+                        {"type": "string", "enum": list(request.allowed_match_ids)},
+                        {"type": "null"},
+                    ]
+                }
+                if request.allowed_match_ids
+                else {"type": "null"}
+            )
             encoded = json.dumps(schema, sort_keys=True, separators=(",", ":")).encode("utf-8")
             rendered = replace(
                 rendered, schema=schema, schema_hash=hashlib.sha256(encoded).hexdigest()
