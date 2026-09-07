@@ -9,6 +9,7 @@ import warnings
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Iterable, Literal
+from uuid import uuid4
 
 from jsonschema import Draft202012Validator, ValidationError
 
@@ -205,12 +206,14 @@ class ClaudeSkills:
         model: str,
         *,
         session_budget: SkillSessionBudget | None = None,
+        response_dir: Path | None = None,
     ) -> None:
         from anthropic import Anthropic
 
         self.repo_root = repo_root
         self.state_path = state_path
         self.model = model
+        self.response_dir = response_dir or state_path.parent / "responses"
         api_key = load_api_key(repo_root)
         self.client = Anthropic(
             api_key=api_key,
@@ -390,14 +393,38 @@ class ClaudeSkills:
             },
         )
         response_usage = response.usage.model_dump(mode="json") if response.usage else {}
+        # Persist paid evidence before any budget, stop-reason, or JSON rejection.
+        response_dir = getattr(self, "response_dir", None)
+        if response_dir is not None:
+            write_json(
+                response_dir / f"{uuid4().hex}.json",
+                {
+                    "response": response.model_dump(mode="json"),
+                    "usage": response_usage,
+                    "policy": policy.as_dict(),
+                    "schema": schema,
+                    "messages": messages,
+                    "request_text_characters": sum(
+                        len(block.get("text", ""))
+                        for message in messages
+                        for block in message["content"]
+                        if isinstance(block, dict)
+                    ),
+                    "input_usage_tokens": _input_token_volume(response_usage),
+                },
+            )
         self._record_session_usage(response_usage, response.id)
         usage = _single_response_usage(response.id, response_usage)
         usage["session"] = dict(self.session_usage)
         input_tokens = _input_token_volume(usage)
         if input_tokens > policy.max_input_tokens:
             raise SkillBudgetExceeded(
-                f"Claude Skill call used {input_tokens:,} input tokens; configured "
-                f"maximum is {policy.max_input_tokens:,}. No output was accepted.",
+                f"Claude Skill response reported {input_tokens:,} aggregate input-usage tokens "
+                f"(uncached={response_usage.get('input_tokens', 0):,}, "
+                f"cache_write={response_usage.get('cache_creation_input_tokens', 0):,}, "
+                f"cache_read={response_usage.get('cache_read_input_tokens', 0):,}); "
+                f"usage guard is {policy.max_input_tokens:,}, not a context-window limit. "
+                "No output was accepted; the paid response is retained when response storage is configured.",
                 response_id=response.id,
                 usage=usage,
             )

@@ -46,6 +46,10 @@ def run(execute=False):
     }
     if len(records) != 471:
         raise ValueError("Expected 471 completed pair judgments")
+    for path in sorted((OUTPUT / "revisions").glob("*/provenance/attempts.jsonl")):
+        for line in path.read_text(encoding="utf-8").splitlines():
+            row = json.loads(line)
+            records[row["request_key"]] = row
     with tempfile.TemporaryDirectory() as temporary:
         output = OUTPUT if execute else Path(temporary)
         output.mkdir(parents=True, exist_ok=True)
@@ -79,9 +83,9 @@ def run(execute=False):
         try:
             summary = runner.run(papers)
         except ReplayComplete as boundary:
-            if judge.reused != 471:
-                raise ValueError("The original pair was not fully preserved") from boundary
-            print(f"Verified all 471 pair judgments. First new request: {boundary}")
+            if judge.reused != len(records):
+                raise ValueError("Completed judgments were not fully preserved") from boundary
+            print(f"Verified all {judge.reused} completed judgments. First new request: {boundary}")
         except Exception as error:
             write_json(
                 revision / "failure.json", {"type": type(error).__name__, "message": str(error)}

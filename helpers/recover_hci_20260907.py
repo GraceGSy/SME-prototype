@@ -70,15 +70,15 @@ class RecoveryProvider:
 
     def judge(self, request):
         rendered = self.live.render_request(request)
-        original_schema = self.live.prompts.render(
+        original_rendered = self.live.prompts.render(
             request.prompt_ref, request.context_ref, request.context
-        ).schema_hash
+        )
         if request.key in self.records:
             row = self.records[request.key]
             if (
                 row["context_hash"] != rendered.context_hash
-                or row["prompt_hash"] != rendered.prompt_hash
-                or row["schema_hash"] not in {rendered.schema_hash, original_schema}
+                or row["prompt_hash"] not in {rendered.prompt_hash, original_rendered.prompt_hash}
+                or row["schema_hash"] not in {rendered.schema_hash, original_rendered.schema_hash}
                 or row["candidate_ids"] != request.allowed_match_ids
                 or row["output_kind"] != request.output_kind
             ):
@@ -186,8 +186,8 @@ def run(execute=False):
                     "previous_recovery": str(PREVIOUS),
                     "continuation_policy_sha256": _policy_hash(state.config),
                     "available_prior_judgments": len(records),
-                "first_correction_original_basis_available": False,
-                "continuation_overrides": {"paragraph_matching.max_tokens": 1024},
+                    "first_correction_original_basis_available": False,
+                    "continuation_overrides": {"paragraph_matching.max_tokens": 1024},
                 },
             )
         try:

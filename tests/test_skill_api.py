@@ -1,3 +1,4 @@
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -97,6 +98,24 @@ SCHEMA = {
 
 
 class SkillApiTest(unittest.TestCase):
+    def test_response_retained_before_usage_rejection(self):
+        adapter, _ = _adapter(_Response("paid-response", "end_turn", 201, 10))
+        with tempfile.TemporaryDirectory() as directory:
+            adapter.response_dir = Path(directory)
+            with self.assertRaises(SkillBudgetExceeded):
+                adapter.run_json(
+                    [SKILL],
+                    "input",
+                    SCHEMA,
+                    policy=SkillCallPolicy(max_tokens=100, max_input_tokens=200),
+                )
+            records = list(Path(directory).glob("*.json"))
+            self.assertEqual(len(records), 1)
+            record = json.loads(records[0].read_text())
+            self.assertEqual(record["response"]["id"], "paid-response")
+            self.assertEqual(record["usage"]["input_tokens"], 201)
+            self.assertGreater(record["request_text_characters"], 0)
+
     def test_native_skill_registration_is_reused_until_source_or_account_changes(self):
         with (
             tempfile.TemporaryDirectory() as directory,
@@ -272,7 +291,9 @@ class SkillApiTest(unittest.TestCase):
         adapter, _ = _adapter(_Response("response-1", "end_turn", 1_001, 20))
         policy = SkillCallPolicy(max_tokens=512, max_input_tokens=1_000)
 
-        with self.assertRaisesRegex(SkillBudgetExceeded, "1,001 input tokens") as raised:
+        with self.assertRaisesRegex(
+            SkillBudgetExceeded, "1,001 aggregate input-usage tokens"
+        ) as raised:
             adapter.run_json([SKILL], "prompt", SCHEMA, policy=policy)
 
         self.assertEqual(raised.exception.response_id, "response-1")

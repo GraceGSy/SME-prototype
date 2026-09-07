@@ -18,6 +18,7 @@ from ..llm.client import (
     SkillSessionBudget,
 )
 from .configuration import PromptRepository, RenderedPrompt
+from .evidence_encoding import encode_evidence
 from .models import JudgmentRequest, JudgmentResult, ModelSettings
 
 
@@ -55,6 +56,18 @@ class AnthropicJudgmentProvider:
             request.context,
         )
         if request.output_kind == "match":
+            if rendered.cacheable_context:
+                prefix = json.loads(rendered.cacheable_context.split("\n\n", 1)[1])
+                encoded = json.dumps(
+                    encode_evidence(prefix), ensure_ascii=False, separators=(",", ":")
+                )
+                rendered = replace(
+                    rendered,
+                    cacheable_context="Shared context for this judgment:\n\n" + encoded,
+                    prompt_hash=hashlib.sha256(
+                        (rendered.prompt_hash + "\0shared-text-v1").encode()
+                    ).hexdigest(),
+                )
             schema = deepcopy(rendered.schema)
             schema["properties"]["target_id"] = (
                 {
@@ -99,6 +112,7 @@ class AnthropicJudgmentProvider:
                     max_input_tokens=self.model.max_session_input_tokens,
                     max_output_tokens=self.model.max_session_output_tokens,
                 ),
+                response_dir=self.cache_dir / "responses",
             )
         skill = self.skills.register(skill_path)
         response = self.skills.run_json(
