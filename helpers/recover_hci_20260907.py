@@ -130,6 +130,10 @@ class RecoveryProvider:
 
 def run(execute=False):
     state = RunState.model_validate(read_json(SOURCE / "run.json"))
+    # One observed paragraph match exhausted 512 tokens; retain the normal default.
+    for stage in state.config.stages:
+        if stage.id == "paragraph_matching":
+            stage.max_tokens = 1024
     inputs = SOURCE / "inputs/revision-0002"
     if directory_hash(inputs) != state.input_sha256["revision-0002"]:
         raise ValueError("Source inputs changed")
@@ -182,7 +186,8 @@ def run(execute=False):
                     "previous_recovery": str(PREVIOUS),
                     "continuation_policy_sha256": _policy_hash(state.config),
                     "available_prior_judgments": len(records),
-                    "first_correction_original_basis_available": False,
+                "first_correction_original_basis_available": False,
+                "continuation_overrides": {"paragraph_matching.max_tokens": 1024},
                 },
             )
         try:

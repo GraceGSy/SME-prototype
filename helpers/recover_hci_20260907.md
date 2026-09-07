@@ -24,6 +24,11 @@ Repeated execution creates a new revision and reuses this rescue's recorded work
 Use the authorized personal key only in the process environment. Do not launch
 two copies concurrently. The previous single-correction output stays untouched.
 
+After 371 recorded judgments, one paragraph match exhausted its 512-token output
+limit. This helper gives subsequent paragraph-matching calls 1,024 tokens and
+records the override per revision. It does not change the normal pipeline's
+default or relabel completed responses as having used the larger budget.
+
 Output goes to `runs/hci-first-two-content-20260907-rescued`; the original runs
 are unchanged. The output has copied inputs, a new judgment cache, explicit
 `corrections/` records, and standard exports under `revisions/revision-NNNN/`.
