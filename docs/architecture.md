@@ -157,6 +157,11 @@ Reject unsupported versions, wrong types, unknown fields, missing decisions,
 unknown IDs, duplicate assignments, and malformed present files. Explicit null
 means abstention; a missing field does not.
 
+Graph-level rejected judgments are saved separately in `cache/rejected/`, with
+the full response, request, and validation error. They are never accepted cache
+entries or repaired by the runtime. Each rejection gets its own record so a
+later failed retry cannot overwrite the paid evidence.
+
 Normal wire decoding (JSON/YAML and a manifest path string into a Path) is not
 repair. Source text is retained verbatim. One-time content stripping/flattening
 belongs in `helpers/`, with the derivative then stored and reused.

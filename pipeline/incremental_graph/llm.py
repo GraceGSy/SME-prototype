@@ -6,9 +6,10 @@ import hashlib
 import json
 from pathlib import Path
 from typing import Protocol
+from uuid import uuid4
 
 from ..document import QUESTION_FIELD
-from ..files import directory_hash
+from ..files import directory_hash, write_json
 from ..llm.client import (
     ClaudeSkills,
     SkillCallPolicy,
@@ -110,7 +111,6 @@ class AnthropicJudgmentProvider:
             "usage": response.usage,
         }
 
-        self._validate(request, api_normalized)
         normalized = api_normalized
         result = JudgmentResult(
             fingerprint=fingerprint,
@@ -127,7 +127,20 @@ class AnthropicJudgmentProvider:
             model=model,
             cache_hit=False,
         )
-        cache_path.write_text(result.model_dump_json(indent=2) + "\n", encoding="utf-8")
+        try:
+            self._validate(request, normalized)
+        except JudgmentError as error:
+            # Preserve paid evidence without accepting or repairing the rejected output.
+            write_json(
+                self.cache_dir / "rejected" / f"{fingerprint}-{uuid4().hex}.json",
+                {
+                    "request": request.model_dump(mode="json"),
+                    "result": result.model_dump(mode="json"),
+                    "error": str(error),
+                },
+            )
+            raise
+        write_json(cache_path, result.model_dump(mode="json"))
         return result
 
     def _fingerprint(self, request: JudgmentRequest, rendered, skill_hash: str | None) -> str:

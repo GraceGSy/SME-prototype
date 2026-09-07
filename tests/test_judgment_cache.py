@@ -10,12 +10,45 @@ from unittest.mock import patch
 from test_incremental_graph import CONFIG_PATH
 
 from pipeline.incremental_graph.configuration import PromptRepository, load_pipeline_config
-from pipeline.incremental_graph.llm import AnthropicJudgmentProvider
+from pipeline.incremental_graph.llm import AnthropicJudgmentProvider, JudgmentError
 from pipeline.incremental_graph.models import JudgmentRequest
 from pipeline.llm.client import SkillRef
 
 
 class JudgmentCacheTest(unittest.TestCase):
+    def test_rejected_id_keeps_raw_response_without_becoming_a_cache_hit(self):
+        config = load_pipeline_config(CONFIG_PATH)
+        raw = {"id": "rejected-response", "usage": {"output_tokens": 12}}
+        with (
+            tempfile.TemporaryDirectory() as directory,
+            patch("pipeline.incremental_graph.llm.ClaudeSkills") as client,
+        ):
+            client.return_value.register.return_value = SkillRef(
+                "match-role", "skill", "v1", "hash"
+            )
+            client.return_value.run_json.return_value = SimpleNamespace(
+                value={"target_id": "paper-group", "basis": "Original explanation"},
+                raw_response=raw,
+            )
+            provider = AnthropicJudgmentProvider(
+                PromptRepository(config.prompt_root, config.context_root),
+                config.model,
+                Path(directory),
+                config.skill_root,
+            )
+            for _ in range(2):
+                with self.assertRaises(JudgmentError):
+                    provider.judge(self.request())
+            self.assertEqual(client.return_value.run_json.call_count, 2)
+            self.assertEqual(list(Path(directory).glob("*.json")), [])
+            records = list((Path(directory) / "rejected").glob("*.json"))
+            self.assertEqual(len(records), 2)
+            record = json.loads(records[0].read_text())
+            self.assertEqual(record["result"]["raw_response"], raw)
+            self.assertEqual(record["result"]["normalized"]["target_id"], "paper-group")
+            self.assertEqual(record["result"]["normalized"]["basis"], "Original explanation")
+            self.assertEqual(record["request"]["allowed_match_ids"], ["group"])
+
     def test_every_matching_direction_preserves_all_evidence_in_split_blocks(self):
         config = load_pipeline_config(CONFIG_PATH)
         prompts = PromptRepository(config.prompt_root, config.context_root)
