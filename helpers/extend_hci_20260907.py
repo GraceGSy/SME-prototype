@@ -23,7 +23,7 @@ def run(execute=False):
         read_json(ROOT / "runs/hci-first-two-content-20260907/run.json")
     )
     for stage in state.config.stages:
-        if stage.id == "paragraph_matching":
+        if stage.id in {"paragraph_matching", "paragraph_rerepresentation"}:
             stage.max_tokens = 1024
     manifest, papers = load_manifest(PAIR / "inputs/manifest.yaml")
     _, incoming = load_manifest(ROOT / "datasets/hci-five-paper/content/manifest.yaml")

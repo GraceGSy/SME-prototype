@@ -78,6 +78,12 @@ that choice intelligible on both sides. Similar formatting or topic alone is
 insufficient. Before selecting, check that your explanation describes the
 centers rather than just their neighbors; otherwise reconsider or abstain.
 
+Keep the final `basis` concise: target at most 100 words for a match and 60
+words for an abstention. For an abstention, identify the decisive role mismatch
+instead of cataloguing every candidate or quoting every member. For a match,
+use minimal excerpts and explain member coverage compactly; do not weaken the
+all-members check to shorten the answer. Return one final JSON object only.
+
 Participant correspondence is relational, not moral: a hero can map to a villain
 if each occupies the same role in the chosen relation. Different names, moral
 status, or subject domains are not vetoes. But a mapping must preserve who acts
