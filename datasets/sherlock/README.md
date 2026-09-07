@@ -16,6 +16,14 @@ The manifest is ordered by first publication: `speckled_band`,
 `illustrious_client`. The graph consumes exactly the entries in the supplied
 manifest, in that order; it does not silently limit a run to two stories.
 
+For the first two complete stories only, use
+`whole-story/first-two.manifest.yaml`. This explicitly selects The Speckled Band
+then Wisteria Lodge (503 paragraphs total), not the old last-15-paragraph slice:
+
+```powershell
+python -m pipeline.incremental_graph.cli start datasets/sherlock/whole-story/first-two.manifest.yaml runs/sherlock-first-two
+```
+
 Review an extraction by opening its `*.content.json` beside the matching XHTML.
 The required checks are paragraph fidelity and order, exclusion of book chrome,
 and scene changes occurring only at `<hr>` elements. Validate all five without

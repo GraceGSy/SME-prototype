@@ -1,0 +1,9 @@
+schema_version: 1
+max_granularity: paragraph
+papers:
+  - paper_id: speckled_band
+    title: The Adventure of the Speckled Band
+    file: speckled_band.content.json
+  - paper_id: wisteria_lodge
+    title: The Adventure of Wisteria Lodge
+    file: wisteria_lodge.content.json
