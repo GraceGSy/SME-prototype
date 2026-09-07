@@ -157,6 +157,12 @@ Reject unsupported versions, wrong types, unknown fields, missing decisions,
 unknown IDs, duplicate assignments, and malformed present files. Explicit null
 means abstention; a missing field does not.
 
+Each matching request binds `target_id` to an enum of its exact eligible IDs
+plus JSON null in the API response schema. The effective schema is hashed into
+the judgment fingerprint; changed pools cannot reuse a differently constrained
+result. Post-response validation remains strict. This prevents invented IDs
+without normalizing them; it does not guarantee a semantically good selection.
+
 Graph-level rejected judgments are saved separately in `cache/rejected/`, with
 the full response, request, and validation error. They are never accepted cache
 entries or repaired by the runtime. Each rejection gets its own record so a

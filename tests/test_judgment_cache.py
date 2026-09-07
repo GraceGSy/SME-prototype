@@ -141,6 +141,7 @@ class JudgmentCacheTest(unittest.TestCase):
             self.assertTrue(provider().judge(request).cache_hit)
             self.assertEqual(client.return_value.run_json.call_count, 1)
             call = client.return_value.run_json.call_args
+            self.assertEqual(call.args[2]["properties"]["target_id"]["enum"], ["group", None])
             self.assertIn("Repeated corpus", call.kwargs["cacheable_context"])
             self.assertNotIn("Repeated corpus", call.args[1])
             self.assertIn("Repeated corpus", first.rendered_user)
@@ -153,3 +154,26 @@ class JudgmentCacheTest(unittest.TestCase):
             model = config.model.model_copy(update={"name": "different-model"})
             request.force = False
             self.assertFalse(provider(model).judge(request).cache_hit)
+
+    def test_match_schema_allows_only_current_candidates_or_null(self):
+        from jsonschema import Draft202012Validator
+
+        config = load_pipeline_config(CONFIG_PATH)
+        with tempfile.TemporaryDirectory() as directory:
+            provider = AnthropicJudgmentProvider(
+                PromptRepository(config.prompt_root, config.context_root),
+                config.model,
+                Path(directory),
+                config.skill_root,
+            )
+            request = self.request()
+            first = provider.render_request(request)
+            validator = Draft202012Validator(first.schema)
+            self.assertTrue(validator.is_valid({"target_id": "group", "basis": "Role"}))
+            self.assertTrue(validator.is_valid({"target_id": None, "basis": "No match"}))
+            self.assertFalse(validator.is_valid({"target_id": "paper-group", "basis": "Role"}))
+            request.allowed_match_ids = []
+            second = provider.render_request(request)
+            self.assertEqual(second.schema["properties"]["target_id"]["enum"], [None])
+            self.assertNotEqual(first.schema_hash, second.schema_hash)
+            self.assertEqual(first.schema["properties"]["target_id"]["enum"], ["group", None])

@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+from copy import deepcopy
+from dataclasses import replace
 from pathlib import Path
 from typing import Protocol
 from uuid import uuid4
@@ -15,7 +17,7 @@ from ..llm.client import (
     SkillCallPolicy,
     SkillSessionBudget,
 )
-from .configuration import PromptRepository
+from .configuration import PromptRepository, RenderedPrompt
 from .models import JudgmentRequest, JudgmentResult, ModelSettings
 
 
@@ -45,12 +47,24 @@ class AnthropicJudgmentProvider:
         self.skills: ClaudeSkills | None = None
         cache_dir.mkdir(parents=True, exist_ok=True)
 
-    def judge(self, request: JudgmentRequest) -> JudgmentResult:
+    def render_request(self, request: JudgmentRequest) -> RenderedPrompt:
+        """Bind decoding to this pool without repairing model output."""
         rendered = self.prompts.render(
             request.prompt_ref,
             request.context_ref,
             request.context,
         )
+        if request.output_kind == "match":
+            schema = deepcopy(rendered.schema)
+            schema["properties"]["target_id"]["enum"] = [*request.allowed_match_ids, None]
+            encoded = json.dumps(schema, sort_keys=True, separators=(",", ":")).encode("utf-8")
+            rendered = replace(
+                rendered, schema=schema, schema_hash=hashlib.sha256(encoded).hexdigest()
+            )
+        return rendered
+
+    def judge(self, request: JudgmentRequest) -> JudgmentResult:
+        rendered = self.render_request(request)
         skill_path = self.skill_root / request.skill_ref if request.skill_ref else None
         if not skill_path:
             raise JudgmentError(f"Every LLM judgment requires a configured Skill: {request.key}")
