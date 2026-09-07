@@ -62,10 +62,15 @@ The manifest order is the insertion order. A start manifest needs at least two
 papers; additional entries extend the initial pair in order. An add manifest
 contains only new paper IDs and must retain the existing granularity.
 
-`add` recomputes the finalized ordered graph with cached judgments. It does not
-mutate the last graph in place: structural rerepresentation happens before the
-paragraph pass and can change paragraph scope. Successful and failed revisions
-remain separate. A failed latest revision must be retried before another add.
+Each document completes structural matching, reciprocal singleton realignment,
+then the same operations for paragraphs within their exact section nodes before
+the next document is inserted. Paragraph-only mode still runs paragraph realignment.
+
+`add` replays this ordered sequence with cached judgments into a new revision;
+it does not mutate the previous revision in place. A structural merge moves any
+existing paragraph nodes into the new scope without changing their IDs.
+Successful and failed revisions remain separate. A failed latest revision must
+be retried before another add.
 
 A targeted retry can force a stage for one paper:
 `retry runs/hci --paper-index 2 --stage section_matching`.

@@ -87,25 +87,24 @@ See [SEQL, CogSci 2000](https://www.qrg.northwestern.edu/papers/Files/SEQL_CogSc
 when it shares a coherent relational system with both earlier stories. It can
 also reinforce a mistaken abstraction.
 
-In this implementation, structural singletons can be reconsidered before the
-paragraph pass. Later paragraphs are compared with existing paragraph nodes;
-there is no general pass that rematches all old unmatched paragraph pairs.
-A third paper can therefore create new correspondences without repairing the
-original mistakes. It cannot turn Watson's question into Holmes's answer.
+The archived implementation ran structural singleton matching once after the
+full insertion sequence, in one direction, and skipped it in paragraph-only
+mode. That did not implement the intended algorithm. These Sherlock runs
+therefore do not test per-insertion reciprocal realignment at paragraph level.
 
-The current pass is structural-only, once after the full insertion sequence,
-and one-way. It only joins singletons to established non-singleton nodes, does
-not revise existing shared groups, and is skipped in paragraph-only Sherlock
-runs. Consequently, those runs do not test the proposed per-addition paragraph
-rerepresentation mechanism at all. Keeping reciprocal top-1 acceptance is a
-reasonable precision-oriented experiment; reciprocity between passages alone
-does not check consistency among their internal relational arguments.
+The corrected implementation now completes both levels after each document.
+Each singleton and established group independently selects its best eligible
+counterpart, and only mutual choices merge. Paragraph realignment is the same
+algorithm inside one exact section node, including paragraph-only mode. Old
+singletons are revisited, and structural merges preserve/reparent existing
+paragraph nodes. Offline regressions demonstrate an older singleton joining a
+group established by a third document before the fourth document is inserted.
 
-Before relaxing top-1 or building a solver, test a bounded rerepresentation pass
-at the intended level and timing. Include a missed bridge, a wrong early shared
-group, and a no-match control. Specify whether existing memberships can change:
-if only singleton attachment is allowed, some early errors cannot be repaired
-by construction. This is proposed work, not an implemented algorithm change.
+This mechanism can recover a missed correspondence when common structure
+emerges. It does not split an incorrectly accepted shared group or change the
+source evidence. Retain top-1 reciprocity and evaluate a missed bridge, an
+incorrect early group, and a no-match control before adding new machinery.
+Semantic quality of the corrected algorithm remains untested with live models.
 
 ## Three Fragmentation Strategies
 

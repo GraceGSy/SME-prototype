@@ -111,6 +111,11 @@ revision directory, with content-addressed judgment reuse.
 A failure record may be written under its revision. An interruption can leave a
 partial revision; do not edit its inputs or treat it as a successful dataset.
 
+Each insertion records `section_rerepresentation` and
+`paragraph_rerepresentation` stages (the former is omitted in paragraph-only
+mode). Realignment records both `singleton_to_group` and `group_to_singleton`
+decisions. Both use exactly the same target-or-null response contract above.
+
 ## Viewer Export
 
 `manifest.json` and one JSON file per paper preserve source order.
@@ -121,6 +126,10 @@ A shared group represents at least two papers; a singleton exactly one.
 `graph-replay.json` is optional, with an ordered event stream, paper order,
 layouts, and final graph hash. Mutation events create/update/merge nodes and add
 containment edges. Judgment/projection/fan-in annotations are not extra mutations.
+Realignment `node_merged` events require `attempt_id` and `reverse_attempt_id`.
+`node_reparented` records a paragraph node's old and new structural parent;
+replay updates both node scope and member ownership without changing identity.
+The former one-way realignment event contract is intentionally not accepted.
 
 The exporter also writes `graph.json`, `correspondences.json`, and
 `correspondences.md` for analysis. Packaging copies only viewer-required data.

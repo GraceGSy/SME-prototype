@@ -29,21 +29,34 @@ requires review; no comprehensive source-alignment validator is claimed.
 and the successful/latest pointers. `input_data.py` projects already-valid
 canonical content into the selected granularity.
 
-The stage order is fixed because it encodes real data dependencies:
+The stage order is fixed. Complete this sequence for each document before
+inserting the next, whether documents arrive in one manifest or separate adds:
 
 1. Register each paper in manifest order.
 2. Reuse or generate its structural questions.
 3. Match each new structural unit against existing nodes in both directions.
 4. Accept reciprocal selections; create nodes for unmatched units.
 5. Generate display questions for the structural groups.
-6. After all papers, let structural singletons select established multi-paper
-   nodes in one direction. Reject merges that duplicate a paper in a node.
+6. Revisit all structural singletons, including those from earlier documents.
+   Each selects its best eligible established group or null; each established
+   group independently selects its best eligible singleton or null. Merge only
+   mutual top-1 choices, excluding groups that already contain the source paper.
 7. Regenerate changed structural questions.
-8. For each paper in order, reuse or generate paragraph questions, match against
-   eligible paragraph nodes in both directions, reconcile, and generate questions.
+8. Reuse or generate the document's paragraph questions. Within each exact
+   structural node, match paragraphs in both directions, reconcile, and generate
+   group questions.
+9. Apply the same singleton realignment algorithm to paragraph nodes, bounded
+   to each exact structural node, and regenerate changed group questions.
+
+Both levels use one shared realignment implementation. Each pass freezes the
+candidate pools and obtains all forward/reverse judgments before any merge.
+The reverse pool includes all eligible singletons, not just proposers. An
+established group can absorb at most one singleton per pass; this is not an
+unbounded repeat-until-convergence loop. A later insertion starts a fresh pass.
 
 Paragraph-only mode requires one section per document, creates a deterministic
-shared root, and skips structural LLM judgments. Section mode combines a section's
+shared root, and skips only structural LLM judgments, not paragraph realignment.
+Section mode combines a section's
 descendant paragraphs. Subsection mode preserves both levels and gives each
 paragraph one exact structural owner.
 
@@ -53,14 +66,15 @@ chain through an already-added fan-in member. Unaccepted projected selections
 are provenance only. The ordinary graph edges are containment edges, not
 invented causal or analogical relations.
 
-A third paper is matched to the existing multi-paper nodes. It does not trigger
-a general global reassessment of all earlier unmatched paragraph pairs.
-The current rerepresentation pass runs once after the entire structural insertion
-sequence, not after each paper in a multi-paper start/add command. It only moves
-structural singletons into established groups; it cannot split or revise an
-existing shared group. Paragraph-only mode skips it entirely. This is narrower
-than the proposed per-addition global realignment and must not be described as
-implementing that proposal.
+A structural singleton may already own paragraph nodes from an earlier document.
+Its merge reparents those nodes and updates their member ownership, preserving
+IDs and source text. Replay records these scope changes explicitly. Every merge
+records both judgment attempt IDs; unreciprocated choices remain provenance only.
+
+A third paper can establish a group that an older singleton now joins at either
+level. Realignment still does not split previously accepted shared groups or
+search all possible global relational alignments. Those are different operations,
+not implicit consequences of singleton matching.
 
 ## Module Boundaries
 
