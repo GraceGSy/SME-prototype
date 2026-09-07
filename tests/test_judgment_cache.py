@@ -101,6 +101,10 @@ class JudgmentCacheTest(unittest.TestCase):
             request = self.request()
             first = provider().judge(request)
             self.assertFalse(first.cache_hit)
+            self.assertEqual(
+                client.call_args.args[1],
+                config.skill_root.parent / "_cache" / "skill-registry.json",
+            )
             self.assertTrue(provider().judge(request).cache_hit)
             self.assertEqual(client.return_value.run_json.call_count, 1)
             call = client.return_value.run_json.call_args

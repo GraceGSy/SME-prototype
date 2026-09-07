@@ -64,7 +64,7 @@ def extract_document(
     if source.stat().st_size > policy.max_attachment_bytes:
         raise ValueError(f"Source exceeds the {policy.max_attachment_bytes}-byte extraction limit")
     raw = source.read_bytes()
-    client = client or ClaudeSkills(ROOT, ROOT / "runs/extraction/skill-registry.json", model)
+    client = client or ClaudeSkills(ROOT, ROOT / "_cache/skill-registry.json", model)
     skill = client.register(SKILL)
     result = client.run_json_file(
         skill,

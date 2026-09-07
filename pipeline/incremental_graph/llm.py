@@ -68,7 +68,7 @@ class AnthropicJudgmentProvider:
         if self.skills is None:
             self.skills = ClaudeSkills(
                 self.skill_root.parent,
-                self.cache_dir / "skill-registry.json",
+                self.skill_root.parent / "_cache" / "skill-registry.json",
                 self.model.name,
                 session_budget=SkillSessionBudget(
                     max_api_responses=self.model.max_api_responses_per_process,

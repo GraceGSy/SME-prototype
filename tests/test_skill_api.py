@@ -2,6 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
+from unittest.mock import patch
 
 from pipeline.llm.client import (
     CACHEABLE_SYSTEM,
@@ -96,6 +97,38 @@ SCHEMA = {
 
 
 class SkillApiTest(unittest.TestCase):
+    def test_native_skill_registration_is_reused_until_source_or_account_changes(self):
+        with (
+            tempfile.TemporaryDirectory() as directory,
+            patch("pipeline.llm.client.load_api_key", return_value="test-account-one") as key,
+            patch("anthropic.Anthropic") as api,
+        ):
+            root = Path(directory)
+            skill = root / "skills" / "test"
+            skill.mkdir(parents=True)
+            instructions = skill / "SKILL.md"
+            instructions.write_text("---\nname: test\ndescription: Test\n---\nInstructions")
+            registry = root / "_cache" / "skill-registry.json"
+            remote = api.return_value.beta.skills
+            remote.create.return_value = SimpleNamespace(id="skill-1", latest_version_id="v1")
+            remote.versions.create.return_value = SimpleNamespace(id="v2")
+
+            first = ClaudeSkills(root, registry, "model").register(skill)
+            second = ClaudeSkills(root, registry, "model").register(skill)
+            self.assertEqual(first, second)
+            self.assertEqual(remote.create.call_count, 1)
+            remote.versions.create.assert_not_called()
+
+            instructions.write_text("---\nname: test\ndescription: Test\n---\nChanged instructions")
+            updated = ClaudeSkills(root, registry, "model").register(skill)
+            self.assertEqual(updated.version, "v2")
+            self.assertNotEqual(first.source_sha256, updated.source_sha256)
+            self.assertEqual(remote.versions.create.call_count, 1)
+
+            key.return_value = "test-account-two"
+            ClaudeSkills(root, registry, "model").register(skill)
+            self.assertEqual(remote.create.call_count, 2)
+
     def test_native_skill_caches_candidate_prefix_before_changing_focus(self):
         adapter, messages = _adapter(_Response("direct", "end_turn", 100, 20))
         adapter.run_json(

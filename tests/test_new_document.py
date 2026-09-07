@@ -5,9 +5,9 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from types import SimpleNamespace
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
-from pipeline.extraction import extract_document
+from pipeline.extraction import ROOT, extract_document
 
 
 class NewDocumentTest(unittest.TestCase):
@@ -32,7 +32,11 @@ class NewDocumentTest(unittest.TestCase):
                     response_id="r1",
                     usage={"input_tokens": 10},
                 )
-                extract_document(source, output, domain=domain, title="Source", client=client)
+                with patch("pipeline.extraction.ClaudeSkills", return_value=client) as adapter:
+                    extract_document(source, output, domain=domain, title="Source")
+                    self.assertEqual(
+                        adapter.call_args.args[1], ROOT / "_cache" / "skill-registry.json"
+                    )
                 self.assertEqual(
                     json.loads(output.read_text())[0]["paragraphs"][0]["text"], "Source evidence."
                 )

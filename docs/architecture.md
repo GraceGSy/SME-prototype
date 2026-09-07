@@ -119,6 +119,15 @@ This does not guarantee that a Skill's on-demand instruction-file read will be
 reused across separate judgments. Container state is independent of prompt
 caching; containers and tool histories are not carried between judgments.
 
+Both pipelines store native Skill registration records in
+`_cache/skill-registry.json` under the repository root (the graph configuration's
+Skill-root parent). New runs reuse the registered ID/version for identical Skill
+files; source changes create a new version, and credentials have isolated
+records. This is registration reuse, not cached model output or a guarantee of
+prompt-cache hits. Old per-run registries are not migrated. Local judgment
+results remain run-scoped, so independent experiments do not silently share
+decisions. Archiving `runs/` no longer discards the shared Skill registry.
+
 The existing system breakpoint and the two user-prefix breakpoints use the
 five-minute TTL. This leaves one of the four explicit breakpoint slots free.
 According to [Anthropic's caching documentation](https://platform.claude.com/docs/en/build-with-claude/prompt-caching),
