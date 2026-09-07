@@ -117,6 +117,7 @@ class SkillApiTest(unittest.TestCase):
             second = ClaudeSkills(root, registry, "model").register(skill)
             self.assertEqual(first, second)
             self.assertEqual(remote.create.call_count, 1)
+            self.assertNotIn("betas", remote.create.call_args.kwargs)
             remote.versions.create.assert_not_called()
 
             instructions.write_text("---\nname: test\ndescription: Test\n---\nChanged instructions")
@@ -124,6 +125,7 @@ class SkillApiTest(unittest.TestCase):
             self.assertEqual(updated.version, "v2")
             self.assertNotEqual(first.source_sha256, updated.source_sha256)
             self.assertEqual(remote.versions.create.call_count, 1)
+            self.assertNotIn("betas", remote.versions.create.call_args.kwargs)
 
             key.return_value = "test-account-two"
             ClaudeSkills(root, registry, "model").register(skill)
@@ -207,6 +209,7 @@ class SkillApiTest(unittest.TestCase):
         self.assertEqual(messages.calls, [])
 
     def test_every_call_applies_low_cost_defaults(self) -> None:
+        self.assertNotIn("skills-2025-10-02", MESSAGE_BETAS)
         adapter, messages = _adapter(_Response("response-1", "end_turn", 100, 20))
         policy = SkillCallPolicy(max_tokens=512, max_input_tokens=1_000)
 

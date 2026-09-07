@@ -14,10 +14,8 @@ from jsonschema import Draft202012Validator, ValidationError
 
 from ..files import directory_hash, write_json
 
-SKILL_BETAS = ["skills-2025-10-02"]
 MESSAGE_BETAS = [
     "code-execution-2025-08-25",
-    "skills-2025-10-02",
     "files-api-2025-04-14",
     "structured-outputs-2025-11-13",
     "context-management-2025-06-27",
@@ -246,18 +244,18 @@ class ClaudeSkills:
         if existing:
             try:
                 response = self.client.beta.skills.versions.create(
-                    existing["skill_id"], files=files, betas=SKILL_BETAS
+                    existing["skill_id"], files=files
                 )
                 skill_id = existing["skill_id"]
                 version = response.id
             except Exception as exc:
                 if getattr(exc, "status_code", None) != 404:
                     raise
-                response = self.client.beta.skills.create(files=files, betas=SKILL_BETAS)
+                response = self.client.beta.skills.create(files=files)
                 skill_id = response.id
                 version = response.latest_version_id
         else:
-            response = self.client.beta.skills.create(files=files, betas=SKILL_BETAS)
+            response = self.client.beta.skills.create(files=files)
             skill_id = response.id
             version = response.latest_version_id
         if not version:
