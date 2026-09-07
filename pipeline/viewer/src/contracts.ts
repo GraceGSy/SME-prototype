@@ -4,7 +4,12 @@ const id = z.string().min(1);
 const ordinal = z.number().int().positive();
 const level = z.enum(["section", "paragraph"]);
 const kind = z.enum(["section", "subsection", "paragraph"]);
-const direction = z.enum(["new_to_group", "group_to_new", "singleton_to_group"]);
+const direction = z.enum([
+  "new_to_group",
+  "group_to_new",
+  "singleton_to_group",
+  "group_to_singleton",
+]);
 const textUnit = { id, title: z.string(), text: z.string(), tag: z.string() };
 export const paperSchema = z.strictObject({
   paper_id: id,
@@ -90,6 +95,13 @@ const member = z.strictObject({
   membership_role: z.enum(["core", "fan_in"]).optional(),
 });
 const event = { sequence: ordinal, event_id: id, paper_index: ordinal };
+const merge = {
+  ...event,
+  action: z.literal("node_merged"),
+  source_node_id: id,
+  target_node_id: id,
+  members: z.array(member).min(1),
+};
 export const eventSchema = z.discriminatedUnion("action", [
   z.strictObject({ ...event, action: z.literal("paper_added"), paper_id: id, title: id }),
   z.strictObject({
@@ -101,14 +113,21 @@ export const eventSchema = z.discriminatedUnion("action", [
     member,
   }),
   z.strictObject({ ...event, action: z.literal("member_added"), node_id: id, member }),
+  z.discriminatedUnion("reason", [
+    z.strictObject({ ...merge, reason: z.literal("adjacent_paragraph_fan_in") }),
+    z.strictObject({
+      ...merge,
+      reason: z.enum(["structural_rerepresentation", "paragraph_rerepresentation"]),
+      attempt_id: id,
+      reverse_attempt_id: id,
+    }),
+  ]),
   z.strictObject({
     ...event,
-    action: z.literal("node_merged"),
-    source_node_id: id,
-    target_node_id: id,
-    members: z.array(member).min(1),
-    reason: z.enum(["structural_rerepresentation", "adjacent_paragraph_fan_in"]),
-    attempt_id: id.optional(),
+    action: z.literal("node_reparented"),
+    node_id: id,
+    previous_parent_id: id,
+    parent_id: id,
   }),
   z.strictObject({
     ...event,
@@ -147,15 +166,6 @@ export const eventSchema = z.discriminatedUnion("action", [
     source_group_id: id,
     selected_unit_id: id,
     absorbed_group_id: id,
-    attempt_id: id,
-  }),
-  z.strictObject({
-    ...event,
-    action: z.literal("rerepresentation_merge_ignored"),
-    source_group_id: id,
-    target_group_id: id,
-    paper_id: id,
-    reason: z.literal("target_already_contains_paper"),
     attempt_id: id,
   }),
   z.strictObject({

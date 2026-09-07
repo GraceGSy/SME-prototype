@@ -1,0 +1,1 @@
+{"type":"object","properties":{"target_id":{"type":["string","null"]},"basis":{"type":"string","minLength":1}},"required":["target_id","basis"],"additionalProperties":false}

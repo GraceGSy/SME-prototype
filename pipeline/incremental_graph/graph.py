@@ -164,22 +164,25 @@ class QuestionGraph:
         )
         return moved
 
-    def merge_section_singleton(
+    def merge_singleton(
         self,
         source_id: str,
         target_id: str,
         *,
         paper_index: int,
         attempt_id: str,
+        reverse_attempt_id: str,
     ) -> dict[str, Any]:
-        """Absorb one structural singleton and preserve its containment edges."""
+        """Absorb a reciprocally accepted singleton and preserve child ownership."""
 
         if source_id == target_id:
-            raise ValueError("A structural singleton cannot merge into itself")
+            raise ValueError("A singleton cannot merge into itself")
         source = self.graph.nodes[source_id]
         target = self.graph.nodes[target_id]
-        if source["level"] != "section" or target["level"] != "section":
-            raise ValueError("Only structural groups can be rerepresented")
+        if source["level"] != target["level"]:
+            raise ValueError("Realignment requires matching levels")
+        if source.get("parent_id") != target.get("parent_id"):
+            raise ValueError("Realignment requires the same exact parent scope")
         if len(source["members"]) != 1:
             raise ValueError(f"Rerepresentation source {source_id} is not a singleton")
         if len(target["members"]) < 2:
@@ -200,6 +203,11 @@ class QuestionGraph:
         ]
         if unsupported:
             raise ValueError(f"Cannot rewire unsupported edge kinds {unsupported}")
+        children = [
+            (node_id, data)
+            for node_id, data in self.nodes("paragraph")
+            if data.get("parent_id") == source_id
+        ]
         target["members"].append(member)
         target["members"].sort(
             key=lambda item: (
@@ -215,9 +223,23 @@ class QuestionGraph:
             source_node_id=source_id,
             target_node_id=target_id,
             members=[member],
-            reason="structural_rerepresentation",
+            reason="structural_rerepresentation"
+            if source["level"] == "section"
+            else "paragraph_rerepresentation",
             attempt_id=attempt_id,
+            reverse_attempt_id=reverse_attempt_id,
         )
+        for node_id, data in children:
+            data["parent_id"] = target_id
+            for child_member in data["members"]:
+                child_member["owner_group_id"] = target_id
+            self.journal.event(
+                "node_reparented",
+                paper_index=paper_index,
+                node_id=node_id,
+                previous_parent_id=source_id,
+                parent_id=target_id,
+            )
         for edge_source, edge_target, data in incident_edges:
             replacement_source = target_id if edge_source == source_id else edge_source
             replacement_target = target_id if edge_target == source_id else edge_target
@@ -347,7 +369,8 @@ def graph_from_events(events: list[dict[str, Any]]) -> nx.MultiDiGraph:
     """Rebuild graph topology and visible metadata from replay events."""
 
     graph = nx.MultiDiGraph()
-    for event in events:
+    for saved_event in events:
+        event = deepcopy(saved_event)
         action = event["action"]
         if action == "node_created":
             graph.add_node(
@@ -362,6 +385,11 @@ def graph_from_events(events: list[dict[str, Any]]) -> nx.MultiDiGraph:
         elif action == "node_merged":
             graph.nodes[event["target_node_id"]]["members"].extend(event["members"])
             graph.remove_node(event["source_node_id"])
+        elif action == "node_reparented":
+            node = graph.nodes[event["node_id"]]
+            node["parent_id"] = event["parent_id"]
+            for member in node["members"]:
+                member["owner_group_id"] = event["parent_id"]
         elif action == "edge_created":
             graph.add_edge(
                 event["source"],

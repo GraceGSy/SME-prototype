@@ -495,17 +495,17 @@ class IncrementalGraphTest(unittest.TestCase):
                 },
                 {"Paragraph for shared method"},
             )
-            first_paragraph_request = next(
-                index
-                for index, request in enumerate(runner.judge.requests)
-                if request.stage_id.startswith("paragraph_")
-            )
-            last_section_request = max(
-                index
-                for index, request in enumerate(runner.judge.requests)
-                if request.stage_id.startswith("section_")
-            )
-            self.assertLess(last_section_request, first_paragraph_request)
+            paper_indices = [request.paper_index for request in runner.judge.requests]
+            self.assertEqual(paper_indices, sorted(paper_indices))
+            for paper_index in (1, 2, 3):
+                requests = [r for r in runner.judge.requests if r.paper_index == paper_index]
+                first_paragraph = next(
+                    i for i, r in enumerate(requests) if r.stage_id.startswith("paragraph_")
+                )
+                last_section = max(
+                    i for i, r in enumerate(requests) if r.stage_id.startswith("section_")
+                )
+                self.assertLess(last_section, first_paragraph)
             model_group_question_stages = {
                 request.stage_id
                 for request in runner.judge.requests
@@ -808,7 +808,8 @@ class IncrementalGraphTest(unittest.TestCase):
         matches = {
             "p2:section_matching:new_to_group:shared2": target_id,
             f"p2:section_matching:group_to_new:{target_id}": "shared2",
-            f"corpus:section_rerepresentation:singleton_to_group:{subsection_id}": target_id,
+            f"p3:section_rerepresentation:singleton_to_group:{subsection_id}": target_id,
+            f"p3:section_rerepresentation:group_to_singleton:{target_id}": subsection_id,
         }
         judge = ScriptedJudge(matches)
 
@@ -830,13 +831,13 @@ class IncrementalGraphTest(unittest.TestCase):
             target_id,
         )
         self.assertNotIn(
-            f"corpus:section_rerepresentation:singleton_to_group:{unique_id}",
+            f"p3:section_rerepresentation:singleton_to_group:{unique_id}",
             {request.key for request in judge.requests},
         )
         rerepresentation_request = next(
             request
             for request in judge.requests
-            if request.key == f"corpus:section_rerepresentation:singleton_to_group:{subsection_id}"
+            if request.key == f"p3:section_rerepresentation:singleton_to_group:{subsection_id}"
         )
         self.assertEqual(rerepresentation_request.allowed_match_ids, [target_id])
         self.assertEqual(len(rerepresentation_request.context["focus"]["members"]), 1)
@@ -889,7 +890,7 @@ class IncrementalGraphTest(unittest.TestCase):
             set(runner.question_graph.graph.edges(keys=True)),
         )
 
-    def test_structural_rerepresentation_resolves_same_paper_target_conflicts_stably(self) -> None:
+    def test_structural_realignment_uses_group_choice_not_singleton_iteration_order(self) -> None:
         papers = [
             Paper(paper_id="p1", title="P1", sections=[Section(id="s1", text="Shared")]),
             Paper(paper_id="p2", title="P2", sections=[Section(id="s2", text="Shared")]),
@@ -910,9 +911,10 @@ class IncrementalGraphTest(unittest.TestCase):
             "p2:section_matching:new_to_group:s2": target_id,
             f"p2:section_matching:group_to_new:{target_id}": "s2",
             **{
-                f"corpus:section_rerepresentation:singleton_to_group:{source_id}": target_id
+                f"p3:section_rerepresentation:singleton_to_group:{source_id}": target_id
                 for source_id in source_ids
             },
+            f"p3:section_rerepresentation:group_to_singleton:{target_id}": source_ids[1],
         }
         judge = ScriptedJudge(matches)
 
@@ -924,22 +926,21 @@ class IncrementalGraphTest(unittest.TestCase):
             )
             runner.run(papers)
 
-        self.assertNotIn(source_ids[0], runner.question_graph.graph)
-        self.assertIn(source_ids[1], runner.question_graph.graph)
+        self.assertNotIn(source_ids[1], runner.question_graph.graph)
+        self.assertIn(source_ids[0], runner.question_graph.graph)
         self.assertEqual(len(runner.question_graph.members(target_id)), 3)
-        ignored = [
-            event
-            for event in runner.journal.events
-            if event["action"] == "rerepresentation_merge_ignored"
-        ]
-        self.assertEqual(len(ignored), 1)
-        self.assertEqual(ignored[0]["source_group_id"], source_ids[1])
         rerepresentation_requests = [
             request for request in judge.requests if request.stage_id == "section_rerepresentation"
         ]
-        self.assertEqual(len(rerepresentation_requests), 2)
+        self.assertEqual(len(rerepresentation_requests), 3)
+        reverse = next(r for r in rerepresentation_requests if ":group_to_singleton:" in r.key)
+        self.assertEqual(reverse.allowed_match_ids, source_ids)
         self.assertTrue(
-            all(request.allowed_match_ids == [target_id] for request in rerepresentation_requests)
+            all(
+                r.allowed_match_ids == [target_id]
+                for r in rerepresentation_requests
+                if r is not reverse
+            )
         )
         regenerated = [
             request

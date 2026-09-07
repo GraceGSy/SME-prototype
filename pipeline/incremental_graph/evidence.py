@@ -161,6 +161,18 @@ class Evidence:
             return None
         return {"full_text": paragraph.text}
 
+    def node_match_context(self, group_id: str, *, selectable: bool = False) -> dict[str, Any]:
+        """Use the same role evidence for both directions of singleton realignment."""
+        if self.graph.node(group_id)["level"] == "paragraph":
+            return self.paragraph_group_match_context(
+                group_id, selection_id=group_id if selectable else None
+            )
+        context = self.group_context(group_id)
+        context.pop("group_id")
+        if selectable:
+            context["selection_id"] = group_id
+        return context
+
     def scope_context(self, level: str, parent_id: str | None) -> dict[str, Any]:
         scope = {"level": level, "parent_group_id": parent_id}
         if parent_id:

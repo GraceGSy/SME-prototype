@@ -55,10 +55,14 @@ status, or subject domains are not vetoes. But a mapping must preserve who acts
 on whom and the relevant causal direction. Do not swap agent and recipient,
 or claim that posing a question supplies the answer, to manufacture a match.
 
-Structural rerepresentation compares a singleton with established non-singleton
-nodes in one direction; the caller deliberately does not require reciprocity
-for that pass. All other acceptance rules are applied by deterministic code
-after these independent judgments.
+Singleton rerepresentation uses the same reciprocal top-1 rule at both levels.
+After each document insertion, each singleton selects its best eligible
+established node or null, and each established node independently selects its
+best eligible singleton or null. The reverse pool contains all eligible
+singletons, not only the singleton that selected the group. Only mutual choices
+merge. A group can absorb at most one singleton in this frozen pass; later
+insertions trigger another pass. Paragraph calls are bounded to the exact
+section node. All graph acceptance rules remain deterministic.
 
 The caller's JSON schema is authoritative. For example, an abstention is:
 

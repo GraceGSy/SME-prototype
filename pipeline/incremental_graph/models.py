@@ -11,8 +11,8 @@ from pydantic import BaseModel, BeforeValidator, ConfigDict, Field, model_valida
 Level = Literal["section", "paragraph"]
 StructuralKind = Literal["section", "subsection"]
 Granularity = Literal["section", "subsection", "paragraph"]
-Phase = Literal["structural", "rerepresentation", "paragraph"]
-MatchDirection = Literal["new_to_group", "group_to_new", "singleton_to_group"]
+Phase = Literal["structural", "paragraph"]
+MatchDirection = Literal["new_to_group", "group_to_new", "singleton_to_group", "group_to_singleton"]
 
 
 class StrictModel(BaseModel):

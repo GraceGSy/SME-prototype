@@ -73,19 +73,16 @@ class IncrementalGraphRunner:
             "match_paragraphs": self._match_paragraphs,
             "reconcile_paragraphs": self._reconcile_paragraphs,
             "generate_paragraph_group_questions": self._generate_paragraph_group_questions,
+            "rerepresent_paragraph_singletons": self._rerepresent_paragraph_singletons,
+            "regenerate_rerepresented_paragraph_questions": self._regenerate_rerepresented_paragraph_questions,
         }
 
     def run(self, papers: list[Paper]) -> dict[str, Any]:
-        insertions: list[InsertionState] = []
         for paper_index, paper in enumerate(papers, start=1):
             self._register_paper(paper)
             insertion = InsertionState(paper=paper, paper_index=paper_index)
-            insertions.append(insertion)
             self.insertions_by_paper[paper.paper_id] = insertion
             self._run_phase("structural", insertion)
-        if insertions:
-            self._run_phase("rerepresentation", insertions[-1])
-        for insertion in insertions:
             self._run_phase("paragraph", insertion)
         self.journal.finalize()
         export_revision(self.revision_dir / "dataset", self.question_graph, self.papers)
@@ -228,123 +225,124 @@ class IncrementalGraphRunner:
     def _rerepresent_section_singletons(
         self, stage: StageConfig, insertion: InsertionState
     ) -> dict[str, Any]:
-        """Run one frozen singleton-to-established-node structural match pass."""
+        return self._rerepresent_singletons(stage, insertion, "section")
 
-        self._require_match_direction(stage, "singleton_to_group")
-        frozen_nodes = list(self.question_graph.nodes("section"))
-        singleton_ids = [node_id for node_id, data in frozen_nodes if len(data["members"]) == 1]
-        established_ids = [node_id for node_id, data in frozen_nodes if len(data["members"]) > 1]
-        decisions: dict[str, MatchDecision] = {}
-        candidates_by_singleton: dict[str, list[str]] = {}
+    def _rerepresent_paragraph_singletons(
+        self, stage: StageConfig, insertion: InsertionState
+    ) -> dict[str, Any]:
+        return self._rerepresent_singletons(stage, insertion, "paragraph")
 
-        for source_id in singleton_ids:
-            member = self.question_graph.members(source_id)[0]
-            candidate_ids = [
+    def _rerepresent_singletons(
+        self, stage: StageConfig, insertion: InsertionState, level: str
+    ) -> dict[str, Any]:
+        """Apply reciprocal top-1 decisions from one frozen per-insertion snapshot."""
+        nodes = dict(self.question_graph.nodes(level))
+        singletons = [node_id for node_id, data in nodes.items() if len(data["members"]) == 1]
+        established = [node_id for node_id, data in nodes.items() if len(data["members"]) > 1]
+        eligible = {
+            source_id: [
                 target_id
-                for target_id in established_ids
-                if not any(
-                    target_member["paper_id"] == member["paper_id"]
-                    for target_member in self.question_graph.members(target_id)
+                for target_id in established
+                if nodes[source_id].get("parent_id") == nodes[target_id].get("parent_id")
+                and not any(
+                    member["paper_id"] == nodes[source_id]["members"][0]["paper_id"]
+                    for member in nodes[target_id]["members"]
                 )
             ]
-            candidates_by_singleton[source_id] = candidate_ids
-            if not candidate_ids:
-                continue
-            context = {
-                "scope": {
-                    **self.evidence.scope_context("section", None),
-                    "match_mode": "rerepresentation",
-                },
-                "focus": self.evidence.group_context(source_id),
-                "candidates": [self.evidence.group_context(group_id) for group_id in candidate_ids],
-            }
-            decisions[source_id] = self._match(
-                stage,
-                insertion,
-                direction="singleton_to_group",
-                source_id=source_id,
-                allowed_ids=candidate_ids,
-                context=context,
-                key_prefix="corpus",
-            )
-
+            for source_id in singletons
+        }
+        batch = MatchBatch(existing_group_ids=established, new_unit_ids=singletons)
+        for direction, sources, decisions in (
+            ("singleton_to_group", singletons, batch.forward),
+            ("group_to_singleton", established, batch.reverse),
+        ):
+            for source_id in sources:
+                allowed = (
+                    eligible[source_id]
+                    if direction == "singleton_to_group"
+                    else [
+                        singleton_id
+                        for singleton_id in singletons
+                        if source_id in eligible[singleton_id]
+                    ]
+                )
+                if not allowed:
+                    continue
+                decisions[source_id] = self._match(
+                    stage,
+                    insertion,
+                    direction=direction,
+                    source_id=source_id,
+                    allowed_ids=allowed,
+                    context={
+                        "scope": {
+                            **self.evidence.scope_context(level, nodes[source_id].get("parent_id")),
+                            "match_mode": "rerepresentation",
+                        },
+                        "focus": self.evidence.node_match_context(source_id),
+                        "candidates": [
+                            self.evidence.node_match_context(node_id, selectable=True)
+                            for node_id in allowed
+                        ],
+                    },
+                )
         merged = []
-        ignored = []
-        changed_group_ids: set[str] = set()
-        for source_id in singleton_ids:
-            decision = decisions.get(source_id)
-            target_id = decision.target_id if decision else None
-            if target_id is None:
-                continue
-            member = self.question_graph.members(source_id)[0]
-            if any(
-                target_member["paper_id"] == member["paper_id"]
-                for target_member in self.question_graph.members(target_id)
-            ):
-                ignored.append(
-                    {
-                        "source_group_id": source_id,
-                        "target_group_id": target_id,
-                        "reason": "target_already_contains_paper",
-                    }
-                )
-                self.journal.event(
-                    "rerepresentation_merge_ignored",
-                    paper_index=insertion.paper_index,
-                    source_group_id=source_id,
-                    target_group_id=target_id,
-                    paper_id=member["paper_id"],
-                    reason="target_already_contains_paper",
-                    attempt_id=decision.attempt_id,
-                )
-                continue
-            self.question_graph.merge_section_singleton(
+        for source_id, target_id in reciprocal_matches(batch).items():
+            member = nodes[source_id]["members"][0]
+            owner = self.insertions_by_paper[member["paper_id"]]
+            assignments = (
+                owner.section_assignments if level == "section" else owner.paragraph_assignments
+            )
+            if assignments.get(member["unit_id"]) != source_id:
+                raise PipelineError(f"Assignment for {source_id} is stale")
+            forward = batch.forward[source_id]
+            reverse = batch.reverse[target_id]
+            self.question_graph.merge_singleton(
                 source_id,
                 target_id,
                 paper_index=insertion.paper_index,
-                attempt_id=decision.attempt_id,
+                attempt_id=forward.attempt_id,
+                reverse_attempt_id=reverse.attempt_id,
             )
-            source_insertion = self.insertions_by_paper[member["paper_id"]]
-            if source_insertion.section_assignments.get(member["unit_id"]) != source_id:
-                raise PipelineError(f"Structural assignment for {source_id} is stale")
-            source_insertion.section_assignments[member["unit_id"]] = target_id
-            changed_group_ids.add(target_id)
+            assignments[member["unit_id"]] = target_id
             merged.append(
                 {
                     "source_group_id": source_id,
                     "target_group_id": target_id,
                     "paper_id": member["paper_id"],
                     "unit_id": member["unit_id"],
-                    "attempt_id": decision.attempt_id,
+                    "attempt_id": forward.attempt_id,
+                    "reverse_attempt_id": reverse.attempt_id,
                 }
             )
-
         return {
-            "singleton_ids": singleton_ids,
-            "established_group_ids": established_ids,
-            "candidates_by_singleton": candidates_by_singleton,
-            "decisions": {
-                source_id: decision.model_dump(mode="json")
-                for source_id, decision in decisions.items()
-            },
+            "singleton_ids": singletons,
+            "established_group_ids": established,
+            "candidates_by_singleton": eligible,
+            "forward": {key: value.model_dump(mode="json") for key, value in batch.forward.items()},
+            "reverse": {key: value.model_dump(mode="json") for key, value in batch.reverse.items()},
             "merged": merged,
-            "ignored": ignored,
-            "changed_group_ids": sorted(changed_group_ids),
+            "changed_group_ids": sorted({item["target_group_id"] for item in merged}),
         }
 
     def _regenerate_rerepresented_section_questions(
         self, stage: StageConfig, insertion: InsertionState
     ) -> list[dict[str, str]]:
-        rerepresentation = insertion.stage_results.get("section_rerepresentation")
-        if rerepresentation is None:
-            raise PipelineError(
-                "regenerate_rerepresented_section_questions requires section_rerepresentation"
-            )
+        return self._regenerate_rerepresented_questions(stage, insertion, "section")
+
+    def _regenerate_rerepresented_paragraph_questions(
+        self, stage: StageConfig, insertion: InsertionState
+    ) -> list[dict[str, str]]:
+        return self._regenerate_rerepresented_questions(stage, insertion, "paragraph")
+
+    def _regenerate_rerepresented_questions(
+        self, stage: StageConfig, insertion: InsertionState, level: str
+    ) -> list[dict[str, str]]:
+        result = insertion.stage_results.get(f"{level}_rerepresentation")
+        if result is None:
+            raise PipelineError(f"{stage.id} requires {level}_rerepresentation")
         return self._generate_group_questions(
-            stage,
-            insertion,
-            "section",
-            group_ids=rerepresentation["changed_group_ids"],
+            stage, insertion, level, group_ids=result["changed_group_ids"]
         )
 
     def _generate_paragraph_questions(
@@ -595,10 +593,9 @@ class IncrementalGraphRunner:
         source_id: str,
         allowed_ids: list[str],
         context: dict[str, Any],
-        key_prefix: str | None = None,
     ) -> MatchDecision:
         request = JudgmentRequest(
-            key=f"{key_prefix or insertion.paper.paper_id}:{stage.id}:{direction}:{source_id}",
+            key=f"{insertion.paper.paper_id}:{stage.id}:{direction}:{source_id}",
             paper_index=insertion.paper_index,
             stage_id=stage.id,
             output_kind="match",
@@ -667,6 +664,9 @@ class IncrementalGraphRunner:
                     paper_index=insertion.paper_index,
                 )
                 for member in moved:
+                    self.insertions_by_paper[member["paper_id"]].paragraph_assignments[
+                        member["unit_id"]
+                    ] = target_id
                     anchor = anchors[(member["paper_id"], member["unit_id"])]
                     self.journal.event(
                         "paragraph_fan_in_added",
@@ -841,13 +841,6 @@ class IncrementalGraphRunner:
             raise PipelineError(
                 f"Stage {stage.id} requires new_to_group and group_to_new prompt/context entries"
             )
-        if not stage.skill:
-            raise PipelineError(f"Stage {stage.id} requires a matching Skill")
-
-    @staticmethod
-    def _require_match_direction(stage: StageConfig, direction: MatchDirection) -> None:
-        if direction not in stage.prompts or direction not in stage.contexts:
-            raise PipelineError(f"Stage {stage.id} requires a {direction} prompt/context entry")
         if not stage.skill:
             raise PipelineError(f"Stage {stage.id} requires a matching Skill")
 

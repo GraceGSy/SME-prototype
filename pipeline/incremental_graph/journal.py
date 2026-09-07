@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
@@ -27,7 +28,7 @@ class RevisionJournal:
             "event_id": f"event-{len(self.events) + 1:06d}",
             "paper_index": paper_index,
             "action": action,
-            **payload,
+            **deepcopy(payload),
         }
         self.events.append(event)
         self._append(self.event_path, event)

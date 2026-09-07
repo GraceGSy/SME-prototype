@@ -48,7 +48,13 @@ def build_correspondences(
         if event["action"] == "node_merged" and event.get("reason") == "structural_rerepresentation"
         for member in event["members"]
     }
-    one_way_members = fan_in_members | rerepresented_members
+    paragraph_rerepresented_members = {
+        (member["paper_id"], member["unit_id"])
+        for event in events
+        if event["action"] == "node_merged" and event.get("reason") == "paragraph_rerepresentation"
+        for member in event["members"]
+    }
+    one_way_members = fan_in_members
 
     labels = _unit_labels(papers)
     levels: dict[str, list[dict[str, Any]]] = {"section": [], "paragraph": []}
@@ -80,6 +86,7 @@ def build_correspondences(
             "section_rerepresented_members": len(rerepresented_members),
             "paragraph_fan_in_groups": sum(bool(row["fan_in"]) for row in levels["paragraph"]),
             "paragraph_fan_in_members": len(fan_in_events),
+            "paragraph_rerepresented_members": len(paragraph_rerepresented_members),
             "section_correspondence_rows": len(levels["section"]),
             "paragraph_correspondence_rows": len(levels["paragraph"]),
         },

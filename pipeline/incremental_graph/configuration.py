@@ -135,16 +135,22 @@ STAGE_ORDER = (
     ("section_matching", "match_sections", "structural"),
     ("section_reconciliation", "reconcile_sections", "structural"),
     ("section_group_questions", "generate_section_group_questions", "structural"),
-    ("section_rerepresentation", "rerepresent_section_singletons", "rerepresentation"),
+    ("section_rerepresentation", "rerepresent_section_singletons", "structural"),
     (
         "section_rerepresentation_questions",
         "regenerate_rerepresented_section_questions",
-        "rerepresentation",
+        "structural",
     ),
     ("paragraph_questions", "generate_paragraph_questions", "paragraph"),
     ("paragraph_matching", "match_paragraphs", "paragraph"),
     ("paragraph_reconciliation", "reconcile_paragraphs", "paragraph"),
     ("paragraph_group_questions", "generate_paragraph_group_questions", "paragraph"),
+    ("paragraph_rerepresentation", "rerepresent_paragraph_singletons", "paragraph"),
+    (
+        "paragraph_rerepresentation_questions",
+        "regenerate_rerepresented_paragraph_questions",
+        "paragraph",
+    ),
 )
 
 
@@ -160,10 +166,11 @@ def validate_pipeline_config(config: PipelineConfig) -> None:
             "match_sections",
             "match_paragraphs",
             "rerepresent_section_singletons",
+            "rerepresent_paragraph_singletons",
         }:
             directions = (
-                {"singleton_to_group"}
-                if stage.handler == "rerepresent_section_singletons"
+                {"singleton_to_group", "group_to_singleton"}
+                if stage.handler.startswith("rerepresent_")
                 else {"new_to_group", "group_to_new"}
             )
             if (

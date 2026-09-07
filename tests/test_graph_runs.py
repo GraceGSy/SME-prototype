@@ -10,6 +10,7 @@ import yaml
 from test_incremental_graph import CONFIG_PATH, ScriptedJudge
 
 from pipeline.files import write_json
+from pipeline.incremental_graph.graph import stable_id
 from pipeline.incremental_graph.runs import add_papers, retry_graph, start_graph
 
 
@@ -48,6 +49,38 @@ def manifest(root: Path, ids: list[str], name: str) -> Path:
 
 
 class GraphRunTest(unittest.TestCase):
+    def test_sequence_and_separate_additions_produce_the_same_realignments(self):
+        structural = stable_id("section-group", "root", "a", "s0001")
+        target = stable_id("paragraph-group", structural, "a", "s0001.p0001")
+        singleton = stable_id("paragraph-group", structural, "b", "s0001.p0001")
+        matches = {
+            "c:paragraph_matching:new_to_group:s0001.p0001": target,
+            f"c:paragraph_matching:group_to_new:{target}": "s0001.p0001",
+            f"c:paragraph_rerepresentation:singleton_to_group:{singleton}": target,
+            f"c:paragraph_rerepresentation:group_to_singleton:{target}": singleton,
+        }
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            initial = manifest(root, ["a", "b"], "initial")
+            third = manifest(root, ["c"], "third")
+            fourth = manifest(root, ["d"], "fourth")
+            additions = manifest(root, ["c", "d"], "additions")
+            complete = manifest(root, ["a", "b", "c", "d"], "complete")
+            with patch(
+                "pipeline.incremental_graph.runs.AnthropicJudgmentProvider",
+                side_effect=lambda *args, **kwargs: ScriptedJudge(matches),
+            ):
+                whole = start_graph(complete, root / "whole", CONFIG_PATH)
+                start_graph(initial, root / "batch", CONFIG_PATH)
+                batch = add_papers(additions, root / "batch")
+                start_graph(initial, root / "single", CONFIG_PATH)
+                add_papers(third, root / "single")
+                single = add_papers(fourth, root / "single")
+            self.assertEqual(whole["graph_hash"], batch["graph_hash"])
+            self.assertEqual(whole["graph_hash"], single["graph_hash"])
+            report = json.loads((Path(single["dataset_dir"]) / "correspondences.json").read_text())
+            self.assertEqual(report["stats"]["paragraph_rerepresented_members"], 1)
+
     def test_start_add_and_retry_preserve_order_and_frozen_sources(self):
         with TemporaryDirectory() as directory:
             root = Path(directory)

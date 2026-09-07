@@ -24,7 +24,7 @@ export function mountReplay(host: HTMLElement, replay: Replay, papers: Paper[]) 
     edge_created: "Hierarchy edge added",
     question_generated: "Display question generated",
     projected_edge_ignored: "Projected edge ignored",
-    rerepresentation_merge_ignored: "Rerepresentation merge ignored",
+    node_reparented: "Paragraph scope changed",
   };
 
   let index = 0;
@@ -256,17 +256,17 @@ export function mountReplay(host: HTMLElement, replay: Replay, papers: Paper[]) 
       return `${event.member.paper_id}:${event.member.unit_id} joins ${event.node_id}.`;
     if (event.action === "node_merged") {
       const reason =
-        event.reason === "structural_rerepresentation"
-          ? "through structural rerepresentation"
-          : "as adjacent paragraph fan-in";
+        event.reason === "adjacent_paragraph_fan_in"
+          ? "as adjacent paragraph fan-in"
+          : "through reciprocal singleton realignment";
       return `${event.source_node_id} joins ${event.target_node_id} ${reason}.`;
     }
     if (event.action === "edge_created") return `${event.source} points to ${event.target}.`;
     if (event.action === "question_generated") return event.question;
     if (event.action === "projected_edge_ignored")
       return `The selection was retained as provenance; no ${event.source_group_id} -> ${event.absorbed_group_id} edge was added.`;
-    if (event.action === "rerepresentation_merge_ignored")
-      return `${event.source_group_id} remains a singleton because ${event.target_group_id} already represents ${event.paper_id}.`;
+    if (event.action === "node_reparented")
+      return `${event.node_id} moves from ${event.previous_parent_id} into ${event.parent_id}.`;
     return "The saved pipeline event has no graph mutation.";
   }
 

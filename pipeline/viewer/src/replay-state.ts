@@ -40,6 +40,17 @@ export function reduceEvents(events: ReplayEvent[], endIndex = events.length): R
       case "member_added":
         node(event.node_id).members.push(event.member);
         break;
+      case "node_reparented": {
+        const child = node(event.node_id);
+        node(event.parent_id);
+        if (child.parentId !== event.previous_parent_id) throw new Error("Replay parent mismatch");
+        child.parentId = event.parent_id;
+        child.members = child.members.map((member) => ({
+          ...member,
+          owner_group_id: event.parent_id,
+        }));
+        break;
+      }
       case "node_merged":
         node(event.source_node_id);
         node(event.target_node_id).members.push(...event.members);
@@ -61,7 +72,6 @@ export function reduceEvents(events: ReplayEvent[], endIndex = events.length): R
       // The remaining events are judgment provenance, not graph mutations.
       case "match_recorded":
       case "projected_edge_ignored":
-      case "rerepresentation_merge_ignored":
       case "paragraph_fan_in_added":
         break;
     }
