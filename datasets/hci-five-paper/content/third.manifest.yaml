@@ -1,0 +1,6 @@
+schema_version: 1
+max_granularity: subsection
+papers:
+- paper_id: examplore_chi18
+  title: Examplore (CHI 2018)
+  file: examplore_chi18.content.json

@@ -86,7 +86,7 @@ stages:
     handler: match_paragraphs
     phase: paragraph
     skill: match-role
-    max_tokens: 512
+    max_tokens: 1024
     # Each request compares one focus paragraph against the allowed pool.
     max_input_tokens: 150000
     prompts:
