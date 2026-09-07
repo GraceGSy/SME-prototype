@@ -337,8 +337,20 @@ class ClaudeSkills:
         policy: SkillCallPolicy,
     ) -> RunResult:
         response, usage = self._run(skills, messages, policy=policy, schema=schema)
+        # Earlier text belongs to intermediate server-tool iterations, not the answer.
+        boundary = max(
+            (
+                i
+                for i, block in enumerate(response.content)
+                if getattr(block, "type", "") == "server_tool_use"
+                or getattr(block, "type", "").endswith("_tool_result")
+            ),
+            default=-1,
+        )
         text = "".join(
-            block.text for block in response.content if getattr(block, "type", "") == "text"
+            block.text
+            for block in response.content[boundary + 1 :]
+            if getattr(block, "type", "") == "text"
         )
         if not text.strip():
             raise RuntimeError(f"Claude response {response.id} contained no structured text output")

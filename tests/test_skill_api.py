@@ -98,6 +98,25 @@ SCHEMA = {
 
 
 class SkillApiTest(unittest.TestCase):
+    def test_final_answer_after_tool_result_excludes_intermediate_json(self):
+        response = _Response("final", "end_turn", 100, 50)
+        response.content = [
+            SimpleNamespace(type="text", text='{"answer":"intermediate"}'),
+            SimpleNamespace(type="server_tool_use"),
+            SimpleNamespace(type="bash_code_execution_tool_result"),
+            SimpleNamespace(type="text", text='{"answer":"final"}'),
+        ]
+        adapter, _ = _adapter(response)
+        result = adapter.run_json([SKILL], "input", SCHEMA, policy=SkillCallPolicy(max_tokens=100))
+        self.assertEqual(result.value, {"answer": "final"})
+
+    def test_two_final_json_objects_still_rejected(self):
+        response = _Response("ambiguous", "end_turn", 100, 50)
+        response.content.append(SimpleNamespace(type="text", text='{"answer":"other"}'))
+        adapter, _ = _adapter(response)
+        with self.assertRaises(json.JSONDecodeError):
+            adapter.run_json([SKILL], "input", SCHEMA, policy=SkillCallPolicy(max_tokens=100))
+
     def test_response_retained_before_usage_rejection(self):
         adapter, _ = _adapter(_Response("paid-response", "end_turn", 201, 10))
         with tempfile.TemporaryDirectory() as directory:
