@@ -11,6 +11,11 @@ precomputed questions for reproducible question-reuse tests. These are deliberat
 prepared variants, not interchangeable input schemas. Precomputed questions are
 not a human gold standard.
 
+New experiments use `content/manifest.yaml`, not the question-annotated root
+manifest. For the first pair only, use `content/first-two.manifest.yaml`
+(AbstractExplorer, then CorpusStudio). Start in a new run directory to generate
+fresh questions and judgments. Do not re-extract the unchanged source PDFs.
+
 No preparation runs automatically. The one-shot utility is retained under
 `helpers/prepare_content_corpus.py`; existing content should be reused.
 

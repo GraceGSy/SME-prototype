@@ -49,6 +49,12 @@ the raw document before including it in a graph.
 
 The checked-in corpora are already prepared. Do not extract them again.
 
+For new experiments, use content-only prepared inputs and a new run directory.
+Do not seed them with older generated questions or judgment caches. Retrying an
+interrupted experiment may reuse that same run's completed judgments. HCI's
+content-only manifest is `datasets/hci-five-paper/content/manifest.yaml`; its
+`first-two.manifest.yaml` selects only AbstractExplorer and CorpusStudio.
+
 ## Start, Add, Retry
 
 ```powershell
