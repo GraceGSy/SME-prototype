@@ -10,6 +10,35 @@ and a fixed `scope`. Return one `target_id` and one evidence-grounded `basis`.
 The reverse judgment is a separate request. Do not batch, invent candidates,
 generate questions, or mutate the graph.
 
+## Exact Input And Output Contract
+
+The user message may split the input across text blocks: shared `scope` and
+`candidates` come first, and the single `focus` comes last. Read them together
+as one request. The pool is complete and already filtered by the caller.
+
+Copy the selected candidate's output handle exactly, using these input shapes:
+
+| Candidate shape | Field to copy into `target_id` |
+|---|---|
+| Has an outer `selection_id` (paragraph matching or singleton realignment) | Outer `selection_id` |
+| Structural graph node with `group_id` and `members` | Outer `group_id` |
+| New structural unit with `paper_id` and `section_id` | Outer `section_id` |
+
+Never use a member's ID, the focus ID, `paper_id`, `parent_unit_id`, `family_id`,
+a label, an ordinal, or a generated question as the output handle. IDs are
+opaque strings: do not concatenate, prefix, trim, reformat, or reconstruct them.
+For example, a candidate with `paper_id: "corpusstudio"` and
+`section_id: "s0003"` must be returned as `"s0003"`, NOT
+`"corpusstudio-s0003"`. This example is not an additional candidate.
+
+Return exactly one JSON object with exactly two fields:
+- `target_id`: the exact selected handle string, or JSON `null` for abstention.
+- `basis`: a nonempty string containing the evidence-grounded explanation below.
+
+Do not return a list, Markdown fences, a string containing JSON, extra fields,
+or the string `"null"`. Before returning, check that `target_id` equals one of
+the supplied candidate handles character for character, or is JSON `null`.
+
 ## Evidence
 
 - Judge role first, relational structure second, content similarity last.
