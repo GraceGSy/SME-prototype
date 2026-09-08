@@ -5,16 +5,30 @@ in-flight uncertainty and tool fees. This is not a provider-enforced dollar cap.
 """
 
 import argparse
+from dataclasses import replace
 from pathlib import Path
 from unittest.mock import patch
 
 from pipeline.files import read_json, write_json
 from pipeline.incremental_graph.runs import add_papers, retry_graph, start_graph
-from pipeline.llm.client import ClaudeSkills, SkillBudgetExceeded
+from pipeline.llm.client import ClaudeSkills, SkillBudgetExceeded, SkillCallPolicy
 
 ROOT = Path(__file__).resolve().parents[1]
 RUN = ROOT / "runs/hci-concise-fresh-20260907"
 CONTENT = ROOT / "datasets/hci-five-paper/content"
+
+
+def extension_policy(policy: SkillCallPolicy) -> SkillCallPolicy:
+    """Allow aggregate native-Skill usage across iterations, not a larger prompt.
+
+    Paralib's complete deduplicated pool produced 219,217 input-usage tokens,
+    97.5% cache reads, with a normal 290-token response. Keep prompt/output
+    limits and the separate dollar guard unchanged. Raw responses record this
+    effective guard; saved run configuration remains intact for cache reuse.
+    """
+    if policy.max_input_tokens == 200_000:
+        return replace(policy, max_input_tokens=300_000)
+    return policy
 
 
 def token_cost(usage):
@@ -69,6 +83,8 @@ def run(action):
                 f"Experiment reached its ${stop_threshold:.2f} cumulative estimated token-cost stop threshold"
             )
         usage = {}
+        if authorization_path.exists():
+            kwargs["policy"] = extension_policy(kwargs["policy"])
         try:
             response, usage = original(client, *args, **kwargs)
             return response, usage
