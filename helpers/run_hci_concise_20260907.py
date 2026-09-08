@@ -32,6 +32,28 @@ def token_cost(usage):
 
 def run(action):
     spent = sum(token_cost(read_json(p)["usage"]) for p in (RUN / "cache/responses").glob("*.json"))
+    authorization_path = RUN / "remaining-two-budget.json"
+    if action == "add-remaining":
+        state = read_json(RUN / "run.json")
+        if state["latest_revision"] != state["current_revision"]:
+            raise ValueError("Retry the unfinished revision before adding papers")
+        summary = read_json(RUN / "revisions" / state["current_revision"] / "summary.json")
+        if summary["paper_order"] != ["abstractexplorer", "corpusstudio", "examplore_chi18"]:
+            raise ValueError("Expected exactly the completed first three HCI papers")
+        if not authorization_path.exists():
+            write_json(
+                authorization_path,
+                {
+                    "baseline_token_cost_usd": spent,
+                    "reported_available_balance_usd": 25,
+                    "additional_token_allowance_usd": 23,
+                    "stop_threshold_usd": spent + 23,
+                    "authorization": "User approved the remaining two HCI papers with $25 available",
+                },
+            )
+    stop_threshold = (
+        read_json(authorization_path)["stop_threshold_usd"] if authorization_path.exists() else 17
+    )
     if action == "add" and spent > 9:
         raise ValueError(
             "Less than $10 of the original $19 remains; review before adding Examplore"
@@ -42,9 +64,9 @@ def run(action):
         nonlocal spent
         if client.model != "claude-sonnet-5":
             raise ValueError("Budget rates apply only to claude-sonnet-5")
-        if spent >= 17:
+        if spent >= stop_threshold:
             raise SkillBudgetExceeded(
-                "Experiment reached its $17 estimated token-cost stop threshold"
+                f"Experiment reached its ${stop_threshold:.2f} cumulative estimated token-cost stop threshold"
             )
         usage = {}
         try:
@@ -59,7 +81,7 @@ def run(action):
                 RUN / "budget.json",
                 {
                     "estimated_token_cost_usd": spent,
-                    "stop_threshold_usd": 17,
+                    "stop_threshold_usd": stop_threshold,
                     "original_balance_usd": 19,
                     "excludes": "tool charges and unreported usage",
                 },
@@ -70,6 +92,8 @@ def run(action):
             result = start_graph(CONTENT / "first-two.manifest.yaml", RUN)
         elif action == "add":
             result = add_papers(CONTENT / "third.manifest.yaml", RUN)
+        elif action == "add-remaining":
+            result = add_papers(CONTENT / "remaining-two.manifest.yaml", RUN)
         else:
             result = retry_graph(RUN)
     print(result)
@@ -77,5 +101,5 @@ def run(action):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=["start", "add", "retry"])
+    parser.add_argument("action", choices=["start", "add", "add-remaining", "retry"])
     run(parser.parse_args().action)
