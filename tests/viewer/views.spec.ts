@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("groups, paper map, replay, and tutorial work on canonical exports", async ({ page }) => {
+test("groups, paper map, explorer, and tutorial work on canonical exports", async ({ page }) => {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/single/public/");
@@ -19,11 +19,8 @@ test("groups, paper map, replay, and tutorial work on canonical exports", async 
   await page.getByRole("button", { name: "Show singleton questions" }).click();
   await expect(page.locator(".paper-map-singleton-legend button")).toBeVisible();
   await page.screenshot({ path: "output/playwright/desktop-map.png" });
-  await page.getByRole("button", { name: "Graph Replay", exact: true }).click();
-  await page.locator("#graphReplayEnd").click();
-  await expect(page.locator(".graph-replay-node")).toHaveCount(1);
-  await page.locator("#graphReplayScope").selectOption("paragraph");
-  await expect(page.locator(".graph-replay-node")).toHaveCount(2);
+  await page.getByRole("button", { name: "Graphical Explorer", exact: true }).click();
+  await expect(page.locator(".gx-node")).toHaveCount(1);
   await page.getByRole("button", { name: "Tutorial", exact: true }).click();
   for (let i = 0; i < 7; i++)
     await page.getByRole("button", { name: "Next Step", exact: true }).click();

@@ -2,8 +2,7 @@ import { loadDataset } from "./data";
 import { element } from "./dom";
 import { GroupsView } from "./groups";
 import { PaperMapView } from "./paper-map";
-import { mountReplay } from "./replay";
-import { reduceEvents } from "./replay-state";
+import { GraphicalExplorer } from "./explorer";
 import { mountTutorial, type View } from "./tutorial";
 
 element("#useToolButton").addEventListener("click", () => {
@@ -11,30 +10,27 @@ element("#useToolButton").addEventListener("click", () => {
 });
 
 async function main(): Promise<void> {
-  const { descriptor, model, replay } = await loadDataset();
-  if (replay) reduceEvents(replay.events);
+  const { descriptor, model } = await loadDataset();
   document.title = descriptor.label;
   element("#viewerTitle").textContent = descriptor.label;
   document.documentElement.dataset.datasetId = descriptor.dataset_id;
   const host = element("#stage");
   const groups = new GroupsView(host, model);
   const paperMap = new PaperMapView(host, model);
-  let replayView: ReturnType<typeof mountReplay> | null = null;
+  const explorer = new GraphicalExplorer(host, model);
   let view: View = "groups";
   const labels: Record<View, string> = {
     groups: "Question Groups",
     "paper-map": "Paper Map",
-    "graph-replay": "Graph Replay",
+    "graphical-explorer": "Graphical Explorer",
   };
   const switchView = (next: View): void => {
-    replayView?.destroy();
-    replayView = null;
+    explorer.destroy();
     paperMap.hideTooltip();
     view = next;
     const tabs = element("#granularityTabs");
     tabs.replaceChildren();
     for (const key of Object.keys(labels) as View[]) {
-      if (key === "graph-replay" && !replay) continue;
       const button = document.createElement("button");
       button.type = "button";
       button.className = "granularity-btn" + (view === key ? " active" : "");
@@ -45,13 +41,12 @@ async function main(): Promise<void> {
     }
     if (view === "groups") groups.render();
     else if (view === "paper-map") paperMap.render();
-    else if (replay) replayView = mountReplay(host, replay, model.papers);
+    else explorer.render();
   };
   switchView(view);
   mountTutorial(switchView, () => view);
   window.addEventListener("resize", () => {
     if (view === "paper-map") paperMap.resize();
-    replayView?.resize();
   });
 }
 

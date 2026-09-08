@@ -1,6 +1,6 @@
 import { element } from "./dom";
 
-export type View = "groups" | "paper-map" | "graph-replay";
+export type View = "groups" | "paper-map" | "graphical-explorer";
 interface Step {
   view: View;
   target: string;
@@ -12,8 +12,8 @@ const STEPS: Step[] = [
   {
     view: "groups",
     target: "#granularityTabs",
-    title: "Two ways to inspect the same graph",
-    body: "Question Groups compares matching passages. Paper Map keeps each document in source order.",
+    title: "Three ways to inspect the same graph",
+    body: "Question Groups compares matching passages. Paper Map keeps document order. Graphical Explorer connects section roles and opens their paragraph graphs.",
   },
   {
     view: "groups",

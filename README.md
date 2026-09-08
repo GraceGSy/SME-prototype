@@ -114,7 +114,13 @@ python -m http.server 8000 --directory site/hci/public
 ```
 
 Open `http://localhost:8000`. Question Groups and Paper Map show the final
-snapshot. Graph Replay is available when the export includes a valid replay.
+snapshot. Graphical Explorer adds a pan/zoom section skeleton, optional subsection
+detail, and paragraph graphs bounded to each section role. Select a node to read
+its sources or compare them side by side; paper and role filters emphasize paths
+without deleting unmatched evidence. Arrows indicate source reading order among
+displayed units, not causal relationships. Differences within matched roles are
+for the reader to inspect, not newly inferred classifications. Graph Replay is
+hidden from navigation for now; replay exports and validation remain intact.
 Malformed present replay data is an error, not a silently hidden tab.
 Packaging requires the viewer build and refuses a nonempty output directory.
 
