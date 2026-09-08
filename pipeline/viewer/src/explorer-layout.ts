@@ -45,22 +45,35 @@ export function explorerGraph(
   sectionId: string | null,
   includeSubsections = false,
 ): ExplorerGraph {
-  if (sectionId !== null && !model.sections.some((g) => g.group_id === sectionId))
-    throw new Error("Unknown explorer section");
+  const parent = model.sections.find((g) => g.group_id === sectionId);
+  if (sectionId !== null && !parent) throw new Error("Unknown explorer section");
   const groups =
     sectionId === null
       ? model.sections.filter(
           (g) => includeSubsections || g.members.some((m) => m.unit_type === "section"),
         )
-      : [...model.groups.values()]
-          .map((entry) => entry.group)
-          .filter((group) => group.parent_group_id === sectionId);
+      : [
+          ...model.sections.filter(
+            (group) =>
+              group.group_id !== sectionId &&
+              group.members.some((member) => {
+                const paper = model.papers.find((p) => p.paper_id === member.paper);
+                const source = paper?.sections.find((s) => s.id === member.unit_id);
+                return parent!.members.some(
+                  (m) => m.paper === member.paper && m.unit_id === source?.parent_id,
+                );
+              }),
+          ),
+          ...[...model.groups.values()]
+            .map((entry) => entry.group)
+            .filter((group) => group.parent_group_id === sectionId),
+        ];
   const membership = new Map<string, string>();
   for (const group of groups) {
     for (const member of group.members) {
       const key = unitKey(member.paper, member.unit_id);
       const paper = model.papers.find((p) => p.paper_id === member.paper);
-      const units = paper && (sectionId === null ? paper.sections : paper.paragraphs);
+      const units = paper && (member.unit_type === "paragraph" ? paper.paragraphs : paper.sections);
       if (!units?.some((unit) => unit.id === member.unit_id))
         throw new Error("Unknown explorer source unit");
       if (membership.has(key)) throw new Error("Duplicate explorer membership");
@@ -70,10 +83,18 @@ export function explorerGraph(
   const positions = new Map<string, number[]>();
   const edges: ExplorerEdge[] = [];
   model.papers.forEach((paper) => {
-    const units = (sectionId === null ? paper.sections : paper.paragraphs)
-      .filter((unit) => membership.has(unitKey(paper.paper_id, unit.id)))
+    // Flatten source sections and their paragraphs in document order. A section
+    // heading precedes its text; these are reading-order edges, not relations.
+    const ordered = paper.sections
       .slice()
-      .sort((a, b) => a.ordinal - b.ordinal);
+      .sort((a, b) => a.ordinal - b.ordinal)
+      .flatMap((section) => [
+        section,
+        ...paper.paragraphs
+          .filter((p) => p.section_id === section.id)
+          .sort((a, b) => a.ordinal - b.ordinal),
+      ]);
+    const units = ordered.filter((unit) => membership.has(unitKey(paper.paper_id, unit.id)));
     let previous: string | undefined;
     const seenEdges = new Set<string>();
     units.forEach((unit, index) => {

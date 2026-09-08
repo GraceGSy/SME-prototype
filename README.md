@@ -114,11 +114,15 @@ python -m http.server 8000 --directory site/hci/public
 ```
 
 Open `http://localhost:8000`. Question Groups and Paper Map show the final
-snapshot. Graphical Explorer adds a pan/zoom section skeleton, optional subsection
-detail, and paragraph graphs bounded to each section role. Select a node to read
-its sources or compare them side by side; paper and role filters emphasize paths
-without deleting unmatched evidence. Arrows indicate source reading order among
-displayed units, not causal relationships. Differences within matched roles are
+snapshot. Graphical Explorer follows the questions in source reading order.
+Click a section to gently center it and unfold its subsections and directly assigned
+paragraph roles. Click a paragraph role to read original passages across papers
+inline on the canvas; Back returns to the containing section. There is no sidebar.
+Parallel directed paper paths collapse into one bold arrow without changing the
+underlying data. Paper-specific branches remain colored; arrows into unmatched
+nodes are dashed. Paper and role filters highlight paths without deleting evidence.
+Arrows indicate order among displayed units, not causal relationships or a new
+semantic matching step. Differences within matched roles are
 for the reader to inspect, not newly inferred classifications. Graph Replay is
 hidden from navigation for now; replay exports and validation remain intact.
 Malformed present replay data is an error, not a silently hidden tab.

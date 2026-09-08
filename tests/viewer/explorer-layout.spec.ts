@@ -109,10 +109,12 @@ test("explorer retains exact membership, differences, and per-paper reading orde
   expect(explorerGraph(model, null).nodes).toHaveLength(1);
   expect(explorerGraph(model, null, true).nodes).toHaveLength(2);
   const graph = explorerGraph(model, "section");
-  expect(graph.nodes).toHaveLength(3);
+  expect(graph.nodes).toHaveLength(4);
   expect(graph.edges).toEqual([
     { source: "shared", target: "a-only", paper: "a" },
+    { source: "a-only", target: "sub", paper: "a" },
     { source: "shared", target: "b-only", paper: "b" },
+    { source: "b-only", target: "sub", paper: "b" },
   ]);
   expect(explorerGraph(model, "sub").nodes).toHaveLength(0);
   expect(() => explorerGraph(model, "invented")).toThrow("Unknown explorer section");
