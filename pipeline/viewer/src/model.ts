@@ -8,6 +8,7 @@ export interface GroupEntry {
 }
 export interface Model {
   papers: Paper[];
+  sections: Group[];
   shared: GroupEntry[];
   singletons: GroupEntry[];
   groups: Map<string, GroupEntry>;
@@ -62,5 +63,13 @@ export function buildModel(papers: Paper[], snapshot: Snapshot): Model {
   const singletons = entries(snapshot.singletons, true);
   if (membership.size !== paragraphs.size)
     throw new Error("Snapshot does not account for every paragraph");
-  return { papers, shared, singletons, groups, paragraphs, membership };
+  return {
+    papers,
+    sections: snapshot.section_groups,
+    shared,
+    singletons,
+    groups,
+    paragraphs,
+    membership,
+  };
 }
