@@ -1,5 +1,10 @@
 import { expect, test } from "@playwright/test";
-import { explorerGraph, NODE_HEIGHT, NODE_WIDTH } from "../../pipeline/viewer/src/explorer-layout";
+import {
+  collapseEdges,
+  explorerGraph,
+  NODE_HEIGHT,
+  NODE_WIDTH,
+} from "../../pipeline/viewer/src/explorer-layout";
 import { buildModel } from "../../pipeline/viewer/src/model";
 import type { Group, Paper, Snapshot } from "../../pipeline/viewer/src/contracts";
 
@@ -124,4 +129,18 @@ test("explorer rejects a missing structural member instead of silently drawing a
   const model = fixture();
   model.sections[0].members[0].unit_id = "missing";
   expect(() => explorerGraph(model, null)).toThrow("Unknown explorer source unit");
+});
+
+test("collapsed arrows preserve direction and exact contributing paper paths", () => {
+  const edges = [
+    { source: "intro", target: "method", paper: "a" },
+    { source: "intro", target: "method", paper: "b" },
+    { source: "method", target: "intro", paper: "c" },
+  ];
+  const before = JSON.stringify(edges);
+  expect(collapseEdges(edges)).toEqual([
+    { source: "intro", target: "method", papers: ["a", "b"] },
+    { source: "method", target: "intro", papers: ["c"] },
+  ]);
+  expect(JSON.stringify(edges)).toBe(before);
 });

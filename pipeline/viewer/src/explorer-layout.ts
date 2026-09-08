@@ -18,6 +18,23 @@ export interface ExplorerGraph {
   width: number;
   height: number;
 }
+export interface CollapsedEdge {
+  source: string;
+  target: string;
+  papers: string[];
+}
+
+// Collapse only the drawing, never the underlying directed paper paths.
+export function collapseEdges(edges: ExplorerEdge[]): CollapsedEdge[] {
+  const collapsed = new Map<string, CollapsedEdge>();
+  for (const edge of edges) {
+    const key = JSON.stringify([edge.source, edge.target]);
+    const item = collapsed.get(key) ?? { source: edge.source, target: edge.target, papers: [] };
+    if (!item.papers.includes(edge.paper)) item.papers.push(edge.paper);
+    collapsed.set(key, item);
+  }
+  return [...collapsed.values()];
+}
 export const NODE_WIDTH = 224;
 export const NODE_HEIGHT = 106;
 
@@ -84,7 +101,12 @@ export function explorerGraph(
       return {
         group,
         papers,
-        x: 48 + (indexes.reduce((a, b) => a + b, 0) / indexes.length) * 280,
+        x:
+          papers.length > 1
+            ? 48 + Math.floor(model.papers.length / 2) * 280
+            : 48 +
+              (indexes[0] >= Math.floor(model.papers.length / 2) ? indexes[0] + 1 : indexes[0]) *
+                280,
         y: 75 + (values.reduce((a, b) => a + b, 0) / values.length) * rows * 145,
       };
     })
@@ -102,7 +124,7 @@ export function explorerGraph(
   return {
     nodes,
     edges,
-    width: Math.max(700, model.papers.length * 280 + 40),
+    width: Math.max(700, (model.papers.length + 1) * 280 + 40),
     height: Math.max(400, ...nodes.map((node) => node.y + NODE_HEIGHT + 70)),
   };
 }
