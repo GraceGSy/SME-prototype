@@ -25,6 +25,26 @@ header h1 {
   font-weight: 600;
   color: #495057;
 }
+.local-runs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 16px;
+  border-bottom: 1px solid #dee2e6;
+  background: #fff;
+}
+.local-runs select,
+.local-runs button {
+  max-width: 100%;
+  min-width: 0;
+  padding: 6px 8px;
+  font: inherit;
+  font-size: 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background: #fff;
+  color: #343a40;
+}
 #legend {
   font-size: 10.5px;
   color: #868e96;

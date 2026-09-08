@@ -9,6 +9,7 @@ import {
 import type { Replay, Routes } from "./contracts";
 import { element } from "./dom";
 import { buildModel } from "./model";
+import { localDatasetBase } from "./local-runs";
 
 export function participantRoute(id: string, routes: Routes): string {
   const match = /^([A-Z]{2})([0-9]{3})$/.exec(id);
@@ -55,7 +56,8 @@ async function datasetBase(root: URL): Promise<URL> {
 }
 
 export async function loadDataset() {
-  const base = await datasetBase(new URL("./data/", window.location.href));
+  const base =
+    (await localDatasetBase()) ?? (await datasetBase(new URL("./data/", window.location.href)));
   const descriptor = descriptorSchema.parse(await readJson("dataset.json", base));
   const manifest = manifestSchema.parse(await readJson("manifest.json", base));
   const papers = [];

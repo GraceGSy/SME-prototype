@@ -87,7 +87,24 @@ Saved input hashes and code/prompt/Skill/config/dependency fingerprints are
 checked before adding or retrying. If policy changed, start a new run. Old run
 formats and legacy caches are not migrated at runtime.
 
-## Package And Inspect
+## Inspect Local Runs
+
+Build once, then serve completed outputs directly without copying datasets:
+
+```powershell
+npm run build:viewer
+python -m pipeline.viewer.server runs --port 8073
+```
+
+Open `http://127.0.0.1:8073/` and select a run and revision. "Latest completed"
+resolves once per page load, so a running insertion cannot mix files from two
+revisions. Use Load / Refresh after a run finishes. Reloading also discovers new
+runs. Only completed revisions are selectable; malformed datasets fail validation.
+The server binds to localhost and exposes only viewer assets and exported data,
+not credentials, caches, provenance, or arbitrary files. Rebuild only when viewer
+code changes. Static deployment and participant-study packaging remain optional.
+
+## Package For Sharing
 
 ```powershell
 $state = Get-Content runs/hci/run.json | ConvertFrom-Json
