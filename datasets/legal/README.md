@@ -32,6 +32,12 @@ Legal extraction uses only printed Roman-numeral and capital-letter divisions.
 It does not infer doctrinal or topical sections. A document with no printed
 division remains one `Opinion` or `Dissent` section.
 
+Both graph manifests explicitly use `max_granularity: subsection`, as in the HCI
+experiment. Printed subsections participate in structural alignment before the
+unchanged paragraph pipeline runs within their assigned groups. Documents without
+subsections retain their printed section structure; no divisions are invented.
+The next planned legal experiment is the five opinions, before the dissents.
+
 After all ten files exist, validate the two content corpora without API calls:
 
 ```powershell
