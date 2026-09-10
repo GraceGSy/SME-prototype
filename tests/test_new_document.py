@@ -41,6 +41,10 @@ class NewDocumentTest(unittest.TestCase):
                     json.loads(output.read_text())[0]["paragraphs"][0]["text"], "Source evidence."
                 )
                 args, kwargs = client.run_json_file.call_args
+                wire_schema = json.dumps(args[3])
+                self.assertNotIn('"minimum":', wire_schema)
+                self.assertNotIn('"minLength":', wire_schema)
+                self.assertIn('"additionalProperties": false', wire_schema)
                 self.assertIn("Source", args[1])
                 self.assertIn(f"{domain} mode", kwargs["cacheable_prompt"])
                 if extension == "pdf":
@@ -80,3 +84,23 @@ class NewDocumentTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 extract_document(source, output, domain="legal", title="S", client=client)
             self.assertFalse(output.exists())
+
+    def test_retains_local_constraints_unsupported_by_provider(self):
+        for number, text in [(-1, "Source evidence."), (0, ""), (0, "   ")]:
+            with self.subTest(number=number, text=text), TemporaryDirectory() as directory:
+                source, output = Path(directory) / "source.txt", Path(directory) / "out.json"
+                source.write_text("Source evidence.")
+                client = Mock()
+                client.run_json_file.return_value = SimpleNamespace(
+                    value=[
+                        {
+                            "section_name": "S",
+                            "section_number": None,
+                            "subsections": [],
+                            "paragraphs": [{"paragraph_number": number, "text": text}],
+                        }
+                    ]
+                )
+                with self.assertRaises(ValueError):
+                    extract_document(source, output, domain="legal", title="S", client=client)
+                self.assertFalse(output.exists())
