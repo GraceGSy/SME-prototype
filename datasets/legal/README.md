@@ -50,6 +50,12 @@ unchanged paragraph pipeline runs within their assigned groups. Documents withou
 subsections retain their printed section structure; no divisions are invented.
 The next planned legal experiment is the five opinions, before the dissents.
 
+**Dissent quality gate:** the [2026-09-10 sanity audit](../../docs/legal-extraction-audit-20260910.md)
+found merged paragraphs in the Banuelos-Jimenez, Porter, and Westmoreland
+dissents. Correct those extractions before starting a dissent graph. The other
+opinions passed this sanity check after the Porter correction; that is not a
+complete transcription-fidelity certification.
+
 After all ten files exist, validate the two content corpora without API calls:
 
 ```powershell

@@ -10,6 +10,10 @@ It requires `pdfplumber`, preserves printed indentation, and removes verified
 page-number footers. It writes a new input under `output/`, not canonical content;
 the normal extraction pipeline and a separate fidelity review follow.
 
+`audit_legal_extractions.py` uses `pdfplumber` for a read-only comparison of all
+ten legal PDFs with prepared content. It writes diagnostic candidates under
+`output/`; indentation flags require human review and never repair inputs.
+
 ## Five-story Sherlock experiment
 
 - `prepare_sherlock_five.py` is the retained one-time source preparation helper.
