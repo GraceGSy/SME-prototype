@@ -5,6 +5,11 @@ creates a content-only or whole-story derivative from valid canonical inputs.
 Keep the source corpus unchanged. This helper is not imported by either runtime
 pipeline, and does not accept or repair alternate document schemas.
 
+`prepare_porter_layout.py` is the retained one-time Porter opinion input refresh.
+It requires `pdfplumber`, preserves printed indentation, and removes verified
+page-number footers. It writes a new input under `output/`, not canonical content;
+the normal extraction pipeline and a separate fidelity review follow.
+
 ## Five-story Sherlock experiment
 
 - `prepare_sherlock_five.py` is the retained one-time source preparation helper.

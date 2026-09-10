@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "extraction_date": "2026-09-10",
+  "published_source": "../raw/porter_opinion.txt",
+  "pdf_source": "Porter v. Board of Trustees of North Carolina State University/221712_opinion_Thacker.pdf",
+  "pdf_source_sha256": "158c4b71fcf99d7dadc440044896a1df45cb3c74700c00714b2e8ea1d8953b9c",
+  "preparation": "helpers/prepare_porter_layout.py: preserve PDF indentation and page breaks; remove only verified page-number footers",
+  "curation": "Removed the standalone THACKER, Circuit Judge: attribution returned as a paragraph and renumbered the remaining introductory paragraph. No body text was changed.",
+  "verification": {
+    "previous_paragraph_count": 14,
+    "published_paragraph_count": 38,
+    "flagged_paragraph_words": 149,
+    "largest_paragraph_words": 321,
+    "pdf_indented_starts_checked": 37,
+    "pdf_indented_starts_matched": 37,
+    "source_word_multiset_preserved_excluding_headings_and_attribution": true
+  },
+  "source": "C:\\HBS\\Glassman Lab Research\\hypothesis\\SME-prototype-elena-clean\\output\\porter-extraction-20260910\\porter_opinion.layout.txt",
+  "source_sha256": "2c8aa2074f53ac81eccf440e5b090e5dd01dda80c412f14c6ef870765686a484",
+  "domain": "legal",
+  "title": "Porter v. Board of Trustees of North Carolina State University - Opinion",
+  "model": "claude-sonnet-5",
+  "skill_sha256": "44fffbe01e9e5d77e2a08348d3d023af80d3914710e0452d037fe65871122968",
+  "response_id": "msg_011CevQuRRRGfH53Dpck42jJ",
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 17907
+    },
+    "cache_creation_input_tokens": 17907,
+    "cache_read_input_tokens": 17426,
+    "fallback_credit": null,
+    "inference_geo": "global",
+    "input_tokens": 60,
+    "iterations": null,
+    "output_tokens": 11088,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_fetch_requests": 0,
+      "web_search_requests": 0
+    },
+    "service_tier": "standard",
+    "speed": null,
+    "request_count": 1,
+    "responses": [
+      {
+        "response_id": "msg_011CevQuRRRGfH53Dpck42jJ",
+        "usage": {
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 17907
+          },
+          "cache_creation_input_tokens": 17907,
+          "cache_read_input_tokens": 17426,
+          "fallback_credit": null,
+          "inference_geo": "global",
+          "input_tokens": 60,
+          "iterations": null,
+          "output_tokens": 11088,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "server_tool_use": {
+            "web_fetch_requests": 0,
+            "web_search_requests": 0
+          },
+          "service_tier": "standard",
+          "speed": null
+        }
+      }
+    ],
+    "session": {
+      "api_responses": 1,
+      "input_tokens": 35393,
+      "output_tokens": 11088
+    }
+  }
+}

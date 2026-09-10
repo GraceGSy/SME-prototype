@@ -28,6 +28,18 @@ restored once under printed subsection `II.C`. This is not a runtime repair
 path. New text extraction has a final-passage presence check, which is not a
 complete fidelity assessment.
 
+On 2026-09-10, `porter_opinion` was re-extracted with the unchanged native Skill
+from PDF-layout text prepared by `helpers/prepare_porter_layout.py`. The previous
+plain-text input had lost paragraph indentation. The refreshed content has 38
+paragraphs instead of 14; the flagged 1,235-word unit is now a 149-word paragraph,
+and the longest paragraph is 321 words. All 37 independently detected indented
+PDF paragraph starts match the new boundaries. Body/footnote word counts match
+the refreshed source after excluding printed headings and the author attribution.
+The sole post-extraction curation removed that attribution from the introduction.
+The response ID, usage, source hashes, and checks are recorded in
+`content/porter_opinion.content.provenance.json`; the old content remains in Git
+history. These checks apply to Porter, not to the other nine prepared documents.
+
 Legal extraction uses only printed Roman-numeral and capital-letter divisions.
 It does not infer doctrinal or topical sections. A document with no printed
 division remains one `Opinion` or `Dissent` section.
