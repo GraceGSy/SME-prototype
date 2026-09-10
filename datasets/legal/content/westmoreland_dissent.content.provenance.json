@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "published_source": "../raw/westmoreland_dissent.txt",
+  "source_pdf": "C:/HBS/Glassman Lab Research/legal corpus/Westmoreland v. Butler County/22a0053p-06_dissent_Bush.pdf",
+  "source_pdf_sha256": "8ba7fd9f15424fda89925c9ef7fdbce11094445e1168c020cd75e25f2d653b45",
+  "native_output_sha256": "210d6815830344d3ca15285d6dc386814c79ec1606897d7aabd7a3641f11090d",
+  "curation": "Removed inline author attribution. Lifted eight page-bottom footnotes out of interrupted body sentences, rejoined each body continuation, and placed each note as its own paragraph after the paragraph containing its reference. Every source token retained. Exact source-verified edits are in helpers/curate_dissent_outputs.py; no runtime normalization added. Original native output retained under output/dissent-extraction-20260910; provider response retained in _cache/responses.",
+  "verification": "61 paragraphs, maximum 336 words. Source word multiset including printed headings equals published content after excluding author metadata. Confirmed body boundaries restored; residual indentation flags are list items or block-quote continuations. No missing source-line prefixes or final passage.",
+  "source": "C:\\HBS\\Glassman Lab Research\\hypothesis\\SME-prototype-elena-clean\\output\\dissent-extraction-20260910\\westmoreland_dissent.layout.txt",
+  "source_sha256": "ec55e3ee603c96e5fb4c48d78ea3c6622cb985eb6a1ff631983055bb4b51d968",
+  "domain": "legal",
+  "title": "westmoreland - Dissent",
+  "model": "claude-sonnet-5",
+  "skill_sha256": "44fffbe01e9e5d77e2a08348d3d023af80d3914710e0452d037fe65871122968",
+  "response_id": "msg_011CevTPcq2EJYp5MfhKMFDY",
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 21608
+    },
+    "cache_creation_input_tokens": 21608,
+    "cache_read_input_tokens": 34324,
+    "fallback_credit": null,
+    "inference_geo": "global",
+    "input_tokens": 45,
+    "iterations": null,
+    "output_tokens": 20307,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_fetch_requests": 0,
+      "web_search_requests": 0
+    },
+    "service_tier": "standard",
+    "speed": null,
+    "request_count": 1,
+    "responses": [
+      {
+        "response_id": "msg_011CevTPcq2EJYp5MfhKMFDY",
+        "usage": {
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 21608
+          },
+          "cache_creation_input_tokens": 21608,
+          "cache_read_input_tokens": 34324,
+          "fallback_credit": null,
+          "inference_geo": "global",
+          "input_tokens": 45,
+          "iterations": null,
+          "output_tokens": 20307,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "server_tool_use": {
+            "web_fetch_requests": 0,
+            "web_search_requests": 0
+          },
+          "service_tier": "standard",
+          "speed": null
+        }
+      }
+    ],
+    "session": {
+      "api_responses": 1,
+      "input_tokens": 55977,
+      "output_tokens": 20307
+    }
+  }
+}

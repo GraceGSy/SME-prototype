@@ -2,12 +2,67 @@
 
 Date: 2026-09-10. Reviewed all ten prepared legal documents against their local
 opinion/dissent PDFs, including the newly corrected Porter opinion as a control.
-No additional extraction or graph calls were made for this audit.
+The initial audit made no additional extraction or graph calls. The subsequently
+authorized repair used three extraction calls, documented below. No graph calls
+were made.
 
-## Findings
+## Repair completed
+
+The three flagged dissents were re-extracted from indentation-preserving text
+using the unchanged native extraction Skill and canonical local validation.
+The PDF-specific preparation and bounded curation scripts remain in `helpers/`,
+not in the runtime pipeline. The original native responses are retained in
+ignored `output/dissent-extraction-20260910/` and the provider response cache;
+their hashes, source PDF/text hashes, usage, and curation notes are recorded in
+the published content provenance files. Earlier inputs remain in Git history.
+
+| Dissent | Old paragraphs | Repaired paragraphs | Old maximum words | Repaired maximum words |
+| --- | ---: | ---: | ---: | ---: |
+| Banuelos-Jimenez | 8 | 23 | 1,329 | 255 |
+| Porter | 66 | 71 | 280 | 241 |
+| Westmoreland | 25 | 61 | 1,697 | 336 |
+
+All three native outputs unnecessarily retained judge attribution; that metadata
+was removed once. Porter's new output preserved the two flagged body boundaries
+but flattened three within-footnote boundaries (footnote 5 on printed page 32
+and footnote 6 on page 37). Those were split at the verified printed starts.
+Westmoreland's new output preserved ordinary body starts but inserted eight
+page-bottom footnotes into sentences continuing onto the following page. Each
+note was lifted out, the original body sentence rejoined, and the note placed
+as a separate paragraph after the paragraph containing its reference. No source
+words were dropped or invented. This also restores notes 7-8 to section IV.C
+rather than leaving them embedded in section V's opening sentence.
+
+Full source-word multiset comparisons pass for each repaired dissent, counting
+printed headings and excluding only author metadata and Porter's standalone
+`(Continued)` page-chrome marker. These comparisons test missing/extra words, not
+punctuation or ordering on their own. Separate regression checks verify the
+confirmed boundaries and repaired sentence continuations. Remaining indentation
+flags are Banuelos-Jimenez heading/block-quote continuations and Westmoreland
+list/block-quote continuations, not unexplained ordinary-paragraph merges.
+No missing source-line prefixes, duplicate-paragraph candidates, or lost final
+passages were found in the repaired files. Relevant body, footnote and
+continuation pages were visually checked against the PDFs.
+
+The dissent corpus now has **180 paragraphs**, with its 14 printed subsections
+retained. The opinions still have 173 paragraphs and 7 subsections. All 96 tests
+pass, including break-fix tests that failed on the old data before publication.
+The saved HCI matching-policy hash is unchanged.
+
+The three successful extraction responses cost approximately **$0.5918 in token
+charges**, excluding tool fees; no retry responses were needed. Each output
+passed schema validation. These were content-layout errors, which rigorous JSON
+schemas cannot prevent. Future legal extractions still need the PDF fidelity
+gate; this repair is not evidence that unreviewed native outputs are reliable.
+
+The [five-opinion offline preflight](legal-opinions-preflight-20260910.md) is
+separate from extraction and does not authorize a paid graph run.
+
+## Initial findings (before repair)
 
 Three additional extractions have confirmed ordinary-paragraph boundary errors.
-Do not use the dissent corpus for a graph run until these are corrected.
+They have now been corrected as described above; this table preserves the
+initial audit findings rather than the current corpus counts.
 
 | Document | Stored paragraphs | Longest unit (words) | Sanity-check result |
 | --- | ---: | ---: | --- |

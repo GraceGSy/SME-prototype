@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "published_source": "../raw/porter_dissent.txt",
+  "source_pdf": "C:/HBS/Glassman Lab Research/legal corpus/Porter v. Board of Trustees of North Carolina State University/221712_dissent_Richardson.pdf",
+  "source_pdf_sha256": "5bd7d1784ae727ec0c82671b1b5ec7512b6e2753c717cb6b5536065e78da35b8",
+  "native_output_sha256": "bf4f0cd4c8975c9b24d7613234f66015738449c883665efcab0ce41356c1f7d2",
+  "curation": "Removed author attribution and split three source-verified within-footnote boundaries (footnote 5 on printed page 32; footnote 6 on printed page 37) using helpers/curate_dissent_outputs.py. No body wording changed. Original native output retained under output/dissent-extraction-20260910; provider response retained in _cache/responses.",
+  "verification": "71 paragraphs, maximum 241 words. Source word multiset including printed headings equals published content after excluding author metadata and the standalone (Continued) page marker. No remaining contained indented paragraph starts, missing source-line prefixes, or missing final passage.",
+  "source": "C:\\HBS\\Glassman Lab Research\\hypothesis\\SME-prototype-elena-clean\\output\\dissent-extraction-20260910\\porter_dissent.layout.txt",
+  "source_sha256": "f775f2753d97001aa435f3f51076f581b54cc424b2e07212638af1b076fde273",
+  "domain": "legal",
+  "title": "porter - Dissent",
+  "model": "claude-sonnet-5",
+  "skill_sha256": "44fffbe01e9e5d77e2a08348d3d023af80d3914710e0452d037fe65871122968",
+  "response_id": "msg_011CevT9LCmL6WC7rFdLWVNt",
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 18003
+    },
+    "cache_creation_input_tokens": 18003,
+    "cache_read_input_tokens": 30732,
+    "fallback_credit": null,
+    "inference_geo": "global",
+    "input_tokens": 39,
+    "iterations": null,
+    "output_tokens": 16909,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_fetch_requests": 0,
+      "web_search_requests": 0
+    },
+    "service_tier": "standard",
+    "speed": null,
+    "request_count": 1,
+    "responses": [
+      {
+        "response_id": "msg_011CevT9LCmL6WC7rFdLWVNt",
+        "usage": {
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 18003
+          },
+          "cache_creation_input_tokens": 18003,
+          "cache_read_input_tokens": 30732,
+          "fallback_credit": null,
+          "inference_geo": "global",
+          "input_tokens": 39,
+          "iterations": null,
+          "output_tokens": 16909,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "server_tool_use": {
+            "web_fetch_requests": 0,
+            "web_search_requests": 0
+          },
+          "service_tier": "standard",
+          "speed": null
+        }
+      }
+    ],
+    "session": {
+      "api_responses": 1,
+      "input_tokens": 48774,
+      "output_tokens": 16909
+    }
+  }
+}

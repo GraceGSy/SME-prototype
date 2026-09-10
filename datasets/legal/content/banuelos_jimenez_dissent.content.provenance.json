@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "published_source": "../raw/banuelos_jimenez_dissent.txt",
+  "source_pdf": "C:/HBS/Glassman Lab Research/legal corpus/Banuelos-Jimenez v. Garland/23a0097p-06_dissent_Gilman.pdf",
+  "source_pdf_sha256": "579c2b16fcaaa4e86d033508d277308edeaa2fe07e24c3ae24368d547d3d9568",
+  "native_output_sha256": "d632926ea0166cc37f8381b75496ce839265e90c6459bc9bb4e265748f2cccae",
+  "curation": "Removed the author-attribution-only introduction using helpers/curate_dissent_outputs.py. No body wording changed. Original native output retained under output/dissent-extraction-20260910; provider response retained in _cache/responses.",
+  "verification": "23 paragraphs, maximum 255 words. Source word multiset including printed headings equals published content after excluding author metadata. Confirmed body boundaries restored; residual indentation flags are heading text or block-quote continuations. No missing source-line prefixes or final passage.",
+  "source": "C:\\HBS\\Glassman Lab Research\\hypothesis\\SME-prototype-elena-clean\\output\\dissent-extraction-20260910\\banuelos_jimenez_dissent.layout.txt",
+  "source_sha256": "12c36e300811672cc4cf3fcdd52e36f41dec68c24200bcd85ae9f3f8cfe81265",
+  "domain": "legal",
+  "title": "banuelos_jimenez - Dissent",
+  "model": "claude-sonnet-5",
+  "skill_sha256": "44fffbe01e9e5d77e2a08348d3d023af80d3914710e0452d037fe65871122968",
+  "response_id": "msg_011CevSygnjPayaX2Uf8vt7d",
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 13783
+    },
+    "cache_creation_input_tokens": 13783,
+    "cache_read_input_tokens": 32068,
+    "fallback_credit": null,
+    "inference_geo": "global",
+    "input_tokens": 57,
+    "iterations": null,
+    "output_tokens": 6645,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_fetch_requests": 0,
+      "web_search_requests": 0
+    },
+    "service_tier": "standard",
+    "speed": null,
+    "request_count": 1,
+    "responses": [
+      {
+        "response_id": "msg_011CevSygnjPayaX2Uf8vt7d",
+        "usage": {
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 0,
+            "ephemeral_5m_input_tokens": 13783
+          },
+          "cache_creation_input_tokens": 13783,
+          "cache_read_input_tokens": 32068,
+          "fallback_credit": null,
+          "inference_geo": "global",
+          "input_tokens": 57,
+          "iterations": null,
+          "output_tokens": 6645,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "server_tool_use": {
+            "web_fetch_requests": 0,
+            "web_search_requests": 0
+          },
+          "service_tier": "standard",
+          "speed": null
+        }
+      }
+    ],
+    "session": {
+      "api_responses": 1,
+      "input_tokens": 45908,
+      "output_tokens": 6645
+    }
+  }
+}
