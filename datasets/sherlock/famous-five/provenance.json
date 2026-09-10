@@ -1,0 +1,46 @@
+{
+  "source_commit": "48ec456ea50987a81f564821457b9fb32cc2bfc6",
+  "method": "literal XHTML p elements, including quoted letters and signatures; headings and scene separators omitted",
+  "stories": [
+    {
+      "paper_id": "scandal_in_bohemia",
+      "source_url": "https://raw.githubusercontent.com/standardebooks/arthur-conan-doyle_the-adventures-of-sherlock-holmes/48ec456ea50987a81f564821457b9fb32cc2bfc6/src/epub/text/a-scandal-in-bohemia.xhtml",
+      "source_sha256": "f43eb48c0e360f113ea47b9b9154f0a47d5946c38e5b3b82f0fa0bc665c182a1",
+      "content_sha256": "b59b1091e0cda7a0c0b27d6d484f21c898d1669bc999df6b0f9433736c61545b",
+      "paragraphs": 259,
+      "words": 8526
+    },
+    {
+      "paper_id": "redheaded_league",
+      "source_url": "https://raw.githubusercontent.com/standardebooks/arthur-conan-doyle_the-adventures-of-sherlock-holmes/48ec456ea50987a81f564821457b9fb32cc2bfc6/src/epub/text/the-redheaded-league.xhtml",
+      "source_sha256": "151fd4a83cedcc63a314313b6fe80e508c0c2545c4cba15b8df0f5557d8ec314",
+      "content_sha256": "6aa7e3bc7df7752abc46a339057a824b085df022c91cbfbf8729ecefd4df7b7e",
+      "paragraphs": 215,
+      "words": 9144
+    },
+    {
+      "paper_id": "blue_carbuncle",
+      "source_url": "https://raw.githubusercontent.com/standardebooks/arthur-conan-doyle_the-adventures-of-sherlock-holmes/48ec456ea50987a81f564821457b9fb32cc2bfc6/src/epub/text/the-adventure-of-the-blue-carbuncle.xhtml",
+      "source_sha256": "a8550337d012c09ad3f67237aa82165f2a6e9e4646d6cba4c0eeebed33259201",
+      "content_sha256": "d8578486539e8c4fce15708f8765d4fae05a2d45ad7331fab86f52440c88c2fa",
+      "paragraphs": 214,
+      "words": 7827
+    },
+    {
+      "paper_id": "speckled_band",
+      "source_url": "https://raw.githubusercontent.com/standardebooks/arthur-conan-doyle_the-adventures-of-sherlock-holmes/48ec456ea50987a81f564821457b9fb32cc2bfc6/src/epub/text/the-adventure-of-the-speckled-band.xhtml",
+      "source_sha256": "b59209c14d19744934312bdb7851a6dc977f31989081b54c790fa9cbaf6596f8",
+      "content_sha256": "3eb5ebb5f2c3070c72315176ac938af739fd2293a7a07a19b0b16107d39c6c8a",
+      "paragraphs": 251,
+      "words": 9812
+    },
+    {
+      "paper_id": "beryl_coronet",
+      "source_url": "https://raw.githubusercontent.com/standardebooks/arthur-conan-doyle_the-adventures-of-sherlock-holmes/48ec456ea50987a81f564821457b9fb32cc2bfc6/src/epub/text/the-adventure-of-the-beryl-coronet.xhtml",
+      "source_sha256": "1ccab043f7af01e3070c0552e4fc8dc72152051108ae8dd2ae2597f33c890a7e",
+      "content_sha256": "d3614eff70613bad0e798fc3b26946b21c790354ea9611f531ad8078c1d1c00f",
+      "paragraphs": 222,
+      "words": 9717
+    }
+  ]
+}

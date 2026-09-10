@@ -1,0 +1,18 @@
+schema_version: 1
+max_granularity: paragraph
+papers:
+- paper_id: scandal_in_bohemia
+  title: A Scandal in Bohemia
+  file: scandal_in_bohemia.content.json
+- paper_id: redheaded_league
+  title: The Redheaded League
+  file: redheaded_league.content.json
+- paper_id: blue_carbuncle
+  title: The Adventure of the Blue Carbuncle
+  file: blue_carbuncle.content.json
+- paper_id: speckled_band
+  title: The Adventure of the Speckled Band
+  file: speckled_band.content.json
+- paper_id: beryl_coronet
+  title: The Adventure of the Beryl Coronet
+  file: beryl_coronet.content.json

@@ -1,0 +1,3 @@
+# Preserve the exact bytes recorded in provenance.json across platforms.
+*.content.json -text whitespace=cr-at-eol
+raw/*.xhtml -text
