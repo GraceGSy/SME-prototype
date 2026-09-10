@@ -9,6 +9,7 @@ from dataclasses import replace
 from pathlib import Path
 from unittest.mock import patch
 
+from helpers.usage_budget import token_cost
 from pipeline.files import read_json, write_json
 from pipeline.incremental_graph.runs import add_papers, retry_graph, start_graph
 from pipeline.llm.client import ClaudeSkills, SkillBudgetExceeded, SkillCallPolicy
@@ -29,19 +30,6 @@ def extension_policy(policy: SkillCallPolicy) -> SkillCallPolicy:
     if policy.max_input_tokens == 200_000:
         return replace(policy, max_input_tokens=300_000)
     return policy
-
-
-def token_cost(usage):
-    writes = usage.get("cache_creation") or {}
-    hour = writes.get("ephemeral_1h_input_tokens") or 0
-    total_writes = usage.get("cache_creation_input_tokens") or 0
-    return (
-        (usage.get("input_tokens") or 0) * 2
-        + (total_writes - hour) * 2.5
-        + hour * 4
-        + (usage.get("cache_read_input_tokens") or 0) * 0.2
-        + (usage.get("output_tokens") or 0) * 10
-    ) / 1_000_000
 
 
 def run(action):
