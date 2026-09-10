@@ -34,17 +34,21 @@ def prefix(text: str) -> str:
     return compact(" ".join(text.split()[:8]))
 
 
-def audit(case: str, kind: str) -> dict:
+def audit(
+    case: str, kind: str, *, content_path: Path | None = None, raw_path: Path | None = None
+) -> dict:
     paper_id = f"{case}_{kind}"
     paths = list((PDF_ROOT / CASES[case]).glob(f"*_{kind}_*.pdf"))
     if len(paths) != 1:
         raise ValueError(f"Expected one source PDF for {paper_id}")
-    document = json.loads((CORPUS / f"content/{paper_id}.content.json").read_text(encoding="utf-8"))
+    document = json.loads(
+        (content_path or CORPUS / f"content/{paper_id}.content.json").read_text(encoding="utf-8")
+    )
     units = [u for section in document for u in [section, *section["subsections"]]]
     paragraphs = [p["text"] for u in units for p in u["paragraphs"]]
     content = [compact(p) for p in paragraphs]
     starts = [compact(re.sub(r"^\d+\s*", "", p)) for p in paragraphs]
-    raw = (CORPUS / f"raw/{paper_id}.txt").read_text(encoding="utf-8")
+    raw = (raw_path or CORPUS / f"raw/{paper_id}.txt").read_text(encoding="utf-8")
     raw_compact = compact(raw)
     heading_text = compact(
         " ".join(f"{u['section_number'] or ''} {u['section_name']}" for u in units)
