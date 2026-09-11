@@ -61,6 +61,11 @@ class PromptRepository:
     def render(self, prompt_ref: str, context_ref: str, context: dict[str, Any]) -> RenderedPrompt:
         prompt_dir = self.prompt_root / prompt_ref
         system = self._read(prompt_dir / "system.md")
+        if "{{role_matching_examples}}" in system:
+            system = system.replace(
+                "{{role_matching_examples}}",
+                self._read(self.prompt_root / "shared" / "role-matching-examples.md"),
+            )
         user_template = self._read(prompt_dir / "user.md")
         schema_text = self._read(prompt_dir / "output.schema.json")
         try:

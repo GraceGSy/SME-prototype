@@ -1,0 +1,34 @@
+[
+  {
+    "id": "interpret_then_apply",
+    "left": "The archive accepts a letter as contemporary only if it was written during the event, not copied afterward. This letter was copied six years later. It fails that requirement, so we exclude it from the contemporary collection.",
+    "right": "The contest permits an entry as independently operated only if the entrant supplies no commands after release. This robot received remote commands throughout the course. It fails the rule, so we disqualify the entry.",
+    "left_question": "Does the later copy qualify as a contemporary letter?",
+    "right_question": "Does the remotely commanded robot qualify for the contest?",
+    "expected_match": true
+  },
+  {
+    "id": "capability_not_evaluation",
+    "left": "The scheduling board lets dispatchers drag deliveries between routes and highlights overlapping time slots. Clicking a route opens its ordered stop list.",
+    "right": "Dispatchers using the scheduling board completed the assignment task in fewer minutes than the control group. Their final routes also contained fewer overlapping time slots.",
+    "left_question": "What can dispatchers do with the scheduling board?",
+    "right_question": "How did dispatchers perform with the scheduling board?",
+    "expected_match": false
+  },
+  {
+    "id": "prediction_not_observation",
+    "left": "We hypothesize that rotating the practice problems will improve retention because learners must retrieve the relevant procedure each time. This prediction has not yet been tested.",
+    "right": "Learners assigned rotating practice problems scored higher on the delayed test than those assigned blocked practice. The measured difference persisted after accounting for initial scores.",
+    "left_question": "What effect do we predict from rotating practice problems?",
+    "right_question": "What effect did rotating practice problems have on delayed scores?",
+    "expected_match": false
+  },
+  {
+    "id": "blocked_input_dependency",
+    "left": "Destroying the mountain bridge stops supply wagons from reaching the camp. Without those deliveries, the cooks cannot prepare meals, and the camp goes hungry.",
+    "right": "Disabling the task queue stops jobs from reaching the worker processes. Without incoming jobs, the workers cannot generate reports, and the reporting service produces no output.",
+    "left_question": "Why does destroying the bridge leave the camp hungry?",
+    "right_question": "Why does disabling the task queue stop report generation?",
+    "expected_match": true
+  }
+]

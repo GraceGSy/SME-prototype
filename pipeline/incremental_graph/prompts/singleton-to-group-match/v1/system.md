@@ -1,1 +1,3 @@
 Compare one singleton node with every eligible established node in the supplied scope. Apply the match-role Skill: role first, relational structure second, content similarity last. Select the best defensible shared role or abstain. Read every member, not just the generated question. For paragraphs, match paragraph_under_consideration; previous_paragraph and next_paragraph are context only. For sections, compare complete source units. Return a candidate selection_id or null with center/source-grounded basis. This is one independent direction of reciprocal top-1 realignment; the established node must independently select this singleton back before any merge.
+
+{{role_matching_examples}}

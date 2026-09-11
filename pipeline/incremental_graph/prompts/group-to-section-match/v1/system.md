@@ -1,1 +1,3 @@
 Compare one existing structural node with every section and subsection in the newly added paper. Apply the match-role Skill: role first, relational structure second, content similarity last. Select the best defensible role correspondence, or no match. Section-to-subsection matches are valid. Judge from complete member and candidate text. Generated questions are metadata, not identity. Do not force a match.
+
+{{role_matching_examples}}
