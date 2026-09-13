@@ -7,10 +7,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from jsonschema import Draft202012Validator
-
-from test_incremental_graph import CONFIG_PATH
 import test_judgment_cache
+from jsonschema import Draft202012Validator
+from test_incremental_graph import CONFIG_PATH
 
 from pipeline.incremental_graph.configuration import (
     ConfigurationError,
@@ -32,7 +31,9 @@ class MatchingExamplesTest(unittest.TestCase):
         for stage in self.config.stages:
             for direction, reference in stage.prompts.items():
                 with self.subTest(stage=stage.id, direction=direction):
-                    rendered = self.repository.render(reference, stage.contexts[direction], self.context)
+                    rendered = self.repository.render(
+                        reference, stage.contexts[direction], self.context
+                    )
                     self.assertEqual(rendered.system.count(examples), 1)
                     self.assertNotIn("{{role_matching_examples}}", rendered.system)
                     self.assertNotIn(examples, rendered.user)
@@ -42,11 +43,15 @@ class MatchingExamplesTest(unittest.TestCase):
         for stage in self.config.stages:
             if stage.prompt:
                 spec = self.repository._load_context(stage.context)
-                rendered = self.repository.render(stage.prompt, stage.context, {k: None for k in spec.include})
+                rendered = self.repository.render(
+                    stage.prompt, stage.context, {k: None for k in spec.include}
+                )
                 self.assertNotIn("Constructed matching examples", rendered.system)
 
     def test_live_sanity_cases_are_held_out_of_the_prompt(self):
-        cases = json.loads((Path(__file__).parent / "fixtures/role_matching_holdout.json").read_text())
+        cases = json.loads(
+            (Path(__file__).parent / "fixtures/role_matching_holdout.json").read_text()
+        )
         examples = self.example_path.read_text(encoding="utf-8")
         self.assertEqual(len(cases), 4)
         self.assertEqual(sum(case["expected_match"] for case in cases), 2)
@@ -56,9 +61,13 @@ class MatchingExamplesTest(unittest.TestCase):
 
     def test_example_outputs_balance_matches_and_abstentions(self):
         examples = self.example_path.read_text(encoding="utf-8")
-        outputs = [json.loads(block) for block in re.findall(r"```json\n(.*?)\n```", examples, re.S)]
+        outputs = [
+            json.loads(block) for block in re.findall(r"```json\n(.*?)\n```", examples, re.S)
+        ]
         self.assertEqual(len(outputs), 4)
-        schema = self.repository.render("section-to-group-match/v1", "matching", self.context).schema
+        schema = self.repository.render(
+            "section-to-group-match/v1", "matching", self.context
+        ).schema
         for output in outputs:
             Draft202012Validator(schema).validate(output)
         self.assertEqual(sum(output["target_id"] is None for output in outputs), 2)
@@ -70,7 +79,9 @@ class MatchingExamplesTest(unittest.TestCase):
             repository = PromptRepository(root, self.config.context_root)
             first = repository.render("section-to-group-match/v1", "matching", self.context)
             path = root / "shared/role-matching-examples.md"
-            path.write_text(path.read_text(encoding="utf-8") + "\nChanged example evidence.\n", encoding="utf-8")
+            path.write_text(
+                path.read_text(encoding="utf-8") + "\nChanged example evidence.\n", encoding="utf-8"
+            )
             second = repository.render("section-to-group-match/v1", "matching", self.context)
             self.assertNotEqual(first.prompt_hash, second.prompt_hash)
             self.assertEqual(first.context_hash, second.context_hash)
@@ -82,7 +93,10 @@ class MatchingExamplesTest(unittest.TestCase):
     def test_demonstration_handles_are_not_valid_live_outputs(self):
         with tempfile.TemporaryDirectory() as directory:
             provider = AnthropicJudgmentProvider(
-                self.repository, self.config.model, Path(directory), self.config.skill_root,
+                self.repository,
+                self.config.model,
+                Path(directory),
+                self.config.skill_root,
             )
             request = test_judgment_cache.JudgmentCacheTest().request()
             rendered = provider.render_request(request)
@@ -90,4 +104,6 @@ class MatchingExamplesTest(unittest.TestCase):
             validator = Draft202012Validator(rendered.schema)
             self.assertTrue(validator.is_valid({"target_id": "group", "basis": "Supported role"}))
             for handle in ("demo-analysis", "demo-mechanism"):
-                self.assertFalse(validator.is_valid({"target_id": handle, "basis": "Copied example"}))
+                self.assertFalse(
+                    validator.is_valid({"target_id": handle, "basis": "Copied example"})
+                )
