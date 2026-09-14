@@ -9,13 +9,6 @@ from typing import Any
 from ..files import write_json
 from .graph import graph_from_events
 
-REASONS = {
-    "never_compared": "Never compared",
-    "selected_without_acceptance": "Selected in at least one direction, but not accepted",
-    "model_abstained": "Compared as a focus; all outgoing judgments abstained and none selected it",
-    "candidate_only": "Shown only as a candidate; never selected",
-}
-
 
 def _key(member: dict[str, Any]) -> tuple[str, str]:
     return member["paper_id"], member["unit_id"]
@@ -161,39 +154,4 @@ def write_singleton_report(events: list[dict[str, Any]], output_dir: Path) -> di
     report = build_singleton_report(events)
     output_dir.mkdir(parents=True, exist_ok=False)
     write_json(output_dir / "singletons.json", report)
-    lines = [
-        "# Paragraph Singleton Report",
-        "",
-        f"{report['singleton_paragraph_count']} of {report['paragraph_count']} paragraphs remain outside shared groups.",
-        "These are operational outcomes, not proof that the paragraphs have unique roles.",
-        "",
-        "## Recorded Outcomes",
-        "",
-        "| Outcome | Paragraphs |",
-        "| --- | ---: |",
-        *[f"| {REASONS[reason]} | {count} |" for reason, count in report["reason_counts"].items()],
-        "",
-        "## Recovery Eligibility at the Final Snapshot",
-        "",
-        "| Status | Paragraphs |",
-        "| --- | ---: |",
-        *[
-            f"| {status.replace('_', ' ')} | {count} |"
-            for status, count in report["recovery_status_counts"].items()
-        ],
-        "",
-        *report["limitations"],
-        "",
-        "## Individual Paragraphs",
-        "",
-        "Exact attempt IDs and outgoing decisions are in `singletons.json`; their bases are in the source revision's `provenance/attempts.jsonl`.",
-        "",
-        "| Paper | Paragraph | Outcome | Shared parent | Recovery status |",
-        "| --- | --- | --- | --- | --- |",
-        *[
-            f"| {row['paper_id']} | {row['paragraph_id']} | {REASONS[row['reason']]} | {row['parent_is_shared']} | {row['recovery']['status'].replace('_', ' ')} |"
-            for row in report["paragraphs"]
-        ],
-    ]
-    (output_dir / "singletons.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     return report

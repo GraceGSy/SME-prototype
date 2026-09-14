@@ -89,7 +89,7 @@ formats and legacy caches are not migrated at runtime.
 
 ## Inspect Local Runs
 
-New completed revisions include `reports/singletons.md` and `reports/singletons.json`.
+New completed revisions include `reports/singletons.json` for inspection or viewer use.
 They distinguish lack of comparison, model abstention, and selections that were
 not accepted. They also show final-snapshot recovery eligibility; a singleton is
 not evidence of a genuinely unique role. Audit an older revision without API

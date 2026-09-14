@@ -112,7 +112,6 @@ runs/<run>/
     events.json
     summary.json
     reports/singletons.json
-    reports/singletons.md
     dataset/
 ```
 

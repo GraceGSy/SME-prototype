@@ -116,14 +116,12 @@ class SingletonReportTest(unittest.TestCase):
         self.assertEqual(rows["b", "p1"]["recovery"]["status"], "eligible_established_group")
         self.assertEqual(report["paragraph_count"], 6)
 
-    def test_writes_readable_report_and_refuses_overwrite(self):
+    def test_writes_only_json_diagnostics_and_refuses_overwrite(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "reports"
             write_singleton_report(events(), output)
             saved = json.loads((output / "singletons.json").read_text(encoding="utf-8"))
             self.assertEqual(saved, build_singleton_report(events()))
-            text = (output / "singletons.md").read_text(encoding="utf-8")
-            self.assertIn("Never compared", text)
-            self.assertIn("not proof", text)
+            self.assertEqual([path.name for path in output.iterdir()], ["singletons.json"])
             with self.assertRaises(FileExistsError):
                 write_singleton_report(events(), output)
