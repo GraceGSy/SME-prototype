@@ -1,6 +1,6 @@
 ## Authoritative response contract
 
-The caller's schema replaces the Skill's older two-field output examples.
+The caller's schema is authoritative for every matching direction.
 Return exactly target_id, basis, and evidence. Keep the same role-first selection
 criteria and concise basis. Evidence verifies attribution, not shared wording:
 quotes from the two sides need not use the same words.

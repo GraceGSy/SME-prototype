@@ -38,6 +38,7 @@ class MatchingExamplesTest(unittest.TestCase):
                     self.assertNotIn("{{role_matching_examples}}", rendered.system)
                     self.assertNotIn(examples, rendered.user)
                     self.assertNotIn(examples, rendered.cacheable_context)
+                    self.assertIn("Each paper's accepted contribution", rendered.system)
 
     def test_question_generation_does_not_receive_matching_examples(self):
         for stage in self.config.stages:
@@ -47,6 +48,11 @@ class MatchingExamplesTest(unittest.TestCase):
                     stage.prompt, stage.context, {k: None for k in spec.include}
                 )
                 self.assertNotIn("Constructed matching examples", rendered.system)
+                if stage.context == "group-question":
+                    self.assertIn("Each paper's accepted contribution", rendered.system)
+                    self.assertEqual(
+                        rendered.system.count("Constructed group-question examples"), 1
+                    )
 
     def test_live_sanity_cases_are_held_out_of_the_prompt(self):
         cases = json.loads(
@@ -64,13 +70,13 @@ class MatchingExamplesTest(unittest.TestCase):
         outputs = [
             json.loads(block) for block in re.findall(r"```json\n(.*?)\n```", examples, re.S)
         ]
-        self.assertEqual(len(outputs), 4)
+        self.assertEqual(len(outputs), 6)
         schema = self.repository.render(
             "section-to-group-match/v1", "matching", self.context
         ).schema
         for output in outputs:
             Draft202012Validator(schema).validate(output)
-        self.assertEqual(sum(output["target_id"] is None for output in outputs), 2)
+        self.assertEqual(sum(output["target_id"] is None for output in outputs), 3)
 
     def test_example_changes_invalidate_prompt_hash_and_missing_file_fails(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -102,7 +108,15 @@ class MatchingExamplesTest(unittest.TestCase):
             rendered = provider.render_request(request)
             self.assertIn("Constructed matching examples", rendered.system)
             validator = Draft202012Validator(rendered.schema)
-            self.assertTrue(validator.is_valid({"target_id": "group", "basis": "Supported role", "evidence": {"focus": ["focus"], "target": ["Repeated corpus"]}}))
+            self.assertTrue(
+                validator.is_valid(
+                    {
+                        "target_id": "group",
+                        "basis": "Supported role",
+                        "evidence": {"focus": ["focus"], "target": ["Repeated corpus"]},
+                    }
+                )
+            )
             for handle in ("demo-analysis", "demo-mechanism"):
                 self.assertFalse(
                     validator.is_valid({"target_id": handle, "basis": "Copied example"})

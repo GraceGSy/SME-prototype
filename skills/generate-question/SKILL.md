@@ -16,8 +16,11 @@ or purpose, not a detailed summary rewritten as a question.
 - For academic text, ask what job the evidence does in the paper's argument.
 - For narrative text, ask what uncertainty about the case, characters,
   evidence, investigation, confrontation, or resolution it addresses.
-- For a multi-member node, find one shared-purpose question honestly answered
-  by every member. Do not join different purposes into a list to make them fit.
+- For a multi-member node, find one shared-purpose question answered by each
+  paper's accepted contribution. Members sharing a `paper_key` belong together.
+  They may explain different parts of the role, but each must contribute directly.
+  Do not combine unrelated purposes or different papers' partial answers to
+  manufacture a shared role.
 - Read all evidence to identify its primary function. The question need not
   enumerate every fact, feature, qualification, or secondary purpose.
 - Target 8-15 words; never exceed 20 words. Count whitespace-separated words
@@ -49,8 +52,8 @@ to force onto unrelated evidence.
 
 Use the more general question only when the focus itself answers it. Neighbors
 may clarify the focus but must not supply its answer. For groups, check each
-member against the same question; do not manufacture a shared role merely to
-increase the number of matches.
+paper's accepted members together against the same question, and require every
+member to contribute. Do not manufacture a shared role to increase matches.
 
 The caller handles empty evidence without a model call. Return exactly:
 

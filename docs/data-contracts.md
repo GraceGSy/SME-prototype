@@ -72,6 +72,11 @@ Paragraph evidence uses `previous_paragraph`, `paragraph_under_consideration`,
 and `next_paragraph` in reading order. Only the paragraph under consideration is
 matched; neighbors are context, with null at a structural owner's boundary.
 Neither focus nor member windows expose paragraph IDs, numbers, or labels.
+Each unit carries an anonymous `paper_key`, stable within the run. Group members
+remain ordered by paper, then source order. Members with the same key form one
+paper's accepted contribution; each paper must support the shared role and each
+member must contribute directly. Matching and question generation share this
+instruction and retain constructed examples. The key is not an output handle.
 Source text and generated metadata are not rewritten to remove numbers in prose.
 The exact response is:
 
@@ -88,8 +93,8 @@ characters, and an exact substring of that center's `full_text`. Neighbor text,
 another member's text, paraphrases, and whitespace repairs are not accepted.
 Abstentions require both arrays empty. Quotes establish attribution, not semantic
 correctness: the basis must still explain the shared role rather than word overlap.
-The shared schema and caller instructions live in `prompts/shared/`; native
-Skills are unchanged. Historical two-field responses are not accepted by this
+The shared schema and caller instructions live in `prompts/shared/` and agree
+with the repository Skills. Historical two-field responses are not accepted by this
 contract and must not receive fabricated evidence during replay.
 
 Question requests return exactly `question_this_text_answers` with a nonblank
@@ -127,6 +132,11 @@ Each insertion records `section_rerepresentation` and
 `paragraph_rerepresentation` stages (the former is omitted in paragraph-only
 mode). Realignment records both `singleton_to_group` and `group_to_singleton`
 decisions. Both use exactly the same target-or-null response contract above.
+When older sections merge, `recursive_paragraph_matching` records their child
+comparison batches. These use the same paragraph matching prompts and rules.
+For insertion comparisons, `match_recorded.unit_paper_id` identifies the paper being compared as the new
+scope contribution; `paper_index` identifies when the comparison occurred.
+Older events omit `unit_paper_id` because the two always coincided.
 
 The singleton report uses only recorded events. It gives each paragraph outside
 a shared group one operational reason: `never_compared`,
@@ -135,8 +145,9 @@ means appearing as a focus or eligible candidate, not merely as neighbor context
 Non-null outgoing or incoming selection takes precedence over abstentions in
 other calls. Attempt IDs link back to the unmodified judgment provenance.
 Final-snapshot recovery eligibility is separate from these historical outcomes:
-same-scope singleton peers are excluded by the current recovery policy, and an
-established target must not already contain the singleton's paper. The report
+same-scope singleton peers are excluded by recovery, but newly eligible peers
+are compared by recursive insertion. A same-paper established target is eligible
+only for paragraph fan-in beside an accepted core. The report
 does not claim that an eligible target was examined or that a selection was sound.
 
 ## Viewer Export
@@ -150,6 +161,7 @@ A shared group represents at least two papers; a singleton exactly one.
 layouts, and final graph hash. Mutation events create/update/merge nodes and add
 containment edges. Judgment/projection/fan-in annotations are not extra mutations.
 Realignment `node_merged` events require `attempt_id` and `reverse_attempt_id`.
+The `recursive_paragraph_matching` merge reason also records both attempts.
 `node_reparented` records a paragraph node's old and new structural parent;
 replay updates both node scope and member ownership without changing identity.
 The former one-way realignment event contract is intentionally not accepted.

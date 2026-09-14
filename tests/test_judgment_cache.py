@@ -27,7 +27,11 @@ class JudgmentCacheTest(unittest.TestCase):
                 "match-role", "skill", "v1", "hash"
             )
             client.return_value.run_json.return_value = SimpleNamespace(
-                value={"target_id": "paper-group", "basis": "Original explanation", "evidence": {"focus": [], "target": []}},
+                value={
+                    "target_id": "paper-group",
+                    "basis": "Original explanation",
+                    "evidence": {"focus": [], "target": []},
+                },
                 raw_response=raw,
             )
             provider = AnthropicJudgmentProvider(
@@ -85,8 +89,17 @@ class JudgmentCacheTest(unittest.TestCase):
             allowed_match_ids=["group"],
             context={
                 "scope": {"level": "paragraph"},
-                "focus": {"paragraph_under_consideration": {"full_text": "First focus"}},
-                "candidates": [{"selection_id": "group", "paragraph_under_consideration": {"full_text": "Repeated corpus"}}],
+                "focus": {
+                    "paper_key": "paper-2",
+                    "paragraph_under_consideration": {"full_text": "First focus"},
+                },
+                "candidates": [
+                    {
+                        "selection_id": "group",
+                        "paper_key": "paper-1",
+                        "paragraph_under_consideration": {"full_text": "Repeated corpus"},
+                    }
+                ],
             },
         )
 
@@ -95,7 +108,7 @@ class JudgmentCacheTest(unittest.TestCase):
         prompts = PromptRepository(config.prompt_root, config.context_root)
         request = self.request()
         first = prompts.render(request.prompt_ref, request.context_ref, request.context)
-        request.context["focus"] = {"paragraph_under_consideration": {"full_text": "Second focus"}}
+        request.context["focus"]["paragraph_under_consideration"]["full_text"] = "Second focus"
         second = prompts.render(request.prompt_ref, request.context_ref, request.context)
         self.assertEqual(first.cacheable_context, second.cacheable_context)
         self.assertIn("Repeated corpus", first.cacheable_context)
@@ -103,7 +116,9 @@ class JudgmentCacheTest(unittest.TestCase):
         self.assertIn("First focus", first.user)
         self.assertNotIn("Repeated corpus", first.user)
         self.assertNotEqual(first.context_hash, second.context_hash)
-        request.context["candidates"][0]["paragraph_under_consideration"]["full_text"] = "Changed corpus"
+        request.context["candidates"][0]["paragraph_under_consideration"]["full_text"] = (
+            "Changed corpus"
+        )
         third = prompts.render(request.prompt_ref, request.context_ref, request.context)
         self.assertNotEqual(second.cacheable_context, third.cacheable_context)
         self.assertNotEqual(second.context_hash, third.context_hash)
@@ -111,7 +126,11 @@ class JudgmentCacheTest(unittest.TestCase):
     def test_exact_results_survive_provider_restarts_but_not_changed_evidence_or_force(self):
         config = load_pipeline_config(CONFIG_PATH)
         response = SimpleNamespace(
-            value={"target_id": "group", "basis": "The same role", "evidence": {"focus": ["focus"], "target": ["Repeated corpus"]}},
+            value={
+                "target_id": "group",
+                "basis": "The same role",
+                "evidence": {"focus": ["focus"], "target": ["Repeated corpus"]},
+            },
             raw_response={"id": "response", "usage": {"input_tokens": 30, "output_tokens": 10}},
         )
         with (
@@ -157,6 +176,12 @@ class JudgmentCacheTest(unittest.TestCase):
             model = config.model.model_copy(update={"name": "different-model"})
             request.force = False
             self.assertFalse(provider(model).judge(request).cache_hit)
+            # Same text assigned to a different paper changes the collective-role judgment.
+            previous_calls = client.return_value.run_json.call_count
+            request.context["candidates"][0]["paper_key"] = "paper-2"
+            self.assertFalse(provider().judge(request).cache_hit)
+            self.assertTrue(provider().judge(request).cache_hit)
+            self.assertEqual(client.return_value.run_json.call_count, previous_calls + 1)
 
     def test_match_schema_allows_only_current_candidates_or_null(self):
         from jsonschema import Draft202012Validator
@@ -172,8 +197,24 @@ class JudgmentCacheTest(unittest.TestCase):
             request = self.request()
             first = provider.render_request(request)
             validator = Draft202012Validator(first.schema)
-            self.assertTrue(validator.is_valid({"target_id": "group", "basis": "Role", "evidence": {"focus": ["focus"], "target": ["Repeated corpus"]}}))
-            self.assertTrue(validator.is_valid({"target_id": None, "basis": "No match", "evidence": {"focus": [], "target": []}}))
+            self.assertTrue(
+                validator.is_valid(
+                    {
+                        "target_id": "group",
+                        "basis": "Role",
+                        "evidence": {"focus": ["focus"], "target": ["Repeated corpus"]},
+                    }
+                )
+            )
+            self.assertTrue(
+                validator.is_valid(
+                    {
+                        "target_id": None,
+                        "basis": "No match",
+                        "evidence": {"focus": [], "target": []},
+                    }
+                )
+            )
             self.assertFalse(validator.is_valid({"target_id": "paper-group", "basis": "Role"}))
             request.allowed_match_ids = []
             second = provider.render_request(request)

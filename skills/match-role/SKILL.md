@@ -6,7 +6,8 @@ description: "Select one role-corresponding candidate for one focus unit or grap
 # Directional Role Matching
 
 The caller supplies exactly one `focus`, the complete allowed `candidates`,
-and a fixed `scope`. Return one `target_id` and one evidence-grounded `basis`.
+and a fixed `scope`. Return one `target_id`, an evidence-grounded `basis`, and
+machine-checkable `evidence` quotations.
 The reverse judgment is a separate request. Do not batch, invent candidates,
 generate questions, or mutate the graph.
 
@@ -31,9 +32,12 @@ For example, a candidate with `paper_id: "corpusstudio"` and
 `section_id: "s0003"` must be returned as `"s0003"`, NOT
 `"corpusstudio-s0003"`. This example is not an additional candidate.
 
-Return exactly one JSON object with exactly two fields:
+Return exactly one JSON object with exactly three fields:
 - `target_id`: the exact selected handle string, or JSON `null` for abstention.
 - `basis`: a nonempty string containing the evidence-grounded explanation below.
+- `evidence`: `focus` and `target` arrays, each containing one exact center quote
+  per member in input order. A single unit requires one quote. For abstention,
+  both arrays must be empty. Each quote must be nonempty and at most 240 characters.
 
 Do not return a list, Markdown fences, a string containing JSON, extra fields,
 or the string `"null"`. Before returning, check that `target_id` equals one of
@@ -51,8 +55,12 @@ the supplied candidate handles character for character, or is JSON `null`.
   a role mismatch. Apply this priority across academic, legal, and narrative text.
 - Read all supplied source text. Generated questions are fallible summaries,
   not identity and not substitutes for the underlying evidence.
-- A node represents all its members. A candidate must fit their shared role;
-  do not select it because one member resembles the focus.
+- Members sharing a `paper_key` form that paper's accepted contribution.
+  Each paper must support the shared role. Read its members together: different
+  paragraphs can supply different parts, but each must contribute directly.
+  Do not select a node merely because one paper resembles the focus. If the
+  candidate's paper is already represented, evaluate the proposed contribution
+  alongside its accepted members, without borrowing unaccepted neighbor text.
 - Sections and subsections are peers for structural matching. Paragraphs are
   restricted to the exact structural node supplied by the caller.
 - Each paragraph window is ordered `previous_paragraph`,
@@ -72,7 +80,8 @@ abstention; a very broad shared theme alone does not justify a match.
 
 In `basis`, state the shared role first, anchor it in a short exact excerpt from
 each matched center (or actual structural unit), and explain the corresponding
-participants and relations. For a node, every member must support that role.
+participants and relations. Check the role across papers and the direct
+contribution of each accepted member within its paper.
 Choose the abstraction level using judgment, not a fixed taxonomy, and make
 that choice intelligible on both sides. Similar formatting or topic alone is
 insufficient. Before selecting, check that your explanation describes the
@@ -82,7 +91,7 @@ Keep the final `basis` concise: target at most 100 words for a match and 60
 words for an abstention. For an abstention, identify the decisive role mismatch
 instead of cataloguing every candidate or quoting every member. For a match,
 use minimal excerpts and explain member coverage compactly; do not weaken the
-all-members check to shorten the answer. Return one final JSON object only.
+per-paper role and member-contribution checks to shorten the answer. Return one final JSON object only.
 
 Participant correspondence is relational, not moral: a hero can map to a villain
 if each occupies the same role in the chosen relation. Different names, moral
@@ -93,16 +102,19 @@ or claim that posing a question supplies the answer, to manufacture a match.
 Singleton rerepresentation uses the same reciprocal top-1 rule at both levels.
 After each document insertion, each singleton selects its best eligible
 established node or null, and each established node independently selects its
-best eligible singleton or null. The reverse pool contains all eligible
-singletons, not only the singleton that selected the group. Only mutual choices
-merge. A group can absorb at most one singleton in this frozen pass; later
-insertions trigger another pass. Paragraph calls are bounded to the exact
-section node. All graph acceptance rules remain deterministic.
+best eligible reciprocal-core singleton or null. The reverse pool contains all
+eligible core candidates, not only proposers. Mutual choices establish cores;
+at most one new reciprocal core joins each group per pass. At paragraph level
+only, an immediately adjacent singleton that selects the group may join as
+fan-in beside an accepted core, including one from its own paper. Fan-in cannot
+chain through another fan-in member. The caller checks adjacency and membership;
+do not infer them from prose. Section nodes never admit fan-in. Paragraph calls
+remain bounded to the exact section node.
 
 The caller's JSON schema is authoritative. For example, an abstention is:
 
 ```json
-{"target_id": null, "basis": "No candidate performs the focus unit's relation or function."}
+{"target_id": null, "basis": "No candidate performs the focus unit's relation or function.", "evidence": {"focus": [], "target": []}}
 ```
 
 These local judgments are not a global SME alignment. Do not claim that a

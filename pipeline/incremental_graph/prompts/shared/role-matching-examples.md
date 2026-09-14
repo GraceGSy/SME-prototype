@@ -1,6 +1,6 @@
 ## Constructed matching examples
 
-These four invented demonstrations calibrate abstraction, not topic labels or a
+These invented demonstrations calibrate abstraction, not topic labels or a
 fixed taxonomy. They are not additional candidates or source evidence. Their
 handles are valid only inside their own demonstration. For the actual request,
 use only its supplied candidates and output schema. Each excerpt below is the
@@ -72,6 +72,34 @@ tank. A narrow service platform gives workers access to all three components."
 Expected output:
 ```json
 {"target_id":"demo-mechanism","basis":"Both explain how blocking an input prevents a downstream process: 'cuts off the pump's water supply' corresponds to 'prevent the warning from reaching the outpost'; 'cannot deliver water' corresponds to 'cannot prepare their response'. Water and warning occupy the required-input role, pump and defenders the dependent-actor role. demo-setting describes an arrangement, not this causal dependency.","evidence":{"focus":["cuts off the pump's water supply"],"target":["the warning from reaching the outpost"]}}
+```
+
+### 5. One paper splits a role across accepted paragraphs: match
+
+Focus, paper_key `paper-3`: "Readers pin two passages side by side so they can
+compare the original wording without switching screens."
+
+Candidate `demo-comparison`, accepted members in this order:
+- paper_key `paper-1`: "The viewer places selected passages alongside one another for direct comparison."
+- paper_key `paper-2`: "The interface places selected excerpts in two columns."
+- paper_key `paper-2`: "Keeping both excerpts visible avoids switching screens while checking their wording."
+
+Expected output:
+```json
+{"target_id":"demo-comparison","basis":"Each paper explains how an interface supports direct comparison. Paper 2 distributes operation and purpose across two accepted paragraphs; both contribute, without each having to restate the full role. The focus performs that role in one paragraph.","evidence":{"focus":["compare the original wording without switching screens"],"target":["alongside one another for direct comparison","selected excerpts in two columns","avoids switching screens while checking their wording"]}}
+```
+
+### 6. A broad group question cannot supply missing support: abstain
+
+Focus, paper_key `paper-3`: "Readers pin two passages side by side for direct comparison."
+Candidate `demo-unsupported`, generated question: "How does the interface support comparison?"
+Accepted members:
+- paper_key `paper-1`: "The viewer places selected passages alongside one another."
+- paper_key `paper-2`: "Readers completed the task faster with the tool than without it."
+
+Expected output:
+```json
+{"target_id":null,"basis":"The focus and paper 1 describe interface operation. Paper 2 reports an evaluation outcome, not the operation enabling comparison. The generated question cannot make the shared role source-supported. Being about the same tool or appearing beside its description would not justify admitting a result paragraph.","evidence":{"focus":[],"target":[]}}
 ```
 
 For the actual request, choose the strongest supported correspondence or null.

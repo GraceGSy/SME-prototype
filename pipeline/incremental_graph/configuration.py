@@ -61,11 +61,15 @@ class PromptRepository:
     def render(self, prompt_ref: str, context_ref: str, context: dict[str, Any]) -> RenderedPrompt:
         prompt_dir = self.prompt_root / prompt_ref
         system = self._read(prompt_dir / "system.md")
-        if "{{role_matching_examples}}" in system:
-            system = system.replace(
-                "{{role_matching_examples}}",
-                self._read(self.prompt_root / "shared" / "role-matching-examples.md"),
-            )
+        for name in ("role_matching_examples", "group_question_examples"):
+            placeholder = "{{" + name + "}}"
+            if placeholder in system:
+                system = system.replace(
+                    placeholder,
+                    self._read(self.prompt_root / "shared" / (name.replace("_", "-") + ".md")),
+                )
+        if context_ref in {"matching", "group-question"}:
+            system += "\n\n" + self._read(self.prompt_root / "shared" / "group-role.md")
         if context_ref == "matching":
             system += "\n\n" + self._read(self.prompt_root / "shared" / "match-evidence.md")
         user_template = self._read(prompt_dir / "user.md")
