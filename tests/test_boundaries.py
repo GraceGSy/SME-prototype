@@ -54,7 +54,7 @@ class BoundaryTest(unittest.TestCase):
         ):
             with self.subTest(invalid=invalid), self.assertRaises(JudgmentError):
                 AnthropicJudgmentProvider._validate(request, invalid)
-        AnthropicJudgmentProvider._validate(request, {"target_id": None, "basis": "No match."})
+        AnthropicJudgmentProvider._validate(request, {"target_id": None, "basis": "No match.", "evidence": {"focus": [], "target": []}})
 
 
 if __name__ == "__main__":

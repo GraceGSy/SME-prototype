@@ -19,11 +19,8 @@ from ..llm.client import (
 )
 from .configuration import PromptRepository, RenderedPrompt
 from .evidence_encoding import encode_evidence
+from .match_evidence import EvidenceValidationError, JudgmentError, validate_evidence
 from .models import JudgmentRequest, JudgmentResult, ModelSettings
-
-
-class JudgmentError(RuntimeError):
-    """Raised when a model response does not satisfy the requested contract."""
 
 
 class JudgmentProvider(Protocol):
@@ -86,6 +83,24 @@ class AnthropicJudgmentProvider:
         return rendered
 
     def judge(self, request: JudgmentRequest) -> JudgmentResult:
+        # Retry only attribution failures, not provider, budget, or other contract errors.
+        # Each attempt uses the same source pool and native Skill; only feedback changes.
+        feedback = ""
+        for attempt in range(3):
+            try:
+                return self._judge_once(request, feedback)
+            except EvidenceValidationError as error:
+                if attempt == 2:
+                    raise
+                feedback = (
+                    "\n\nEvidence validation failed: "
+                    + str(error)
+                    + ". Reconsider this judgment using the unchanged source evidence. "
+                    "Return a complete response with exact center quotations."
+                )
+        raise AssertionError("Unreachable retry state")
+
+    def _judge_once(self, request: JudgmentRequest, feedback: str) -> JudgmentResult:
         rendered = self.render_request(request)
         skill_path = self.skill_root / request.skill_ref if request.skill_ref else None
         if not skill_path:
@@ -95,7 +110,7 @@ class AnthropicJudgmentProvider:
         skill_hash = directory_hash(skill_path)
         fingerprint = self._fingerprint(request, rendered, skill_hash)
         cache_path = self.cache_dir / f"{fingerprint}.json"
-        if cache_path.is_file() and not request.force:
+        if cache_path.is_file() and not request.force and not feedback:
             payload = json.loads(cache_path.read_text(encoding="utf-8"))
             result = JudgmentResult.model_validate(payload)
             result.cache_hit = True
@@ -115,9 +130,10 @@ class AnthropicJudgmentProvider:
                 response_dir=self.cache_dir / "responses",
             )
         skill = self.skills.register(skill_path)
+        user_prompt = rendered.user + feedback
         response = self.skills.run_json(
             [skill],
-            rendered.user,
+            user_prompt,
             rendered.schema,
             policy=SkillCallPolicy(
                 max_tokens=request.max_tokens or self.model.max_tokens,
@@ -156,7 +172,7 @@ class AnthropicJudgmentProvider:
             rendered_system=rendered.system,
             # Preserve all user evidence in the existing text provenance contract.
             rendered_user="\n\n".join(
-                block for block in (rendered.cacheable_context, rendered.user) if block
+                block for block in (rendered.cacheable_context, user_prompt) if block
             ),
             prompt_hash=rendered.prompt_hash,
             context_hash=rendered.context_hash,
@@ -203,8 +219,8 @@ class AnthropicJudgmentProvider:
             if not isinstance(question, str) or not question.strip():
                 raise JudgmentError(f"{request.key} returned an empty question")
             return
-        if not isinstance(value, dict) or set(value) != {"target_id", "basis"}:
-            raise JudgmentError(f"{request.key} requires exactly target_id and basis")
+        if not isinstance(value, dict) or set(value) != {"target_id", "basis", "evidence"}:
+            raise JudgmentError(f"{request.key} requires exactly target_id, basis, and evidence")
         if not isinstance(value["basis"], str) or not value["basis"].strip():
             raise JudgmentError(f"{request.key} requires a non-empty basis")
         chosen = value["target_id"]
@@ -214,3 +230,4 @@ class AnthropicJudgmentProvider:
             raise JudgmentError(
                 f"{request.key} selected {chosen!r}; allowed values are {request.allowed_match_ids} or null"
             )
+        validate_evidence(request.context, chosen, value["evidence"])

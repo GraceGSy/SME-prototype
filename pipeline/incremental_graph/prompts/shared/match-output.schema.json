@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "properties": {
+    "target_id": {"type": ["string", "null"]},
+    "basis": {"type": "string", "minLength": 1},
+    "evidence": {
+      "type": "object",
+      "properties": {
+        "focus": {"type": "array", "items": {"type": "string", "minLength": 1, "maxLength": 240}},
+        "target": {"type": "array", "items": {"type": "string", "minLength": 1, "maxLength": 240}}
+      },
+      "required": ["focus", "target"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["target_id", "basis", "evidence"],
+  "additionalProperties": false
+}

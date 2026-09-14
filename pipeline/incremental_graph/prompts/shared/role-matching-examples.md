@@ -25,7 +25,7 @@ April. The inspector visited in May, and the office scheduled a hearing in June.
 
 Expected output:
 ```json
-{"target_id":"demo-analysis","basis":"Both interpret a governing eligibility condition, apply observed facts, and conclude exclusion: 'removable without demolition' versus 'return to baseline' defines the condition; 'must be broken up' versus 'remained elevated' defeats it. The permit and experimental protocol play corresponding governing roles. demo-topic only recounts procedural history. The specific question about the shed does not override the focus's reasoning role."}
+{"target_id":"demo-analysis","basis":"Both interpret a governing eligibility condition, apply observed facts, and conclude exclusion: 'removable without demolition' versus 'return to baseline' defines the condition; 'must be broken up' versus 'remained elevated' defeats it. The permit and experimental protocol play corresponding governing roles. demo-topic only recounts procedural history. The specific question about the shed does not override the focus's reasoning role.","evidence":{"focus":["removable without demolition"],"target":["return to baseline"]}}
 ```
 
 ### 2. Same tool, different job: abstain
@@ -39,7 +39,7 @@ suggest that its comparison panel reduces lookup effort."
 
 Expected output:
 ```json
-{"target_id":null,"basis":"The focus describes capabilities ('groups quotations', 'lets readers pin'); the candidate supplies measured evidence of benefit ('found relevant quotations more quickly'). Describing how a tool works and evaluating its effect are distinct roles despite the identical tool and panel."}
+{"target_id":null,"basis":"The focus describes capabilities ('groups quotations', 'lets readers pin'); the candidate supplies measured evidence of benefit ('found relevant quotations more quickly'). Describing how a tool works and evaluating its effect are distinct roles despite the identical tool and panel.","evidence":{"focus":[],"target":[]}}
 ```
 
 ### 3. Hypothesis versus evidence: abstain without borrowing a neighbor
@@ -54,7 +54,7 @@ reminders missed fewer deadlines in the trial than teams receiving one reminder.
 
 Expected output:
 ```json
-{"target_id":null,"basis":"The focus proposes an untested prediction ('We predict'); the candidate reports an observed outcome ('missed fewer deadlines in the trial'). The focus's next paragraph provides results, but it is not the passage being matched. Both concern interventions, yet prediction and evidence play different roles."}
+{"target_id":null,"basis":"The focus proposes an untested prediction ('We predict'); the candidate reports an observed outcome ('missed fewer deadlines in the trial'). The focus's next paragraph provides results, but it is not the passage being matched. Both concern interventions, yet prediction and evidence play different roles.","evidence":{"focus":[],"target":[]}}
 ```
 
 ### 4. Corresponding causal explanation: select it over a shared setting
@@ -71,7 +71,7 @@ tank. A narrow service platform gives workers access to all three components."
 
 Expected output:
 ```json
-{"target_id":"demo-mechanism","basis":"Both explain how blocking an input prevents a downstream process: 'cuts off the pump's water supply' corresponds to 'prevent the warning from reaching the outpost'; 'cannot deliver water' corresponds to 'cannot prepare their response'. Water and warning occupy the required-input role, pump and defenders the dependent-actor role. demo-setting describes an arrangement, not this causal dependency."}
+{"target_id":"demo-mechanism","basis":"Both explain how blocking an input prevents a downstream process: 'cuts off the pump's water supply' corresponds to 'prevent the warning from reaching the outpost'; 'cannot deliver water' corresponds to 'cannot prepare their response'. Water and warning occupy the required-input role, pump and defenders the dependent-actor role. demo-setting describes an arrangement, not this causal dependency.","evidence":{"focus":["cuts off the pump's water supply"],"target":["the warning from reaching the outpost"]}}
 ```
 
 For the actual request, choose the strongest supported correspondence or null.

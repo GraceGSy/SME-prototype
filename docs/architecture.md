@@ -168,6 +168,17 @@ the full response, request, and validation error. They are never accepted cache
 entries or repaired by the runtime. Each rejection gets its own record so a
 later failed retry cannot overwrite the paid evidence.
 
+Matching judgments also supply exact center quotations for the focus and chosen
+target, one per group member in input order. The provider validates attribution
+before accepting or caching a result. An attribution failure retries only that
+judgment, at most twice after the initial attempt. The retry appends validation
+feedback to the changing focus message; the native Skill and cacheable candidate
+pool stay unchanged. All attempts use the existing token and session guards.
+Other contract errors, provider errors, and budget failures still stop execution.
+This does not prove that a quoted passage supports the claimed role. The changed
+prompt/schema and policy require a fresh run rather than silently extending an
+older experiment under different rules.
+
 Normal wire decoding (JSON/YAML and a manifest path string into a Path) is not
 repair. Source text is retained verbatim. One-time content stripping/flattening
 belongs in `helpers/`, with the derivative then stored and reused.

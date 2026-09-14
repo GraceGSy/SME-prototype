@@ -66,8 +66,15 @@ class PromptRepository:
                 "{{role_matching_examples}}",
                 self._read(self.prompt_root / "shared" / "role-matching-examples.md"),
             )
+        if context_ref == "matching":
+            system += "\n\n" + self._read(self.prompt_root / "shared" / "match-evidence.md")
         user_template = self._read(prompt_dir / "user.md")
-        schema_text = self._read(prompt_dir / "output.schema.json")
+        schema_path = (
+            self.prompt_root / "shared" / "match-output.schema.json"
+            if context_ref == "matching"
+            else prompt_dir / "output.schema.json"
+        )
+        schema_text = self._read(schema_path)
         try:
             schema = json.loads(schema_text)
         except json.JSONDecodeError as error:

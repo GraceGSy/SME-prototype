@@ -76,11 +76,22 @@ Source text and generated metadata are not rewritten to remove numbers in prose.
 The exact response is:
 
 ```json
-{"target_id": null, "basis": "No supplied candidate performs the same role."}
+{"target_id": null, "basis": "No supplied candidate performs the same role.", "evidence": {"focus": [], "target": []}}
 ```
 
 For a match, `target_id` must exactly equal one supplied candidate ID. A missing
 field, blank basis, extra field, wrong type, or invented ID is invalid.
+For a non-null selection, `evidence.focus` and `evidence.target` each contain one
+short verbatim quotation per center, in the supplied member order. A unit has
+one center; a group has one per member. Each quote must be nonempty, at most 240
+characters, and an exact substring of that center's `full_text`. Neighbor text,
+another member's text, paraphrases, and whitespace repairs are not accepted.
+Abstentions require both arrays empty. Quotes establish attribution, not semantic
+correctness: the basis must still explain the shared role rather than word overlap.
+The shared schema and caller instructions live in `prompts/shared/`; native
+Skills are unchanged. Historical two-field responses are not accepted by this
+contract and must not receive fabricated evidence during replay.
+
 Question requests return exactly `question_this_text_answers` with a nonblank
 string. There is no batched-result interface.
 

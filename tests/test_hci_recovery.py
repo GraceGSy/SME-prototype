@@ -21,9 +21,22 @@ class HciRecoveryTest(unittest.TestCase):
             prompt_ref="prompt",
             context_ref="matching",
             allowed_match_ids=["s0003"],
-            context={"candidates": [{"paper_id": "corpusstudio", "section_id": "s0003"}]},
+            context={
+                "focus": {"full_text": "Original focus text"},
+                "candidates": [
+                    {
+                        "paper_id": "corpusstudio",
+                        "section_id": "s0003",
+                        "full_text": "Original candidate text",
+                    }
+                ],
+            },
         )
-        original = {"target_id": "corpusstudio.s0003", "basis": "Original model reasoning"}
+        original = {
+            "target_id": "corpusstudio.s0003",
+            "basis": "Original model reasoning",
+            "evidence": {"focus": ["Original focus"], "target": ["Original candidate"]},
+        }
         result = JudgmentResult(
             fingerprint="old",
             normalized=original,

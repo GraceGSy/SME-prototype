@@ -102,7 +102,7 @@ class MatchingExamplesTest(unittest.TestCase):
             rendered = provider.render_request(request)
             self.assertIn("Constructed matching examples", rendered.system)
             validator = Draft202012Validator(rendered.schema)
-            self.assertTrue(validator.is_valid({"target_id": "group", "basis": "Supported role"}))
+            self.assertTrue(validator.is_valid({"target_id": "group", "basis": "Supported role", "evidence": {"focus": ["focus"], "target": ["Repeated corpus"]}}))
             for handle in ("demo-analysis", "demo-mechanism"):
                 self.assertFalse(
                     validator.is_valid({"target_id": handle, "basis": "Copied example"})

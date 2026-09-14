@@ -1,0 +1,195 @@
+"""Center quotations are exact, member-bound evidence, never repaired text."""
+
+import copy
+import tempfile
+import unittest
+from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
+
+from test_incremental_graph import CONFIG_PATH
+
+from pipeline.incremental_graph.configuration import PromptRepository, load_pipeline_config
+from pipeline.incremental_graph.llm import AnthropicJudgmentProvider, JudgmentError
+from pipeline.incremental_graph.models import JudgmentRequest
+from pipeline.llm.client import SkillBudgetExceeded, SkillRef
+
+
+def evidence_request():
+    return JudgmentRequest(
+        key="p2:paragraph_matching:new_to_group:p1",
+        paper_index=2,
+        stage_id="paragraph_matching",
+        output_kind="match",
+        prompt_ref="paragraph-to-group-match/v1",
+        context_ref="matching",
+        skill_ref="match-role",
+        allowed_match_ids=["group"],
+        context={
+            "scope": {"level": "paragraph"},
+            "focus": {
+                "paragraph_under_consideration": {"full_text": "We deny the appeal."},
+                "next_paragraph": {"full_text": "Costs are awarded."},
+            },
+            "candidates": [
+                {
+                    "selection_id": "group",
+                    "members": [
+                        {
+                            "paragraph_under_consideration": {
+                                "full_text": "We dismiss the petition."
+                            },
+                            "next_paragraph": {"full_text": "We deny the appeal."},
+                        },
+                        {
+                            "paragraph_under_consideration": {
+                                "full_text": "The judgment is affirmed."
+                            }
+                        },
+                    ],
+                }
+            ],
+        },
+    )
+
+
+def evidence_response():
+    return {
+        "target_id": "group",
+        "basis": "Each center announces the court's disposition.",
+        "evidence": {
+            "focus": ["deny the appeal"],
+            "target": ["dismiss the petition", "judgment is affirmed"],
+        },
+    }
+
+
+class MatchEvidenceTest(unittest.TestCase):
+    def test_legacy_response_without_evidence_is_rejected(self):
+        value = evidence_response()
+        del value["evidence"]
+        with self.assertRaises(JudgmentError):
+            AnthropicJudgmentProvider._validate(evidence_request(), value)
+
+    def test_accepts_exact_quotes_in_member_order_in_both_directions(self):
+        request, value = evidence_request(), evidence_response()
+        AnthropicJudgmentProvider._validate(request, value)
+        request.context["focus"], request.context["candidates"][0] = (
+            request.context["candidates"][0],
+            request.context["focus"],
+        )
+        request.context["candidates"][0]["selection_id"] = "group"
+        value["evidence"]["focus"], value["evidence"]["target"] = (
+            value["evidence"]["target"],
+            value["evidence"]["focus"],
+        )
+        AnthropicJudgmentProvider._validate(request, value)
+
+    def test_rejects_neighbor_quotes_missing_members_order_and_normalization(self):
+        for side, quotes in [
+            ("focus", ["Costs are awarded"]),
+            ("target", ["deny the appeal", "judgment is affirmed"]),
+            ("target", ["dismiss the petition"]),
+            ("target", ["judgment is affirmed", "dismiss the petition"]),
+            ("focus", ["deny  the appeal"]),
+            ("focus", ["DENY the appeal"]),
+            ("focus", [""]),
+            ("focus", [123]),
+        ]:
+            with self.subTest(side=side, quotes=quotes):
+                value = evidence_response()
+                value["evidence"][side] = quotes
+                with self.assertRaises(JudgmentError):
+                    AnthropicJudgmentProvider._validate(evidence_request(), value)
+
+    def test_abstention_requires_empty_evidence_and_structure_uses_actual_unit(self):
+        value = {
+            "target_id": None,
+            "basis": "Different roles.",
+            "evidence": {"focus": [], "target": []},
+        }
+        AnthropicJudgmentProvider._validate(evidence_request(), value)
+        value["evidence"]["target"] = ["Invented evidence"]
+        with self.assertRaises(JudgmentError):
+            AnthropicJudgmentProvider._validate(evidence_request(), value)
+        request = evidence_request()
+        request.context = {
+            "scope": {"level": "section"},
+            "focus": {"full_text": "We deny the appeal."},
+            "candidates": [
+                {
+                    "group_id": "group",
+                    "members": [
+                        {"full_text": "We dismiss the petition."},
+                        {"full_text": "The judgment is affirmed."},
+                    ],
+                }
+            ],
+        }
+        AnthropicJudgmentProvider._validate(request, evidence_response())
+
+    def test_retries_only_failed_judgment_and_caches_only_valid_evidence(self):
+        self.check_retry(failures=1, succeeds=True)
+
+    def test_stops_after_three_failed_evidence_responses(self):
+        self.check_retry(failures=3, succeeds=False)
+
+    def check_retry(self, failures, succeeds):
+        config = load_pipeline_config(CONFIG_PATH)
+        bad = evidence_response()
+        bad["evidence"]["focus"] = ["Costs are awarded"]
+        responses = [
+            SimpleNamespace(value=copy.deepcopy(bad), raw_response={"id": str(i)})
+            for i in range(failures)
+        ]
+        responses.append(SimpleNamespace(value=evidence_response(), raw_response={"id": "good"}))
+        with (
+            tempfile.TemporaryDirectory() as directory,
+            patch("pipeline.incremental_graph.llm.ClaudeSkills") as client,
+        ):
+            client.return_value.register.return_value = SkillRef(
+                "match-role", "skill", "v1", "hash"
+            )
+            client.return_value.run_json.side_effect = responses
+            provider = AnthropicJudgmentProvider(
+                PromptRepository(config.prompt_root, config.context_root),
+                config.model,
+                Path(directory),
+                config.skill_root,
+            )
+            request = evidence_request()
+            if succeeds:
+                result = provider.judge(request)
+                self.assertEqual(result.normalized, evidence_response())
+                self.assertTrue(provider.judge(request).cache_hit)
+            else:
+                with self.assertRaises(JudgmentError):
+                    provider.judge(request)
+                self.assertEqual(list(Path(directory).glob("*.json")), [])
+            self.assertEqual(client.return_value.run_json.call_count, failures + int(succeeds))
+            self.assertEqual(len(list((Path(directory) / "rejected").glob("*.json"))), failures)
+            calls = client.return_value.run_json.call_args_list
+            self.assertEqual(
+                calls[0].kwargs["cacheable_context"], calls[-1].kwargs["cacheable_context"]
+            )
+            self.assertIn("Evidence validation failed", calls[1].args[1])
+
+    def test_provider_budget_failures_are_not_retried(self):
+        config = load_pipeline_config(CONFIG_PATH)
+        with (
+            tempfile.TemporaryDirectory() as directory,
+            patch("pipeline.incremental_graph.llm.ClaudeSkills") as client,
+        ):
+            client.return_value.register.return_value = SkillRef(
+                "match-role", "skill", "v1", "hash"
+            )
+            client.return_value.run_json.side_effect = SkillBudgetExceeded("budget")
+            provider = AnthropicJudgmentProvider(
+                PromptRepository(config.prompt_root, config.context_root),
+                config.model,
+                Path(directory),
+                config.skill_root,
+            )
+            with self.assertRaises(SkillBudgetExceeded):
+                provider.judge(evidence_request())
+            self.assertEqual(client.return_value.run_json.call_count, 1)
