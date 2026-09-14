@@ -71,6 +71,14 @@ Its merge reparents those nodes and updates their member ownership, preserving
 IDs and source text. Replay records these scope changes explicitly. Every merge
 records both judgment attempt IDs; unreciprocated choices remain provenance only.
 
+Current limitation: ordinary insertion can match a new paragraph to an existing
+singleton, but realignment considers only singleton-to-established-group pairs.
+Reparenting does not itself compare two older singleton paragraphs that have
+just become co-scoped. Realignment also excludes established groups that already
+contain the source paper. The singleton report distinguishes exposure and
+selection outcomes and makes final-snapshot eligibility visible; it does not
+change either restriction.
+
 A third paper can establish a group that an older singleton now joins at either
 level. Realignment still does not split previously accepted shared groups or
 search all possible global relational alignments. Those are different operations,

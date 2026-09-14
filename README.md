@@ -89,6 +89,18 @@ formats and legacy caches are not migrated at runtime.
 
 ## Inspect Local Runs
 
+New completed revisions include `reports/singletons.md` and `reports/singletons.json`.
+They distinguish lack of comparison, model abstention, and selections that were
+not accepted. They also show final-snapshot recovery eligibility; a singleton is
+not evidence of a genuinely unique role. Audit an older revision without API
+calls or changing its saved results:
+
+```powershell
+python -m helpers.report_singletons runs/hci/revisions/revision-0001/events.json output/reports/hci-singletons
+```
+
+The report output directory must not already exist.
+
 Build once, then serve completed outputs directly without copying datasets:
 
 ```powershell

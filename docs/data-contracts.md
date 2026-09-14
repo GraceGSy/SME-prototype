@@ -111,6 +111,8 @@ runs/<run>/
     stages/
     events.json
     summary.json
+    reports/singletons.json
+    reports/singletons.md
     dataset/
 ```
 
@@ -126,6 +128,17 @@ Each insertion records `section_rerepresentation` and
 `paragraph_rerepresentation` stages (the former is omitted in paragraph-only
 mode). Realignment records both `singleton_to_group` and `group_to_singleton`
 decisions. Both use exactly the same target-or-null response contract above.
+
+The singleton report uses only recorded events. It gives each paragraph outside
+a shared group one operational reason: `never_compared`,
+`selected_without_acceptance`, `model_abstained`, or `candidate_only`. Exposure
+means appearing as a focus or eligible candidate, not merely as neighbor context.
+Non-null outgoing or incoming selection takes precedence over abstentions in
+other calls. Attempt IDs link back to the unmodified judgment provenance.
+Final-snapshot recovery eligibility is separate from these historical outcomes:
+same-scope singleton peers are excluded by the current recovery policy, and an
+established target must not already contain the singleton's paper. The report
+does not claim that an eligible target was examined or that a selection was sound.
 
 ## Viewer Export
 

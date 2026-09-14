@@ -26,6 +26,7 @@ from .models import (
     PipelineConfig,
     StageConfig,
 )
+from .singleton_report import write_singleton_report
 
 
 class PipelineError(RuntimeError):
@@ -86,6 +87,7 @@ class IncrementalGraphRunner:
             self._run_phase("paragraph", insertion)
         self.journal.finalize()
         export_revision(self.revision_dir / "dataset", self.question_graph, self.papers)
+        write_singleton_report(self.journal.events, self.revision_dir / "reports")
         summary = {
             "schema_version": 1,
             "pipeline_id": self.config.pipeline_id,
