@@ -172,6 +172,7 @@ class QuestionGraph:
         paper_index: int,
         attempt_id: str,
         reverse_attempt_id: str,
+        recursive: bool = False,
     ) -> dict[str, Any]:
         """Absorb a reciprocally accepted singleton and preserve child ownership."""
 
@@ -185,7 +186,9 @@ class QuestionGraph:
             raise ValueError("Realignment requires the same exact parent scope")
         if len(source["members"]) != 1:
             raise ValueError(f"Rerepresentation source {source_id} is not a singleton")
-        if len(target["members"]) < 2:
+        if recursive and source["level"] != "paragraph":
+            raise ValueError("Recursive child insertion requires paragraph nodes")
+        if len(target["members"]) < 2 and not recursive:
             raise ValueError(f"Rerepresentation target {target_id} is not established")
 
         member = source["members"][0]
@@ -225,6 +228,8 @@ class QuestionGraph:
             members=[member],
             reason="structural_rerepresentation"
             if source["level"] == "section"
+            else "recursive_paragraph_matching"
+            if recursive
             else "paragraph_rerepresentation",
             attempt_id=attempt_id,
             reverse_attempt_id=reverse_attempt_id,

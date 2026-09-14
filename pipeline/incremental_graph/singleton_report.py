@@ -8,6 +8,7 @@ from typing import Any
 
 from ..files import write_json
 from .graph import graph_from_events
+from .match_rules import recovery_admission
 
 
 def _key(member: dict[str, Any]) -> tuple[str, str]:
@@ -44,7 +45,11 @@ def _decision_history(events: list[dict[str, Any]]) -> dict:
                 is_unit = (focus and direction == "new_to_group") or (
                     not focus and direction == "group_to_new"
                 )
-                return [(paper_ids[event["paper_index"]], handle)] if is_unit else members[handle]
+                return (
+                    [(event.get("unit_paper_id", paper_ids[event["paper_index"]]), handle)]
+                    if is_unit
+                    else members[handle]
+                )
 
             # Resolve at judgment time: later group additions were not in this call.
             focus = resolve(event["source_id"], focus=True)
@@ -96,11 +101,7 @@ def build_singleton_report(events: list[dict[str, Any]]) -> dict[str, Any]:
                 reason = "candidate_only"
             scope = by_scope[data.get("parent_id")]
             established = [(key, value) for key, value in scope if len(value["members"]) > 1]
-            eligible = [
-                key
-                for key, value in established
-                if not any(m["paper_id"] == member["paper_id"] for m in value["members"])
-            ]
+            eligible = [key for key, value in established if recovery_admission(data, value)]
             if len(data["members"]) != 1:
                 recovery_status = "source_is_not_single_member"
                 eligible = []
@@ -144,6 +145,7 @@ def build_singleton_report(events: list[dict[str, Any]]) -> dict[str, Any]:
         "limitations": [
             "Recorded selection and abstention are not proof of semantic correctness or uniqueness.",
             "Recovery eligibility describes the final snapshot, not whether every candidate was tested.",
+            "Recovery eligibility uses current code; historical runs may have used different rules.",
             "Singleton peers share a final scope; this count does not claim they were never compared.",
         ],
         "paragraphs": rows,

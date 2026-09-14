@@ -117,7 +117,11 @@ export const eventSchema = z.discriminatedUnion("action", [
     z.strictObject({ ...merge, reason: z.literal("adjacent_paragraph_fan_in") }),
     z.strictObject({
       ...merge,
-      reason: z.enum(["structural_rerepresentation", "paragraph_rerepresentation"]),
+      reason: z.enum([
+        "structural_rerepresentation",
+        "paragraph_rerepresentation",
+        "recursive_paragraph_matching",
+      ]),
       attempt_id: id,
       reverse_attempt_id: id,
     }),
@@ -150,6 +154,7 @@ export const eventSchema = z.discriminatedUnion("action", [
   z.strictObject({
     ...event,
     action: z.literal("match_recorded"),
+    unit_paper_id: id.optional(),
     level,
     parent_id: id.nullable(),
     direction,

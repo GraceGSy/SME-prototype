@@ -258,7 +258,9 @@ export function mountReplay(host: HTMLElement, replay: Replay, papers: Paper[]) 
       const reason =
         event.reason === "adjacent_paragraph_fan_in"
           ? "as adjacent paragraph fan-in"
-          : "through reciprocal singleton realignment";
+          : event.reason === "recursive_paragraph_matching"
+            ? "through reciprocal matching after its section merged"
+            : "through reciprocal singleton realignment";
       return `${event.source_node_id} joins ${event.target_node_id} ${reason}.`;
     }
     if (event.action === "edge_created") return `${event.source} points to ${event.target}.`;

@@ -15,14 +15,152 @@ from pipeline.viewer.package import validate_dataset
 
 
 class RealignmentTest(unittest.TestCase):
-    def test_paragraph_realignment_excludes_other_sections_and_same_paper_groups(self):
+    def test_section_merge_compares_old_paragraphs_even_when_new_paper_abstains(self):
+        """A+B's new scope must expose their old paragraphs, without rescanning unrelated scopes."""
+        target = stable_id("section-group", "root", "p1", "a")
+        source = stable_id("section-group", "root", "p2", "b")
+        core = stable_id("paragraph-group", target, "p1", "pa")
+        moved = stable_id("paragraph-group", source, "p2", "pb")
+        for reverse in ("pb", "pb2", None):
+            with self.subTest(reverse=reverse), tempfile.TemporaryDirectory() as directory:
+                second = paper("p2", [("b", "pb", "Procedure")])
+                second.sections[0].paragraphs.append(
+                    Paragraph(id="pb2", text="Procedure rationale", ordinal=2)
+                )
+                judge = ScriptedJudge(
+                    {
+                        "p3:section_matching:new_to_group:c": target,
+                        f"p3:section_matching:group_to_new:{target}": "c",
+                        f"p3:section_rerepresentation:singleton_to_group:{source}": target,
+                        f"p3:section_rerepresentation:group_to_singleton:{target}": source,
+                        "p2:paragraph_matching:new_to_group:pb": core,
+                        "p2:paragraph_matching:new_to_group:pb2": core,
+                        f"p2:paragraph_matching:group_to_new:{core}": reverse,
+                    }
+                )
+                runner = IncrementalGraphRunner(
+                    load_pipeline_config(CONFIG_PATH), judge, Path(directory) / "revision"
+                )
+                runner.run(
+                    [
+                        paper("p1", [("a", "pa", "Procedure")]),
+                        second,
+                        paper("p3", [("c", "pc", "Different paragraph role")]),
+                        paper("p4", [("d", "pd", "Unmatched section")]),
+                    ]
+                )
+                child_calls = [
+                    r
+                    for r in judge.requests
+                    if r.stage_id == "paragraph_matching" and r.key.startswith("p2:")
+                ]
+                self.assertEqual(
+                    len(child_calls),
+                    3,
+                    "Two focused paragraphs plus one reverse pool judgment, not pairwise calls",
+                )
+                self.assertTrue(all(r.paper_index == 3 for r in child_calls))
+                self.assertEqual(
+                    {m["unit_id"] for m in runner.question_graph.members(core)},
+                    {"pa", "pb", "pb2"} if reverse else {"pa"},
+                )
+                if reverse:
+                    roles = {
+                        m["unit_id"]: m["membership_role"]
+                        for m in runner.question_graph.members(core)
+                    }
+                    self.assertEqual(roles[reverse], "core")
+                    self.assertEqual(roles["pb2" if reverse == "pb" else "pb"], "fan_in")
+                self.assertEqual(moved in dict(runner.question_graph.nodes()), reverse is None)
+                self.assertEqual(
+                    runner.insertions_by_paper["p2"].paragraph_assignments["pb"],
+                    core if reverse else moved,
+                )
+                recursive_events = [
+                    e
+                    for e in runner.journal.events
+                    if e["action"] == "match_recorded"
+                    and e["level"] == "paragraph"
+                    and e.get("unit_paper_id") == "p2"
+                ]
+                self.assertTrue(all(e["paper_index"] == 3 for e in recursive_events))
+                if reverse is None:
+                    diagnostics = json.loads(
+                        (runner.revision_dir / "reports/singletons.json").read_text()
+                    )
+                    row = next(
+                        r
+                        for r in diagnostics["paragraphs"]
+                        if r["paper_id"] == "p2" and r["paragraph_id"] == "pb"
+                    )
+                    self.assertEqual(row["reason"], "selected_without_acceptance")
+                self.assert_replay_matches(runner)
+                validate_dataset(runner.revision_dir / "dataset", "recursive", "Recursive")
+
+    def test_recovery_fan_in_overrides_same_paper_exclusion_but_cannot_chain(self):
+        """A missed immediate neighbor can join later; its neighbor and another section cannot."""
+        root = stable_id("section-group", "root", "p1", "a")
+        target = stable_id("paragraph-group", root, "p1", "core")
+        neighbor = stable_id("paragraph-group", root, "p1", "neighbor")
+        farther = stable_id("paragraph-group", root, "p1", "farther")
+        first = paper("p1", [("a", "core", "Procedure")])
+        first.sections[0].paragraphs.extend(
+            [
+                Paragraph(id="neighbor", text="Rationale", ordinal=2),
+                Paragraph(id="farther", text="Unrelated", ordinal=3),
+            ]
+        )
+        judge = ScriptedJudge(
+            {
+                "p2:section_matching:new_to_group:b": root,
+                f"p2:section_matching:group_to_new:{root}": "b",
+                "p2:paragraph_matching:new_to_group:pb": target,
+                f"p2:paragraph_matching:group_to_new:{target}": "pb",
+                f"p2:paragraph_rerepresentation:singleton_to_group:{neighbor}": target,
+                f"p2:paragraph_rerepresentation:singleton_to_group:{farther}": target,
+                f"p3:paragraph_rerepresentation:singleton_to_group:{farther}": target,
+            }
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            runner = IncrementalGraphRunner(
+                load_pipeline_config(CONFIG_PATH), judge, Path(directory) / "revision"
+            )
+            runner.run(
+                [
+                    first,
+                    paper("p2", [("b", "pb", "Procedure")]),
+                    paper("p3", [("c", "pc", "Other section")]),
+                ]
+            )
+            self.assertEqual(
+                {m["unit_id"]: m["membership_role"] for m in runner.question_graph.members(target)},
+                {"core": "core", "neighbor": "fan_in", "pb": "core"},
+            )
+            self.assertIn(farther, dict(runner.question_graph.nodes()))
+            self.assertFalse(
+                any(
+                    farther in r.key
+                    for r in judge.requests
+                    if r.stage_id == "paragraph_rerepresentation"
+                )
+            )
+            question = next(
+                r for r in judge.requests if r.stage_id == "paragraph_rerepresentation_questions"
+            )
+            self.assertEqual(
+                [m["paper_key"] for m in question.context["group"]["members"]],
+                ["paper-1", "paper-1", "paper-2"],
+            )
+            self.assert_replay_matches(runner)
+            validate_dataset(runner.revision_dir / "dataset", "fanin", "Fan-in")
+
+    def test_paragraph_realignment_excludes_other_sections(self):
         left = stable_id("section-group", "root", "p1", "left1")
         right = stable_id("section-group", "root", "p1", "right1")
         left_paragraph = stable_id("paragraph-group", left, "p1", "a")
         right_paragraph = stable_id("paragraph-group", right, "p1", "x")
         source = stable_id("paragraph-group", left, "p3", "c")
         first = paper("p1", [("left1", "a", "Left"), ("right1", "x", "Right")])
-        first.sections[0].paragraphs.append(Paragraph(id="unused", text="Another role", ordinal=2))
         judge = ScriptedJudge(
             {
                 "p2:section_matching:new_to_group:left2": left,

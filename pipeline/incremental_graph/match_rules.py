@@ -5,6 +5,25 @@ from typing import Any
 from .models import MatchBatch
 
 
+def recovery_admission(source: dict[str, Any], target: dict[str, Any]) -> str | None:
+    """Same-paper recovery is reserved for paragraph neighbors of accepted cores."""
+    if (
+        source["level"] != target["level"]
+        or source.get("parent_id") != target.get("parent_id")
+        or len(source["members"]) != 1
+        or len(target["members"]) < 2
+    ):
+        return None
+    paper_id = source["members"][0]["paper_id"]
+    if not any(m["paper_id"] == paper_id for m in target["members"]):
+        return "core"
+    if source["level"] == "paragraph" and adjacent_core_anchors(
+        source["members"], target["members"]
+    ):
+        return "fan_in"
+    return None
+
+
 def reciprocal_matches(batch: MatchBatch) -> dict[str, str]:
     reciprocal: dict[str, str] = {}
     for unit_id, forward in batch.forward.items():

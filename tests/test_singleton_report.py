@@ -96,7 +96,7 @@ class SingletonReportTest(unittest.TestCase):
                 {
                     "action": "member_added",
                     "node_id": "group",
-                    "member": {"paper_id": "d", "unit_id": "p1"},
+                    "member": {"paper_id": "d", "unit_id": "p1", "ordinal": 1},
                 },
                 match("a3", None, ["group"], "singleton_to_group", "recovery-forward"),
                 match("group", None, ["a3"], "group_to_singleton", "recovery-reverse"),
@@ -104,7 +104,7 @@ class SingletonReportTest(unittest.TestCase):
                     "action": "node_merged",
                     "source_node_id": "a2",
                     "target_node_id": "group",
-                    "members": [{"paper_id": "a", "unit_id": "p2"}],
+                    "members": [{"paper_id": "a", "unit_id": "p2", "ordinal": 1}],
                 },
             ]
         )

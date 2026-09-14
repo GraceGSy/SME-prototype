@@ -42,17 +42,20 @@ inserting the next, whether documents arrive in one manifest or separate adds:
    group independently selects its best eligible singleton or null. Merge only
    mutual top-1 choices, excluding groups that already contain the source paper.
 7. Regenerate changed structural questions.
-8. Reuse or generate the document's paragraph questions. Within each exact
-   structural node, match paragraphs in both directions, reconcile, and generate
-   group questions.
+8. For each absorbed older section, insert its existing paragraphs into the
+   destination's child scope using ordinary bidirectional matching and
+   reconciliation. Retain unaccepted singleton IDs; merge accepted ones and
+   update their questions. Then process the incoming document's paragraphs
+   through that same procedure within their exact structural nodes.
 9. Apply the same singleton realignment algorithm to paragraph nodes, bounded
    to each exact structural node, and regenerate changed group questions.
 
 Both levels use one shared realignment implementation. Each pass freezes the
 candidate pools and obtains all forward/reverse judgments before any merge.
-The reverse pool includes all eligible singletons, not just proposers. An
-established group can absorb at most one singleton per pass; this is not an
-unbounded repeat-until-convergence loop. A later insertion starts a fresh pass.
+The reverse pool includes all eligible reciprocal-core candidates, not just
+proposers. An established group can accept at most one new reciprocal core per
+pass. Paragraph fan-in additions do not consume this core selection. A later
+insertion starts a fresh pass; there is no repeat-until-convergence loop.
 
 Paragraph-only mode requires one section per document, creates a deterministic
 shared root, and skips only structural LLM judgments, not paragraph realignment.
@@ -61,23 +64,29 @@ descendant paragraphs. Subsection mode preserves both levels and gives each
 paragraph one exact structural owner.
 
 Paragraph reconciliation uses reciprocal top-1 cores and a bounded fan-in rule:
-an immediately adjacent one-way selection can join a reciprocal core. It cannot
-chain through an already-added fan-in member. Unaccepted projected selections
+an immediately adjacent one-way selection can join a reciprocal core. Recovery
+uses this same rule, including when the target already contains the source
+paper. It checks adjacency to cores already accepted or accepted in this pass,
+never to a fan-in member. Same-paper fan-in candidates do not compete in the
+reverse core-selection pool. Section matching never admits fan-in.
+Unaccepted projected selections
 are provenance only. The ordinary graph edges are containment edges, not
 invented causal or analogical relations.
 
 A structural singleton may already own paragraph nodes from an earlier document.
 Its merge reparents those nodes and updates their member ownership, preserving
-IDs and source text. Replay records these scope changes explicitly. Every merge
-records both judgment attempt IDs; unreciprocated choices remain provenance only.
+IDs and source text. Replay records these scope changes explicitly. Reciprocal
+merges record both judgment attempt IDs; accepted fan-in records its one-way
+selection and core anchor separately.
 
-Current limitation: ordinary insertion can match a new paragraph to an existing
-singleton, but realignment considers only singleton-to-established-group pairs.
-Reparenting does not itself compare two older singleton paragraphs that have
-just become co-scoped. Realignment also excludes established groups that already
-contain the source paper. The singleton report distinguishes exposure and
-selection outcomes and makes final-snapshot eligibility visible; it does not
-change either restriction.
+An absorbed singleton section has no previously accepted cross-paper child
+groups. Its paragraphs are therefore new to the destination scope even when
+their paper is old. Recursive child insertion compares them with the existing
+paragraph nodes, including singletons, before the incoming paper is matched.
+Only absorbed scopes receive this extra work; unchanged requests reuse the
+content-addressed cache. Previously accepted groups are not rebuilt or split.
+The ordinary matching loop is shared across levels; paragraph windows and
+paragraph-only fan-in are explicit differences.
 
 A third paper can establish a group that an older singleton now joins at either
 level. Realignment still does not split previously accepted shared groups or

@@ -14,8 +14,10 @@ class Evidence:
         self.section_lookup: dict[tuple[str, str], Section] = {}
         self.paragraph_lookup: dict[tuple[str, str], tuple[Section, Paragraph]] = {}
         self.paragraph_positions: dict[tuple[str, str], int] = {}
+        self.paper_keys: dict[str, str] = {}
 
     def register(self, paper: Paper) -> None:
+        self.paper_keys[paper.paper_id] = f"paper-{len(self.paper_keys) + 1}"
         for section in paper.sections:
             self.section_lookup[(paper.paper_id, section.id)] = section
             for position, paragraph in enumerate(section.paragraphs):
@@ -65,6 +67,7 @@ class Evidence:
         section = self.section_lookup[(paper_id, section_id)]
         return {
             "paper_id": paper_id,
+            "paper_key": self.paper_keys[paper_id],
             "section_id": section.id,
             "section_label": section.label,
             "unit_kind": section.kind,
@@ -94,6 +97,7 @@ class Evidence:
         section, paragraph = self.paragraph_lookup[(paper_id, paragraph_id)]
         return {
             "paper_id": paper_id,
+            "paper_key": self.paper_keys[paper_id],
             "paragraph_id": paragraph.id,
             "paragraph_label": paragraph.label,
             "ordinal": paragraph.ordinal,
@@ -120,6 +124,7 @@ class Evidence:
         section, paragraph = self.paragraph_lookup[(paper_id, paragraph_id)]
         position = self.paragraph_positions[(paper_id, paragraph_id)]
         context = {
+            "paper_key": self.paper_keys[paper_id],
             "previous_paragraph": self.neighbor_text(
                 section.paragraphs[position - 1] if position else None
             ),
@@ -172,6 +177,22 @@ class Evidence:
         if selectable:
             context["selection_id"] = group_id
         return context
+
+    def match_unit_context(
+        self, paper_id: str, unit_id: str, level: str, *, selectable: bool = False
+    ) -> dict[str, Any]:
+        if level == "paragraph":
+            return self.paragraph_match_context(
+                paper_id, unit_id, selection_id=unit_id if selectable else None
+            )
+        return self.section_context(paper_id, unit_id)
+
+    def match_group_context(self, group_id: str, *, selectable: bool = False) -> dict[str, Any]:
+        if self.graph.node(group_id)["level"] == "paragraph":
+            return self.paragraph_group_match_context(
+                group_id, selection_id=group_id if selectable else None
+            )
+        return self.group_context(group_id)
 
     def scope_context(self, level: str, parent_id: str | None) -> dict[str, Any]:
         scope = {"level": level, "parent_group_id": parent_id}

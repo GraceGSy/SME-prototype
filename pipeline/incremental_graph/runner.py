@@ -13,7 +13,12 @@ from .export import export_revision
 from .graph import QuestionGraph
 from .journal import RevisionJournal
 from .llm import JudgmentProvider
-from .match_rules import adjacent_core_anchors, adjacent_paragraph_fan_in, reciprocal_matches
+from .match_rules import (
+    adjacent_core_anchors,
+    adjacent_paragraph_fan_in,
+    reciprocal_matches,
+    recovery_admission,
+)
 from .models import (
     Granularity,
     InsertionState,
@@ -84,6 +89,7 @@ class IncrementalGraphRunner:
             insertion = InsertionState(paper=paper, paper_index=paper_index)
             self.insertions_by_paper[paper.paper_id] = insertion
             self._run_phase("structural", insertion)
+            self._recurse_reparented_sections(insertion)
             self._run_phase("paragraph", insertion)
         self.journal.finalize()
         export_revision(self.revision_dir / "dataset", self.question_graph, self.papers)
@@ -245,11 +251,7 @@ class IncrementalGraphRunner:
             source_id: [
                 target_id
                 for target_id in established
-                if nodes[source_id].get("parent_id") == nodes[target_id].get("parent_id")
-                and not any(
-                    member["paper_id"] == nodes[source_id]["members"][0]["paper_id"]
-                    for member in nodes[target_id]["members"]
-                )
+                if recovery_admission(nodes[source_id], nodes[target_id]) is not None
             ]
             for source_id in singletons
         }
@@ -266,6 +268,7 @@ class IncrementalGraphRunner:
                         singleton_id
                         for singleton_id in singletons
                         if source_id in eligible[singleton_id]
+                        and recovery_admission(nodes[singleton_id], nodes[source_id]) == "core"
                     ]
                 )
                 if not allowed:
@@ -317,6 +320,48 @@ class IncrementalGraphRunner:
                     "reverse_attempt_id": reverse.attempt_id,
                 }
             )
+        if level == "paragraph":
+            accepted_cores = {m["source_group_id"] for m in merged}
+            for source_id, decision in batch.forward.items():
+                target_id = decision.target_id
+                if source_id in accepted_cores or target_id is None:
+                    continue
+                anchors = adjacent_core_anchors(
+                    nodes[source_id]["members"], self.question_graph.members(target_id)
+                )
+                if not anchors:
+                    continue
+                member = nodes[source_id]["members"][0]
+                anchor = anchors[(member["paper_id"], member["unit_id"])]
+                self.question_graph.merge_paragraph_group(
+                    source_id, target_id, paper_index=insertion.paper_index
+                )
+                self.insertions_by_paper[member["paper_id"]].paragraph_assignments[
+                    member["unit_id"]
+                ] = target_id
+                self.journal.event(
+                    "paragraph_fan_in_added",
+                    paper_index=insertion.paper_index,
+                    inserted_paper_id=insertion.paper.paper_id,
+                    paper_id=member["paper_id"],
+                    node_id=target_id,
+                    parent_id=nodes[source_id].get("parent_id"),
+                    unit_id=member["unit_id"],
+                    reciprocal_unit_id=anchor["unit_id"],
+                    direction="singleton_to_group",
+                    source_group_id=source_id,
+                    attempt_id=decision.attempt_id,
+                )
+                merged.append(
+                    {
+                        "source_group_id": source_id,
+                        "target_group_id": target_id,
+                        "paper_id": member["paper_id"],
+                        "unit_id": member["unit_id"],
+                        "attempt_id": decision.attempt_id,
+                        "membership_role": "fan_in",
+                    }
+                )
         return {
             "singleton_ids": singletons,
             "established_group_ids": established,
@@ -411,6 +456,70 @@ class IncrementalGraphRunner:
             results[unit.id] = self._match_batch_dump(batch)
         return results
 
+    def _recurse_reparented_sections(self, insertion: InsertionState) -> None:
+        """An absorbed older section is a new contribution to its destination's child scope."""
+        merges = insertion.stage_results.get("section_rerepresentation", {}).get("merged", [])
+        pending = [m for m in merges if m["paper_id"] != insertion.paper.paper_id]
+        if not pending:
+            return
+        matching = next(s for s in self.config.stages if s.handler == "match_paragraphs")
+        questions = next(
+            s for s in self.config.stages if s.handler == "generate_paragraph_group_questions"
+        )
+        results = []
+        for merge in pending:
+            owner = self.insertions_by_paper[merge["paper_id"]]
+            section = next(s for s in owner.paper.sections if s.id == merge["unit_id"])
+            unit_ids = [p.id for p in section.paragraphs]
+            if not unit_ids:
+                continue
+            # A singleton section cannot already own cross-paper paragraph groups.
+            for unit_id in unit_ids:
+                node = self.question_graph.node(owner.paragraph_assignments[unit_id])
+                if len(node["members"]) != 1:
+                    raise PipelineError(
+                        "A reparented singleton section must own singleton paragraphs"
+                    )
+            parent_id = merge["target_group_id"]
+            contribution = InsertionState(
+                paper=owner.paper,
+                paper_index=insertion.paper_index,
+                section_assignments=owner.section_assignments,
+                paragraph_assignments=owner.paragraph_assignments,
+            )
+            batch = self._match_units(
+                matching,
+                contribution,
+                "paragraph",
+                parent_id,
+                unit_ids,
+                self.question_graph.paragraph_groups_for_section(parent_id, owner.paper.paper_id),
+            )
+            owner.paragraph_assignments.update(
+                self._reconcile(
+                    contribution,
+                    level="paragraph",
+                    parent_id=parent_id,
+                    batch=batch,
+                )
+            )
+            # The incoming paper must see the updated child role, not its old question.
+            self._generate_group_questions(
+                questions,
+                insertion,
+                "paragraph",
+                group_ids=self.question_graph.group_ids("paragraph", parent_id),
+            )
+            results.append(
+                {
+                    "paper_id": owner.paper.paper_id,
+                    "section_id": section.id,
+                    "parent_id": parent_id,
+                    **self._match_batch_dump(batch),
+                }
+            )
+        self.journal.stage(insertion.paper_index, "recursive_paragraph_matching", results)
+
     def _reconcile_paragraphs(
         self, stage: StageConfig, insertion: InsertionState
     ) -> dict[str, str]:
@@ -470,21 +579,16 @@ class IncrementalGraphRunner:
         existing_group_ids: list[str],
     ) -> MatchBatch:
         self._require_match_prompts(stage)
-        if level == "paragraph":
-            return self._match_paragraph_units(
-                stage,
-                insertion,
-                parent_id,
-                new_unit_ids,
-                existing_group_ids,
-            )
         batch = MatchBatch(existing_group_ids=existing_group_ids, new_unit_ids=new_unit_ids)
         scope = self.evidence.scope_context(level, parent_id)
         group_candidates = [
-            self.evidence.group_context(group_id) for group_id in existing_group_ids
+            self.evidence.match_group_context(group_id, selectable=True)
+            for group_id in existing_group_ids
         ]
         unit_candidates = [
-            self.evidence.unit_context(insertion.paper.paper_id, unit_id, level)
+            self.evidence.match_unit_context(
+                insertion.paper.paper_id, unit_id, level, selectable=True
+            )
             for unit_id in new_unit_ids
         ]
 
@@ -493,7 +597,7 @@ class IncrementalGraphRunner:
                 continue
             context = {
                 "scope": scope,
-                "focus": self.evidence.unit_context(insertion.paper.paper_id, unit_id, level),
+                "focus": self.evidence.match_unit_context(insertion.paper.paper_id, unit_id, level),
                 "candidates": group_candidates,
             }
             decision = self._match(
@@ -511,7 +615,7 @@ class IncrementalGraphRunner:
                 continue
             context = {
                 "scope": scope,
-                "focus": self.evidence.group_context(group_id),
+                "focus": self.evidence.match_group_context(group_id),
                 "candidates": unit_candidates,
             }
             decision = self._match(
@@ -523,67 +627,6 @@ class IncrementalGraphRunner:
                 context=context,
             )
             batch.reverse[group_id] = decision
-        return batch
-
-    def _match_paragraph_units(
-        self,
-        stage: StageConfig,
-        insertion: InsertionState,
-        parent_id: str | None,
-        new_unit_ids: list[str],
-        existing_group_ids: list[str],
-    ) -> MatchBatch:
-        """Match one focus paragraph per request in both directions."""
-
-        batch = MatchBatch(
-            existing_group_ids=existing_group_ids,
-            new_unit_ids=new_unit_ids,
-        )
-        if not new_unit_ids or not existing_group_ids:
-            return batch
-        scope = self.evidence.scope_context("paragraph", parent_id)
-        group_candidates = [
-            self.evidence.paragraph_group_match_context(group_id, selection_id=group_id)
-            for group_id in existing_group_ids
-        ]
-        unit_candidates = [
-            self.evidence.paragraph_match_context(
-                insertion.paper.paper_id,
-                unit_id,
-                selection_id=unit_id,
-            )
-            for unit_id in new_unit_ids
-        ]
-
-        for unit_id in new_unit_ids:
-            batch.forward[unit_id] = self._match(
-                stage,
-                insertion,
-                direction="new_to_group",
-                source_id=unit_id,
-                allowed_ids=existing_group_ids,
-                context={
-                    "scope": scope,
-                    "focus": self.evidence.paragraph_match_context(
-                        insertion.paper.paper_id, unit_id
-                    ),
-                    "candidates": group_candidates,
-                },
-            )
-
-        for group_id in existing_group_ids:
-            batch.reverse[group_id] = self._match(
-                stage,
-                insertion,
-                direction="group_to_new",
-                source_id=group_id,
-                allowed_ids=new_unit_ids,
-                context={
-                    "scope": scope,
-                    "focus": self.evidence.paragraph_group_match_context(group_id),
-                    "candidates": unit_candidates,
-                },
-            )
         return batch
 
     def _match(
@@ -623,6 +666,11 @@ class IncrementalGraphRunner:
             target_id=target_id,
             candidate_ids=allowed_ids,
             attempt_id=attempt_id,
+            **(
+                {"unit_paper_id": insertion.paper.paper_id}
+                if direction in {"new_to_group", "group_to_new"}
+                else {}
+            ),
         )
         return MatchDecision(
             source_id=source_id,
@@ -684,21 +732,40 @@ class IncrementalGraphRunner:
                         source_group_id=source_id,
                         attempt_id=batch.reverse[source_id].attempt_id,
                     )
-        for unit_id in batch.new_unit_ids:
+        # Insert reciprocal cores before moving their existing singleton neighbors.
+        for unit_id in sorted(batch.new_unit_ids, key=lambda unit: unit not in reciprocal):
+            previous_group = (
+                insertion.paragraph_assignments.get(unit_id) if level == "paragraph" else None
+            )
             selected_group = reciprocal.get(unit_id) or forward_fan_in.get(unit_id)
             if selected_group:
                 assignments[unit_id] = selected_group
                 metadata = self.evidence.member_metadata(insertion, unit_id, level)
                 if level == "paragraph":
                     metadata["membership_role"] = "fan_in" if unit_id in forward_fan_in else "core"
-                self.question_graph.add_member(
-                    selected_group,
-                    unit_id,
-                    insertion.paper.paper_id,
-                    insertion.paper_index,
-                    self.evidence.unit_ordinal(insertion.paper.paper_id, unit_id, level),
-                    **metadata,
-                )
+                if previous_group:
+                    if unit_id in forward_fan_in:
+                        self.question_graph.merge_paragraph_group(
+                            previous_group, selected_group, paper_index=insertion.paper_index
+                        )
+                    else:
+                        self.question_graph.merge_singleton(
+                            previous_group,
+                            selected_group,
+                            paper_index=insertion.paper_index,
+                            attempt_id=batch.forward[unit_id].attempt_id,
+                            reverse_attempt_id=batch.reverse[selected_group].attempt_id,
+                            recursive=True,
+                        )
+                else:
+                    self.question_graph.add_member(
+                        selected_group,
+                        unit_id,
+                        insertion.paper.paper_id,
+                        insertion.paper_index,
+                        self.evidence.unit_ordinal(insertion.paper.paper_id, unit_id, level),
+                        **metadata,
+                    )
                 if unit_id in forward_fan_in:
                     anchor_unit_id = next(
                         anchor_id
@@ -718,6 +785,9 @@ class IncrementalGraphRunner:
                         attempt_id=batch.forward[unit_id].attempt_id,
                     )
             else:
+                if previous_group:
+                    assignments[unit_id] = previous_group
+                    continue
                 metadata = self.evidence.member_metadata(insertion, unit_id, level)
                 if level == "paragraph":
                     metadata["membership_role"] = "core"
