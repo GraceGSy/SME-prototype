@@ -188,7 +188,8 @@ later failed retry cannot overwrite the paid evidence.
 Matching judgments supply center quotations for the focus and chosen target,
 one per group member in input order. A quotation can be contiguous or use the
 first five and last five words of a passage separated by ` ... `. The validator
-requires verbatim whole-word endpoints in source order within the same center,
+requires verbatim whole-word endpoints in source order within the same center
+(punctuation, including an em dash, can delimit a word),
 with at least one omitted word; the 240-character limit includes the marker.
 It never joins evidence across neighbors or members, or changes the returned text.
 The provider validates attribution before accepting or caching a result.

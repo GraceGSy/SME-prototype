@@ -300,6 +300,29 @@ class MatchEvidenceTest(unittest.TestCase):
                 with self.assertRaises(JudgmentError):
                     AnthropicJudgmentProvider._validate(request, value)
 
+    def test_excerpt_accepts_punctuation_boundaries_without_changing_source_text(self):
+        request, value = evidence_request(), evidence_response()
+        opening = "Prior work on visualizing large"
+        ending = "afforded by the data source."
+        quote = f"{opening} ... {ending}"
+        value["evidence"]["focus"] = [quote]
+        for boundary in ("\u2014", ",", ":", ";", "(", " "):
+            with self.subTest(boundary=boundary):
+                request.context["focus"]["paragraph_under_consideration"]["full_text"] = (
+                    f'"{opening} collections spans several data types and opportunities{boundary}{ending}'
+                )
+                before = copy.deepcopy((request.context, value))
+                AnthropicJudgmentProvider._validate(request, value)
+                self.assertEqual((request.context, value), before)
+        for source in (
+            f"{opening} opportunitiesun{ending}",  # A suffix inside a word is not an endpoint.
+            f"{opening} {ending}",  # Nothing omitted.
+            f"{opening} ... {ending.upper()}",  # No case normalization.
+        ):
+            request.context["focus"]["paragraph_under_consideration"]["full_text"] = source
+            with self.subTest(source=source), self.assertRaises(JudgmentError):
+                AnthropicJudgmentProvider._validate(request, value)
+
     def test_transport_length_failure_gets_bounded_feedback_but_other_schema_errors_do_not(self):
         config = load_pipeline_config(CONFIG_PATH)
         long_quote = (

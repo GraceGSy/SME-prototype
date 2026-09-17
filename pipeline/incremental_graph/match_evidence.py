@@ -29,9 +29,14 @@ def _quote_matches(quote: str, text: str) -> bool:
     parts = quote.split(" ... ")
     if len(parts) != 2 or any(len(part.split()) != 5 for part in parts):
         return False
-    # Exact whole-word endpoints with at least one omitted word, inside one center.
+    # Punctuation also delimits words; never require whitespace beside an endpoint.
+    # The gap must contain omitted word content, inside this same center.
     pattern = (
-        r"(?<!\S)" + re.escape(parts[0]) + r"\s+\S[\s\S]*?\s+" + re.escape(parts[1]) + r"(?!\S)"
+        r"(?<!\w)"
+        + re.escape(parts[0])
+        + r"(?!\w)[\s\S]*?\w[\s\S]*?(?<!\w)"
+        + re.escape(parts[1])
+        + r"(?!\w)"
     )
     return re.search(pattern, text) is not None
 
