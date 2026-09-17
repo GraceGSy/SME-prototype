@@ -189,7 +189,10 @@ Matching judgments also supply exact center quotations for the focus and chosen
 target, one per group member in input order. The provider validates attribution
 before accepting or caching a result. An attribution failure retries only that
 judgment, at most twice after the initial attempt. The retry appends validation
-feedback to the changing focus message; the native Skill and cacheable candidate
+feedback to the changing focus message; the local validator identifies the
+required unit, the offending quote, and an exact occurrence elsewhere in the
+supplied evidence, or reports that no exact occurrence exists. This adds no
+model call or source-text normalization. The native Skill and cacheable candidate
 pool stay unchanged. All attempts use the existing token and session guards.
 Other contract errors, provider errors, and budget failures still stop execution.
 This does not prove that a quoted passage supports the claimed role. The changed

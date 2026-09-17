@@ -128,6 +128,59 @@ class MatchEvidenceTest(unittest.TestCase):
         }
         AnthropicJudgmentProvider._validate(request, evidence_response())
 
+    def test_misattribution_feedback_names_selected_section_and_actual_quote_location(self):
+        request = evidence_request()
+        request.allowed_match_ids = ["s0002", "s0004"]
+        request.context = {
+            "scope": {"level": "section"},
+            "focus": {"full_text": "The interface supports comparison."},
+            "candidates": [
+                {
+                    "section_id": "s0002",
+                    "section_label": "Introduction",
+                    "full_text": "We implemented a writing environment with two support concepts.",
+                },
+                {
+                    "section_id": "s0004",
+                    "section_label": "System Design",
+                    "full_text": "The editor displays source passages alongside the draft.",
+                },
+            ],
+        }
+        value = {
+            "target_id": "s0004",
+            "basis": "Both describe the proposed interface.",
+            "evidence": {
+                "focus": ["interface supports comparison"],
+                "target": ["a writing environment with two support concepts"],
+            },
+        }
+        before = copy.deepcopy((request.context, value))
+        with self.assertRaises(JudgmentError) as caught:
+            AnthropicJudgmentProvider._validate(request, value)
+        feedback = str(caught.exception)
+        for expected in ("evidence.target[0]", "s0004", "System Design", "s0002", "Introduction"):
+            self.assertIn(expected, feedback)
+        self.assertIn(value["evidence"]["target"][0], feedback)
+        self.assertNotIn(request.context["candidates"][1]["full_text"], feedback)
+        self.assertEqual((request.context, value), before)
+        value["evidence"]["target"] = ["source passages alongside the draft"]
+        AnthropicJudgmentProvider._validate(request, value)
+
+    def test_feedback_distinguishes_neighbors_other_members_and_absent_text(self):
+        for side, index, quote, location in (
+            ("focus", 0, "Costs are awarded", "focus.next_paragraph"),
+            ("target", 0, "judgment is affirmed", "members[1]"),
+            ("focus", 0, "DENY the appeal", "No exact occurrence"),
+        ):
+            with self.subTest(quote=quote):
+                value = evidence_response()
+                value["evidence"][side][index] = quote
+                with self.assertRaises(JudgmentError) as caught:
+                    AnthropicJudgmentProvider._validate(evidence_request(), value)
+                self.assertIn(location, str(caught.exception))
+                self.assertIn(quote, str(caught.exception))
+
     def test_retries_only_failed_judgment_and_caches_only_valid_evidence(self):
         self.check_retry(failures=1, succeeds=True)
 
@@ -173,6 +226,11 @@ class MatchEvidenceTest(unittest.TestCase):
                 calls[0].kwargs["cacheable_context"], calls[-1].kwargs["cacheable_context"]
             )
             self.assertIn("Evidence validation failed", calls[1].args[1])
+            self.assertIn("Costs are awarded", calls[1].args[1])
+            self.assertIn("focus.next_paragraph", calls[1].args[1])
+            self.assertEqual(
+                calls[0].kwargs["cacheable_prompt"], calls[-1].kwargs["cacheable_prompt"]
+            )
 
     def test_provider_budget_failures_are_not_retried(self):
         config = load_pipeline_config(CONFIG_PATH)
