@@ -1,5 +1,15 @@
 # One-shot corpus preparation
 
+## Fresh section-level HCI run
+
+`python -m helpers.run_hci_sections --budget-usd 20` starts the content-only
+pair, then adds each remaining paper separately. It uses the standard graph
+pipeline and a fresh run cache. The observed-cost guard reserves $3 for
+uncertainty; it is not a provider-enforced cap. Inspect failures before using
+`--retry`; unreported usage requires reconciliation before resuming.
+
+## Corpus preparation
+
 `python -m helpers.prepare_content_corpus MANIFEST OUTPUT [--whole-section]`
 creates a content-only or whole-story derivative from valid canonical inputs.
 Keep the source corpus unchanged. This helper is not imported by either runtime

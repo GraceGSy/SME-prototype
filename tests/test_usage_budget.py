@@ -4,6 +4,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
 
+from helpers import run_hci_sections as hci
 from helpers import run_sherlock_five as sherlock
 from helpers.run_sherlock_five import run
 from helpers.usage_budget import ResponseLedger
@@ -83,3 +84,55 @@ class UsageBudgetTest(unittest.TestCase):
         for amount in [float("nan"), float("inf"), -1, 0, 3]:
             with self.assertRaises(ValueError):
                 run("start", amount)
+
+    def test_hci_guard_counts_rejected_usage_before_the_next_call(self):
+        with tempfile.TemporaryDirectory() as directory:
+            run_path = Path(directory) / "run"
+            client = SimpleNamespace(
+                model="claude-sonnet-5", response_dir=run_path / "cache/responses"
+            )
+
+            def paid_response(*args, **kwargs):
+                write_json(
+                    client.response_dir / "rejected.json",
+                    {"usage": {"input_tokens": 1_000_000, "output_tokens": 100_000}},
+                )
+                raise ValueError("Mock rejected paid response")
+
+            def start(*args):
+                with self.assertRaisesRegex(ValueError, "Mock rejected"):
+                    hci.ClaudeSkills._run(client)
+                hci.ClaudeSkills._run(client)
+
+            with (
+                patch.object(hci, "RUN", run_path),
+                patch.object(hci, "start_graph", side_effect=start),
+                patch.object(hci.ClaudeSkills, "_run", side_effect=paid_response) as paid,
+            ):
+                with self.assertRaises(SkillBudgetExceeded):
+                    hci.run(5)
+                self.assertEqual(paid.call_count, 1)
+            budget = hci.read_json(run_path / "budget.json")
+            self.assertEqual(budget["estimated_token_cost_usd"], 3)
+            self.assertTrue(budget["last_call_usage_known"])
+
+    def test_hci_guard_blocks_resume_after_unreported_usage(self):
+        with tempfile.TemporaryDirectory() as directory:
+            run_path = Path(directory) / "run"
+            client = SimpleNamespace(
+                model="claude-sonnet-5", response_dir=run_path / "cache/responses"
+            )
+            with (
+                patch.object(hci, "RUN", run_path),
+                patch.object(
+                    hci, "start_graph", side_effect=lambda *args: hci.ClaudeSkills._run(client)
+                ),
+                patch.object(
+                    hci.ClaudeSkills, "_run", side_effect=TimeoutError("Unknown usage")
+                ) as paid,
+            ):
+                with self.assertRaises(TimeoutError):
+                    hci.run(20)
+                with self.assertRaisesRegex(ValueError, "Reconcile unreported usage"):
+                    hci.run(20, retry=True)
+                self.assertEqual(paid.call_count, 1)

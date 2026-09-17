@@ -58,8 +58,8 @@ content-only manifest is `datasets/hci-five-paper/content/manifest.yaml`; its
 ## Start, Add, Retry
 
 ```powershell
-python -m pipeline.incremental_graph.cli validate datasets/hci-five-paper/manifest.yaml
-python -m pipeline.incremental_graph.cli start datasets/hci-five-paper/manifest.yaml runs/hci
+python -m pipeline.incremental_graph.cli validate datasets/hci-five-paper/content/first-two.manifest.yaml
+python -m pipeline.incremental_graph.cli start datasets/hci-five-paper/content/first-two.manifest.yaml runs/hci
 python -m pipeline.incremental_graph.cli add path/to/additions.manifest.yaml runs/hci
 python -m pipeline.incremental_graph.cli retry runs/hci
 ```
