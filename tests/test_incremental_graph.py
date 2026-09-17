@@ -236,6 +236,29 @@ class IncrementalGraphTest(unittest.TestCase):
         )
         self.assertEqual(normalized.sections[0].text, "Overview.\n\nDetails.")
 
+    def test_section_mode_skips_empty_headings_without_renumbering_sources(self) -> None:
+        document = [
+            {"section_name": "Empty", "paragraphs": [], "subsections": []},
+            {
+                "section_name": "Method",
+                "paragraphs": [],
+                "subsections": [
+                    {
+                        "section_name": "Procedure",
+                        "paragraphs": [{"paragraph_number": 0, "text": "Real evidence."}],
+                    }
+                ],
+            },
+            {"section_name": "References", "paragraphs": [], "subsections": []},
+        ]
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "paper.json"
+            path.write_text(json.dumps(document), encoding="utf-8")
+            loaded = load_paper(path, "paper-a", "Paper A")
+        self.assertEqual([section.id for section in loaded.sections], ["s0002"])
+        self.assertEqual(loaded.sections[0].text, "Real evidence.")
+        self.assertEqual(loaded.sections[0].paragraphs[0].id, "s0002.ss0001.p0001")
+
     def test_paragraph_granularity_skips_structural_judgments(self) -> None:
         papers = [
             paper("p1", [("s1", "a1", "first story")]),

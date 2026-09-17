@@ -116,6 +116,8 @@ def _from_section_documents(
     units = list(iter_structural_units(document))
     sections = []
     for section_unit in (unit for unit in units if unit.unit_type == "section"):
+        if not section_unit.evidence:
+            continue
         family = [
             unit
             for unit in units
