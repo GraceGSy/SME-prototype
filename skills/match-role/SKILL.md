@@ -78,9 +78,9 @@ Choose the strongest defensible correspondence, not the least-bad candidate.
 Return `null` when there is none. Different domains alone do not justify
 abstention; a very broad shared theme alone does not justify a match.
 
-In `basis`, state the shared role first, anchor it in a short exact excerpt from
-each matched center (or actual structural unit), and explain the corresponding
-participants and relations. Check the role across papers and the direct
+In `basis`, state the shared role first and explain the corresponding
+participants and relations. Put exact quotations only in `evidence`; do not
+repeat them in `basis`. Check the role across papers and the direct
 contribution of each accepted member within its paper.
 Choose the abstraction level using judgment, not a fixed taxonomy, and make
 that choice intelligible on both sides. Similar formatting or topic alone is
@@ -90,7 +90,7 @@ centers rather than just their neighbors; otherwise reconsider or abstain.
 Keep the final `basis` concise: target at most 100 words for a match and 60
 words for an abstention. For an abstention, identify the decisive role mismatch
 instead of cataloguing every candidate or quoting every member. For a match,
-use minimal excerpts and explain member coverage compactly; do not weaken the
+explain member coverage compactly; do not weaken the
 per-paper role and member-contribution checks to shorten the answer. Return one final JSON object only.
 
 Participant correspondence is relational, not moral: a hero can map to a villain

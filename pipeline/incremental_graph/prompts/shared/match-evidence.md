@@ -4,6 +4,8 @@ The caller's schema is authoritative for every matching direction.
 Return exactly target_id, basis, and evidence. Keep the same role-first selection
 criteria and concise basis. Evidence verifies attribution, not shared wording:
 quotes from the two sides need not use the same words.
+Put quotations only in evidence, never repeat them in basis. Use basis to
+explain the shared role and corresponding relations without restating source text.
 
 For a match, evidence.focus and evidence.target are arrays of short verbatim
 quotations. Supply exactly one quote per member in that side's supplied members

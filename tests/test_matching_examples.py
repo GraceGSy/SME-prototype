@@ -76,6 +76,13 @@ class MatchingExamplesTest(unittest.TestCase):
         ).schema
         for output in outputs:
             Draft202012Validator(schema).validate(output)
+            for quotes in output["evidence"].values():
+                for quote in quotes:
+                    self.assertNotIn(
+                        quote.casefold(),
+                        output["basis"].casefold(),
+                        "Examples must not teach the model to repeat evidence quotes in basis",
+                    )
         self.assertEqual(sum(output["target_id"] is None for output in outputs), 3)
 
     def test_example_changes_invalidate_prompt_hash_and_missing_file_fails(self):
