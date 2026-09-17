@@ -43,6 +43,14 @@ CACHEABLE_SYSTEM = [
 API_TIMEOUT_SECONDS = 30 * 60
 
 
+class StructuredOutputValidationError(ValueError):
+    """Expose schema failures so callers can retry only explicitly allowed errors."""
+
+    def __init__(self, response_id: str, errors: list[ValidationError]) -> None:
+        super().__init__(f"Claude response {response_id} violates the requested schema")
+        self.errors = errors
+
+
 class SkillBudgetExceeded(RuntimeError):
     """Raised when a request bound or observed-usage limit is reached."""
 
@@ -355,12 +363,9 @@ class ClaudeSkills:
         if not text.strip():
             raise RuntimeError(f"Claude response {response.id} contained no structured text output")
         value = json.loads(text)
-        try:
-            Draft202012Validator(schema).validate(value)
-        except ValidationError as error:
-            raise ValueError(
-                f"Claude response {response.id} violates the requested schema"
-            ) from error
+        errors = list(Draft202012Validator(schema).iter_errors(value))
+        if errors:
+            raise StructuredOutputValidationError(response.id, errors) from errors[0]
         return self._result(
             response,
             value,

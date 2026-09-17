@@ -1,6 +1,7 @@
 """Validate quotations against the selected centers, never neighboring context."""
 
 import json
+import re
 from collections.abc import Iterator
 from typing import Any
 
@@ -11,6 +12,28 @@ class JudgmentError(RuntimeError):
 
 class EvidenceValidationError(JudgmentError):
     """The selected correspondence lacks correctly attributed source quotations."""
+
+
+def quote_length_feedback(side: str, index: int, quote: str) -> str:
+    return (
+        f"evidence.{side}[{index}] has {len(quote)} characters; the limit is 240. "
+        "Return a shorter exact quotation from the same matched center, or its first five "
+        "and last five words separated by ' ... '. Keep both parts verbatim and in source "
+        "order; the complete excerpt must still fit within 240 characters. Do not paraphrase."
+    )
+
+
+def _quote_matches(quote: str, text: str) -> bool:
+    if quote in text:
+        return True
+    parts = quote.split(" ... ")
+    if len(parts) != 2 or any(len(part.split()) != 5 for part in parts):
+        return False
+    # Exact whole-word endpoints with at least one omitted word, inside one center.
+    pattern = (
+        r"(?<!\S)" + re.escape(parts[0]) + r"\s+\S[\s\S]*?\s+" + re.escape(parts[1]) + r"(?!\S)"
+    )
+    return re.search(pattern, text) is not None
 
 
 def _centers(value: dict[str, Any], path: str) -> Iterator[tuple[str, dict[str, Any]]]:
@@ -73,7 +96,9 @@ def _attribution_feedback(
     path, member = list(_centers(value, root))[index]
     expected = _source_name(path, member)
     # One exact location is enough to explain the error without echoing the pool.
-    location = next((path for path, text in _text_locations(context) if quote in text), None)
+    location = next(
+        (path for path, text in _text_locations(context) if _quote_matches(quote, text)), None
+    )
     occurrence = (
         f"An exact occurrence was found in {location}."
         if location is not None
@@ -81,7 +106,7 @@ def _attribution_feedback(
     )
     return (
         f"evidence.{side}[{index}]: quote {json.dumps(quote, ensure_ascii=False)} is not an exact "
-        f"substring of its required center, {expected}. "
+        f"quotation or valid five-word-endpoint excerpt from its required center, {expected}. "
         f"{occurrence} Copy a short exact quotation from the required center's full_text "
         "or resolve its existing full_text_refs; do not borrow from another unit or neighbor. "
         "A quotation's presence elsewhere does not establish a role match."
@@ -106,11 +131,13 @@ def validate_evidence(context: dict[str, Any], chosen: str | None, evidence: Any
                 f"evidence.{side} requires one quote per center, in member order"
             )
         for index, (quote, text) in enumerate(zip(quotes, texts, strict=True)):
-            if not isinstance(quote, str) or not quote.strip() or len(quote) > 240:
+            if not isinstance(quote, str) or not quote.strip():
                 raise EvidenceValidationError(
                     f"evidence.{side}[{index}] requires a nonempty quote of at most 240 characters"
                 )
-            if quote not in text:
+            if len(quote) > 240:
+                raise EvidenceValidationError(quote_length_feedback(side, index, quote))
+            if not _quote_matches(quote, text):
                 raise EvidenceValidationError(
                     _attribution_feedback(context, chosen, side, index, quote, value)
                 )

@@ -185,16 +185,24 @@ the full response, request, and validation error. They are never accepted cache
 entries or repaired by the runtime. Each rejection gets its own record so a
 later failed retry cannot overwrite the paid evidence.
 
-Matching judgments also supply exact center quotations for the focus and chosen
-target, one per group member in input order. The provider validates attribution
-before accepting or caching a result. An attribution failure retries only that
+Matching judgments supply center quotations for the focus and chosen target,
+one per group member in input order. A quotation can be contiguous or use the
+first five and last five words of a passage separated by ` ... `. The validator
+requires verbatim whole-word endpoints in source order within the same center,
+with at least one omitted word; the 240-character limit includes the marker.
+It never joins evidence across neighbors or members, or changes the returned text.
+The provider validates attribution before accepting or caching a result.
+An attribution or quotation-length failure retries only that
 judgment, at most twice after the initial attempt. The retry appends validation
 feedback to the changing focus message; the local validator identifies the
 required unit, the offending quote, and an exact occurrence elsewhere in the
 supplied evidence, or reports that no exact occurrence exists. This adds no
-model call or source-text normalization. The native Skill and cacheable candidate
+separate validator model call or source-text normalization. The native Skill and cacheable candidate
 pool stay unchanged. All attempts use the existing token and session guards.
-Other contract errors, provider errors, and budget failures still stop execution.
+Transport schema validation exposes all failures. Only evidence-string length
+errors qualify for correction retries; a response with any other schema error
+still stops execution. Raw paid responses remain recorded even when rejected
+before graph validation. Provider errors and budget failures also stop execution.
 This does not prove that a quoted passage supports the claimed role. The changed
 prompt/schema and policy require a fresh run rather than silently extending an
 older experiment under different rules.

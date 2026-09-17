@@ -1,6 +1,7 @@
 """Center quotations are exact, member-bound evidence, never repaired text."""
 
 import copy
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -8,6 +9,7 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 from test_incremental_graph import CONFIG_PATH
+from test_skill_api import _adapter, _Response
 
 from pipeline.incremental_graph.configuration import PromptRepository, load_pipeline_config
 from pipeline.incremental_graph.llm import AnthropicJudgmentProvider, JudgmentError
@@ -251,3 +253,112 @@ class MatchEvidenceTest(unittest.TestCase):
             with self.assertRaises(SkillBudgetExceeded):
                 provider.judge(evidence_request())
             self.assertEqual(client.return_value.run_json.call_count, 1)
+
+    def test_excerpts_require_exact_ordered_endpoints_in_the_same_center(self):
+        opening = "The wolf was blowing loudly"
+        ending = "And therefore the pigs survived."
+        quote = f"{opening} ... {ending}"
+        request, value = evidence_request(), evidence_response()
+        request.context["focus"]["paragraph_under_consideration"]["full_text"] = (
+            f"{opening} while the brick walls held firm. {ending}"
+        )
+        value["evidence"]["focus"] = [quote]
+        before = copy.deepcopy((request.context, value))
+        AnthropicJudgmentProvider._validate(request, value)
+        self.assertEqual((request.context, value), before)
+        for invalid in (
+            f"{ending} ... {opening}",  # Reversed source order.
+            "The wolf was blowing ... And therefore the pigs survived.",
+            quote.replace("wolf", "Wolf"),
+            quote.replace("loudly", "loud"),  # Endpoints cannot stop inside a word.
+            quote.replace(" ... ", ".... "),
+            quote.replace(" ... ", " ... missing words ... "),
+            quote.replace("was blowing", "was  blowing"),
+        ):
+            with self.subTest(quote=invalid), self.assertRaises(JudgmentError):
+                value["evidence"]["focus"] = [invalid]
+                AnthropicJudgmentProvider._validate(request, value)
+        value["evidence"]["focus"] = [quote]
+        for location in ("next_paragraph", "other_member"):
+            with self.subTest(location=location):
+                request.context["focus"] = (
+                    {
+                        "members": [
+                            {"paragraph_under_consideration": {"full_text": opening}},
+                            {"paragraph_under_consideration": {"full_text": ending}},
+                        ]
+                    }
+                    if location == "other_member"
+                    else {
+                        "paragraph_under_consideration": {"full_text": opening},
+                        "next_paragraph": {"full_text": ending},
+                    }
+                )
+                value["evidence"]["focus"] = (
+                    [quote, ending] if location == "other_member" else [quote]
+                )
+                with self.assertRaises(JudgmentError):
+                    AnthropicJudgmentProvider._validate(request, value)
+
+    def test_transport_length_failure_gets_bounded_feedback_but_other_schema_errors_do_not(self):
+        config = load_pipeline_config(CONFIG_PATH)
+        long_quote = (
+            "These are the opening words "
+            + "supporting evidence " * 20
+            + "these are the closing words"
+        )
+        corrected = evidence_response()
+        corrected["evidence"]["focus"] = [
+            "These are the opening words ... these are the closing words"
+        ]
+        for failures, extra_error, succeeds in (
+            (1, False, True),
+            (3, False, False),
+            (1, True, False),
+        ):
+            with self.subTest(failures=failures, extra_error=extra_error):
+                bad = copy.deepcopy(corrected)
+                bad["evidence"]["focus"] = [long_quote]
+                if extra_error:
+                    bad["unexpected"] = True
+                adapter, messages = _adapter(
+                    *[
+                        _Response(str(i), "end_turn", 100, 20, text=json.dumps(value))
+                        for i, value in enumerate([bad] * failures + [corrected])
+                    ]
+                )
+                with (
+                    tempfile.TemporaryDirectory() as directory,
+                    patch.object(
+                        adapter,
+                        "register",
+                        return_value=SkillRef("match-role", "skill", "v1", "hash"),
+                    ),
+                ):
+                    provider = AnthropicJudgmentProvider(
+                        PromptRepository(config.prompt_root, config.context_root),
+                        config.model,
+                        Path(directory),
+                        config.skill_root,
+                    )
+                    provider.skills = adapter
+                    request = evidence_request()
+                    request.context["focus"]["paragraph_under_consideration"]["full_text"] = (
+                        long_quote
+                    )
+                    if succeeds:
+                        self.assertEqual(provider.judge(request).normalized, corrected)
+                        self.assertTrue(provider.judge(request).cache_hit)
+                    else:
+                        with self.assertRaises(ValueError if extra_error else JudgmentError):
+                            provider.judge(request)
+                        self.assertEqual(list(Path(directory).glob("*.json")), [])
+                    self.assertEqual(len(messages.calls), failures + int(succeeds))
+                    if not extra_error:
+                        first = messages.calls[0]["messages"][0]["content"]
+                        retry = messages.calls[1]["messages"][0]["content"]
+                        self.assertEqual(first[:-1], retry[:-1])
+                        feedback = retry[-1]["text"][len(first[-1]["text"]) :]
+                        for expected in ("evidence.focus[0]", str(len(long_quote)), "240", "same"):
+                            self.assertIn(expected, feedback)
+                        self.assertNotIn(long_quote, feedback)

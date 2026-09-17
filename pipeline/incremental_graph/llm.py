@@ -16,10 +16,16 @@ from ..llm.client import (
     ClaudeSkills,
     SkillCallPolicy,
     SkillSessionBudget,
+    StructuredOutputValidationError,
 )
 from .configuration import PromptRepository, RenderedPrompt
 from .evidence_encoding import encode_evidence
-from .match_evidence import EvidenceValidationError, JudgmentError, validate_evidence
+from .match_evidence import (
+    EvidenceValidationError,
+    JudgmentError,
+    quote_length_feedback,
+    validate_evidence,
+)
 from .models import JudgmentRequest, JudgmentResult, ModelSettings
 
 
@@ -83,21 +89,45 @@ class AnthropicJudgmentProvider:
         return rendered
 
     def judge(self, request: JudgmentRequest) -> JudgmentResult:
-        # Retry only attribution failures, not provider, budget, or other contract errors.
+        # Retry attribution and quote-length failures, never unrelated contract errors.
         # Each attempt uses the same source pool and native Skill; only feedback changes.
         feedback = ""
         for attempt in range(3):
             try:
                 return self._judge_once(request, feedback)
-            except EvidenceValidationError as error:
-                if attempt == 2:
+            except StructuredOutputValidationError as error:
+                if (
+                    request.output_kind != "match"
+                    or not error.errors
+                    or any(
+                        item.validator != "maxLength"
+                        or item.validator_value != 240
+                        or len(item.absolute_path) != 3
+                        or list(item.absolute_path)[:2]
+                        not in (["evidence", "focus"], ["evidence", "target"])
+                        or not isinstance(item.absolute_path[-1], int)
+                        for item in error.errors
+                    )
+                ):
                     raise
-                feedback = (
-                    "\n\nEvidence validation failed: "
-                    + str(error)
-                    + ". Reconsider this judgment using the unchanged source evidence. "
-                    "Return a complete response with exact center quotations."
+                failure = EvidenceValidationError(
+                    " ".join(
+                        quote_length_feedback(
+                            item.absolute_path[1], item.absolute_path[2], item.instance
+                        )
+                        for item in error.errors
+                    )
                 )
+            except EvidenceValidationError as error:
+                failure = error
+            if attempt == 2:
+                raise failure
+            feedback = (
+                "\n\nEvidence validation failed: "
+                + str(failure)
+                + " Reconsider this judgment using the unchanged source evidence. "
+                "Return a complete response with source-bound quotations or valid excerpts."
+            )
         raise AssertionError("Unreachable retry state")
 
     def _judge_once(self, request: JudgmentRequest, feedback: str) -> JudgmentResult:

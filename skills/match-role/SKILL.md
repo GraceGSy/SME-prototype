@@ -35,8 +35,9 @@ For example, a candidate with `paper_id: "corpusstudio"` and
 Return exactly one JSON object with exactly three fields:
 - `target_id`: the exact selected handle string, or JSON `null` for abstention.
 - `basis`: a nonempty string containing the evidence-grounded explanation below.
-- `evidence`: `focus` and `target` arrays, each containing one exact center quote
-  per member in input order. A single unit requires one quote. For abstention,
+- `evidence`: `focus` and `target` arrays, each containing one source-bound center
+  quotation or excerpt per member in input order, following the caller's evidence
+  contract. A single unit requires one quote. For abstention,
   both arrays must be empty. Each quote must be nonempty and at most 240 characters.
 
 Do not return a list, Markdown fences, a string containing JSON, extra fields,
