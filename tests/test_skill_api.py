@@ -5,6 +5,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
 
+from pipeline.incremental_graph.configuration import load_pipeline_config
 from pipeline.llm.client import (
     CACHEABLE_SYSTEM,
     MESSAGE_BETAS,
@@ -275,6 +276,31 @@ class SkillApiTest(unittest.TestCase):
         )
         self.assertEqual(result.usage["request_count"], 1)
         self.assertEqual(result.call_policy, policy.as_dict())
+
+    def test_graph_config_sends_medium_adaptive_thinking_with_output_room(self) -> None:
+        config = load_pipeline_config(
+            Path(__file__).resolve().parents[1]
+            / "pipeline/incremental_graph/configs/incremental-v1.yaml"
+        )
+        self.assertEqual(config.model.name, "claude-sonnet-5")
+        for stage in config.stages:
+            if not stage.skill:
+                continue
+            with self.subTest(stage=stage.id):
+                adapter, messages = _adapter(_Response("response-1", "end_turn", 100, 20))
+                adapter.model = config.model.name
+                policy = SkillCallPolicy(
+                    max_tokens=stage.max_tokens or config.model.max_tokens,
+                    effort=config.model.effort,
+                    thinking=config.model.thinking,
+                )
+                adapter.run_json([SKILL], "prompt", SCHEMA, policy=policy)
+                call = messages.calls[0]
+                self.assertEqual(call["model"], "claude-sonnet-5")
+                self.assertEqual(call["thinking"], {"type": "adaptive"})
+                self.assertEqual(call["output_config"]["effort"], "medium")
+                expected_tokens = 2048 if stage.skill == "generate-question" else 4096
+                self.assertEqual(call["max_tokens"], expected_tokens)
 
     def test_cacheable_instructions_precede_dynamic_input_in_one_turn(self) -> None:
         adapter, messages = _adapter(_Response("response-1", "end_turn", 100, 20))

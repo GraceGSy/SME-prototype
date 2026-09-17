@@ -294,7 +294,7 @@ class IncrementalGraphTest(unittest.TestCase):
         ]
         self.assertEqual(len(paragraph_questions), 2)
         self.assertTrue(all(request.output_kind == "question" for request in paragraph_questions))
-        self.assertTrue(all(request.max_tokens == 256 for request in paragraph_questions))
+        self.assertTrue(all(request.max_tokens == 2048 for request in paragraph_questions))
         expected_context = {
             "paper",
             "previous_paragraph",
@@ -324,7 +324,7 @@ class IncrementalGraphTest(unittest.TestCase):
         ]
         self.assertEqual(len(paragraph_group_questions), 1)
         self.assertEqual(paragraph_group_questions[0].output_kind, "question")
-        self.assertEqual(paragraph_group_questions[0].max_tokens, 256)
+        self.assertEqual(paragraph_group_questions[0].max_tokens, 2048)
         self.assertEqual(summary["max_granularity"], "paragraph")
 
     def test_paragraph_questions_use_one_bounded_request_per_paragraph(self) -> None:
@@ -365,7 +365,7 @@ class IncrementalGraphTest(unittest.TestCase):
             ],
         )
         self.assertTrue(all(request.output_kind == "question" for request in requests))
-        self.assertTrue(all(request.max_tokens == 256 for request in requests))
+        self.assertTrue(all(request.max_tokens == 2048 for request in requests))
         self.assertTrue(all("section" not in request.context for request in requests))
         self.assertIsNone(requests[0].context["previous_paragraph"])
         self.assertEqual(
