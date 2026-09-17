@@ -22,7 +22,8 @@ RUN = ROOT / "runs/hci-section-fresh-20260917"
 RESERVE_USD = 3.0
 
 
-def run(budget_usd: float, *, retry: bool = False):
+def run(budget_usd: float, *, retry: bool = False, run_dir: Path | None = None):
+    run_dir = (run_dir if run_dir is not None else RUN).resolve()
     if not math.isfinite(budget_usd) or budget_usd <= RESERVE_USD:
         raise ValueError("Budget must be finite and exceed the $3 uncertainty reserve")
     manifest, papers = load_manifest(MANIFEST)
@@ -30,16 +31,16 @@ def run(budget_usd: float, *, retry: bool = False):
         raise ValueError("Expected five HCI papers at section granularity")
     if any(s.question or any(p.question for p in s.paragraphs) for d in papers for s in d.sections):
         raise ValueError("This experiment requires content-only inputs without old questions")
-    if retry and not RUN.exists():
+    if retry and not run_dir.exists():
         raise ValueError("There is no run to retry")
-    if RUN.exists():
-        previous_budget = read_json(RUN / "budget.json")
+    if run_dir.exists():
+        previous_budget = read_json(run_dir / "budget.json")
         if previous_budget["authorized_budget_usd"] != budget_usd:
             raise ValueError("Do not change this experiment's authorized budget during resume")
         if not previous_budget["last_call_usage_known"]:
             raise ValueError("Reconcile unreported usage before resuming")
 
-    ledger = ResponseLedger(RUN / "cache/responses")
+    ledger = ResponseLedger(run_dir / "cache/responses")
     original = ClaudeSkills._run
 
     def bounded(client, *args, **kwargs):
@@ -52,7 +53,7 @@ def run(budget_usd: float, *, retry: bool = False):
 
         def save_budget(known):
             write_json(
-                RUN / "budget.json",
+                run_dir / "budget.json",
                 {
                     "authorized_budget_usd": budget_usd,
                     "reserve_usd": RESERVE_USD,
@@ -73,14 +74,14 @@ def run(budget_usd: float, *, retry: bool = False):
             print(f"Recorded token cost: ${ledger.spent:.4f}", flush=True)
 
     with patch.object(ClaudeSkills, "_run", bounded), tempfile.TemporaryDirectory() as directory:
-        if RUN.exists():
-            state = read_json(RUN / "run.json")
+        if run_dir.exists():
+            state = read_json(run_dir / "run.json")
             if state["latest_revision"] != state["current_revision"]:
                 if not retry:
                     raise ValueError("Inspect the failure, then explicitly use --retry")
-                retry_graph(RUN)
-                state = read_json(RUN / "run.json")
-            summary = read_json(RUN / "revisions" / state["current_revision"] / "summary.json")
+                retry_graph(run_dir)
+                state = read_json(run_dir / "run.json")
+            summary = read_json(run_dir / "revisions" / state["current_revision"] / "summary.json")
             completed = len(summary["paper_order"])
             if summary["paper_order"] != [p.paper_id for p in papers[:completed]]:
                 raise ValueError("Saved paper order does not match this experiment")
@@ -110,7 +111,9 @@ def run(budget_usd: float, *, retry: bool = False):
                 flush=True,
             )
             summary = (
-                start_graph(request_path, RUN) if completed == 0 else add_papers(request_path, RUN)
+                start_graph(request_path, run_dir)
+                if completed == 0
+                else add_papers(request_path, run_dir)
             )
             completed = summary["paper_count"]
             print(f"Completed {completed}/5 papers; token cost ${ledger.spent:.4f}", flush=True)
@@ -121,5 +124,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--budget-usd", type=float, required=True)
     parser.add_argument("--retry", action="store_true")
+    parser.add_argument("--run-dir", type=Path, default=RUN, help="Separate directory for this run")
     args = parser.parse_args()
-    print(run(args.budget_usd, retry=args.retry))
+    print(run(args.budget_usd, retry=args.retry, run_dir=args.run_dir))

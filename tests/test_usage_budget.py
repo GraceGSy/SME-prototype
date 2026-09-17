@@ -136,3 +136,27 @@ class UsageBudgetTest(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "Reconcile unreported usage"):
                     hci.run(20, retry=True)
                 self.assertEqual(paid.call_count, 1)
+
+    def test_hci_fresh_directory_runs_pair_then_three_additions_without_touching_old_run(self):
+        with tempfile.TemporaryDirectory() as directory:
+            old_run = Path(directory) / "old"
+            fresh_run = Path(directory) / "fresh"
+            write_json(old_run / "budget.json", {"preserve": True})
+            batches = []
+
+            def execute(manifest_path, run_path):
+                self.assertEqual(run_path, fresh_run)
+                manifest = hci.read_json(manifest_path)
+                batches.append([paper["paper_id"] for paper in manifest["papers"]])
+                return {"paper_count": sum(len(batch) for batch in batches)}
+
+            with (
+                patch.object(hci, "RUN", old_run),
+                patch.object(hci, "start_graph", side_effect=execute) as start,
+                patch.object(hci, "add_papers", side_effect=execute) as add,
+            ):
+                self.assertEqual(hci.run(17.64, run_dir=fresh_run)["paper_count"], 5)
+            self.assertEqual(start.call_count, 1)
+            self.assertEqual(add.call_count, 3)
+            self.assertEqual([len(batch) for batch in batches], [2, 1, 1, 1])
+            self.assertEqual(hci.read_json(old_run / "budget.json"), {"preserve": True})
