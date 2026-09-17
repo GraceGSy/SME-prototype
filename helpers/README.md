@@ -10,6 +10,14 @@ uncertainty; it is not a provider-enforced cap. Inspect failures before using
 
 ## Corpus preparation
 
+`continue_hci_excerpt_contract.py` records the one-time 2026-09-17 transition
+from the paused medium-thinking HCI run to the excerpt evidence contract.
+It replays and validates completed judgments offline, preserves their original
+provenance and costs in a separate run, and refuses to overwrite its destination.
+The result is a mixed-contract continuation, not a fresh evaluation. Normal
+`run_hci_sections --run-dir runs/hci-section-medium-excerpts-20260917 --budget-usd 17.64 --retry`
+continues it; the budget includes the inherited spend.
+
 `python -m helpers.prepare_content_corpus MANIFEST OUTPUT [--whole-section]`
 creates a content-only or whole-story derivative from valid canonical inputs.
 Keep the source corpus unchanged. This helper is not imported by either runtime
