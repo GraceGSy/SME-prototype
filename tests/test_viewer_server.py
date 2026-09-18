@@ -19,14 +19,19 @@ class ViewerServerTest(unittest.TestCase):
             revision = root / "example/revisions/revision-0001"
             make_snapshot_dataset(revision / "dataset")
             write_json(revision / "summary.json", {"paper_count": 2})
+            write_json(root / "example/viewer.json", {"label": "Readable study name"})
             server = ThreadingHTTPServer(("127.0.0.1", 0), handler_for(RunCatalog(root)))
             worker = threading.Thread(target=server.serve_forever, daemon=True)
             worker.start()
             base = f"http://127.0.0.1:{server.server_port}"
             try:
                 with urlopen(base + "/runs/example/revision-0001/dataset.json") as response:
-                    self.assertEqual(json.load(response)["paper_count"], 2)
+                    descriptor = json.load(response)
+                    self.assertEqual(descriptor["paper_count"], 2)
+                    self.assertEqual(descriptor["label"], "Readable study name")
                     self.assertEqual(response.headers["Cache-Control"], "no-store")
+                with urlopen(base + "/local.json") as response:
+                    self.assertEqual(json.load(response)[0]["label"], "Readable study name")
                 for path in (
                     "/runs/example/revision-0001/run.json",
                     "/.env",
@@ -50,6 +55,7 @@ class ViewerServerTest(unittest.TestCase):
             write_json(run / "revisions/revision-0002/failure.json", {"message": "failed"})
             catalog = RunCatalog(root)
             self.assertEqual(catalog.entries()[0]["revisions"], ["revision-0001"])
+            self.assertEqual(catalog.entries()[0]["label"], "example")
             path = catalog.dataset("example", "revision-0001")
             self.assertEqual(path, revision / "dataset")
             with self.assertRaises(ValueError):

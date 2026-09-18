@@ -21,6 +21,23 @@ class RunCatalog:
     def __init__(self, root: Path):
         self.root = root.resolve(strict=True)
 
+    def label(self, run: str) -> str:
+        metadata = self.root / run / "viewer.json"
+        if not metadata.exists():
+            return run
+        if not metadata.resolve().is_relative_to(self.root):
+            raise ValueError("Viewer metadata must stay inside the runs directory")
+        value = read_json(metadata)
+        if (
+            not isinstance(value, dict)
+            or set(value) != {"label"}
+            or not isinstance(value["label"], str)
+            or not value["label"]
+            or value["label"] != value["label"].strip()
+        ):
+            raise ValueError("viewer.json requires exactly one nonempty, unpadded label")
+        return value["label"]
+
     def entries(self):
         entries = []
         for run in self.root.iterdir():
@@ -50,7 +67,10 @@ class RunCatalog:
                 revisions.sort(key=lambda name: int(name.split("-")[1]))
                 entries.append({"id": run.name, "revisions": revisions, "modified": modified})
         entries.sort(key=lambda entry: entry["modified"], reverse=True)
-        return [{"id": entry["id"], "revisions": entry["revisions"]} for entry in entries]
+        return [
+            {"id": entry["id"], "label": self.label(entry["id"]), "revisions": entry["revisions"]}
+            for entry in entries
+        ]
 
     def dataset(self, run, revision):
         if not any(e["id"] == run and revision in e["revisions"] for e in self.entries()):
@@ -82,7 +102,7 @@ def handler_for(catalog):
                 run, revision, filename = match.groups()
                 dataset = catalog.dataset(run, revision)
                 if filename == "dataset.json":
-                    return self.send_json(validate_dataset(dataset, run, f"{run} / {revision}"))
+                    return self.send_json(validate_dataset(dataset, run, catalog.label(run)))
                 allowed = {"manifest.json", "final_snapshot.json", "graph-replay.json"}
                 allowed.update(entry["file"] for entry in read_json(dataset / "manifest.json"))
                 file = (dataset / filename).resolve()

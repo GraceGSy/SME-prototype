@@ -116,6 +116,10 @@ The server binds to localhost and exposes only viewer assets and exported data,
 not credentials, caches, provenance, or arbitrary files. Rebuild only when viewer
 code changes. Static deployment and participant-study packaging remain optional.
 
+To give a run a readable display name, add `viewer.json` in its run directory
+with `{"label": "Readable run name"}`. This changes the title and run selector,
+not the run ID, URLs, or saved results. Without this file, the viewer uses the run ID.
+
 ## Package For Sharing
 
 ```powershell

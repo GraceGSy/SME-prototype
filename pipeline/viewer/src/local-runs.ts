@@ -3,6 +3,7 @@ import { z } from "zod";
 const catalogSchema = z.array(
   z.strictObject({
     id: z.string().regex(/^[A-Za-z0-9_-]+$/),
+    label: z.string().min(1),
     revisions: z.array(z.string().regex(/^revision-[0-9]{4,}$/)).min(1),
   }),
 );
@@ -27,7 +28,7 @@ export async function localDatasetBase(): Promise<URL | null> {
   const runSelect = document.createElement("select");
   runSelect.setAttribute("aria-label", "Run");
   runSelect.name = "run";
-  runs.forEach((entry) => runSelect.add(new Option(entry.id, entry.id)));
+  runs.forEach((entry) => runSelect.add(new Option(entry.label, entry.id)));
   runSelect.value = runId;
   const revisionSelect = document.createElement("select");
   revisionSelect.setAttribute("aria-label", "Revision");
