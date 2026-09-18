@@ -299,7 +299,7 @@ class SkillApiTest(unittest.TestCase):
                 self.assertEqual(call["model"], "claude-sonnet-5")
                 self.assertEqual(call["thinking"], {"type": "adaptive"})
                 self.assertEqual(call["output_config"]["effort"], "medium")
-                expected_tokens = 2048 if stage.skill == "generate-question" else 4096
+                expected_tokens = 2048 if stage.skill == "generate-question" else 8192
                 self.assertEqual(call["max_tokens"], expected_tokens)
 
     def test_cacheable_instructions_precede_dynamic_input_in_one_turn(self) -> None:
