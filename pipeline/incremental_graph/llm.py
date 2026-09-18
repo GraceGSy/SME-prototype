@@ -222,6 +222,17 @@ class AnthropicJudgmentProvider:
                     "error": str(error),
                 },
             )
+            if isinstance(error, EvidenceValidationError):
+                # Retries are separate requests, so they cannot see the prior answer.
+                raise EvidenceValidationError(
+                    f"{error}\nPrevious rejected response (not source evidence): "
+                    + json.dumps(normalized, ensure_ascii=False)
+                    + "\nCorrect the reported error and check every quotation against its "
+                    "required source. Retain already valid quotations if the selection "
+                    "remains supported. Prefer short contiguous exact substrings; preserve "
+                    "case and punctuation. If using ' ... ', each endpoint must contain "
+                    "exactly five whitespace-separated words. Return the complete response."
+                ) from error
             raise
         write_json(cache_path, result.model_dump(mode="json"))
         return result

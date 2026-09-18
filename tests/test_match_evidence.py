@@ -249,6 +249,8 @@ class MatchEvidenceTest(unittest.TestCase):
             self.assertIn("Evidence validation failed", calls[1].args[1])
             self.assertIn("Costs are awarded", calls[1].args[1])
             self.assertIn("focus.next_paragraph", calls[1].args[1])
+            self.assertIn("Previous rejected response", calls[1].args[1])
+            self.assertIn('"target": ["dismiss the petition", "judgment is affirmed"]', calls[1].args[1])
             self.assertEqual(
                 calls[0].kwargs["cacheable_prompt"], calls[-1].kwargs["cacheable_prompt"]
             )
