@@ -130,6 +130,25 @@ class MatchEvidenceTest(unittest.TestCase):
         }
         AnthropicJudgmentProvider._validate(request, evidence_response())
 
+    def test_count_feedback_identifies_every_required_member_without_repeating_source(self):
+        request, value = evidence_request(), evidence_response()
+        value["evidence"]["target"] = ["dismiss the petition"]
+        before = copy.deepcopy((request.context, value))
+        with self.assertRaises(JudgmentError) as caught:
+            AnthropicJudgmentProvider._validate(request, value)
+        feedback = str(caught.exception)
+        for expected in (
+            "evidence.target has 1 quotation; expected exactly 2",
+            "evidence.focus: 1", "evidence.target: 2",
+            "evidence.target[0]", "candidate 'group'.members[0]",
+            "evidence.target[1]", "candidate 'group'.members[1]",
+        ):
+            self.assertIn(expected, feedback)
+        self.assertNotIn("We dismiss the petition.", feedback)
+        self.assertEqual((request.context, value), before)
+        value["evidence"]["target"].append("judgment is affirmed")
+        AnthropicJudgmentProvider._validate(request, value)
+
     def test_misattribution_feedback_names_selected_section_and_actual_quote_location(self):
         request = evidence_request()
         request.allowed_match_ids = ["s0002", "s0004"]

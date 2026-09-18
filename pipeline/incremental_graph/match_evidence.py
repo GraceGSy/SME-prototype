@@ -132,8 +132,24 @@ def validate_evidence(context: dict[str, Any], chosen: str | None, evidence: Any
         texts = center_texts(value)
         quotes = evidence[side]
         if not texts or not isinstance(quotes, list) or len(quotes) != len(texts):
+            root = "focus" if side == "focus" else f"candidate {chosen!r}"
+            received = (
+                f"{len(quotes)} quotation{'s' if len(quotes) != 1 else ''}"
+                if isinstance(quotes, list)
+                else "a non-array value"
+            )
+            positions = "; ".join(
+                f"evidence.{side}[{index}] -> {_source_name(path, member)}"
+                for index, (path, member) in enumerate(_centers(value, root))
+            )
             raise EvidenceValidationError(
-                f"evidence.{side} requires one quote per center, in member order"
+                f"evidence.{side} has {received}; expected exactly {len(texts)}. "
+                f"For this selection the array lengths are evidence.focus: "
+                f"{len(center_texts(context['focus']))}, evidence.target: "
+                f"{len(center_texts(candidates[0]))}. Required member order: {positions}. "
+                "Use one short exact substring per center, not one quote for the entire "
+                "group or multiple quotes for one center. Preserve punctuation. "
+                "Every quotation must still pass source attribution and length checks."
             )
         for index, (quote, text) in enumerate(zip(quotes, texts, strict=True)):
             if not isinstance(quote, str) or not quote.strip():
