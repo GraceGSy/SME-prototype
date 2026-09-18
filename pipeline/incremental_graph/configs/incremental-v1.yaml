@@ -36,6 +36,8 @@ stages:
     handler: match_sections
     phase: structural
     skill: match-role
+    # Aggregate usage includes cached rereads during native Skill tool steps.
+    max_input_tokens: 350000
     prompts:
       new_to_group: section-to-group-match/v1
       group_to_new: group-to-section-match/v1
@@ -59,6 +61,7 @@ stages:
     handler: rerepresent_section_singletons
     phase: structural
     skill: match-role
+    max_input_tokens: 350000
     prompts:
       singleton_to_group: singleton-to-group-match/v1
       group_to_singleton: group-to-singleton-match/v1

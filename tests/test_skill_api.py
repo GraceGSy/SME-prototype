@@ -302,6 +302,34 @@ class SkillApiTest(unittest.TestCase):
                 expected_tokens = 2048 if stage.skill == "generate-question" else 8192
                 self.assertEqual(call["max_tokens"], expected_tokens)
 
+    def test_section_guard_allows_cached_skill_iterations_but_remains_bounded(self) -> None:
+        config = load_pipeline_config(
+            Path(__file__).resolve().parents[1]
+            / "pipeline/incremental_graph/configs/incremental-v1.yaml"
+        )
+        for stage in config.stages:
+            if stage.id not in {"section_matching", "section_rerepresentation"}:
+                continue
+            for cached, accepted in ((287520, True), (350000, False)):
+                with self.subTest(stage=stage.id, cached=cached):
+                    response = _Response("cached-section", "end_turn", 2753, 1977)
+                    response.usage.value.update(
+                        cache_creation_input_tokens=6755, cache_read_input_tokens=cached
+                    )
+                    adapter, _ = _adapter(response)
+                    policy = SkillCallPolicy(
+                        max_tokens=config.model.max_tokens,
+                        max_input_tokens=stage.max_input_tokens or config.model.max_input_tokens
+                    )
+                    if accepted:
+                        self.assertEqual(
+                            adapter.run_json([SKILL], "prompt", SCHEMA, policy=policy).value,
+                            {"answer": "ok"},
+                        )
+                    else:
+                        with self.assertRaises(SkillBudgetExceeded):
+                            adapter.run_json([SKILL], "prompt", SCHEMA, policy=policy)
+
     def test_cacheable_instructions_precede_dynamic_input_in_one_turn(self) -> None:
         adapter, messages = _adapter(_Response("response-1", "end_turn", 100, 20))
 
