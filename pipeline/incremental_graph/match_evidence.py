@@ -128,6 +128,7 @@ def validate_evidence(context: dict[str, Any], chosen: str | None, evidence: Any
     candidates = [c for c in context["candidates"] if candidate_handle(c) == chosen]
     if len(candidates) != 1:
         raise ValueError("Matching request must identify exactly one selected candidate")
+    errors = []
     for side, value in (("focus", context["focus"]), ("target", candidates[0])):
         texts = center_texts(value)
         quotes = evidence[side]
@@ -142,7 +143,7 @@ def validate_evidence(context: dict[str, Any], chosen: str | None, evidence: Any
                 f"evidence.{side}[{index}] -> {_source_name(path, member)}"
                 for index, (path, member) in enumerate(_centers(value, root))
             )
-            raise EvidenceValidationError(
+            errors.append(
                 f"evidence.{side} has {received}; expected exactly {len(texts)}. "
                 f"For this selection the array lengths are evidence.focus: "
                 f"{len(center_texts(context['focus']))}, evidence.target: "
@@ -151,14 +152,18 @@ def validate_evidence(context: dict[str, Any], chosen: str | None, evidence: Any
                 "group or multiple quotes for one center. Preserve punctuation. "
                 "Every quotation must still pass source attribution and length checks."
             )
+            continue
         for index, (quote, text) in enumerate(zip(quotes, texts, strict=True)):
             if not isinstance(quote, str) or not quote.strip():
-                raise EvidenceValidationError(
+                errors.append(
                     f"evidence.{side}[{index}] requires a nonempty quote of at most 240 characters"
                 )
+                continue
             if len(quote) > 240:
-                raise EvidenceValidationError(quote_length_feedback(side, index, quote))
+                errors.append(quote_length_feedback(side, index, quote))
             if not _quote_matches(quote, text):
-                raise EvidenceValidationError(
+                errors.append(
                     _attribution_feedback(context, chosen, side, index, quote, value)
                 )
+    if errors:
+        raise EvidenceValidationError("\n".join(errors))

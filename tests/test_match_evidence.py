@@ -202,6 +202,15 @@ class MatchEvidenceTest(unittest.TestCase):
                 self.assertIn(location, str(caught.exception))
                 self.assertIn(quote, str(caught.exception))
 
+    def test_feedback_reports_all_bad_quotes_in_one_correction(self):
+        value = evidence_response()
+        value["evidence"]["focus"] = ["Costs are awarded"]
+        value["evidence"]["target"] = ["DISMISS the petition", "judgment is AFFIRMED"]
+        with self.assertRaises(JudgmentError) as caught:
+            AnthropicJudgmentProvider._validate(evidence_request(), value)
+        for position in ("evidence.focus[0]", "evidence.target[0]", "evidence.target[1]"):
+            self.assertIn(position, str(caught.exception))
+
     def test_retries_only_failed_judgment_and_caches_only_valid_evidence(self):
         self.check_retry(failures=1, succeeds=True)
 
