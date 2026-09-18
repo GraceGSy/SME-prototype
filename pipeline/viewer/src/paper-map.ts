@@ -80,8 +80,7 @@ export class PaperMapView {
       const id = item.dataset.group!;
       item.addEventListener("click", () =>
         this.select(
-          this.selected === id ? null : id,
-          item.classList.contains("paper-map-legend-item"),
+          item.classList.contains("paper-map-legend-item") && this.selected === id ? null : id,
         ),
       );
       if (item.tagName !== "BUTTON")
@@ -131,6 +130,7 @@ export class PaperMapView {
     }
     this.emphasize();
     this.resize();
+    this.revealQuestion();
   }
 
   private legend(entries: GroupEntry[]): string {
@@ -146,25 +146,46 @@ export class PaperMapView {
       .join("");
   }
 
-  private select(id: string | null, scrollTo = false): void {
+  private select(id: string | null): void {
     this.selected = id;
+    if (id) {
+      // Role navigation aligns independent locations, never proportional scroll positions.
+      this.syncScroll = false;
+      element<HTMLInputElement>("#paperMapSyncScroll", this.host).checked = false;
+    }
     if (id && this.model.groups.get(id)?.singleton && !this.showSingletons) {
       this.showSingletons = true;
       this.render();
     }
     this.emphasize();
-    if (scrollTo && id) {
+    if (id) {
       for (const column of this.host.querySelectorAll<HTMLElement>(".paper-map-column")) {
         const target = [...column.querySelectorAll<HTMLElement>(".paper-map-paragraph")].find(
           (item) => item.dataset.group === id,
         );
         if (target)
           column.scrollTop +=
-            target.getBoundingClientRect().top - column.getBoundingClientRect().top - 65;
+            target.getBoundingClientRect().top -
+            column.getBoundingClientRect().top -
+            element(".paper-map-paper-head", column).offsetHeight -
+            10;
       }
     }
+    this.revealQuestion();
     this.hideTooltip();
     this.indicators();
+  }
+
+  private revealQuestion(): void {
+    const question = [...this.host.querySelectorAll<HTMLElement>(".paper-map-legend-item")].find(
+      (item) => item.dataset.group === this.selected,
+    );
+    if (!question) return;
+    const legend = question.parentElement!;
+    legend.scrollTop +=
+      question.getBoundingClientRect().top -
+      legend.getBoundingClientRect().top -
+      (legend.clientHeight - question.offsetHeight) / 2;
   }
 
   private emphasize(hover: string | null = null): void {
@@ -184,6 +205,14 @@ export class PaperMapView {
         item.classList.contains("paper-map-paragraph") && this.hideUnselected && !matches,
       );
     });
+    const entry = this.selected ? this.model.groups.get(this.selected) : undefined;
+    const papers = new Set(entry?.group.members.map((member) => member.paper));
+    for (const column of this.host.querySelectorAll<HTMLElement>(".paper-map-column")) {
+      const matches = papers.has(column.dataset.paper!);
+      column.classList.toggle("has-selection", matches);
+      if (matches) column.style.setProperty("--group-color", entry!.color);
+      else column.style.removeProperty("--group-color");
+    }
     this.indicators();
   }
 

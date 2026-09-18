@@ -804,6 +804,10 @@ header h1 {
   font-size: 13px;
   font-weight: 700;
 }
+.paper-map-column.has-selection {
+  outline: 2px solid var(--group-color);
+  outline-offset: -2px;
+}
 /* Floating "N more paragraphs of the selected group are above/below" badges.
      position:sticky (not absolute -- an absolute child of an overflow:auto
      ancestor still scrolls away with the content; sticky is the mechanism
