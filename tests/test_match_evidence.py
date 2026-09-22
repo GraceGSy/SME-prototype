@@ -139,9 +139,12 @@ class MatchEvidenceTest(unittest.TestCase):
         feedback = str(caught.exception)
         for expected in (
             "evidence.target has 1 quotation; expected exactly 2",
-            "evidence.focus: 1", "evidence.target: 2",
-            "evidence.target[0]", "candidate 'group'.members[0]",
-            "evidence.target[1]", "candidate 'group'.members[1]",
+            "evidence.focus: 1",
+            "evidence.target: 2",
+            "evidence.target[0]",
+            "candidate 'group'.members[0]",
+            "evidence.target[1]",
+            "candidate 'group'.members[1]",
         ):
             self.assertIn(expected, feedback)
         self.assertNotIn("We dismiss the petition.", feedback)
@@ -259,7 +262,9 @@ class MatchEvidenceTest(unittest.TestCase):
             self.assertIn("Costs are awarded", calls[1].args[1])
             self.assertIn("focus.next_paragraph", calls[1].args[1])
             self.assertIn("Previous rejected response", calls[1].args[1])
-            self.assertIn('"target": ["dismiss the petition", "judgment is affirmed"]', calls[1].args[1])
+            self.assertIn(
+                '"target": ["dismiss the petition", "judgment is affirmed"]', calls[1].args[1]
+            )
             self.assertEqual(
                 calls[0].kwargs["cacheable_prompt"], calls[-1].kwargs["cacheable_prompt"]
             )

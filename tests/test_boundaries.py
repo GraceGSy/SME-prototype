@@ -54,7 +54,10 @@ class BoundaryTest(unittest.TestCase):
         ):
             with self.subTest(invalid=invalid), self.assertRaises(JudgmentError):
                 CachedJudgments._validate(request, invalid)
-        CachedJudgments._validate(request, {"target_id": None, "basis": "No match.", "evidence": {"focus": [], "target": []}})
+        CachedJudgments._validate(
+            request,
+            {"target_id": None, "basis": "No match.", "evidence": {"focus": [], "target": []}},
+        )
 
 
 if __name__ == "__main__":

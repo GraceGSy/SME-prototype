@@ -162,8 +162,6 @@ def validate_evidence(context: dict[str, Any], chosen: str | None, evidence: Any
             if len(quote) > 240:
                 errors.append(quote_length_feedback(side, index, quote))
             if not _quote_matches(quote, text):
-                errors.append(
-                    _attribution_feedback(context, chosen, side, index, quote, value)
-                )
+                errors.append(_attribution_feedback(context, chosen, side, index, quote, value))
     if errors:
         raise EvidenceValidationError("\n".join(errors))
