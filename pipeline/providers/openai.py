@@ -253,7 +253,7 @@ class OpenAISkills(SessionLimits):
         messages_out = [item for item in response.output[boundary + 1 :] if item.type == "message"]
         if not messages_out:
             raise RuntimeError(f"OpenAI response {response.id} contained no final message")
-        blocks = messages_out[-1].content
+        blocks = [block for message in messages_out for block in message.content]
         if any(block.type == "refusal" for block in blocks):
             raise RuntimeError(f"OpenAI response {response.id} refused the requested output")
         text = "".join(block.text for block in blocks if block.type == "output_text")

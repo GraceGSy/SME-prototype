@@ -283,3 +283,29 @@ class OpenAIProviderTest(unittest.TestCase):
             with self.assertRaises(InternalServerError):
                 adapter.run_json([SKILL], "focus", SCHEMA, policy=SkillCallPolicy(max_tokens=512))
             self.assertEqual(len(requests), 1)
+
+    def test_tool_commentary_is_excluded_but_two_final_answers_are_rejected(self):
+        first = response({"question": "First?"})["output"][0]
+        final = response({"question": "Final?"})["output"][0]
+        tool = {
+            "id": "shell_test",
+            "call_id": "call_test",
+            "type": "shell_call",
+            "status": "completed",
+            "action": {"commands": ["read skill"]},
+            "environment": {"type": "container_reference", "container_id": "cntr_test"},
+        }
+        with tempfile.TemporaryDirectory() as temp:
+            adapter, _ = self.adapter(
+                Path(temp),
+                [
+                    response(output=[first, tool, final]),
+                    response(output=[first, final]),
+                ],
+            )
+            result = adapter.run_json(
+                [SKILL], "focus", SCHEMA, policy=SkillCallPolicy(max_tokens=512)
+            )
+            self.assertEqual(result.value, {"question": "Final?"})
+            with self.assertRaises(json.JSONDecodeError):
+                adapter.run_json([SKILL], "focus", SCHEMA, policy=SkillCallPolicy(max_tokens=512))
