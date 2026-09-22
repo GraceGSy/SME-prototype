@@ -1,4 +1,5 @@
 anthropic==1.2.0
+openai==2.29.0
 networkx==2.6.3
 pydantic==2.12.5
 PyYAML==6.0.3

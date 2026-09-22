@@ -15,7 +15,15 @@ class ProviderBoundaryTest(unittest.TestCase):
                 if isinstance(node, ast.ImportFrom):
                     module = node.module or ""
                     self.assertNotIn(
-                        module, {"llm.client", "providers.anthropic", "providers.openai"}, path
+                        module,
+                        {
+                            "llm.client",
+                            "providers.anthropic",
+                            "providers.openai",
+                            "anthropic",
+                            "openai",
+                        },
+                        path,
                     )
                 elif isinstance(node, ast.Import):
                     for name in node.names:

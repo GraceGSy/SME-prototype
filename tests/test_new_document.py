@@ -32,7 +32,9 @@ class NewDocumentTest(unittest.TestCase):
                     response_id="r1",
                     usage={"input_tokens": 10},
                 )
-                with patch("pipeline.extraction.create_skill_client", return_value=client) as adapter:
+                with patch(
+                    "pipeline.extraction.create_skill_client", return_value=client
+                ) as adapter:
                     extract_document(source, output, domain=domain, title="Source")
                     self.assertEqual(
                         adapter.call_args.args[1], ROOT / "_cache" / "skill-registry.json"
@@ -42,8 +44,8 @@ class NewDocumentTest(unittest.TestCase):
                 )
                 args, kwargs = client.run_json_file.call_args
                 wire_schema = json.dumps(args[3])
-                self.assertNotIn('"minimum":', wire_schema)
-                self.assertNotIn('"minLength":', wire_schema)
+                self.assertIn('"minimum":', wire_schema)
+                self.assertIn('"minLength":', wire_schema)
                 self.assertIn('"additionalProperties": false', wire_schema)
                 self.assertIn("Source", args[1])
                 self.assertIn(f"{domain} mode", kwargs["cacheable_prompt"])

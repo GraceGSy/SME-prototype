@@ -18,23 +18,6 @@ SKILL = ROOT / "skills" / "extract-section-and-subsection-paragraphs"
 Domain = Literal["academic", "legal", "narrative"]
 
 
-def _api_content_schema() -> dict[str, Any]:
-    """Omit API-unsupported bounds, still enforced by validate_document locally."""
-
-    def supported(value: Any) -> Any:
-        if isinstance(value, dict):
-            return {
-                key: supported(child)
-                for key, child in value.items()
-                if key not in {"minimum", "minLength"}
-            }
-        if isinstance(value, list):
-            return [supported(child) for child in value]
-        return value
-
-    return supported(content_schema())
-
-
 def validate_source_tail(document: list[dict[str, Any]], source: str) -> None:
     """Detect truncated text extraction; this is not a full fidelity assessment."""
     expected = re.findall(r"\w+", source.casefold())[-8:]
@@ -88,7 +71,7 @@ def extract_document(
         skill,
         f"Extract the attached document: {title}",
         source,
-        _api_content_schema(),
+        content_schema(),
         policy=policy,
         cacheable_prompt=(
             f"Use the attached extraction Skill in {domain} mode. Preserve only "

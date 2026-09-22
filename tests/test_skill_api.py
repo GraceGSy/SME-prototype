@@ -16,6 +16,7 @@ from pipeline.providers.anthropic import (
     SkillSessionBudget,
     _credential_registry,
 )
+from pipeline.providers.contracts import StructuredOutputValidationError
 
 
 class _Usage:
@@ -99,6 +100,20 @@ SCHEMA = {
 
 
 class SkillApiTest(unittest.TestCase):
+    def test_api_schema_projection_does_not_weaken_local_validation(self):
+        schema = {
+            "type": "object",
+            "properties": {"answer": {"type": "string", "minLength": 1}},
+            "required": ["answer"],
+            "additionalProperties": False,
+        }
+        adapter, messages = _adapter(_Response("empty", "end_turn", 10, 5, '{"answer":""}'))
+        with self.assertRaises(StructuredOutputValidationError):
+            adapter.run_json([SKILL], "input", schema, policy=SkillCallPolicy(max_tokens=100))
+        wire = messages.calls[0]["output_config"]["format"]["schema"]
+        self.assertNotIn("minLength", wire["properties"]["answer"])
+        self.assertEqual(schema["properties"]["answer"]["minLength"], 1)
+
     def test_final_answer_after_tool_result_excludes_intermediate_json(self):
         response = _Response("final", "end_turn", 100, 50)
         response.content = [
@@ -139,7 +154,9 @@ class SkillApiTest(unittest.TestCase):
     def test_native_skill_registration_is_reused_until_source_or_account_changes(self):
         with (
             tempfile.TemporaryDirectory() as directory,
-            patch("pipeline.providers.anthropic.load_api_key", return_value="test-account-one") as key,
+            patch(
+                "pipeline.providers.anthropic.load_api_key", return_value="test-account-one"
+            ) as key,
             patch("anthropic.Anthropic") as api,
         ):
             root = Path(directory)
@@ -181,9 +198,10 @@ class SkillApiTest(unittest.TestCase):
             cacheable_context="Candidate corpus",
         )
         call = messages.calls[0]
-        self.assertEqual(call["container"], {
-            "skills": [{"type": "custom", "skill_id": SKILL.skill_id, "version": SKILL.version}]
-        })
+        self.assertEqual(
+            call["container"],
+            {"skills": [{"type": "custom", "skill_id": SKILL.skill_id, "version": SKILL.version}]},
+        )
         self.assertEqual(call["tools"][0]["name"], "code_execution")
         self.assertEqual(call["betas"], MESSAGE_BETAS)
         self.assertEqual(call["system"], CACHEABLE_SYSTEM)
@@ -321,7 +339,7 @@ class SkillApiTest(unittest.TestCase):
                     adapter, _ = _adapter(response)
                     policy = SkillCallPolicy(
                         max_tokens=config.model.max_tokens,
-                        max_input_tokens=stage.max_input_tokens or config.model.max_input_tokens
+                        max_input_tokens=stage.max_input_tokens or config.model.max_input_tokens,
                     )
                     if accepted:
                         self.assertEqual(

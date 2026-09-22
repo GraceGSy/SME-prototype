@@ -19,7 +19,9 @@ from .contracts import (
     SkillSessionBudget,
     StructuredOutputValidationError,
 )
+from .limits import SessionLimits
 from .registry import _credential_registry, load_api_key
+from .schemas import without_constraints
 
 MESSAGE_BETAS = [
     "code-execution-2025-08-25",
@@ -49,7 +51,7 @@ CACHEABLE_SYSTEM = [
 API_TIMEOUT_SECONDS = 30 * 60
 
 
-class ClaudeSkills:
+class ClaudeSkills(SessionLimits):
     def __init__(
         self,
         repo_root: Path,
@@ -241,7 +243,10 @@ class ClaudeSkills:
             thinking={"type": policy.thinking},
             output_config={
                 "effort": policy.effort,
-                "format": {"type": "json_schema", "schema": schema},
+                "format": {
+                    "type": "json_schema",
+                    "schema": without_constraints(schema, {"minimum", "minLength"}),
+                },
             },
             context_management={
                 "edits": [
@@ -279,7 +284,11 @@ class ClaudeSkills:
                     "input_usage_tokens": _input_token_volume(response_usage),
                 },
             )
-        self._record_session_usage(response_usage, response.id)
+        self._record_session_usage(
+            _input_token_volume(response_usage),
+            int(response_usage.get("output_tokens") or 0),
+            response.id,
+        )
         usage = _single_response_usage(response.id, response_usage)
         usage["session"] = dict(self.session_usage)
         input_tokens = _input_token_volume(usage)
@@ -311,47 +320,6 @@ class ClaudeSkills:
                 )
             raise RuntimeError(f"Claude response {response.id} stopped with {response.stop_reason}")
         return response, usage
-
-    @staticmethod
-    def _validate_prompt(
-        prompt: str,
-        policy: SkillCallPolicy,
-        cacheable_prompt: str | None = None,
-        cacheable_context: str | None = None,
-    ) -> None:
-        total_characters = len(prompt) + len(cacheable_prompt or "") + len(cacheable_context or "")
-        if total_characters > policy.max_prompt_characters:
-            raise SkillBudgetExceeded(
-                f"Skill prompt is {total_characters} characters; configured maximum is "
-                f"{policy.max_prompt_characters}"
-            )
-
-    def _check_session_budget(self) -> None:
-        if (
-            self.session_usage["api_responses"] >= self.session_budget.max_api_responses
-            or self.session_usage["input_tokens"] >= self.session_budget.max_input_tokens
-            or self.session_usage["output_tokens"] >= self.session_budget.max_output_tokens
-        ):
-            raise SkillBudgetExceeded(
-                "Skill process reached its response or observed-token limit",
-                usage={"session": dict(self.session_usage)},
-            )
-
-    def _record_session_usage(self, usage: dict[str, Any], response_id: str) -> None:
-        self.session_usage["api_responses"] += 1
-        self.session_usage["input_tokens"] += _input_token_volume(usage)
-        self.session_usage["output_tokens"] += int(usage.get("output_tokens") or 0)
-        if (
-            self.session_usage["input_tokens"] > self.session_budget.max_input_tokens
-            or self.session_usage["output_tokens"] > self.session_budget.max_output_tokens
-        ):
-            raise SkillBudgetExceeded(
-                "Skill process exceeded its cumulative token budget after response "
-                f"{response_id}: {self.session_usage['input_tokens']:,} input and "
-                f"{self.session_usage['output_tokens']:,} output tokens",
-                response_id=response_id,
-                usage={"session": dict(self.session_usage)},
-            )
 
     @staticmethod
     def _result(
