@@ -12,12 +12,13 @@ from uuid import uuid4
 
 from ..document import QUESTION_FIELD
 from ..files import directory_hash, write_json
-from ..llm.client import (
-    ClaudeSkills,
+from ..providers.contracts import (
     SkillCallPolicy,
+    SkillClient,
     SkillSessionBudget,
     StructuredOutputValidationError,
 )
+from ..providers.factory import create_skill_client
 from .configuration import PromptRepository, RenderedPrompt
 from .evidence_encoding import encode_evidence
 from .match_evidence import (
@@ -34,8 +35,8 @@ class JudgmentProvider(Protocol):
         """Return one validated structured judgment."""
 
 
-class AnthropicJudgmentProvider:
-    """Run structured Anthropic judgments and cache each complete input."""
+class CachedJudgments:
+    """Render, validate, and cache SMELTER judgments independently of the provider."""
 
     def __init__(
         self,
@@ -48,7 +49,7 @@ class AnthropicJudgmentProvider:
         self.model = model
         self.cache_dir = cache_dir
         self.skill_root = skill_root
-        self.skills: ClaudeSkills | None = None
+        self.skills: SkillClient | None = None
         cache_dir.mkdir(parents=True, exist_ok=True)
 
     def render_request(self, request: JudgmentRequest) -> RenderedPrompt:
@@ -148,7 +149,7 @@ class AnthropicJudgmentProvider:
             return result
 
         if self.skills is None:
-            self.skills = ClaudeSkills(
+            self.skills = create_skill_client(
                 self.skill_root.parent,
                 self.skill_root.parent / "_cache" / "skill-registry.json",
                 self.model.name,
@@ -158,6 +159,7 @@ class AnthropicJudgmentProvider:
                     max_output_tokens=self.model.max_session_output_tokens,
                 ),
                 response_dir=self.cache_dir / "responses",
+                provider=self.model.provider,
             )
         skill = self.skills.register(skill_path)
         user_prompt = rendered.user + feedback

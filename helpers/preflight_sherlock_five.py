@@ -16,9 +16,9 @@ from pipeline.incremental_graph.evidence import Evidence
 from pipeline.incremental_graph.graph import QuestionGraph
 from pipeline.incremental_graph.input_data import load_manifest
 from pipeline.incremental_graph.journal import RevisionJournal
-from pipeline.incremental_graph.llm import AnthropicJudgmentProvider
+from pipeline.incremental_graph.judgments import CachedJudgments
 from pipeline.incremental_graph.models import JudgmentRequest
-from pipeline.llm.client import ClaudeSkills
+from pipeline.providers.anthropic import ClaudeSkills
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "datasets/sherlock/famous-five/manifest.yaml"
@@ -33,7 +33,7 @@ def scenario(fraction: float) -> dict:
         journal = RevisionJournal(Path(directory))
         graph = QuestionGraph(journal)
         evidence = Evidence(graph)
-        renderer = AnthropicJudgmentProvider(
+        renderer = CachedJudgments(
             PromptRepository(config.prompt_root, config.context_root),
             config.model,
             Path(directory) / "cache",

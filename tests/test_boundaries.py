@@ -5,7 +5,7 @@ import unittest
 from pydantic import ValidationError
 
 from pipeline.document import validate_document
-from pipeline.incremental_graph.llm import AnthropicJudgmentProvider, JudgmentError
+from pipeline.incremental_graph.judgments import CachedJudgments, JudgmentError
 from pipeline.incremental_graph.models import JudgmentRequest, PaperManifest
 
 
@@ -53,8 +53,8 @@ class BoundaryTest(unittest.TestCase):
             {"target_id": [], "basis": "No match."},
         ):
             with self.subTest(invalid=invalid), self.assertRaises(JudgmentError):
-                AnthropicJudgmentProvider._validate(request, invalid)
-        AnthropicJudgmentProvider._validate(request, {"target_id": None, "basis": "No match.", "evidence": {"focus": [], "target": []}})
+                CachedJudgments._validate(request, invalid)
+        CachedJudgments._validate(request, {"target_id": None, "basis": "No match.", "evidence": {"focus": [], "target": []}})
 
 
 if __name__ == "__main__":

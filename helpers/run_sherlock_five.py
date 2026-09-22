@@ -14,7 +14,7 @@ from pipeline.files import read_json, write_json
 from pipeline.incremental_graph.configuration import load_pipeline_config
 from pipeline.incremental_graph.models import PipelineConfig
 from pipeline.incremental_graph.runs import DEFAULT_CONFIG, retry_graph, start_graph
-from pipeline.llm.client import ClaudeSkills
+from pipeline.providers.anthropic import ClaudeSkills
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "datasets/sherlock/famous-five/manifest.yaml"

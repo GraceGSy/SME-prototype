@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import patch
 
 from helpers.preflight_sherlock_five import scenario
-from pipeline.llm.client import ClaudeSkills
+from pipeline.providers.anthropic import ClaudeSkills
 
 
 class SherlockPreflightTest(unittest.TestCase):

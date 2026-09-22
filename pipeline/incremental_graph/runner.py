@@ -12,7 +12,7 @@ from .evidence import Evidence
 from .export import export_revision
 from .graph import QuestionGraph
 from .journal import RevisionJournal
-from .llm import JudgmentProvider
+from .judgments import JudgmentProvider
 from .match_rules import (
     adjacent_core_anchors,
     adjacent_paragraph_fan_in,

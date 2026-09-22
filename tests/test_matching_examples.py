@@ -16,7 +16,7 @@ from pipeline.incremental_graph.configuration import (
     PromptRepository,
     load_pipeline_config,
 )
-from pipeline.incremental_graph.llm import AnthropicJudgmentProvider
+from pipeline.incremental_graph.judgments import CachedJudgments
 
 
 class MatchingExamplesTest(unittest.TestCase):
@@ -105,7 +105,7 @@ class MatchingExamplesTest(unittest.TestCase):
 
     def test_demonstration_handles_are_not_valid_live_outputs(self):
         with tempfile.TemporaryDirectory() as directory:
-            provider = AnthropicJudgmentProvider(
+            provider = CachedJudgments(
                 self.repository,
                 self.config.model,
                 Path(directory),

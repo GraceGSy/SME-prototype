@@ -7,7 +7,7 @@ Not an invoice: native tool fees and usage never returned by the provider are un
 from pathlib import Path
 
 from pipeline.files import read_json
-from pipeline.llm.client import SkillBudgetExceeded
+from pipeline.providers.contracts import SkillBudgetExceeded
 
 
 def token_cost(usage):

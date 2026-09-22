@@ -12,9 +12,9 @@ from test_incremental_graph import CONFIG_PATH
 from test_skill_api import _adapter, _Response
 
 from pipeline.incremental_graph.configuration import PromptRepository, load_pipeline_config
-from pipeline.incremental_graph.llm import AnthropicJudgmentProvider, JudgmentError
+from pipeline.incremental_graph.judgments import CachedJudgments, JudgmentError
 from pipeline.incremental_graph.models import JudgmentRequest
-from pipeline.llm.client import SkillBudgetExceeded, SkillRef
+from pipeline.providers.contracts import SkillBudgetExceeded, SkillRef
 
 
 def evidence_request():
@@ -71,11 +71,11 @@ class MatchEvidenceTest(unittest.TestCase):
         value = evidence_response()
         del value["evidence"]
         with self.assertRaises(JudgmentError):
-            AnthropicJudgmentProvider._validate(evidence_request(), value)
+            CachedJudgments._validate(evidence_request(), value)
 
     def test_accepts_exact_quotes_in_member_order_in_both_directions(self):
         request, value = evidence_request(), evidence_response()
-        AnthropicJudgmentProvider._validate(request, value)
+        CachedJudgments._validate(request, value)
         request.context["focus"], request.context["candidates"][0] = (
             request.context["candidates"][0],
             request.context["focus"],
@@ -85,7 +85,7 @@ class MatchEvidenceTest(unittest.TestCase):
             value["evidence"]["target"],
             value["evidence"]["focus"],
         )
-        AnthropicJudgmentProvider._validate(request, value)
+        CachedJudgments._validate(request, value)
 
     def test_rejects_neighbor_quotes_missing_members_order_and_normalization(self):
         for side, quotes in [
@@ -102,7 +102,7 @@ class MatchEvidenceTest(unittest.TestCase):
                 value = evidence_response()
                 value["evidence"][side] = quotes
                 with self.assertRaises(JudgmentError):
-                    AnthropicJudgmentProvider._validate(evidence_request(), value)
+                    CachedJudgments._validate(evidence_request(), value)
 
     def test_abstention_requires_empty_evidence_and_structure_uses_actual_unit(self):
         value = {
@@ -110,10 +110,10 @@ class MatchEvidenceTest(unittest.TestCase):
             "basis": "Different roles.",
             "evidence": {"focus": [], "target": []},
         }
-        AnthropicJudgmentProvider._validate(evidence_request(), value)
+        CachedJudgments._validate(evidence_request(), value)
         value["evidence"]["target"] = ["Invented evidence"]
         with self.assertRaises(JudgmentError):
-            AnthropicJudgmentProvider._validate(evidence_request(), value)
+            CachedJudgments._validate(evidence_request(), value)
         request = evidence_request()
         request.context = {
             "scope": {"level": "section"},
@@ -128,14 +128,14 @@ class MatchEvidenceTest(unittest.TestCase):
                 }
             ],
         }
-        AnthropicJudgmentProvider._validate(request, evidence_response())
+        CachedJudgments._validate(request, evidence_response())
 
     def test_count_feedback_identifies_every_required_member_without_repeating_source(self):
         request, value = evidence_request(), evidence_response()
         value["evidence"]["target"] = ["dismiss the petition"]
         before = copy.deepcopy((request.context, value))
         with self.assertRaises(JudgmentError) as caught:
-            AnthropicJudgmentProvider._validate(request, value)
+            CachedJudgments._validate(request, value)
         feedback = str(caught.exception)
         for expected in (
             "evidence.target has 1 quotation; expected exactly 2",
@@ -147,7 +147,7 @@ class MatchEvidenceTest(unittest.TestCase):
         self.assertNotIn("We dismiss the petition.", feedback)
         self.assertEqual((request.context, value), before)
         value["evidence"]["target"].append("judgment is affirmed")
-        AnthropicJudgmentProvider._validate(request, value)
+        CachedJudgments._validate(request, value)
 
     def test_misattribution_feedback_names_selected_section_and_actual_quote_location(self):
         request = evidence_request()
@@ -178,7 +178,7 @@ class MatchEvidenceTest(unittest.TestCase):
         }
         before = copy.deepcopy((request.context, value))
         with self.assertRaises(JudgmentError) as caught:
-            AnthropicJudgmentProvider._validate(request, value)
+            CachedJudgments._validate(request, value)
         feedback = str(caught.exception)
         for expected in ("evidence.target[0]", "s0004", "System Design", "s0002", "Introduction"):
             self.assertIn(expected, feedback)
@@ -186,7 +186,7 @@ class MatchEvidenceTest(unittest.TestCase):
         self.assertNotIn(request.context["candidates"][1]["full_text"], feedback)
         self.assertEqual((request.context, value), before)
         value["evidence"]["target"] = ["source passages alongside the draft"]
-        AnthropicJudgmentProvider._validate(request, value)
+        CachedJudgments._validate(request, value)
 
     def test_feedback_distinguishes_neighbors_other_members_and_absent_text(self):
         for side, index, quote, location in (
@@ -198,7 +198,7 @@ class MatchEvidenceTest(unittest.TestCase):
                 value = evidence_response()
                 value["evidence"][side][index] = quote
                 with self.assertRaises(JudgmentError) as caught:
-                    AnthropicJudgmentProvider._validate(evidence_request(), value)
+                    CachedJudgments._validate(evidence_request(), value)
                 self.assertIn(location, str(caught.exception))
                 self.assertIn(quote, str(caught.exception))
 
@@ -207,7 +207,7 @@ class MatchEvidenceTest(unittest.TestCase):
         value["evidence"]["focus"] = ["Costs are awarded"]
         value["evidence"]["target"] = ["DISMISS the petition", "judgment is AFFIRMED"]
         with self.assertRaises(JudgmentError) as caught:
-            AnthropicJudgmentProvider._validate(evidence_request(), value)
+            CachedJudgments._validate(evidence_request(), value)
         for position in ("evidence.focus[0]", "evidence.target[0]", "evidence.target[1]"):
             self.assertIn(position, str(caught.exception))
 
@@ -228,13 +228,13 @@ class MatchEvidenceTest(unittest.TestCase):
         responses.append(SimpleNamespace(value=evidence_response(), raw_response={"id": "good"}))
         with (
             tempfile.TemporaryDirectory() as directory,
-            patch("pipeline.incremental_graph.llm.ClaudeSkills") as client,
+            patch("pipeline.incremental_graph.judgments.create_skill_client") as client,
         ):
             client.return_value.register.return_value = SkillRef(
                 "match-role", "skill", "v1", "hash"
             )
             client.return_value.run_json.side_effect = responses
-            provider = AnthropicJudgmentProvider(
+            provider = CachedJudgments(
                 PromptRepository(config.prompt_root, config.context_root),
                 config.model,
                 Path(directory),
@@ -268,13 +268,13 @@ class MatchEvidenceTest(unittest.TestCase):
         config = load_pipeline_config(CONFIG_PATH)
         with (
             tempfile.TemporaryDirectory() as directory,
-            patch("pipeline.incremental_graph.llm.ClaudeSkills") as client,
+            patch("pipeline.incremental_graph.judgments.create_skill_client") as client,
         ):
             client.return_value.register.return_value = SkillRef(
                 "match-role", "skill", "v1", "hash"
             )
             client.return_value.run_json.side_effect = SkillBudgetExceeded("budget")
-            provider = AnthropicJudgmentProvider(
+            provider = CachedJudgments(
                 PromptRepository(config.prompt_root, config.context_root),
                 config.model,
                 Path(directory),
@@ -294,7 +294,7 @@ class MatchEvidenceTest(unittest.TestCase):
         )
         value["evidence"]["focus"] = [quote]
         before = copy.deepcopy((request.context, value))
-        AnthropicJudgmentProvider._validate(request, value)
+        CachedJudgments._validate(request, value)
         self.assertEqual((request.context, value), before)
         for invalid in (
             f"{ending} ... {opening}",  # Reversed source order.
@@ -307,7 +307,7 @@ class MatchEvidenceTest(unittest.TestCase):
         ):
             with self.subTest(quote=invalid), self.assertRaises(JudgmentError):
                 value["evidence"]["focus"] = [invalid]
-                AnthropicJudgmentProvider._validate(request, value)
+                CachedJudgments._validate(request, value)
         value["evidence"]["focus"] = [quote]
         for location in ("next_paragraph", "other_member"):
             with self.subTest(location=location):
@@ -328,7 +328,7 @@ class MatchEvidenceTest(unittest.TestCase):
                     [quote, ending] if location == "other_member" else [quote]
                 )
                 with self.assertRaises(JudgmentError):
-                    AnthropicJudgmentProvider._validate(request, value)
+                    CachedJudgments._validate(request, value)
 
     def test_excerpt_accepts_punctuation_boundaries_without_changing_source_text(self):
         request, value = evidence_request(), evidence_response()
@@ -342,7 +342,7 @@ class MatchEvidenceTest(unittest.TestCase):
                     f'"{opening} collections spans several data types and opportunities{boundary}{ending}'
                 )
                 before = copy.deepcopy((request.context, value))
-                AnthropicJudgmentProvider._validate(request, value)
+                CachedJudgments._validate(request, value)
                 self.assertEqual((request.context, value), before)
         for source in (
             f"{opening} opportunitiesun{ending}",  # A suffix inside a word is not an endpoint.
@@ -351,7 +351,7 @@ class MatchEvidenceTest(unittest.TestCase):
         ):
             request.context["focus"]["paragraph_under_consideration"]["full_text"] = source
             with self.subTest(source=source), self.assertRaises(JudgmentError):
-                AnthropicJudgmentProvider._validate(request, value)
+                CachedJudgments._validate(request, value)
 
     def test_transport_length_failure_gets_bounded_feedback_but_other_schema_errors_do_not(self):
         config = load_pipeline_config(CONFIG_PATH)
@@ -388,7 +388,7 @@ class MatchEvidenceTest(unittest.TestCase):
                         return_value=SkillRef("match-role", "skill", "v1", "hash"),
                     ),
                 ):
-                    provider = AnthropicJudgmentProvider(
+                    provider = CachedJudgments(
                         PromptRepository(config.prompt_root, config.context_root),
                         config.model,
                         Path(directory),

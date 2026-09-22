@@ -19,7 +19,7 @@ from pydantic import Field
 from ..files import directory_hash, read_json, write_json
 from .configuration import PromptRepository, load_pipeline_config
 from .input_data import load_manifest
-from .llm import AnthropicJudgmentProvider
+from .judgments import CachedJudgments
 from .models import Granularity, PaperManifest, PipelineConfig, SchemaVersion, StrictModel
 from .runner import IncrementalGraphRunner
 
@@ -45,7 +45,7 @@ def _policy_hash(config: PipelineConfig) -> str:
         *Path(__file__).parent.glob("*.py"),
         pipeline / "document.py",
         pipeline / "files.py",
-        pipeline / "llm/client.py",
+        *(pipeline / "providers").glob("*.py"),
     ]
     assets = {
         "config": config.model_dump(mode="json"),
@@ -173,7 +173,7 @@ def _execute(
     write_json(run_dir / "run.json", state.model_dump(mode="json"))
     _, papers = load_manifest(frozen_manifest)
     config = state.config
-    judge = AnthropicJudgmentProvider(
+    judge = CachedJudgments(
         PromptRepository(config.prompt_root, config.context_root),
         config.model,
         run_dir / "cache",

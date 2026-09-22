@@ -67,7 +67,7 @@ class GraphRunTest(unittest.TestCase):
             additions = manifest(root, ["c", "d"], "additions")
             complete = manifest(root, ["a", "b", "c", "d"], "complete")
             with patch(
-                "pipeline.incremental_graph.runs.AnthropicJudgmentProvider",
+                "pipeline.incremental_graph.runs.CachedJudgments",
                 side_effect=lambda *args, **kwargs: ScriptedJudge(matches),
             ):
                 whole = start_graph(complete, root / "whole", CONFIG_PATH)
@@ -88,7 +88,7 @@ class GraphRunTest(unittest.TestCase):
             third = manifest(root, ["c"], "third")
             run = root / "run"
             with patch(
-                "pipeline.incremental_graph.runs.AnthropicJudgmentProvider",
+                "pipeline.incremental_graph.runs.CachedJudgments",
                 return_value=ScriptedJudge({}),
             ):
                 initial = start_graph(first, run, CONFIG_PATH)
@@ -107,7 +107,7 @@ class GraphRunTest(unittest.TestCase):
             one = manifest(root, ["a"], "one")
             two = manifest(root, ["a", "b"], "two")
             with patch(
-                "pipeline.incremental_graph.runs.AnthropicJudgmentProvider",
+                "pipeline.incremental_graph.runs.CachedJudgments",
                 return_value=ScriptedJudge({}),
             ) as provider:
                 with self.assertRaisesRegex(ValueError, "at least two"):
@@ -130,7 +130,7 @@ class GraphRunTest(unittest.TestCase):
                     raise RuntimeError("intentional break")
 
             with patch(
-                "pipeline.incremental_graph.runs.AnthropicJudgmentProvider",
+                "pipeline.incremental_graph.runs.CachedJudgments",
                 return_value=BrokenJudge(),
             ):
                 with self.assertRaisesRegex(RuntimeError, "intentional break"):
@@ -138,7 +138,7 @@ class GraphRunTest(unittest.TestCase):
             state = json.loads((root / "run/run.json").read_text())
             self.assertIsNone(state["current_revision"])
             with patch(
-                "pipeline.incremental_graph.runs.AnthropicJudgmentProvider",
+                "pipeline.incremental_graph.runs.CachedJudgments",
                 return_value=ScriptedJudge({}),
             ):
                 result = retry_graph(root / "run")
@@ -150,7 +150,7 @@ class GraphRunTest(unittest.TestCase):
             root = Path(directory)
             source = manifest(root, ["a", "b"], "source")
             with patch(
-                "pipeline.incremental_graph.runs.AnthropicJudgmentProvider",
+                "pipeline.incremental_graph.runs.CachedJudgments",
                 return_value=ScriptedJudge({}),
             ) as provider:
                 start_graph(source, root / "run", CONFIG_PATH)
@@ -168,7 +168,7 @@ class GraphRunTest(unittest.TestCase):
             root = Path(directory)
             source = manifest(root, ["a", "b"], "source")
             with patch(
-                "pipeline.incremental_graph.runs.AnthropicJudgmentProvider",
+                "pipeline.incremental_graph.runs.CachedJudgments",
                 return_value=ScriptedJudge({}),
             ) as provider:
                 start_graph(source, root / "run", CONFIG_PATH)

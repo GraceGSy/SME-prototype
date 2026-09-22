@@ -12,7 +12,7 @@ from unittest.mock import patch
 from helpers.usage_budget import token_cost
 from pipeline.files import read_json, write_json
 from pipeline.incremental_graph.runs import add_papers, retry_graph, start_graph
-from pipeline.llm.client import ClaudeSkills, SkillBudgetExceeded, SkillCallPolicy
+from pipeline.providers.anthropic import ClaudeSkills, SkillBudgetExceeded, SkillCallPolicy
 
 ROOT = Path(__file__).resolve().parents[1]
 RUN = ROOT / "runs/hci-concise-fresh-20260907"

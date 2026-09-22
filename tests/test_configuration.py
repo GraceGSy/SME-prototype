@@ -33,7 +33,7 @@ class ConfigurationTest(unittest.TestCase):
                 path = root / "config.yaml"
                 path.write_text(yaml.safe_dump(config))
                 documents = manifest(root, ["a", "b"], "docs")
-                with patch("pipeline.incremental_graph.runs.AnthropicJudgmentProvider") as provider:
+                with patch("pipeline.incremental_graph.runs.CachedJudgments") as provider:
                     with self.assertRaises(ValueError):
                         start_graph(documents, root / "run", path)
                     provider.assert_not_called()

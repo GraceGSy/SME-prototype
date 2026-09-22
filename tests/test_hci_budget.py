@@ -1,7 +1,7 @@
 import unittest
 
 from helpers.run_hci_concise_20260907 import extension_policy, token_cost
-from pipeline.llm.client import SkillCallPolicy
+from pipeline.providers.contracts import SkillCallPolicy
 
 
 class HciBudgetTest(unittest.TestCase):

@@ -17,11 +17,11 @@ from pipeline.document import QUESTION_FIELD
 from pipeline.files import directory_hash, read_json, write_json
 from pipeline.incremental_graph.configuration import PromptRepository, load_pipeline_config
 from pipeline.incremental_graph.input_data import load_manifest
-from pipeline.incremental_graph.llm import AnthropicJudgmentProvider
+from pipeline.incremental_graph.judgments import CachedJudgments
 from pipeline.incremental_graph.models import JudgmentResult
 from pipeline.incremental_graph.runner import IncrementalGraphRunner
 from pipeline.incremental_graph.runs import DEFAULT_CONFIG, RunState, _policy_hash
-from pipeline.llm.client import ClaudeSkills
+from pipeline.providers.anthropic import ClaudeSkills
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "datasets/legal/opinions.manifest.yaml"
@@ -154,7 +154,7 @@ def scenario(fraction, calibration, paragraph_fraction=None):
     manifest, papers = load_manifest(MANIFEST)
     with tempfile.TemporaryDirectory() as directory:
         root = Path(directory)
-        renderer = AnthropicJudgmentProvider(
+        renderer = CachedJudgments(
             PromptRepository(config.prompt_root, config.context_root),
             config.model,
             root / "cache",

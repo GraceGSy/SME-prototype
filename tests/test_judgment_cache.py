@@ -10,9 +10,9 @@ from unittest.mock import patch
 from test_incremental_graph import CONFIG_PATH
 
 from pipeline.incremental_graph.configuration import PromptRepository, load_pipeline_config
-from pipeline.incremental_graph.llm import AnthropicJudgmentProvider, JudgmentError
+from pipeline.incremental_graph.judgments import CachedJudgments, JudgmentError
 from pipeline.incremental_graph.models import JudgmentRequest
-from pipeline.llm.client import SkillRef
+from pipeline.providers.contracts import SkillRef
 
 
 class JudgmentCacheTest(unittest.TestCase):
@@ -21,7 +21,7 @@ class JudgmentCacheTest(unittest.TestCase):
         raw = {"id": "rejected-response", "usage": {"output_tokens": 12}}
         with (
             tempfile.TemporaryDirectory() as directory,
-            patch("pipeline.incremental_graph.llm.ClaudeSkills") as client,
+            patch("pipeline.incremental_graph.judgments.create_skill_client") as client,
         ):
             client.return_value.register.return_value = SkillRef(
                 "match-role", "skill", "v1", "hash"
@@ -34,7 +34,7 @@ class JudgmentCacheTest(unittest.TestCase):
                 },
                 raw_response=raw,
             )
-            provider = AnthropicJudgmentProvider(
+            provider = CachedJudgments(
                 PromptRepository(config.prompt_root, config.context_root),
                 config.model,
                 Path(directory),
@@ -135,7 +135,7 @@ class JudgmentCacheTest(unittest.TestCase):
         )
         with (
             tempfile.TemporaryDirectory() as directory,
-            patch("pipeline.incremental_graph.llm.ClaudeSkills") as client,
+            patch("pipeline.incremental_graph.judgments.create_skill_client") as client,
         ):
             client.return_value.run_json.return_value = response
             client.return_value.register.return_value = SkillRef(
@@ -143,7 +143,7 @@ class JudgmentCacheTest(unittest.TestCase):
             )
 
             def provider(model=config.model):
-                return AnthropicJudgmentProvider(
+                return CachedJudgments(
                     PromptRepository(config.prompt_root, config.context_root),
                     model,
                     Path(directory),
@@ -188,7 +188,7 @@ class JudgmentCacheTest(unittest.TestCase):
 
         config = load_pipeline_config(CONFIG_PATH)
         with tempfile.TemporaryDirectory() as directory:
-            provider = AnthropicJudgmentProvider(
+            provider = CachedJudgments(
                 PromptRepository(config.prompt_root, config.context_root),
                 config.model,
                 Path(directory),

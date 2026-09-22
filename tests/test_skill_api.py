@@ -6,7 +6,7 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 from pipeline.incremental_graph.configuration import load_pipeline_config
-from pipeline.llm.client import (
+from pipeline.providers.anthropic import (
     CACHEABLE_SYSTEM,
     MESSAGE_BETAS,
     ClaudeSkills,
@@ -139,7 +139,7 @@ class SkillApiTest(unittest.TestCase):
     def test_native_skill_registration_is_reused_until_source_or_account_changes(self):
         with (
             tempfile.TemporaryDirectory() as directory,
-            patch("pipeline.llm.client.load_api_key", return_value="test-account-one") as key,
+            patch("pipeline.providers.anthropic.load_api_key", return_value="test-account-one") as key,
             patch("anthropic.Anthropic") as api,
         ):
             root = Path(directory)
@@ -181,7 +181,9 @@ class SkillApiTest(unittest.TestCase):
             cacheable_context="Candidate corpus",
         )
         call = messages.calls[0]
-        self.assertEqual(call["container"], {"skills": [SKILL.api_value()]})
+        self.assertEqual(call["container"], {
+            "skills": [{"type": "custom", "skill_id": SKILL.skill_id, "version": SKILL.version}]
+        })
         self.assertEqual(call["tools"][0]["name"], "code_execution")
         self.assertEqual(call["betas"], MESSAGE_BETAS)
         self.assertEqual(call["system"], CACHEABLE_SYSTEM)

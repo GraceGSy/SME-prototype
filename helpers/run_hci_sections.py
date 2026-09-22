@@ -14,7 +14,7 @@ from helpers.usage_budget import ResponseLedger
 from pipeline.files import read_json, write_json
 from pipeline.incremental_graph.input_data import load_manifest
 from pipeline.incremental_graph.runs import add_papers, retry_graph, start_graph
-from pipeline.llm.client import ClaudeSkills
+from pipeline.providers.anthropic import ClaudeSkills
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "datasets/hci-five-paper/content/sections.manifest.yaml"

@@ -9,7 +9,7 @@ from helpers import run_sherlock_five as sherlock
 from helpers.run_sherlock_five import run
 from helpers.usage_budget import ResponseLedger
 from pipeline.files import write_json
-from pipeline.llm.client import SkillBudgetExceeded
+from pipeline.providers.contracts import SkillBudgetExceeded
 
 
 class UsageBudgetTest(unittest.TestCase):

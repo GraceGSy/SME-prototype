@@ -10,7 +10,8 @@ from typing import Any, Literal
 
 from .document import content_schema, strip_questions, validate_document
 from .files import directory_hash, write_json
-from .llm.client import ClaudeSkills, SkillCallPolicy
+from .providers.contracts import SkillCallPolicy, SkillClient
+from .providers.factory import create_skill_client
 
 ROOT = Path(__file__).resolve().parents[1]
 SKILL = ROOT / "skills" / "extract-section-and-subsection-paragraphs"
@@ -58,7 +59,7 @@ def extract_document(
     domain: Domain,
     title: str,
     model: str = "claude-sonnet-5",
-    client: ClaudeSkills | None = None,
+    client: SkillClient | None = None,
 ) -> Path:
     """Publish canonical content and provenance after one validated judgment."""
     source, output = source.resolve(), output.resolve()
@@ -81,7 +82,7 @@ def extract_document(
     if source.stat().st_size > policy.max_attachment_bytes:
         raise ValueError(f"Source exceeds the {policy.max_attachment_bytes}-byte extraction limit")
     raw = source.read_bytes()
-    client = client or ClaudeSkills(ROOT, ROOT / "_cache/skill-registry.json", model)
+    client = client or create_skill_client(ROOT, ROOT / "_cache/skill-registry.json", model)
     skill = client.register(SKILL)
     result = client.run_json_file(
         skill,

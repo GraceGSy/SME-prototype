@@ -10,7 +10,7 @@ from helpers.recover_hci_20260907 import ROOT, RecoveryProvider, ReplayComplete
 from pipeline.files import directory_hash, read_json, write_json
 from pipeline.incremental_graph.configuration import PromptRepository
 from pipeline.incremental_graph.input_data import load_manifest
-from pipeline.incremental_graph.llm import AnthropicJudgmentProvider
+from pipeline.incremental_graph.judgments import CachedJudgments
 from pipeline.incremental_graph.runner import IncrementalGraphRunner
 from pipeline.incremental_graph.runs import RunState
 
@@ -70,7 +70,7 @@ def run(execute=False):
                 raise ValueError("Source inputs changed")
         revisions = sorted((output / "revisions").glob("revision-*"))
         revision = output / "revisions" / f"revision-{len(revisions) + 1:04d}"
-        live = AnthropicJudgmentProvider(
+        live = CachedJudgments(
             PromptRepository(state.config.prompt_root, state.config.context_root),
             state.config.model,
             output / "cache",

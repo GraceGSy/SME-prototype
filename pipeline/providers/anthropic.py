@@ -2,18 +2,24 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
-import os
 import warnings
-from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Iterable, Literal
+from typing import Any, Iterable
 from uuid import uuid4
 
-from jsonschema import Draft202012Validator, ValidationError
+from jsonschema import Draft202012Validator
 
 from ..files import directory_hash, write_json
+from .contracts import (
+    RunResult,
+    SkillBudgetExceeded,
+    SkillCallPolicy,
+    SkillRef,
+    SkillSessionBudget,
+    StructuredOutputValidationError,
+)
+from .registry import _credential_registry, load_api_key
 
 MESSAGE_BETAS = [
     "code-execution-2025-08-25",
@@ -43,169 +49,6 @@ CACHEABLE_SYSTEM = [
 API_TIMEOUT_SECONDS = 30 * 60
 
 
-class StructuredOutputValidationError(ValueError):
-    """Expose schema failures so callers can retry only explicitly allowed errors."""
-
-    def __init__(self, response_id: str, errors: list[ValidationError]) -> None:
-        super().__init__(f"Claude response {response_id} violates the requested schema")
-        self.errors = errors
-
-
-class SkillBudgetExceeded(RuntimeError):
-    """Raised when a request bound or observed-usage limit is reached."""
-
-    def __init__(
-        self,
-        message: str,
-        *,
-        response_id: str | None = None,
-        usage: dict[str, Any] | None = None,
-    ) -> None:
-        super().__init__(message)
-        self.response_id = response_id
-        self.usage = usage or {}
-
-
-@dataclass(frozen=True)
-class SkillCallPolicy:
-    """Request bounds and post-response usage guards; not a guaranteed spend cap."""
-
-    max_tokens: int
-    effort: Literal["low", "medium", "high"] = "low"
-    thinking: Literal["disabled", "adaptive"] = "disabled"
-    max_input_tokens: int = 200_000
-    max_prompt_characters: int = 500_000
-    max_attachment_bytes: int = 500_000
-    context_management_trigger_tokens: int = 50_000
-
-    def __post_init__(self) -> None:
-        positive = {
-            "max_tokens": self.max_tokens,
-            "max_input_tokens": self.max_input_tokens,
-            "max_prompt_characters": self.max_prompt_characters,
-            "max_attachment_bytes": self.max_attachment_bytes,
-            "context_management_trigger_tokens": self.context_management_trigger_tokens,
-        }
-        invalid = [name for name, value in positive.items() if value <= 0]
-        if invalid:
-            raise ValueError(f"Skill call limits must be positive: {', '.join(invalid)}")
-
-    def output_config(self, schema: dict[str, Any]) -> dict[str, Any]:
-        return {
-            "effort": self.effort,
-            "format": {"type": "json_schema", "schema": schema},
-        }
-
-    def as_dict(self) -> dict[str, Any]:
-        return asdict(self)
-
-
-@dataclass(frozen=True)
-class SkillSessionBudget:
-    """Process-local ceiling across many individually bounded Skill calls."""
-
-    max_api_responses: int = 100
-    max_input_tokens: int = 2_000_000
-    max_output_tokens: int = 100_000
-
-    def __post_init__(self) -> None:
-        if (
-            min(
-                self.max_api_responses,
-                self.max_input_tokens,
-                self.max_output_tokens,
-            )
-            <= 0
-        ):
-            raise ValueError("Skill session budget values must be positive")
-
-
-@dataclass(frozen=True)
-class SkillRef:
-    path: str
-    skill_id: str
-    version: str
-    source_sha256: str
-
-    def api_value(self) -> dict[str, str]:
-        return {"type": "custom", "skill_id": self.skill_id, "version": self.version}
-
-
-@dataclass(frozen=True)
-class RunResult:
-    response_id: str
-    stop_reason: str
-    usage: dict[str, Any]
-    container_id: str | None
-    value: Any = None
-    raw_text: str | None = None
-    raw_response: dict[str, Any] | None = None
-    call_policy: dict[str, Any] | None = None
-
-
-def load_api_key(repo_root: Path) -> str:
-    """Load the API key without copying it into pipeline output or logs."""
-    key = os.environ.get("ANTHROPIC_API_KEY")
-    if key:
-        return key
-
-    for directory in [repo_root, *repo_root.parents]:
-        env_path = directory / ".env"
-        if not env_path.exists():
-            continue
-        values: dict[str, str] = {}
-        for raw_line in env_path.read_text(encoding="utf-8-sig").splitlines():
-            line = raw_line.strip()
-            if not line or line.startswith("#") or "=" not in line:
-                continue
-            name, value = line.split("=", 1)
-            values[name.strip()] = value.strip().strip("\"'")
-        key = values.get("ANTHROPIC_API_KEY")
-        if key:
-            os.environ["ANTHROPIC_API_KEY"] = key
-            return key
-    raise RuntimeError("No ANTHROPIC_API_KEY was found in the environment or an ancestor .env")
-
-
-def _credential_registry(
-    state: dict[str, Any],
-    api_key: str,
-) -> tuple[dict[str, Any], dict[str, Any]]:
-    """Read the current registry only; legacy caches must be discarded explicitly."""
-
-    skill_record = {
-        "type": "object",
-        "additionalProperties": False,
-        "required": ["skill_id", "version", "source_sha256"],
-        "properties": {
-            "skill_id": {"type": "string", "minLength": 1},
-            "version": {"type": "string", "minLength": 1},
-            "source_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
-        },
-    }
-    schema = {
-        "type": "object",
-        "additionalProperties": False,
-        "required": ["schema_version", "accounts"],
-        "properties": {
-            "schema_version": {"const": 1},
-            "accounts": {
-                "type": "object",
-                "propertyNames": {"pattern": "^[a-f0-9]{64}$"},
-                "additionalProperties": {"type": "object", "additionalProperties": skill_record},
-            },
-        },
-    }
-    try:
-        Draft202012Validator(schema).validate(state)
-    except ValidationError as error:
-        raise ValueError(
-            "Unsupported or malformed Skill registry; discard this cache explicitly"
-        ) from error
-    credential_id = hashlib.sha256(api_key.encode("utf-8")).hexdigest()
-    return state, state["accounts"].setdefault(credential_id, {})
-
-
 class ClaudeSkills:
     def __init__(
         self,
@@ -222,7 +65,7 @@ class ClaudeSkills:
         self.state_path = state_path
         self.model = model
         self.response_dir = response_dir or state_path.parent / "responses"
-        api_key = load_api_key(repo_root)
+        api_key = load_api_key(repo_root, "ANTHROPIC_API_KEY")
         self.client = Anthropic(
             api_key=api_key,
             timeout=API_TIMEOUT_SECONDS,
@@ -382,7 +225,10 @@ class ClaudeSkills:
         policy: SkillCallPolicy,
         schema: dict[str, Any],
     ) -> tuple[Any, dict[str, Any]]:
-        skill_values = [skill.api_value() for skill in skills]
+        skill_values = [
+            {"type": "custom", "skill_id": skill.skill_id, "version": skill.version}
+            for skill in skills
+        ]
         self._check_session_budget()
         response = self.client.beta.messages.create(
             model=self.model,
@@ -393,7 +239,10 @@ class ClaudeSkills:
             messages=messages,
             tools=[CODE_EXECUTION_TOOL],
             thinking={"type": policy.thinking},
-            output_config=policy.output_config(schema),
+            output_config={
+                "effort": policy.effort,
+                "format": {"type": "json_schema", "schema": schema},
+            },
             context_management={
                 "edits": [
                     {

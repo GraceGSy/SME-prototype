@@ -32,7 +32,7 @@ class NewDocumentTest(unittest.TestCase):
                     response_id="r1",
                     usage={"input_tokens": 10},
                 )
-                with patch("pipeline.extraction.ClaudeSkills", return_value=client) as adapter:
+                with patch("pipeline.extraction.create_skill_client", return_value=client) as adapter:
                     extract_document(source, output, domain=domain, title="Source")
                     self.assertEqual(
                         adapter.call_args.args[1], ROOT / "_cache" / "skill-registry.json"

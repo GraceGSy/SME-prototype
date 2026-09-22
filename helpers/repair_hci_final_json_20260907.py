@@ -10,7 +10,7 @@ from helpers.extend_hci_20260907 import OUTPUT, run
 from helpers.recover_hci_20260907 import RecoveryProvider, ReplayComplete
 from pipeline.files import directory_hash, read_json, write_json
 from pipeline.incremental_graph.models import JudgmentResult
-from pipeline.llm.client import _prompt_content
+from pipeline.providers.anthropic import _prompt_content
 
 SOURCE = OUTPUT / "cache/responses/6b7ae2c38d134944849f64c604a42f83.json"
 

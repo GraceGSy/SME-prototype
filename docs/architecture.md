@@ -99,9 +99,14 @@ not implicit consequences of singleton matching.
 - `evidence.py`: exact unit/node evidence and identity-free paragraph windows.
 - `match_rules.py`: pure reciprocity and adjacency predicates.
 - `graph.py`: deterministic mutations, stable IDs, serialization, replay.
-- `llm.py`: graph-specific fingerprints, cache records, response validation.
-- `pipeline/llm/client.py`: shared Skills API calls, registration, temporary
-  attachment cleanup, request bounds, observed usage accounting.
+- `judgments.py`: shared prompt rendering, fingerprints, completed-call caching,
+  evidence validation, and correction retries. It has no provider SDK calls.
+- `pipeline/providers/contracts.py`: the small transport interface used by
+  extraction and graph judgments.
+- `pipeline/providers/anthropic.py`: native Claude Skills API calls, registration,
+  caching headers, file cleanup, and provider response handling.
+- `pipeline/providers/registry.py`: credentials and account-scoped skill records.
+- `pipeline/providers/factory.py`: transport selection, separate from graph rules.
 - `journal.py`: append-only attempts, events, and stage records.
 - `export.py`, `correspondences.py`, `correspondence_table.py`: inspection outputs.
 - `pipeline/files.py`: shared atomic JSON writes and filesystem hashes.

@@ -7,7 +7,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 from helpers.recover_hci_20260907 import RecoveryProvider, normalize_hci_target
-from pipeline.incremental_graph.llm import AnthropicJudgmentProvider
+from pipeline.incremental_graph.judgments import CachedJudgments
 from pipeline.incremental_graph.models import JudgmentRequest, JudgmentResult
 
 
@@ -58,7 +58,7 @@ class HciRecoveryTest(unittest.TestCase):
         live = SimpleNamespace(
             render_request=lambda _: SimpleNamespace(schema_hash="new-schema"),
             prompts=SimpleNamespace(render=lambda *args: SimpleNamespace(schema_hash="old-schema")),
-            _validate=AnthropicJudgmentProvider._validate,
+            _validate=CachedJudgments._validate,
         )
         with tempfile.TemporaryDirectory() as directory:
             recovered = RecoveryProvider(live, {}, rejected, Path(directory)).judge(request)
