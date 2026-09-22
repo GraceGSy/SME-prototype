@@ -17,6 +17,7 @@ import yaml
 from pydantic import Field
 
 from ..files import directory_hash, read_json, write_json
+from ..providers.settings import ModelSettings
 from .configuration import PromptRepository, load_pipeline_config
 from .input_data import load_manifest
 from .judgments import CachedJudgments
@@ -54,7 +55,8 @@ def _policy_hash(config: PipelineConfig) -> str:
             for path in sorted(source_files)
         },
         "dependencies": {
-            name: version(name) for name in ("anthropic", "networkx", "pydantic", "PyYAML")
+            name: version(name)
+            for name in (config.model.provider, "networkx", "pydantic", "PyYAML", "jsonschema")
         },
         "prompts": directory_hash(config.prompt_root),
         "contexts": directory_hash(config.context_root),
@@ -88,12 +90,27 @@ def _saved_inputs(run_dir: Path, state: RunState, revision: str) -> tuple[PaperM
 
 
 def start_graph(
-    manifest_path: Path, run_dir: Path, config_path: Path = DEFAULT_CONFIG
+    manifest_path: Path,
+    run_dir: Path,
+    config_path: Path = DEFAULT_CONFIG,
+    *,
+    provider: str | None = None,
+    model: str | None = None,
 ) -> dict[str, Any]:
+    if (provider is None) != (model is None):
+        raise ValueError("Pass provider and model together, or use the saved configuration")
     manifest, documents = _inputs(manifest_path)
     if len(manifest.papers) < 2:
         raise ValueError("A new graph requires at least two prepared papers")
     config = load_pipeline_config(config_path)
+    if provider is not None:
+        config.model = ModelSettings.model_validate(
+            {
+                **config.model.model_dump(),
+                "provider": provider,
+                "name": model,
+            }
+        )
     state = RunState(
         config=config, max_granularity=manifest.max_granularity, policy_sha256=_policy_hash(config)
     )

@@ -7,12 +7,26 @@ from unittest.mock import patch
 from helpers import run_hci_sections as hci
 from helpers import run_sherlock_five as sherlock
 from helpers.run_sherlock_five import run
-from helpers.usage_budget import ResponseLedger
+from helpers.usage_budget import ResponseLedger, token_cost
 from pipeline.files import write_json
 from pipeline.providers.contracts import SkillBudgetExceeded
 
 
 class UsageBudgetTest(unittest.TestCase):
+    def test_openai_usage_cannot_be_priced_as_sonnet(self):
+        usage = {
+            "input_tokens": 1000,
+            "output_tokens": 100,
+            "input_tokens_details": {"cached_tokens": 800},
+        }
+        with self.assertRaisesRegex(ValueError, "not OpenAI"):
+            token_cost(usage)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)
+            write_json(path / "openai.json", {"provider": "openai", "usage": usage})
+            with self.assertRaisesRegex(ValueError, "Non-Anthropic"):
+                ResponseLedger(path)
+
     def test_counts_rejected_responses_once_across_resume(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory)

@@ -270,6 +270,7 @@ class ClaudeSkills(SessionLimits):
             write_json(
                 response_dir / f"{uuid4().hex}.json",
                 {
+                    "provider": "anthropic",
                     "response": response.model_dump(mode="json"),
                     "usage": response_usage,
                     "policy": policy.as_dict(),

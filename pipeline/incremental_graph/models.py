@@ -8,6 +8,8 @@ from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, BeforeValidator, ConfigDict, Field, model_validator
 
+from ..providers.settings import ModelSettings
+
 Level = Literal["section", "paragraph"]
 StructuralKind = Literal["section", "subsection"]
 Granularity = Literal["section", "subsection", "paragraph"]
@@ -106,20 +108,6 @@ class PaperManifest(StrictModel):
         if len(ids) != len(set(ids)):
             raise ValueError("The paper manifest contains duplicate paper IDs")
         return self
-
-
-class ModelSettings(StrictModel):
-    provider: Literal["anthropic"] = "anthropic"
-    name: str = "claude-sonnet-5"
-    max_tokens: int = Field(default=1024, gt=0)
-    effort: Literal["low", "medium", "high"] = "low"
-    thinking: Literal["disabled", "adaptive"] = "disabled"
-    max_input_tokens: int = Field(default=200_000, gt=0)
-    max_prompt_characters: int = Field(default=500_000, gt=0)
-    context_management_trigger_tokens: int = Field(default=50_000, gt=0)
-    max_api_responses_per_process: int = Field(default=200, gt=0)
-    max_session_input_tokens: int = Field(default=2_000_000, gt=0)
-    max_session_output_tokens: int = Field(default=100_000, gt=0)
 
 
 class StageConfig(StrictModel):

@@ -12,8 +12,16 @@ from pipeline.extraction import ROOT, extract_document
 
 class NewDocumentTest(unittest.TestCase):
     def test_extracts_each_supported_source_once_with_explicit_domain(self):
-        for extension, domain in (("xhtml", "narrative"), ("txt", "legal"), ("pdf", "academic")):
-            with self.subTest(extension=extension), TemporaryDirectory() as directory:
+        for extension, domain, provider in (
+            ("xhtml", "narrative", "anthropic"),
+            ("txt", "legal", "anthropic"),
+            ("pdf", "academic", "anthropic"),
+            ("txt", "academic", "openai"),
+        ):
+            with (
+                self.subTest(extension=extension, provider=provider),
+                TemporaryDirectory() as directory,
+            ):
                 source, output = (
                     Path(directory) / f"source.{extension}",
                     Path(directory) / "content.json",
@@ -35,10 +43,20 @@ class NewDocumentTest(unittest.TestCase):
                 with patch(
                     "pipeline.extraction.create_skill_client", return_value=client
                 ) as adapter:
-                    extract_document(source, output, domain=domain, title="Source")
+                    extract_document(
+                        source,
+                        output,
+                        domain=domain,
+                        title="Source",
+                        provider=provider,
+                        model="gpt-5.6-sol" if provider == "openai" else None,
+                    )
                     self.assertEqual(
                         adapter.call_args.args[1], ROOT / "_cache" / "skill-registry.json"
                     )
+                    self.assertEqual(adapter.call_args.kwargs["provider"], provider)
+                provenance = json.loads(output.with_suffix(".provenance.json").read_text())
+                self.assertEqual(provenance["provider"], provider)
                 self.assertEqual(
                     json.loads(output.read_text())[0]["paragraphs"][0]["text"], "Source evidence."
                 )

@@ -12,6 +12,7 @@ from .document import content_schema, strip_questions, validate_document
 from .files import directory_hash, write_json
 from .providers.contracts import SkillCallPolicy, SkillClient
 from .providers.factory import create_skill_client
+from .providers.settings import ModelSettings
 
 ROOT = Path(__file__).resolve().parents[1]
 SKILL = ROOT / "skills" / "extract-section-and-subsection-paragraphs"
@@ -41,7 +42,8 @@ def extract_document(
     *,
     domain: Domain,
     title: str,
-    model: str = "claude-sonnet-5",
+    model: str | None = None,
+    provider: str = "anthropic",
     client: SkillClient | None = None,
 ) -> Path:
     """Publish canonical content and provenance after one validated judgment."""
@@ -57,6 +59,12 @@ def extract_document(
         )
     if not isinstance(title, str) or not title.strip():
         raise ValueError("A non-empty document title is required")
+    settings = ModelSettings.model_validate(
+        {
+            "provider": provider,
+            **({"name": model} if model is not None else {}),
+        }
+    )
     policy = SkillCallPolicy(
         max_tokens=32768,
         max_input_tokens=250000,
@@ -65,7 +73,9 @@ def extract_document(
     if source.stat().st_size > policy.max_attachment_bytes:
         raise ValueError(f"Source exceeds the {policy.max_attachment_bytes}-byte extraction limit")
     raw = source.read_bytes()
-    client = client or create_skill_client(ROOT, ROOT / "_cache/skill-registry.json", model)
+    client = client or create_skill_client(
+        ROOT, ROOT / "_cache/skill-registry.json", settings.name, provider=settings.provider
+    )
     skill = client.register(SKILL)
     result = client.run_json_file(
         skill,
@@ -94,7 +104,8 @@ def extract_document(
             "source_sha256": hashlib.sha256(raw).hexdigest(),
             "domain": domain,
             "title": title,
-            "model": model,
+            "provider": settings.provider,
+            "model": settings.name,
             "skill_sha256": directory_hash(SKILL),
             "response_id": result.response_id,
             "usage": result.usage,
@@ -110,11 +121,17 @@ def main() -> None:
     parser.add_argument("output", type=Path)
     parser.add_argument("--domain", choices=["academic", "legal", "narrative"], required=True)
     parser.add_argument("--title", required=True)
-    parser.add_argument("--model", default="claude-sonnet-5")
+    parser.add_argument("--provider", choices=["anthropic", "openai"], default="anthropic")
+    parser.add_argument("--model")
     args = parser.parse_args()
     print(
         extract_document(
-            args.source, args.output, domain=args.domain, title=args.title, model=args.model
+            args.source,
+            args.output,
+            domain=args.domain,
+            title=args.title,
+            model=args.model,
+            provider=args.provider,
         )
     )
 

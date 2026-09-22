@@ -11,6 +11,8 @@ from pipeline.providers.contracts import SkillBudgetExceeded
 
 
 def token_cost(usage):
+    if "input_tokens_details" in usage:
+        raise ValueError("This calculator supports Anthropic Sonnet 5 usage, not OpenAI usage")
     writes = usage.get("cache_creation") or {}
     hour = writes.get("ephemeral_1h_input_tokens") or 0
     total_writes = usage.get("cache_creation_input_tokens") or 0
@@ -37,6 +39,8 @@ class ResponseLedger:
             if path.name in self.seen:
                 continue
             data = read_json(path)
+            if data.get("provider", "anthropic") != "anthropic":
+                raise ValueError(f"Non-Anthropic response in Sonnet 5 ledger: {path.name}")
             usage = data.get("usage")
             if not isinstance(usage, dict) or any(
                 type(usage.get(field)) is not int or usage[field] < 0

@@ -19,6 +19,7 @@ from ..providers.contracts import (
     StructuredOutputValidationError,
 )
 from ..providers.factory import create_skill_client
+from ..providers.settings import ModelSettings
 from .configuration import PromptRepository, RenderedPrompt
 from .evidence_encoding import encode_evidence
 from .match_evidence import (
@@ -27,7 +28,7 @@ from .match_evidence import (
     quote_length_feedback,
     validate_evidence,
 )
-from .models import JudgmentRequest, JudgmentResult, ModelSettings
+from .models import JudgmentRequest, JudgmentResult
 
 
 class JudgmentProvider(Protocol):

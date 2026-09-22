@@ -105,6 +105,9 @@ not implicit consequences of singleton matching.
   extraction and graph judgments.
 - `pipeline/providers/anthropic.py`: native Claude Skills API calls, registration,
   caching headers, file cleanup, and provider response handling.
+- `pipeline/providers/openai.py`: native OpenAI Skills through Responses and hosted
+  shell, cached prompt prefixes, attachment cleanup, and response validation.
+- `pipeline/providers/settings.py`: strict model selection and request limits.
 - `pipeline/providers/registry.py`: credentials and account-scoped skill records.
 - `pipeline/providers/factory.py`: transport selection, separate from graph rules.
 - `journal.py`: append-only attempts, events, and stage records.
@@ -229,8 +232,8 @@ migration have been removed.
   get graph snapshots rather than reaching into NetworkX for mutation.
 - **DYC:** this document explains execution and invariants; contracts document
   accepted interfaces; research claims and limitations live in the assessment.
-- **DRY:** one canonical source validator, one JSON writer, one Claude transport,
-  and shared viewer schemas. Do not introduce an abstraction for coincidental
+- **DRY:** one canonical source validator, one JSON writer, one judgment layer,
+  shared request limits, and shared viewer schemas. Do not introduce an abstraction for coincidental
   similarity between genuinely different scientific operations.
 - **KISS:** two explicit pipelines, a fixed stage order, a static viewer, and
   inspectable JSON. No plugin framework, service layer, database, or background job.
@@ -238,8 +241,9 @@ migration have been removed.
   run focused and full suites. Keep scripted judgments separate from live-model
   and human evaluation. Existing tests do not imply the original code was TDD.
 - **YAGNI:** delete retired paths instead of carrying compatibility. Do not add
-  a global alignment solver, learned thresholds, automatic chunking, provider
-  abstraction, or additional UI modes before a concrete experiment requires them.
+  a global alignment solver, learned thresholds, automatic chunking, or additional
+  UI modes before a concrete experiment requires them. Provider selection uses a
+  small factory and two concrete transports, not a plugin framework.
 
 ## Remaining Work, In Order
 

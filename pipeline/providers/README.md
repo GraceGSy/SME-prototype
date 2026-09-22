@@ -7,6 +7,7 @@ extraction logic.
 - `contracts.py`: request limits, registered skill references, results, and the
   `SkillClient` interface.
 - `factory.py`: selects the provider client.
+- `settings.py`: strict provider/model selection and saved call limits.
 - `registry.py`: loads credentials and validates account-scoped registration state.
 - `anthropic.py`: Claude Messages and native Skills transport.
 - `openai.py`: OpenAI Responses, native Skills, and hosted shell transport.
@@ -19,6 +20,10 @@ and puts cache breakpoints after shared instructions and candidate evidence, bef
 the changing focus. OpenAI input-token totals already include cached tokens;
 Anthropic reports uncached input, cache reads, and cache writes separately.
 Both adapters preserve raw usage before rejecting an incomplete or invalid result.
+`thinking: adaptive` maps to OpenAI's configured reasoning effort;
+`thinking: disabled` maps to `reasoning.effort: none`. The output allowance includes
+reasoning tokens. Anthropic's tool-context clearing option does not trigger
+OpenAI truncation; both routes keep the complete candidate evidence.
 
 OpenAI requires an object at the root of structured output. The adapter wraps
 array-shaped extraction output in a `result` field on the wire and unwraps it

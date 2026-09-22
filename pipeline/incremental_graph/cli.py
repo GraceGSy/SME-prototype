@@ -48,6 +48,8 @@ def main() -> None:
     start.add_argument("manifest", type=Path)
     start.add_argument("run_dir", type=Path)
     start.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
+    start.add_argument("--provider", choices=["anthropic", "openai"])
+    start.add_argument("--model", help="Model name; supply together with --provider")
     add = commands.add_parser("add", help="Append prepared papers in manifest order")
     add.add_argument("manifest", type=Path)
     add.add_argument("run_dir", type=Path)
@@ -59,7 +61,9 @@ def main() -> None:
     validate.add_argument("manifest", type=Path)
     args = parser.parse_args()
     if args.command == "start":
-        result = start_graph(args.manifest, args.run_dir, args.config)
+        result = start_graph(
+            args.manifest, args.run_dir, args.config, provider=args.provider, model=args.model
+        )
     elif args.command == "add":
         result = add_papers(args.manifest, args.run_dir)
     elif args.command == "retry":

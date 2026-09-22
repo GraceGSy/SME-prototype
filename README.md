@@ -1,7 +1,7 @@
 # Question Atlas: Experimental Structure-Mapping Graph
 
 This repo compares documents by the roles their passages play, not just by topic.
-It uses Claude Skills for language judgments and deterministic Python for graph
+It uses native Skills through Anthropic or OpenAI for language judgments and deterministic Python for graph
 membership, ordering, provenance, and replay. The viewer lets a researcher inspect
 shared questions alongside the original passages.
 
@@ -32,7 +32,8 @@ npm ci
 npm run build:viewer
 ```
 
-Model commands use `ANTHROPIC_API_KEY`, or the nearest ancestor `.env`.
+Model commands use `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` for the selected provider,
+from the environment or the nearest ancestor `.env` containing that key.
 Tests and manifest validation do not need a key.
 
 ## Extract A New Document
@@ -86,6 +87,35 @@ Unchanged downstream inputs reuse their existing cached judgments.
 Saved input hashes and code/prompt/Skill/config/dependency fingerprints are
 checked before adding or retrying. If policy changed, start a new run. Old run
 formats and legacy caches are not migrated at runtime.
+
+## Choose A Provider
+
+The default remains Anthropic. To start an OpenAI run, pass both `--provider` and
+`--model`; the existing config still supplies effort, output budgets, and stages:
+
+```powershell
+python -m pipeline.incremental_graph.cli start datasets/hci-five-paper/content/first-two.manifest.yaml runs/hci-openai --provider openai --model YOUR_OPENAI_MODEL
+```
+
+Choose a model supporting native Skills and explicit caching (GPT-5.6 or later).
+The shared config currently uses medium effort with thinking enabled. Subsequent
+`add` and `retry` commands use the provider and model saved in that run. To use a
+different model or provider, start a new run. You can also set `model.provider`
+and `model.name` in a pipeline config passed with `--config`.
+
+Extraction accepts the same provider flags:
+
+```powershell
+python -m pipeline.extraction path/to/new-paper.pdf datasets/my-corpus/content/new-paper.json --domain academic --title "New Paper" --provider openai --model YOUR_OPENAI_MODEL
+```
+
+Both routes use the same prompts, examples, skill directories, schemas, evidence
+checks, and graph rules. Provider-specific API code lives in
+[`pipeline/providers`](pipeline/providers/README.md). Completed-call cache keys
+include the provider and model; native skill registrations use separate files.
+Raw response records retain each provider's cache-read, cache-write, and reasoning
+usage. The historical HCI/Sherlock dollar-budget helpers remain Sonnet-specific
+and reject OpenAI usage rather than assigning it Claude prices.
 
 ## Inspect Local Runs
 
