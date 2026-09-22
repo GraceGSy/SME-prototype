@@ -1,11 +1,23 @@
 """Shared preflight checks and observed usage limits for provider transports."""
 
+from pathlib import Path
+
 from .contracts import SkillBudgetExceeded, SkillCallPolicy, SkillSessionBudget
 
 
 class SessionLimits:
-    session_budget: SkillSessionBudget
-    session_usage: dict[str, int]
+    def __init__(self, session_budget: SkillSessionBudget | None = None) -> None:
+        self.session_budget = session_budget or SkillSessionBudget()
+        self.session_usage = {"api_responses": 0, "input_tokens": 0, "output_tokens": 0}
+
+    @staticmethod
+    def _validate_attachment(path: Path, policy: SkillCallPolicy) -> None:
+        size = path.stat().st_size
+        if size > policy.max_attachment_bytes:
+            raise SkillBudgetExceeded(
+                f"Attachment {path.name} is {size} bytes; configured maximum is "
+                f"{policy.max_attachment_bytes}"
+            )
 
     @staticmethod
     def _validate_prompt(

@@ -2,10 +2,50 @@
 
 import hashlib
 import os
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
 from jsonschema import Draft202012Validator, ValidationError
+
+from ..files import directory_hash, read_json, write_json
+from .contracts import SkillRef
+
+
+class SkillRegistry:
+    """Own local registration state; adapters supply only the provider upload."""
+
+    def __init__(self, repo_root: Path, state_path: Path, api_key: str) -> None:
+        self.repo_root = repo_root
+        self.state_path = state_path
+        stored = (
+            read_json(state_path) if state_path.exists() else {"schema_version": 1, "accounts": {}}
+        )
+        self.document, self.skills = _credential_registry(stored, api_key)
+
+    def register(
+        self,
+        skill_path: Path,
+        upload: Callable[[Path, SkillRef | None], tuple[str, str]],
+    ) -> SkillRef:
+        skill_path = skill_path.resolve()
+        relative = skill_path.relative_to(self.repo_root).as_posix()
+        fingerprint = directory_hash(skill_path)
+        existing = self.skills.get(relative)
+        previous = SkillRef(relative, **existing) if existing else None
+        if previous and previous.source_sha256 == fingerprint:
+            return previous
+
+        skill_id, version = upload(skill_path, previous)
+        if not version:
+            raise RuntimeError(f"Skills API did not return a version for {relative}")
+        self.skills[relative] = {
+            "skill_id": skill_id,
+            "version": version,
+            "source_sha256": fingerprint,
+        }
+        write_json(self.state_path, self.document)
+        return SkillRef(relative, skill_id, version, fingerprint)
 
 
 def load_api_key(repo_root: Path, variable: str) -> str:

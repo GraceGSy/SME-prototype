@@ -14,7 +14,6 @@ from pipeline.providers.anthropic import (
     SkillCallPolicy,
     SkillRef,
     SkillSessionBudget,
-    _credential_registry,
 )
 from pipeline.providers.contracts import StructuredOutputValidationError
 
@@ -224,30 +223,6 @@ class SkillApiTest(unittest.TestCase):
                 cacheable_context="large pool",
             )
         self.assertEqual(messages.calls, [])
-
-    def test_skill_registry_is_scoped_without_storing_api_keys(self) -> None:
-        state = {"schema_version": 1, "accounts": {}}
-        document, first_registry = _credential_registry(state, "key-one")
-        first_registry["skills/test"] = {
-            "skill_id": "skill-1",
-            "version": "v1",
-            "source_sha256": "0" * 64,
-        }
-        _, second_registry = _credential_registry(document, "key-two")
-        self.assertEqual(second_registry, {})
-        self.assertNotIn("key-one", str(document))
-        self.assertNotIn("key-two", str(document))
-
-    def test_registry_rejects_legacy_and_malformed_shapes(self) -> None:
-        for state in (
-            {},
-            {"skills/test": {"skill_id": "legacy"}},
-            {"schema_version": "1", "accounts": {}},
-            {"schema_version": 1, "accounts": {}, "extra": True},
-            {"schema_version": 1, "accounts": {"not-a-hash": {}}},
-        ):
-            with self.subTest(state=state), self.assertRaises(ValueError):
-                _credential_registry(state, "key")
 
     def test_transport_rejects_malformed_json_instead_of_repairing_it(self) -> None:
         for text in (

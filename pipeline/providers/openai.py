@@ -2,27 +2,21 @@
 
 from __future__ import annotations
 
-import json
 import mimetypes
 import warnings
 from pathlib import Path
 from typing import Any, Iterable
-from uuid import uuid4
 
-from jsonschema import Draft202012Validator
-
-from ..files import directory_hash, write_json
 from .contracts import (
     RunResult,
     SkillBudgetExceeded,
     SkillCallPolicy,
     SkillRef,
     SkillSessionBudget,
-    StructuredOutputValidationError,
 )
 from .limits import SessionLimits
-from .registry import _credential_registry, load_api_key
-from .schemas import without_constraints
+from .registry import SkillRegistry, load_api_key
+from .responses import parse_json, save_response, usage_record, validate_value, without_constraints
 
 INSTRUCTIONS = (
     "Use the configured Agent Skill on the complete input in the user message. "
@@ -44,29 +38,17 @@ class OpenAISkills(SessionLimits):
     ) -> None:
         from openai import OpenAI
 
-        self.repo_root = repo_root
-        self.state_path = state_path
+        super().__init__(session_budget)
         self.model = model
         self.response_dir = response_dir or state_path.parent / "responses"
         api_key = load_api_key(repo_root, "OPENAI_API_KEY")
         self.client = OpenAI(api_key=api_key, timeout=30 * 60, max_retries=0)
-        self.session_budget = session_budget or SkillSessionBudget()
-        self.session_usage = {"api_responses": 0, "input_tokens": 0, "output_tokens": 0}
-        stored_state = (
-            json.loads(state_path.read_text(encoding="utf-8"))
-            if state_path.exists()
-            else {"schema_version": 1, "accounts": {}}
-        )
-        self.state_document, self.state = _credential_registry(stored_state, api_key)
+        self.registry = SkillRegistry(repo_root, state_path, api_key)
 
     def register(self, skill_path: Path) -> SkillRef:
-        skill_path = skill_path.resolve()
-        relative = skill_path.relative_to(self.repo_root).as_posix()
-        fingerprint = directory_hash(skill_path)
-        existing = self.state.get(relative)
-        if existing and existing["source_sha256"] == fingerprint:
-            return SkillRef(relative, existing["skill_id"], existing["version"], fingerprint)
+        return self.registry.register(skill_path, self._upload_skill)
 
+    def _upload_skill(self, skill_path: Path, previous: SkillRef | None) -> tuple[str, str]:
         # Multipart paths retain the single top-level skill folder and supporting files.
         files = [
             (
@@ -77,21 +59,13 @@ class OpenAISkills(SessionLimits):
             for path in sorted(skill_path.rglob("*"))
             if path.is_file()
         ]
-        if existing:
-            response = self.client.skills.versions.create(existing["skill_id"], files=files)
-            skill_id, version = existing["skill_id"], response.version
+        if previous:
+            response = self.client.skills.versions.create(previous.skill_id, files=files)
+            skill_id, version = previous.skill_id, response.version
         else:
             response = self.client.skills.create(files=files)
             skill_id, version = response.id, response.latest_version
-        if not version:
-            raise RuntimeError(f"Skills API did not return a version for {relative}")
-        self.state[relative] = {
-            "skill_id": skill_id,
-            "version": version,
-            "source_sha256": fingerprint,
-        }
-        write_json(self.state_path, self.state_document)
-        return SkillRef(relative, skill_id, version, fingerprint)
+        return skill_id, version
 
     def run_json(
         self,
@@ -118,12 +92,7 @@ class OpenAISkills(SessionLimits):
         cacheable_prompt: str | None = None,
     ) -> RunResult:
         self._validate_prompt(prompt, policy, cacheable_prompt)
-        size = input_path.stat().st_size
-        if size > policy.max_attachment_bytes:
-            raise SkillBudgetExceeded(
-                f"Attachment {input_path.name} is {size} bytes; configured maximum is "
-                f"{policy.max_attachment_bytes}"
-            )
+        self._validate_attachment(input_path, policy)
         self._check_session_budget()
         uploaded = self.client.files.create(file=input_path, purpose="user_data")
         try:
@@ -202,29 +171,21 @@ class OpenAISkills(SessionLimits):
         raw_usage = response.usage.model_dump(mode="json") if response.usage else {}
         # OpenAI input_tokens already includes cache reads and writes. Do not add them again.
         input_tokens = int(raw_usage.get("input_tokens") or 0)
-        write_json(
-            self.response_dir / f"{uuid4().hex}.json",
-            {
-                "provider": "openai",
-                "response": raw_response,
-                "usage": raw_usage,
-                "policy": policy.as_dict(),
-                "schema": schema,
-                "api_schema": api_schema,
-                "messages": messages,
-                "request_text_characters": sum(len(block["text"]) for block in content),
-                "input_usage_tokens": input_tokens,
-            },
+        save_response(
+            self.response_dir,
+            provider="openai",
+            response=raw_response,
+            usage=raw_usage,
+            policy=policy,
+            schema=schema,
+            api_schema=api_schema,
+            messages=messages,
+            input_tokens=input_tokens,
         )
         self._record_session_usage(
             input_tokens, int(raw_usage.get("output_tokens") or 0), response.id
         )
-        usage = {
-            **raw_usage,
-            "request_count": 1,
-            "responses": [{"response_id": response.id, "usage": raw_usage}],
-            "session": dict(self.session_usage),
-        }
+        usage = usage_record(response.id, raw_usage, self.session_usage)
         if input_tokens > policy.max_input_tokens:
             raise SkillBudgetExceeded(
                 f"OpenAI response {response.id} reported {input_tokens:,} input tokens; "
@@ -257,15 +218,10 @@ class OpenAISkills(SessionLimits):
         if any(block.type == "refusal" for block in blocks):
             raise RuntimeError(f"OpenAI response {response.id} refused the requested output")
         text = "".join(block.text for block in blocks if block.type == "output_text")
-        value = json.loads(text)
-        wire_errors = list(Draft202012Validator(api_schema).iter_errors(value))
-        if wire_errors:
-            raise StructuredOutputValidationError(response.id, wire_errors) from wire_errors[0]
+        value = parse_json(text, api_schema, response.id)
         if wrapped:
             value = value["result"]
-        errors = list(Draft202012Validator(schema).iter_errors(value))
-        if errors:
-            raise StructuredOutputValidationError(response.id, errors) from errors[0]
+        validate_value(value, schema, response.id)
         return RunResult(
             response.id,
             response.status,

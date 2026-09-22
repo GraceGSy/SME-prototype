@@ -8,11 +8,13 @@ extraction logic.
   `SkillClient` interface.
 - `factory.py`: selects the provider client.
 - `settings.py`: strict provider/model selection and saved call limits.
-- `registry.py`: loads credentials and validates account-scoped registration state.
+- `registry.py`: credentials, account-scoped registration state, source hashing,
+  cache reuse, and saving successful uploads. Each adapter supplies its upload call.
 - `anthropic.py`: Claude Messages and native Skills transport.
 - `openai.py`: OpenAI Responses, native Skills, and hosted shell transport.
 - `limits.py`: shared prompt limits and process-local usage guards.
-- `schemas.py`: API schema projections; adapters still validate the full contract.
+- `responses.py`: saved paid responses, usage records, JSON validation, and API
+  schema projections. Each adapter extracts its own final response text.
 
 The OpenAI transport targets models supporting native Skills and explicit prompt
 caching (GPT-5.6 and later). It uploads the same skill files, pins their versions,

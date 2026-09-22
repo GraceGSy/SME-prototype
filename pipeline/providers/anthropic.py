@@ -2,26 +2,20 @@
 
 from __future__ import annotations
 
-import json
 import warnings
 from pathlib import Path
 from typing import Any, Iterable
-from uuid import uuid4
 
-from jsonschema import Draft202012Validator
-
-from ..files import directory_hash, write_json
 from .contracts import (
     RunResult,
     SkillBudgetExceeded,
     SkillCallPolicy,
     SkillRef,
     SkillSessionBudget,
-    StructuredOutputValidationError,
 )
 from .limits import SessionLimits
-from .registry import _credential_registry, load_api_key
-from .schemas import without_constraints
+from .registry import SkillRegistry, load_api_key
+from .responses import parse_json, save_response, usage_record, without_constraints
 
 MESSAGE_BETAS = [
     "code-execution-2025-08-25",
@@ -63,8 +57,7 @@ class ClaudeSkills(SessionLimits):
     ) -> None:
         from anthropic import Anthropic
 
-        self.repo_root = repo_root
-        self.state_path = state_path
+        super().__init__(session_budget)
         self.model = model
         self.response_dir = response_dir or state_path.parent / "responses"
         api_key = load_api_key(repo_root, "ANTHROPIC_API_KEY")
@@ -73,36 +66,19 @@ class ClaudeSkills(SessionLimits):
             timeout=API_TIMEOUT_SECONDS,
             max_retries=0,
         )
-        self.session_budget = session_budget or SkillSessionBudget()
-        self.session_usage = {
-            "api_responses": 0,
-            "input_tokens": 0,
-            "output_tokens": 0,
-        }
-        stored_state = (
-            json.loads(state_path.read_text(encoding="utf-8"))
-            if state_path.exists()
-            else {"schema_version": 1, "accounts": {}}
-        )
-        self.state_document, self.state = _credential_registry(stored_state, api_key)
+        self.registry = SkillRegistry(repo_root, state_path, api_key)
 
     def register(self, skill_path: Path) -> SkillRef:
+        return self.registry.register(skill_path, self._upload_skill)
+
+    def _upload_skill(self, skill_path: Path, previous: SkillRef | None) -> tuple[str, str]:
         from anthropic.lib import files_from_dir
 
-        skill_path = skill_path.resolve()
-        relative = skill_path.relative_to(self.repo_root).as_posix()
-        fingerprint = directory_hash(skill_path)
-        existing = self.state.get(relative)
-        if existing and existing.get("source_sha256") == fingerprint:
-            return SkillRef(relative, existing["skill_id"], existing["version"], fingerprint)
-
         files = files_from_dir(skill_path)
-        if existing:
+        if previous:
             try:
-                response = self.client.beta.skills.versions.create(
-                    existing["skill_id"], files=files
-                )
-                skill_id = existing["skill_id"]
+                response = self.client.beta.skills.versions.create(previous.skill_id, files=files)
+                skill_id = previous.skill_id
                 version = response.id
             except Exception as exc:
                 if getattr(exc, "status_code", None) != 404:
@@ -114,16 +90,7 @@ class ClaudeSkills(SessionLimits):
             response = self.client.beta.skills.create(files=files)
             skill_id = response.id
             version = response.latest_version_id
-        if not version:
-            raise RuntimeError(f"Skills API did not return a version for {relative}")
-
-        self.state[relative] = {
-            "skill_id": skill_id,
-            "version": version,
-            "source_sha256": fingerprint,
-        }
-        write_json(self.state_path, self.state_document)
-        return SkillRef(relative, skill_id, version, fingerprint)
+        return skill_id, version
 
     def run_json(
         self,
@@ -153,12 +120,7 @@ class ClaudeSkills(SessionLimits):
         """Run a Skill over one attachment and return schema-constrained JSON."""
 
         self._validate_prompt(prompt, policy, cacheable_prompt)
-        size = input_path.stat().st_size
-        if size > policy.max_attachment_bytes:
-            raise SkillBudgetExceeded(
-                f"Attachment {input_path.name} is {size} bytes; configured maximum is "
-                f"{policy.max_attachment_bytes}"
-            )
+        self._validate_attachment(input_path, policy)
         self._check_session_budget()
         uploaded = self.client.beta.files.upload(file=input_path, betas=FILE_BETAS)
         try:
@@ -207,10 +169,7 @@ class ClaudeSkills(SessionLimits):
         )
         if not text.strip():
             raise RuntimeError(f"Claude response {response.id} contained no structured text output")
-        value = json.loads(text)
-        errors = list(Draft202012Validator(schema).iter_errors(value))
-        if errors:
-            raise StructuredOutputValidationError(response.id, errors) from errors[0]
+        value = parse_json(text, schema, response.id)
         return self._result(
             response,
             value,
@@ -265,33 +224,22 @@ class ClaudeSkills(SessionLimits):
         )
         response_usage = response.usage.model_dump(mode="json") if response.usage else {}
         # Persist paid evidence before any budget, stop-reason, or JSON rejection.
-        response_dir = getattr(self, "response_dir", None)
-        if response_dir is not None:
-            write_json(
-                response_dir / f"{uuid4().hex}.json",
-                {
-                    "provider": "anthropic",
-                    "response": response.model_dump(mode="json"),
-                    "usage": response_usage,
-                    "policy": policy.as_dict(),
-                    "schema": schema,
-                    "messages": messages,
-                    "request_text_characters": sum(
-                        len(block.get("text", ""))
-                        for message in messages
-                        for block in message["content"]
-                        if isinstance(block, dict)
-                    ),
-                    "input_usage_tokens": _input_token_volume(response_usage),
-                },
-            )
+        save_response(
+            getattr(self, "response_dir", None),
+            provider="anthropic",
+            response=response.model_dump(mode="json"),
+            usage=response_usage,
+            policy=policy,
+            schema=schema,
+            messages=messages,
+            input_tokens=_input_token_volume(response_usage),
+        )
         self._record_session_usage(
             _input_token_volume(response_usage),
             int(response_usage.get("output_tokens") or 0),
             response.id,
         )
-        usage = _single_response_usage(response.id, response_usage)
-        usage["session"] = dict(self.session_usage)
+        usage = usage_record(response.id, response_usage, self.session_usage)
         input_tokens = _input_token_volume(usage)
         if input_tokens > policy.max_input_tokens:
             raise SkillBudgetExceeded(
@@ -342,16 +290,6 @@ class ClaudeSkills(SessionLimits):
             response.model_dump(mode="json"),
             policy.as_dict() if policy else None,
         )
-
-
-def _single_response_usage(response_id: str, usage: dict[str, Any]) -> dict[str, Any]:
-    """Keep raw billing fields and make the one-request contract explicit."""
-
-    return {
-        **usage,
-        "request_count": 1,
-        "responses": [{"response_id": response_id, "usage": usage}],
-    }
 
 
 def _prompt_content(
