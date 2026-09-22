@@ -16,11 +16,7 @@ or purpose, not a detailed summary rewritten as a question.
 - For academic text, ask what job the evidence does in the paper's argument.
 - For narrative text, ask what uncertainty about the case, characters,
   evidence, investigation, confrontation, or resolution it addresses.
-- For a multi-member node, find one shared-purpose question answered by each
-  paper's accepted contribution. Members sharing a `paper_key` belong together.
-  They may explain different parts of the role, but each must contribute directly.
-  Do not combine unrelated purposes or different papers' partial answers to
-  manufacture a shared role.
+- For a multi-member node, apply the caller's shared-role contract.
 - Read all evidence to identify its primary function. The question need not
   enumerate every fact, feature, qualification, or secondary purpose.
 - Target 8-15 words; never exceed 20 words. Count whitespace-separated words
@@ -34,7 +30,8 @@ or purpose, not a detailed summary rewritten as a question.
   Do not reduce everything to a vague question such as "What is discussed?"
 - Keep the question standalone, source-answerable, and open. Do not assert that
   a tool succeeded, a claim was proved, or a suspect was guilty unless warranted.
-- Do not include section numbers, parentheses, em dashes, or answer-revealing
+  Avoid bare references such as "this" or "here" and do not invent a claim.
+- Do not include numbering, labels, parentheses, em dashes, or answer-revealing
   examples.
 
 ## Examples
@@ -51,9 +48,7 @@ to force onto unrelated evidence.
 | What did Holmes learn from the muddy boots? | How does the physical evidence constrain the explanation of events? |
 
 Use the more general question only when the focus itself answers it. Neighbors
-may clarify the focus but must not supply its answer. For groups, check each
-paper's accepted members together against the same question, and require every
-member to contribute. Do not manufacture a shared role to increase matches.
+may clarify the focus but must not supply its answer.
 
 The caller handles empty evidence without a model call. Return exactly:
 

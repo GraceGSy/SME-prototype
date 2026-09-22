@@ -1,8 +1,8 @@
 # Question Atlas: Experimental Structure-Mapping Graph
 
 This repo compares documents by the roles their passages play, not just by topic.
-It uses native Skills through Anthropic or OpenAI for language judgments and deterministic Python for graph
-membership, ordering, provenance, and replay. The viewer lets a researcher inspect
+It uses native Skills through Anthropic or OpenAI for language judgments and
+deterministic Python for graph membership, ordering, provenance, and replay. The viewer lets a researcher inspect
 shared questions alongside the original passages.
 
 It is an experimental, SME-inspired matcher, **not an implementation or validation
@@ -19,6 +19,45 @@ evaluations. Start with [the Sherlock assessment](docs/sherlock-experiment.md).
 
 Packaging the static viewer is an offline export operation, not a third model
 pipeline. No command implicitly extracts a document during graph construction.
+
+## Read The Code
+
+Start with [runner.py](pipeline/incremental_graph/runner.py) for the sequence,
+[match_rules.py](pipeline/incremental_graph/match_rules.py) for acceptance rules,
+and [judgments.py](pipeline/incremental_graph/judgments.py) for prompts, validation,
+and completed-call caching. You do not need to read provider API code to follow
+the algorithm.
+
+| Path | Responsibility |
+|---|---|
+| [pipeline/extraction.py](pipeline/extraction.py) | Extract a new document once |
+| [pipeline/document.py](pipeline/document.py) | Canonical content and positional IDs |
+| [pipeline/incremental_graph/](pipeline/incremental_graph/) | Ordered graph algorithm |
+| [pipeline/providers/](pipeline/providers/README.md) | API transports and shared provider bookkeeping |
+| [skills/](skills/) | One maintained copy of each native skill |
+| [prompts/](pipeline/incremental_graph/prompts/) | Stage tasks, shared contracts, examples, and schemas |
+| [pipeline/viewer/](pipeline/viewer/) | Viewer, packaging, and participant-study scaffold |
+| [datasets/](datasets/) | Raw sources and prepared content |
+| [helpers/](helpers/) | One-time preparation and historical run scripts, outside the runtime |
+| [tests/](tests/) | Algorithm, provider-contract, recovery, and viewer checks |
+
+### Instruction Ownership
+
+| Change | Edit |
+|---|---|
+| Role matching, candidate IDs, and matching judgment rules | [match-role/SKILL.md](skills/match-role/SKILL.md) |
+| Question style, abstraction, and length | [generate-question/SKILL.md](skills/generate-question/SKILL.md) |
+| How accepted members jointly realize a role | [group-role.md](pipeline/incremental_graph/prompts/shared/group-role.md) |
+| Center-only evidence and quotation/excerpt requirements | [match-evidence.md](pipeline/incremental_graph/prompts/shared/match-evidence.md) |
+| Few-shot examples and the two output schemas | [prompts/shared/](pipeline/incremental_graph/prompts/shared/) |
+| Which unit or direction a stage judges | That stage's `prompts/<task>/v1/system.md` |
+
+Stage files name the task rather than repeat the skill or shared contracts.
+The renderer sends dynamic evidence directly as JSON; there are no per-stage
+input templates. Anthropic and OpenAI consume these same sources.
+
+See [architecture](docs/architecture.md) for execution details and
+[data contracts](docs/data-contracts.md) for accepted inputs and outputs.
 
 ## Setup
 
@@ -173,23 +212,6 @@ for the reader to inspect, not newly inferred classifications. Graph Replay is
 hidden from navigation for now; replay exports and validation remain intact.
 Malformed present replay data is an error, not a silently hidden tab.
 Packaging requires the viewer build and refuses a nonempty output directory.
-
-## Where Things Live
-
-| Path | Responsibility |
-|---|---|
-| `pipeline/extraction.py` | New-document extraction entry point |
-| `pipeline/document.py` | Canonical source validation and positional IDs |
-| `pipeline/incremental_graph/` | Ordered graph orchestration and deterministic rules |
-| `pipeline/llm/client.py` | Shared Claude transport and observed usage guards |
-| `pipeline/viewer/` | Typed static viewer and offline packaging |
-| `datasets/` | Raw sources, canonical content, explicit prepared variants |
-| `skills/` | Extraction, question generation, and local role matching |
-| `helpers/` | Explicit one-shot preparation; never imported by runtime pipelines |
-| `tests/` | Offline algorithm, boundary, failure-recovery, and browser tests |
-
-See [architecture](docs/architecture.md), [data contracts](docs/data-contracts.md),
-and [Sherlock findings and next experiment](docs/sherlock-experiment.md).
 
 ## Verification
 

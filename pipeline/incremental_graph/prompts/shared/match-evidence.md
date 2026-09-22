@@ -1,11 +1,18 @@
 ## Authoritative response contract
 
 The caller's schema is authoritative for every matching direction.
-Return exactly target_id, basis, and evidence. Keep the same role-first selection
-criteria and concise basis. Evidence verifies attribution, not shared wording:
-quotes from the two sides need not use the same words.
-Put quotations only in evidence, never repeat them in basis. Use basis to
-explain the shared role and corresponding relations without restating source text.
+Return exactly one JSON object with target_id, basis, and evidence. Do not return
+a list, Markdown fences, a string containing JSON, extra fields, or the string
+"null". Evidence verifies attribution, not shared wording: quotes from the two
+sides need not use the same words.
+Put quotations only in evidence, never repeat them in basis.
+
+Each paragraph window is ordered previous_paragraph, paragraph_under_consideration,
+next_paragraph. Only paragraph_under_consideration.full_text is being matched;
+neighbors are context only, not replacement evidence. Apply this to the focus,
+each member, and each candidate. Null neighbors mark a window boundary.
+A question does not become an answer because its next paragraph answers it.
+For structural units, compare their complete source text.
 
 For a match, evidence.focus and evidence.target are arrays of short verbatim
 quotations or excerpts. Supply exactly one per member in that side's supplied

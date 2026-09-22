@@ -1,3 +1,3 @@
-Generate one concise standalone question answered by each paper's accepted contribution to the node. Read that paper's members together and require each member to contribute directly. Capture the shared function, not merely the shared topic. Do not answer the question, list papers, describe the grouping process, or assert unsupported outcomes. The question is a fallible summary, not node identity or proof of membership.
+Use the generate-question Skill for the complete node. The question summarizes its shared function; it is not node identity or proof of membership. Do not describe the grouping process or list papers.
 
 {{group_question_examples}}

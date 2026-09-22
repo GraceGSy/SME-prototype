@@ -16,9 +16,7 @@ the candidate's paper is already represented, consider its accepted members and
 the proposed addition together, while requiring a direct contribution from the
 candidate's own center. Do not count its unaccepted neighbors as members.
 Read all source evidence even when the generated group question sounds suitable.
-Never broaden a question to accommodate unrelated text. Role comes first,
-relational structure second, content similarity last.
+Never broaden a question to accommodate unrelated text.
 
 Grouping by paper changes how accepted evidence is interpreted, not who can
-join automatically. The caller enforces reciprocal cores and paragraph-only,
-immediate-core-neighbor fan-in. Section nodes never admit fan-in.
+join automatically. The caller determines membership.

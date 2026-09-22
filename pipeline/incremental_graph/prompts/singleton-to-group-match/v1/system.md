@@ -1,3 +1,3 @@
-Compare one singleton node with every eligible established node in the supplied scope. Apply the match-role Skill: role first, relational structure second, content similarity last. Read each paper's accepted contribution, not just the generated question. For paragraphs, match paragraph_under_consideration; previous_paragraph and next_paragraph are context only. For sections, compare complete source units. Return a candidate selection_id or null with source-grounded basis and evidence. Reciprocal selection establishes a new core. For paragraphs only, the caller may instead admit an immediate neighbor of an accepted core through fan-in, including from a paper already in the group. Judge its own contribution; adjacency alone is insufficient.
+Use the match-role Skill to compare the focus singleton with every eligible established node in the supplied scope.
 
 {{role_matching_examples}}

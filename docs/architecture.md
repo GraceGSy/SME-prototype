@@ -109,6 +109,8 @@ not implicit consequences of singleton matching.
   shell, cached prompt prefixes, attachment cleanup, and response validation.
 - `pipeline/providers/settings.py`: strict model selection and request limits.
 - `pipeline/providers/registry.py`: credentials and account-scoped skill records.
+- `pipeline/providers/responses.py`: shared response storage and JSON validation.
+- `pipeline/providers/limits.py`: attachment, prompt, and process-usage limits.
 - `pipeline/providers/factory.py`: transport selection, separate from graph rules.
 - `journal.py`: append-only attempts, events, and stage records.
 - `export.py`, `correspondences.py`, `correspondence_table.py`: inspection outputs.
@@ -128,7 +130,7 @@ a completed user-study infrastructure.
 
 ## Prompt Caching
 
-Graph judgments still use native Claude Skills and code execution. Skill files
+Graph judgments use native Skills through the selected provider. Skill files
 are not copied into the system prompt. Matching context declares `cache_prefix:
 [scope, candidates]`: the transport sends cached task instructions, then cached
 scope/candidates, then the changing focus without a cache marker. This applies
@@ -144,9 +146,10 @@ This does not guarantee that a Skill's on-demand instruction-file read will be
 reused across separate judgments. Container state is independent of prompt
 caching; containers and tool histories are not carried between judgments.
 
-Both pipelines store native Skill registration records in
-`_cache/skill-registry.json` under the repository root (the graph configuration's
-Skill-root parent). New runs reuse the registered ID/version for identical Skill
+Both pipelines store native Skill registration records under `_cache/` at the
+repository root (the graph configuration's Skill-root parent): `skill-registry.json`
+for Anthropic and `skill-registry-openai.json` for OpenAI.
+New runs reuse the registered ID/version for identical Skill
 files; source changes create a new version, and credentials have isolated
 records. This is registration reuse, not cached model output or a guarantee of
 prompt-cache hits. Old per-run registries are not migrated. Local judgment

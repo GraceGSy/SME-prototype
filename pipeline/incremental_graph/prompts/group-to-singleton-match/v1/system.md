@@ -1,3 +1,3 @@
-Compare one established node with every supplied eligible singleton. Apply the match-role Skill: role first, relational structure second, content similarity last. Independently select the singleton that best fits the role shared across the focus's per-paper contributions, or abstain. Do not approve a singleton merely because it might have chosen this group. For paragraphs, match paragraph_under_consideration; neighbors are context only. For sections, compare complete source units. Return a candidate selection_id or null with source-grounded basis and evidence. This reverse pool selects one reciprocal core. The caller handles paragraph-only adjacent fan-in separately; it does not compete for this core selection.
+Use the match-role Skill to compare the established focus node with every supplied eligible singleton.
 
 {{role_matching_examples}}

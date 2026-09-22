@@ -39,6 +39,19 @@ class MatchingExamplesTest(unittest.TestCase):
                     self.assertNotIn(examples, rendered.user)
                     self.assertNotIn(examples, rendered.cacheable_context)
                     self.assertIn("Each paper's accepted contribution", rendered.system)
+                    skill = (self.config.skill_root / stage.skill / "SKILL.md").read_text(
+                        encoding="utf-8"
+                    )
+                    instructions = " ".join((skill + "\n" + rendered.system).split())
+                    self.assertEqual(
+                        instructions.count(
+                            "role first, relational structure second, content similarity last"
+                        ),
+                        1,
+                        "The selection rule should have one instruction owner",
+                    )
+                    self.assertEqual(instructions.count("## Authoritative response contract"), 1)
+                    self.assertEqual(instructions.count("## Shared role across papers"), 1)
 
     def test_question_generation_does_not_receive_matching_examples(self):
         for stage in self.config.stages:
@@ -53,6 +66,31 @@ class MatchingExamplesTest(unittest.TestCase):
                     self.assertEqual(
                         rendered.system.count("Constructed group-question examples"), 1
                     )
+
+    def test_one_question_schema_controls_all_question_stages_and_their_cache_keys(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "prompts"
+            shutil.copytree(self.config.prompt_root, root)
+            repository = PromptRepository(root, self.config.context_root)
+            stages = [stage for stage in self.config.stages if stage.prompt]
+
+            def render(stage):
+                fields = repository._load_context(stage.context).include
+                return repository.render(
+                    stage.prompt, stage.context, {field: None for field in fields}
+                )
+
+            before = [render(stage) for stage in stages]
+            self.assertEqual(len({result.schema_hash for result in before}), 1)
+            path = root / "shared/question-output.schema.json"
+            schema = json.loads(path.read_text())
+            schema["properties"]["question_this_text_answers"]["minLength"] = 2
+            path.write_text(json.dumps(schema))
+            after = [render(stage) for stage in stages]
+            self.assertEqual(len({result.schema_hash for result in after}), 1)
+            for first, second in zip(before, after):
+                self.assertNotEqual(first.schema_hash, second.schema_hash)
+                self.assertEqual(first.user, second.user)
 
     def test_live_sanity_cases_are_held_out_of_the_prompt(self):
         cases = json.loads(

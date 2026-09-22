@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal
@@ -52,8 +51,6 @@ class RenderedPrompt:
 class PromptRepository:
     """Render versioned prompt bundles using filtered, deterministic JSON context."""
 
-    _PLACEHOLDER = "{{context_json}}"
-
     def __init__(self, prompt_root: Path, context_root: Path):
         self.prompt_root = prompt_root
         self.context_root = context_root
@@ -72,12 +69,8 @@ class PromptRepository:
             system += "\n\n" + self._read(self.prompt_root / "shared" / "group-role.md")
         if context_ref == "matching":
             system += "\n\n" + self._read(self.prompt_root / "shared" / "match-evidence.md")
-        user_template = self._read(prompt_dir / "user.md")
-        schema_path = (
-            self.prompt_root / "shared" / "match-output.schema.json"
-            if context_ref == "matching"
-            else prompt_dir / "output.schema.json"
-        )
+        schema_name = "match-output" if context_ref == "matching" else "question-output"
+        schema_path = self.prompt_root / "shared" / f"{schema_name}.schema.json"
         schema_text = self._read(schema_path)
         try:
             schema = json.loads(schema_text)
@@ -112,24 +105,12 @@ class PromptRepository:
             ensure_ascii=False,
         )
 
-        if self._PLACEHOLDER not in user_template:
-            raise ConfigurationError(
-                f"Prompt {prompt_ref}/user.md must contain {self._PLACEHOLDER}"
-            )
-        unresolved = re.findall(r"{{[^{}]+}}", user_template.replace(self._PLACEHOLDER, ""))
-        if unresolved:
-            raise ConfigurationError(
-                f"Prompt {prompt_ref} has unresolved placeholders: {unresolved}"
-            )
-        user = user_template.replace(self._PLACEHOLDER, dynamic_json)
         return RenderedPrompt(
             system=system,
-            user=user,
+            user=dynamic_json,
             cacheable_context=cacheable_context,
             schema=schema,
-            prompt_hash=_sha256_text(
-                system + "\0" + user_template + "\0" + json.dumps(prefix_fields)
-            ),
+            prompt_hash=_sha256_text(system + "\0" + json.dumps(prefix_fields)),
             context_hash=_sha256_text(context_json),
             schema_hash=_sha256_text(schema_text),
         )
