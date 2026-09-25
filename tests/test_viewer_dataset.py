@@ -13,7 +13,6 @@ from pipeline.viewer.package import (
     DatasetValidationError,
     package_dataset,
     package_study,
-    validate_dataset,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -112,7 +111,7 @@ class ViewerDatasetTest(unittest.TestCase):
             self.assertFalse((output / "public" / "viz").exists())
             self.assertFalse((output / "public" / "data" / "bidirectional_matches.json").exists())
 
-    def test_packages_optional_incremental_graph_replay(self) -> None:
+    def test_package_keeps_audit_replay_out_of_the_reader_site(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             source = root / "source"
@@ -121,8 +120,9 @@ class ViewerDatasetTest(unittest.TestCase):
 
             descriptor = package_dataset(source, output, VIEWER_PATH, "snapshot", "Snapshot")
 
-            self.assertEqual(descriptor["graph_replay_file"], "graph-replay.json")
-            self.assertTrue((output / "public" / "data" / "graph-replay.json").is_file())
+            self.assertNotIn("graph_replay_file", descriptor)
+            self.assertTrue((source / "graph-replay.json").is_file())
+            self.assertFalse((output / "public" / "data" / "graph-replay.json").exists())
             self.assertTrue((output / "public" / "app.js").is_file())
 
     def test_packages_participant_routed_study_datasets(self) -> None:
@@ -178,13 +178,6 @@ class ViewerDatasetTest(unittest.TestCase):
                 with self.assertRaises(DatasetValidationError):
                     package_dataset(source, root / "site", VIEWER_PATH, "test", "Test")
                 self.assertFalse((root / "site").exists())
-
-    def test_optional_replay_can_be_absent(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            source = Path(directory) / "source"
-            make_snapshot_dataset(source)
-            (source / "graph-replay.json").unlink()
-            self.assertNotIn("graph_replay_file", validate_dataset(source))
 
 
 if __name__ == "__main__":

@@ -1,31 +1,19 @@
-# HCI five-paper dataset
+# Five HCI papers
 
-`raw/` contains the five source PDFs. `manifest.yaml` defines the canonical
-insertion order for the existing question-annotated extractions. Each root file
-is named `<paper_id>.json` and contains
-non-appendix top-level sections, optional subsections, paragraphs in reading
-order, and precomputed `question_this_text_answers` metadata.
+`raw/` holds the source PDFs. `content/` holds one content-only canonical JSON
+file per paper. `content/manifest.yaml` lists all five in insertion order;
+`content/first-two.manifest.yaml` selects AbstractExplorer and CorpusStudio for
+a smaller first run. The graph generates missing questions from these files.
+Do not re-extract unchanged PDFs or reuse judgments from a different run.
 
-`content/` is the tracked content-only baseline; the root JSON files retain
-precomputed questions for reproducible question-reuse tests. These are deliberate
-prepared variants, not interchangeable input schemas. Precomputed questions are
-not a human gold standard.
-
-New experiments use `content/manifest.yaml`, not the question-annotated root
-manifest. For the first pair only, use `content/first-two.manifest.yaml`
-(AbstractExplorer, then CorpusStudio). Start in a new run directory to generate
-fresh questions and judgments. Do not re-extract the unchanged source PDFs.
-
-No preparation runs automatically. The one-shot utility is retained under
-`helpers/prepare_content_corpus.py`; existing content should be reused.
-
-The incremental graph represents every top-level section and subsection as a
-structural unit. Whole-section matching evidence includes its descendants, but
-each paragraph has exactly one owner. The checked-in corpus contains 52
-top-level sections, 87 subsections, and 459 paragraphs.
-
-Run the non-network validation from the repository root:
+The stored corpus has 52 top-level sections, 87 subsections, and 459
+paragraphs. Source-marked subsections remain structural units; each paragraph
+has one exact owner. Validate the full prepared corpus without API calls:
 
 ```powershell
-python -m pipeline.incremental_graph.cli validate datasets/hci-five-paper/manifest.yaml
+python -m pipeline.incremental_graph.cli validate datasets/hci-five-paper/content/manifest.yaml
 ```
+
+An older question-annotated variant was removed from the active checkout. It
+remains in Git history and is not a gold standard. See the
+[main README](../../README.md) to run the content-only example.

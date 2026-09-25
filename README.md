@@ -1,230 +1,157 @@
-# Question Atlas: Experimental Structure-Mapping Graph
+# SMELTER: comparative reading with question-role graphs
 
-This repo compares documents by the roles their passages play, not just by topic.
-It uses native Skills through Anthropic or OpenAI for language judgments and
-deterministic Python for graph membership, ordering, provenance, and replay. The viewer lets a researcher inspect
-shared questions alongside the original passages.
+SMELTER (Structural Mapping Engine for Long TExtual Reading) compares long
+documents by the questions their sections and paragraphs answer. An LLM
+proposes questions and local matches; Python applies fixed graph
+rules and saves every judgment with its source evidence. A browser viewer shows
+the resulting Question Groups and each document's Paper Map. The system is
+experimental: a generated match is not a verified analogy or a complete
+implementation of the canonical Structure-Mapping Engine.
 
-It is an experimental, SME-inspired matcher, **not an implementation or validation
-of Gentner's complete Structure-Mapping Engine**. There have been no real-user
-evaluations. Start with [the Sherlock assessment](docs/sherlock-experiment.md).
+**Start here:** use the prepared two-paper HCI example below. It requires Python
+3.11, an Anthropic API key with credit, and network access. Running the graph
+makes paid model calls. There is no provider-enforced spending cap in the core
+CLI, so inspect the corpus and model configuration before starting a large run.
 
-## Two Pipelines
+## Run the prepared example
 
-1. **Extract new documents once:** raw PDF, UTF-8 text, or XHTML -> canonical
-   content JSON and extraction provenance. Existing outputs are never overwritten.
-2. **Build the ordered graph:** prepared documents -> questions, directional
-   judgments, deterministic graph, correspondence report, and viewer dataset.
-   Start with at least two papers; append another paper or an ordered manifest.
-
-Packaging the static viewer is an offline export operation, not a third model
-pipeline. No command implicitly extracts a document during graph construction.
-
-## Read The Code
-
-Start with [runner.py](pipeline/incremental_graph/runner.py) for the sequence,
-[match_rules.py](pipeline/incremental_graph/match_rules.py) for acceptance rules,
-and [judgments.py](pipeline/incremental_graph/judgments.py) for prompts, validation,
-and completed-call caching. You do not need to read provider API code to follow
-the algorithm.
-
-| Path | Responsibility |
-|---|---|
-| [pipeline/extraction.py](pipeline/extraction.py) | Extract a new document once |
-| [pipeline/document.py](pipeline/document.py) | Canonical content and positional IDs |
-| [pipeline/incremental_graph/](pipeline/incremental_graph/) | Ordered graph algorithm |
-| [pipeline/providers/](pipeline/providers/README.md) | API transports and shared provider bookkeeping |
-| [skills/](skills/) | One maintained copy of each native skill |
-| [prompts/](pipeline/incremental_graph/prompts/) | Stage tasks, shared contracts, examples, and schemas |
-| [pipeline/viewer/](pipeline/viewer/) | Viewer, packaging, and participant-study scaffold |
-| [datasets/](datasets/) | Raw sources and prepared content |
-| [helpers/](helpers/) | One-time preparation and historical run scripts, outside the runtime |
-| [tests/](tests/) | Algorithm, provider-contract, recovery, and viewer checks |
-
-### Instruction Ownership
-
-| Change | Edit |
-|---|---|
-| Role matching, candidate IDs, and matching judgment rules | [match-role/SKILL.md](skills/match-role/SKILL.md) |
-| Question style, abstraction, and length | [generate-question/SKILL.md](skills/generate-question/SKILL.md) |
-| How accepted members jointly realize a role | [group-role.md](pipeline/incremental_graph/prompts/shared/group-role.md) |
-| Center-only evidence and quotation/excerpt requirements | [match-evidence.md](pipeline/incremental_graph/prompts/shared/match-evidence.md) |
-| Few-shot examples and the two output schemas | [prompts/shared/](pipeline/incremental_graph/prompts/shared/) |
-| Which unit or direction a stage judges | That stage's `prompts/<task>/v1/system.md` |
-
-Stage files name the task rather than repeat the skill or shared contracts.
-The renderer sends dynamic evidence directly as JSON; there are no per-stage
-input templates. Anthropic and OpenAI consume these same sources.
-
-See [architecture](docs/architecture.md) for execution details and
-[data contracts](docs/data-contracts.md) for accepted inputs and outputs.
-
-## Setup
-
-Python 3.11 and Node 22 are the tested runtimes. From this repository root:
+From this repository root in PowerShell:
 
 ```powershell
-python -m venv .venv
+py -3.11 -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements-dev.txt
-npm ci
-npm run build:viewer
-```
-
-Model commands use `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` for the selected provider,
-from the environment or the nearest ancestor `.env` containing that key.
-Tests and manifest validation do not need a key.
-
-## Extract A New Document
-
-```powershell
-python -m pipeline.extraction path/to/new-paper.pdf datasets/my-corpus/content/new-paper.json --domain academic --title "New Paper"
-```
-
-The domain must be exactly `academic`, `legal`, or `narrative`. It is not inferred
-from the extension. Extraction returns content only, not questions.
-The attachment bounds are 20 MB for PDF and 500 KB for text/XHTML.
-A valid schema is not proof of faithful extraction: inspect new content against
-the raw document before including it in a graph.
-
-The checked-in corpora are already prepared. Do not extract them again.
-
-For new experiments, use content-only prepared inputs and a new run directory.
-Do not seed them with older generated questions or judgment caches. Retrying an
-interrupted experiment may reuse that same run's completed judgments. HCI's
-content-only manifest is `datasets/hci-five-paper/content/manifest.yaml`; its
-`first-two.manifest.yaml` selects only AbstractExplorer and CorpusStudio.
-
-## Start, Add, Retry
-
-```powershell
+python -m pip install -r requirements.txt
+$env:ANTHROPIC_API_KEY = "your-key"
 python -m pipeline.incremental_graph.cli validate datasets/hci-five-paper/content/first-two.manifest.yaml
-python -m pipeline.incremental_graph.cli start datasets/hci-five-paper/content/first-two.manifest.yaml runs/hci
-python -m pipeline.incremental_graph.cli add path/to/additions.manifest.yaml runs/hci
-python -m pipeline.incremental_graph.cli retry runs/hci
+python -m pipeline.incremental_graph.cli start datasets/hci-five-paper/content/first-two.manifest.yaml runs/hci-first-two
 ```
 
-The manifest order is the insertion order. A start manifest needs at least two
-papers; additional entries extend the initial pair in order. An add manifest
-contains only new paper IDs and must retain the existing granularity.
+`validate` checks the inputs without using the API. `start` creates a new run
+directory and maps AbstractExplorer and CorpusStudio in that order. Do not
+reuse an existing run directory for a new experiment. A failed run can be
+resumed with `python -m pipeline.incremental_graph.cli retry runs/hci-first-two`.
+This is not a cheap smoke test: the current example contains 66 structural
+units and 221 paragraphs. Review the `validate` output before calling `start`.
 
-Each document completes structural matching, reciprocal singleton realignment,
-then the same operations for paragraphs within their exact section nodes before
-the next document is inserted. Paragraph-only mode still runs paragraph realignment.
-
-`add` replays this ordered sequence with cached judgments into a new revision;
-it does not mutate the previous revision in place. A structural merge moves any
-existing paragraph nodes into the new scope without changing their IDs.
-Successful and failed revisions remain separate. A failed latest revision must
-be retried before another add.
-
-A targeted retry can force a stage for one paper:
-`retry runs/hci --paper-index 2 --stage section_matching`.
-This forces that stage's requests, not an arbitrary downstream invalidation.
-Unchanged downstream inputs reuse their existing cached judgments.
-
-Saved input hashes and code/prompt/Skill/config/dependency fingerprints are
-checked before adding or retrying. If policy changed, start a new run. Old run
-formats and legacy caches are not migrated at runtime.
-
-## Choose A Provider
-
-The default remains Anthropic. To start an OpenAI run, pass both `--provider` and
-`--model`; the existing config still supplies effort, output budgets, and stages:
+To inspect a completed run, install Node.js 22 and build the static viewer:
 
 ```powershell
-python -m pipeline.incremental_graph.cli start datasets/hci-five-paper/content/first-two.manifest.yaml runs/hci-openai --provider openai --model YOUR_OPENAI_MODEL
-```
-
-Choose a model supporting native Skills and explicit caching (GPT-5.6 or later).
-The shared config currently uses medium effort with thinking enabled. Subsequent
-`add` and `retry` commands use the provider and model saved in that run. To use a
-different model or provider, start a new run. You can also set `model.provider`
-and `model.name` in a pipeline config passed with `--config`.
-
-Extraction accepts the same provider flags:
-
-```powershell
-python -m pipeline.extraction path/to/new-paper.pdf datasets/my-corpus/content/new-paper.json --domain academic --title "New Paper" --provider openai --model YOUR_OPENAI_MODEL
-```
-
-Both routes use the same prompts, examples, skill directories, schemas, evidence
-checks, and graph rules. Provider-specific API code lives in
-[`pipeline/providers`](pipeline/providers/README.md). Completed-call cache keys
-include the provider and model; native skill registrations use separate files.
-Raw response records retain each provider's cache-read, cache-write, and reasoning
-usage. The historical HCI/Sherlock dollar-budget helpers remain Sonnet-specific
-and reject OpenAI usage rather than assigning it Claude prices.
-
-## Inspect Local Runs
-
-New completed revisions include `reports/singletons.json` for inspection or viewer use.
-They distinguish lack of comparison, model abstention, and selections that were
-not accepted. They also show final-snapshot recovery eligibility; a singleton is
-not evidence of a genuinely unique role. Audit an older revision without API
-calls or changing its saved results:
-
-```powershell
-python -m helpers.report_singletons runs/hci/revisions/revision-0001/events.json output/reports/hci-singletons
-```
-
-The report output directory must not already exist.
-
-Build once, then serve completed outputs directly without copying datasets:
-
-```powershell
+npm ci
 npm run build:viewer
 python -m pipeline.viewer.server runs --port 8073
 ```
 
-Open `http://127.0.0.1:8073/` and select a run and revision. "Latest completed"
-resolves once per page load, so a running insertion cannot mix files from two
-revisions. Use Load / Refresh after a run finishes. Reloading also discovers new
-runs. Only completed revisions are selectable; malformed datasets fail validation.
-The server binds to localhost and exposes only viewer assets and exported data,
-not credentials, caches, provenance, or arbitrary files. Rebuild only when viewer
-code changes. Static deployment and participant-study packaging remain optional.
+Open `http://127.0.0.1:8073/`, select the run and a completed revision, then
+use Question Groups, Paper Map, or Graphical Explorer. Serving the viewer makes
+no model calls. The server exposes viewer data, not keys or judgment caches.
 
-To give a run a readable display name, add `viewer.json` in its run directory
-with `{"label": "Readable run name"}`. This changes the title and run selector,
-not the run ID, URLs, or saved results. Without this file, the viewer uses the run ID.
+## Run your own documents
 
-## Package For Sharing
+1. Prepare at least two canonical JSON documents. For a new PDF, UTF-8 text,
+   or XHTML source, extract it once with `pipeline.extraction`. Review the
+   resulting paragraphs against the source before using them. Extraction
+   does not automatically run as part of graph construction.
+2. Create an ordered YAML manifest. Paths are relative to the manifest. Use
+   `section`, `subsection`, or `paragraph` for `max_granularity`; paragraph
+   mode requires one stored top-level section per document.
+3. Validate the manifest, then start a new run. Use `add` with a manifest
+   containing only new documents to extend it. `retry` uses frozen inputs
+   after an interruption or failed judgment.
 
 ```powershell
-$state = Get-Content runs/hci/run.json | ConvertFrom-Json
-$dataset = Join-Path runs/hci/revisions (Join-Path $state.current_revision dataset)
-python -m pipeline.viewer.package $dataset site/hci --dataset-id hci --label "HCI Graph"
-python -m http.server 8000 --directory site/hci/public
+python -m pipeline.extraction path/to/paper-a.pdf datasets/my-corpus/paper-a.json --domain academic --title "Paper A"
+python -m pipeline.extraction path/to/paper-b.pdf datasets/my-corpus/paper-b.json --domain academic --title "Paper B"
+python -m pipeline.incremental_graph.cli validate datasets/my-corpus/manifest.yaml
+python -m pipeline.incremental_graph.cli start datasets/my-corpus/manifest.yaml runs/my-corpus
 ```
 
-Open `http://localhost:8000`. Question Groups and Paper Map show the final
-snapshot. Graphical Explorer follows the questions in source reading order.
-Click a section to gently center it and unfold its subsections and directly assigned
-paragraph roles. Click a paragraph role to read original passages across papers
-inline on the canvas; Back returns to the containing section. There is no sidebar.
-Parallel directed paper paths collapse into one bold arrow without changing the
-underlying data. Paper-specific branches remain colored; arrows into unmatched
-nodes are dashed. Paper and role filters highlight paths without deleting evidence.
-Arrows indicate order among displayed units, not causal relationships or a new
-semantic matching step. Differences within matched roles are
-for the reader to inspect, not newly inferred classifications. Graph Replay is
-hidden from navigation for now; replay exports and validation remain intact.
-Malformed present replay data is an error, not a silently hidden tab.
-Packaging requires the viewer build and refuses a nonempty output directory.
+To extend that run later, put only the additional documents in another
+manifest and call
+`python -m pipeline.incremental_graph.cli add datasets/my-corpus/new.manifest.yaml runs/my-corpus`.
 
-## Verification
+Example `datasets/my-corpus/manifest.yaml`:
+
+```yaml
+schema_version: 1
+max_granularity: subsection
+papers:
+  - paper_id: paper-a
+    title: Paper A
+    file: paper-a.json
+  - paper_id: paper-b
+    title: Paper B
+    file: paper-b.json
+```
+
+The extraction domains are exactly `academic`, `legal`, and `narrative`; select
+one explicitly. Existing prepared corpora are under `datasets/`. Do not
+re-extract them for a new graph experiment. A manifest's order is the graph's
+insertion order and can affect the result. The [data contract](docs/data-contracts.md)
+defines every accepted field and the paragraph-only constraint.
+
+The configured default model is `claude-sonnet-5` with the settings in
+[`incremental-v1.yaml`](pipeline/incremental_graph/configs/incremental-v1.yaml).
+For a different provider/model, set its API key and pass both flags on `start`:
 
 ```powershell
+$env:OPENAI_API_KEY = "your-key"
+python -m pipeline.incremental_graph.cli start datasets/my-corpus/manifest.yaml runs/my-openai-run --provider openai --model YOUR_SKILLS_CAPABLE_MODEL
+```
+
+The selected provider and model remain fixed for `add` and `retry`. Both routes
+require native Skills support; an arbitrary chat model will not work. Offline
+tests verify the OpenAI transport contract, but a live OpenAI graph run has not
+been verified here. Provider usage limits are acceptance guards, not guaranteed
+cost ceilings. Raw extraction with OpenAI also needs `--provider openai --model`.
+
+## What the pipeline saves
+
+The graph processes documents in order. For each document it compares
+structural roles in both directions, accepts reciprocal choices, revisits
+eligible singletons, then repeats the process for paragraphs inside their
+assigned structural groups. Paragraphs may join an adjacent accepted core
+under a limited fan-in rule. Each match request chooses one candidate or null;
+Python controls the final mapping. The [flow diagrams](PIPELINE_FLOW.md) show
+the stage order, including paragraph-only mode and reparented sections.
+
+Each `start`, `add`, or `retry` attempt writes a new immutable revision under
+`runs/<name>/revisions/`. A successful revision contains the graph, source
+passages, correspondence reports, a singleton report, event/provenance records,
+and a viewer dataset. `run.json` points to the last completed revision and the
+latest attempt. Unchanged model judgments may be reused when an addition or
+retry replays the ordered sequence. Code, prompt, Skill, configuration, or
+dependency changes require a new run rather than mixing policies.
+
+## Find the code
+
+| Path | Responsibility |
+| --- | --- |
+| [`pipeline/extraction.py`](pipeline/extraction.py) | One-time extraction of a new source |
+| [`pipeline/document.py`](pipeline/document.py) | Canonical document schema and positional IDs |
+| [`pipeline/incremental_graph/`](pipeline/incremental_graph/) | Ordered graph, judgments, deterministic rules, revisions, and export |
+| [`pipeline/providers/`](pipeline/providers/README.md) | Anthropic/OpenAI native Skill transports |
+| [`skills/`](skills/) | Maintained extraction, question, and matching instructions |
+| [`pipeline/viewer/`](pipeline/viewer/) | Browser views, local server, and static packaging |
+| [`datasets/`](datasets/) | Raw sources, prepared content, manifests, and provenance |
+| [`helpers/`](helpers/README.md) | Optional one-time content preparation and report regeneration |
+| [`tests/`](tests/) | Offline contract, graph, and viewer checks |
+
+The [architecture guide](docs/architecture.md) explains matching and recovery
+rules. The [Sherlock assessment](docs/sherlock-experiment.md) records observed
+semantic failures and limits; passing tests does not establish mapping quality.
+
+## Verify changes
+
+```powershell
+python -m pip install -r requirements-dev.txt
+npm ci
 npm run build:viewer
-python -m unittest discover -s tests -v
 python -m ruff check pipeline tests helpers
 python -m ruff format --check pipeline tests helpers
+python -m unittest discover -s tests -q
 npm run test:viewer
 npm run format:check
 ```
 
-Browser tests use installed Microsoft Edge. CI is configured for these checks on Windows.
-No test makes a paid model call. Offline correctness does not establish match
-quality. Input-token limits are post-response acceptance guards, not guaranteed
-spend caps; a single request may incur cost before an observed-usage rejection.
+These checks use scripted judgments and make no paid model calls. A live run
+and source-by-source review are still needed before interpreting its mappings.

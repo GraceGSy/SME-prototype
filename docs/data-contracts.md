@@ -1,8 +1,7 @@
 # Data Contracts
 
-This branch has an intentional contract reset. Older run formats, pairwise
-mapping outputs, epoch files, aliases, and malformed model output are rejected,
-not normalized.
+The current pipeline rejects older pairwise run formats, epoch files, aliases,
+and malformed model output rather than normalizing them.
 
 ## Canonical Source
 
@@ -157,14 +156,15 @@ does not claim that an eligible target was examined or that a selection was soun
 and includes structural groups. Every paragraph has exactly one membership.
 A shared group represents at least two papers; a singleton exactly one.
 
-`graph-replay.json` is optional, with an ordered event stream, paper order,
-layouts, and final graph hash. Mutation events create/update/merge nodes and add
-containment edges. Judgment/projection/fan-in annotations are not extra mutations.
+The graph export also writes `graph-replay.json` for audit. It has an ordered
+event stream, paper order, layouts, and final graph hash. Mutation events
+create/update/merge nodes and add containment edges. Judgment/projection/fan-in
+annotations are not extra mutations.
 Realignment `node_merged` events require `attempt_id` and `reverse_attempt_id`.
 The `recursive_paragraph_matching` merge reason also records both attempts.
 `node_reparented` records a paragraph node's old and new structural parent;
 replay updates both node scope and member ownership without changing identity.
-The former one-way realignment event contract is intentionally not accepted.
+The reader site does not load or package this audit file.
 
 The exporter also writes `graph.json`, `correspondences.json`, and
 `correspondences.md` for analysis. Packaging copies only viewer-required data.

@@ -39,14 +39,6 @@ test("participant gate rejects lowercase instead of normalizing", async ({ page 
   await expect(page.locator("#tutorialLoading")).toHaveText("Ready");
 });
 
-test("malformed present replay is an error, not a hidden tab", async ({ page }) => {
-  await page.route("**/graph-replay.json", (route) =>
-    route.fulfill({ json: { schema_version: 999 } }),
-  );
-  await page.goto("/single/public/");
-  await expect(page.getByRole("alert")).toContainText("Could not load viewer data");
-});
-
 test("mobile layout stays within the viewport while paper columns scroll", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/single/public/");

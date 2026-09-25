@@ -13,11 +13,9 @@ from jsonschema import Draft202012Validator, ValidationError
 
 COMMON_ROOT_FILES = ("manifest.json",)
 SNAPSHOT_FILE = "final_snapshot.json"
-GRAPH_REPLAY_FILE = "graph-replay.json"
 VIEWER_ASSETS = {
     "dist/app.js": "app.js",
     "styles.css": "styles.css",
-    "graph_replay.css": "graph_replay.css",
 }
 
 
@@ -63,67 +61,6 @@ def _validate_members(groups: list[dict[str, Any]], units: set[str], source: str
             _require(key not in seen, f"{source} assigns {key} more than once")
             seen.add(key)
     _require(seen == units, f"{source} does not account for every unit")
-
-
-def _validate_optional_graph_replay(dataset_dir: Path, paper_ids: list[str]) -> dict[str, Any]:
-    path = dataset_dir / GRAPH_REPLAY_FILE
-    if not path.is_file():
-        return {}
-    replay = _read_json(path)
-    _validate_contract("replay", replay)
-    _require(
-        replay.get("schema_version") == 1, f"{GRAPH_REPLAY_FILE} has an unsupported schema version"
-    )
-    _require(
-        replay.get("mode") == "incremental_graph_replay", f"{GRAPH_REPLAY_FILE} has an invalid mode"
-    )
-    _require(
-        replay.get("paper_order") == paper_ids,
-        f"{GRAPH_REPLAY_FILE} paper order disagrees with manifest",
-    )
-    _require(isinstance(replay.get("layouts"), dict), f"{GRAPH_REPLAY_FILE} has no layouts object")
-    _require(
-        isinstance(replay.get("hierarchy_layouts", {}), dict),
-        f"{GRAPH_REPLAY_FILE} has an invalid hierarchy layouts object",
-    )
-    events = replay.get("events")
-    _require(isinstance(events, list), f"{GRAPH_REPLAY_FILE} has no events list")
-    _require(
-        [event.get("sequence") for event in events] == list(range(1, len(events) + 1)),
-        f"{GRAPH_REPLAY_FILE} event sequences must be contiguous from 1",
-    )
-    known_nodes: set[str] = set()
-    for event in events:
-        action = event.get("action")
-        if action == "node_created":
-            node_id = event.get("node_id")
-            _require(
-                bool(node_id) and node_id not in known_nodes,
-                f"{GRAPH_REPLAY_FILE} creates a duplicate node",
-            )
-            known_nodes.add(node_id)
-        elif action == "node_merged":
-            _require(
-                event.get("source_node_id") in known_nodes
-                and event.get("target_node_id") in known_nodes,
-                f"{GRAPH_REPLAY_FILE} merges an unknown node",
-            )
-            known_nodes.remove(event["source_node_id"])
-        elif action in {"member_added", "question_generated"}:
-            _require(
-                event.get("node_id") in known_nodes, f"{GRAPH_REPLAY_FILE} updates an unknown node"
-            )
-        elif action == "edge_created":
-            _require(
-                event.get("source") in known_nodes and event.get("target") in known_nodes,
-                f"{GRAPH_REPLAY_FILE} creates an edge with an unknown endpoint",
-            )
-    graph_hash = replay.get("final_graph_hash")
-    _require(
-        isinstance(graph_hash, str) and bool(re.fullmatch(r"[a-f0-9]{64}", graph_hash)),
-        f"{GRAPH_REPLAY_FILE} has an invalid final graph hash",
-    )
-    return {"graph_replay_file": GRAPH_REPLAY_FILE}
 
 
 def validate_dataset(
@@ -189,8 +126,6 @@ def validate_dataset(
         bool(re.fullmatch(r"[a-z0-9][a-z0-9_-]*", resolved_id)),
         "dataset_id must use lowercase letters, numbers, dashes, or underscores",
     )
-    replay_descriptor = _validate_optional_graph_replay(dataset_dir, paper_ids)
-
     snapshot = _read_json(dataset_dir / SNAPSHOT_FILE)
     _validate_contract("snapshot", snapshot)
     shared_groups = snapshot.get("groups")
@@ -228,7 +163,6 @@ def validate_dataset(
         "paragraph_count": paragraph_count,
         "snapshot_file": SNAPSHOT_FILE,
         "stats": snapshot.get("stats") or {},
-        **replay_descriptor,
     }
 
 
@@ -259,9 +193,6 @@ def _copy_dataset(
     for filename in filenames:
         shutil.copy2(dataset_dir / filename, data_dir / filename)
     shutil.copy2(dataset_dir / SNAPSHOT_FILE, data_dir / SNAPSHOT_FILE)
-    if descriptor.get("graph_replay_file"):
-        replay_file = descriptor["graph_replay_file"]
-        shutil.copy2(dataset_dir / replay_file, data_dir / replay_file)
     (data_dir / "dataset.json").write_text(
         json.dumps(descriptor, indent=2) + "\n",
         encoding="utf-8",

@@ -26,16 +26,16 @@ pinned [source revision](https://github.com/standardebooks/arthur-conan-doyle_th
 `raw/` contains the five source XHTML files. `provenance.json` records each URL,
 raw/content SHA-256 digest, and counts.
 
-The one-time `helpers/prepare_sherlock_five.py` helper extracts literal XHTML
-paragraph elements, including quoted letters and signatures, in reading order.
-Inline text is preserved; outer whitespace, heading markup, and scene separators
-are omitted. Unsupported body markup or stray text fails rather than being
-silently dropped. Tests compare every stored paragraph with the source text.
-The helper refuses to overwrite this directory and is not part of either runtime
-pipeline. The older Sherlock corpus remains unchanged.
+The stored content was prepared once from literal XHTML paragraph elements,
+including quoted letters and signatures, in reading order. Inline text is
+preserved; outer whitespace, heading markup, and scene separators are omitted.
+The one-time preparation script was retired; its commit remains in Git history.
+The graph consumes the prepared files directly. The other Sherlock corpus
+remains unchanged.
 
 Fresh here means newly prepared source-only inputs and newly generated questions
 in a separate run, not stories unseen during the model's training. Familiarity
 with Sherlock is a limitation of this experiment, not eliminated by fresh inputs.
 
-See [run readiness](../../../docs/sherlock-five-readiness.md) before funding or launch.
+The [dated run-readiness report](../../../docs/history/sherlock-five-readiness.md)
+documents an earlier cost analysis, not a current budget or launch procedure.

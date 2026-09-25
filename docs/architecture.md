@@ -117,11 +117,11 @@ not implicit consequences of singleton matching.
 - `pipeline/files.py`: shared atomic JSON writes and filesystem hashes.
 
 The viewer is plain TypeScript, not a framework rewrite. Its modules separate
-wire contracts, loading, model indexing, groups, paper map, replay reduction,
-replay rendering, tutorial, and application wiring. The TypeScript build exports
-JSON Schema so Python packaging and browser loading validate the same shapes.
-Only source-order reading views and replay remain; hidden skeleton, link,
-iteration, trace/flow, and MILP experiments were removed.
+wire contracts, loading, model indexing, groups, paper map, graphical explorer,
+tutorial, and application wiring. The TypeScript build exports JSON Schema so
+Python packaging and browser loading validate the same shapes. The graph still
+exports an event replay for audit, but the dormant replay UI and its assets are
+not part of the reader site.
 
 The tutorial was reduced to eight steps about the retained views, without the
 old experiment-specific action-gating machinery. Participant routing remains
@@ -146,8 +146,8 @@ This does not guarantee that a Skill's on-demand instruction-file read will be
 reused across separate judgments. Container state is independent of prompt
 caching; containers and tool histories are not carried between judgments.
 
-Both pipelines store native Skill registration records under `_cache/` at the
-repository root (the graph configuration's Skill-root parent): `skill-registry.json`
+Extraction and graph judgments store native Skill registration records under
+`_cache/` at the repository root (the graph configuration's Skill-root parent): `skill-registry.json`
 for Anthropic and `skill-registry-openai.json` for OpenAI.
 New runs reuse the registered ID/version for identical Skill
 files; source changes create a new version, and credentials have isolated
@@ -238,8 +238,9 @@ migration have been removed.
 - **DRY:** one canonical source validator, one JSON writer, one judgment layer,
   shared request limits, and shared viewer schemas. Do not introduce an abstraction for coincidental
   similarity between genuinely different scientific operations.
-- **KISS:** two explicit pipelines, a fixed stage order, a static viewer, and
-  inspectable JSON. No plugin framework, service layer, database, or background job.
+- **KISS:** one graph pipeline, separate one-time extraction, a fixed stage
+  order, a static viewer, and inspectable JSON. No plugin framework, service
+  layer, database, or background job.
 - **TDD:** reproduce a bug with a failing test, implement the smallest fix, then
   run focused and full suites. Keep scripted judgments separate from live-model
   and human evaluation. Existing tests do not imply the original code was TDD.

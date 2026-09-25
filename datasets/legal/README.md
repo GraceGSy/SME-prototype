@@ -29,7 +29,7 @@ path. New text extraction has a final-passage presence check, which is not a
 complete fidelity assessment.
 
 On 2026-09-10, `porter_opinion` was re-extracted with the unchanged native Skill
-from PDF-layout text prepared by `helpers/prepare_porter_layout.py`. The previous
+from PDF-layout text prepared during corpus curation. The previous
 plain-text input had lost paragraph indentation. The refreshed content has 38
 paragraphs instead of 14; the flagged 1,235-word unit is now a 149-word paragraph,
 and the longest paragraph is 321 words. All 37 independently detected indented
@@ -50,7 +50,7 @@ unchanged paragraph pipeline runs within their assigned groups. Documents withou
 subsections retain their printed section structure; no divisions are invented.
 The next planned legal experiment is the five opinions, before the dissents.
 
-**Dissent repair completed:** the [2026-09-10 audit and repair](../../docs/legal-extraction-audit-20260910.md)
+**Dissent repair completed:** the [2026-09-10 audit and repair](../../docs/history/legal-extraction-audit-20260910.md)
 corrected merged paragraphs in Banuelos-Jimenez, Porter, and Westmoreland.
 The corpus now contains 180 dissent paragraphs. All source words are retained
 in the three repaired files, with judge metadata removed and source-verified
@@ -58,9 +58,9 @@ footnote boundaries/continuations restored once. Native responses and curation
 provenance are preserved. The runtime still rejects malformed documents; no
 repair adapter was added. This is not an exhaustive transcription certification.
 
-The [five-opinion offline preflight](../../docs/legal-opinions-preflight-20260910.md)
-projects roughly $5-$8 with HCI-like usage, with a recommended $15-$20 planning
-reserve rather than a guaranteed ceiling. No paid legal graph has started.
+The [historical five-opinion offline preflight](../../docs/history/legal-opinions-preflight-20260910.md)
+is not a cost ceiling for a new run. No paid legal graph had started at the time
+of that report.
 
 After all ten files exist, validate the two content corpora without API calls:
 

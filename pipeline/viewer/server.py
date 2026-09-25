@@ -103,7 +103,7 @@ def handler_for(catalog):
                 dataset = catalog.dataset(run, revision)
                 if filename == "dataset.json":
                     return self.send_json(validate_dataset(dataset, run, catalog.label(run)))
-                allowed = {"manifest.json", "final_snapshot.json", "graph-replay.json"}
+                allowed = {"manifest.json", "final_snapshot.json"}
                 allowed.update(entry["file"] for entry in read_json(dataset / "manifest.json"))
                 file = (dataset / filename).resolve()
                 if filename not in allowed or not file.is_relative_to(dataset):

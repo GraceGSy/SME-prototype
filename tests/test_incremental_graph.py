@@ -27,7 +27,11 @@ CONFIG_PATH = (
     / "incremental-v1.yaml"
 )
 CANONICAL_MANIFEST = (
-    Path(__file__).resolve().parents[1] / "datasets" / "hci-five-paper" / "manifest.yaml"
+    Path(__file__).resolve().parents[1]
+    / "datasets"
+    / "hci-five-paper"
+    / "content"
+    / "manifest.yaml"
 )
 
 
@@ -585,7 +589,8 @@ class IncrementalGraphTest(unittest.TestCase):
                 )
             )
             descriptor = validate_dataset(revision / "dataset", "incremental", "Incremental")
-            self.assertEqual(descriptor["graph_replay_file"], "graph-replay.json")
+            self.assertEqual(descriptor["mode"], "final_snapshot")
+            self.assertNotIn("graph_replay_file", descriptor)
 
     def test_section_correspondence_table_ignores_unrequited_claims(self) -> None:
         first = Paper(

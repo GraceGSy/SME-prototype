@@ -1,7 +1,7 @@
 import { build } from "esbuild";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { z } from "zod";
-import { manifestSchema, paperSchema, snapshotSchema, replaySchema } from "./src/contracts";
+import { manifestSchema, paperSchema, snapshotSchema } from "./src/contracts";
 
 const out = "pipeline/viewer/dist";
 mkdirSync(out, { recursive: true });
@@ -22,7 +22,6 @@ writeFileSync(
         manifest: manifestSchema,
         paper: paperSchema,
         snapshot: snapshotSchema,
-        replay: replaySchema,
       }).map(([name, schema]) => [name, z.toJSONSchema(schema)]),
     ),
     null,

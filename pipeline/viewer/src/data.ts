@@ -2,11 +2,10 @@ import {
   descriptorSchema,
   manifestSchema,
   paperSchema,
-  replaySchema,
   snapshotSchema,
   studySchema,
 } from "./contracts";
-import type { Replay, Routes } from "./contracts";
+import type { Routes } from "./contracts";
 import { element } from "./dom";
 import { buildModel } from "./model";
 import { localDatasetBase } from "./local-runs";
@@ -75,16 +74,5 @@ export async function loadDataset() {
   ) {
     throw new Error("Dataset counts disagree with contents");
   }
-  let replay: Replay | null = null;
-  if (descriptor.graph_replay_file) {
-    replay = replaySchema.parse(await readJson(descriptor.graph_replay_file, base));
-    if (
-      JSON.stringify(replay.paper_order) !== JSON.stringify(papers.map((paper) => paper.paper_id))
-    ) {
-      throw new Error("Replay paper order disagrees with manifest");
-    }
-    if (replay.events.some((event, index) => event.sequence !== index + 1))
-      throw new Error("Replay event sequence is not contiguous");
-  }
-  return { descriptor, model, replay };
+  return { descriptor, model };
 }
