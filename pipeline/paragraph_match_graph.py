@@ -527,34 +527,70 @@ class ParagraphMatchGraph:
         """Flags NODES that TWO OR MORE DISTINCT paragraphs from the SAME other paper
         each independently chose as their own single closest match -- fan-IN onto one
         target, the mirror image of `one_to_many_candidates()`'s fan-OUT (one
-        paragraph pointing at 2+ distinct far-side families). Since every paragraph's
-        own directional pass can only ever name ONE closest match, at most one of a
-        fan-in group's claimants can end up reciprocated (a CONFIRMED member of the
-        target's node); the rest are necessarily left as unreciprocated
-        `one_directional_match` inbound edges. This shows up often at paragraph
-        granularity because papers frequently compress into one paragraph what
-        another spreads across several -- see this module's own docstring and the
-        README's worked example for real instances (three examplore_chi18 Introduction
-        paragraphs (3, 4, 5) all independently choosing corpusstudio's single
-        paragraph 4 as their closest match, with only paragraph 4 reciprocated;
-        two examplore_chi18 paragraphs (0, 1) both choosing corpusstudio's paragraph 0,
-        which reciprocates NEITHER -- its own pick was null).
+        paragraph pointing at 2+ distinct far-side families).
+
+        **Restricted to density-mismatch spillover around a bidirectional match --
+        deliberate divergence from `ClosestMatchGraph.fan_in_candidates()`, added
+        2026-08-29.** A (node, claiming_paper_id) group is only flagged when that
+        claiming paper has a CONFIRMED (bidirectionally reciprocated) claim on this
+        node, and only its one-directional claims whose `paragraph_number` is exactly
+        adjacent (+-1) to that confirmed claim's `paragraph_number` are kept -- a
+        one-directional claim further away is dropped from the group even if it would
+        otherwise have qualified. Two consequences worth being explicit about:
+          - A group with NO confirmed claim at all for that claiming paper is dropped
+            entirely, even if 2+ distinct paragraphs converge on the target. This is a
+            real behavior change: the OLD version of this method also flagged fully
+            unreciprocated convergence (e.g. two examplore_chi18 paragraphs both
+            choosing corpusstudio paragraph 0, whose own pick was null, reciprocating
+            NEITHER) -- that case is no longer surfaced by this method at all. It is
+            still visible via `fan_in_correspondence_table()`, which has its own
+            separate claim-collection logic and was NOT changed by this revision (see
+            that method's own docstring) -- the two methods now deliberately disagree
+            about what counts as flag-worthy, and that's intentional, not a bug to
+            reconcile.
+          - A one-directional claim that is NOT contiguous with its group's confirmed
+            claim is simply excluded from the group, not flagged in some other way --
+            e.g. if paragraph 9 also named corpusstudio paragraph 4 as its closest
+            match (alongside the confirmed 4<->4 and the contiguous 3, 5), paragraph 9
+            would not appear anywhere in this method's output.
+
+        The rationale for restricting to contiguity: the real, substantive phenomenon
+        this method exists to surface is paragraph-DENSITY mismatch -- one paper
+        compresses into a single paragraph what the other spreads across several
+        adjacent ones (see this module's own top-of-file docstring). A one-directional
+        claim immediately next to an already-confirmed pair is strong evidence of
+        exactly that pattern; a claim from a paragraph elsewhere in the section that
+        happens to also name the same target is far more likely to be an unrelated,
+        weaker secondary match than genuine spillover, and diluted the signal here
+        rather than sharpening it.
+
+        Real instance under this restriction (corpusstudio/examplore_chi18
+        Introduction pairing, post role-vs-content prompt fix): examplore_chi18 ¶3 and
+        ¶5 both remain flagged against corpusstudio ¶4 (paragraph_number 3 and 5 are
+        each exactly 1 away from the confirmed pair's 4) -- this group is unaffected
+        by the restriction, since both claims were already contiguous. The old ¶0/¶1
+        vs. corpusstudio ¶0 group (no confirmed claim at all, pre-fix) would have been
+        dropped entirely under this rule, had it still existed after the fix.
 
         Purely a post-hoc read of matches already made; no new API call, no new
         matching logic, and the graph itself is never modified.
 
         Returns a list of dicts, one per flagged (node, claiming paper) group:
+          - "node_id": the flagged node's graph id -- added 2026-08-29 alongside the
+            contiguity restriction, so `fan_in_correspondence_table()` can build
+            directly on this method's (now-filtered) output instead of recomputing
+            its own claims from scratch. See that method's docstring for the
+            resulting behavior change (it no longer surfaces fully-unreciprocated
+            convergence, since this method no longer does either).
           - "target_members": the node's own member(s) NOT belonging to the claiming
             paper (normally exactly one, in the common two-paper-per-node case; more
             if this node has absorbed confirmed members from more than two papers
             across multiple section pairings).
           - "claiming_paper_id": the paper whose distinct paragraphs are fanning in.
-          - "claims": one entry per claiming paragraph -- {"status", "unit", "basis"}.
-            `status` is "confirmed" (this specific claim WAS reciprocated -- it's
-            itself a member of the target's node) or "one_directional" (left
-            stranded). At most one "confirmed" entry ordinarily appears per group;
-            often zero, when the target's own pick was null or landed elsewhere
-            entirely.
+          - "claims": the confirmed claim plus only its contiguous one-directional
+            claims -- {"status", "unit", "basis"}. Always contains exactly one
+            "confirmed" entry (by construction: a group is only ever flagged when one
+            exists) plus one or more "one_directional" entries.
         """
         claims_by_node: dict[str, dict[str, list[dict[str, Any]]]] = {}
 
@@ -578,13 +614,33 @@ class ParagraphMatchGraph:
         for node_id, per_paper in claims_by_node.items():
             members = self.graph.nodes[node_id]["members"]
             for claiming_paper_id, claim_list in per_paper.items():
-                if len(claim_list) < 2:
+                confirmed_claims = [c for c in claim_list if c["status"] == "confirmed"]
+                if not confirmed_claims:
+                    continue  # nothing bidirectional for this claiming paper on this node -- drop the group
+                confirmed_paragraph_numbers = {
+                    c["unit"].get("paragraph_number")
+                    for c in confirmed_claims
+                    if c["unit"].get("paragraph_number") is not None
+                }
+
+                def is_contiguous(claim: dict[str, Any]) -> bool:
+                    n = claim["unit"].get("paragraph_number")
+                    if n is None:
+                        return False
+                    return any(abs(n - cp) == 1 for cp in confirmed_paragraph_numbers)
+
+                kept_claims = confirmed_claims + [
+                    c for c in claim_list if c["status"] == "one_directional" and is_contiguous(c)
+                ]
+                if len(kept_claims) < 2:
                     continue
+
                 flagged.append(
                     {
+                        "node_id": node_id,
                         "target_members": [m for m in members if m["paper_id"] != claiming_paper_id],
                         "claiming_paper_id": claiming_paper_id,
-                        "claims": claim_list,
+                        "claims": kept_claims,
                     }
                 )
 
@@ -599,73 +655,68 @@ class ParagraphMatchGraph:
 
     def fan_in_correspondence_table(self) -> list[dict[str, Any]]:
         """The paragraph-level sibling of `ClosestMatchGraph.
-        fan_in_correspondence_table()` -- see that method's docstring for the shared
-        row-inclusion rule (bidirectional node, OR an unreciprocated node still
-        flagged by >= 2 distinct claims from the same other paper -- the
-        "structurally different" last-row case in the README's own worked example)
-        and cell/bold conventions.
+        fan_in_correspondence_table()`. **Rebuilt 2026-08-29 to build directly on
+        `fan_in_candidates()`'s own output** instead of recomputing claims from
+        scratch -- the two methods had drifted out of sync once `fan_in_candidates()`
+        gained its contiguity restriction (only one-directional claims adjacent to a
+        confirmed pair, and only for groups that have a confirmed claim at all -- see
+        that method's own docstring). Building on it directly, rather than duplicating
+        similar-but-independent logic, means the two can no longer silently disagree.
 
-        The one structural divergence: NO `redundant_edges()` filtering here. Every
-        one-directional claim on a row's node is included as-is -- see this module's
-        own "-- redundancy flagging --" comment block for why a ported filter would be
-        actively wrong at this granularity (it was verified to erase all three real
-        fan-in groups in the corpusstudio/examplore_chi18 Introduction pairing, not
-        just redundant noise).
+        **Real behavior change worth being explicit about: this table no longer
+        surfaces fully-unreciprocated convergence.** The pre-refactor version of this
+        method could produce a row with NO bidirectional member at all (the README's
+        own corpusstudio ¶0/examplore_chi18 ¶0,¶1 example, back when ¶0's own pick was
+        null) -- that's the literal reason this table is named "(even unrequited)" in
+        the README. Since `fan_in_candidates()` now drops any group without a
+        confirmed claim, and this method only seeds rows from (a) bidirectional nodes
+        and (b) `fan_in_candidates()`'s own (now confirmed-anchored) groups, a fully
+        unrequited convergence can no longer produce a row here either. The table's
+        name is now a mismatch for what it actually computes -- flag this to the user
+        rather than quietly letting the docstring/README drift from the code.
 
         Returns a list of dicts, UNORDERED, same shape as the section-level sibling:
           - "node_id": the node's graph id.
           - "cells": {paper_id: [(label, is_bidirectional), ...]}, sorted within each
-            cell by `paragraph_number` ascending -- unlike the section-level sibling
-            (no natural sort order there), a paragraph number gives a real total
-            order, and the README's own worked example interleaves the bidirectional
-            entry among its unreciprocated neighbors this way (e.g. "¶3, **¶4**, ¶5")
-            rather than listing the bidirectional member first.
+            cell by `paragraph_number` ascending.
 
-        A unit's label is always `"¶{paragraph_number}"` -- paragraphs have no
-        "(whole)"-vs-subsection distinction to disambiguate, unlike the section-level
-        sibling.
+        A unit's label is always `"¶{paragraph_number}"`.
         """
-        claims_by_node: dict[str, dict[str, list[dict[str, Any]]]] = {}
-        for node_id, data in self.graph.nodes(data=True):
-            per_paper = claims_by_node.setdefault(node_id, {})
-            for member in data["members"]:
-                per_paper.setdefault(member["paper_id"], []).append({"status": "bidirectional", "unit": member})
-        for _, target_node, _, data in self.graph.edges(keys=True, data=True):
-            if data.get("kind") != "one_directional_match":
-                continue
-            su = data["source_unit"]
-            per_paper = claims_by_node.setdefault(target_node, {})
-            per_paper.setdefault(su["paper_id"], []).append({"status": "one_directional", "unit": su})
-
         def unit_label(u: dict[str, Any]) -> str:
             return f"¶{u['paragraph_number']}"
 
-        rows: list[dict[str, Any]] = []
+        # (paragraph_number, label, is_bidirectional) per cell, keyed by node_id, so
+        # sorting can happen once at the end after both sources below are merged in.
+        raw_rows: dict[str, dict[str, list[tuple[Optional[int], str, bool]]]] = {}
+
+        # Seed one row per bidirectional node, even if fan_in_candidates() has
+        # nothing to add to it (e.g. a confirmed pair with zero extra claimants).
         for node_id, data in self.graph.nodes(data=True):
             members = data["members"]
-            is_bidirectional_node = len(members) > 1
-            per_paper = claims_by_node.get(node_id, {})
-            has_fan_in = any(len(claim_list) >= 2 for claim_list in per_paper.values())
-            if not is_bidirectional_node and not has_fan_in:
+            if len(members) <= 1:
                 continue
-
-            # (paragraph_number, label, is_bidirectional) per cell, sorted
-            # numerically, then stripped to the (label, is_bidirectional) shape the
-            # renderer wants.
-            raw_cells: dict[str, list[tuple[Optional[int], str, bool]]] = {}
+            raw_cells = raw_rows.setdefault(node_id, {})
             for m in members:
                 raw_cells.setdefault(m["paper_id"], []).append(
-                    (m.get("paragraph_number"), unit_label(m), is_bidirectional_node)
+                    (m.get("paragraph_number"), unit_label(m), True)
                 )
-            for claiming_paper, claim_list in per_paper.items():
-                for c in claim_list:
-                    if c["status"] != "one_directional":
-                        continue
-                    u = c["unit"]
-                    raw_cells.setdefault(claiming_paper, []).append(
-                        (u.get("paragraph_number"), unit_label(u), False)
-                    )
 
+        # Layer in fan_in_candidates()'s own (contiguity-filtered) one-directional
+        # claims. Every group here is already anchored to a bidirectional node (by
+        # construction, per fan_in_candidates()'s current rule), so node_id is
+        # guaranteed to already be seeded above -- no need to seed again here.
+        for group in self.fan_in_candidates():
+            raw_cells = raw_rows.setdefault(group["node_id"], {})
+            for c in group["claims"]:
+                if c["status"] != "one_directional":
+                    continue
+                u = c["unit"]
+                raw_cells.setdefault(group["claiming_paper_id"], []).append(
+                    (u.get("paragraph_number"), unit_label(u), False)
+                )
+
+        rows: list[dict[str, Any]] = []
+        for node_id, raw_cells in raw_rows.items():
             cells: dict[str, list[tuple[str, bool]]] = {}
             for pid, entries in raw_cells.items():
                 entries.sort(key=lambda e: (e[0] is None, e[0]))

@@ -6,12 +6,12 @@
     "paper1_subsection_number": "3.1",
     "paper1_paragraph_number": 0,
     "paper1_text": "Our overarching design goal is to empower users with evidence of community-specific emergent norms and outliers at the document and sentence level as they write their own document for the same audience. In the process of fulfilling this overarching goal, our goal is to reduce, not facilitate, unintentional human- or AI-generated plagiarism.",
-    "paper2_section_name": null,
+    "paper2_section_name": "INTRODUCTION",
     "paper2_section_number": null,
     "paper2_subsection_name": null,
     "paper2_subsection_number": null,
-    "paper2_paragraph_number": null,
-    "paper2_text": null,
-    "basis": "The query paragraph is a design-goals statement for a different tool (\"Corpus Studio\") focused on writing norms and plagiarism reduction—concepts (community-specific document/sentence norms, plagiarism) that do not appear anywhere in the candidate pool. The paper2 candidates are all from the INTRODUCTION of a paper about EXAMPLORE, a tool for visualizing API usage examples mined from code corpora; none discusses design goals around emergent writing norms or plagiarism. Paragraph 5 (EXAMPLORE's mechanism) and paragraph 4 (introducing the tool) are the closest thematically since both describe a tool's design, but they address API usage visualization, not writing/plagiarism goals, so there is no genuine correspondence—hence null.\""
+    "paper2_paragraph_number": 3,
+    "paper2_text": "In the software engineering community, there is a growing interest in leveraging a large collection of open source repositories—so-called Big Code—to automatically infer API usage patterns from massive corpora [4, 16, 26, 30]. However, these API usage mining techniques provide limited support to help programmers explore concrete code examples from which API usage patterns are inferred, and understand the commonalities and variances across different uses. To bridge the gap, we aim to visualize hundreds of concrete code examples mined from massive code corpora in a way that reveals their commonalities and variances, and design a navigation model to guide the exploration of these examples. We draw motivation from prior work on visualizing large corpora of related documents, e.g., student coding assignments [8], text [27, 21], and image manipulation tutorials [17], to pose the following research question: How might we extract, align, canonicalize, and display large numbers of usage examples for a given API?",
+    "basis": "The query paragraph states the overarching design goal of the tool (Corpus Studio) — empowering users with evidence of community norms/outliers at document/sentence level. Candidate [3] plays the analogous role for EXAMPLORE: it articulates the design goal/research question of the tool — visualizing large numbers of usage examples to reveal commonalities and variances and guide exploration ('How might we extract, align, canonicalize, and display large numbers of usage examples for a given API?'). Both paragraphs serve as the pivot statement of the paper's core design objective, even though domains differ (writing/plagiarism vs. API usage examples). Other candidates describe motivating problems or contributions/tool description, not the core design-goal statement itself, so none match as closely."
   }
 ]

@@ -584,6 +584,10 @@ class ClosestMatchGraph:
         matching logic, and the graph itself is never modified.
 
         Returns a list of dicts, one per flagged (node, claiming paper) group:
+          - "node_id": the flagged node's graph id -- added 2026-08-29 so
+            `fan_in_correspondence_table()` can build directly on this method's
+            output instead of recomputing its own claims (see that method's
+            docstring for why the two were originally separate).
           - "target_members": the node's own member(s) NOT belonging to the claiming
             paper (normally exactly one, in the common two-paper-per-node case; more
             if this node has absorbed confirmed members from more than two papers
@@ -621,6 +625,7 @@ class ClosestMatchGraph:
                     continue
                 flagged.append(
                     {
+                        "node_id": node_id,
                         "target_members": [m for m in members if m["paper_id"] != claiming_paper_id],
                         "claiming_paper_id": claiming_paper_id,
                         "claims": claim_list,
@@ -638,24 +643,29 @@ class ClosestMatchGraph:
 
     def fan_in_correspondence_table(self) -> list[dict[str, Any]]:
         """Build the row data behind the README's "Bidirectional and (even unrequited)
-        Fan_In Correspondence Table" for sections/subsections: one row per node that is
-        either BIDIRECTIONAL (both directions agree, i.e. merged, len(members) > 1) or
-        the target of a `fan_in_candidates()`-style convergence (>= 2 distinct claims
-        from the same other paper) even when never reciprocated -- the same
-        "structurally different, unreciprocated" row the README's paragraph-level
-        worked example calls out (e.g. a target whose own directional pass picked
-        something else, or nothing). Every non-redundant one-directional claim on a
-        row's node is folded into the same row, in the cell of whichever paper made
-        the claim.
+        Fan_In Correspondence Table" for sections/subsections. **Rebuilt 2026-08-29 to
+        build directly on `fan_in_candidates()`'s own output** instead of recomputing
+        claims from scratch (see that method's docstring for the "node_id" field this
+        relies on) -- the paragraph-level sibling of this method was refactored the
+        same way, after its `fan_in_candidates()` gained a contiguity restriction that
+        made the two methods' independent claim-collection logic capable of silently
+        disagreeing. `ClosestMatchGraph.fan_in_candidates()` itself was NOT given any
+        such restriction, so this table's behavior is unchanged by this refactor --
+        it's a pure de-duplication of logic, not a behavior change, unlike its sibling.
+
+        One row per node that is either BIDIRECTIONAL (merged, len(members) > 1) or
+        the target of a `fan_in_candidates()` group (which, on THIS class, still
+        includes groups with zero confirmed claims -- i.e. fully unreciprocated
+        convergence remains representable here, unlike the now-restricted paragraph-
+        level sibling). Every non-redundant one-directional claim on a row's node is
+        folded into the same row, in the cell of whichever paper made the claim.
 
         Filters every one-directional claim through `redundant_edges()` first -- a
         claim whose source unit is already covered by a sibling's bidirectional match
         to the exact same target is dropped, same discipline as the README's own "Step
         2: filter out every extra claim that redundant_edges() already flags" worked
-        example. This is the one place this method structurally diverges from its
-        `ParagraphMatchGraph` sibling: that class has no `redundant_edges()` to filter
-        through (see its own module docstring for why), so its version of this table
-        includes every non-empty fan-in claim, unfiltered.
+        example. This remains the one structural divergence from the paragraph-level
+        sibling: that class has no `redundant_edges()` to filter through.
 
         Returns a list of dicts, UNORDERED -- row order is a presentation choice (e.g.
         one paper's own document order) this method has no way to make on its own:
@@ -676,10 +686,9 @@ class ClosestMatchGraph:
         contents, never by re-reading the source paper JSON.
 
         Within a cell, a bidirectional member (if any) is listed first, followed by
-        non-redundant one-directional claims in whatever order `fan_in_candidates()`-
-        style iteration encountered them -- no additional sort. This is a deliberate
-        difference from the paragraph-level sibling's numeric-by-paragraph-number sort;
-        section/subsection labels have no natural total order to sort by.
+        non-redundant one-directional claims in whatever order `fan_in_candidates()`
+        returned them -- no additional sort. Section/subsection labels have no natural
+        total order to sort by, unlike the paragraph-level sibling's paragraph_number.
         """
         has_subsections: set[tuple[str, str]] = set()
 
@@ -708,39 +717,51 @@ class ClosestMatchGraph:
             for r in self.redundant_edges()
         }
 
-        claims_by_node: dict[str, dict[str, list[dict[str, Any]]]] = {}
-        for node_id, data in self.graph.nodes(data=True):
-            per_paper = claims_by_node.setdefault(node_id, {})
-            for member in data["members"]:
-                per_paper.setdefault(member["paper_id"], []).append({"status": "bidirectional", "unit": member})
-        for source, target, key, data in self.graph.edges(keys=True, data=True):
-            if data.get("kind") != "one_directional_match":
-                continue
-            su = data["source_unit"]
-            per_paper = claims_by_node.setdefault(target, {})
-            per_paper.setdefault(su["paper_id"], []).append(
-                {"status": "one_directional", "unit": su, "target_unit": data["target_unit"]}
-            )
+        raw_rows: dict[str, dict[str, list[tuple[str, bool]]]] = {}
 
-        rows: list[dict[str, Any]] = []
+        # Seed one row per bidirectional node, even if fan_in_candidates() has
+        # nothing to add to it.
         for node_id, data in self.graph.nodes(data=True):
             members = data["members"]
-            is_bidirectional_node = len(members) > 1
-            per_paper = claims_by_node.get(node_id, {})
-            has_fan_in = any(len(claim_list) >= 2 for claim_list in per_paper.values())
-            if not is_bidirectional_node and not has_fan_in:
+            if len(members) <= 1:
                 continue
-
-            cells: dict[str, list[tuple[str, bool]]] = {}
+            cells = raw_rows.setdefault(node_id, {})
             for m in members:
-                cells.setdefault(m["paper_id"], []).append((unit_label(m), is_bidirectional_node))
-            for claiming_paper, claim_list in per_paper.items():
-                for c in claim_list:
-                    if c["status"] != "one_directional":
-                        continue
-                    if (self._member_key(c["unit"]), self._member_key(c["target_unit"])) in redundant_keys:
-                        continue
-                    cells.setdefault(claiming_paper, []).append((unit_label(c["unit"]), False))
+                cells.setdefault(m["paper_id"], []).append((unit_label(m), True))
+
+        # Layer in fan_in_candidates()'s own groups -- unlike the paragraph-level
+        # sibling, a group here can point at a NOT-yet-seeded node (this class's
+        # fan_in_candidates() still allows zero-confirmed-claim groups), so this loop
+        # must be able to create a fresh row, not just add to an existing one.
+        for group in self.fan_in_candidates():
+            cells = raw_rows.setdefault(group["node_id"], {})
+            # A group whose node was NOT already seeded as bidirectional above is the
+            # unrequited case (this class's fan_in_candidates() still allows a group
+            # with zero confirmed claims) -- the target's own member(s) still need to
+            # be represented in the row, unbolded, or the row would show only the
+            # claiming side and silently drop the target's own identity.
+            if len(self.graph.nodes[group["node_id"]]["members"]) <= 1:
+                for tm in group["target_members"]:
+                    entry = (unit_label(tm), False)
+                    if entry not in cells.get(tm["paper_id"], []):
+                        cells.setdefault(tm["paper_id"], []).append(entry)
+
+            for c in group["claims"]:
+                if c["status"] != "one_directional":
+                    continue
+                # fan_in_candidates()'s claim dicts don't carry a "target_unit" key
+                # (only "unit" -- the claiming/source side); the target's identity for
+                # a redundant_edges() lookup comes from the group's own
+                # "target_members" instead -- a match against ANY of them counts.
+                source_key = self._member_key(c["unit"])
+                if any((source_key, self._member_key(tm)) in redundant_keys for tm in group["target_members"]):
+                    continue
+                entry = (unit_label(c["unit"]), False)
+                if entry not in cells.get(group["claiming_paper_id"], []):
+                    cells.setdefault(group["claiming_paper_id"], []).append(entry)
+
+        rows: list[dict[str, Any]] = []
+        for node_id, cells in raw_rows.items():
             rows.append({"node_id": node_id, "cells": cells})
         return rows
 

@@ -63,7 +63,7 @@ class ScriptedJudge:
 
 
 class IncrementalGraphTest(unittest.TestCase):
-    def test_normalizes_pseudo_sections_with_stable_unique_unit_ids(self) -> None:
+    def test_normalizes_extracted_sections_with_stable_unique_unit_ids(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "paper.json"
             path.write_text(json.dumps([
