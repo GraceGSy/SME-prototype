@@ -209,11 +209,13 @@ def render_html(report: dict) -> str:
     parts = [
         """<!doctype html><html lang="en"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
 <title>SMELTER run comparison</title>
 <style>
 body{font:12pt 'Times New Roman',serif;color:#000;background:#fff;max-width:1100px;margin:1in auto;padding:0 1rem}
 h1,h2,h3{font-size:12pt}table{border-collapse:collapse;width:100%;margin:1rem 0}
 td,th{border:1px solid #000;padding:.5rem;text-align:left;vertical-align:top;overflow-wrap:anywhere}
+body>table:first-of-type th:first-child{width:25%}
 pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}details{border:1px solid #000;margin:.8rem 0;padding:.6rem}
 blockquote{margin:1rem 0;white-space:pre-wrap}summary{cursor:pointer} @media(max-width:600px){body{margin:1rem auto}td,th{padding:.25rem}}
 </style><h1>SMELTER run comparison</h1>
