@@ -6,6 +6,23 @@ extracts it. Language models make bounded question and match judgments. Python
 validates those judgments, applies graph rules, and writes inspectable outputs.
 This is an SME-inspired comparison system, not the canonical symbolic SME.
 
+## Implemented Jev flow
+
+Jev selection is available with `start --jev`. The
+[detailed diagram](docs/diagrams/jev-pipeline.svg) shows the full run lifecycle,
+both matching directions, singleton recovery, oversized-pool selection,
+fixed-target evidence, caching, failure recovery, viewer export, and run comparison.
+The [Jev guide](docs/jev.md) gives exact startup and minimal-run commands.
+
+![Implemented Jev pipeline](docs/diagrams/jev-pipeline.png)
+
+Jev chooses candidates through TypeSafe's Choice endpoint. The existing
+generative provider writes questions and source-bound evidence; Python retains
+all graph rules. Every non-null directional choice gets evidence before
+reconciliation, including choices Python ultimately rejects. This preserves
+the existing directional-judgment audit contract. Earlier Decisions API plans
+are proposals, not the implemented TypeSafe transport described here.
+
 ## From source to viewer
 
 ![Source-to-viewer pipeline](docs/diagrams/pipeline-overview.png)

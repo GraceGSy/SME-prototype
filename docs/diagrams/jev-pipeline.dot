@@ -1,0 +1,83 @@
+digraph JevPipeline {
+  graph [rankdir=TB, compound=true, newrank=true, bgcolor="white", pad=0.3,
+    nodesep=0.35, ranksep=0.4, fontname="Times New Roman,", fontsize=12,
+    labelloc=t, label="SMELTER with Jev: ordered graph construction, selection, evidence, and comparison\nSolid arrows show execution. Dashed arrows show shared calls or retained artifacts. Python owns graph membership."];
+  node [shape=box, fontname="Times New Roman,", fontsize=12, color=black,
+    fontcolor=black, margin="0.14,0.10"];
+  edge [fontname="Times New Roman,", fontsize=12, color=black, arrowsize=0.7];
+
+  subgraph cluster_pipeline {
+    label="A. Run lifecycle and document insertion";
+    inputs [label="Prepared canonical JSON + ordered manifest\nNew raw source: extract once and review before graph work\nMinimal fixture: 2 documents, 4 sections, 4 paragraphs"];
+    validate [label="OFFLINE: validate manifest, source contract, positional IDs\nNo credentials or model calls"];
+    start [label="start --jev: require TypeSafe + generative-provider keys\nPin Jev model, config, code/prompt/Skill/dependency hashes\nFreeze source inputs; create run and immutable attempt"];
+    paper [label="Process next document in manifest order\nFirst document seeds groups; empty match pools cost no calls"];
+    mode [shape=diamond, label="Granularity?"];
+    root [label="Paragraph-only\nCreate deterministic shared root\nSkip structural judgments"];
+    structural [label="Section / subsection phase\nReuse stored unit questions; generate missing ones\nForward: each new unit chooses an eligible existing node\nReverse: each node chooses from all eligible new units\nBoth directions use B independently, without the other votes"];
+    section_rules [label="PYTHON: accept reciprocal top-1 structural cores\nKeep other units as singletons; record rejected one-way choices\nReuse singleton questions; generate changed group questions"];
+    section_recovery [label="Structural singleton recovery: one frozen snapshot\nEach singleton -> eligible established node (>1 member)\nEach node -> all eligible core singletons, not only proposers\nUse B, reconcile mutual choices, refresh changed questions\nNo singleton-to-singleton comparison or convergence loop"];
+    older [label="If an older section joins a shared structural group:\nrecompare its existing paragraphs in the new exact scope\nUse the same paragraph matching and reconciliation rules"];
+    paragraph_questions [label="Incoming paragraph phase\nReuse stored questions or generate with adjacent context\nCandidates must share the exact structural parent\nInitial candidates cannot already contain the incoming paper"];
+    paragraph_match [label="Forward: each new paragraph -> eligible paragraph node\nReverse: each node -> all eligible incoming paragraphs\nUse B for each nonempty pool"];
+    paragraph_rules [label="PYTHON: accept reciprocal cores\nAllow only immediate-core adjacent paragraph fan-in\nReject fan-in chains; preserve paper/parent restrictions\nGenerate questions for changed paragraph groups"];
+    paragraph_recovery [label="Paragraph singleton recovery: one frozen snapshot\nUse B in both directions; apply core + adjacency rules\nRefresh changed group questions\nCross-paper core candidates need not be neighbors"];
+    more [shape=diamond, label="More documents?"];
+    export [label="SUCCESS: export immutable revision\nGraph, events/judgments, correspondence and singleton reports\nViewer dataset: manifest, source texts, final_snapshot.json\nUpdate run.json current_revision only after completion"];
+    viewer [label="OFFLINE: local read-only viewer\nQuestion Groups / Paper Map / Graphical Explorer\nSelect run and completed revision; no model calls"];
+    compare [label="OFFLINE: compare two completed runs or revisions\nMatch source IDs + identical authored text/boundaries\nMembership/scope changes, added/removed co-member pairs\nSingleton counts, question changes, provider/model settings\nStandalone index.html + comparison.json\nShared-paper comparisons; agreement is not accuracy"];
+
+    inputs -> validate -> start -> paper -> mode;
+    mode -> structural [label="section / subsection"];
+    mode -> root [label="paragraph"];
+    structural -> section_rules -> section_recovery -> older -> paragraph_questions;
+    root -> paragraph_questions;
+    paragraph_questions -> paragraph_match -> paragraph_rules -> paragraph_recovery -> more;
+    more -> paper [label="yes", constraint=false];
+    more -> export [label="no"];
+    export -> viewer -> compare;
+  }
+
+  subgraph cluster_selection {
+    label="B. Shared matching boundary: initial, recovery, and reparented paragraphs";
+    request [label="One direction, one focus, eligible candidates + full evidence\nShared role policy and examples; opaque candidate handles\nEmpty pool: return null without a provider call"];
+    cached [shape=diamond, label="Valid complete\njudgment cache?"];
+    cached_result [label="Reuse validated target / explanation / quotations\nNo Jev or generative call"];
+    pool [shape=diamond, label="1-254 candidates AND\nrequest <= byte guard?"];
+    split [label="Oversized pool: split ordered candidates in halves\nApply this same selection procedure recursively to each half\nKeep up to 5 candidate IDs per final half distribution\nExclude NO_MATCH from the five; retain full candidate evidence"];
+    rerank [label="Rerank the combined shortlist + NO_MATCH\nUse the same size checks and selection cache\nNever compare probabilities across independent halves\nIf the shortlist cannot shrink to fit: stop, never truncate"];
+    choice_cache [shape=diamond, label="Valid selection cache\nfor exact request?"];
+    api [label="PAID: TypeSafe POST /v1/systemone\nPinned Jev version; one Choice named match per request\nstate = focus, candidate evidence, shared source-text table\ncriteria = candidate handles + NO_MATCH\nCheck call / cumulative input-token guards; no automatic retry"];
+    contract [label="Retain raw response before accepting it\nValidate model, exact options, finite normalized probabilities,\nhighest-probability choice, confidence range and usage\nCache successful selection separately from evidence"];
+    selected [shape=diamond, label="Selected NO_MATCH?"];
+    abstain [label="Return target_id = null, deterministic basis, empty evidence\nNo generative explanation call"];
+    evidence [label="PAID: existing generative match-role Skill\nSupply only focus and Jev-selected candidate\nSchema fixes target_id to that candidate (null forbidden)\nGenerate basis and source quotations, not a new selection"];
+    quote [label="PYTHON: validate quote source, attribution and length\nUp to 2 evidence retries; reuse Jev selection\nEvidence cannot replace or veto the chosen target\nContract errors / exhausted repairs stop the revision"];
+    result [label="Return existing match-judgment contract to A\nSave Jev trace + generative response + evidence\nPython reconciles only after directional judgments finish\nEvidence also documents nonreciprocal, ultimately rejected choices"];
+    fail [label="FAILURE: save failure.json in the attempted revision\nKeep completed revision, raw responses and valid caches\nNo fallback to a generative selector or silent data repair"];
+    retry [label="After inspection: retry RUN (same frozen inputs/policy)\nReplay ordered stages; reuse validated caches\nNew attempt, no deletion of prior attempts\nChanged code/config/source requires a new run\nTimeouts may have billed; process budgets reset on retry"];
+    limits [shape=note, label="Limits and interpretation\nDefault: Jev 1.14.0; 24,000 request bytes; 500 calls/process\n2,000,000 Jev input tokens/process; separate generative guards\nNo long-context opt-in, confidence threshold, or dollar ceiling\nShortlisting can discard a globally preferable candidate\nQuote checks do not establish semantic correctness"];
+
+    request -> cached;
+    cached -> cached_result [label="yes"];
+    cached -> pool [label="no"];
+    pool -> split [label="no"];
+    split -> rerank;
+    rerank -> pool [style=dashed, constraint=false, label="same procedure"];
+    pool -> choice_cache [label="yes"];
+    choice_cache -> api [label="miss"];
+    api -> contract -> selected;
+    choice_cache -> selected [label="hit: revalidate", style=dashed];
+    selected -> abstain [label="yes"];
+    selected -> evidence [label="no"];
+    evidence -> quote -> result;
+    abstain -> result;
+    cached_result -> result [style=dashed, constraint=false];
+    contract -> fail [label="invalid / unavailable", style=dashed, constraint=false];
+    quote -> fail [label="invalid", style=dashed];
+    result -> fail [style=invis];
+    fail -> retry -> limits [style=dashed];
+  }
+
+  { rank=same; inputs; request; }
+}

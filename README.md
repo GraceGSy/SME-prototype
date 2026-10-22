@@ -13,6 +13,12 @@ implementation of the canonical Structure-Mapping Engine.
 makes paid model calls. There is no provider-enforced spending cap in the core
 CLI, so inspect the corpus and model configuration before starting a large run.
 
+**Jev and run comparisons:** the [Jev guide](docs/jev.md) includes a much smaller
+two-document smoke test, macOS/Windows key setup, recovery instructions, and
+standalone comparisons of completed runs. Jev selects matches; the existing
+generative provider still writes questions and quoted evidence. Both keys are
+required. See the [detailed pipeline diagram](docs/diagrams/jev-pipeline.svg).
+
 ## Run the prepared example
 
 From this repository root in PowerShell:
