@@ -4,6 +4,9 @@
 
 /* Use the same neutral cards, blue selection, and paper colors as the other views. */
 .gx {
+  --gx-board: #f7f9fb;
+  --gx-row: #eaf0f5;
+  --gx-guide: #a9becf;
   border: 1px solid #dee2e6;
   border-radius: 6px;
   background: #fff;
@@ -97,7 +100,9 @@
   position: relative;
   min-width: 0;
   border-top: 1px solid #e9ecef;
-  background: #fafafa;
+  background-color: var(--gx-board);
+  background-image: radial-gradient(#cbd5de80 0.7px, transparent 0.7px);
+  background-size: 18px 18px;
   overflow: hidden;
 }
 .gx-viewport > svg {
@@ -108,6 +113,28 @@
 }
 .gx-viewport > svg:active {
   cursor: grabbing;
+}
+.gx-row {
+  fill: var(--gx-row);
+  pointer-events: none;
+}
+.gx-reading-axis {
+  stroke: var(--gx-guide);
+  stroke-width: 1px;
+  stroke-dasharray: 2 5;
+  pointer-events: none;
+}
+.gx-board-label,
+.gx-row-number {
+  fill: #6b8193;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.1px;
+  pointer-events: none;
+}
+.gx-row-number {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
 }
 .gx-node {
   cursor: pointer;
@@ -151,20 +178,21 @@
   pointer-events: none;
 }
 .gx-edge {
-  opacity: 0.65;
+  opacity: 0;
+  pointer-events: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
   transition: opacity 0.2s;
 }
-.gx-edge.shared {
-  opacity: 0.85;
+.gx-edge.visible {
+  opacity: 0.75;
+  pointer-events: stroke;
 }
-.gx-edge.unmatched {
-  stroke-dasharray: 6 4;
-}
-.gx-edge.selected {
+.gx-edge.visible.selected {
   opacity: 1;
 }
-.gx-edge.dimmed {
-  opacity: 0.04;
+.gx-edge.order-exception {
+  stroke-dasharray: 4 3;
 }
 .gx-zoom {
   position: absolute;
@@ -179,6 +207,8 @@
   left: 12px;
   font-size: 10px;
   color: #6c757d;
+  max-width: calc(100% - 24px);
+  background: #f7f9fbe6;
   pointer-events: none;
 }
 .gx-status {

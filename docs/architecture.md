@@ -143,6 +143,22 @@ Python packaging and browser loading validate the same shapes. The graph still
 exports an event replay for audit, but the dormant replay UI and its assets are
 not part of the reader site.
 
+The explorer's pattern board ranks directed reading-order transitions by the
+number of documents supporting them. It adds them to an acyclic layout graph,
+rejecting a transition only when it would create a cycle, then assigns rows by
+longest preceding path. All original directed document edges remain available
+for display; cycle rejection changes placement, never the saved mappings.
+This is a deterministic layout heuristic, not a global sequence alignment.
+
+Blocks in a row are ranked center-out by distinct-document coverage. A lone
+optional role is offset from the centerline according to missing documents.
+Badges always use the full loaded corpus as their denominator, even after
+filtering. Side-by-side blocks are observed options near a reading stage, not
+guaranteed mutually exclusive roles. Selecting a paper exposes its exact path;
+skip and return arrows use outer gutters instead of crossing intervening blocks.
+Clicking a block retains the existing section-unfolding and source-evidence
+interaction. Layout and counts add no model judgments.
+
 The tutorial was reduced to eight steps about the retained views, without the
 old experiment-specific action-gating machinery. Participant routing remains
 available through `package_study`; it is not random assignment, telemetry, or

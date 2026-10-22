@@ -50,6 +50,10 @@ python -m pipeline.viewer.server runs --port 8073
 Open `http://127.0.0.1:8073/`, select the run and a completed revision, then
 use Question Groups, Paper Map, or Graphical Explorer. Serving the viewer makes
 no model calls. The server exposes viewer data, not keys or judgment caches.
+Graphical Explorer arranges roles as a compact top-to-bottom pattern board.
+Nearby blocks show options at the same reading stage; frequent options sit
+nearer the center of each row. Coverage badges count distinct documents.
+Select a paper to reveal its route, including skipped rows and reordered roles.
 
 ## Run your own documents
 

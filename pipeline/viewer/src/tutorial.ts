@@ -13,7 +13,7 @@ const STEPS: Step[] = [
     view: "groups",
     target: "#granularityTabs",
     title: "Three ways to inspect the same graph",
-    body: "Question Groups compares matching passages. Paper Map keeps document order. Graphical Explorer connects section roles and opens their paragraph graphs.",
+    body: "Question Groups compares matching passages. Paper Map keeps document order. Graphical Explorer arranges roles in a top-to-bottom pattern board. Select a paper to trace its route; open a block to inspect its contents.",
   },
   {
     view: "groups",

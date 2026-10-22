@@ -6,6 +6,8 @@ import {
   explorerGraph,
   NODE_HEIGHT,
   NODE_WIDTH,
+  ROW_GAP,
+  BOARD_TOP,
   type ExplorerGraph,
   type ExplorerNode,
 } from "./explorer-layout";
@@ -63,15 +65,13 @@ export class GraphicalExplorer {
     this.graph = explorerGraph(this.model, this.section, this.subsections);
     const anchor = this.history.at(-1);
     if (anchor) {
-      const left = this.graph.nodes.length ? Math.min(...this.graph.nodes.map((n) => n.x)) : 0;
-      const right = this.graph.nodes.length
-        ? Math.max(...this.graph.nodes.map((n) => n.x + NODE_WIDTH))
-        : NODE_WIDTH;
-      const top = Math.min(...this.graph.nodes.map((n) => n.y), 75);
+      const dx = anchor.x + NODE_WIDTH / 2 - this.graph.centerX;
+      const top = Math.min(...this.graph.nodes.map((n) => n.y), BOARD_TOP);
       for (const node of this.graph.nodes) {
-        node.x += anchor.x + NODE_WIDTH / 2 - (left + right) / 2;
-        node.y += anchor.y + NODE_HEIGHT + 24 - top;
+        node.x += dx;
+        node.y += anchor.y + NODE_HEIGHT + 48 - top;
       }
+      this.graph.centerX += dx;
       this.graph.height = Math.max(
         anchor.y + NODE_HEIGHT + 150,
         ...this.graph.nodes.map((n) => n.y + NODE_HEIGHT + 70),
@@ -130,16 +130,16 @@ export class GraphicalExplorer {
       toolbar.append(detail);
     }
     const legend = html("div", "gx-papers");
-    legend.append(
-      button(
-        "All papers",
-        () => {
-          this.paper = "";
-          this.render();
-        },
-        "gx-paper" + (!this.paper ? " active" : ""),
-      ),
+    const allPapers = button(
+      "All papers",
+      () => {
+        this.paper = "";
+        this.render();
+      },
+      "gx-paper" + (!this.paper ? " active" : ""),
     );
+    allPapers.setAttribute("aria-pressed", String(!this.paper));
+    legend.append(allPapers);
     this.model.papers.forEach((paper, index) => {
       const chip = button(
         paper.title,
@@ -156,7 +156,7 @@ export class GraphicalExplorer {
     const body = html("div", "gx-body");
     const viewport = html("div", "gx-viewport");
     this.canvas = svg("svg", {
-      "aria-label": this.section ? "Section contents graph" : "Section role graph",
+      "aria-label": this.section ? "Section contents pattern board" : "Document pattern board",
       role: "group",
     });
     this.world = svg("g");
@@ -166,7 +166,7 @@ export class GraphicalExplorer {
     controls.append(
       button("+", () => this.zoom(1.3)),
       button("-", () => this.zoom(1 / 1.3)),
-      button("Fit graph", () => this.fit()),
+      button("Fit board", () => this.fit()),
     );
     controls.children[0].setAttribute("aria-label", "Zoom in");
     controls.children[1].setAttribute("aria-label", "Zoom out");
@@ -175,14 +175,22 @@ export class GraphicalExplorer {
     viewport.append(
       controls,
       this.status,
-      html("div", "gx-hint", "Drag to pan / Scroll to zoom / Click to unfold"),
+      html(
+        "div",
+        "gx-hint",
+        "Scroll to read / Ctrl+scroll to zoom / Drag to pan / Click a block to unfold",
+      ),
     );
     body.append(viewport);
     const key = html("div", "gx-key");
     key.append(
-      html("span", "", "Bold arrows: shared reading order"),
-      html("span", "", "Colored branches: paper-specific reading order"),
-      html("span", "", "Dashed: unmatched in this graph"),
+      html("span", "", "Within a row: frequent options near the center"),
+      html("span", "", "Badges: documents containing this role, not model confidence"),
+      html(
+        "span",
+        "",
+        "Select a paper to trace its path; side arrows mark skips or reordered roles",
+      ),
     );
     this.root.append(toolbar, legend, body, key);
     this.host.replaceChildren(this.root);
@@ -196,13 +204,11 @@ export class GraphicalExplorer {
       height = this.canvas.clientHeight;
       if (this.evidence) this.draw();
       if (this.selected) this.focusNode(this.selected);
-      else if (anchor) this.focusNode(anchor.group.group_id);
-      else this.frame();
+      else this.frame(anchor);
     });
     this.observer.observe(viewport);
     if (this.selected) this.focusNode(this.selected);
-    else if (anchor) this.focusNode(anchor.group.group_id);
-    else this.frame();
+    else this.frame(anchor);
   }
 
   private navigate(section: string | null): void {
@@ -223,6 +229,61 @@ export class GraphicalExplorer {
   private draw(): void {
     this.world.replaceChildren();
     const lookup = new Map(this.graph.nodes.map((n) => [n.group.group_id, n]));
+    const rowNodes = new Map<number, ExplorerNode[]>();
+    for (const node of this.graph.nodes) {
+      const row = rowNodes.get(node.row) ?? [];
+      row.push(node);
+      rowNodes.set(node.row, row);
+    }
+    const left = Math.min(...this.graph.nodes.map((node) => node.x), this.graph.centerX);
+    const right = Math.max(
+      ...this.graph.nodes.map((node) => node.x + NODE_WIDTH),
+      this.graph.centerX,
+    );
+    const anchor = this.history.at(-1);
+    const top = this.graph.nodes[0]?.y ?? (anchor ? anchor.y + NODE_HEIGHT + 48 : BOARD_TOP);
+    const heading = svg("text", {
+      x: this.graph.centerX,
+      y: top - 24,
+      "text-anchor": "middle",
+      class: "gx-board-label",
+    });
+    heading.textContent = this.graph.nodes.length
+      ? "READ TOP TO BOTTOM"
+      : "No mapped passages in this section";
+    this.world.append(heading);
+    if (this.graph.nodes.length)
+      this.world.append(
+        svg("line", {
+          x1: this.graph.centerX,
+          x2: this.graph.centerX,
+          y1: top - 12,
+          y2: this.graph.nodes.at(-1)!.y + NODE_HEIGHT + 12,
+          class: "gx-reading-axis",
+        }),
+      );
+    for (const [index, row] of rowNodes) {
+      const rowLeft = Math.min(...row.map((node) => node.x));
+      const rowRight = Math.max(...row.map((node) => node.x + NODE_WIDTH));
+      this.world.append(
+        svg("rect", {
+          x: rowLeft - 5,
+          y: row[0].y - 5,
+          width: rowRight - rowLeft + 10,
+          height: NODE_HEIGHT + 10,
+          rx: 4,
+          class: "gx-row",
+        }),
+      );
+      const label = svg("text", {
+        x: left - 22,
+        y: row[0].y + NODE_HEIGHT / 2 + 4,
+        "text-anchor": "end",
+        class: "gx-row-number",
+      });
+      label.textContent = String(index + 1).padStart(2, "0");
+      this.world.append(label);
+    }
     const defs = svg("defs");
     const colors = [...PAPER_COLORS, "#495057"];
     colors.forEach((color, index) => {
@@ -239,44 +300,58 @@ export class GraphicalExplorer {
       defs.append(marker);
     });
     this.world.append(defs);
-    for (const edge of collapseEdges(this.graph.edges)) {
+    for (const [edgeIndex, edge] of collapseEdges(this.graph.edges).entries()) {
       const source = lookup.get(edge.source)!;
       const target = lookup.get(edge.target)!;
       const shared = edge.papers.length > 1;
-      const index = shared
-        ? PAPER_COLORS.length
-        : this.model.papers.findIndex((p) => p.paper_id === edge.papers[0]) % PAPER_COLORS.length;
+      const coloredPaper = this.paper || (shared ? "" : edge.papers[0]);
+      const index = coloredPaper
+        ? this.model.papers.findIndex((p) => p.paper_id === coloredPaper) % PAPER_COLORS.length
+        : PAPER_COLORS.length;
       const x1 = source.x + NODE_WIDTH / 2;
       const y1 = source.y + NODE_HEIGHT;
       const x2 = target.x + NODE_WIDTH / 2;
       const y2 = target.y;
-      const bend = Math.max(40, Math.abs(y2 - y1) / 2);
-      // A return path goes around nodes rather than through their text.
-      const pathData =
-        y2 > y1
-          ? `M${x1},${y1} C${x1},${y1 + bend} ${x2},${y2 - bend} ${x2},${y2}`
-          : `M${source.x + NODE_WIDTH},${source.y + NODE_HEIGHT / 2} C${Math.max(source.x, target.x) + NODE_WIDTH + 90},${source.y + NODE_HEIGHT / 2} ${Math.max(source.x, target.x) + NODE_WIDTH + 90},${target.y + NODE_HEIGHT / 2} ${target.x + NODE_WIDTH},${target.y + NODE_HEIGHT / 2}`;
+      const jump = target.row - source.row > 1;
+      const returning = target.row <= source.row;
+      const rail = returning ? left - 18 - (edgeIndex % 4) * 6 : right + 18 + (edgeIndex % 4) * 6;
+      // Long jumps and reversed order travel in row gaps and outside the board,
+      // never through intervening blocks. Original edge direction is unchanged.
+      const pathData = returning
+        ? `M${x1},${source.y} V${source.y - ROW_GAP / 2} H${rail} V${target.y + NODE_HEIGHT + ROW_GAP / 2} H${x2} V${target.y + NODE_HEIGHT}`
+        : jump
+          ? `M${x1},${y1} V${y1 + ROW_GAP / 2} H${rail} V${y2 - ROW_GAP / 2} H${x2} V${y2}`
+          : `M${x1},${y1} C${x1},${y1 + ROW_GAP / 2} ${x2},${y2 - ROW_GAP / 2} ${x2},${y2}`;
       const path = svg("path", {
         d: pathData,
         stroke: colors[index],
         fill: "none",
-        "stroke-width": shared ? 4 : 1.8,
+        "stroke-width": this.paper ? 2.5 : shared ? 3 : 1.8,
         "marker-end": `url(#gx-arrow-${index})`,
         class:
-          "gx-edge" + (shared ? " shared" : "") + (target.papers.length === 1 ? " unmatched" : ""),
+          "gx-edge" +
+          (shared ? " shared" : "") +
+          (jump ? " jump" : "") +
+          (returning ? " order-exception" : ""),
       });
       path.dataset.papers = JSON.stringify(edge.papers);
       path.dataset.source = edge.source;
       path.dataset.target = edge.target;
+      path.dataset.skippedRows = String(Math.max(0, target.row - source.row - 1));
       const title = svg("title");
       title.textContent =
         edge.papers
           .map((id) => this.model.papers.find((p) => p.paper_id === id)!.title)
-          .join(", ") + ": reading order";
+          .join(", ") +
+        ": reading order" +
+        (returning
+          ? " (differs from board order)"
+          : jump
+            ? ` (skips ${target.row - source.row - 1} board rows)`
+            : "");
       path.append(title);
       this.world.append(path);
     }
-    const anchor = this.history.at(-1);
     const nodes = anchor ? [anchor, ...this.graph.nodes] : this.graph.nodes;
     for (const node of nodes) {
       const structural = this.model.sections.some((g) => g.group_id === node.group.group_id);
@@ -288,15 +363,17 @@ export class GraphicalExplorer {
           (node === anchor ? " gx-anchor" : ""),
         tabindex: 0,
         role: "button",
-        "aria-label": node.group.overarching_question,
+        "aria-label": `${node.group.overarching_question} (${node.papers.length} of ${this.model.papers.length} documents)`,
         "aria-expanded": String(node === anchor || node.group.group_id === this.evidence),
       });
       group.dataset.id = node.group.group_id;
+      group.dataset.row = String(node.row);
+      group.dataset.support = String(node.papers.length);
       const title = svg("title");
       title.textContent = node.group.overarching_question;
-      group.append(title, svg("rect", { width: NODE_WIDTH, height: NODE_HEIGHT, rx: 6 }));
+      group.append(title, svg("rect", { width: NODE_WIDTH, height: NODE_HEIGHT, rx: 3 }));
       const badge = svg("text", { x: 15, y: 22, class: "gx-node-meta" });
-      badge.textContent = `${node.papers.length} ${node.papers.length > 1 ? "PAPERS" : "PAPER"} / ${structural ? "SECTION" : "PARAGRAPH"}`;
+      badge.textContent = `${node.papers.length}/${this.model.papers.length} DOCUMENTS / ${node === anchor ? "PARENT" : structural ? "SECTION" : "PARAGRAPH"}`;
       group.append(badge);
       const wrapped = lines(node.group.overarching_question);
       wrapped.slice(0, 3).forEach((line, i) => {
@@ -325,18 +402,22 @@ export class GraphicalExplorer {
         }
         this.selected = node.group.group_id;
         this.highlight();
-        this.focusNode(node.group.group_id, () => {
-          if (structural) {
-            this.history.push(node);
-            this.navigate(node.group.group_id);
-          } else {
-            this.evidence = this.evidence === node.group.group_id ? null : node.group.group_id;
-            this.draw();
-            [...this.world.querySelectorAll<SVGGElement>(".gx-node")]
-              .find((element) => element.dataset.id === node.group.group_id)
-              ?.focus({ preventScroll: true });
-          }
-        });
+        this.focusNode(
+          node.group.group_id,
+          () => {
+            if (structural) {
+              this.history.push(node);
+              this.navigate(node.group.group_id);
+            } else {
+              this.evidence = this.evidence === node.group.group_id ? null : node.group.group_id;
+              this.draw();
+              [...this.world.querySelectorAll<SVGGElement>(".gx-node")]
+                .find((element) => element.dataset.id === node.group.group_id)
+                ?.focus({ preventScroll: true });
+            }
+          },
+          structural,
+        );
       };
       group.addEventListener("click", select);
       group.addEventListener("keydown", (event) => {
@@ -398,17 +479,17 @@ export class GraphicalExplorer {
       node.setAttribute("tabindex", active ? "0" : "-1");
     });
     this.world.querySelectorAll<SVGPathElement>(".gx-edge").forEach((edge) => {
-      edge.classList.toggle(
-        "dimmed",
-        !visible.has(edge.dataset.source!) ||
-          !visible.has(edge.dataset.target!) ||
-          (!!this.paper && !JSON.parse(edge.dataset.papers!).includes(this.paper)),
-      );
-      edge.classList.toggle(
-        "selected",
+      const onPaper = !!this.paper && JSON.parse(edge.dataset.papers!).includes(this.paper);
+      const incident =
         !!this.selected &&
-          (edge.dataset.source === this.selected || edge.dataset.target === this.selected),
-      );
+        (edge.dataset.source === this.selected || edge.dataset.target === this.selected);
+      const show =
+        visible.has(edge.dataset.source!) &&
+        visible.has(edge.dataset.target!) &&
+        (this.paper ? onPaper : incident);
+      edge.classList.toggle("visible", show);
+      edge.setAttribute("aria-hidden", String(!show));
+      edge.classList.toggle("selected", incident);
     });
     this.status.textContent = `${visible.size} of ${this.graph.nodes.length} roles highlighted`;
   }
@@ -427,14 +508,16 @@ export class GraphicalExplorer {
     this.ty = (box.height - bounds.height * this.scale) / 2 - bounds.y * this.scale;
     this.transform();
   }
-  private frame(): void {
+  private frame(anchor?: ExplorerNode): void {
     this.fit();
-    // Start close enough to recognize roles; Fit graph remains the full skeleton.
-    if (this.scale < 0.65) {
-      this.zoom(0.65 / this.scale, this.canvas.clientWidth / 2, 0);
-      this.ty = 15;
-      this.transform();
-    }
+    // Start at the top at a readable scale; Fit board remains the full overview.
+    this.scale = 1;
+    this.tx = this.canvas.clientWidth / 2 - this.graph.centerX * this.scale;
+    this.ty = this.readingTop() - (anchor?.y ?? this.graph.nodes[0]?.y ?? BOARD_TOP);
+    this.transform();
+  }
+  private readingTop(): number {
+    return this.canvas.clientWidth < 600 ? 94 : 60;
   }
   private zoom(
     factor: number,
@@ -448,7 +531,7 @@ export class GraphicalExplorer {
     this.scale = next;
     this.transform();
   }
-  private focusNode(id: string, after?: () => void): void {
+  private focusNode(id: string, after?: () => void, atTop = false): void {
     cancelAnimationFrame(this.animation);
     const node = [...this.graph.nodes, ...this.history.slice(-1)].find(
       (n) => n.group.group_id === id,
@@ -456,7 +539,9 @@ export class GraphicalExplorer {
     if (!node) return;
     const scale = Math.max(this.scale, 0.8);
     const tx = this.canvas.clientWidth / 2 - (node.x + NODE_WIDTH / 2) * scale;
-    const ty = this.canvas.clientHeight / 2 - (node.y + NODE_HEIGHT / 2) * scale;
+    const ty = atTop
+      ? this.readingTop() - node.y * scale
+      : this.canvas.clientHeight / 2 - (node.y + NODE_HEIGHT / 2) * scale;
     const start = { scale: this.scale, tx: this.tx, ty: this.ty };
     const duration = after && !matchMedia("(prefers-reduced-motion: reduce)").matches ? 420 : 0;
     const started = performance.now();
@@ -479,12 +564,19 @@ export class GraphicalExplorer {
       (event) => {
         if ((event.target as Element).closest(".gx-evidence")) return;
         event.preventDefault();
-        const box = this.canvas.getBoundingClientRect();
-        this.zoom(
-          Math.exp(-event.deltaY * 0.0015),
-          event.clientX - box.left,
-          event.clientY - box.top,
-        );
+        if (event.ctrlKey || event.metaKey) {
+          const box = this.canvas.getBoundingClientRect();
+          this.zoom(
+            Math.exp(-event.deltaY * 0.0015),
+            event.clientX - box.left,
+            event.clientY - box.top,
+          );
+        } else {
+          cancelAnimationFrame(this.animation);
+          this.tx -= event.shiftKey ? event.deltaY : event.deltaX;
+          if (!event.shiftKey) this.ty -= event.deltaY;
+          this.transform();
+        }
       },
       { passive: false },
     );
