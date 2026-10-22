@@ -1,0 +1,41 @@
+digraph Recovery {
+  graph [rankdir=TB, bgcolor="#fbfaf5", pad=0.35, nodesep=0.38, ranksep=0.35,
+         splines=polyline, fontname="Georgia", fontcolor="#20332c", labelloc=t,
+         label=<<FONT POINT-SIZE="28"><B>SMELTER: singleton recovery</B></FONT><BR/>
+                <FONT FACE="Calibri" POINT-SIZE="16">One frozen pass after each level's initial matching and node-question generation.</FONT>>];
+  node [shape=box, style="rounded,filled", fillcolor="#e7f4e8", color="#6b8b73",
+        fontname="Calibri", fontsize=17, fontcolor="#20332c", margin="0.20,0.13", penwidth=1.2];
+  edge [color="#60746c", arrowsize=0.7, penwidth=1.3, fontname="Calibri", fontsize=14,
+        fontcolor="#384d43"];
+
+  legend [shape=plain, style="", label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="7" CELLPADDING="5">
+    <TR><TD BGCOLOR="#fff0d8">LLM judgment</TD><TD BGCOLOR="#e7f4e8">Python rule</TD><TD BGCOLOR="#edf4f8">Saved graph state</TD></TR>
+  </TABLE>>];
+  snapshot [fillcolor="#edf4f8", color="#7f9aa8",
+            label="Freeze the current graph at this level\nSingletons: exactly one member, from any inserted document.\nEstablished nodes: more than one member."];
+  eligibility [label="Filter singleton-to-node eligibility in Python\nSame level and exact parent scope are mandatory.\nSource paper absent from node: eligible for a reciprocal core, at any distance.\nSource paper already present: paragraph-only, immediate accepted-core\nneighbor may be considered for fan-in; otherwise exclude."];
+  forward [fillcolor="#fff0d8", color="#b68a49",
+           label="FORWARD: each eligible singleton\nSee ALL its eligible established nodes.\nChoose ONE node or NULL.\nThe pool includes core and fan-in targets."];
+  reverse [fillcolor="#fff0d8", color="#b68a49",
+           label="REVERSE: each eligible established node\nSee ALL eligible core singletons,\nnot only forward proposers.\nChoose ONE singleton or NULL."];
+  validate [label="Validate source-bound evidence and allowed IDs\nSame judgment cache and evidence-retry rules as initial matching.\nThe reverse request does not receive the forward votes."];
+  core [label="Merge mutual top-1 choices as cores\nAt most one new reciprocal core per established node in this pass.\nUpdate the source document's assignment; remove the singleton node."];
+  fanin [label="Paragraphs only: inspect remaining forward choices\nA singleton that selected a node may join as fan-in if immediately\nadjacent to a same-paper/same-scope accepted core there.\nThat core may pre-exist or have just joined in this pass.\nFan-in members never become anchors for further fan-in."];
+  remaining [label="Leave all other singletons unchanged\nNo new established targets are added to this frozen pass.\nNo singleton-to-singleton comparisons."];
+  questions [fillcolor="#fff0d8", color="#b68a49",
+             label="Regenerate questions only for changed target nodes\nUse accepted evidence, not rejected candidates or unaccepted neighbors."];
+  finish [fillcolor="#edf4f8", color="#7f9aa8",
+          label="End this recovery pass\nFor absorbed older structural units, reparent and recompare their\nparagraphs before processing the incoming document's paragraphs.\nOtherwise continue the configured stages / next document."];
+  notes [shape=plain, style="", fontname="Calibri", fontsize=15, fontcolor="#42574c",
+         label="CURRENT BEHAVIOR: recovery runs once per level per document insertion, not until convergence.\nStructural nodes never accept fan-in. Paragraph distance restricts same-paper fan-in,\nbut does NOT restrict which new cross-paper reciprocal cores can be proposed.\nNeighbor-only singleton matching and decision-API judging are not implemented."];
+
+  legend -> snapshot [style=invis];
+  snapshot -> eligibility;
+  eligibility -> forward;
+  eligibility -> reverse;
+  {rank=same; forward; reverse;}
+  forward -> validate;
+  reverse -> validate;
+  validate -> core -> fanin -> remaining -> questions -> finish;
+  finish -> notes [style=invis];
+}

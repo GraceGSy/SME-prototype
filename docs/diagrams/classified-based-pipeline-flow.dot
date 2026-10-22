@@ -1,0 +1,71 @@
+digraph ClassifiedPipeline {
+  // The comma keeps Pango from parsing "Roman" as a style instead of the font family.
+  graph [rankdir=TB, bgcolor="#fbfaf5", pad=0.5, nodesep=0.35, ranksep=0.28,
+         splines=polyline, fontname="Times New Roman,", fontsize=12,
+         fontcolor="black", labelloc=t,
+         label=<<FONT POINT-SIZE="12"><B>Classified based pipeline flow</B></FONT><BR/>
+                <FONT POINT-SIZE="12">Proposed design: Decisions API selects matches; Python controls membership.</FONT>>];
+  node [shape=box, style="rounded,filled", fillcolor="#e7f4e8", color="#6b8b73",
+        fontcolor="black", fontname="Times New Roman,", fontsize=12,
+        margin="0.16,0.10", penwidth=1];
+  edge [color="#60746c", fontcolor="black", fontname="Times New Roman,",
+        fontsize=12, arrowsize=0.65, penwidth=1];
+
+  legend [shape=plain, style="", label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="5" CELLPADDING="5">
+    <TR><TD BGCOLOR="#f1eafb">Decisions API</TD><TD BGCOLOR="#fff0d8">Generative LLM</TD>
+    <TD BGCOLOR="#e7f4e8">Python rules</TD><TD BGCOLOR="#edf4f8">Sources / saved state</TD></TR>
+  </TABLE>>];
+  prepared [fillcolor="#edf4f8", color="#7f9aa8",
+            label="Extract each new source once; verify and approve it\nReuse approved content. Graph construction never re-extracts text."];
+  questions [fillcolor="#fff0d8", color="#b68a49",
+             label="Reuse / generate implicit questions for the next document's units\nSections first, then paragraphs. Questions remain metadata; retain source text."];
+  pool [label="Python: build the eligible candidate pools\nStructural units: existing section / subsection nodes.\nParagraphs: exact structural scope; exclude nodes containing this paper.\nEmpty pools skip choice calls; other pools go directly to the Decisions API."];
+  forward [peripheries=2, fillcolor="#f1eafb", color="#7054a0",
+           label="FORWARD - Decisions API\nEach incoming unit sees all eligible nodes.\nChoose one node or NO_MATCH.\nReturn choice, probabilities, and confidence."];
+  reverse [peripheries=2, fillcolor="#f1eafb", color="#7054a0",
+           label="REVERSE - Decisions API\nEach existing node sees the eligible incoming units.\nChoose one unit or NO_MATCH, independently.\nDo not supply the forward votes."];
+  propose [label="Python: check allowed IDs and propose memberships\nMutual top-1 choices propose reciprocal cores.\nParagraphs only: immediate-core neighbors may propose fan-in.\nNO_MATCH, refusals, or unaccepted one-way choices remain separate."];
+  evidence [fillcolor="#fff0d8", color="#b68a49",
+            label="Generative LLM: document admissible proposals only\nReuse / generate required explanations and source quotations.\nDo not choose a new target; skip this stage when there is no proposal."];
+  validate [label="Python: validate each quotation against its own source passage\nCheck attribution, length, scope, and membership constraints.\nInvalid evidence: retry / stop without committing. No semantic API checks."];
+  commit [label="Python: commit reciprocal cores, then eligible adjacent paragraph fan-in\nCreate / retain singleton nodes for all unmatched units.\nSave choices, rejected selections, evidence, assignments, and source links."];
+  labels [fillcolor="#fff0d8", color="#b68a49",
+          label="Describe accepted nodes with implicit questions\nShared nodes use accepted evidence; singletons reuse their member question."];
+  freeze [fillcolor="#edf4f8", color="#7f9aa8",
+          label="Freeze one singleton-recovery snapshot at this level\nSingletons: one member, from any inserted document. Established nodes: 2+ members.\nPython requires the same level and exact parent scope.\nCross-paper cores need a paper absent from the target; same-paper fan-in needs adjacency."];
+  singleton_forward [peripheries=2, fillcolor="#f1eafb", color="#7054a0",
+                     label="SINGLETON FORWARD - Decisions API\nEach singleton sees all its eligible established nodes.\nChoose one node or NO_MATCH.\nOne question per singleton, not per singleton-node pair."];
+  singleton_reverse [peripheries=2, fillcolor="#f1eafb", color="#7054a0",
+                     label="SINGLETON REVERSE - Decisions API\nEach established node sees all eligible core singletons.\nChoose one singleton or NO_MATCH, independently.\nDo not restrict this pool to forward proposers."];
+  recovery_proposals [label="Python: check IDs and propose recovery memberships\nPropose mutual top-1 cores before checking paragraph fan-in anchors.\nFan-in needs an immediate same-paper, same-owner core accepted before commit.\nNo singleton-to-singleton comparisons; no fan-in chains."];
+  recovery_evidence [fillcolor="#fff0d8", color="#b68a49",
+                     label="Generative LLM: document admissible recovery proposals\nReuse / generate the required explanations and quotations only.\nKeep the selected target fixed; no additional semantic judge."];
+  recovery_validate [label="Python: validate recovery quotations, IDs, scope, and adjacency\nInvalid evidence: retry / stop without committing.\nOnly accepted cores can anchor committed paragraph fan-in."];
+  merge [label="Python: merge accepted singletons and update their assignments\nAt most one recovered reciprocal core per target in this frozen pass.\nRemove absorbed singleton nodes; leave all others unchanged."];
+  refresh [fillcolor="#fff0d8", color="#b68a49",
+           label="Refresh questions only for changed target nodes\nUse accepted evidence, not rejected candidates."];
+  next [fillcolor="#edf4f8", color="#7f9aa8",
+        label="Continue levels and documents in order\nAfter structural recovery: reparent / recompare absorbed older paragraphs\nbefore matching incoming paragraphs, using the same bidirectional stages.\nAfter paragraph recovery: advance to the next document. No convergence loop."];
+  export [fillcolor="#edf4f8", color="#7f9aa8",
+          label="After the last document: export graph, evidence, reports, and reader views\nQuestion Groups, Paper Map, and Graphical Explorer expose the accepted mappings."];
+  notes [shape=plain, style="",
+         label="Every purple stage uses the same choice helper: up to 254 candidates + NO_MATCH.\nIf larger: split in half, query both halves, keep the top 5 candidates from each,\nthen run a third choice question over those candidates + NO_MATCH. Split recursively if needed.\nRerank original evidence; do not compare probabilities from different halves.\nThis is a proposed flow and an illustrative demo, not an implemented API integration."];
+
+  legend -> prepared [style=invis];
+  prepared -> questions -> pool;
+  pool -> forward;
+  pool -> reverse;
+  {rank=same; forward; reverse;}
+  forward -> propose;
+  reverse -> propose;
+  propose -> evidence -> validate -> commit -> labels -> freeze;
+  freeze -> singleton_forward;
+  freeze -> singleton_reverse;
+  {rank=same; singleton_forward; singleton_reverse;}
+  singleton_forward -> recovery_proposals;
+  singleton_reverse -> recovery_proposals;
+  recovery_proposals -> recovery_evidence -> recovery_validate -> merge -> refresh -> next;
+  next -> questions [style=dashed, constraint=false, label="next scope / document"];
+  next -> export [label="finished"];
+  export -> notes [style=invis];
+}

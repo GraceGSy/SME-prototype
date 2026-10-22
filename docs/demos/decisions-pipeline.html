@@ -1,0 +1,3320 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SMELTER: watch the graph grow</title>
+    <link rel="icon" href="data:," />
+    <style>
+      :root {
+        --ink: #19251e;
+        --paper: #fbfaf5;
+        --line: #ccd5ce;
+        --green: #e7f4e8;
+        --green-edge: #527a5d;
+        --purple: #f1eafb;
+        --purple-edge: #7054a0;
+        --orange: #fff0d8;
+        --orange-edge: #b68a49;
+        --blue: #edf4f8;
+        --blue-edge: #7f9aa8;
+        --gray: #ecefeb;
+        --red: #a33e38;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--paper);
+        font:
+          12pt/1.4 "Times New Roman",
+          Times,
+          serif;
+      }
+      button,
+      select,
+      input {
+        font: inherit;
+        color: inherit;
+      }
+      button,
+      select {
+        min-height: 38px;
+        background: white;
+        border: 1px solid #a3b1a6;
+        border-radius: 4px;
+        padding: 5px 11px;
+      }
+      button {
+        cursor: pointer;
+      }
+      button:disabled {
+        opacity: 0.4;
+        cursor: default;
+      }
+      button:hover:not(:disabled) {
+        background: var(--green);
+      }
+      button:focus-visible,
+      select:focus-visible,
+      input:focus-visible,
+      summary:focus-visible {
+        outline: 3px solid var(--purple-edge);
+        outline-offset: 3px;
+      }
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+      h1 {
+        font-size: 28px;
+        font-weight: 400;
+      }
+      h2 {
+        font-size: 23px;
+        line-height: 1.2;
+      }
+      h3 {
+        font-size: 16px;
+      }
+      main {
+        max-width: 1450px;
+        margin: auto;
+        padding: 22px 28px 40px;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        border-top: 4px solid var(--ink);
+        padding: 12px 0;
+        align-items: center;
+      }
+      .brand {
+        font-weight: bold;
+        font-size: 14px;
+        letter-spacing: 0.12em;
+      }
+      .status {
+        border: 1px solid var(--blue-edge);
+        background: var(--blue);
+        padding: 7px 11px;
+        font-size: 14px;
+      }
+      .toolbar {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+        border-block: 1px solid var(--line);
+        padding: 10px 0;
+      }
+      .field {
+        display: flex;
+        gap: 7px;
+        align-items: center;
+      }
+      .example {
+        margin-right: auto;
+      }
+      #play {
+        background: var(--ink);
+        color: white;
+        min-width: 74px;
+      }
+      .timeline {
+        display: grid;
+        grid-template-columns: 110px 1fr auto;
+        gap: 10px;
+        align-items: center;
+        padding: 7px 0;
+      }
+      #scrub {
+        width: 100%;
+        min-height: 32px;
+        accent-color: var(--green-edge);
+      }
+      #step-count {
+        font-variant-numeric: tabular-nums;
+      }
+      .chapters {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+      }
+      .chapters button {
+        background: transparent;
+        padding: 3px 8px;
+        min-height: 32px;
+        font-size: 14px;
+      }
+      .chapters button[aria-current] {
+        background: var(--green);
+        border-color: var(--green-edge);
+        font-weight: bold;
+      }
+      .stage {
+        border-left: 4px solid var(--blue-edge);
+        background: var(--blue);
+        padding: 13px 16px;
+        min-height: 94px;
+      }
+      .stage[data-kind="python"] {
+        background: var(--green);
+        border-color: var(--green-edge);
+      }
+      .stage[data-kind="llm"] {
+        background: var(--orange);
+        border-color: var(--orange-edge);
+      }
+      .stage[data-kind="decision"] {
+        background: var(--purple);
+        border-color: var(--purple-edge);
+      }
+      .stage-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 18px;
+        margin-bottom: 7px;
+      }
+      #owner {
+        font-size: 14px;
+        font-weight: bold;
+        white-space: nowrap;
+      }
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 18px;
+        margin: 12px 0;
+        font-size: 14px;
+      }
+      .legend span {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+      .swatch {
+        width: 12px;
+        height: 12px;
+        border: 1px solid;
+        border-radius: 50%;
+      }
+      .swatch.shared {
+        background: var(--green);
+        border-color: var(--green-edge);
+      }
+      .swatch.singleton {
+        background: var(--gray);
+        border-color: #a3aca5;
+      }
+      .swatch.decision {
+        background: var(--purple);
+        border-color: var(--purple-edge);
+      }
+      .swatch.llm {
+        background: var(--orange);
+        border-color: var(--orange-edge);
+      }
+      .scene {
+        position: relative;
+        display: grid;
+        grid-template-columns: 285px minmax(0, 1fr);
+        gap: 54px;
+        isolation: isolate;
+      }
+      .connections {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        padding: 8px 0 12px;
+        margin-bottom: 12px;
+        border-bottom: 1px solid var(--line);
+      }
+      .connection-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+      }
+      .connection-controls button {
+        min-height: 32px;
+        font-size: 14px;
+      }
+      #connection-kind {
+        display: block;
+        font-size: 12px;
+      }
+      #connection-label {
+        font-weight: bold;
+      }
+      .scene.has-connection .role.highlight:not(.trace-active) {
+        border-color: #acb5ae;
+        box-shadow: none;
+      }
+      .scene.has-connection .passage.highlight:not(.trace-active) {
+        outline: none;
+      }
+      .scene .role.trace-active,
+      .scene .passage.trace-active {
+        opacity: 1;
+        border-color: var(--trace);
+        box-shadow: 0 0 0 4px var(--trace-soft);
+      }
+      .scene #actor.trace-active,
+      .scene .paper-top.trace-active,
+      .scene .owner-chip.trace-active {
+        outline: 2px solid var(--trace);
+        outline-offset: 2px;
+      }
+      .scene .trace-active .choice {
+        font-weight: bold;
+      }
+      .source,
+      .graph-panel {
+        position: relative;
+        min-width: 0;
+      }
+      .scene-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        border-bottom: 1px solid var(--ink);
+        padding-bottom: 7px;
+        margin-bottom: 10px;
+        align-items: baseline;
+      }
+      .scene-head small {
+        font-size: 14px;
+      }
+      #actor {
+        position: relative;
+        z-index: 5;
+        text-align: center;
+        border: 1px solid var(--blue-edge);
+        background: var(--blue);
+        padding: 8px;
+        margin-bottom: 10px;
+        font-size: 14px;
+      }
+      #actor[data-kind="decision"] {
+        border: 3px double var(--purple-edge);
+        background: var(--purple);
+      }
+      #actor[data-kind="llm"] {
+        border-color: var(--orange-edge);
+        background: var(--orange);
+      }
+      #actor[data-kind="python"] {
+        border-color: var(--green-edge);
+        background: var(--green);
+      }
+      #waiting {
+        border: 1px dashed var(--blue-edge);
+        padding: 26px 20px;
+        text-align: center;
+        color: #5d6961;
+        margin-top: 22px;
+      }
+      #paper {
+        position: relative;
+        border: 1px solid var(--blue-edge);
+        background: white;
+        padding: 12px;
+      }
+      #paper.raw {
+        box-shadow:
+          4px 4px 0 #e4e9e5,
+          8px 8px 0 #f0f1ec;
+      }
+      .paper-top {
+        position: relative;
+        z-index: 2;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        padding-bottom: 8px;
+        margin-bottom: 8px;
+        border-bottom: 1px solid var(--line);
+      }
+      #approval {
+        font-size: 12px;
+        background: var(--green);
+        border: 1px solid var(--green-edge);
+        padding: 1px 5px;
+      }
+      .raw-text {
+        font-size: 14px;
+      }
+      .raw-text p {
+        margin: 12px 0;
+      }
+      .raw-text strong {
+        display: block;
+      }
+      .passages {
+        display: grid;
+        gap: 8px;
+      }
+      .passage {
+        position: relative;
+        z-index: 2;
+        border: 1px solid #acb5ae;
+        border-radius: 10px;
+        padding: 9px 10px;
+        background: var(--gray);
+      }
+      .passage .passage-top {
+        display: flex;
+        gap: 8px;
+        align-items: baseline;
+        font-size: 14px;
+      }
+      .passage .id {
+        border: 1px solid #acb5ae;
+        border-radius: 50%;
+        min-width: 28px;
+        height: 28px;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        background: white;
+        font-size: 12px;
+        flex-shrink: 0;
+      }
+      .passage .label {
+        font-weight: bold;
+        border: 0;
+        background: transparent;
+        padding: 0;
+        min-height: 0;
+        text-align: left;
+      }
+      .question {
+        font-size: 14px;
+        margin-top: 5px;
+        line-height: 1.25;
+      }
+      .question.pending {
+        color: #7c857f;
+        font-style: italic;
+      }
+      .paragraph-stubs {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+      }
+      .stub {
+        display: inline-block;
+        background: #e2e8e2;
+        border: 1px solid #a9b5ab;
+        width: 25px;
+        height: 8px;
+        border-radius: 2px;
+      }
+      .question.generated {
+        background: var(--orange);
+        border-radius: 4px;
+      }
+      .choice {
+        margin-top: 7px;
+        padding: 3px 6px;
+        border: 1px solid #b6a0cf;
+        background: var(--purple);
+        font-size: 12px;
+      }
+      .membership {
+        margin-top: 5px;
+        font-size: 12px;
+      }
+      .passage.joined {
+        border-color: var(--green-edge);
+        background: #f3f8f1;
+      }
+      .passage.singleton {
+        background: var(--gray);
+        color: #5b665e;
+      }
+      .passage.highlight {
+        outline: 2px solid var(--purple-edge);
+        outline-offset: 2px;
+      }
+      .passage.rule-pass {
+        border: 2px solid var(--green-edge);
+        padding: 8px 9px;
+      }
+      .passage.rule-fail {
+        border: 2px solid var(--red);
+        padding: 8px 9px;
+      }
+      .source-owners {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+      .owner-chip {
+        border: 1px solid var(--green-edge);
+        background: var(--green);
+        padding: 3px 6px;
+        font-size: 12px;
+      }
+      .owner-chip.singleton {
+        border-color: #a3aca5;
+        background: var(--gray);
+        color: #5b665e;
+      }
+      .scope-tag {
+        color: #566258;
+        font-size: 12px;
+        margin-top: 4px;
+      }
+      #graph {
+        position: relative;
+        width: 100%;
+        min-height: 600px;
+      }
+      #corpus {
+        position: absolute;
+        z-index: 2;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 1px solid var(--blue-edge);
+        border-radius: 24px;
+        background: var(--blue);
+        padding: 7px 20px;
+        min-width: 170px;
+        text-align: center;
+        font-size: 14px;
+      }
+      .role {
+        position: absolute;
+        z-index: 2;
+        min-height: 138px;
+        border: 2px solid var(--green-edge);
+        border-radius: 52px;
+        background: var(--green);
+        padding: 12px 14px;
+        text-align: center;
+        transition:
+          background 0.4s,
+          border-color 0.4s,
+          opacity 0.4s;
+      }
+      .role.singleton {
+        background: var(--gray);
+        border-color: #a3aca5;
+        opacity: 0.68;
+      }
+      .role.highlight {
+        opacity: 1;
+        border-color: var(--purple-edge);
+        box-shadow: 0 0 0 4px #f1eafb;
+      }
+      .role.proposed {
+        opacity: 1;
+        border-color: var(--orange-edge);
+        border-style: dashed;
+        background: #fffaf0;
+      }
+      .role.changed {
+        opacity: 1;
+        box-shadow: 0 0 0 5px #d8eadb;
+      }
+      .role.generating {
+        box-shadow: 0 0 0 5px #fff0d8;
+      }
+      .role.retired {
+        opacity: 0.2;
+        min-height: 74px;
+        background: transparent;
+        border: 1px dashed #a3aca5;
+        padding: 12px;
+      }
+      .role.retired .question,
+      .role.retired .members,
+      .role.retired .choice,
+      .role.retired .node-count {
+        display: none;
+      }
+      .role-title {
+        border: 0;
+        padding: 0;
+        background: transparent;
+        min-height: 0;
+        font-weight: bold;
+        font-size: 16px;
+      }
+      .role-title:hover:not(:disabled) {
+        background: transparent;
+        text-decoration: underline;
+      }
+      .node-count {
+        display: block;
+        font-size: 12px;
+        margin-top: 2px;
+      }
+      .members {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        justify-content: center;
+        margin-top: 8px;
+      }
+      .member {
+        border: 1px solid var(--blue-edge);
+        background: var(--blue);
+        padding: 1px 5px;
+        font-size: 12px;
+        border-radius: 12px;
+      }
+      .member.fan-in {
+        border: 1px dashed var(--green-edge);
+        background: #f5faf1;
+      }
+      .member.proposed-member {
+        border: 1px dashed var(--orange-edge);
+        background: var(--orange);
+      }
+      .role .choice {
+        border-radius: 12px;
+      }
+      #links {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        pointer-events: none;
+        overflow: visible;
+      }
+      .link {
+        fill: none;
+        stroke-width: 2.6;
+      }
+      .link.ownership {
+        stroke: var(--blue-edge);
+        stroke-width: 1.4;
+        opacity: 0.55;
+      }
+      .link.decision {
+        stroke: var(--purple-edge);
+        stroke-dasharray: 8 5;
+      }
+      .link.accept {
+        stroke: var(--green-edge);
+        stroke-width: 3.2;
+      }
+      .link.llm {
+        stroke: var(--orange-edge);
+        stroke-width: 3;
+      }
+      .link.reject {
+        stroke: var(--red);
+        stroke-dasharray: 6 5;
+      }
+      .link.candidate {
+        stroke: var(--blue-edge);
+        stroke-width: 2.6;
+        stroke-dasharray: 3 5;
+        opacity: 1;
+      }
+      .link.reparent {
+        stroke: var(--green-edge);
+        stroke-width: 3;
+      }
+      #inspector {
+        margin-top: 14px;
+        border-top: 1px solid var(--line);
+        padding-top: 12px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+      }
+      #inspector h3 {
+        margin-bottom: 7px;
+      }
+      #facts {
+        margin: 0;
+        padding-left: 20px;
+      }
+      #facts li {
+        padding-bottom: 4px;
+      }
+      .quote {
+        background: var(--orange);
+        border-left: 3px solid var(--orange-edge);
+        padding: 10px 13px;
+        font-size: 14px;
+      }
+      .quote.invalid {
+        background: #fff0ed;
+        border-color: var(--red);
+      }
+      .quote p {
+        margin-top: 5px;
+      }
+      .quote strong {
+        font-size: 14px;
+      }
+      .diff {
+        display: grid;
+        gap: 5px;
+        font-size: 14px;
+      }
+      .diff .after {
+        background: var(--orange);
+        padding: 6px 9px;
+      }
+      .diff .before {
+        color: #707a72;
+        text-decoration: line-through;
+      }
+      footer {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 24px;
+        border-top: 1px solid var(--ink);
+        padding-top: 12px;
+        margin-top: 22px;
+        font-size: 14px;
+      }
+      footer p {
+        margin-right: auto;
+      }
+      a {
+        color: inherit;
+        text-underline-offset: 3px;
+      }
+      #overflow {
+        position: relative;
+        min-height: 530px;
+        padding-top: 25px;
+      }
+      .overflow-groups {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 26px;
+      }
+      .choice-cloud {
+        border: 2px solid var(--purple-edge);
+        border-radius: 35px;
+        padding: 20px;
+        text-align: center;
+        background: #f9f6fe;
+      }
+      .choice-cloud h3 {
+        margin-bottom: 4px;
+      }
+      .dots {
+        display: grid;
+        grid-template-columns: repeat(15, 1fr);
+        gap: 5px;
+        max-width: 440px;
+        margin: 16px auto;
+      }
+      .dot {
+        width: 100%;
+        aspect-ratio: 1;
+        max-width: 13px;
+        border-radius: 50%;
+        background: #ccc5d8;
+      }
+      .dot.selected {
+        background: var(--purple-edge);
+      }
+      .choice-cloud.wait {
+        opacity: 0.28;
+      }
+      .choice-cloud.active {
+        box-shadow: 0 0 0 5px var(--purple);
+      }
+      #final-choice {
+        max-width: 600px;
+        margin: 35px auto 0;
+        background: var(--purple);
+      }
+      .shortlist {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 7px;
+        margin-top: 12px;
+      }
+      .shortlisted {
+        border: 1px solid var(--purple-edge);
+        border-radius: 15px;
+        padding: 3px 10px;
+        background: white;
+      }
+      .shortlisted.winner {
+        border: 2px solid var(--green-edge);
+        background: var(--green);
+        font-weight: bold;
+      }
+      #overflow-whole {
+        max-width: 650px;
+        margin: auto;
+      }
+      #overflow-whole .dots {
+        grid-template-columns: repeat(20, 1fr);
+      }
+      .scan::after {
+        content: "";
+        position: absolute;
+        left: 6px;
+        right: 6px;
+        height: 3px;
+        background: var(--orange-edge);
+        top: 40px;
+        animation: scan 1.6s ease-in-out 2;
+        pointer-events: none;
+      }
+      @keyframes scan {
+        from {
+          top: 40px;
+        }
+        to {
+          top: calc(100% - 8px);
+        }
+      }
+      @media (min-width: 1120px) {
+        .toolbar {
+          position: sticky;
+          top: 0;
+          z-index: 10;
+          background: var(--paper);
+        }
+      }
+      @media (max-width: 1000px) {
+        main {
+          padding: 18px;
+        }
+        .scene {
+          grid-template-columns: 260px minmax(0, 1fr);
+          gap: 20px;
+        }
+      }
+      @media (max-width: 760px) {
+        main {
+          padding: 14px;
+        }
+        header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+        }
+        .scene {
+          grid-template-columns: 1fr;
+        }
+        .source {
+          max-width: 100%;
+        }
+        #waiting {
+          margin-top: 0;
+        }
+        .timeline {
+          grid-template-columns: 100px 1fr;
+        }
+        #replay {
+          grid-column: 1/-1;
+          justify-self: start;
+        }
+        .stage-top {
+          flex-direction: column;
+          gap: 5px;
+        }
+        .example {
+          flex-basis: 100%;
+          min-width: 0;
+        }
+        .example select {
+          min-width: 0;
+          flex: 1;
+        }
+        #inspector {
+          grid-template-columns: 1fr;
+        }
+        .overflow-groups {
+          grid-template-columns: 1fr;
+        }
+        .role {
+          border-radius: 44px;
+        }
+        #graph {
+          width: calc(100% - 18px);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+      [hidden] {
+        display: none !important;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div>
+          <p class="brand">SMELTER / ANIMATED EXPLAINER</p>
+          <h1>Watch the graph grow</h1>
+        </div>
+        <p class="status">
+          Proposed Decisions API design. Fictional documents and scripted choices.
+        </p>
+      </header>
+      <div class="toolbar">
+        <label class="field example"
+          >Example
+          <select id="scenario">
+            <option value="main">Building and recovering matches</option>
+            <option value="overflow">300-candidate selection</option>
+          </select></label
+        >
+        <button id="reset" type="button">Restart</button
+        ><button id="back" type="button">Back</button
+        ><button id="play" type="button" aria-pressed="false">Play</button
+        ><button id="next" type="button">Next</button>
+        <label class="field"
+          >Pace
+          <select id="pace">
+            <option value="3000">Fast</option>
+            <option value="6500" selected>Normal</option>
+            <option value="10000">Slow</option>
+          </select></label
+        >
+      </div>
+      <div class="timeline">
+        <output id="step-count" for="scrub"></output
+        ><input id="scrub" type="range" min="0" value="0" aria-label="Animation step" /><button
+          id="replay"
+          type="button"
+        >
+          Replay this step
+        </button>
+      </div>
+      <nav id="chapters" class="chapters" aria-label="Pipeline chapters"></nav>
+      <section id="stage" class="stage" aria-labelledby="title">
+        <div class="stage-top">
+          <h2 id="title"></h2>
+          <span id="owner"></span>
+        </div>
+        <p id="description"></p>
+      </section>
+      <p id="announcement" class="sr-only" aria-live="polite"></p>
+      <div class="legend" aria-label="Graph key">
+        <span><i class="swatch shared"></i>Shared node</span
+        ><span><i class="swatch singleton"></i>Singleton / not yet matched</span
+        ><span><i class="swatch decision"></i>Purple arrows: API choices</span
+        ><span><i class="swatch llm"></i>Orange pointers: generated evidence or questions</span>
+      </div>
+      <div id="connections" class="connections" aria-label="Connection playback" hidden>
+        <div>
+          <span id="connection-kind"></span>
+          <p id="connection-label"></p>
+        </div>
+        <div class="connection-controls">
+          <button id="arrow-back" type="button">Previous arrow</button>
+          <span id="connection-count"></span>
+          <button id="arrow-next" type="button">Next arrow</button>
+        </div>
+      </div>
+      <section id="scene" class="scene" aria-label="Animated document mapping">
+        <aside id="source" class="source">
+          <div class="scene-head">
+            <h3>Incoming paper C</h3>
+            <small>Gesture training</small>
+          </div>
+          <div id="actor" data-kind="source"></div>
+          <div id="waiting">
+            No new document yet.<br />The graph on the right already contains A and B.
+          </div>
+          <div id="paper" hidden>
+            <div class="paper-top" id="paper-top">
+              <span>C / Gesture training</span><span id="approval" hidden>Source reviewed</span>
+            </div>
+            <div id="raw" class="raw-text"></div>
+            <div id="owner-chips" class="source-owners" hidden></div>
+            <div id="section-units" class="passages" hidden></div>
+            <div id="paragraph-units" class="passages" hidden></div>
+          </div>
+        </aside>
+        <div class="graph-panel">
+          <div class="scene-head">
+            <h3>Persistent corpus graph</h3>
+            <small id="graph-count"></small>
+          </div>
+          <div id="graph"><div id="corpus">Corpus: A + B</div></div>
+        </div>
+        <svg id="links" aria-label="Ownership and matching arrows">
+          <defs>
+            <marker
+              id="arrow-purple"
+              markerWidth="14"
+              markerHeight="14"
+              markerUnits="userSpaceOnUse"
+              viewBox="0 0 8 8"
+              refX="7"
+              refY="4"
+              orient="auto-start-reverse"
+            >
+              <path d="M0,0 L8,4 L0,8 Z" fill="#7054a0" />
+            </marker>
+            <marker
+              id="arrow-green"
+              markerWidth="14"
+              markerHeight="14"
+              markerUnits="userSpaceOnUse"
+              viewBox="0 0 8 8"
+              refX="7"
+              refY="4"
+              orient="auto-start-reverse"
+            >
+              <path d="M0,0 L8,4 L0,8 Z" fill="#527a5d" />
+            </marker>
+            <marker
+              id="arrow-orange"
+              markerWidth="14"
+              markerHeight="14"
+              markerUnits="userSpaceOnUse"
+              viewBox="0 0 8 8"
+              refX="7"
+              refY="4"
+              orient="auto-start-reverse"
+            >
+              <path d="M0,0 L8,4 L0,8 Z" fill="#b68a49" />
+            </marker>
+            <marker
+              id="arrow-red"
+              markerWidth="14"
+              markerHeight="14"
+              markerUnits="userSpaceOnUse"
+              viewBox="0 0 8 8"
+              refX="7"
+              refY="4"
+              orient="auto-start-reverse"
+            >
+              <path d="M0,0 L8,4 L0,8 Z" fill="#a33e38" />
+            </marker>
+            <marker
+              id="arrow-blue"
+              markerWidth="6"
+              markerHeight="6"
+              refX="5"
+              refY="3"
+              orient="auto"
+            >
+              <path d="M0,0 L6,3 L0,6 Z" fill="#7f9aa8" />
+            </marker>
+          </defs>
+          <g id="edge-layer"></g>
+        </svg>
+      </section>
+      <section id="overflow" hidden aria-label="Animated oversized choice selection">
+        <div id="overflow-whole" class="choice-cloud">
+          <h3>300 eligible candidates</h3>
+          <p>A single focus needs one match or NO_MATCH.</p>
+          <div id="all-dots" class="dots"></div>
+        </div>
+        <div id="overflow-halves" class="overflow-groups" hidden>
+          <div id="half-a" class="choice-cloud">
+            <h3>Half A</h3>
+            <p>150 candidates + NO_MATCH</p>
+            <div id="dots-a" class="dots"></div>
+            <div id="top-a" class="shortlist"></div>
+          </div>
+          <div id="half-b" class="choice-cloud">
+            <h3>Half B</h3>
+            <p>150 candidates + NO_MATCH</p>
+            <div id="dots-b" class="dots"></div>
+            <div id="top-b" class="shortlist"></div>
+          </div>
+        </div>
+        <div id="final-choice" class="choice-cloud" hidden>
+          <h3>Rerank together</h3>
+          <p>Five from each half + NO_MATCH = 11 choices.</p>
+          <div id="top-final" class="shortlist"></div>
+        </div>
+      </section>
+      <section id="inspector">
+        <div>
+          <h3 id="facts-heading">Visible change</h3>
+          <ul id="facts"></ul>
+        </div>
+        <div>
+          <h3 id="detail-heading">Source evidence</h3>
+          <div id="detail"></div>
+        </div>
+      </section>
+      <footer>
+        <p>Scripted animation, not a live API run. Click a graph node to inspect its passages.</p>
+        <a href="../diagrams/classified-based-pipeline-flow.png">Full flow diagram</a
+        ><a href="../../PIPELINE_FLOW.md">Flow documentation</a>
+      </footer>
+    </main>
+    <script>
+      "use strict";
+      const $ = (id) => document.getElementById(id);
+      const clone = (value) => structuredClone(value);
+      const esc = (value) =>
+        String(value).replace(
+          /[&<>"']/g,
+          (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c],
+        );
+      const motion = matchMedia("(prefers-reduced-motion: reduce)");
+      const unit = (id, paper, label, level, section, ordinal, question, text) => ({
+        id,
+        paper,
+        label,
+        level,
+        section,
+        ordinal,
+        question,
+        text,
+      });
+      const units = Object.fromEntries(
+        [
+          unit(
+            "A-S1",
+            "A",
+            "Audio correction",
+            "section",
+            null,
+            1,
+            "How does feedback correct an error?",
+            "The interface gives spoken corrections after a learner makes an error.",
+          ),
+          unit(
+            "A-S2",
+            "A",
+            "Baseline comparison",
+            "section",
+            null,
+            2,
+            "Which baseline did the study use?",
+            "We compared spoken feedback with silent practice using timed tasks and confidence ratings.",
+          ),
+          unit(
+            "A-S3",
+            "A",
+            "Limitations",
+            "section",
+            null,
+            3,
+            "What limits the findings?",
+            "The study used one task and a small participant sample.",
+          ),
+          unit(
+            "B-S1",
+            "B",
+            "Haptic correction",
+            "section",
+            null,
+            1,
+            "How does feedback correct an error?",
+            "The interface gives a vibration after a learner makes an error.",
+          ),
+          unit(
+            "B-S2",
+            "B",
+            "Haptic evaluation",
+            "section",
+            null,
+            2,
+            "How were haptic trials evaluated?",
+            "We compared haptic feedback with silent practice using timed tasks and confidence ratings.",
+          ),
+          unit(
+            "B-S3",
+            "B",
+            "Limitations",
+            "section",
+            null,
+            3,
+            "What limits the findings?",
+            "The study used one task and recruited participants from one site.",
+          ),
+          unit(
+            "C-S1",
+            "C",
+            "Prototype",
+            "section",
+            null,
+            1,
+            "How does feedback correct an error?",
+            "The interface displays a corrective gesture after a learner makes an error.",
+          ),
+          unit(
+            "C-S2",
+            "C",
+            "User study",
+            "section",
+            null,
+            2,
+            "How does training affect performance?",
+            "We compared gesture feedback with silent practice using timed tasks and confidence ratings.",
+          ),
+          unit(
+            "C-S3",
+            "C",
+            "Future work",
+            "section",
+            null,
+            3,
+            "What will later training support?",
+            "A future version will study confidence during collaborative training over several weeks.",
+          ),
+          unit(
+            "A-P1",
+            "A",
+            "Audio conditions",
+            "paragraph",
+            "A-S2",
+            1,
+            "Which conditions did the study compare?",
+            "Participants completed the same tasks with spoken feedback and with silent practice.",
+          ),
+          unit(
+            "A-P2",
+            "A",
+            "Audio timing",
+            "paragraph",
+            "A-S2",
+            2,
+            "How did feedback affect speed?",
+            "We recorded completion time in both conditions and compared their mean times.",
+          ),
+          unit(
+            "A-P3",
+            "A",
+            "Audio self-report",
+            "paragraph",
+            "A-S2",
+            3,
+            "What did learners report after practice?",
+            "Learners rated how confident they felt after completing the training tasks.",
+          ),
+          unit(
+            "B-P1",
+            "B",
+            "Haptic conditions",
+            "paragraph",
+            "B-S2",
+            1,
+            "How were haptic trials organized?",
+            "Participants completed the same tasks with haptic feedback and with silent practice.",
+          ),
+          unit(
+            "B-P2",
+            "B",
+            "Haptic timing",
+            "paragraph",
+            "B-S2",
+            2,
+            "When were haptic trials timed?",
+            "We recorded completion time in both conditions and compared their mean times.",
+          ),
+          unit(
+            "B-P3",
+            "B",
+            "Timing detail",
+            "paragraph",
+            "B-S2",
+            3,
+            "Which trials were excluded from timing?",
+            "Practice trials were excluded from the completion-time comparison.",
+          ),
+          unit(
+            "B-P4",
+            "B",
+            "Calibration confidence",
+            "paragraph",
+            "B-S2",
+            4,
+            "How did learners rate calibration?",
+            "Learners rated their confidence after each calibration exercise.",
+          ),
+          unit(
+            "C-P1",
+            "C",
+            "Training conditions",
+            "paragraph",
+            "C-S2",
+            1,
+            "Which conditions did the study compare?",
+            "Participants completed the same tasks with gesture feedback and with silent practice.",
+          ),
+          unit(
+            "C-P2",
+            "C",
+            "Trial order",
+            "paragraph",
+            "C-S2",
+            2,
+            "How was comparison order controlled?",
+            "The order of gesture feedback and silent practice was counterbalanced.",
+          ),
+          unit(
+            "C-P3",
+            "C",
+            "Study setting",
+            "paragraph",
+            "C-S2",
+            3,
+            "How was the comparison setting controlled?",
+            "Both feedback conditions were tested in the same controlled indoor setting.",
+          ),
+          unit(
+            "C-P4",
+            "C",
+            "Confidence change",
+            "paragraph",
+            "C-S2",
+            4,
+            "How did training affect confidence?",
+            "Learners rated their confidence before and after the gesture training tasks.",
+          ),
+          unit(
+            "C-P5",
+            "C",
+            "Completion time",
+            "paragraph",
+            "C-S2",
+            5,
+            "How did feedback affect speed?",
+            "We recorded completion time in both conditions and compared their mean times.",
+          ),
+          unit(
+            "C-P6",
+            "C",
+            "Data availability",
+            "paragraph",
+            "C-S2",
+            6,
+            "Where are the study materials available?",
+            "The study materials will be deposited in the laboratory archive.",
+          ),
+          unit(
+            "C-P7",
+            "C",
+            "Future confidence study",
+            "paragraph",
+            "C-S3",
+            1,
+            "How will collaborative training affect confidence?",
+            "Next, we will measure learner confidence during collaborative training sessions.",
+          ),
+        ].map((u) => [u.id, u]),
+      );
+      const sectionIds = ["C-S1", "C-S2", "C-S3"];
+      const paragraphIds = ["C-P1", "C-P2", "C-P3", "C-P4", "C-P5", "C-P6", "C-P7"];
+      for (const section of Object.values(units).filter((u) => u.level === "section")) {
+        section.text = [
+          section.text,
+          ...Object.values(units)
+            .filter((u) => u.section === section.id)
+            .map((u) => u.text),
+        ].join("\n\n");
+      }
+      const names = {
+        "n-design": "Correction",
+        "n-eval": "Evaluation",
+        "n-old-eval": "A: baseline",
+        "n-limits": "Limitations",
+        "n-task": "Conditions",
+        "n-speed": "Timing",
+        "n-timing-detail": "Timing detail",
+        "n-confidence": "Confidence",
+        "n-old-task": "A: conditions",
+        "n-old-speed": "A: timing",
+        "n-old-confidence": "A: self-report",
+      };
+      const node = (id, level, parent, members) => ({
+        id,
+        level,
+        parent,
+        label: names[id] || units[members[0]].label,
+        question: units[members[0]].question,
+        members: members.map((id) => ({ id, role: "core" })),
+      });
+      const initialGraph = Object.fromEntries(
+        [
+          node("n-design", "section", null, ["A-S1", "B-S1"]),
+          node("n-eval", "section", null, ["B-S2"]),
+          node("n-old-eval", "section", null, ["A-S2"]),
+          node("n-limits", "section", null, ["A-S3", "B-S3"]),
+          node("n-task", "paragraph", "n-eval", ["B-P1"]),
+          node("n-speed", "paragraph", "n-eval", ["B-P2"]),
+          node("n-old-task", "paragraph", "n-old-eval", ["A-P1"]),
+          node("n-old-speed", "paragraph", "n-old-eval", ["A-P2"]),
+          node("n-confidence", "paragraph", "n-eval", ["B-P4"]),
+          node("n-timing-detail", "paragraph", "n-eval", ["B-P3"]),
+          node("n-old-confidence", "paragraph", "n-old-eval", ["A-P3"]),
+        ].map((n) => [n.id, n]),
+      );
+      const graphSlots = Object.keys(initialGraph);
+      const groupFor = (graph, id) =>
+        Object.values(graph).find((n) => n.members.some((m) => m.id === id));
+      const scope = (graph, id) =>
+        units[id].level === "section" ? null : groupFor(graph, units[id].section).id;
+      const hasPaper = (n, paper) => n.members.some((m) => units[m.id].paper === paper);
+      const anchor = (u, n) =>
+        n.members.some(
+          (m) =>
+            m.role !== "fan-in" &&
+            units[m.id].paper === u.paper &&
+            units[m.id].section === u.section &&
+            Math.abs(units[m.id].ordinal - u.ordinal) === 1,
+        );
+      const edge = (from, to, kind = "decision", both = false, label = "") => ({
+        from,
+        to,
+        kind,
+        both,
+        label,
+      });
+
+      function absorb(graph, source, target, role = "core") {
+        graph[target].members.push(...graph[source].members.map((m) => ({ ...m, role })));
+        if (graph[source].level === "section")
+          for (const n of Object.values(graph)) if (n.parent === source) n.parent = target;
+        delete graph[source];
+      }
+      function commitUnit(graph, id, target, role = "core") {
+        const prior = groupFor(graph, id);
+        if (prior) absorb(graph, prior.id, target, role);
+        else graph[target].members.push({ id, role });
+      }
+      function keepUnmatched(graph, ids) {
+        for (const id of ids)
+          if (!groupFor(graph, id)) {
+            const key = "n-" + id.toLowerCase();
+            graph[key] = node(key, units[id].level, scope(graph, id), [id]);
+          }
+      }
+      function sharedQuestion(n) {
+        if (n.members.length === 1) return units[n.members[0].id].question;
+        if (n.id === "n-eval")
+          return n.members.length > 2
+            ? "How does feedback training compare with silent practice?"
+            : "How does feedback training affect performance?";
+        if (n.id === "n-task")
+          return n.members.some((m) => m.role === "fan-in")
+            ? "Which conditions are compared, and how is trial order controlled?"
+            : "Which feedback conditions did the study compare?";
+        if (n.id === "n-speed")
+          return "How is completion time measured across feedback conditions?";
+        if (n.id === "n-confidence")
+          return n.members.length > 2
+            ? "How confident do learners feel after training?"
+            : "How did training affect learner confidence?";
+        return n.question;
+      }
+      function evidence(graph, source, target) {
+        const sources = units[source] ? [source] : graph[source].members.map((m) => m.id);
+        return [...sources, ...graph[target].members.map((m) => m.id)].map((id) => ({
+          id,
+          quote: units[id].text.split("\n\n")[0],
+        }));
+      }
+      const quotesValid = (rows) =>
+        rows.every((r) => r.quote && r.quote.length <= 240 && units[r.id].text.includes(r.quote));
+
+      // Each frame stores a graph snapshot. Decisions are scripted; acceptance follows the local rules.
+      function buildStory() {
+        const graph = clone(initialGraph),
+          frames = [];
+        const state = {
+          chapter: "Arrival",
+          paper: "none",
+          verified: false,
+          level: "section",
+          questions: [],
+          focus: [],
+          edges: [],
+          ghosts: [],
+          votes: {},
+          nodeVotes: {},
+          kind: "source",
+        };
+        const add = (title, description, extra = {}) => {
+          frames.push(clone({ ...state, graph, title, description, facts: [], ...extra }));
+        };
+        const actorEdge = (id) => edge("actor", "q-" + id, "llm");
+        const sourceKey = (id) => (groupFor(graph, id) ? groupFor(graph, id).id : id);
+        const refresh = (chapter, changed) => {
+          const updates = changed
+            .map((id) => ({ id, before: graph[id].question, after: sharedQuestion(graph[id]) }))
+            .filter((q) => q.before !== q.after);
+          for (const q of updates) graph[q.id].question = q.after;
+          add(
+            "Generate the shared-node questions",
+            "The orange labels replace document-specific questions with questions supported by the accepted group.",
+            {
+              chapter,
+              kind: "llm",
+              edges: updates.map((q) => actorEdge(q.id)),
+              generating: updates.map((q) => q.id),
+              updates,
+              facts: updates.length
+                ? updates.map((q) => names[q.id] + ": the question broadens as more passages join.")
+                : ["Only changed groups need updated questions. Unchanged labels stay in place."],
+            },
+          );
+        };
+        add(
+          "An existing graph, before paper C arrives",
+          "A and B have already produced shared roles and separate singleton nodes.",
+          {
+            reveal: true,
+            focus: [],
+            facts: [
+              "Green nodes contain multiple passages; gray nodes still have one.",
+              "Thin blue edges show which section owns each paragraph.",
+              "The separate A evaluation and A self-report are already visible; they will not appear suddenly during recovery.",
+            ],
+          },
+        );
+        state.paper = "raw";
+        add(
+          "A new paper enters the scene",
+          "The gesture-training paper arrives as authored text. It has no generated questions yet.",
+          {
+            arrive: true,
+            facts: [
+              "Paper C is still one document.",
+              "Existing graph nodes and singletons keep their positions.",
+            ],
+          },
+        );
+        state.paper = "split";
+        add(
+          "Extract sections and paragraphs",
+          "The paper separates into three structural units; the study contains six paragraphs and future work contains one.",
+          {
+            kind: "llm",
+            split: true,
+            edges: sectionIds.map((id) => edge("paper-top", id, "llm")),
+            facts: [
+              "The small strips are extracted paragraphs, not generated questions.",
+              "The source passages remain available throughout the animation.",
+            ],
+          },
+        );
+        state.verified = true;
+        add(
+          "Check the extracted source",
+          "Coverage, ordering, and boundaries are checked against the source, followed by original-source review.",
+          {
+            kind: "python",
+            verify: true,
+            pass: sectionIds,
+            edges: sectionIds.map((id) => edge("actor", id, "accept")),
+            facts: [
+              "The green checks mark reviewed structural boundaries.",
+              "This is source preparation, not a matching or semantic-verification API call.",
+            ],
+          },
+        );
+        state.questions = sectionIds;
+        add(
+          "Generate each section's implicit question",
+          "Orange pointers show the missing questions being added to the extracted units.",
+          {
+            kind: "llm",
+            generating: sectionIds,
+            edges: sectionIds.map(actorEdge),
+            facts: [
+              "Questions describe the role of a passage rather than its vocabulary.",
+              "They were absent before this step.",
+            ],
+          },
+        );
+
+        function initialPhase(chapter, ids, forward, reverse, options = {}) {
+          state.chapter = chapter;
+          state.focus = ids.map(sourceKey);
+          const level = units[ids[0]].level;
+          const frozen = clone(graph);
+          const allowed = Object.fromEntries(
+            ids.map((id) => [
+              id,
+              Object.keys(graph).filter(
+                (g) =>
+                  graph[g].level === level &&
+                  (level === "section" || graph[g].parent === scope(graph, id)) &&
+                  !hasPaper(graph[g], units[id].paper),
+              ),
+            ]),
+          );
+          const targets = [...new Set(Object.values(allowed).flat())];
+          const reversePool = Object.fromEntries(
+            targets.map((g) => [g, ids.filter((id) => allowed[id].includes(g))]),
+          );
+          const fw = Object.fromEntries(
+            ids.filter((id) => allowed[id].length).map((id) => [id, forward[id] || null]),
+          );
+          const rv = Object.fromEntries(targets.map((g) => [g, reverse[g] || null]));
+          for (const [id, target] of Object.entries(fw))
+            if (target && !allowed[id].includes(target))
+              throw new Error("Disallowed forward target");
+          for (const [g, id] of Object.entries(rv))
+            if (id && !reversePool[g].includes(id)) throw new Error("Disallowed reverse target");
+          const cores = Object.entries(fw).filter(([id, g]) => g && rv[g] === id);
+          const newFan =
+            level === "paragraph"
+              ? Object.entries(fw).filter(
+                  ([id, g]) =>
+                    g &&
+                    !cores.some(([u]) => u === id) &&
+                    cores.some(
+                      ([u, t]) =>
+                        t === g &&
+                        units[u].section === units[id].section &&
+                        Math.abs(units[u].ordinal - units[id].ordinal) === 1,
+                    ),
+                )
+              : [];
+          const oldFan =
+            level === "paragraph"
+              ? Object.entries(rv).flatMap(([g, id]) => {
+                  const core = cores.find(([u]) => u === id);
+                  return core &&
+                    core[1] !== g &&
+                    graph[g].members.every((m) => anchor(units[m.id], graph[core[1]]))
+                    ? [[g, core[1]]]
+                    : [];
+                })
+              : [];
+          const fwEdges = Object.entries(fw)
+            .filter(([, g]) => g)
+            .map(([id, g]) => edge(sourceKey(id), g));
+          const rvEdges = Object.entries(rv)
+            .filter(([, id]) => id)
+            .map(([g, id]) => edge(g, sourceKey(id)));
+          const coreEdges = cores.map(([id, g]) => edge(sourceKey(id), g, "accept", true));
+          const ghosts = cores.map(([id, g]) => ({ target: g, id }));
+          const quotes = [...cores, ...newFan, ...oldFan].flatMap(([id, g]) =>
+            evidence(frozen, id, g),
+          );
+          if (!quotesValid(quotes)) throw new Error("Invalid fixture quotation");
+          state.votes = {};
+          state.nodeVotes = {};
+          add(
+            "Build the eligible " + (level === "section" ? "section" : "paragraph") + " pools",
+            "Python highlights the nodes each unit is allowed to choose. Unrelated levels and ownership scopes remain outside the pool.",
+            {
+              kind: "python",
+              focus: [...state.focus, ...targets],
+              edges: allowed[ids[0]].map((g) => edge(sourceKey(ids[0]), g, "candidate")),
+              facts: [
+                level === "section"
+                  ? "Only structural nodes are candidates; paragraph nodes stay gray."
+                  : "A paragraph must share the exact structural group and its paper must not already be in the target.",
+                ...ids
+                  .filter((id) => !allowed[id].length)
+                  .map((id) => id + ": no eligible node, so no choice call."),
+              ],
+            },
+          );
+          if (options.scopeExample)
+            add(
+              "A similar question in the wrong section is excluded",
+              "C-P7 asks about confidence, but belongs to Future work, not the shared Evaluation section.",
+              {
+                kind: "python",
+                focus: ["C-P7", "n-confidence"],
+                fail: ["C-P7"],
+                edges: [edge("C-P7", "n-confidence", "reject", false, "wrong scope")],
+                facts: [
+                  "The crossed arrow is excluded before any decision request.",
+                  "Question similarity alone does not override structural ownership.",
+                ],
+              },
+            );
+          state.votes = fw;
+          add(
+            "Forward: each unit chooses one node",
+            "Purple arrows carry the incoming choices. NO_MATCH leaves the unit separate.",
+            {
+              kind: "decision",
+              edges: fwEdges,
+              focus: [...state.focus, ...targets],
+              facts: [
+                Object.keys(fw).length + " logical choice questions: one per nonempty unit pool.",
+                "A choice does not commit a membership.",
+              ],
+            },
+          );
+          state.nodeVotes = rv;
+          add(
+            "Reverse: each node independently chooses one unit",
+            "The arrows reverse direction and the graph nodes display purple choice labels.",
+            {
+              kind: "decision",
+              edges: rvEdges,
+              focus: [...state.focus, ...targets],
+              facts: [
+                Object.keys(rv).length + " logical choice questions.",
+                "Each reverse pool contains all eligible units, not only its forward proposers.",
+                "The reverse input does not contain the forward votes.",
+              ],
+            },
+          );
+          add(
+            "Find the reciprocal cores",
+            "Mutual top-1 choices become double-headed green arrows. One-way choices remain dashed purple.",
+            {
+              kind: "python",
+              edges: [
+                ...coreEdges,
+                ...fwEdges
+                  .filter((e) => !cores.some(([id]) => e.from === sourceKey(id)))
+                  .map((e) => ({ ...e, label: "one-way" })),
+              ],
+              focus: [...state.focus, ...targets],
+              facts: cores.map(([id, g]) => id + " and " + names[g] + " choose each other."),
+            },
+          );
+          add(
+            "Describe the proposed groups",
+            "Orange prospective members show exactly which passages would form the new group. The graph has not committed them yet.",
+            {
+              kind: "llm",
+              ghosts,
+              edges: ghosts.map((g) => edge("actor", g.target, "llm")),
+              focus: cores.map(([, g]) => g),
+              quotes,
+              facts: [
+                "Generate the shared-role explanation and source quotations only for admissible proposals.",
+                "The orange members are proposals, not accepted graph members.",
+                "There is no additional semantic judge.",
+              ],
+            },
+          );
+          if (options.badQuote) {
+            const invalid = { id: "C-P4", quote: units["C-P5"].text };
+            if (quotesValid([invalid]))
+              throw new Error("The invalid quotation example is not invalid");
+            add(
+              "Python blocks a misattributed quotation",
+              "The proposed confidence match quotes the timing paragraph C-P5 instead of its own center C-P4.",
+              {
+                kind: "python",
+                ghosts,
+                focus: ["C-P4", "C-P5", "n-confidence"],
+                fail: ["C-P4"],
+                edges: [edge("C-P5", "C-P4", "reject", false, "wrong source")],
+                quoteError: invalid,
+                facts: [
+                  "The quote exists in the document, but not in the required passage.",
+                  "No proposed memberships are committed while this evidence fails.",
+                ],
+              },
+            );
+            add(
+              "Repair the quote without reselecting the match",
+              "The evidence generator replaces the borrowed timing sentence with the exact confidence sentence.",
+              {
+                kind: "llm",
+                ghosts,
+                generating: ["C-P4"],
+                edges: [edge("actor", "C-P4", "llm")],
+                quotes: [{ id: "C-P4", quote: units["C-P4"].text }],
+                facts: [
+                  "The selected target stays fixed.",
+                  "This is quotation repair, not another semantic-verification call.",
+                ],
+              },
+            );
+          }
+          add(
+            "Validate quotations and membership constraints",
+            "Python checks source attribution, quotation length, allowed IDs, and structural scope before allowing a merge.",
+            {
+              kind: "python",
+              ghosts,
+              pass: cores.map(([id]) => id),
+              edges: coreEdges,
+              quotes,
+              facts: [
+                "Every quote belongs to its own selected source center and is at most 240 characters.",
+                "Green paths are now eligible to commit; the node counts have not changed yet.",
+              ],
+            },
+          );
+          const changed = new Set();
+          for (const [id, g] of cores) {
+            commitUnit(graph, id, g);
+            changed.add(g);
+          }
+          for (const [source, target] of oldFan) {
+            absorb(graph, source, target, "fan-in");
+            changed.add(target);
+          }
+          keepUnmatched(graph, ids);
+          add(
+            "Commit the checked reciprocal cores",
+            "The new members move into their target nodes. A singleton target visibly becomes a shared cluster.",
+            {
+              kind: "python",
+              changed: [...changed],
+              moves: [
+                ...cores.map(([id, g]) => ({
+                  from: units[id].paper === "C" ? id : groupFor(frozen, id).id,
+                  to: g,
+                  id,
+                })),
+                ...oldFan.map(([from, to]) => ({ from, to, id: frozen[from].members[0].id })),
+              ],
+              edges: oldFan.map(([from, to]) => edge(from, to, "accept")),
+              pass: cores.map(([id]) => id),
+              facts: [
+                "Accepted nodes turn green and their membership counts increase.",
+                ...(oldFan.length
+                  ? [
+                      "B-P3 joins Timing as existing-side fan-in: it is immediately beside the B-P2 core.",
+                    ]
+                  : []),
+                "Unmatched units remain in their original gray positions.",
+              ],
+            },
+          );
+          if (newFan.length) {
+            for (const [id, g] of newFan) {
+              commitUnit(graph, id, g, "fan-in");
+              changed.add(g);
+            }
+            add(
+              "Accept only immediate-core paragraph fan-in",
+              "C-P2 chose Conditions and is directly adjacent to the accepted core C-P1, so Python lets it join.",
+              {
+                kind: "python",
+                changed: newFan.map(([, g]) => g),
+                pass: newFan.map(([id]) => id),
+                moves: newFan.map(([id, to]) => ({ from: id, to, id })),
+                edges: [
+                  edge("C-P1", "C-P2", "accept", true, "adjacent"),
+                  ...newFan.map(([id, g]) => edge(id, g, "accept")),
+                ],
+                facts: [
+                  "The shared node now contains two C passages, but only C-P1 is a reciprocal core.",
+                  "The dashed C-P2 member label marks fan-in, not a new core.",
+                ],
+              },
+            );
+          }
+          if (options.chainExample)
+            add(
+              "Reject a fan-in chain",
+              "C-P3 also chose Conditions, but is two positions from the C-P1 core. Its neighbor C-P2 is only fan-in.",
+              {
+                kind: "python",
+                focus: ["C-P1", "C-P2", "C-P3", "n-task"],
+                fail: ["C-P3"],
+                edges: [
+                  edge("C-P2", "C-P3", "reject", true, "fan-in cannot anchor"),
+                  edge("C-P3", "n-task", "reject", false, "not adjacent to core"),
+                ],
+                facts: [
+                  "Adjacency to a fan-in member does not count.",
+                  "C-P3 remains a gray singleton. C-P6 chose NO_MATCH; C-P7 had an empty pool.",
+                  "A one-way choice alone does not make a valid membership.",
+                ],
+              },
+            );
+          state.votes = {};
+          state.nodeVotes = {};
+          refresh(chapter, [...changed]);
+        }
+
+        function recovery(chapter, level, forward, reverse) {
+          state.chapter = chapter;
+          state.focus = [];
+          state.votes = {};
+          state.nodeVotes = {};
+          const frozen = clone(graph);
+          const singletons = Object.keys(graph).filter(
+            (g) => graph[g].level === level && graph[g].members.length === 1,
+          );
+          const established = Object.keys(graph).filter(
+            (g) => graph[g].level === level && graph[g].members.length > 1,
+          );
+          const admission = (s, t) => {
+            if (graph[s].parent !== graph[t].parent) return null;
+            const u = units[graph[s].members[0].id];
+            if (!hasPaper(graph[t], u.paper)) return "core";
+            return level === "paragraph" && anchor(u, graph[t]) ? "fan-in" : null;
+          };
+          const allowed = Object.fromEntries(
+            singletons.map((s) => [s, established.filter((t) => admission(s, t))]),
+          );
+          const reversePool = Object.fromEntries(
+            established.map((t) => [t, singletons.filter((s) => admission(s, t) === "core")]),
+          );
+          const fw = Object.fromEntries(
+            singletons.filter((s) => allowed[s].length).map((s) => [s, forward[s] || null]),
+          );
+          const rv = Object.fromEntries(
+            established.filter((t) => reversePool[t].length).map((t) => [t, reverse[t] || null]),
+          );
+          for (const [s, t] of Object.entries(fw))
+            if (t && !allowed[s].includes(t)) throw new Error("Invalid recovery forward choice");
+          for (const [t, s] of Object.entries(rv))
+            if (s && !reversePool[t].includes(s))
+              throw new Error("Invalid recovery reverse choice");
+          const cores = Object.entries(fw).filter(([s, t]) => t && rv[t] === s);
+          const quoted = cores.flatMap(([s, t]) => evidence(graph, s, t));
+          if (!quotesValid(quoted)) throw new Error("Invalid recovery quote");
+          add(
+            "Revisit the singletons already on screen",
+            "The same gray nodes are queried against the newly established shared groups. Nothing is introduced or hidden for recovery.",
+            {
+              kind: "python",
+              focus: singletons,
+              edges: cores.map(([s, t]) => edge(s, t, "candidate")),
+              facts: [
+                "One frozen recovery pass at this level; no singleton-to-singleton comparisons.",
+                "Same level and exact parent scope still apply.",
+                "A cross-paper core needs a paper absent from the target. Same-paper fan-in additionally needs an immediate core neighbor.",
+              ],
+            },
+          );
+          state.nodeVotes = {};
+          state.votes = Object.fromEntries(
+            Object.entries(fw).map(([s, t]) => [frozen[s].members[0].id, t]),
+          );
+          add(
+            "Singleton forward: choose an established node",
+            "Purple arrows show singleton-to-node selections over all eligible targets.",
+            {
+              kind: "decision",
+              focus: [...singletons, ...established],
+              edges: Object.entries(fw)
+                .filter(([, t]) => t)
+                .map(([s, t]) => edge(s, t)),
+              facts: [
+                Object.keys(fw).length +
+                  " logical questions, not one request per singleton-node pair.",
+                "Cross-paper core candidates are not restricted to geographic neighbors.",
+                "The retained gray nodes stay visible even when they have no eligible pool.",
+              ],
+            },
+          );
+          state.votes = {};
+          state.nodeVotes = rv;
+          add(
+            "Singleton reverse: independently choose a singleton",
+            "Established groups now send their purple choices back to eligible core singletons.",
+            {
+              kind: "decision",
+              focus: [...singletons, ...established],
+              edges: Object.entries(rv)
+                .filter(([, s]) => s)
+                .map(([t, s]) => edge(t, s)),
+              facts: [
+                Object.keys(rv).length + " logical reverse questions.",
+                "All eligible core singletons are candidates, not only forward proposers.",
+                "Same-paper fan-in candidates are not new reciprocal core candidates.",
+              ],
+            },
+          );
+          const mutual = cores.map(([s, t]) => edge(s, t, "accept", true));
+          add(
+            "Identify the reciprocal recovery",
+            "The two purple choices agree, so the gray source gains a double-headed green path into the established group.",
+            {
+              kind: "python",
+              focus: cores.flat(),
+              edges: mutual,
+              facts: [
+                "At most one new reciprocal core per target in this pass.",
+                "No unaccepted one-way choice changes membership.",
+              ],
+            },
+          );
+          add(
+            "Document the proposed recovery",
+            "An orange prospective member makes the proposed expanded group visible before the merge.",
+            {
+              kind: "llm",
+              ghosts: cores.map(([s, t]) => ({ target: t, id: graph[s].members[0].id })),
+              edges: cores.map(([, t]) => edge("actor", t, "llm")),
+              quotes: quoted,
+              facts: [
+                "Keep the selected target fixed while generating its explanation and exact source quotations.",
+                "No semantic-verification API call runs.",
+              ],
+            },
+          );
+          add(
+            "Check recovery evidence in Python",
+            "Source-bound evidence and membership constraints must pass before the gray singleton moves.",
+            {
+              kind: "python",
+              edges: mutual,
+              pass: cores.map(([s]) => graph[s].members[0].id),
+              quotes: quoted,
+              facts: [
+                "Only checked cores can anchor later fan-in.",
+                "Invalid evidence would block the graph change.",
+              ],
+            },
+          );
+          const moves = cores.map(([from, to]) => ({ from, to, id: graph[from].members[0].id }));
+          for (const [s, t] of cores) absorb(graph, s, t);
+          const fan = [];
+          if (level === "paragraph")
+            for (const [s, t] of Object.entries(fw))
+              if (t && graph[s] && anchor(units[graph[s].members[0].id], graph[t])) {
+                fan.push({ from: s, to: t, id: graph[s].members[0].id });
+                absorb(graph, s, t, "fan-in");
+              }
+          state.votes = {};
+          state.nodeVotes = {};
+          add(
+            "Absorb the accepted singleton",
+            "The member travels into its target, the shared-node count grows, and all unmatched singletons stay gray.",
+            {
+              kind: "python",
+              moves: [...moves, ...fan],
+              changed: cores.map(([, t]) => t),
+              facts: [
+                level === "section"
+                  ? "A-S2 now belongs to Evaluation with B-S2 and C-S2."
+                  : "A-P3 now belongs to Confidence with B-P4 and C-P4.",
+                "Absorbed nodes leave a faint position marker; the remaining singleton nodes keep their positions.",
+              ],
+            },
+          );
+          refresh(chapter, [...new Set(cores.map(([, t]) => t))]);
+        }
+        initialPhase(
+          "Section matches",
+          sectionIds,
+          { "C-S1": "n-design", "C-S2": "n-eval" },
+          { "n-design": "C-S1", "n-eval": "C-S2", "n-old-eval": "C-S2" },
+        );
+        recovery(
+          "Section recovery",
+          "section",
+          { "n-old-eval": "n-eval" },
+          { "n-eval": "n-old-eval" },
+        );
+        state.chapter = "Older paragraphs";
+        add(
+          "Reparent the older A paragraphs",
+          "The section merge changes the ownership edges: A's gray paragraphs now belong to the shared Evaluation group.",
+          {
+            kind: "python",
+            reparent: ["n-old-task", "n-old-speed", "n-old-confidence"],
+            focus: ["n-eval", "n-old-task", "n-old-speed", "n-old-confidence"],
+            edges: ["n-old-task", "n-old-speed", "n-old-confidence"].map((id) =>
+              edge("n-eval", id, "reparent"),
+            ),
+            facts: [
+              "A's original text does not change.",
+              "These older paragraphs are compared in the shared scope before C's paragraphs.",
+              "Their gray nodes were present from the first scene.",
+            ],
+          },
+        );
+        initialPhase(
+          "Older paragraphs",
+          ["A-P1", "A-P2", "A-P3"],
+          { "A-P1": "n-task", "A-P2": "n-speed" },
+          { "n-task": "A-P1", "n-speed": "A-P2", "n-timing-detail": "A-P2" },
+        );
+        state.level = "paragraph";
+        state.chapter = "New paragraphs";
+        state.votes = {};
+        state.nodeVotes = {};
+        add(
+          "Expand C's extracted paragraphs",
+          "The paragraph strips open into numbered units. They are still unmatched and have no generated paragraph questions.",
+          {
+            kind: "source",
+            expand: true,
+            focus: paragraphIds,
+            facts: [
+              "C-P1 through C-P6 belong to the shared Evaluation section.",
+              "C-P7 belongs to Future work, so it has a different matching scope.",
+              "Reading order stays visible: it will determine which fan-in additions are allowed.",
+            ],
+          },
+        );
+        state.questions = [...sectionIds, ...paragraphIds];
+        add(
+          "Generate paragraph questions",
+          "Orange pointers add each paragraph's implicit question. Source text and paragraph order remain unchanged.",
+          {
+            kind: "llm",
+            generating: paragraphIds,
+            edges: paragraphIds.map(actorEdge),
+            facts: [
+              "The numbered gray units become selectable evidence, not automatic matches.",
+              "Their questions are generated at this stage rather than being visible from the start.",
+            ],
+          },
+        );
+        initialPhase(
+          "New paragraphs",
+          paragraphIds,
+          {
+            "C-P1": "n-task",
+            "C-P2": "n-task",
+            "C-P3": "n-task",
+            "C-P4": "n-confidence",
+            "C-P5": "n-speed",
+          },
+          {
+            "n-task": "C-P1",
+            "n-speed": "C-P5",
+            "n-confidence": "C-P4",
+            "n-old-confidence": "C-P4",
+          },
+          { badQuote: true, scopeExample: true, chainExample: true },
+        );
+        recovery(
+          "Paragraph recovery",
+          "paragraph",
+          { "n-old-confidence": "n-confidence" },
+          { "n-confidence": "n-old-confidence" },
+        );
+        state.chapter = "Patterns";
+        add(
+          "Read the pattern that emerged",
+          "Conditions, Timing, and Confidence now each contain evidence from A, B, and C. The unmatched passages remain visible as differences.",
+          {
+            kind: "source",
+            focus: ["n-task", "n-speed", "n-confidence"],
+            edges: [edge("n-task", "n-speed", "accept"), edge("n-speed", "n-confidence", "accept")],
+            export: true,
+            facts: [
+              "Question Groups collect passages for each shared role; Paper Map preserves each document's ordering.",
+              "The same roles can occur in a different sequence: C discusses confidence before timing.",
+              "C-P3, C-P6, and C-P7 remain separate. Shared roles do not imply identical findings.",
+              "The pipeline continues in document order, then exports graph, evidence, decisions, and reader views.",
+            ],
+          },
+        );
+        return frames;
+      }
+      function buildOverflow() {
+        const a = ["N017", "N040", "N053", "N105", "N122"],
+          b = ["N218", "N200", "N271", "N243", "N190"];
+        const base = {
+          chapter: "Choice limits",
+          overflow: true,
+          graph: {},
+          facts: [],
+          kind: "python",
+          topA: [],
+          topB: [],
+          tops: [],
+        };
+        return [
+          {
+            ...base,
+            title: "One focus, 300 candidates",
+            description:
+              "The complete pool has 300 candidates plus NO_MATCH, so it cannot fit in one choice question.",
+            phase: 0,
+            facts: [
+              "This helper applies to both matching directions and both singleton-recovery directions.",
+            ],
+          },
+          {
+            ...base,
+            title: "Split the ordered pool in half",
+            description: "The 300 candidates visibly separate into two 150-candidate pools.",
+            phase: 1,
+            facts: [
+              "Each half includes NO_MATCH: 151 choices per question.",
+              "No candidate is dropped before its half is queried.",
+            ],
+          },
+          {
+            ...base,
+            title: "Query half A",
+            description:
+              "The first Decisions API question highlights its top five candidate IDs in purple.",
+            kind: "decision",
+            phase: 2,
+            topA: a,
+            facts: [
+              "Retain five candidates from the returned probabilities.",
+              "NO_MATCH remains an option but does not occupy a candidate shortlist slot.",
+            ],
+          },
+          {
+            ...base,
+            title: "Query half B independently",
+            description:
+              "The second question selects five candidates from the other half, using the same focus and evidence.",
+            kind: "decision",
+            phase: 3,
+            topA: a,
+            topB: b,
+            facts: [
+              "The first half's choices are not supplied to the second question.",
+              "Do not compare probabilities across different choice sets.",
+            ],
+          },
+          {
+            ...base,
+            title: "Move the two shortlists into one pool",
+            description:
+              "The ten highlighted candidates move into a single final choice set, with NO_MATCH.",
+            phase: 4,
+            topA: a,
+            topB: b,
+            tops: [...a, ...b],
+            facts: [
+              "The final question uses original evidence for each shortlisted candidate.",
+              "If a half is still too large, split it recursively before reranking.",
+            ],
+          },
+          {
+            ...base,
+            title: "Rerank all ten together",
+            description:
+              "The third Decisions API question picks N218 over the combined shortlist or can choose NO_MATCH.",
+            kind: "decision",
+            phase: 5,
+            topA: a,
+            topB: b,
+            tops: [...a, ...b],
+            winner: "N218",
+            facts: [
+              "The final question follows the first two results because it depends on them.",
+              "Only this final choice returns to its matching direction.",
+            ],
+          },
+          {
+            ...base,
+            title: "Return the choice to the graph rules",
+            description:
+              "The selected candidate goes back to reciprocity and the normal Python checks.",
+            phase: 6,
+            topA: a,
+            topB: b,
+            tops: [...a, ...b],
+            winner: "N218",
+            facts: [
+              "A choice still does not commit a graph membership.",
+              "Shortlisting can discard a candidate that a full-pool comparison would prefer.",
+            ],
+          },
+        ];
+      }
+
+      const stories = { main: buildStory(), overflow: buildOverflow() };
+      let story = stories.main,
+        position = 0,
+        timer = null,
+        connectionTimer = null,
+        connections = [],
+        connectionIndex = 0,
+        current = null,
+        inspectId = null;
+      const nodeElements = new Map(),
+        sourceElements = new Map(),
+        runningAnimations = new Set();
+      const ownerLabel = {
+        source: "Document / graph state",
+        python: "Python rules",
+        llm: "Generative LLM",
+        decision: "Decisions API",
+      };
+      function animate(el, frames, options = {}) {
+        if (!el || motion.matches) return;
+        const animation = el.animate(frames, {
+          duration: 850,
+          easing: "cubic-bezier(.2,.7,.2,1)",
+          ...options,
+        });
+        runningAnimations.add(animation);
+        animation.finished.catch(() => {}).finally(() => runningAnimations.delete(animation));
+      }
+      function cancelEffects() {
+        for (const a of runningAnimations) a.cancel();
+        runningAnimations.clear();
+        document.querySelectorAll(".scan").forEach((el) => el.classList.remove("scan"));
+      }
+      function makePassage(id) {
+        const u = units[id],
+          el = document.createElement("article");
+        el.className = "passage";
+        el.id = "u-" + id;
+        el.innerHTML =
+          '<div class="passage-top"><span class="id">' +
+          esc(id.slice(2)) +
+          '</span><button class="label" type="button">' +
+          esc(u.label) +
+          '</button></div><p class="question pending" id="q-' +
+          id +
+          '"></p><div class="paragraph-stubs"></div><p class="scope-tag"></p><p class="membership"></p><p class="choice" hidden></p>';
+        el.querySelector("button").addEventListener("click", () => {
+          pause();
+          inspectId = id;
+          renderDetail();
+        });
+        sourceElements.set(id, el);
+        return el;
+      }
+      for (const id of sectionIds) $("section-units").append(makePassage(id));
+      for (const id of paragraphIds) $("paragraph-units").append(makePassage(id));
+      $("raw").innerHTML = sectionIds
+        .map(
+          (id) =>
+            "<strong>" +
+            esc(units[id].label) +
+            "</strong>" +
+            units[id].text
+              .split("\n\n")
+              .map((text) => "<p>" + esc(text) + "</p>")
+              .join(""),
+        )
+        .join("");
+      for (const id of graphSlots) {
+        const el = document.createElement("article");
+        el.id = "g-" + id;
+        el.className = "role";
+        el.innerHTML =
+          '<button class="role-title" type="button"></button><span class="node-count"></span><p class="question" id="q-' +
+          id +
+          '"></p><div class="members"></div><p class="choice" hidden></p>';
+        el.querySelector("button").addEventListener("click", () => {
+          pause();
+          inspectId = id;
+          renderDetail();
+        });
+        $("graph").append(el);
+        nodeElements.set(id, el);
+      }
+      for (const [element, count, offset] of [
+        ["all-dots", 300, 0],
+        ["dots-a", 150, 0],
+        ["dots-b", 150, 150],
+      ]) {
+        $(element).innerHTML = Array.from(
+          { length: count },
+          (_, i) =>
+            '<i class="dot" data-candidate="N' + String(i + 1 + offset).padStart(3, "0") + '"></i>',
+        ).join("");
+      }
+      function layoutGraph() {
+        const width = $("graph").clientWidth;
+        const columns = width >= 680 ? 4 : width >= 440 ? 3 : width >= 300 ? 2 : 1;
+        const gap = 14,
+          cell = (width - gap * (columns - 1)) / columns;
+        const rowHeight = columns === 4 ? 200 : columns === 1 ? 220 : 245;
+        $("graph").style.height = Math.ceil(graphSlots.length / columns) * rowHeight + 65 + "px";
+        graphSlots.forEach((id, i) => {
+          const el = nodeElements.get(id);
+          el.style.left = (i % columns) * (cell + gap) + "px";
+          el.style.top = 65 + Math.floor(i / columns) * rowHeight + "px";
+          el.style.width = cell + "px";
+        });
+      }
+      function endpointElement(id) {
+        if (id === "actor" || id === "corpus" || id === "paper-top") return $(id);
+        if (id.startsWith("q-")) {
+          const el = $(id);
+          return el?.closest("article");
+        }
+        if (sourceElements.has(id)) return sourceElements.get(id);
+        if (nodeElements.has(id)) return nodeElements.get(id);
+        const owner = $("owner-C-S3");
+        if (id === "n-c-s3" && owner && owner.offsetParent !== null) return owner;
+        if (current && current.graph[id] && current.graph[id].members.length === 1)
+          return endpointElement(current.graph[id].members[0].id);
+        return null;
+      }
+      function rectOf(id) {
+        const el = endpointElement(id);
+        return el && el.offsetParent !== null ? el.getBoundingClientRect() : null;
+      }
+      function endpointLabel(id) {
+        if (id.startsWith("q-")) return endpointLabel(id.slice(2));
+        if (id === "actor") return ownerLabel[current.kind];
+        if (id === "paper-top") return "Paper C";
+        if (id === "corpus") return "Corpus";
+        if (units[id]) return id + ": " + units[id].label;
+        return current.graph[id]?.label || names[id] || id;
+      }
+      function edgeColor(kind) {
+        return {
+          decision: "purple",
+          candidate: "blue",
+          accept: "green",
+          reparent: "green",
+          llm: "orange",
+          reject: "red",
+          ownership: "blue",
+        }[kind];
+      }
+      function stopConnections() {
+        clearTimeout(connectionTimer);
+        connectionTimer = null;
+      }
+      function connectionInterval() {
+        return Math.min(Number($("pace").value), 2000);
+      }
+      function queueConnection() {
+        stopConnections();
+        const playing = () => $("play").getAttribute("aria-pressed") === "true";
+        if ((motion.matches && !playing()) || connectionIndex >= connections.length - 1) return;
+        connectionTimer = setTimeout(() => {
+          if (motion.matches && !playing()) return;
+          connectionIndex++;
+          drawLinks(true);
+          queueConnection();
+        }, connectionInterval());
+      }
+      function prepareConnections(f) {
+        stopConnections();
+        connections = [...(f.edges || [])];
+        // Show the failing rule first rather than starting its scene with an accepted core.
+        if (f.fail?.length)
+          connections.sort((a, b) => Number(b.kind === "reject") - Number(a.kind === "reject"));
+        connectionIndex = 0;
+        $("connections").hidden = !connections.length;
+        $("scene").classList.toggle("has-connection", !!connections.length);
+      }
+      function showConnection(item) {
+        document
+          .querySelectorAll(".trace-active")
+          .forEach((el) => el.classList.remove("trace-active"));
+        if (!item) return;
+        const color = edgeColor(item.kind);
+        const styles = getComputedStyle(document.documentElement);
+        $("scene").style.setProperty(
+          "--trace",
+          styles.getPropertyValue(color === "red" ? "--red" : "--" + color + "-edge"),
+        );
+        $("scene").style.setProperty(
+          "--trace-soft",
+          color === "red" ? "#f9e8e6" : styles.getPropertyValue("--" + color),
+        );
+        for (const id of [item.from, item.to]) endpointElement(id)?.classList.add("trace-active");
+        $("connection-label").innerHTML =
+          esc(endpointLabel(item.from)) +
+          (item.both ? " &harr; " : " &rarr; ") +
+          esc(endpointLabel(item.to));
+        $("connection-kind").textContent =
+          item.label ||
+          {
+            candidate: "Eligible candidate",
+            decision: "Independent API choice",
+            accept: item.both ? "Reciprocal match" : "Checked / accepted",
+            reparent: "Ownership update",
+            llm: "Generated representation or evidence",
+            reject: "Rejected by Python",
+          }[item.kind];
+        $("connection-count").textContent = connectionIndex + 1 + " / " + connections.length;
+        $("arrow-back").disabled = connectionIndex === 0;
+        $("arrow-next").disabled = connectionIndex === connections.length - 1;
+      }
+      function roundedRoute(points) {
+        let d = "M " + points[0].join(" ");
+        for (let i = 1; i < points.length - 1; i++) {
+          const [x, y] = points[i],
+            [px, py] = points[i - 1],
+            [nx, ny] = points[i + 1];
+          const before = Math.hypot(x - px, y - py),
+            after = Math.hypot(nx - x, ny - y);
+          if (!before || !after) continue;
+          const radius = Math.min(12, before / 2, after / 2);
+          d +=
+            " L " + [x - ((x - px) * radius) / before, y - ((y - py) * radius) / before].join(" ");
+          d +=
+            " Q " +
+            [x, y, x + ((nx - x) * radius) / after, y + ((ny - y) * radius) / after].join(" ");
+        }
+        return d + " L " + points[points.length - 1].join(" ");
+      }
+      function svgElement(name, attrs) {
+        const el = document.createElementNS("http://www.w3.org/2000/svg", name);
+        for (const [key, value] of Object.entries(attrs)) el.setAttribute(key, String(value));
+        return el;
+      }
+      function drawPath(item, index, animateIt = false) {
+        const start = rectOf(item.from),
+          end = rectOf(item.to);
+        if (!start || !end) return;
+        const base = $("scene").getBoundingClientRect();
+        const dx = end.left + end.width / 2 - start.left - start.width / 2;
+        const dy = end.top + end.height / 2 - start.top - start.height / 2;
+        let x1, y1, x2, y2;
+        if (item.kind === "ownership") {
+          x1 = start.left + start.width / 2 - base.left;
+          y1 = start.bottom - base.top;
+          x2 = end.left + end.width / 2 - base.left;
+          y2 = end.top - base.top - 5;
+        } else if (Math.abs(dx) > Math.abs(dy) * 0.5) {
+          x1 = (dx >= 0 ? start.right : start.left) - base.left;
+          y1 = start.top + start.height / 2 - base.top;
+          x2 = (dx >= 0 ? end.left : end.right) - base.left;
+          y2 = end.top + end.height / 2 - base.top;
+        } else {
+          x1 = start.left + start.width / 2 - base.left;
+          y1 = (dy >= 0 ? start.bottom : start.top) - base.top;
+          x2 = end.left + end.width / 2 - base.left;
+          y2 = (dy >= 0 ? end.top : end.bottom) - base.top;
+        }
+        const bend = Math.max(45, Math.min(180, Math.abs(x2 - x1) * 0.4));
+        let d =
+          Math.abs(dx) > Math.abs(dy) * 0.5
+            ? [
+                "M",
+                x1,
+                y1,
+                "C",
+                x1 + (dx >= 0 ? bend : -bend),
+                y1,
+                x2 - (dx >= 0 ? bend : -bend),
+                y2,
+                x2,
+                y2,
+              ].join(" ")
+            : [
+                "M",
+                x1,
+                y1,
+                "C",
+                x1 + 45,
+                y1 + (dy >= 0 ? 40 : -40),
+                x2 + 45,
+                y2 - (dy >= 0 ? 40 : -40),
+                x2,
+                y2,
+              ].join(" ");
+        if (item.kind === "ownership") {
+          const middle = (y1 + y2) / 2;
+          d = ["M", x1, y1, "C", x1, middle, x2, middle, x2, y2].join(" ");
+          if (y2 - y1 > 180 && Math.abs(x2 - x1) < 40) {
+            const side = start.right - base.left + 7;
+            d = [
+              "M",
+              x1,
+              y1,
+              "C",
+              x1,
+              y1 + 18,
+              side,
+              y1 + 18,
+              side,
+              y1 + 32,
+              "L",
+              side,
+              y2 - 22,
+              "Q",
+              side,
+              y2 - 10,
+              x2,
+              y2 - 10,
+              "L",
+              x2,
+              y2,
+            ].join(" ");
+          }
+        }
+        const graphBox = $("graph").getBoundingClientRect();
+        const fromSource = $("source").contains(endpointElement(item.from));
+        const toSource = $("source").contains(endpointElement(item.to));
+        const fromGraph = $("graph").contains(endpointElement(item.from));
+        const toGraph = $("graph").contains(endpointElement(item.to));
+        // One active connection uses the outside corridor and empty row gaps.
+        if (item.kind !== "ownership" && ((fromSource && toGraph) || (fromGraph && toSource))) {
+          const sourceFirst = fromSource;
+          const source = sourceFirst ? start : end;
+          const target = sourceFirst ? end : start;
+          const sideBySide = graphBox.left > $("source").getBoundingClientRect().right;
+          const laneX = sideBySide
+            ? (graphBox.left + $("source").getBoundingClientRect().right) / 2 - base.left
+            : base.width - 4;
+          const laneY = target.top - base.top - 20;
+          const points = [
+            [source.right - base.left + 3, source.top + source.height / 2 - base.top],
+            [laneX, source.top + source.height / 2 - base.top],
+            [laneX, laneY],
+            [target.left + target.width / 2 - base.left, laneY],
+            [target.left + target.width / 2 - base.left, target.top - base.top - 5],
+          ];
+          if (!sourceFirst) points.reverse();
+          d = roundedRoute(points);
+        }
+        if (item.kind !== "ownership" && fromGraph && toGraph) {
+          x1 = start.left + start.width / 2 - base.left;
+          y1 = start.top - base.top - 5;
+          x2 = end.left + end.width / 2 - base.left;
+          y2 = end.top - base.top - 5;
+          const startLane = y1 - 15;
+          const endLane = y2 - 15;
+          const side = graphBox.left - base.left - 9;
+          d = roundedRoute(
+            Math.abs(startLane - endLane) < 2
+              ? [
+                  [x1, y1],
+                  [x1, startLane],
+                  [x2, endLane],
+                  [x2, y2],
+                ]
+              : [
+                  [x1, y1],
+                  [x1, startLane],
+                  [side, startLane],
+                  [side, endLane],
+                  [x2, endLane],
+                  [x2, y2],
+                ],
+          );
+        }
+        if (item.kind !== "ownership" && fromSource && toSource) {
+          x1 = start.right - base.left;
+          y1 = start.top + start.height / 2 - base.top;
+          x2 = end.right - base.left + 3;
+          y2 = end.top + end.height / 2 - base.top;
+          const side = $("source").getBoundingClientRect().right - base.left + 10;
+          d = roundedRoute([
+            [x1, y1],
+            [side, y1],
+            [side, y2],
+            [x2, y2],
+          ]);
+        }
+        const color = edgeColor(item.kind);
+        const path = svgElement("path", {
+          d,
+          class: "link " + item.kind,
+          "data-from": item.from,
+          "data-to": item.to,
+          "stroke-linejoin": "round",
+          "stroke-linecap": "round",
+          "marker-end": "url(#arrow-" + color + ")",
+        });
+        if (item.both) path.setAttribute("marker-start", "url(#arrow-" + color + ")");
+        $("edge-layer").append(path);
+        if (animateIt && !motion.matches) {
+          const length = path.getTotalLength();
+          animate(
+            path,
+            [
+              { strokeDasharray: length + " " + length, strokeDashoffset: length },
+              { strokeDasharray: length + " " + length, strokeDashoffset: 0 },
+            ],
+            { duration: 1100, delay: Math.min(index * 95, 700) },
+          );
+          const dot = svgElement("circle", {
+            r: 3.5,
+            opacity: 0,
+            fill: getComputedStyle(path).stroke,
+          });
+          const move = svgElement("animateMotion", {
+            dur: "1.25s",
+            begin: Math.min(index * 95, 700) / 1000 + "s",
+            repeatCount: 1,
+            path: d,
+            fill: "freeze",
+          });
+          dot.append(move);
+          dot.append(
+            svgElement("animate", {
+              attributeName: "opacity",
+              from: 0,
+              to: 1,
+              begin: Math.min(index * 95, 700) / 1000 + "s",
+              dur: ".02s",
+              fill: "freeze",
+            }),
+          );
+          $("edge-layer").append(dot);
+        }
+        if (item.kind === "reject") {
+          const { x: mx, y: my } = path.getPointAtLength(path.getTotalLength() / 2);
+          $("edge-layer").append(svgElement("circle", { cx: mx, cy: my, r: 10, fill: "#fbfaf5" }));
+          $("edge-layer").append(
+            svgElement("path", {
+              d: [
+                "M",
+                mx - 7,
+                my - 7,
+                "L",
+                mx + 7,
+                my + 7,
+                "M",
+                mx + 7,
+                my - 7,
+                "L",
+                mx - 7,
+                my + 7,
+              ].join(" "),
+              stroke: "#a33e38",
+              "stroke-width": 3,
+            }),
+          );
+        }
+      }
+      function drawLinks(animated = false) {
+        if (!current || current.overflow) return;
+        const layer = $("edge-layer");
+        for (const animation of runningAnimations) {
+          if (layer.contains(animation.effect?.target)) animation.cancel();
+        }
+        layer.replaceChildren();
+        const active = connections[connectionIndex];
+        showConnection(active);
+        if (active) {
+          drawPath(active, 0, animated);
+          return;
+        }
+        for (const n of Object.values(current.graph)) {
+          if (!nodeElements.has(n.id)) continue;
+          const target = rectOf(n.id);
+          if (!target) continue;
+          const from = n.level === "section" ? "corpus" : n.parent;
+          drawPath(
+            edge(from, n.id, "ownership"),
+            graphSlots.indexOf(n.id),
+            animated && current.reveal,
+          );
+        }
+      }
+      function memberPositions() {
+        const map = new Map();
+        document.querySelectorAll("[data-member]").forEach((el) => {
+          if (el.offsetParent !== null) map.set(el.dataset.member, el.getBoundingClientRect());
+        });
+        for (const [id, el] of sourceElements)
+          if (!map.has(id) && el.offsetParent !== null) map.set(id, el.getBoundingClientRect());
+        return map;
+      }
+      function renderSource(f) {
+        $("waiting").hidden = f.paper !== "none";
+        $("paper").hidden = f.paper === "none";
+        $("paper").classList.toggle("raw", f.paper === "raw");
+        $("raw").hidden = f.paper !== "raw";
+        $("approval").hidden = !f.verified;
+        $("section-units").hidden = f.paper !== "split" || f.level !== "section";
+        $("paragraph-units").hidden = f.paper !== "split" || f.level !== "paragraph";
+        $("owner-chips").hidden = f.level !== "paragraph";
+        $("owner-chips").innerHTML = sectionIds
+          .map((id) => {
+            const n = groupFor(f.graph, id),
+              single = n && n.members.length === 1;
+            return (
+              '<span id="owner-' +
+              id +
+              '" class="owner-chip ' +
+              (single ? "singleton" : "") +
+              '">' +
+              esc(id) +
+              " " +
+              esc(n ? n.label : units[id].label) +
+              "</span>"
+            );
+          })
+          .join("");
+        for (const [id, el] of sourceElements) {
+          const u = units[id],
+            n = groupFor(f.graph, id),
+            joined = n && n.members.length > 1;
+          const q = el.querySelector(".question"),
+            generated = f.questions.includes(id);
+          q.textContent = generated ? u.question : "Question not generated";
+          q.classList.toggle("pending", !generated);
+          q.classList.toggle("generated", (f.generating || []).includes(id));
+          el.className = "passage " + (joined ? "joined" : n ? "singleton" : "pending");
+          el.classList.toggle("highlight", f.focus.includes(id));
+          el.classList.toggle("rule-pass", (f.pass || []).includes(id));
+          el.classList.toggle("rule-fail", (f.fail || []).includes(id));
+          el.querySelector(".membership").textContent = joined
+            ? "Joined " +
+              n.label +
+              (n.members.find((m) => m.id === id).role === "fan-in" ? " / fan-in" : " / core")
+            : n
+              ? "Singleton: separate node"
+              : "Not yet matched";
+          const stubs =
+            u.level === "section"
+              ? Object.values(units).filter((p) => p.paper === "C" && p.section === id)
+              : [];
+          el.querySelector(".paragraph-stubs").innerHTML = stubs
+            .map((p) => '<span class="stub" aria-label="' + esc(p.id) + '"></span>')
+            .join("");
+          el.querySelector(".scope-tag").textContent =
+            u.level === "paragraph"
+              ? (u.section === "C-S3" ? "Scope: Future work" : "Scope: shared Evaluation") +
+                " / position " +
+                u.ordinal
+              : "";
+          const vote = el.querySelector(".choice");
+          vote.hidden = !Object.hasOwn(f.votes, id);
+          vote.textContent =
+            "Chooses: " +
+            (f.votes[id]
+              ? f.graph[f.votes[id]]?.label || names[f.votes[id]] || f.votes[id]
+              : "NO_MATCH");
+        }
+      }
+      function renderGraph(f) {
+        $("corpus").textContent = f.paper === "none" ? "Corpus: A + B" : "Corpus: A + B, adding C";
+        $("graph-count").textContent =
+          Object.values(f.graph).filter((n) => n.members.length > 1).length +
+          " shared / " +
+          Object.values(f.graph).filter((n) => n.members.length === 1).length +
+          " singletons";
+        for (const [id, el] of nodeElements) {
+          const n = f.graph[id],
+            initial = initialGraph[id];
+          el.className = "role";
+          if (!n) {
+            el.classList.add("retired");
+            el.querySelector("button").textContent = initial.label + " joined";
+            el.querySelector("button").disabled = true;
+            continue;
+          }
+          el.querySelector("button").disabled = false;
+          el.classList.toggle("singleton", n.members.length === 1);
+          el.classList.toggle("highlight", f.focus.includes(id));
+          el.classList.toggle("changed", (f.changed || []).includes(id));
+          el.classList.toggle("generating", (f.generating || []).includes(id));
+          const ghosts = (f.ghosts || []).filter((m) => m.target === id);
+          el.classList.toggle("proposed", ghosts.length > 0);
+          el.querySelector("button").textContent = n.label;
+          const docs = new Set(n.members.map((m) => units[m.id].paper));
+          el.querySelector(".node-count").textContent =
+            docs.size +
+            " " +
+            (docs.size === 1 ? "paper" : "papers") +
+            (ghosts.length ? " + proposed" : "");
+          const q = el.querySelector(".question");
+          q.textContent = n.question;
+          q.classList.toggle("generated", (f.generating || []).includes(id));
+          el.querySelector(".members").innerHTML =
+            n.members
+              .map(
+                (m) =>
+                  '<span class="member ' +
+                  (m.role === "fan-in" ? "fan-in" : "") +
+                  '" data-member="' +
+                  esc(m.id) +
+                  '">' +
+                  esc(m.id) +
+                  (m.role === "fan-in" ? " +" : "") +
+                  "</span>",
+              )
+              .join("") +
+            ghosts
+              .map((m) => '<span class="member proposed-member">' + esc(m.id) + " proposed</span>")
+              .join("");
+          const vote = el.querySelector(".choice");
+          const forwardSource = n.members.length === 1 ? n.members[0].id : null;
+          const isForward = forwardSource && Object.hasOwn(f.votes, forwardSource);
+          vote.hidden = !Object.hasOwn(f.nodeVotes, id) && !isForward;
+          const chosen = isForward ? f.votes[forwardSource] : f.nodeVotes[id],
+            member = f.graph[chosen]?.members[0]?.id;
+          vote.textContent =
+            "Chooses: " +
+            (chosen
+              ? isForward
+                ? f.graph[chosen]?.label || names[chosen] || chosen
+                : units[chosen]
+                  ? chosen
+                  : member || chosen
+              : "NO_MATCH");
+        }
+        layoutGraph();
+      }
+      function renderDetail() {
+        const f = current;
+        $("facts").innerHTML = f.facts.map((t) => "<li>" + esc(t) + "</li>").join("");
+        if (inspectId) {
+          const ids = units[inspectId]
+            ? [inspectId]
+            : f.graph[inspectId]?.members.map((m) => m.id) || [];
+          $("detail-heading").textContent =
+            "Inspect " + (units[inspectId] ? inspectId : names[inspectId] || inspectId);
+          $("detail").innerHTML = ids
+            .map(
+              (id) =>
+                '<div class="quote"><strong>' +
+                esc(id) +
+                "</strong><p>" +
+                esc(units[id].text) +
+                "</p></div>",
+            )
+            .join("");
+          return;
+        }
+        if (f.quoteError) {
+          $("detail-heading").textContent = "Evidence fails the source check";
+          $("detail").innerHTML =
+            '<div class="quote invalid"><strong>Expected center: C-P4</strong><p>' +
+            esc(units["C-P4"].text) +
+            "</p><strong>Incorrect quotation from C-P5</strong><p>" +
+            esc(f.quoteError.quote) +
+            "</p></div>";
+        } else if (f.updates?.length) {
+          $("detail-heading").textContent = "A visible abstraction change";
+          const q = f.updates[0];
+          $("detail").innerHTML =
+            '<div class="diff"><strong>' +
+            esc(names[q.id]) +
+            '</strong><p class="before">' +
+            esc(q.before) +
+            '</p><p class="after">' +
+            esc(q.after) +
+            "</p></div>";
+        } else if (f.quotes?.length) {
+          $("detail-heading").textContent = "Quotations from the proposed group";
+          $("detail").innerHTML =
+            '<div class="quote">' +
+            f.quotes
+              .filter((q, i, a) => a.findIndex((t) => t.id === q.id) === i)
+              .slice(0, 3)
+              .map((q) => "<strong>" + esc(q.id) + "</strong><p>" + esc(q.quote) + "</p>")
+              .join("") +
+            "</div>";
+        } else {
+          $("detail-heading").textContent = f.overflow
+            ? "Selection policy"
+            : "How to read the graph";
+          $("detail").innerHTML =
+            "<p>" +
+            (f.overflow
+              ? "Purple marks are scripted choices. Reranking compares the shortlisted evidence together; probabilities from different halves are not compared."
+              : "Green clusters show accepted groups. Gray nodes and incoming units stay separate until the rules permit a merge. Faint empty positions mark absorbed nodes, not remaining singletons.") +
+            "</p>";
+        }
+      }
+      function effect(f, before, replay = false) {
+        if (motion.matches) return;
+        if (f.arrive)
+          animate(
+            $("paper"),
+            [
+              { transform: "translateX(-330px) rotate(-4deg)", opacity: 0 },
+              { transform: "translateX(0) rotate(0)", opacity: 1 },
+            ],
+            { duration: 1300 },
+          );
+        if (f.split || f.expand) {
+          const ids = f.expand ? paragraphIds : sectionIds;
+          ids.forEach((id, i) =>
+            animate(
+              sourceElements.get(id),
+              [
+                { transform: "translateY(-35px) scale(.86)", opacity: 0 },
+                { transform: "translateY(0) scale(1)", opacity: 1 },
+              ],
+              { duration: 900, delay: i * 100 },
+            ),
+          );
+          $("paper").classList.add("scan");
+        }
+        if (f.verify) {
+          $("paper").classList.add("scan");
+          animate(
+            $("approval"),
+            [
+              { transform: "scale(.3)", opacity: 0 },
+              { transform: "scale(1.2)", opacity: 1 },
+              { transform: "scale(1)", opacity: 1 },
+            ],
+            { duration: 900 },
+          );
+        }
+        if (f.reveal) {
+          graphSlots.forEach((id, i) =>
+            animate(
+              nodeElements.get(id),
+              [
+                { transform: "translateY(-20px) scale(.8)", opacity: 0 },
+                {
+                  transform: "translateY(0) scale(1)",
+                  opacity: initialGraph[id].members.length === 1 ? 0.68 : 1,
+                },
+              ],
+              { duration: 900, delay: i * 90 },
+            ),
+          );
+        }
+        for (const id of f.generating || []) {
+          const q = $("q-" + id);
+          if (q && q.offsetParent !== null)
+            animate(
+              q,
+              [
+                { clipPath: "inset(0 100% 0 0)", background: "#fff0d8" },
+                { clipPath: "inset(0 0 0 0)", background: "#fff0d8" },
+              ],
+              { duration: 1800 },
+            );
+        }
+        for (const g of f.ghosts || []) {
+          const el = nodeElements.get(g.target)?.querySelector(".proposed-member");
+          animate(
+            el,
+            [
+              { transform: "scale(.2)", opacity: 0 },
+              { transform: "scale(1)", opacity: 1 },
+            ],
+            { duration: 900 },
+          );
+        }
+        for (const move of f.moves || []) {
+          const target = nodeElements
+            .get(move.to)
+            ?.querySelector('[data-member="' + move.id + '"]');
+          const original = (replay ? rectOf(move.from) : before.get(move.id)) || rectOf(move.from);
+          if (!target || !original) continue;
+          const end = target.getBoundingClientRect();
+          const targetNode = nodeElements.get(move.to).getBoundingClientRect();
+          const originNode = nodeElements.get(move.from)?.getBoundingClientRect();
+          const startX = original.left + original.width / 2;
+          const startY = original.top + original.height / 2;
+          const endX = end.left + end.width / 2;
+          const endY = end.top + end.height / 2;
+          const targetLane = targetNode.top - 19;
+          const side = $("graph").getBoundingClientRect().left - 13;
+          const points = [[startX, startY]];
+          if (originNode) {
+            const originLane = originNode.top - 19;
+            points.push([startX, originLane]);
+            if (Math.abs(originLane - targetLane) > 2)
+              points.push([side, originLane], [side, targetLane]);
+          } else points.push([side, startY], [side, targetLane]);
+          points.push([endX, targetLane], [endX, endY]);
+          animate(
+            target,
+            points.map(([x, y], i) => ({
+              offset: i / (points.length - 1),
+              transform:
+                "translate(" +
+                (x - endX) +
+                "px," +
+                (y - endY) +
+                "px) scale(" +
+                (1.5 - (0.5 * i) / (points.length - 1)) +
+                ")",
+              background: i === points.length - 1 ? "#edf4f8" : "#fff0d8",
+              opacity: 1,
+            })),
+            { duration: 1900, delay: Math.min((f.moves || []).indexOf(move) * 180, 800) },
+          );
+          animate(
+            nodeElements.get(move.to),
+            [{ transform: "scale(1)" }, { transform: "scale(1.09)" }, { transform: "scale(1)" }],
+            { duration: 1700 },
+          );
+        }
+        if (f.reparent)
+          f.reparent.forEach((id, i) =>
+            animate(
+              nodeElements.get(id),
+              [
+                { transform: "translateY(0)" },
+                { transform: "translateY(-12px)" },
+                { transform: "translateY(0)" },
+              ],
+              { duration: 900, delay: i * 100 },
+            ),
+          );
+        (f.fail || []).forEach((id) =>
+          animate(
+            sourceElements.get(id),
+            [
+              { transform: "translateX(0)" },
+              { transform: "translateX(-5px)" },
+              { transform: "translateX(5px)" },
+              { transform: "translateX(0)" },
+            ],
+            { duration: 500 },
+          ),
+        );
+        if (replay && f.moves)
+          f.moves.forEach((move) => {
+            if (nodeElements.has(move.from))
+              animate(nodeElements.get(move.from), [{ opacity: 0.7 }, { opacity: 0.2 }], {
+                duration: 1600,
+              });
+          });
+      }
+      function renderOverflow(f, animateIt) {
+        $("overflow-whole").hidden = f.phase > 0;
+        $("overflow-halves").hidden = f.phase === 0;
+        $("final-choice").hidden = f.phase < 4;
+        $("half-a").classList.toggle("active", f.phase === 2);
+        $("half-b").classList.toggle("active", f.phase === 3);
+        $("final-choice").classList.toggle("active", f.phase === 5);
+        $("half-b").classList.toggle("wait", f.phase === 2);
+        for (const [container, ids] of [
+          ["dots-a", f.topA],
+          ["dots-b", f.topB],
+        ])
+          $(container)
+            .querySelectorAll(".dot")
+            .forEach((el) => el.classList.toggle("selected", ids.includes(el.dataset.candidate)));
+        for (const [container, ids] of [
+          ["top-a", f.topA],
+          ["top-b", f.topB],
+          ["top-final", f.tops],
+        ])
+          $(container).innerHTML = ids
+            .map(
+              (id) =>
+                '<span class="shortlisted ' +
+                (f.winner === id ? "winner" : "") +
+                '" data-option="' +
+                id +
+                '">' +
+                id +
+                (f.winner === id ? " selected" : "") +
+                "</span>",
+            )
+            .join("");
+        if (animateIt && !motion.matches) {
+          if (f.phase === 1) {
+            animate(
+              $("half-a"),
+              [
+                { transform: "translateX(120px) scale(.75)", opacity: 0 },
+                { transform: "translateX(0) scale(1)", opacity: 1 },
+              ],
+              { duration: 1200 },
+            );
+            animate(
+              $("half-b"),
+              [
+                { transform: "translateX(-120px) scale(.75)", opacity: 0 },
+                { transform: "translateX(0) scale(1)", opacity: 1 },
+              ],
+              { duration: 1200 },
+            );
+          }
+          if (f.phase === 2 || f.phase === 3) {
+            const el = $(f.phase === 2 ? "half-a" : "half-b");
+            animate(
+              el,
+              [{ transform: "scale(1)" }, { transform: "scale(1.03)" }, { transform: "scale(1)" }],
+              { duration: 1200 },
+            );
+            el.querySelectorAll(".dot.selected").forEach((dot, i) =>
+              animate(
+                dot,
+                [{ transform: "scale(1)" }, { transform: "scale(2.1)" }, { transform: "scale(1)" }],
+                { duration: 1500, delay: i * 100 },
+              ),
+            );
+          }
+          if (f.phase === 4)
+            $("top-final")
+              .querySelectorAll(".shortlisted")
+              .forEach((el, i) => {
+                const from = $(i < 5 ? "top-a" : "top-b").querySelector(
+                  '[data-option="' + el.dataset.option + '"]',
+                );
+                if (!from) return;
+                const a = from.getBoundingClientRect(),
+                  b = el.getBoundingClientRect();
+                animate(
+                  el,
+                  [
+                    {
+                      transform: "translate(" + (a.left - b.left) + "px," + (a.top - b.top) + "px)",
+                      opacity: 0.3,
+                    },
+                    { transform: "translate(0,0)", opacity: 1 },
+                  ],
+                  { duration: 1500, delay: i * 90 },
+                );
+              });
+          if (f.winner)
+            animate(
+              $("top-final").querySelector(".winner"),
+              [{ transform: "scale(1)" }, { transform: "scale(1.18)" }, { transform: "scale(1)" }],
+              { duration: 1300 },
+            );
+        }
+      }
+      function render(animated = true, replay = false) {
+        const before = memberPositions();
+        cancelEffects();
+        inspectId = null;
+        current = story[position];
+        const f = current;
+        prepareConnections(f);
+        $("stage").dataset.kind = f.kind;
+        $("title").textContent = f.title;
+        $("description").textContent = f.description;
+        $("owner").textContent = ownerLabel[f.kind];
+        $("actor").dataset.kind = f.kind;
+        $("actor").textContent = ownerLabel[f.kind];
+        $("announcement").textContent =
+          "Step " + (position + 1) + " of " + story.length + ". " + f.title;
+        $("step-count").textContent = "Step " + (position + 1) + " / " + story.length;
+        $("scrub").max = story.length - 1;
+        $("scrub").value = position;
+        $("scrub").setAttribute("aria-valuetext", f.title);
+        $("back").disabled = position === 0;
+        $("next").disabled = position === story.length - 1;
+        $("scene").hidden = !!f.overflow;
+        $("overflow").hidden = !f.overflow;
+        $("chapters")
+          .querySelectorAll("button")
+          .forEach((button) => {
+            if (button.dataset.chapter === f.chapter) button.setAttribute("aria-current", "step");
+            else button.removeAttribute("aria-current");
+          });
+        if (f.overflow) renderOverflow(f, animated);
+        else {
+          renderSource(f);
+          renderGraph(f);
+          drawLinks(animated);
+          if (animated) effect(f, before, replay);
+        }
+        renderDetail();
+        if (animated) queueConnection();
+      }
+      function pause() {
+        clearTimeout(timer);
+        stopConnections();
+        timer = null;
+        $("play").textContent = "Play";
+        $("play").setAttribute("aria-pressed", "false");
+      }
+      function schedule() {
+        clearTimeout(timer);
+        timer = setTimeout(
+          () => {
+            if (position === story.length - 1) {
+              pause();
+              return;
+            }
+            position++;
+            render();
+            schedule();
+          },
+          Math.max(
+            Number($("pace").value),
+            (connections.length - connectionIndex) * connectionInterval(),
+          ),
+        );
+      }
+      function togglePlay() {
+        if (timer !== null) {
+          pause();
+          return;
+        }
+        if (position === story.length - 1) {
+          position = 0;
+          render();
+        }
+        $("play").textContent = "Pause";
+        $("play").setAttribute("aria-pressed", "true");
+        queueConnection();
+        schedule();
+      }
+      function seekConnection(index) {
+        pause();
+        connectionIndex = Math.max(0, Math.min(connections.length - 1, index));
+        drawLinks(true);
+      }
+      function seek(index) {
+        pause();
+        position = Math.max(0, Math.min(story.length - 1, index));
+        render();
+      }
+      function chapters() {
+        $("chapters").replaceChildren();
+        const seen = new Set();
+        story.forEach((f, i) => {
+          if (seen.has(f.chapter)) return;
+          seen.add(f.chapter);
+          const b = document.createElement("button");
+          b.type = "button";
+          b.textContent = f.chapter;
+          b.dataset.chapter = f.chapter;
+          b.addEventListener("click", () => seek(i));
+          $("chapters").append(b);
+        });
+      }
+      $("play").addEventListener("click", togglePlay);
+      $("next").addEventListener("click", () => seek(position + 1));
+      $("back").addEventListener("click", () => seek(position - 1));
+      $("arrow-back").addEventListener("click", () => seekConnection(connectionIndex - 1));
+      $("arrow-next").addEventListener("click", () => seekConnection(connectionIndex + 1));
+      $("reset").addEventListener("click", () => seek(0));
+      $("replay").addEventListener("click", () => {
+        pause();
+        render(true, true);
+      });
+      $("scrub").addEventListener("input", (event) => seek(Number(event.target.value)));
+      $("pace").addEventListener("change", () => {
+        if (timer !== null) {
+          queueConnection();
+          schedule();
+        }
+      });
+      $("scenario").addEventListener("change", (event) => {
+        pause();
+        story = stories[event.target.value];
+        position = 0;
+        chapters();
+        render();
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.target.closest("button,input,select,summary,a")) return;
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          seek(position + 1);
+        }
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          seek(position - 1);
+        }
+        if (event.code === "Space") {
+          event.preventDefault();
+          togglePlay();
+        }
+      });
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) pause();
+      });
+      window.addEventListener("resize", () => {
+        if (current && !current.overflow) {
+          layoutGraph();
+          drawLinks(false);
+        }
+      });
+      chapters();
+      render();
+    </script>
+  </body>
+</html>

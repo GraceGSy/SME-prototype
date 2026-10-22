@@ -158,6 +158,12 @@ cost ceilings. Raw extraction with OpenAI also needs `--provider openai --model`
 
 ## What the pipeline saves
 
+For the proposed Decisions API design, see the
+[colored flow diagram](PIPELINE_FLOW.md#classified-based-pipeline-flow) and
+[playable offline demo](docs/demos/decisions-pipeline.html). The demo shows
+forward/reverse selection, singleton recovery, and oversized-pool reranking;
+it does not call an API or change the current matcher.
+
 The graph processes documents in order. For each document it compares
 structural roles in both directions, accepts reciprocal choices, revisits
 eligible singletons, then repeats the process for paragraphs inside their

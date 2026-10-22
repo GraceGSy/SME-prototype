@@ -1,0 +1,42 @@
+digraph Matching {
+  graph [rankdir=TB, bgcolor="#fbfaf5", pad=0.35, nodesep=0.38, ranksep=0.35,
+         splines=polyline, fontname="Georgia", fontcolor="#20332c", labelloc=t,
+         label=<<FONT POINT-SIZE="28"><B>SMELTER: current matching process</B></FONT><BR/>
+                <FONT FACE="Calibri" POINT-SIZE="16">Structural matching first, then paragraphs, for each document in order.</FONT>>];
+  node [shape=box, style="rounded,filled", fillcolor="#e7f4e8", color="#6b8b73",
+        fontname="Calibri", fontsize=17, fontcolor="#20332c", margin="0.20,0.13", penwidth=1.2];
+  edge [color="#60746c", arrowsize=0.7, penwidth=1.3, fontname="Calibri", fontsize=14,
+        fontcolor="#384d43"];
+
+  legend [shape=plain, style="", label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="7" CELLPADDING="5">
+    <TR><TD BGCOLOR="#fff0d8">LLM judgment</TD><TD BGCOLOR="#e7f4e8">Python rule</TD><TD BGCOLOR="#edf4f8">Prepared input / saved state</TD></TR>
+  </TABLE>>];
+  input [fillcolor="#edf4f8", color="#7f9aa8",
+         label="Next prepared document + current graph"];
+  questions [fillcolor="#fff0d8", color="#b68a49",
+             label="Reuse or generate implicit questions for each unit\nRetain source text; questions are fallible metadata."];
+  pool [label="Build the allowed candidate pool in Python\nStructural: all existing section/subsection nodes.\nParagraphs: exact structural node; exclude nodes containing this paper."];
+  forward [fillcolor="#fff0d8", color="#b68a49",
+           label="FORWARD: one judgment per new unit\nSee all eligible existing nodes.\nChoose ONE node or NULL."];
+  reverse [fillcolor="#fff0d8", color="#b68a49",
+           label="REVERSE: one judgment per existing node\nSee all incoming units in this pool.\nChoose ONE unit or NULL, independently."];
+  accept [label="Python validates quotes and applies membership rules\nMutual top-1 choices: accept a reciprocal core.\nEligible immediate-core paragraph neighbors: accept one-way fan-in.\nOtherwise: create / retain separate singleton nodes."];
+  labels [fillcolor="#fff0d8", color="#b68a49",
+          label="Describe each node's shared role with a question\nSingleton: copy member question. Shared node: LLM reads accepted evidence."];
+  recovery [fillcolor="#edf4f8", color="#7f9aa8",
+            label="Revisit singletons once at this level\nFrozen recovery pool; refresh changed-node questions afterward."];
+  next [fillcolor="#edf4f8", color="#7f9aa8",
+        label="Continue to the next level / document, then export\nRecompare absorbed older sections' paragraphs before incoming paragraphs."];
+  notes [shape=plain, style="", fontname="Calibri", fontsize=15, fontcolor="#42574c",
+         label="LLM instructions: read source evidence; role first, relations second, topic last.\nNonempty pools: N new units + G existing nodes = N + G logical judgments; caches / retries affect model calls.\nEmpty pools skip judgments. Paragraph-only mode skips structural matching and uses one shared root.\nQuote attribution is checked in code; semantic correctness has no independent verifier. No top-k shortlist."];
+
+  legend -> input [style=invis];
+  input -> questions -> pool;
+  pool -> forward;
+  pool -> reverse;
+  {rank=same; forward; reverse;}
+  forward -> accept;
+  reverse -> accept;
+  accept -> labels -> recovery -> next;
+  next -> notes [style=invis];
+}
