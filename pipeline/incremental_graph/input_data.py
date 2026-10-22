@@ -14,6 +14,7 @@ from ..document import (
     validate_document,
 )
 from ..files import read_json
+from ..source_review import require_approved
 from .models import Granularity, Paper, PaperManifest, Paragraph, Section
 
 
@@ -49,6 +50,7 @@ def load_paper(
     try:
         payload = read_json(path)
         validate_document(payload)
+        require_approved(path, payload)
         return _from_canonical_document(payload, paper_id, title, max_granularity)
     except (OSError, ValueError) as error:
         raise InputError(f"Could not load canonical document {path}: {error}") from error

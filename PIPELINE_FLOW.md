@@ -56,8 +56,12 @@ flowchart TD
     classDef artifact fill:#f1eafb,stroke:#7054a0,color:#382459;
 ```
 
-`python -m pipeline.extraction` calls the extraction Skill for a new source,
-validates the returned content, and refuses to overwrite an existing output.
+`python -m pipeline.extraction` calls the extraction Skill only for new source
+bytes, retains the first response, and publishes content with a pending source
+review. `python -m pipeline.source_review` checks coverage/order/boundaries and
+records approval after original-source review. Newly extracted inputs cannot
+pass the validation stage without that approval. Identical sources reuse an
+approved copy without another extraction; frozen run inputs retain its receipt.
 `python -m pipeline.incremental_graph.cli validate` makes no model calls.
 `start` creates a run from at least two documents; `add` appends only new
 documents; `retry` takes no manifest and reuses saved inputs. Every execution

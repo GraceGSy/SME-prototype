@@ -21,12 +21,15 @@ class NewDocumentTest(unittest.TestCase):
             with (
                 self.subTest(extension=extension, provider=provider),
                 TemporaryDirectory() as directory,
+                patch("pipeline.source_review.SOURCE_CACHE", Path(directory) / "cache"),
             ):
                 source, output = (
                     Path(directory) / f"source.{extension}",
                     Path(directory) / "content.json",
                 )
                 source.write_text("Source evidence.", encoding="utf8")
+                reference = Path(directory) / "reference.txt"
+                reference.write_text("Source evidence.", encoding="utf8")
                 client = Mock()
                 client.run_json_file.return_value = SimpleNamespace(
                     value=[
@@ -50,6 +53,7 @@ class NewDocumentTest(unittest.TestCase):
                         title="Source",
                         provider=provider,
                         model="gpt-5.6-sol" if provider == "openai" else None,
+                        reference=reference if extension == "pdf" else None,
                     )
                     self.assertEqual(
                         adapter.call_args.args[1], ROOT / "_cache" / "skill-registry.json"
@@ -75,12 +79,15 @@ class NewDocumentTest(unittest.TestCase):
                         ).glob("*.pdf")
                     )
                     self.assertGreaterEqual(kwargs["policy"].max_attachment_bytes, largest_fixture)
-                with self.assertRaises(FileExistsError):
+                with self.assertRaisesRegex(ValueError, "review"):
                     extract_document(source, output, domain=domain, title="Source", client=client)
                 self.assertEqual(client.run_json_file.call_count, 1)
 
     def test_rejects_domain_and_format_before_client_use(self):
-        with TemporaryDirectory() as directory:
+        with (
+            TemporaryDirectory() as directory,
+            patch("pipeline.source_review.SOURCE_CACHE", Path(directory) / "cache"),
+        ):
             source = Path(directory) / "source.json"
             source.write_text("[]")
             for domain in ("academic", "fiction"):
@@ -96,18 +103,38 @@ class NewDocumentTest(unittest.TestCase):
                 client.register.assert_not_called()
 
     def test_rejects_malformed_extraction_without_publishing_content(self):
-        with TemporaryDirectory() as directory:
+        with (
+            TemporaryDirectory() as directory,
+            patch("pipeline.source_review.SOURCE_CACHE", Path(directory) / "cache"),
+        ):
             source, output = Path(directory) / "source.txt", Path(directory) / "content.json"
             source.write_text("Source evidence.")
             client = Mock()
-            client.run_json_file.return_value = SimpleNamespace(value={"sections": []})
+            client.run_json_file.return_value = SimpleNamespace(
+                value={"sections": []}, response_id="rejected", usage={"input_tokens": 10}
+            )
             with self.assertRaises(ValueError):
                 extract_document(source, output, domain="legal", title="S", client=client)
             self.assertFalse(output.exists())
+            with self.assertRaises(ValueError):
+                extract_document(
+                    source,
+                    Path(directory) / "another.json",
+                    domain="legal",
+                    title="S",
+                    client=client,
+                )
+            self.assertEqual(client.run_json_file.call_count, 1)
+            saved = next((Path(directory) / "cache").glob("*/extraction.json"))
+            self.assertEqual(json.loads(saved.read_text())["content"], {"sections": []})
 
     def test_retains_local_constraints_unsupported_by_provider(self):
         for number, text in [(-1, "Source evidence."), (0, ""), (0, "   ")]:
-            with self.subTest(number=number, text=text), TemporaryDirectory() as directory:
+            with (
+                self.subTest(number=number, text=text),
+                TemporaryDirectory() as directory,
+                patch("pipeline.source_review.SOURCE_CACHE", Path(directory) / "cache"),
+            ):
                 source, output = Path(directory) / "source.txt", Path(directory) / "out.json"
                 source.write_text("Source evidence.")
                 client = Mock()
@@ -119,7 +146,9 @@ class NewDocumentTest(unittest.TestCase):
                             "subsections": [],
                             "paragraphs": [{"paragraph_number": number, "text": text}],
                         }
-                    ]
+                    ],
+                    response_id="rejected",
+                    usage={},
                 )
                 with self.assertRaises(ValueError):
                     extract_document(source, output, domain="legal", title="S", client=client)

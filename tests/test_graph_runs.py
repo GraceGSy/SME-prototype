@@ -12,6 +12,7 @@ from test_incremental_graph import CONFIG_PATH, ScriptedJudge
 from pipeline.files import write_json
 from pipeline.incremental_graph.graph import stable_id
 from pipeline.incremental_graph.runs import add_papers, retry_graph, start_graph
+from pipeline.source_review import review_document
 
 
 def manifest(root: Path, ids: list[str], name: str) -> Path:
@@ -87,6 +88,16 @@ class GraphRunTest(unittest.TestCase):
             first = manifest(root, ["a", "b"], "first")
             third = manifest(root, ["c"], "third")
             run = root / "run"
+            source = root / "a.txt"
+            source.write_text("Evidence from a.", encoding="utf-8")
+            with patch("pipeline.source_review.SOURCE_CACHE", root / "source-cache"):
+                review_document(
+                    source,
+                    root / "a.json",
+                    approve=True,
+                    reviewer="Test reviewer",
+                    notes="Checked source paragraph.",
+                )
             with patch(
                 "pipeline.incremental_graph.runs.CachedJudgments",
                 return_value=ScriptedJudge({}),
@@ -100,6 +111,10 @@ class GraphRunTest(unittest.TestCase):
             self.assertEqual(added["graph_hash"], retried["graph_hash"])
             self.assertEqual((Path(initial["dataset_dir"]) / "a.json").read_bytes(), original)
             self.assertEqual((Path(added["dataset_dir"]) / "a.json").read_bytes(), original)
+            self.assertEqual(
+                json.loads((run / "inputs/revision-0001/paper-0001.review.json").read_text()),
+                json.loads((run / "inputs/revision-0003/paper-0001.review.json").read_text()),
+            )
 
     def test_rejects_one_paper_start_and_duplicate_append_before_judgments(self):
         with TemporaryDirectory() as directory:

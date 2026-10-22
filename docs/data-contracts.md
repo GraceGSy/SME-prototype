@@ -40,6 +40,29 @@ Stable IDs derive from array positions: `s0001`, `s0001.ss0001`,
 `s0001.p0001`, `s0001.ss0001.p0001`. Changing questions or labels leaves
 identity unchanged; reordering source structure changes it by design.
 
+## Prepared-Source Review
+
+New extractions write `content.provenance.json` with
+`requires_source_review: true`, `content.review.json`, and `content.review.html`.
+Graph loading requires an approved receipt with matching authored-content hash,
+passing coverage/order checks, no unresolved issues, and reviewer/notes/time.
+TXT/XHTML paragraph-boundary checks must pass; PDF/layout boundaries need
+explicit original-source review. Approval does not certify generated questions
+or semantic matches. Older manually prepared files without this marker remain
+accepted, not automatically verified.
+
+The strict version-1 receipt records source/reference/content SHA-256 values,
+`boundary_mode`, `coverage_ok`, `order_ok`, `boundary_ok`, `paragraph_count`,
+`issues`, and review status/attribution. Authored-content hashing excludes
+question metadata and JSON formatting. Raw-source hashing is byte-exact.
+Frozen inputs include approved receipts in the directory integrity hash.
+
+`_cache/source-extractions/<source-sha256>/` retains the first request and
+response, plus an approved source copy when available. A source is never
+automatically re-extracted because a model changes or a previous output failed
+local checks. Correct the saved content and review it; do not replace the raw
+source merely to trigger a second call.
+
 ## Ordered Manifest
 
 ```yaml
@@ -107,6 +130,7 @@ runs/<run>/
   inputs/revision-0001/
     manifest.yaml
     paper-0001.json
+    paper-0001.review.json    # when a source approval exists
     paper-0002.json
   cache/
   revisions/revision-0001/

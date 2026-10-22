@@ -12,6 +12,11 @@ def read_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def file_sha256(path: Path) -> str:
+    with path.open("rb") as stream:
+        return hashlib.file_digest(stream, "sha256").hexdigest()
+
+
 def write_json(path: Path, value: Any) -> None:
     """Atomically write readable UTF-8 JSON."""
 

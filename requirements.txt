@@ -5,3 +5,4 @@ pydantic==2.12.5
 PyYAML==6.0.3
 
 jsonschema==4.26.0
+pypdf==6.1.1

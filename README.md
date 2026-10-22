@@ -53,23 +53,56 @@ no model calls. The server exposes viewer data, not keys or judgment caches.
 
 ## Run your own documents
 
-1. Prepare at least two canonical JSON documents. For a new PDF, UTF-8 text,
-   or XHTML source, extract it once with `pipeline.extraction`. Review the
-   resulting paragraphs against the source before using them. Extraction
-   does not automatically run as part of graph construction.
-2. Create an ordered YAML manifest. Paths are relative to the manifest. Use
+1. Prepare at least two canonical JSON documents. Extract each new PDF, UTF-8
+   text, or XHTML source once with `pipeline.extraction`. It saves a pending
+   source review and reuses the first response for identical source bytes.
+2. Open each `.review.html`, check it against the original, and fix the saved
+   JSON if necessary. Approve the review offline. Newly extracted content
+   cannot enter the graph until approved; extraction never runs inside graph
+   construction.
+3. Create an ordered YAML manifest. Paths are relative to the manifest. Use
    `section`, `subsection`, or `paragraph` for `max_granularity`; paragraph
    mode requires one stored top-level section per document.
-3. Validate the manifest, then start a new run. Use `add` with a manifest
+4. Validate the manifest, then start a new run. Use `add` with a manifest
    containing only new documents to extend it. `retry` uses frozen inputs
    after an interruption or failed judgment.
 
 ```powershell
 python -m pipeline.extraction path/to/paper-a.pdf datasets/my-corpus/paper-a.json --domain academic --title "Paper A"
 python -m pipeline.extraction path/to/paper-b.pdf datasets/my-corpus/paper-b.json --domain academic --title "Paper B"
+```
+
+After reviewing the HTML reports and original sources:
+
+```powershell
+python -m pipeline.source_review path/to/paper-a.pdf datasets/my-corpus/paper-a.json --approve --reviewer "Your name" --notes "Checked source text, headings, paragraph boundaries, and footnotes."
+python -m pipeline.source_review path/to/paper-b.pdf datasets/my-corpus/paper-b.json --approve --reviewer "Your name" --notes "Checked source text, headings, paragraph boundaries, and footnotes."
 python -m pipeline.incremental_graph.cli validate datasets/my-corpus/manifest.yaml
 python -m pipeline.incremental_graph.cli start datasets/my-corpus/manifest.yaml runs/my-corpus
 ```
+
+The checks detect missing/added tokens, reordered text or heading ownership,
+and merged/split paragraph boundaries in authored TXT/XHTML. PDF/layout text
+does not supply reliable authored boundaries, so approval requires reviewing
+those against the original. If PDF text includes page chrome, interleaved
+footnotes, or material intentionally outside the corpus, prepare an independent
+paragraph transcript and pass `--reference path/to/reviewed-body.txt` to source
+review. Record exclusions in the approval notes; never build that reference
+from the extraction being checked.
+
+Approved receipts bind the source and prepared content by hash. Formatting
+JSON or changing generated question metadata does not invalidate source
+approval; changing authored text or ownership does. Approvals travel with
+frozen run inputs. Identical raw source bytes reuse approved content even at a
+new path or with a different requested model. Existing manually curated corpora
+remain usable but are not automatically marked verified; certify them with the
+same source-review command without re-extracting.
+
+Keep `_cache/source-extractions/` backed up. It freezes the original source
+and retains the first extraction and approved copy, including responses rejected
+by local content validation.
+An interrupted extraction with an uncertain outcome refuses an automatic
+second call; inspect retained provider responses or curate the saved source.
 
 To extend that run later, put only the additional documents in another
 manifest and call
@@ -134,6 +167,7 @@ dependency changes require a new run rather than mixing policies.
 | --- | --- |
 | [`pipeline/extraction.py`](pipeline/extraction.py) | One-time extraction of a new source |
 | [`pipeline/document.py`](pipeline/document.py) | Canonical document schema and positional IDs |
+| [`pipeline/source_review.py`](pipeline/source_review.py) | Offline coverage/boundary checks, review reports, and approval receipts |
 | [`pipeline/incremental_graph/`](pipeline/incremental_graph/) | Ordered graph, judgments, deterministic rules, revisions, and export |
 | [`pipeline/providers/`](pipeline/providers/README.md) | Anthropic/OpenAI native Skill transports |
 | [`skills/`](skills/) | Maintained extraction, question, and matching instructions |

@@ -20,6 +20,7 @@ from ..files import directory_hash, read_json, write_json
 from ..providers.jev import JevSettings
 from ..providers.registry import load_api_key
 from ..providers.settings import ModelSettings
+from ..source_review import require_approved, review_path
 from .configuration import PromptRepository, load_pipeline_config
 from .input_data import load_manifest
 from .judgments import CachedJudgments
@@ -48,6 +49,7 @@ def _policy_hash(config: PipelineConfig) -> str:
         *Path(__file__).parent.glob("*.py"),
         pipeline / "document.py",
         pipeline / "files.py",
+        pipeline / "source_review.py",
         *(pipeline / "providers").glob("*.py"),
     ]
     assets = {
@@ -70,9 +72,14 @@ def _policy_hash(config: PipelineConfig) -> str:
     return hashlib.sha256(json.dumps(assets, sort_keys=True).encode()).hexdigest()
 
 
-def _inputs(path: Path) -> tuple[PaperManifest, list[Any]]:
+def _inputs(path: Path) -> tuple[PaperManifest, list[Any], list[dict | None]]:
     manifest, _ = load_manifest(path)
-    return manifest, [read_json(path.resolve().parent / entry.file) for entry in manifest.papers]
+    files = [path.resolve().parent / entry.file for entry in manifest.papers]
+    documents = [read_json(file) for file in files]
+    reviews = [
+        require_approved(file, document) for file, document in zip(files, documents, strict=True)
+    ]
+    return manifest, documents, reviews
 
 
 def _state(run_dir: Path) -> RunState:
@@ -84,7 +91,9 @@ def _state(run_dir: Path) -> RunState:
     return state
 
 
-def _saved_inputs(run_dir: Path, state: RunState, revision: str) -> tuple[PaperManifest, list[Any]]:
+def _saved_inputs(
+    run_dir: Path, state: RunState, revision: str
+) -> tuple[PaperManifest, list[Any], list[dict | None]]:
     input_dir = run_dir / "inputs" / revision
     if state.input_sha256.get(revision) != directory_hash(input_dir):
         raise ValueError("Saved inputs changed; do not mix edited documents into an existing run")
@@ -105,7 +114,7 @@ def start_graph(
 ) -> dict[str, Any]:
     if (provider is None) != (model is None):
         raise ValueError("Pass provider and model together, or use the saved configuration")
-    manifest, documents = _inputs(manifest_path)
+    manifest, documents, reviews = _inputs(manifest_path)
     if len(manifest.papers) < 2:
         raise ValueError("A new graph requires at least two prepared papers")
     config = load_pipeline_config(config_path)
@@ -140,7 +149,7 @@ def start_graph(
     )
     run_dir = run_dir.resolve()
     run_dir.mkdir(parents=True, exist_ok=False)
-    return _execute(run_dir, state, manifest, documents)
+    return _execute(run_dir, state, manifest, documents, reviews)
 
 
 def add_papers(manifest_path: Path, run_dir: Path) -> dict[str, Any]:
@@ -148,8 +157,8 @@ def add_papers(manifest_path: Path, run_dir: Path) -> dict[str, Any]:
     state = _state(run_dir)
     if state.latest_revision != state.current_revision or state.current_revision is None:
         raise ValueError("Retry the unfinished revision before adding papers")
-    previous, documents = _saved_inputs(run_dir, state, state.current_revision)
-    incoming, added = _inputs(manifest_path)
+    previous, documents, reviews = _saved_inputs(run_dir, state, state.current_revision)
+    incoming, added, added_reviews = _inputs(manifest_path)
     if incoming.max_granularity != state.max_granularity:
         raise ValueError("Added papers must use the graph's existing max_granularity")
     duplicates = {entry.paper_id for entry in previous.papers} & {
@@ -160,7 +169,7 @@ def add_papers(manifest_path: Path, run_dir: Path) -> dict[str, Any]:
     combined = PaperManifest(
         max_granularity=state.max_granularity, papers=[*previous.papers, *incoming.papers]
     )
-    return _execute(run_dir, state, combined, [*documents, *added])
+    return _execute(run_dir, state, combined, [*documents, *added], [*reviews, *added_reviews])
 
 
 def retry_graph(
@@ -170,14 +179,14 @@ def retry_graph(
     state = _state(run_dir)
     if state.latest_revision is None:
         raise ValueError("There is no revision to retry")
-    manifest, documents = _saved_inputs(run_dir, state, state.latest_revision)
+    manifest, documents, reviews = _saved_inputs(run_dir, state, state.latest_revision)
     if (paper_index is None) != (stage_id is None):
         raise ValueError("Provide both paper index and stage, or neither")
     if paper_index is not None and not 1 <= paper_index <= len(manifest.papers):
         raise ValueError("Paper index is outside the saved input sequence")
     if stage_id is not None and stage_id not in {stage.id for stage in state.config.stages}:
         raise ValueError(f"Unknown stage: {stage_id}")
-    return _execute(run_dir, state, manifest, documents, paper_index, stage_id)
+    return _execute(run_dir, state, manifest, documents, reviews, paper_index, stage_id)
 
 
 def _execute(
@@ -185,6 +194,7 @@ def _execute(
     state: RunState,
     manifest: PaperManifest,
     documents: list[Any],
+    reviews: list[dict | None],
     force_paper_index: int | None = None,
     force_stage_id: str | None = None,
 ) -> dict[str, Any]:
@@ -193,9 +203,13 @@ def _execute(
     input_dir = run_dir / "inputs" / revision
     input_dir.mkdir(parents=True, exist_ok=False)
     entries = []
-    for index, (entry, document) in enumerate(zip(manifest.papers, documents, strict=True), 1):
+    for index, (entry, document, review) in enumerate(
+        zip(manifest.papers, documents, reviews, strict=True), 1
+    ):
         filename = f"paper-{index:04d}.json"
         write_json(input_dir / filename, document)
+        if review is not None:
+            write_json(review_path(input_dir / filename), review)
         entries.append({"paper_id": entry.paper_id, "title": entry.title, "file": filename})
     frozen_manifest = input_dir / "manifest.yaml"
     frozen_manifest.write_text(

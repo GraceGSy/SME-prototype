@@ -13,15 +13,35 @@ auditable without hiding graph mutations inside a model response.
 
 ## Extraction
 
-`pipeline.extraction.extract_document` validates a raw source request, registers
-one extraction Skill, and makes one structured request. The requested domain
-selects the source-specific extraction instructions. It validates the returned
-nested content, rejects question metadata, and publishes provenance before the
-content file. Neither file may already exist.
+`pipeline.extraction.extract_document` uses a repository-local cache keyed by
+the raw source's SHA-256. Only a new source makes an extraction request; model
+or prompt changes do not re-extract existing material. It retains the first
+response before local validation, sends a frozen byte-exact source snapshot,
+refuses to overwrite prepared content, and reuses approved copies. A started
+source with no captured response stops rather
+than silently buying a second extraction. Review can adopt manually curated
+content without any model call.
 
-Text inputs also have a final-passage presence check. This catches some
-truncation, not omissions or reordering elsewhere. PDF and XHTML fidelity still
-requires review; no comprehensive source-alignment validator is claimed.
+`pipeline.source_review` compares the complete reference token sequence,
+including punctuation, with the canonical paragraphs and matched printed
+headings. It detects omissions, inventions/duplication, reordering, changed
+heading ownership, and paragraph merges/splits when authored boundaries are
+available. Comparison ignores whitespace and Unicode compatibility encoding;
+it never changes either source. HTML text uses authored blocks and excludes
+markup, head metadata, scripts, and styles. PDF/layout transcripts cannot prove
+authored paragraph boundaries and require original-source review. A separate,
+independently prepared reference transcript can declare the intended text scope;
+the reviewer must record exclusions. No OCR or automatic semantic repair is
+introduced.
+
+Every new extraction publishes a pending JSON receipt and an HTML comparison.
+Approval requires no unresolved automatic discrepancies, a reviewer, and notes
+confirming original-source/heading/boundary/footnote review. The receipt binds
+source, reference, and authored content by hash; generated questions are outside
+its scope. The loader rejects pending, missing-required, or changed approvals.
+Run snapshots copy approved receipts, so add/retry does not re-extract or
+re-review earlier sources. Existing manually prepared corpora remain explicit
+inputs without being retroactively certified.
 
 ## Graph Construction
 
@@ -244,6 +264,11 @@ migration have been removed.
 - **TDD:** reproduce a bug with a failing test, implement the smallest fix, then
   run focused and full suites. Keep scripted judgments separate from live-model
   and human evaluation. Existing tests do not imply the original code was TDD.
+  Test meaningful failures and user-visible invariants, not incidental wording
+  or corpus word-length snapshots. Source-review regressions cover lost middle
+  text, invented/duplicated text, order/ownership, merged/split boundaries,
+  approval/tampering, and no second paid extraction. Known legal paragraph and
+  footnote repairs retain their source-word and boundary regressions.
 - **YAGNI:** delete retired paths instead of carrying compatibility. Do not add
   a global alignment solver, learned thresholds, automatic chunking, or additional
   UI modes before a concrete experiment requires them. Provider selection uses a

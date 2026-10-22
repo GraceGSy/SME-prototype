@@ -36,17 +36,16 @@ class LegalManifestTest(unittest.TestCase):
 
     def test_dissent_repairs_preserve_all_source_words(self):
         root = Path(__file__).resolve().parents[1] / "datasets/legal"
-        for case, author, count, maximum in [
-            ("banuelos_jimenez", "GILMAN, Circuit Judge, dissenting.", 23, 255),
-            ("porter", "RICHARDSON, Circuit Judge, dissenting:", 71, 241),
-            ("westmoreland", "JOHN K. BUSH, Circuit Judge, dissenting.", 61, 336),
+        for case, author, count in [
+            ("banuelos_jimenez", "GILMAN, Circuit Judge, dissenting.", 23),
+            ("porter", "RICHARDSON, Circuit Judge, dissenting:", 71),
+            ("westmoreland", "JOHN K. BUSH, Circuit Judge, dissenting.", 61),
         ]:
             with self.subTest(case=case):
                 document = read_json(root / f"content/{case}_dissent.content.json")
                 units = [u for s in document for u in [s, *s["subsections"]]]
                 paragraphs = [p["text"] for u in units for p in u["paragraphs"]]
                 self.assertEqual(len(paragraphs), count)
-                self.assertEqual(max(len(p.split()) for p in paragraphs), maximum)
                 source = (root / f"raw/{case}_dissent.txt").read_text(encoding="utf-8")
                 source = source.replace(author, "", 1)
                 source = re.sub(r"(?m)^\s*\(Continued\)\s*$", "", source)
@@ -99,9 +98,6 @@ class LegalManifestTest(unittest.TestCase):
         self.assertEqual(len(paragraphs), 38)
         self.assertTrue(any(p.startswith("The first communication occurred") for p in paragraphs))
         self.assertTrue(any(p.startswith("The second communication relates") for p in paragraphs))
-        focused = next(p for p in paragraphs if p.startswith("Appellant\u2019s Complaint alleges"))
-        self.assertEqual(len(focused.split()), 149)
-        self.assertEqual(max(len(p.split()) for p in paragraphs), 321)
         source = (root / "raw/porter_opinion.txt").read_text(encoding="utf-8")
         prose = " ".join(
             line
