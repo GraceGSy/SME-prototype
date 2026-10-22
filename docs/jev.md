@@ -12,15 +12,31 @@ has been verified here. Run the small fixture below before a real corpus.
 
 ## Detailed flow
 
-Open the [zoomable SVG](diagrams/jev-pipeline.svg), the
-[PNG](diagrams/jev-pipeline.png), or the editable
+The flow has two separate diagrams. Every step has a single responsibility:
+purple for Jev selection, orange for generative LLM work, and green for
+deterministic Python steps. No striped or mixed-responsibility boxes remain.
+
+**A. Run lifecycle and document insertion:**
+[PNG](diagrams/jev-pipeline.png), [zoomable SVG](diagrams/jev-pipeline.svg),
 [Graphviz source](diagrams/jev-pipeline.dot).
 
-![Jev pipeline, matching, recovery, and comparison](diagrams/jev-pipeline.png)
+![A. Run lifecycle, document insertion, and comparison](diagrams/jev-pipeline.png)
 
-Read column A from top to bottom for the ordered pipeline. Column B expands the
-matching operation used by both directions at both levels. Unlike the earlier
-Decisions API proposal, this implementation calls TypeSafe directly.
+Read A's numbered columns in order. They separate question generation, Jev
+selection, fixed-target explanations, validation, reconciliation, and recovery.
+Named connectors continue execution in another column. Each matching sequence
+runs once per directional request before Python reconciles the complete set.
+
+**B. One directional match:**
+[PNG](diagrams/jev-matching.png), [zoomable SVG](diagrams/jev-matching.svg),
+[Graphviz source](diagrams/jev-matching.dot).
+
+![B. Jev selection, fixed-target evidence, caching, and retry](diagrams/jev-matching.png)
+
+B expands the common matching operation used by all initial, recovery, and
+older-paragraph passes in A. Its three columns show complete-cache lookup,
+recursive Jev selection, and fixed-target evidence. Unlike the earlier Decisions
+API proposal, this implementation calls TypeSafe directly.
 
 ## Directory and setup
 
@@ -329,9 +345,11 @@ memberships and quotations in the viewer, then compare Jev and baseline runs on
 the same reviewed corpus. Human source-by-source evaluation is still necessary
 to assess whether either model makes useful correspondences.
 
-Regenerate the diagram with Graphviz installed:
+Regenerate both diagrams with Graphviz installed:
 
 ```bash
 dot -Tsvg docs/diagrams/jev-pipeline.dot -o docs/diagrams/jev-pipeline.svg
 dot -Tpng -Gdpi=144 docs/diagrams/jev-pipeline.dot -o docs/diagrams/jev-pipeline.png
+dot -Tsvg docs/diagrams/jev-matching.dot -o docs/diagrams/jev-matching.svg
+dot -Tpng -Gdpi=144 docs/diagrams/jev-matching.dot -o docs/diagrams/jev-matching.png
 ```

@@ -1,107 +1,119 @@
-digraph JevPipeline {
-  graph [rankdir=TB, compound=true, newrank=true, bgcolor="white", pad=0.3,
-    nodesep=0.35, ranksep=0.4, fontname="Times New Roman,", fontsize=12,
-    labelloc=t, label="SMELTER with Jev: ordered graph construction, selection, evidence, and comparison\nSolid arrows show execution. Dashed arrows show shared calls or retained artifacts. Python owns graph membership."];
+digraph JevPipelineA {
+  // The comma keeps Pango from treating Roman as a style instead of a family.
+  graph [rankdir=TB, newrank=true, bgcolor="white", pad=0.3, nodesep=0.28,
+    ranksep=0.3, fontname="Times New Roman,", fontsize=12, labelloc=t,
+    label="A. SMELTER run lifecycle and document insertion\nRead columns 1, 2, then 3. Named connectors continue the same execution; B expands each directional match."];
   node [shape=box, style=filled, fillcolor="#e7f4e8", color="#6b8b73",
-    fontname="Times New Roman,", fontsize=12,
-    fontcolor=black, margin="0.14,0.10"];
-  edge [fontname="Times New Roman,", fontsize=12, color=black, arrowsize=0.7];
+    fontname="Times New Roman,", fontsize=12, fontcolor=black, margin="0.14,0.10"];
+  edge [fontname="Times New Roman,", fontsize=12, color=black, arrowsize=0.65];
 
   legend [shape=plain, style="", label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="5" CELLPADDING="6">
-    <TR><TD BGCOLOR="#f1eafb">Jev selection</TD><TD BGCOLOR="#fff0d8">Generative LLM</TD>
-    <TD BGCOLOR="#e7f4e8">Deterministic Python</TD><TD BGCOLOR="#edf4f8">Sources / records / notes</TD></TR>
-    <TR><TD COLSPAN="4">Striped boxes summarize combined steps; column B separates their responsibilities.</TD></TR>
+    <TR><TD BGCOLOR="#f1eafb">JEV: match selection</TD><TD BGCOLOR="#fff0d8">LLM: questions / quoted evidence</TD>
+    <TD BGCOLOR="#e7f4e8">PYTHON: deterministic steps</TD></TR>
+    <TR><TD COLSPAN="3">Each selection / evidence / validation sequence repeats per directional judgment, before reconciliation.</TD></TR>
+    <TR><TD COLSPAN="3">Stored questions and valid caches avoid paid calls. NO_MATCH skips the explanation step. See B for these branches.</TD></TR>
   </TABLE>>];
 
-  subgraph cluster_pipeline {
-    label="A. Run lifecycle and document insertion";
-    inputs [label="Prepared canonical JSON + ordered manifest\nNew raw source: extract once and review before graph work\nMinimal fixture: 2 documents, 4 sections, 4 paragraphs"];
-    validate [label="OFFLINE: validate manifest, source contract, positional IDs\nNo credentials or model calls"];
-    start [label="start --jev: require TypeSafe + generative-provider keys\nPin Jev model, config, code/prompt/Skill/dependency hashes\nFreeze source inputs; create run and immutable attempt"];
-    paper [label="Process next document in manifest order\nFirst document seeds groups; empty match pools cost no calls"];
-    mode [shape=diamond, label="Granularity?"];
-    root [label="Paragraph-only\nCreate deterministic shared root\nSkip structural judgments"];
-    structural [label="Section / subsection phase\nReuse stored unit questions; generate missing ones\nForward: each new unit chooses an eligible existing node\nReverse: each node chooses from all eligible new units\nBoth directions use B independently, without the other votes"];
-    section_rules [label="PYTHON: accept reciprocal top-1 structural cores\nKeep other units as singletons; record rejected one-way choices\nReuse singleton questions; generate changed group questions"];
-    section_recovery [label="Structural singleton recovery: one frozen snapshot\nEach singleton -> eligible established node (>1 member)\nEach node -> all eligible core singletons, not only proposers\nUse B, reconcile mutual choices, refresh changed questions\nNo singleton-to-singleton comparison or convergence loop"];
-    older [label="If an older section joins a shared structural group:\nrecompare its existing paragraphs in the new exact scope\nUse the same paragraph matching and reconciliation rules"];
-    paragraph_questions [label="Incoming paragraph phase\nReuse stored questions or generate with adjacent context\nCandidates must share the exact structural parent\nInitial candidates cannot already contain the incoming paper"];
-    paragraph_match [label="Forward: each new paragraph -> eligible paragraph node\nReverse: each node -> all eligible incoming paragraphs\nUse B for each nonempty pool"];
-    paragraph_rules [label="PYTHON: accept reciprocal cores\nAllow only immediate-core adjacent paragraph fan-in\nReject fan-in chains; preserve paper/parent restrictions\nGenerate questions for changed paragraph groups"];
-    paragraph_recovery [label="Paragraph singleton recovery: one frozen snapshot\nUse B in both directions; apply core + adjacency rules\nRefresh changed group questions\nCross-paper core candidates need not be neighbors"];
-    more [shape=diamond, label="More documents?"];
-    export [label="SUCCESS: export immutable revision\nGraph, events/judgments, correspondence and singleton reports\nViewer dataset: manifest, source texts, final_snapshot.json\nUpdate run.json current_revision only after completion"];
-    viewer [label="OFFLINE: local read-only viewer\nQuestion Groups / Paper Map / Graphical Explorer\nSelect run and completed revision; no model calls"];
-    compare [label="OFFLINE: compare two completed runs or revisions\nMatch source IDs + identical authored text/boundaries\nMembership/scope changes, added/removed co-member pairs\nSingleton counts, question changes, provider/model settings\nStandalone index.html + comparison.json\nShared-paper comparisons; agreement is not accuracy"];
+  subgraph cluster_initial {
+    label="1. Setup and initial structural matching";
+    inputs [label="PYTHON: load prepared JSON + ordered manifest\nNew raw sources must be extracted and reviewed beforehand\nTiny fixture: 2 documents, 4 sections, 4 paragraphs"];
+    validate [label="PYTHON: validate source contract and positional IDs\nOffline; no credentials or model calls"];
+    start [label="PYTHON: start --jev\nCheck TypeSafe + generative-provider keys before paid work\nPin model/config/code/prompt/Skill/dependency hashes\nFreeze source inputs; create the run and immutable attempt"];
+    paper [label="PYTHON: ingest next document in manifest order\nFirst document seeds groups; empty match pools make no calls"];
+    mode [shape=diamond, label="PYTHON: granularity?"];
+    root [label="PYTHON: paragraph-only mode\nAssign the document's one section to a shared root\nSkip structural judgments; continue at column 3"];
+    stored_s [label="PYTHON: reuse stored / cached structural questions\nIdentify only missing section or subsection questions"];
+    question_s [fillcolor="#fff0d8", color="#b68a49",
+      label="LLM: generate missing structural questions\nQuestions describe source units; they do not define identity"];
+    pool_s [label="PYTHON: build initial structural candidate pools\nForward: each incoming unit sees eligible existing nodes\nReverse: each node sees all eligible incoming units\nKeep directions independent; never supply opposite votes"];
+    choose_s [fillcolor="#f1eafb", color="#7054a0",
+      label="JEV: choose for one structural direction\nOne candidate handle or NO_MATCH\nForward and reverse each use the selector in B"];
+    explain_s [fillcolor="#fff0d8", color="#b68a49",
+      label="LLM: explain this non-null structural choice\nGenerate basis + focus/target quotations\nThe selected target is fixed; no replacement or veto"];
+    check_s [label="PYTHON: validate this directional judgment\nCheck allowed ID, quote source, attribution and length\nRepair quote errors or stop as shown in B\nFinish all forward/reverse judgments before reconciliation"];
+    reconcile_s [label="PYTHON: reconcile structural choices\nAccept reciprocal top-1 cores; preserve unmatched singletons\nRetain rejected one-way choices and their evidence\nReuse singleton questions; identify group questions to update"];
+    label_s [fillcolor="#fff0d8", color="#b68a49",
+      label="LLM: generate required structural group questions\nDescribe accepted evidence; do not reconsider membership"];
+    to_recovery [shape=ellipse, label="Continue at column 2\nStructural singleton recovery"];
 
     inputs -> validate -> start -> paper -> mode;
-    mode -> structural [label="section / subsection"];
-    mode -> root [label="paragraph"];
-    structural -> section_rules -> section_recovery -> older -> paragraph_questions;
-    root -> paragraph_questions;
-    paragraph_questions -> paragraph_match -> paragraph_rules -> paragraph_recovery -> more;
-    more -> paper [label="yes", constraint=false];
+    mode -> stored_s [label="section / subsection"];
+    mode -> root [label="paragraph-only"];
+    stored_s -> question_s -> pool_s -> choose_s -> explain_s -> check_s;
+    check_s -> reconcile_s -> label_s -> to_recovery;
+  }
+
+  subgraph cluster_recovery {
+    label="2. Structural recovery and older paragraphs";
+    freeze_s [label="PYTHON: freeze one structural recovery snapshot\nSingletons have 1 member; established nodes have >1\nNo singleton-to-singleton matching or convergence loop"];
+    recovery_pool_s [label="PYTHON: build eligible recovery pools\nRequire the same level and parent; apply paper restrictions\nForward: singleton -> established node\nReverse: node -> all eligible core singletons, not only proposers\nCross-paper core candidates need not be neighbors"];
+    recovery_choose_s [fillcolor="#f1eafb", color="#7054a0",
+      label="JEV: choose for one structural recovery direction\nOne candidate or NO_MATCH, independently in each direction"];
+    recovery_explain_s [fillcolor="#fff0d8", color="#b68a49",
+      label="LLM: explain this non-null recovery choice\nKeep the chosen target; provide source-bound quotations"];
+    recovery_check_s [label="PYTHON: validate recovery judgment and quotations\nUse B's evidence repair / failure rules\nComplete all directional requests from the frozen pools"];
+    merge_s [label="PYTHON: merge reciprocal structural recoveries\nUpdate assignments; leave unaccepted singletons unchanged\nRecord changed structural nodes for question refresh"];
+    refresh_s [fillcolor="#fff0d8", color="#b68a49",
+      label="LLM: refresh changed structural group questions\nUse only the group's accepted source evidence"];
+    old_sections [label="PYTHON: find absorbed sections from older documents\nFor each with paragraphs: enter its new exact parent scope\nProcess all older contributions before incoming paragraphs"];
+    old_pool [label="PYTHON: build older-paragraph candidate pools\nUse the new parent group; exclude nodes containing the owner\nApply the same independent forward / reverse pool rules"];
+    old_choose [fillcolor="#f1eafb", color="#7054a0",
+      label="JEV: choose for one older-paragraph direction\nOne candidate or NO_MATCH; use the same selector in B"];
+    old_explain [fillcolor="#fff0d8", color="#b68a49",
+      label="LLM: explain this non-null older-paragraph choice\nKeep the target fixed and quote both sources"];
+    old_check [label="PYTHON: validate older-paragraph judgments\nCheck quotations; complete both directional passes"];
+    old_reconcile [label="PYTHON: reconcile older paragraphs in their new scope\nAccept reciprocal cores and eligible immediate-core fan-in\nUpdate the older document's paragraph assignments\nReuse singleton questions; identify required group labels"];
+    old_labels [fillcolor="#fff0d8", color="#b68a49",
+      label="LLM: update required paragraph group questions\nThe incoming document must see the updated child roles"];
+    to_paragraphs [shape=ellipse, label="Continue at column 3\nIncoming paragraph phase"];
+
+    freeze_s -> recovery_pool_s -> recovery_choose_s -> recovery_explain_s;
+    recovery_explain_s -> recovery_check_s -> merge_s -> refresh_s -> old_sections;
+    old_sections -> old_pool [label="older paragraphs exist"];
+    old_sections -> to_paragraphs [label="none", style=dashed, constraint=false];
+    old_pool -> old_choose -> old_explain -> old_check -> old_reconcile -> old_labels -> to_paragraphs;
+  }
+
+  subgraph cluster_paragraphs {
+    label="3. Incoming paragraphs and completed outputs";
+    stored_p [label="PYTHON: enter from column 2, or paragraph-only root\nReuse stored / cached incoming paragraph questions\nIdentify missing questions; collect adjacent source context"];
+    question_p [fillcolor="#fff0d8", color="#b68a49",
+      label="LLM: generate missing paragraph questions\nUse the paragraph and its adjacent context"];
+    pool_p [label="PYTHON: build incoming paragraph candidate pools\nRequire the exact structural parent group\nExclude nodes already containing the incoming paper\nForward: paragraph -> nodes; reverse: node -> all eligible units"];
+    choose_p [fillcolor="#f1eafb", color="#7054a0",
+      label="JEV: choose for one incoming paragraph direction\nOne candidate or NO_MATCH; independent forward / reverse"];
+    explain_p [fillcolor="#fff0d8", color="#b68a49",
+      label="LLM: explain this non-null paragraph choice\nKeep the target fixed; provide basis and quotations"];
+    check_p [label="PYTHON: validate incoming paragraph judgments\nCheck quote attribution and length using B\nFinish both directional passes before reconciliation"];
+    reconcile_p [label="PYTHON: reconcile incoming paragraphs\nAccept reciprocal cores, then immediate-core adjacent fan-in\nReject fan-in chains; preserve paper / parent restrictions\nRetain singletons and reuse their member questions"];
+    labels_p [fillcolor="#fff0d8", color="#b68a49",
+      label="LLM: generate required paragraph group questions\nLabel accepted evidence without changing membership"];
+    freeze_p [label="PYTHON: freeze one paragraph recovery snapshot\nBuild singleton -> established-node pools at the exact parent\nReverse pools include all eligible core singletons\nCross-paper cores need not be neighbors; same-paper fan-in does\nNo singleton-to-singleton matching or convergence loop"];
+    recovery_choose_p [fillcolor="#f1eafb", color="#7054a0",
+      label="JEV: choose for one paragraph recovery direction\nOne candidate or NO_MATCH; independent forward / reverse"];
+    recovery_explain_p [fillcolor="#fff0d8", color="#b68a49",
+      label="LLM: explain this non-null paragraph recovery choice\nKeep the target fixed; provide source-bound quotations"];
+    recovery_check_p [label="PYTHON: validate recovery judgments\nUse B's quote-repair / failure rules\nComplete all requests from the frozen snapshot"];
+    merge_p [label="PYTHON: apply paragraph recovery memberships\nAccept reciprocal cores, then eligible adjacent fan-in\nUpdate assignments and record changed target nodes"];
+    refresh_p [fillcolor="#fff0d8", color="#b68a49",
+      label="LLM: refresh only changed paragraph group questions"];
+    more [shape=diamond, label="PYTHON: more documents?"];
+    next_paper [shape=ellipse, label="Return to column 1\nIngest the next document"];
+    export [label="PYTHON: export the completed immutable revision\nGraph, events/judgments, correspondence + singleton reports\nViewer manifest, source texts and final_snapshot.json\nOnly now update run.json current_revision"];
+    viewer [label="PYTHON / BROWSER: inspect a completed revision offline\nQuestion Groups / Paper Map / Graphical Explorer\nNo model calls; serve exported data, not keys or caches"];
+    compare [label="PYTHON: compare completed runs / revisions offline\nRequire shared source IDs, text and boundaries to agree\nReport membership / scope changes, co-member pair differences,\nsingletons, question changes and provider/model settings\nWrite standalone index.html + comparison.json\nShared-paper pair metrics; agreement does not measure accuracy"];
+
+    stored_p -> question_p -> pool_p -> choose_p -> explain_p -> check_p -> reconcile_p -> labels_p;
+    labels_p -> freeze_p -> recovery_choose_p -> recovery_explain_p -> recovery_check_p;
+    recovery_check_p -> merge_p -> refresh_p -> more;
+    more -> next_paper [label="yes"];
     more -> export [label="no"];
     export -> viewer -> compare;
   }
 
-  subgraph cluster_selection {
-    label="B. Shared matching boundary: initial, recovery, and reparented paragraphs";
-    request [label="One direction, one focus, eligible candidates + full evidence\nShared role policy and examples; opaque candidate handles\nEmpty pool: return null without a provider call"];
-    cached [shape=diamond, label="Valid complete\njudgment cache?"];
-    cached_result [label="Reuse validated target / explanation / quotations\nNo Jev or generative call"];
-    pool [shape=diamond, label="1-254 candidates AND\nrequest <= byte guard?"];
-    split [label="Oversized pool: split ordered candidates in halves\nApply this same selection procedure recursively to each half\nKeep up to 5 candidate IDs per final half distribution\nExclude NO_MATCH from the five; retain full candidate evidence"];
-    rerank [label="Rerank the combined shortlist + NO_MATCH\nUse the same size checks and selection cache\nNever compare probabilities across independent halves\nIf the shortlist cannot shrink to fit: stop, never truncate"];
-    choice_cache [shape=diamond, label="Valid selection cache\nfor exact request?"];
-    api [label="PAID: TypeSafe POST /v1/systemone\nPinned Jev version; one Choice named match per request\nstate = focus, candidate evidence, shared source-text table\ncriteria = candidate handles + NO_MATCH\nCheck call / cumulative input-token guards; no automatic retry"];
-    contract [label="Retain raw response before accepting it\nValidate model, exact options, finite normalized probabilities,\nhighest-probability choice, confidence range and usage\nCache successful selection separately from evidence"];
-    selected [shape=diamond, label="Selected NO_MATCH?"];
-    abstain [label="Return target_id = null, deterministic basis, empty evidence\nNo generative explanation call"];
-    evidence [label="PAID: existing generative match-role Skill\nSupply only focus and Jev-selected candidate\nSchema fixes target_id to that candidate (null forbidden)\nGenerate basis and source quotations, not a new selection"];
-    quote [label="PYTHON: validate quote source, attribution and length\nUp to 2 evidence retries; reuse Jev selection\nEvidence cannot replace or veto the chosen target\nContract errors / exhausted repairs stop the revision"];
-    result [label="Return existing match-judgment contract to A\nSave Jev trace + generative response + evidence\nPython reconciles only after directional judgments finish\nEvidence also documents nonreciprocal, ultimately rejected choices"];
-    fail [label="FAILURE: save failure.json in the attempted revision\nKeep completed revision, raw responses and valid caches\nNo fallback to a generative selector or silent data repair"];
-    retry [label="After inspection: retry RUN (same frozen inputs/policy)\nReplay ordered stages; reuse validated caches\nNew attempt, no deletion of prior attempts\nChanged code/config/source requires a new run\nTimeouts may have billed; process budgets reset on retry"];
-    limits [shape=note, label="Limits and interpretation\nDefault: Jev 1.14.0; 24,000 request bytes; 500 calls/process\n2,000,000 Jev input tokens/process; separate generative guards\nNo long-context opt-in, confidence threshold, or dollar ceiling\nShortlisting can discard a globally preferable candidate\nQuote checks do not establish semantic correctness"];
-
-    request -> cached;
-    cached -> cached_result [label="yes"];
-    cached -> pool [label="no"];
-    pool -> split [label="no"];
-    split -> rerank;
-    rerank -> pool [style=dashed, constraint=false, label="same procedure"];
-    pool -> choice_cache [label="yes"];
-    choice_cache -> api [label="miss"];
-    api -> contract -> selected;
-    choice_cache -> selected [label="hit: revalidate", style=dashed];
-    selected -> abstain [label="yes"];
-    selected -> evidence [label="no"];
-    evidence -> quote -> result;
-    abstain -> result;
-    cached_result -> result [style=dashed, constraint=false];
-    contract -> fail [label="invalid / unavailable", style=dashed, constraint=false];
-    quote -> fail [label="invalid", style=dashed];
-    result -> fail [style=invis];
-    fail -> retry -> limits [style=dashed];
-  }
-
-  // Aggregate stages retain all their existing steps; stripes avoid assigning
-  // an entire mixed stage to a single provider.
-  structural [style=striped, fillcolor="#f1eafb:#fff0d8:#e7f4e8", color="#7f7f7f"];
-  section_recovery [style=striped, fillcolor="#f1eafb:#fff0d8:#e7f4e8", color="#7f7f7f"];
-  older [style=striped, fillcolor="#f1eafb:#fff0d8:#e7f4e8", color="#7f7f7f"];
-  paragraph_match [style=striped, fillcolor="#f1eafb:#fff0d8:#e7f4e8", color="#7f7f7f"];
-  paragraph_recovery [style=striped, fillcolor="#f1eafb:#fff0d8:#e7f4e8", color="#7f7f7f"];
-  section_rules [style=striped, fillcolor="#e7f4e8:#fff0d8", color="#7f7f7f"];
-  paragraph_rules [style=striped, fillcolor="#e7f4e8:#fff0d8", color="#7f7f7f"];
-  paragraph_questions [style=striped, fillcolor="#fff0d8:#e7f4e8", color="#7f7f7f"];
-  api [fillcolor="#f1eafb", color="#7054a0", peripheries=2];
-  evidence [fillcolor="#fff0d8", color="#b68a49"];
-  inputs [fillcolor="#edf4f8", color="#7f9aa8"];
-  limits [fillcolor="#edf4f8", color="#7f9aa8"];
-
-  { rank=same; inputs; request; }
+  { rank=same; inputs; freeze_s; stored_p; }
+  inputs -> freeze_s -> stored_p [style=invis];
   legend -> inputs [style=invis];
-  legend -> request [style=invis];
+  legend -> freeze_s [style=invis];
+  legend -> stored_p [style=invis];
 }
