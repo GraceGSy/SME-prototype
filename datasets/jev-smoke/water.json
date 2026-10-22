@@ -1,0 +1,28 @@
+[
+  {
+    "section_name": "Mechanism",
+    "section_number": null,
+    "question_this_text_answers": "How does blocking a necessary input prevent a downstream process?",
+    "paragraphs": [
+      {
+        "paragraph_number": 0,
+        "text": "Closing the inlet valve cuts off the pump's water supply. Without that supply, the pump cannot deliver water to the upper tank, so the tank stops filling.",
+        "question_this_text_answers": "How does blocking a necessary input prevent a downstream process?"
+      }
+    ],
+    "subsections": []
+  },
+  {
+    "section_name": "Limitation",
+    "section_number": null,
+    "question_this_text_answers": "What limits the generalizability of the findings?",
+    "paragraphs": [
+      {
+        "paragraph_number": 0,
+        "text": "We tested one pump at a single site. The small sample limits how confidently these findings can be generalized to other water systems.",
+        "question_this_text_answers": "What limits the generalizability of the findings?"
+      }
+    ],
+    "subsections": []
+  }
+]
