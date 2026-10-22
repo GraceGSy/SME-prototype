@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Manually match sections and paragraphs across two documents."
+    />
+    <link rel="icon" href="data:," />
+    <title>Question Atlas | Manual Matcher</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./matcher.css" />
+  </head>
+  <body class="mm">
+    <div id="matcher"></div>
+    <div id="announcement" class="mm-announcement" role="status" aria-live="polite" hidden></div>
+    <input type="file" id="openLabels" accept=".json,application/json" hidden />
+    <dialog id="outsideDialog" aria-labelledby="outsideTitle"></dialog>
+    <script type="module" src="./matcher.js"></script>
+  </body>
+</html>

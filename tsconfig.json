@@ -11,5 +11,11 @@
     "noEmit": true,
     "skipLibCheck": true
   },
-  "include": ["pipeline/viewer/**/*.ts", "tests/viewer/**/*.ts", "playwright.config.ts"]
+  "include": [
+    "pipeline/viewer/**/*.ts",
+    "pipeline/manual_matcher/**/*.ts",
+    "tests/viewer/**/*.ts",
+    "tests/manual-matcher.test.ts",
+    "playwright.config.ts"
+  ]
 }

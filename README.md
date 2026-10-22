@@ -55,6 +55,15 @@ Nearby blocks show options at the same reading stage; frequent options sit
 nearer the center of each row. Coverage badges count distinct documents.
 Select a paper to reveal its route, including skipped rows and reordered roles.
 
+## Create manual labels
+
+Open the [manual matcher](https://question-atlas-labels.vercel.app/) to label two
+extracted documents without model calls. Match sections or subsections, then
+their paragraphs; many-to-many groups and outside-group paragraph matches are
+supported. Save labels downloads a resumable JSON file, and Export viewer produces
+a complete viewer-compatible ZIP. Browser autosave is local, not shared storage.
+See [the matcher guide](pipeline/manual_matcher/README.md) for local build and tests.
+
 ## Run your own documents
 
 1. Prepare at least two canonical JSON documents. Extract each new PDF, UTF-8

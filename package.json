@@ -4,6 +4,8 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "build:viewer": "npm run typecheck && esbuild pipeline/viewer/build.ts --bundle --platform=node --packages=external --format=esm --outfile=pipeline/viewer/dist/build.mjs && node pipeline/viewer/dist/build.mjs",
+    "build:matcher": "npm run typecheck && esbuild pipeline/manual_matcher/build.ts --bundle --platform=node --packages=external --format=esm --outfile=output/manual-matcher-build.mjs && node output/manual-matcher-build.mjs",
+    "test:matcher": "esbuild tests/manual-matcher.test.ts --bundle --platform=node --packages=external --format=cjs --outfile=output/manual-matcher.test.cjs && node --test output/manual-matcher.test.cjs",
     "test:viewer": "playwright test",
     "format:check": "prettier --check \"pipeline/viewer/src/**/*.ts\" \"pipeline/viewer/*.ts\" \"tests/viewer/**/*.ts\" playwright.config.ts tsconfig.json package.json pipeline/viewer/index.html pipeline/viewer/styles.css"
   },
@@ -11,6 +13,7 @@
     "@playwright/test": "1.63.0",
     "@types/node": "22.20.1",
     "esbuild": "0.28.2",
+    "fflate": "0.8.3",
     "prettier": "3.9.6",
     "typescript": "7.0.2",
     "zod": "4.5.4"

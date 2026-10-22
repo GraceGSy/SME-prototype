@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Manual Labels | Question Atlas</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./matcher.css" />
+  </head>
+  <body>
+    <header>
+      <h1 id="viewerTitle">Manual Labels</h1>
+      <div id="granularityTabs" style="display: flex; gap: 2px"></div>
+      <a href="./" class="mm-back">Back to matcher</a>
+    </header>
+    <div id="legend">
+      Human-labelled groups. Unlabelled passages remain separate; questions are optional.
+    </div>
+    <main id="stage"></main>
+    <div
+      class="paper-map-question-preview"
+      id="paperMapQuestionPreview"
+      role="tooltip"
+      aria-hidden="true"
+    >
+      <div class="paper-map-question-preview-text" id="paperMapQuestionPreviewText"></div>
+      <div class="paper-map-question-preview-meta" id="paperMapQuestionPreviewMeta"></div>
+    </div>
+    <script type="module" src="./preview.js"></script>
+  </body>
+</html>
