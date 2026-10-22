@@ -2,9 +2,16 @@ digraph JevPipeline {
   graph [rankdir=TB, compound=true, newrank=true, bgcolor="white", pad=0.3,
     nodesep=0.35, ranksep=0.4, fontname="Times New Roman,", fontsize=12,
     labelloc=t, label="SMELTER with Jev: ordered graph construction, selection, evidence, and comparison\nSolid arrows show execution. Dashed arrows show shared calls or retained artifacts. Python owns graph membership."];
-  node [shape=box, fontname="Times New Roman,", fontsize=12, color=black,
+  node [shape=box, style=filled, fillcolor="#e7f4e8", color="#6b8b73",
+    fontname="Times New Roman,", fontsize=12,
     fontcolor=black, margin="0.14,0.10"];
   edge [fontname="Times New Roman,", fontsize=12, color=black, arrowsize=0.7];
+
+  legend [shape=plain, style="", label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="5" CELLPADDING="6">
+    <TR><TD BGCOLOR="#f1eafb">Jev selection</TD><TD BGCOLOR="#fff0d8">Generative LLM</TD>
+    <TD BGCOLOR="#e7f4e8">Deterministic Python</TD><TD BGCOLOR="#edf4f8">Sources / records / notes</TD></TR>
+    <TR><TD COLSPAN="4">Striped boxes summarize combined steps; column B separates their responsibilities.</TD></TR>
+  </TABLE>>];
 
   subgraph cluster_pipeline {
     label="A. Run lifecycle and document insertion";
@@ -79,5 +86,22 @@ digraph JevPipeline {
     fail -> retry -> limits [style=dashed];
   }
 
+  // Aggregate stages retain all their existing steps; stripes avoid assigning
+  // an entire mixed stage to a single provider.
+  structural [style=striped, fillcolor="#f1eafb:#fff0d8:#e7f4e8", color="#7f7f7f"];
+  section_recovery [style=striped, fillcolor="#f1eafb:#fff0d8:#e7f4e8", color="#7f7f7f"];
+  older [style=striped, fillcolor="#f1eafb:#fff0d8:#e7f4e8", color="#7f7f7f"];
+  paragraph_match [style=striped, fillcolor="#f1eafb:#fff0d8:#e7f4e8", color="#7f7f7f"];
+  paragraph_recovery [style=striped, fillcolor="#f1eafb:#fff0d8:#e7f4e8", color="#7f7f7f"];
+  section_rules [style=striped, fillcolor="#e7f4e8:#fff0d8", color="#7f7f7f"];
+  paragraph_rules [style=striped, fillcolor="#e7f4e8:#fff0d8", color="#7f7f7f"];
+  paragraph_questions [style=striped, fillcolor="#fff0d8:#e7f4e8", color="#7f7f7f"];
+  api [fillcolor="#f1eafb", color="#7054a0", peripheries=2];
+  evidence [fillcolor="#fff0d8", color="#b68a49"];
+  inputs [fillcolor="#edf4f8", color="#7f9aa8"];
+  limits [fillcolor="#edf4f8", color="#7f9aa8"];
+
   { rank=same; inputs; request; }
+  legend -> inputs [style=invis];
+  legend -> request [style=invis];
 }
