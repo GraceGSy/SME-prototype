@@ -36,42 +36,28 @@ For example, a candidate with `paper_id: "corpusstudio"` and
 
 ## Matching Rules
 
-- Judge role first, relational structure second, content similarity last.
-  Role means the job the passage performs in its context: for example, posing
-  a problem, supplying evidence, justifying a decision, or resolving a threat.
-  Structure means how participants, claims, evidence, and consequences relate,
-  not paragraph length, formatting, or location. Content similarity means shared
-  vocabulary, entities, or topic, not whether you should read the source text.
-  Read the text first to establish the role; topical similarity cannot rescue
-  a role mismatch. Apply this priority across academic, legal, and narrative text.
-- Read all supplied source text. Generated questions are fallible summaries,
-  not identity and not substitutes for the underlying evidence.
-- Sections and subsections are peers for structural matching. Paragraphs are
-  restricted to the exact structural node supplied by the caller.
+Read and apply `references/selection.md`. That file owns the semantic selection
+policy shared by this Skill and the Jev selector.
 
 ## Decision
 
-Choose the strongest defensible correspondence, not the least-bad candidate.
-Return `null` when there is none. Different domains alone do not justify
-abstention; a very broad shared theme alone does not justify a match.
+Return `null` for an abstention.
+
+When the caller supplies `fixed_target_id`, Jev has already selected the target.
+Return that exact value; do not select a different candidate or change it to null.
+Document the selection using source-bound quotations and a faithful explanation.
+Report unsupported aspects honestly rather than inventing a rationale. This mode
+documents a selection; it is not another selector or a semantic approval gate.
 
 In `basis`, state the shared role first and explain the corresponding
 participants and relations.
-Choose the abstraction level using judgment, not a fixed taxonomy, and make
-that choice intelligible on both sides. Similar formatting or topic alone is
-insufficient.
+Make the chosen abstraction level intelligible on both sides.
 
 Keep the final `basis` concise: target at most 100 words for a match and 60
 words for an abstention. For an abstention, identify the decisive role mismatch
 instead of cataloguing every candidate or quoting every member. For a match,
 explain member coverage compactly; do not weaken the
 per-paper role and member-contribution checks to shorten the answer.
-
-Participant correspondence is relational, not moral: a hero can map to a villain
-if each occupies the same role in the chosen relation. Different names, moral
-status, or subject domains are not vetoes. But a mapping must preserve who acts
-on whom and the relevant causal direction. Do not swap agent and recipient,
-or claim that posing a question supplies the answer, to manufacture a match.
 
 Singleton rerepresentation uses the same reciprocal top-1 rule at both levels.
 After each document insertion, each singleton selects its best eligible

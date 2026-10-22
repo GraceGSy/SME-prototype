@@ -42,7 +42,12 @@ class MatchingExamplesTest(unittest.TestCase):
                     skill = (self.config.skill_root / stage.skill / "SKILL.md").read_text(
                         encoding="utf-8"
                     )
-                    instructions = " ".join((skill + "\n" + rendered.system).split())
+                    selection = (
+                        self.config.skill_root / stage.skill / "references/selection.md"
+                    ).read_text(encoding="utf-8")
+                    instructions = " ".join(
+                        (skill + "\n" + selection + "\n" + rendered.system).split()
+                    )
                     self.assertEqual(
                         instructions.count(
                             "role first, relational structure second, content similarity last"

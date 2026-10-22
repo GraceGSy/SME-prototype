@@ -99,7 +99,7 @@ class ConfigurationTest(unittest.TestCase):
                         payload.index('"next_paragraph"'),
                     )
                 self.assertIn("paragraph_under_consideration", rendered.system)
-                instructions = (config.skill_root / "match-role/SKILL.md").read_text(
+                instructions = (config.skill_root / "match-role/references/selection.md").read_text(
                     encoding="utf-8"
                 )
                 self.assertIn("role first", instructions)

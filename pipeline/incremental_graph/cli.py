@@ -50,6 +50,10 @@ def main() -> None:
     start.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
     start.add_argument("--provider", choices=["anthropic", "openai"])
     start.add_argument("--model", help="Model name; supply together with --provider")
+    start.add_argument("--jev", action="store_true", help="Use Jev for all match selection")
+    start.add_argument("--jev-model", help="Pinned Jev version, for example jev-1.14.0")
+    start.add_argument("--jev-max-calls", type=int, help="Maximum Jev HTTP calls per process")
+    start.add_argument("--max-api-responses", type=int, help="Generative provider response guard")
     add = commands.add_parser("add", help="Append prepared papers in manifest order")
     add.add_argument("manifest", type=Path)
     add.add_argument("run_dir", type=Path)
@@ -62,7 +66,15 @@ def main() -> None:
     args = parser.parse_args()
     if args.command == "start":
         result = start_graph(
-            args.manifest, args.run_dir, args.config, provider=args.provider, model=args.model
+            args.manifest,
+            args.run_dir,
+            args.config,
+            provider=args.provider,
+            model=args.model,
+            jev=args.jev,
+            jev_model=args.jev_model,
+            jev_max_calls=args.jev_max_calls,
+            max_api_responses=args.max_api_responses,
         )
     elif args.command == "add":
         result = add_papers(args.manifest, args.run_dir)

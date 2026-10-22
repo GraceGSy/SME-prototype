@@ -17,6 +17,8 @@ import yaml
 from pydantic import Field
 
 from ..files import directory_hash, read_json, write_json
+from ..providers.jev import JevSettings
+from ..providers.registry import load_api_key
 from ..providers.settings import ModelSettings
 from .configuration import PromptRepository, load_pipeline_config
 from .input_data import load_manifest
@@ -96,6 +98,10 @@ def start_graph(
     *,
     provider: str | None = None,
     model: str | None = None,
+    jev: bool = False,
+    jev_model: str | None = None,
+    jev_max_calls: int | None = None,
+    max_api_responses: int | None = None,
 ) -> dict[str, Any]:
     if (provider is None) != (model is None):
         raise ValueError("Pass provider and model together, or use the saved configuration")
@@ -103,6 +109,16 @@ def start_graph(
     if len(manifest.papers) < 2:
         raise ValueError("A new graph requires at least two prepared papers")
     config = load_pipeline_config(config_path)
+    if (jev_model is not None or jev_max_calls is not None) and not (jev or config.jev):
+        raise ValueError("Jev overrides require --jev or a Jev configuration")
+    if jev or config.jev:
+        settings = config.jev or JevSettings()
+        overrides = {}
+        if jev_model is not None:
+            overrides["model"] = jev_model
+        if jev_max_calls is not None:
+            overrides["max_calls"] = jev_max_calls
+        config.jev = JevSettings.model_validate({**settings.model_dump(), **overrides})
     if provider is not None:
         config.model = ModelSettings.model_validate(
             {
@@ -111,6 +127,14 @@ def start_graph(
                 "name": model,
             }
         )
+    if max_api_responses is not None:
+        config.model = ModelSettings.model_validate(
+            {**config.model.model_dump(), "max_api_responses_per_process": max_api_responses}
+        )
+    if config.jev:
+        # Fail before buying question generation or creating a run with missing credentials.
+        load_api_key(config.skill_root.parent, "TYPESAFE_API_KEY")
+        load_api_key(config.skill_root.parent, f"{config.model.provider.upper()}_API_KEY")
     state = RunState(
         config=config, max_granularity=manifest.max_granularity, policy_sha256=_policy_hash(config)
     )
@@ -195,6 +219,7 @@ def _execute(
         config.model,
         run_dir / "cache",
         config.skill_root,
+        jev=config.jev,
     )
     revision_dir = run_dir / "revisions" / revision
     runner = IncrementalGraphRunner(

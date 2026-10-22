@@ -19,12 +19,15 @@ from ..providers.contracts import (
     StructuredOutputValidationError,
 )
 from ..providers.factory import create_skill_client
+from ..providers.jev import JevSettings
 from ..providers.settings import ModelSettings
 from .configuration import PromptRepository, RenderedPrompt
 from .evidence_encoding import encode_evidence
+from .jev_selection import JevSelector
 from .match_evidence import (
     EvidenceValidationError,
     JudgmentError,
+    candidate_handle,
     quote_length_feedback,
     validate_evidence,
 )
@@ -45,12 +48,16 @@ class CachedJudgments:
         model: ModelSettings,
         cache_dir: Path,
         skill_root: Path,
+        jev: JevSettings | None = None,
     ):
         self.prompts = prompts
         self.model = model
         self.cache_dir = cache_dir
         self.skill_root = skill_root
         self.skills: SkillClient | None = None
+        self.jev = (
+            JevSelector(jev, cache_dir / "jev", skill_root, prompts.prompt_root) if jev else None
+        )
         cache_dir.mkdir(parents=True, exist_ok=True)
 
     def render_request(self, request: JudgmentRequest) -> RenderedPrompt:
@@ -147,7 +154,56 @@ class CachedJudgments:
             result = JudgmentResult.model_validate(payload)
             result.cache_hit = True
             self._validate(request, result.normalized)
+            if self.jev and request.output_kind == "match":
+                if result.normalized["target_id"] != result.raw_response["jev"]["target_id"]:
+                    raise JudgmentError("Cached evidence changed Jev's selection")
             return result
+
+        selection = None
+        if self.jev and request.output_kind == "match":
+            selection = self.jev.select(request, force=request.force and not feedback)
+            target = selection["target_id"]
+            if target is None:
+                result = JudgmentResult(
+                    fingerprint=fingerprint,
+                    normalized={
+                        "target_id": None,
+                        "basis": "Jev selected NO_MATCH; no generative explanation was requested.",
+                        "evidence": {"focus": [], "target": []},
+                    },
+                    raw_response={"jev": selection},
+                    rendered_system=self.jev.instructions,
+                    rendered_user=json.dumps(request.context, ensure_ascii=False),
+                    prompt_hash=rendered.prompt_hash,
+                    context_hash=rendered.context_hash,
+                    schema_hash=rendered.schema_hash,
+                    model={"jev": self.jev.settings.model_dump()},
+                )
+                self._validate(request, result.normalized)
+                write_json(cache_path, result.model_dump(mode="json"))
+                return result
+            evidence_request = request.model_copy(
+                update={
+                    "context": {
+                        **request.context,
+                        "candidates": [
+                            candidate
+                            for candidate in request.context["candidates"]
+                            if candidate_handle(candidate) == target
+                        ],
+                    },
+                    "allowed_match_ids": [target],
+                }
+            )
+            rendered = self.render_request(evidence_request)
+            rendered.schema["properties"]["target_id"] = {"type": "string", "enum": [target]}
+            rendered = replace(
+                rendered,
+                user=rendered.user + "\n\n" + json.dumps({"fixed_target_id": target}),
+                schema_hash=hashlib.sha256(
+                    json.dumps(rendered.schema, sort_keys=True).encode()
+                ).hexdigest(),
+            )
 
         if self.skills is None:
             self.skills = create_skill_client(
@@ -196,6 +252,9 @@ class CachedJudgments:
             "stop_reason": response.stop_reason,
             "usage": response.usage,
         }
+        if selection is not None:
+            raw_response = {**raw_response, "jev": selection}
+            model["jev"] = self.jev.settings.model_dump()
 
         normalized = api_normalized
         result = JudgmentResult(
@@ -214,6 +273,8 @@ class CachedJudgments:
             cache_hit=False,
         )
         try:
+            if selection is not None and normalized.get("target_id") != selection["target_id"]:
+                raise JudgmentError("Generative evidence must not change Jev's selection")
             self._validate(request, normalized)
         except JudgmentError as error:
             # Preserve paid evidence without accepting or repairing the rejected output.
@@ -250,6 +311,7 @@ class CachedJudgments:
             "max_tokens": request.max_tokens or self.model.max_tokens,
             "max_input_tokens": request.max_input_tokens or self.model.max_input_tokens,
             "skill_hash": skill_hash,
+            "jev": self.jev.settings.model_dump() if self.jev else None,
         }
         encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
         return hashlib.sha256(encoded).hexdigest()

@@ -8,6 +8,7 @@ from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, BeforeValidator, ConfigDict, Field, model_validator
 
+from ..providers.jev import JevSettings
 from ..providers.settings import ModelSettings
 
 Level = Literal["section", "paragraph"]
@@ -130,6 +131,7 @@ class PipelineConfig(StrictModel):
     context_root: WirePath
     skill_root: WirePath = Path("skills")
     model: ModelSettings = Field(default_factory=ModelSettings)
+    jev: JevSettings | None = None
     stages: list[StageConfig]
 
     @model_validator(mode="after")
