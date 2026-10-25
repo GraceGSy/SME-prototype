@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>HCI match comparison: Jev versus saved runs</title>
+<style>
+body{font:12pt 'Times New Roman',serif;color:#000;background:#fff;max-width:1100px;margin:1in auto;padding:0 1rem}
+h1,h2,h3{font-size:12pt}a{color:#000}table{border-collapse:collapse;width:100%;margin:1rem 0}
+td,th{border:1px solid #000;padding:.5rem;text-align:left;vertical-align:top;overflow-wrap:anywhere}
+pre,code{font:inherit;overflow-wrap:anywhere}pre{white-space:pre-wrap}details{border:1px solid #000;padding:.6rem;margin:1rem 0}
+summary{cursor:pointer}@media(max-width:600px){body{margin:1rem auto}td,th{padding:.25rem}}
+</style>
+<h1>HCI match comparison: Jev versus saved runs</h1>
+<p><strong>The Jev run produces substantially fewer matches, including some plausible missed correspondences. The results do not establish that it is more accurate.</strong></p>
+<p>Comparison date: October 25, 2026. New result: <code>hci-first-two-jev-20261025-01 / revision-0002</code>, containing AbstractExplorer and CorpusStudio. All scores below come from saved outputs; no models or API calls were used to calculate them.</p>
+<nav><a href="#baselines">Choose a comparison</a> | <a href="#changes">What changed</a> | <a href="#methods">Deterministic tool</a> | <a href="#reproduce">Reproduce</a></nav>
+
+<h2 id="baselines">Choose a comparison</h2>
+<p>The latest previous run is not the cleanest baseline: it has five papers and uses sections rather than subsections. The reports therefore include three baselines. Paragraph coverage always uses the same 221 paragraphs with identical authored text.</p>
+<table>
+<tr><th>Baseline and detailed report</th><th>Matched paragraph coverage, old to new</th><th>Shared paragraph groups, old to new</th><th>Cross-paper pairs retained / removed / added</th><th>Main limitation</th></tr>
+<tr><td><a href="../../output/run-comparisons/hci-jev-20261025/previous-latest/index.html">Latest old HCI run</a><br><code>hci-section-medium-excerpts-20260917 / revision-0013</code></td><td>91 / 221 (41.2%) to 15 / 221 (6.8%)</td><td>34 to 7</td><td>6 / 58 / 2<br>Jaccard: 9.1%</td><td>Five papers versus two; section versus subsection scopes. Scores project onto the two shared papers.</td></tr>
+<tr><td><a href="../../output/run-comparisons/hci-jev-20261025/previous-two-paper/index.html">Old two-paper checkpoint</a><br><code>hci-section-medium-excerpts-20260917 / revision-0004</code></td><td>76 / 221 (34.4%) to 15 / 221 (6.8%)</td><td>30 to 7</td><td>6 / 45 / 2<br>Jaccard: 11.3%</td><td>Same papers and order, but section versus subsection scopes.</td></tr>
+<tr><td><a href="../../output/run-comparisons/hci-jev-20261025/same-granularity/index.html">Same-granularity baseline</a><br><code>hci-concise-fresh-20260907 / revision-0001</code></td><td>35 / 221 (15.8%) to 15 / 221 (6.8%)</td><td>15 to 7</td><td>5 / 15 / 3<br>Jaccard: 21.7%</td><td>Same 66 structural units and 221 paragraphs, but different generative settings and policy. This is the cleanest available structural comparison, not a controlled Jev A/B test.</td></tr>
+</table>
+<p>For the section-based baselines, only 21 structural units are shared: cross-paper structural groups fall from 8 to 3, and coverage from 16/21 to 6/21. The new run's other 45 structural units are excluded from that comparison, not counted as failures.</p>
+<p>For the same-granularity baseline, all 66 structural units are comparable: shared groups fall from 15 to 9, and coverage from 30/66 (45.5%) to 18/66 (27.3%). Six structural pairs remain, nine disappear, and three are new.</p>
+
+<h2 id="changes">What changed</h2>
+<p><strong>The main difference is reduced coverage, not just reworded questions.</strong> Against the same-granularity baseline, 31 paragraphs change membership and another 75 change only their parent scope. Reporting all 106 as changed matches would overstate membership churn.</p>
+<p>Source-question wording also changes: none of the 66 structural questions and only 1 of the 221 paragraph questions remain identical after normalization. Mean TF-IDF cosine is 43.4% for structural questions and 44.6% for paragraph questions. These scores measure lexical overlap, not whether the questions express the same meaning.</p>
+
+<h3>Review observations, not automatic quality labels</h3>
+<ul>
+<li><strong>Likely missed match: funding acknowledgments.</strong> Both paragraphs credit NSF grant IIS-2107391 and Sloan fellowship FG-2023-19960, and both disclaim funder involvement. The older runs group them together; the new run leaves them separate even though their parent sections match. Jev selects the counterpart with probability 0.61 in the forward direction, then selects <code>NO_MATCH</code> with probability 0.53 versus 0.47 in reverse. The reciprocal rule rejects the pair. This is a substantive selection disagreement, not a probability-validation failure.</li>
+<li><strong>Likely missed match: highlighting helps people skim text.</strong> The older runs join participant feedback about color highlighting and efficient skimming. The new run separates the paragraphs and their corresponding structural units. That removes a plausible cross-system result correspondence. Different parent scopes also change which paragraph candidates the pipeline considers.</li>
+<li><strong>Useful additions relative to the same-granularity baseline:</strong> the new run matches introductory descriptions of each tool's new features, and matches the two contribution summaries. These pairs have a plausible common rhetorical role.</li>
+<li><strong>Some removals may help:</strong> the older same-granularity run groups AbstractExplorer's JSON precomputation/latency paragraph with CorpusStudio's sentence-embedding procedure. Those passages describe different implementation operations. Their removal could improve specificity, although that is a review judgment rather than a measured precision gain.</li>
+<li><strong>Some procedural matches remain stable:</strong> participant recruitment, remote-session logistics, warm-up activities, and closing surveys/interviews retain cross-paper paragraph matches.</li>
+</ul>
+<details><summary>Source IDs and saved evidence for these observations</summary>
+<p>Funding: <code>abstractexplorer:s0010.p0001</code> and <code>corpusstudio:s0011.p0001</code>. Selection records: <code>attempt-000437</code> and <code>attempt-000438</code> in <code>runs/hci-first-two-jev-20261025-01/revisions/revision-0002/provenance/attempts.jsonl</code>; reconciliation events 551 and 552 in <code>events.json</code>.</p>
+<p>Highlighting: <code>abstractexplorer:s0008.ss0001.p0001</code> and <code>corpusstudio:s0007.ss0002.p0008</code>.</p>
+<p>New features: <code>abstractexplorer:s0002.p0007</code> and <code>corpusstudio:s0002.p0005</code>. Contributions: <code>abstractexplorer:s0002.p0008</code> and <code>corpusstudio:s0002.p0008</code>.</p>
+<p>Removed implementation pair: <code>abstractexplorer:s0005.ss0003.p0005</code> and <code>corpusstudio:s0005.ss0002.p0001</code>.</p>
+<p>Open the detailed reports above to inspect full passages, memberships, scopes, and questions. Their adjacent <code>comparison.json</code> files contain every computed score and pair change.</p>
+</details>
+
+<h2>What this does not establish</h2>
+<p>None of the historical runs isolates the effect of Jev. The same-granularity run used lower generative limits and effort; the latest old run used different source scopes and eventually added three papers. Historical configuration comes from run-level settings when per-revision snapshots are absent and may describe a later attempt. The new run also regenerated almost every source question.</p>
+<p>Coverage does not measure recall without reference labels, and pair agreement does not measure precision. The reviewed misses are reasons to investigate, not a corpus-wide error estimate. Do not call the new run an accuracy improvement on the evidence available.</p>
+
+<h2 id="methods">Deterministic comparison tool</h2>
+<p>The working mockup is a Python CLI that writes standalone HTML and JSON. It needs no server, credentials, generative model, embedding model, or new dependency. It never changes saved runs.</p>
+<ul>
+<li>Coverage counts units with a cross-paper partner, overall and per paper.</li>
+<li>Match similarity includes pair Jaccard, pair F1 agreement, baseline-pair retention, and peer-set overlap. Same-paper fan-in does not inflate cross-paper scores.</li>
+<li>NetworkX <a href="https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.matching.max_weight_matching.html">maximum-weight matching</a> aligns groups globally by shared-member count. Unaligned groups remain visible. Question wording does not affect alignment.</li>
+<li>NetworkX graph intersection, symmetric difference, and identity-preserving isomorphism compare actual source matches. Exact edge edits use fixed source IDs instead of an unrestricted, potentially timeout-dependent graph-edit search.</li>
+<li>Question scores include normalized exact agreement, token Jaccard, and lexical TF-IDF cosine. TF-IDF fits each question comparison locally; scores are not calibrated across different corpora and do not detect semantic equivalence or contradiction.</li>
+<li>Expandable rows show source passages, old/new questions, membership changes, and parent-scope-only changes. Explicit projection warnings prevent different granularities from silently appearing comparable.</li>
+</ul>
+
+<h2 id="reproduce">Reproduce from saved runs</h2>
+<p>Run from the repository root, <code>SME-prototype-elena-clean</code>. The output directory must be new. The local historical runs are not included in Git.</p>
+<pre>python -m pipeline.incremental_graph.compare runs/hci-concise-fresh-20260907/revisions/revision-0001 runs/hci-first-two-jev-20261025-01 output/comparisons/hci-same-granularity-review</pre>
+<p>For the latest old HCI run, explicitly request the common-source projection:</p>
+<pre>python -m pipeline.incremental_graph.compare runs/hci-section-medium-excerpts-20260917/revisions/revision-0013 runs/hci-first-two-jev-20261025-01 output/comparisons/hci-latest-review --shared-sources</pre>
+<p>Open the resulting <code>index.html</code> in a browser. For any other two completed runs, use <code>python -m pipeline.incremental_graph.compare BASELINE COMPARISON NEW_OUTPUT_DIRECTORY</code>. See <a href="../jev.md">the operational documentation</a> for definitions and projection rules.</p>
+</html>
