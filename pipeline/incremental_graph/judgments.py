@@ -307,11 +307,10 @@ class CachedJudgments:
             "prompt_hash": rendered.prompt_hash,
             "context_hash": rendered.context_hash,
             "schema_hash": rendered.schema_hash,
-            "model": self.model.model_dump(mode="json"),
+            "model": self.model.result_settings(),
             "max_tokens": request.max_tokens or self.model.max_tokens,
-            "max_input_tokens": request.max_input_tokens or self.model.max_input_tokens,
             "skill_hash": skill_hash,
-            "jev": self.jev.settings.model_dump() if self.jev else None,
+            "jev": self.jev.settings.result_settings() if self.jev else None,
         }
         encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
         return hashlib.sha256(encoded).hexdigest()

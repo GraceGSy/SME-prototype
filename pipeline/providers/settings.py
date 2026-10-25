@@ -20,6 +20,18 @@ class ModelSettings(BaseModel):
     max_session_input_tokens: int = Field(default=2_000_000, gt=0)
     max_session_output_tokens: int = Field(default=100_000, gt=0)
 
+    def result_settings(self) -> dict:
+        """Exclude stop-only guards, not settings that affect generated content."""
+        return self.model_dump(
+            exclude={
+                "max_input_tokens",
+                "max_prompt_characters",
+                "max_api_responses_per_process",
+                "max_session_input_tokens",
+                "max_session_output_tokens",
+            }
+        )
+
     @model_validator(mode="after")
     def validate_selection(self) -> "ModelSettings":
         if not self.name or self.name.strip() != self.name:

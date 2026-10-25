@@ -34,6 +34,10 @@ class JevSettings(BaseModel):
     max_input_tokens: int = Field(default=2_000_000, gt=0)
     timeout_seconds: int = Field(default=120, gt=0)
 
+    def result_settings(self) -> dict:
+        """Budgets and timeouts do not change a successful Choice request."""
+        return self.model_dump(exclude={"max_calls", "max_input_tokens", "timeout_seconds"})
+
 
 class ChoiceAnswer(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True, allow_inf_nan=False)

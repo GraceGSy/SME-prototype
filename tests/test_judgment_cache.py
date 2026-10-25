@@ -158,6 +158,17 @@ class JudgmentCacheTest(unittest.TestCase):
                 config.skill_root.parent / "_cache" / "skill-registry.json",
             )
             self.assertTrue(provider().judge(request).cache_hit)
+            guards = config.model.model_copy(
+                update={
+                    "max_input_tokens": 400_000,
+                    "max_prompt_characters": 1_000_000,
+                    "max_api_responses_per_process": 6000,
+                    "max_session_input_tokens": 60_000_000,
+                    "max_session_output_tokens": 2_000_000,
+                }
+            )
+            request.max_input_tokens = 400_000
+            self.assertTrue(provider(guards).judge(request).cache_hit)
             self.assertEqual(client.return_value.run_json.call_count, 1)
             call = client.return_value.run_json.call_args
             self.assertEqual(

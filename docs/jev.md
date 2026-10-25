@@ -237,9 +237,10 @@ To extend a successful run, use a manifest containing only new papers:
 python -m pipeline.incremental_graph.cli add datasets/my-corpus/new.manifest.yaml runs/my-corpus-jev
 ```
 
-`add` and `retry` retain the saved Jev and generative configuration, including
-guards. To change models, limits, prompts, code, dependencies, or source data,
-start a new run rather than editing `run.json` or frozen inputs.
+`add` and plain `retry` retain the last saved configuration. Retry can override
+execution guards and timeouts without changing scientific policy or invalidating
+cached results. Models, generation settings, prompts, matching code, dependencies,
+and source data remain fixed. Do not edit `run.json` or frozen inputs.
 
 ## Recover a failed attempt
 
@@ -256,6 +257,36 @@ start a new run rather than editing `run.json` or frozen inputs.
 python -m pipeline.incremental_graph.cli retry runs/jev-smoke-01
 ```
 
+If a budget stopped the attempt, review usage and supply a new allowance:
+
+```bash
+python -m pipeline.incremental_graph.cli retry runs/jev-smoke-01 --jev-max-calls 12 --max-api-responses 40
+```
+
+These flags change only the next process's guards, not the choices or cache keys.
+The example allowances suit the small smoke fixture, not a cost estimate for HCI.
+For other guards or Jev's timeout, supply a full pipeline YAML/JSON configuration:
+
+```bash
+python -m pipeline.incremental_graph.cli retry runs/jev-smoke-01 --config path/to/retry-config.json
+```
+
+Each revision's `config.json` records its complete resolved configuration. Use
+those settings in a separate retry config and change only:
+
+- `jev.max_calls`, `jev.max_input_tokens`, or `jev.timeout_seconds`.
+- `model.max_api_responses_per_process`, `model.max_session_input_tokens`,
+  `model.max_session_output_tokens`, `model.max_input_tokens`, or
+  `model.max_prompt_characters`.
+- A stage's `max_input_tokens` guard.
+
+The CLI flags take precedence over the supplied file. Unspecified overrides keep
+the saved values. Each new attempt saves its overrides for later attempts.
+`max_tokens` is **not** a budget-only setting: it limits generated output and stays
+part of scientific policy, along with model identity, effort, thinking, and context
+management. A changed scientific setting fails before any provider call or new
+revision. Comparison reads each revision's own configuration, not the latest limits.
+
 Retry writes a new revision and replays the ordered stages, reusing valid saved
 judgments. A saved Jev choice survives an evidence-generation failure, so an
 ordinary retry need not buy that choice again. Failed attempts do not replace
@@ -270,6 +301,11 @@ retry an unchanged contract or size error. Inspect the retained response and fix
 the underlying issue in a new run if it requires a policy change. Do not delete
 caches to bypass validation. Avoid `retry --stage` / `--paper-index` unless you
 intend to force judgments and potentially pay again.
+
+Runs created before this request-limit and fingerprint correction retain their
+original policy identity. They remain viewable and comparable; retry them using
+their original code, or start a new run under this corrected policy. Do not rewrite
+old policy hashes to bypass that distinction.
 
 ## Selection, evidence, and saved artifacts
 
@@ -307,13 +343,14 @@ Within `runs/<name>/`:
 
 | Location                              | Purpose                                                                        |
 | ------------------------------------- | ------------------------------------------------------------------------------ |
-| `run.json`                            | Frozen configuration, policy identity, last completed revision, latest attempt |
+| `run.json`                            | Latest execution configuration, scientific policy identity, revision pointers |
 | `inputs/`                             | Frozen prepared source documents and manifest                                  |
 | `cache/jev/<hash>.json`               | Exact Jev request and validated selection, independent of generated evidence   |
 | `cache/jev/responses/`                | Raw response records, including responses rejected by validation               |
 | `cache/<hash>.json`                   | Complete validated questions/matches, Jev traces, and generated evidence       |
 | `cache/responses/`, `cache/rejected/` | Generative responses and rejected evidence for diagnosis                       |
 | `revisions/revision-XXXX/`            | Attempt outputs; completed attempts include reports and `dataset/`             |
+| `revisions/revision-XXXX/config.json` | Full configuration used for that attempt, including its budgets and timeout    |
 
 These records contain source text, so treat them as research data. The integration
 does not save authorization headers or keys. Back up the full run, not only its

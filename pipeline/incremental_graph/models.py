@@ -134,6 +134,15 @@ class PipelineConfig(StrictModel):
     jev: JevSettings | None = None
     stages: list[StageConfig]
 
+    def result_settings(self) -> dict:
+        """Scientific configuration shared by policy checks and retry validation."""
+        settings = self.model_dump(mode="json")
+        settings["model"] = self.model.result_settings()
+        settings["jev"] = self.jev.result_settings() if self.jev else None
+        for stage in settings["stages"]:
+            stage.pop("max_input_tokens")
+        return settings
+
     @model_validator(mode="after")
     def validate_stages(self) -> "PipelineConfig":
         ids = [stage.id for stage in self.stages]

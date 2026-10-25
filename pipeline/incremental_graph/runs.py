@@ -46,14 +46,18 @@ class RunState(StrictModel):
 def _policy_hash(config: PipelineConfig) -> str:
     pipeline = Path(__file__).resolve().parents[1]
     source_files = [
-        *Path(__file__).parent.glob("*.py"),
+        *(
+            path
+            for path in Path(__file__).parent.glob("*.py")
+            if path.name not in {"cli.py", "compare.py", "smoke_check.py"}
+        ),
         pipeline / "document.py",
         pipeline / "files.py",
         pipeline / "source_review.py",
         *(pipeline / "providers").glob("*.py"),
     ]
     assets = {
-        "config": config.model_dump(mode="json"),
+        "config": config.result_settings(),
         "code": {
             path.relative_to(pipeline).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
             for path in sorted(source_files)
@@ -86,7 +90,8 @@ def _state(run_dir: Path) -> RunState:
     state = RunState.model_validate(read_json(run_dir / "run.json"))
     if state.policy_sha256 != _policy_hash(state.config):
         raise ValueError(
-            "Graph code, prompts, or Skills changed; start a new run instead of mixing policies"
+            "Scientific configuration, graph code, prompts, or Skills changed; "
+            "start a new run instead of mixing policies"
         )
     return state
 
@@ -98,6 +103,21 @@ def _saved_inputs(
     if state.input_sha256.get(revision) != directory_hash(input_dir):
         raise ValueError("Saved inputs changed; do not mix edited documents into an existing run")
     return _inputs(input_dir / "manifest.yaml")
+
+
+def _set_execution_limits(
+    config: PipelineConfig, jev_max_calls: int | None, max_api_responses: int | None
+) -> None:
+    if jev_max_calls is not None:
+        if config.jev is None:
+            raise ValueError("Jev overrides require a Jev run")
+        config.jev = JevSettings.model_validate(
+            {**config.jev.model_dump(), "max_calls": jev_max_calls}
+        )
+    if max_api_responses is not None:
+        config.model = ModelSettings.model_validate(
+            {**config.model.model_dump(), "max_api_responses_per_process": max_api_responses}
+        )
 
 
 def start_graph(
@@ -125,8 +145,6 @@ def start_graph(
         overrides = {}
         if jev_model is not None:
             overrides["model"] = jev_model
-        if jev_max_calls is not None:
-            overrides["max_calls"] = jev_max_calls
         config.jev = JevSettings.model_validate({**settings.model_dump(), **overrides})
     if provider is not None:
         config.model = ModelSettings.model_validate(
@@ -136,10 +154,7 @@ def start_graph(
                 "name": model,
             }
         )
-    if max_api_responses is not None:
-        config.model = ModelSettings.model_validate(
-            {**config.model.model_dump(), "max_api_responses_per_process": max_api_responses}
-        )
+    _set_execution_limits(config, jev_max_calls, max_api_responses)
     if config.jev:
         # Fail before buying question generation or creating a run with missing credentials.
         load_api_key(config.skill_root.parent, "TYPESAFE_API_KEY")
@@ -173,7 +188,13 @@ def add_papers(manifest_path: Path, run_dir: Path) -> dict[str, Any]:
 
 
 def retry_graph(
-    run_dir: Path, *, paper_index: int | None = None, stage_id: str | None = None
+    run_dir: Path,
+    *,
+    paper_index: int | None = None,
+    stage_id: str | None = None,
+    config_path: Path | None = None,
+    jev_max_calls: int | None = None,
+    max_api_responses: int | None = None,
 ) -> dict[str, Any]:
     run_dir = run_dir.resolve()
     state = _state(run_dir)
@@ -186,6 +207,15 @@ def retry_graph(
         raise ValueError("Paper index is outside the saved input sequence")
     if stage_id is not None and stage_id not in {stage.id for stage in state.config.stages}:
         raise ValueError(f"Unknown stage: {stage_id}")
+    if config_path is not None:
+        config = load_pipeline_config(config_path)
+        if config.result_settings() != state.config.result_settings():
+            raise ValueError(
+                "Retry may change only execution guards and timeouts; "
+                "scientific configuration changed, so start a new run"
+            )
+        state.config = config
+    _set_execution_limits(state.config, jev_max_calls, max_api_responses)
     return _execute(run_dir, state, manifest, documents, reviews, paper_index, stage_id)
 
 
@@ -245,6 +275,8 @@ def _execute(
         force_stage_id=force_stage_id,
     )
     try:
+        # Preserve the actual limits for each attempt, even after a retry changes them.
+        write_json(revision_dir / "config.json", config.model_dump(mode="json"))
         summary = runner.run(papers)
     except Exception as error:
         write_json(

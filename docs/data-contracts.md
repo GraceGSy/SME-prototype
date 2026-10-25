@@ -134,6 +134,7 @@ runs/<run>/
     paper-0002.json
   cache/
   revisions/revision-0001/
+    config.json
     provenance/attempts.jsonl
     provenance/events.jsonl
     stages/
@@ -144,9 +145,15 @@ runs/<run>/
 ```
 
 `run.json` stores the current successful revision, latest attempted revision,
-input hashes, resolved configuration, and policy fingerprint. Failed execution
+input hashes, latest resolved configuration, and scientific policy fingerprint. Failed execution
 does not replace the successful pointer. Retry uses frozen inputs and a new
 revision directory, with content-addressed judgment reuse.
+
+Each revision's `config.json` preserves that attempt's complete settings. Retry
+can change execution guards and timeouts without invalidating cached judgments;
+model identity, generation settings, prompts, Skills, and matching logic remain
+protected by policy checks. Run comparison uses the revision's configuration,
+falling back to `run.json` only for older revisions without a configuration snapshot.
 
 A failure record may be written under its revision. An interruption can leave a
 partial revision; do not edit its inputs or treat it as a successful dataset.

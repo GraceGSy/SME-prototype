@@ -27,6 +27,11 @@ def load_revision(path: Path) -> dict:
     if (path / "failure.json").exists() or not (path / "summary.json").is_file():
         raise ValueError(f"Not a completed graph revision: {path}")
     summary = read_json(path / "summary.json")
+    config = (
+        read_json(path / "config.json")
+        if (path / "config.json").is_file()
+        else (state["config"] if state else {})
+    )
     dataset = path / "dataset"
     manifest = read_json(dataset / "manifest.json")
     snapshot = read_json(dataset / "final_snapshot.json")
@@ -80,8 +85,8 @@ def load_revision(path: Path) -> dict:
         "sources": sources,
         "groups": groups,
         "settings": {
-            "model": state["config"].get("model") if state else None,
-            "jev": state["config"].get("jev") if state else None,
+            "model": config.get("model"),
+            "jev": config.get("jev"),
             "policy_sha256": state.get("policy_sha256") if state else None,
         },
     }

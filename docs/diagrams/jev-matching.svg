@@ -155,12 +155,12 @@
 <!-- retry -->
 <g id="node10" class="node">
 <title>retry</title>
-<polygon fill="#e7f4e8" stroke="#6b8b73" points="615.46,-297.23 336.54,-297.23 336.54,-211.57 615.46,-211.57 615.46,-297.23"/>
+<polygon fill="#e7f4e8" stroke="#6b8b73" points="625.21,-297.23 326.79,-297.23 326.79,-211.57 625.21,-211.57 625.21,-297.23"/>
 <text xml:space="preserve" text-anchor="middle" x="476" y="-278.62" font-family="Times New Roman," font-size="12.00">PYTHON: retry RUN after operator inspection</text>
-<text xml:space="preserve" text-anchor="middle" x="476" y="-264.38" font-family="Times New Roman," font-size="12.00">Verify unchanged frozen inputs and policy</text>
-<text xml:space="preserve" text-anchor="middle" x="476" y="-250.12" font-family="Times New Roman," font-size="12.00">Create a new revision; replay stages using valid caches</text>
-<text xml:space="preserve" text-anchor="middle" x="476" y="-235.87" font-family="Times New Roman," font-size="12.00">Changed policy/source requires a new run</text>
-<text xml:space="preserve" text-anchor="middle" x="476" y="-221.62" font-family="Times New Roman," font-size="12.00">A killed process may not have written failure.json</text>
+<text xml:space="preserve" text-anchor="middle" x="476" y="-264.38" font-family="Times New Roman," font-size="12.00">Verify unchanged frozen inputs and scientific policy</text>
+<text xml:space="preserve" text-anchor="middle" x="476" y="-250.12" font-family="Times New Roman," font-size="12.00">Allow new budgets/timeouts; keep valid cached judgments</text>
+<text xml:space="preserve" text-anchor="middle" x="476" y="-235.87" font-family="Times New Roman," font-size="12.00">Save each attempt&#39;s settings in its own config.json</text>
+<text xml:space="preserve" text-anchor="middle" x="476" y="-221.62" font-family="Times New Roman," font-size="12.00">Changed model/policy/source requires a new run</text>
 </g>
 <!-- fail&#45;&gt;retry -->
 <g id="edge8" class="edge">

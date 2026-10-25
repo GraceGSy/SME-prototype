@@ -177,8 +177,11 @@ Each `start`, `add`, or `retry` attempt writes a new immutable revision under
 passages, correspondence reports, a singleton report, event/provenance records,
 and a viewer dataset. `run.json` points to the last completed revision and the
 latest attempt. Unchanged model judgments may be reused when an addition or
-retry replays the ordered sequence. Code, prompt, Skill, configuration, or
-dependency changes require a new run rather than mixing policies.
+retry replays the ordered sequence. Matching code, prompt, Skill, scientific
+configuration, or dependency changes require a new run rather than mixing policies.
+Execution guards and timeouts can change on retry without discarding cached results;
+see the [retry options](docs/jev.md#recover-a-failed-attempt). Each revision retains
+its actual configuration in `config.json`.
 
 ## Find the code
 

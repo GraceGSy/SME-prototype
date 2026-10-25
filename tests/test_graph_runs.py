@@ -1,5 +1,6 @@
 """Offline integration of prepared documents, ordered runs, and immutable revisions."""
 
+import io
 import json
 import unittest
 from pathlib import Path
@@ -10,8 +11,11 @@ import yaml
 from test_incremental_graph import CONFIG_PATH, ScriptedJudge
 
 from pipeline.files import write_json
+from pipeline.incremental_graph.cli import main
+from pipeline.incremental_graph.configuration import load_pipeline_config
 from pipeline.incremental_graph.graph import stable_id
-from pipeline.incremental_graph.runs import add_papers, retry_graph, start_graph
+from pipeline.incremental_graph.runs import _policy_hash, add_papers, retry_graph, start_graph
+from pipeline.providers.jev import JevSettings
 from pipeline.source_review import review_document
 
 
@@ -50,6 +54,96 @@ def manifest(root: Path, ids: list[str], name: str) -> Path:
 
 
 class GraphRunTest(unittest.TestCase):
+    def test_policy_separates_execution_guards_from_result_settings(self):
+        config = load_pipeline_config(CONFIG_PATH)
+        config.jev = JevSettings()
+        original = _policy_hash(config)
+        changed = config.model_copy(deep=True)
+        changed.model.max_input_tokens += 1
+        changed.model.max_prompt_characters += 1
+        changed.model.max_api_responses_per_process += 1
+        changed.model.max_session_input_tokens += 1
+        changed.model.max_session_output_tokens += 1
+        changed.jev.max_calls += 1
+        changed.jev.max_input_tokens += 1
+        changed.jev.timeout_seconds += 1
+        changed.stages[0].max_input_tokens = 500_000
+        self.assertEqual(_policy_hash(changed), original)
+        for field, value in (
+            ("provider", "openai"),
+            ("name", "different-model"),
+            ("max_tokens", config.model.max_tokens + 1),
+            ("effort", "high"),
+            ("thinking", "disabled"),
+            (
+                "context_management_trigger_tokens",
+                config.model.context_management_trigger_tokens + 1,
+            ),
+        ):
+            with self.subTest(field=field):
+                changed = config.model_copy(deep=True)
+                setattr(changed.model, field, value)
+                self.assertNotEqual(_policy_hash(changed), original)
+        changed = config.model_copy(deep=True)
+        changed.jev.model = "jev-1.13.0"
+        self.assertNotEqual(_policy_hash(changed), original)
+        changed = config.model_copy(deep=True)
+        changed.stages[0].max_tokens = 123
+        self.assertNotEqual(_policy_hash(changed), original)
+
+    def test_retry_rejects_scientific_changes_and_invalid_budgets_before_creating_revision(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = manifest(root, ["a", "b"], "source")
+            run = root / "run"
+            with patch(
+                "pipeline.incremental_graph.runs.CachedJudgments", return_value=ScriptedJudge({})
+            ) as provider:
+                start_graph(source, run, CONFIG_PATH)
+                original_state = (run / "run.json").read_bytes()
+                config = json.loads(original_state)["config"]
+                config["model"]["max_tokens"] += 1
+                write_json(root / "changed.json", config)
+                provider.reset_mock()
+                with self.assertRaisesRegex(ValueError, "scientific configuration changed"):
+                    retry_graph(run, config_path=root / "changed.json")
+                with self.assertRaises(ValueError):
+                    retry_graph(run, max_api_responses=0)
+                with self.assertRaisesRegex(ValueError, "require a Jev run"):
+                    retry_graph(run, jev_max_calls=5)
+                provider.assert_not_called()
+                self.assertEqual((run / "run.json").read_bytes(), original_state)
+                self.assertEqual(len(list((run / "revisions").iterdir())), 1)
+
+    def test_retry_cli_passes_execution_overrides(self):
+        with (
+            patch(
+                "sys.argv",
+                [
+                    "graph",
+                    "retry",
+                    "run",
+                    "--config",
+                    "retry.yaml",
+                    "--jev-max-calls",
+                    "20",
+                    "--max-api-responses",
+                    "50",
+                ],
+            ),
+            patch("sys.stdout", new_callable=io.StringIO),
+            patch("pipeline.incremental_graph.cli.retry_graph", return_value={}) as retry,
+        ):
+            main()
+            retry.assert_called_once_with(
+                Path("run"),
+                paper_index=None,
+                stage_id=None,
+                config_path=Path("retry.yaml"),
+                jev_max_calls=20,
+                max_api_responses=50,
+            )
+
     def test_sequence_and_separate_additions_produce_the_same_realignments(self):
         structural = stable_id("section-group", "root", "a", "s0001")
         target = stable_id("paragraph-group", structural, "a", "s0001.p0001")

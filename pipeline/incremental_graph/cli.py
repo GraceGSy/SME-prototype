@@ -61,6 +61,11 @@ def main() -> None:
     retry.add_argument("run_dir", type=Path)
     retry.add_argument("--paper-index", type=int)
     retry.add_argument("--stage")
+    retry.add_argument(
+        "--config", type=Path, help="Same scientific config with updated execution limits"
+    )
+    retry.add_argument("--jev-max-calls", type=int, help="Maximum Jev HTTP calls for this attempt")
+    retry.add_argument("--max-api-responses", type=int, help="Generative provider response guard")
     validate = commands.add_parser("validate", help="Validate prepared inputs without model calls")
     validate.add_argument("manifest", type=Path)
     args = parser.parse_args()
@@ -79,7 +84,14 @@ def main() -> None:
     elif args.command == "add":
         result = add_papers(args.manifest, args.run_dir)
     elif args.command == "retry":
-        result = retry_graph(args.run_dir, paper_index=args.paper_index, stage_id=args.stage)
+        result = retry_graph(
+            args.run_dir,
+            paper_index=args.paper_index,
+            stage_id=args.stage,
+            config_path=args.config,
+            jev_max_calls=args.jev_max_calls,
+            max_api_responses=args.max_api_responses,
+        )
     else:
         result = validate_manifest(args.manifest)
     print(json.dumps(result, indent=2))

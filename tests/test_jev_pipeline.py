@@ -12,7 +12,7 @@ from test_jev import answer
 
 from pipeline.document import QUESTION_FIELD
 from pipeline.files import read_json, write_json
-from pipeline.incremental_graph.compare import compare_revisions
+from pipeline.incremental_graph.compare import compare_revisions, load_revision
 from pipeline.incremental_graph.match_evidence import candidate_handle, center_texts
 from pipeline.incremental_graph.runs import retry_graph, start_graph
 from pipeline.incremental_graph.smoke_check import check_smoke
@@ -118,14 +118,65 @@ class JevPipelineTest(unittest.TestCase):
                     Path(first["dataset_dir"]), "offline-smoke", "Offline smoke"
                 )
                 self.assertTrue(data)
-                retry_graph(run)
+                original_state = read_json(run / "run.json")
+                retry_graph(run, jev_max_calls=24, max_api_responses=160)
                 self.assertEqual(network.call_count, 6)
                 self.assertEqual(skills.calls, 6)
+                retry_config = read_json(run / "run.json")["config"]
+                retry_config["jev"].update(max_input_tokens=4_000_000, timeout_seconds=240)
+                retry_config["model"].update(
+                    max_input_tokens=400_000,
+                    max_prompt_characters=1_000_000,
+                    max_session_input_tokens=60_000_000,
+                    max_session_output_tokens=2_000_000,
+                )
+                for stage in retry_config["stages"]:
+                    stage["max_input_tokens"] = 400_000
+                write_json(run / "retry-config.json", retry_config)
+                retry_graph(run, config_path=run / "retry-config.json")
+                self.assertEqual(network.call_count, 6)
+                self.assertEqual(skills.calls, 6)
+                self.assertEqual(
+                    read_json(run / "run.json")["policy_sha256"], original_state["policy_sha256"]
+                )
+                self.assertEqual(
+                    read_json(run / "revisions/revision-0001/config.json"), original_state["config"]
+                )
+                self.assertEqual(
+                    read_json(run / "revisions/revision-0003/config.json"), retry_config
+                )
             report = compare_revisions(
                 run / "revisions/revision-0001", run / "revisions/revision-0002"
             )
             self.assertEqual(report["levels"]["paragraph"]["changed_units"], 0)
             self.assertEqual(read_json(run / "run.json")["config"]["jev"]["model"], "jev-1.14.0")
+            self.assertEqual(
+                load_revision(run / "revisions/revision-0001")["settings"]["jev"]["max_calls"], 12
+            )
+            self.assertEqual(load_revision(run)["settings"]["jev"]["timeout_seconds"], 240)
+
+    def test_call_budget_failure_can_retry_with_larger_budget_without_rebuying_choices(self):
+        with tempfile.TemporaryDirectory() as directory:
+            run = Path(directory) / "run"
+            skills = ScriptedSkills()
+            with (
+                patch("pipeline.incremental_graph.runs.load_api_key", return_value="offline-key"),
+                patch("pipeline.providers.jev.load_api_key", return_value="offline-key"),
+                patch("pipeline.providers.jev.urlopen", side_effect=scripted_http) as network,
+                patch(
+                    "pipeline.incremental_graph.judgments.create_skill_client", return_value=skills
+                ),
+            ):
+                with self.assertRaisesRegex(ValueError, "Jev call limit"):
+                    start_graph(MANIFEST, run, jev=True, jev_max_calls=1)
+                self.assertEqual(network.call_count, 1)
+                failure = run / "revisions/revision-0001/failure.json"
+                original_failure = failure.read_bytes()
+                retry_graph(run, jev_max_calls=12)
+                self.assertEqual(network.call_count, 6)
+                self.assertEqual(skills.calls, 6)
+                self.assertEqual(failure.read_bytes(), original_failure)
+                self.assertTrue(check_smoke(run)["passed"])
 
     def test_failure_keeps_selection_and_retry_finishes_without_rebuying_it(self):
         with tempfile.TemporaryDirectory() as directory:
