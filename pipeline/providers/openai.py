@@ -186,7 +186,7 @@ class OpenAISkills(SessionLimits):
             input_tokens, int(raw_usage.get("output_tokens") or 0), response.id
         )
         usage = usage_record(response.id, raw_usage, self.session_usage)
-        if input_tokens > policy.max_input_tokens:
+        if policy.max_input_tokens is not None and input_tokens > policy.max_input_tokens:
             raise SkillBudgetExceeded(
                 f"OpenAI response {response.id} reported {input_tokens:,} input tokens; "
                 f"usage guard is {policy.max_input_tokens:,}. The paid response is retained.",

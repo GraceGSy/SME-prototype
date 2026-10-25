@@ -241,7 +241,7 @@ class ClaudeSkills(SessionLimits):
         )
         usage = usage_record(response.id, response_usage, self.session_usage)
         input_tokens = _input_token_volume(usage)
-        if input_tokens > policy.max_input_tokens:
+        if policy.max_input_tokens is not None and input_tokens > policy.max_input_tokens:
             raise SkillBudgetExceeded(
                 f"Claude Skill response reported {input_tokens:,} aggregate input-usage tokens "
                 f"(uncached={response_usage.get('input_tokens', 0):,}, "

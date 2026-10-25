@@ -73,7 +73,6 @@ def extract_document(
         )
         policy = SkillCallPolicy(
             max_tokens=32768,
-            max_input_tokens=250000,
             max_attachment_bytes=20_000_000 if source.suffix == ".pdf" else 500_000,
         )
         if source.stat().st_size > policy.max_attachment_bytes:

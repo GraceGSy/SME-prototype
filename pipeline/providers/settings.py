@@ -13,12 +13,12 @@ class ModelSettings(BaseModel):
     max_tokens: int = Field(default=1024, gt=0)
     effort: Literal["low", "medium", "high"] = "low"
     thinking: Literal["disabled", "adaptive"] = "disabled"
-    max_input_tokens: int = Field(default=200_000, gt=0)
-    max_prompt_characters: int = Field(default=500_000, gt=0)
+    max_input_tokens: int | None = Field(default=None, gt=0)
+    max_prompt_characters: int | None = Field(default=None, gt=0)
     context_management_trigger_tokens: int = Field(default=50_000, gt=0)
-    max_api_responses_per_process: int = Field(default=200, gt=0)
-    max_session_input_tokens: int = Field(default=2_000_000, gt=0)
-    max_session_output_tokens: int = Field(default=100_000, gt=0)
+    max_api_responses_per_process: int | None = Field(default=None, gt=0)
+    max_session_input_tokens: int | None = Field(default=None, gt=0)
+    max_session_output_tokens: int | None = Field(default=None, gt=0)
 
     def result_settings(self) -> dict:
         """Exclude stop-only guards, not settings that affect generated content."""

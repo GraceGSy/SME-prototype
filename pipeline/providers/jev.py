@@ -31,8 +31,8 @@ class JevSettings(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
     model: str = Field(default="jev-1.14.0", pattern=r"^jev-\d+\.\d+\.\d+$")
     selection_mode: Literal["choice", "choice_noul"] = "choice"
-    max_calls: int = Field(default=500, gt=0)
-    max_input_tokens: int = Field(default=2_000_000, gt=0)
+    max_calls: int | None = Field(default=None, gt=0)
+    max_input_tokens: int | None = Field(default=None, gt=0)
     timeout_seconds: int = Field(default=120, gt=0)
 
     def result_settings(self) -> dict:
@@ -115,9 +115,12 @@ class JevClient:
                 raise ValueError("Only Choice and Noul questions are supported")
         if len(encoded) > MAX_REQUEST_BYTES:
             raise JevRequestTooLarge("Jev request exceeds TypeSafe's 32 MiB body limit")
-        if self.calls >= self.settings.max_calls:
+        if self.settings.max_calls is not None and self.calls >= self.settings.max_calls:
             raise ValueError("Jev call limit reached; inspect usage before retrying")
-        if self.input_tokens >= self.settings.max_input_tokens:
+        if (
+            self.settings.max_input_tokens is not None
+            and self.input_tokens >= self.settings.max_input_tokens
+        ):
             raise ValueError("Jev input-token limit reached; inspect usage before retrying")
         key = load_api_key(self.repo_root, "TYPESAFE_API_KEY")
         request = Request(
@@ -157,6 +160,9 @@ class JevClient:
         write_json(path, {**record, "response_text": text})
         payload = validate_response(json.loads(text), body)
         self.input_tokens += payload["usage"]["input_tokens"]
-        if self.input_tokens > self.settings.max_input_tokens:
+        if (
+            self.settings.max_input_tokens is not None
+            and self.input_tokens > self.settings.max_input_tokens
+        ):
             raise ValueError("Jev input-token limit exceeded; paid response retained")
         return payload

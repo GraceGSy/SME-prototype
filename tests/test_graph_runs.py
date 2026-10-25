@@ -59,13 +59,13 @@ class GraphRunTest(unittest.TestCase):
         config.jev = JevSettings()
         original = _policy_hash(config)
         changed = config.model_copy(deep=True)
-        changed.model.max_input_tokens += 1
-        changed.model.max_prompt_characters += 1
-        changed.model.max_api_responses_per_process += 1
-        changed.model.max_session_input_tokens += 1
-        changed.model.max_session_output_tokens += 1
-        changed.jev.max_calls += 1
-        changed.jev.max_input_tokens += 1
+        changed.model.max_input_tokens = 200_000
+        changed.model.max_prompt_characters = 500_000
+        changed.model.max_api_responses_per_process = 200
+        changed.model.max_session_input_tokens = 2_000_000
+        changed.model.max_session_output_tokens = 100_000
+        changed.jev.max_calls = 500
+        changed.jev.max_input_tokens = 2_000_000
         changed.jev.timeout_seconds += 1
         changed.stages[0].max_input_tokens = 500_000
         self.assertEqual(_policy_hash(changed), original)

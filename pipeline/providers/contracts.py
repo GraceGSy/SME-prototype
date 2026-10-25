@@ -37,9 +37,9 @@ class SkillCallPolicy:
     max_tokens: int
     effort: Literal["low", "medium", "high"] = "low"
     thinking: Literal["disabled", "adaptive"] = "disabled"
-    max_input_tokens: int = 200_000
-    max_prompt_characters: int = 500_000
-    max_attachment_bytes: int = 500_000
+    max_input_tokens: int | None = None
+    max_prompt_characters: int | None = None
+    max_attachment_bytes: int | None = None
     context_management_trigger_tokens: int = 50_000
 
     def __post_init__(self) -> None:
@@ -50,7 +50,12 @@ class SkillCallPolicy:
             "max_attachment_bytes": self.max_attachment_bytes,
             "context_management_trigger_tokens": self.context_management_trigger_tokens,
         }
-        invalid = [name for name, value in positive.items() if value <= 0]
+        invalid = [name for name, value in positive.items() if value is not None and value <= 0]
+        invalid.extend(
+            name
+            for name in ("max_tokens", "context_management_trigger_tokens")
+            if positive[name] is None
+        )
         if invalid:
             raise ValueError(f"Skill call limits must be positive: {', '.join(invalid)}")
 
@@ -60,20 +65,20 @@ class SkillCallPolicy:
 
 @dataclass(frozen=True)
 class SkillSessionBudget:
-    """Process-local ceiling across many individually bounded Skill calls."""
+    """Optional process-local ceilings; None leaves a counter uncapped."""
 
-    max_api_responses: int = 100
-    max_input_tokens: int = 2_000_000
-    max_output_tokens: int = 100_000
+    max_api_responses: int | None = None
+    max_input_tokens: int | None = None
+    max_output_tokens: int | None = None
 
     def __post_init__(self) -> None:
-        if (
-            min(
+        if any(
+            value is not None and value <= 0
+            for value in (
                 self.max_api_responses,
                 self.max_input_tokens,
                 self.max_output_tokens,
             )
-            <= 0
         ):
             raise ValueError("Skill session budget values must be positive")
 

@@ -13,7 +13,7 @@ class SessionLimits:
     @staticmethod
     def _validate_attachment(path: Path, policy: SkillCallPolicy) -> None:
         size = path.stat().st_size
-        if size > policy.max_attachment_bytes:
+        if policy.max_attachment_bytes is not None and size > policy.max_attachment_bytes:
             raise SkillBudgetExceeded(
                 f"Attachment {path.name} is {size} bytes; configured maximum is "
                 f"{policy.max_attachment_bytes}"
@@ -27,17 +27,20 @@ class SessionLimits:
         cacheable_context: str | None = None,
     ) -> None:
         total = len(prompt) + len(cacheable_prompt or "") + len(cacheable_context or "")
-        if total > policy.max_prompt_characters:
+        if policy.max_prompt_characters is not None and total > policy.max_prompt_characters:
             raise SkillBudgetExceeded(
                 f"Skill prompt is {total} characters; configured maximum is "
                 f"{policy.max_prompt_characters}"
             )
 
     def _check_session_budget(self) -> None:
-        if (
-            self.session_usage["api_responses"] >= self.session_budget.max_api_responses
-            or self.session_usage["input_tokens"] >= self.session_budget.max_input_tokens
-            or self.session_usage["output_tokens"] >= self.session_budget.max_output_tokens
+        if any(
+            limit is not None and self.session_usage[key] >= limit
+            for key, limit in (
+                ("api_responses", self.session_budget.max_api_responses),
+                ("input_tokens", self.session_budget.max_input_tokens),
+                ("output_tokens", self.session_budget.max_output_tokens),
+            )
         ):
             raise SkillBudgetExceeded(
                 "Skill process reached its response or observed-token limit",
@@ -50,9 +53,12 @@ class SessionLimits:
         self.session_usage["api_responses"] += 1
         self.session_usage["input_tokens"] += input_tokens
         self.session_usage["output_tokens"] += output_tokens
-        if (
-            self.session_usage["input_tokens"] > self.session_budget.max_input_tokens
-            or self.session_usage["output_tokens"] > self.session_budget.max_output_tokens
+        if any(
+            limit is not None and self.session_usage[key] > limit
+            for key, limit in (
+                ("input_tokens", self.session_budget.max_input_tokens),
+                ("output_tokens", self.session_budget.max_output_tokens),
+            )
         ):
             raise SkillBudgetExceeded(
                 "Skill process exceeded its cumulative token budget after response "

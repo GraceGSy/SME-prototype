@@ -237,6 +237,7 @@ class SkillApiTest(unittest.TestCase):
 
     def test_exhausted_token_budget_blocks_the_next_call(self) -> None:
         adapter, messages = _adapter(_Response("unused", "end_turn", 1, 1))
+        adapter.session_budget = SkillSessionBudget(max_input_tokens=100)
         adapter.session_usage["input_tokens"] = adapter.session_budget.max_input_tokens
         with self.assertRaises(SkillBudgetExceeded):
             adapter.run_json([SKILL], "prompt", SCHEMA, policy=SkillCallPolicy(max_tokens=512))
@@ -297,7 +298,7 @@ class SkillApiTest(unittest.TestCase):
                 expected_tokens = 2048 if stage.skill == "generate-question" else 8192
                 self.assertEqual(call["max_tokens"], expected_tokens)
 
-    def test_section_guard_allows_cached_skill_iterations_but_remains_bounded(self) -> None:
+    def test_sections_allow_large_cached_skill_iterations_without_an_opt_in_cap(self) -> None:
         config = load_pipeline_config(
             Path(__file__).resolve().parents[1]
             / "pipeline/incremental_graph/configs/incremental-v1.yaml"
@@ -305,7 +306,7 @@ class SkillApiTest(unittest.TestCase):
         for stage in config.stages:
             if stage.id not in {"section_matching", "section_rerepresentation"}:
                 continue
-            for cached, accepted in ((287520, True), (350000, False)):
+            for cached in (287520, 350000, 3_000_000):
                 with self.subTest(stage=stage.id, cached=cached):
                     response = _Response("cached-section", "end_turn", 2753, 1977)
                     response.usage.value.update(
@@ -316,14 +317,10 @@ class SkillApiTest(unittest.TestCase):
                         max_tokens=config.model.max_tokens,
                         max_input_tokens=stage.max_input_tokens or config.model.max_input_tokens,
                     )
-                    if accepted:
-                        self.assertEqual(
-                            adapter.run_json([SKILL], "prompt", SCHEMA, policy=policy).value,
-                            {"answer": "ok"},
-                        )
-                    else:
-                        with self.assertRaises(SkillBudgetExceeded):
-                            adapter.run_json([SKILL], "prompt", SCHEMA, policy=policy)
+                    self.assertEqual(
+                        adapter.run_json([SKILL], "prompt", SCHEMA, policy=policy).value,
+                        {"answer": "ok"},
+                    )
 
     def test_cacheable_instructions_precede_dynamic_input_in_one_turn(self) -> None:
         adapter, messages = _adapter(_Response("response-1", "end_turn", 100, 20))

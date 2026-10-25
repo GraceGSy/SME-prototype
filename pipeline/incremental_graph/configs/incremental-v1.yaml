@@ -11,13 +11,8 @@ model:
   max_tokens: 8192
   effort: medium
   thinking: adaptive
-  max_input_tokens: 200000
-  max_prompt_characters: 500000
   context_management_trigger_tokens: 50000
-  # Capacity for the five-story corpus when questions run one unit per request.
-  max_api_responses_per_process: 3000
-  max_session_input_tokens: 30000000
-  max_session_output_tokens: 1000000
+  # Local token, request-count, and prompt-size caps are opt-in; omitted means uncapped.
 
 stages:
   - id: ingest
@@ -36,8 +31,6 @@ stages:
     handler: match_sections
     phase: structural
     skill: match-role
-    # Aggregate usage includes cached rereads during native Skill tool steps.
-    max_input_tokens: 350000
     prompts:
       new_to_group: section-to-group-match/v1
       group_to_new: group-to-section-match/v1
@@ -61,7 +54,6 @@ stages:
     handler: rerepresent_section_singletons
     phase: structural
     skill: match-role
-    max_input_tokens: 350000
     prompts:
       singleton_to_group: singleton-to-group-match/v1
       group_to_singleton: group-to-singleton-match/v1
@@ -84,14 +76,11 @@ stages:
     prompt: paragraph-question/v1
     context: paragraph-question
     max_tokens: 2048
-    max_input_tokens: 50000
 
   - id: paragraph_matching
     handler: match_paragraphs
     phase: paragraph
     skill: match-role
-    # Each request compares one focus paragraph against the allowed pool.
-    max_input_tokens: 150000
     prompts:
       new_to_group: paragraph-to-group-match/v1
       group_to_new: group-to-paragraph-match/v1
@@ -110,13 +99,11 @@ stages:
     prompt: group-question/v1
     context: group-question
     max_tokens: 2048
-    max_input_tokens: 350000
 
   - id: paragraph_rerepresentation
     handler: rerepresent_paragraph_singletons
     phase: paragraph
     skill: match-role
-    max_input_tokens: 150000
     prompts:
       singleton_to_group: singleton-to-group-match/v1
       group_to_singleton: group-to-singleton-match/v1
@@ -131,4 +118,3 @@ stages:
     prompt: group-question/v1
     context: group-question
     max_tokens: 2048
-    max_input_tokens: 350000

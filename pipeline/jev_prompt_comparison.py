@@ -108,8 +108,8 @@ def compare_prompts(
     output: Path,
     *,
     live: bool = False,
-    max_calls: int = 24,
-    max_input_tokens: int = 500_000,
+    max_calls: int | None = None,
+    max_input_tokens: int | None = None,
 ) -> dict:
     revision, output = revision.resolve(), output.resolve()
     run = revision.parent.parent
@@ -211,8 +211,8 @@ def main() -> None:
     parser.add_argument(
         "--live", action="store_true", help="Make paid Jev calls; otherwise write an offline plan"
     )
-    parser.add_argument("--max-calls", type=int, default=24)
-    parser.add_argument("--max-input-tokens", type=int, default=500_000)
+    parser.add_argument("--max-calls", type=int, help="Optional per-process request cap")
+    parser.add_argument("--max-input-tokens", type=int, help="Optional cumulative input-token cap")
     args = parser.parse_args()
     report = compare_prompts(
         args.revision,
