@@ -200,20 +200,58 @@ argument selects its last completed revision, even if the latest attempt failed.
 The tool deliberately permits different historical policies; it does not require
 the old run's code hash to match today's checkout.
 
-The report shows changed source memberships and paragraph parent scopes, group
-and singleton counts, added/removed co-member pairs, pair-set Jaccard agreement,
-and changed group questions. Expand a changed unit to read its passage and both
-assignments. `comparison.json` also lists every added and removed pair.
+The Python comparison is deterministic and makes no model, embedding, or API
+calls. It uses the existing pinned NetworkX dependency. The HTML report includes:
 
-Comparisons ignore generated graph IDs. Shared papers must have the same source
-IDs, authored text, and boundaries, and both runs must use the same granularity;
-otherwise the tool refuses the comparison. When paper sets differ, pair metrics
-cover shared papers only and counts cover the full runs. Parent-scope changes can
-include added papers. No pairs in either result means Jaccard is not applicable,
-not perfect agreement. Question-only differences appear separately. Neither run
-is ground truth: agreement measures consistency, not accuracy or causality.
+- **Coverage:** the fraction of shared source units with at least one match in
+  another paper, overall and per paper. Singleton units remain in the denominator.
+- **Match similarity:** cross-paper pair Jaccard (intersection / union), pair F1
+  agreement, baseline-pair retention, and each active unit's peer-set Jaccard.
+  Same-paper fan-in pairs do not inflate these scores. Units unmatched in both
+  runs do not inflate peer agreement.
+- **Graph comparison:** NetworkX intersection and symmetric difference provide
+  retained edges and exact edge edits with source identities fixed. Isomorphism
+  also preserves source IDs, so similarly shaped but unrelated matches do not
+  count as equivalent.
+- **Group alignment:** NetworkX `max_weight_matching` finds a global one-to-one
+  alignment maximizing shared-member counts, without using question wording.
+  Unaligned groups count as zero in mean membership Jaccard. Overlap counts expose
+  possible splits and merges; this alignment does not prove semantic equivalence.
+- **Question similarity:** normalized exact agreement, token-set Jaccard, and
+  TF-IDF cosine for source-unit questions and aligned cross-paper group questions.
+  These measure wording, not meaning. TF-IDF uses raw token counts and smoothed
+  IDF fitted separately on each comparison's nonempty question pairs; scores from
+  different comparison corpora are not calibrated. Missing questions are excluded.
+- **Review details:** added/lost pairs with source passages, aligned group
+  questions, unit-question changes, and membership changes separated from
+  parent-scope-only changes. `comparison.json` contains the complete metric data.
+
+Comparisons ignore generated group IDs. By default, shared papers must have the
+same source IDs, authored text, and boundaries, and both runs must use the same
+granularity. To inspect historical runs with different section/subsection
+projections, explicitly opt into the shared-source intersection:
+
+```bash
+python -m pipeline.incremental_graph.compare runs/hci-section-medium-excerpts-20260917/revisions/revision-0004 runs/hci-first-two-jev-20261025-01 output/comparisons/hci-two-paper-shared --shared-sources
+```
+
+This mode still rejects changed text for a common source ID. It reports excluded
+units and metadata differences rather than silently treating different boundaries
+as identical. Coverage and graph scores use only the shared-source intersection;
+full-run counts remain separate. Extra papers and full parent scopes can influence
+the results even after projection. Older revisions without `config.json` use
+`run.json` as a clearly flagged, potentially stale settings fallback.
+
+No cross-paper pairs in either result means agreement is not applicable, not
+perfect. Integer alignment weights and canonical source ordering make results
+repeatable with the pinned NetworkX version. We do not use unrestricted graph edit
+distance: remapping known source identities would obscure which passages matched,
+and timeout-bounded searches would make the result depend on execution time.
+
+Neither run is ground truth: agreement measures consistency, not accuracy or causality.
 Keep source preparation, order, granularity, and generative settings constant
-when testing the effect of Jev alone.
+when testing the effect of Jev alone. Human labels are needed to establish whether
+added matches are correct and whether removed matches are genuine improvements.
 
 ## Run a real corpus
 
@@ -378,6 +416,7 @@ npm ci
 npm run build:viewer
 python -m unittest discover -s tests -p "test_jev*.py" -v
 python -m unittest discover -s tests -p test_run_comparison.py -v
+python -m unittest discover -s tests -p test_comparison_metrics.py -v
 python -m unittest discover -s tests -q
 ```
 

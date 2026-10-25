@@ -1,5 +1,8 @@
 """Cross-run comparison keeps source identity separate from generated graph IDs."""
 
+import os
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -112,6 +115,11 @@ class RunComparisonTest(unittest.TestCase):
             self.assertEqual(data["pair_jaccard"], 1)
             self.assertEqual(data["added_pairs"], [])
             self.assertEqual(data["removed_pairs"], [])
+            self.assertTrue(data["metrics"]["graph"]["identity_isomorphic"])
+            self.assertEqual(data["metrics"]["graph"]["fixed_identity_edge_edits"], 0)
+            self.assertEqual(
+                data["metrics"]["group_alignment"]["mean_member_jaccard_with_unmatched_zero"], 1
+            )
 
     def test_changed_memberships_and_singletons_are_reported(self):
         a = self.run_fixture("a", [["a", "b"], ["c"]])
@@ -142,12 +150,17 @@ class RunComparisonTest(unittest.TestCase):
         for data in result["levels"].values():
             self.assertEqual(data["added_pairs"], [])
             self.assertEqual(data["pair_jaccard"], 1)
+            self.assertEqual(data["metrics"]["coverage"]["right"]["total_units"], 2)
+            self.assertEqual(data["metrics"]["coverage"]["right"]["matched_units"], 2)
+            self.assertEqual(data["metrics"]["graph"]["fixed_identity_edge_edits"], 0)
 
     def test_changed_source_or_granularity_is_rejected(self):
         a = self.run_fixture("a", [["a", "b"]])
         b = self.run_fixture("b", [["a", "b"]], text_suffix=" changed")
         with self.assertRaisesRegex(ValueError, "source content"):
             compare_revisions(a, b)
+        with self.assertRaisesRegex(ValueError, "source content"):
+            compare_revisions(a, b, shared_sources=True)
         summary = b / "revisions/revision-0001/summary.json"
         write_json(summary, {**read_json(summary), "max_granularity": "paragraph"})
         with self.assertRaisesRegex(ValueError, "different granularities"):
@@ -178,6 +191,9 @@ class RunComparisonTest(unittest.TestCase):
         self.assertNotIn("<img", html)
         self.assertIn("&lt;script&gt;", html)
         self.assertIn("&lt;img", html)
+        self.assertIn("NetworkX shared-group alignment", html)
+        self.assertIn("Question token Jaccard:", html)
+        self.assertIn("Cross-paper pairs added:", html)
         self.assertEqual(read_json(Path(paths["data"]))["levels"]["section"]["changed_units"], 3)
         with self.assertRaises(FileExistsError):
             write_comparison(a, b, output)
@@ -186,6 +202,68 @@ class RunComparisonTest(unittest.TestCase):
         a = self.run_fixture("a", [["a"], ["b"]])
         result = compare_revisions(a, a)
         self.assertIsNone(result["levels"]["section"]["pair_jaccard"])
+        self.assertIsNone(result["levels"]["section"]["metrics"]["graph"]["pair_f1_agreement"])
+
+    def test_explicit_projection_reports_scope_metadata_and_excluded_units(self):
+        a = self.run_fixture("a", [["a", "b"]])
+        b = self.run_fixture("b", [["a", "b"]])
+        revision = b / "revisions/revision-0001"
+        write_json(
+            revision / "summary.json",
+            {**read_json(revision / "summary.json"), "max_granularity": "subsection"},
+        )
+        for paper in ("a", "b"):
+            path = revision / "dataset" / f"{paper}.json"
+            document = read_json(path)
+            document["sections"].append(
+                {
+                    **document["sections"][0],
+                    "id": "ss0001",
+                    "unit_type": "subsection",
+                    "parent_id": "s0001",
+                }
+            )
+            document["paragraphs"][0]["section_id"] = "ss0001"
+            write_json(path, document)
+        snapshot_path = revision / "dataset/final_snapshot.json"
+        snapshot = read_json(snapshot_path)
+        snapshot["section_groups"].append(
+            {
+                "group_id": "subsections",
+                "overarching_question": "Subsections?",
+                "parent_group_id": None,
+                "members": [{"paper": paper, "unit_id": "ss0001"} for paper in ("a", "b")],
+            }
+        )
+        write_json(snapshot_path, snapshot)
+        with self.assertRaisesRegex(ValueError, "different granularities"):
+            compare_revisions(a, b)
+        report = compare_revisions(a, b, shared_sources=True)
+        self.assertEqual(report["comparison_mode"], "shared-sources")
+        self.assertEqual(
+            len(report["levels"]["section"]["source_projection"]["right_excluded_units"]), 2
+        )
+        self.assertEqual(
+            len(report["levels"]["paragraph"]["source_projection"]["metadata_changed_units"]), 2
+        )
+        self.assertEqual(report["levels"]["paragraph"]["metrics"]["graph"]["pair_jaccard"], 1)
+
+    def test_report_is_identical_across_python_hash_seeds(self):
+        a = self.run_fixture("a", [["a", "b"], ["c", "d"]])
+        b = self.run_fixture("b", [["a", "c"], ["b", "d"]])
+        command = [
+            sys.executable,
+            "-c",
+            (
+                "import json; from pathlib import Path; from pipeline.incremental_graph.compare import compare_revisions; "
+                f"print(json.dumps(compare_revisions(Path({str(a)!r}),Path({str(b)!r})),sort_keys=True))"
+            ),
+        ]
+        results = [
+            subprocess.check_output(command, env={**os.environ, "PYTHONHASHSEED": seed})
+            for seed in ("1", "777")
+        ]
+        self.assertEqual(results[0], results[1])
 
 
 if __name__ == "__main__":

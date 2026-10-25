@@ -9,6 +9,7 @@ import re
 from itertools import combinations
 from pathlib import Path
 
+from ..comparison_metrics import membership_metrics, project_groups, question_similarity
 from ..files import read_json, write_json
 
 
@@ -88,6 +89,9 @@ def load_revision(path: Path) -> dict:
             "model": config.get("model"),
             "jev": config.get("jev"),
             "policy_sha256": state.get("policy_sha256") if state else None,
+            "config_source": "revision/config.json"
+            if (path / "config.json").is_file()
+            else "run.json (historical fallback)",
         },
     }
 
@@ -108,20 +112,14 @@ def _source_identity(unit: dict, level: str) -> dict:
 
 
 def _assignments(run: dict, level: str, common: set[str]) -> tuple[dict, dict]:
-    parents = {node["group_id"]: node["source_members"] for node in run["groups"]["section"]}
     memberships = {}
     questions = {}
-    for node in run["groups"][level]:
-        members = tuple(key for key in node["source_members"] if key in common)
-        if not members:
-            continue
-        parent = node["parent_group_id"]
-        if parent is not None and parent not in parents:
-            raise ValueError(f"Unknown parent scope: {parent}")
-        scope = tuple(parents[parent]) if parent is not None else ()
+    for group in project_groups(run, level, common):
+        members = tuple(group["members"])
+        scope = tuple(group["scope"])
         for key in members:
             memberships[key] = {"members": members, "scope": scope}
-        questions[members] = node["overarching_question"]
+        questions[members] = group["question"]
     return memberships, questions
 
 
@@ -135,15 +133,18 @@ def _stats(run: dict, level: str) -> dict:
     }
 
 
-def compare_revisions(left: Path, right: Path) -> dict:
+def compare_revisions(left: Path, right: Path, *, shared_sources: bool = False) -> dict:
     a, b = load_revision(left), load_revision(right)
-    if a["summary"]["max_granularity"] != b["summary"]["max_granularity"]:
+    granularity_changed = a["summary"]["max_granularity"] != b["summary"]["max_granularity"]
+    if granularity_changed and not shared_sources:
         raise ValueError("Runs use different granularities; compare runs with the same projection")
     common_papers = set(a["papers"]) & set(b["papers"])
     if not common_papers:
         raise ValueError("Runs have no source papers in common")
     result = {
-        "schema_version": 1,
+        "schema_version": 2,
+        "comparison_mode": "shared-sources" if shared_sources else "strict",
+        "warnings": ["Agreement and coverage are not accuracy; neither run is ground truth."],
         "left": {key: a[key] for key in ("path", "summary", "settings")},
         "right": {key: b[key] for key in ("path", "summary", "settings")},
         "common_papers": sorted(common_papers),
@@ -151,18 +152,46 @@ def compare_revisions(left: Path, right: Path) -> dict:
         "right_only_papers": sorted(set(b["papers"]) - common_papers),
         "levels": {},
     }
+    if granularity_changed:
+        result["warnings"].append(
+            "Granularity differs. Only identical shared source IDs/text are compared; source scopes may differ."
+        )
+    if a["summary"]["paper_order"] != b["summary"]["paper_order"]:
+        result["warnings"].append(
+            "Corpus membership or insertion order differs. Extra papers can affect matches and group questions even after projection."
+        )
+    if any(
+        a["settings"][field] != b["settings"][field] for field in ("model", "jev", "policy_sha256")
+    ):
+        result["warnings"].append(
+            "Model/policy metadata differ. These runs are not a controlled Jev-versus-LLM experiment."
+        )
+    if any("historical" in run["settings"]["config_source"] for run in (a, b)):
+        result["warnings"].append(
+            "An older revision has no config snapshot; its settings come from run.json and may describe a later attempt."
+        )
     for level in ("section", "paragraph"):
-        common = {
+        left_units = {
             key for key, source in a["sources"][level].items() if source["paper"] in common_papers
         }
-        other = {
+        right_units = {
             key for key, source in b["sources"][level].items() if source["paper"] in common_papers
         }
-        if common != other or any(
-            _source_identity(a["sources"][level][key], level)
-            != _source_identity(b["sources"][level][key], level)
+        common = left_units & right_units
+        if not common:
+            raise ValueError(f"No shared {level} source IDs")
+        metadata_changes = sorted(
+            key
             for key in common
-        ):
+            if _source_identity(a["sources"][level][key], level)
+            != _source_identity(b["sources"][level][key], level)
+        )
+        text_changes = [
+            key
+            for key in common
+            if a["sources"][level][key]["text"] != b["sources"][level][key]["text"]
+        ]
+        if text_changes or (not shared_sources and (left_units != right_units or metadata_changes)):
             raise ValueError(
                 f"Shared {level} source content or boundaries differ; memberships are not directly comparable"
             )
@@ -196,21 +225,191 @@ def compare_revisions(left: Path, right: Path) -> dict:
             "left_stats": _stats(a, level),
             "right_stats": _stats(b, level),
             "common_units": len(common),
+            "source_projection": {
+                "left_units_in_shared_papers": len(left_units),
+                "right_units_in_shared_papers": len(right_units),
+                "left_excluded_units": sorted(left_units - common),
+                "right_excluded_units": sorted(right_units - common),
+                "metadata_changed_units": metadata_changes,
+            },
             "changed_units": len(changes),
+            "membership_changed_units": sum(
+                before[key]["members"] != after[key]["members"] for key in common
+            ),
+            "scope_changed_units": sum(
+                before[key]["scope"] != after[key]["scope"] for key in common
+            ),
+            "scope_only_changed_units": sum(
+                before[key]["members"] == after[key]["members"]
+                and before[key]["scope"] != after[key]["scope"]
+                for key in common
+            ),
             "unchanged_pairs": len(old_pairs & new_pairs),
             "added_pairs": sorted(new_pairs - old_pairs),
             "removed_pairs": sorted(old_pairs - new_pairs),
             "pair_jaccard": len(old_pairs & new_pairs) / len(union) if union else None,
             "changes": changes,
             "question_changes": question_changes,
+            "sources": {key: a["sources"][level][key] for key in sorted(common)},
+            "metrics": membership_metrics(
+                project_groups(a, level, common),
+                project_groups(b, level, common),
+                {key: a["sources"][level][key] for key in sorted(common)},
+            ),
+            "unit_questions": question_similarity(
+                [
+                    {
+                        "unit": key,
+                        "left": a["sources"][level][key].get("tag", ""),
+                        "right": b["sources"][level][key].get("tag", ""),
+                    }
+                    for key in sorted(common)
+                ]
+            ),
         }
     return result
 
 
-def render_html(report: dict) -> str:
-    def escape(value):
-        return html.escape(str(value), quote=True)
+def escape(value) -> str:
+    return html.escape(str(value), quote=True)
 
+
+def _percent(value: float | None) -> str:
+    return "N/A" if value is None else f"{value:.1%}"
+
+
+def _metrics_html(data: dict) -> str:
+    metrics = data["metrics"]
+    coverage, graph, alignment = (metrics[key] for key in ("coverage", "graph", "group_alignment"))
+    parts = [
+        "<h3>Coverage on identical shared sources</h3><table><tr><th>Measure</th><th>Baseline</th><th>Comparison</th></tr>"
+    ]
+    for label, values in (
+        (
+            "Units matched across papers",
+            [
+                f"{coverage[side]['matched_units']} / {data['common_units']} ({_percent(coverage[side]['fraction'])})"
+                for side in ("left", "right")
+            ],
+        ),
+        ("Shared groups", [coverage[side]["cross_paper_groups"] for side in ("left", "right")]),
+        (
+            "Cross-paper co-member pairs",
+            [coverage[side]["cross_paper_pairs"] for side in ("left", "right")],
+        ),
+    ):
+        parts.append(
+            f"<tr><th>{escape(label)}</th><td>{escape(values[0])}</td><td>{escape(values[1])}</td></tr>"
+        )
+    for paper in coverage["left"]["by_paper"]:
+        cells = [coverage[side]["by_paper"][paper] for side in ("left", "right")]
+        parts.append(
+            f"<tr><th>{escape(paper)} coverage</th>"
+            + "".join(
+                f"<td>{cell['matched']} / {cell['total']} ({_percent(cell['fraction'])})</td>"
+                for cell in cells
+            )
+            + "</tr>"
+        )
+    parts.append("</table><h3>Match agreement</h3><table><tr><th>Measure</th><th>Value</th></tr>")
+    for label, value in (
+        ("Cross-paper pair Jaccard", _percent(graph["pair_jaccard"])),
+        ("Cross-paper pair F1 agreement (not accuracy)", _percent(graph["pair_f1_agreement"])),
+        ("Baseline pairs retained", _percent(graph["baseline_pair_retention"])),
+        ("New-run pairs also in baseline", _percent(graph["new_pair_overlap_with_baseline"])),
+        (
+            "Mean peer overlap, units matched in either run",
+            _percent(graph["mean_peer_jaccard_active_units"]),
+        ),
+        ("Fixed-source graph edge edits", graph["fixed_identity_edge_edits"]),
+        ("Source-identity-preserving graph isomorphism", graph["identity_isomorphic"]),
+        ("Units with membership changes", data["membership_changed_units"]),
+        ("Units with scope-only changes", data["scope_only_changed_units"]),
+        (
+            "Units gaining / losing match coverage",
+            f"{len(graph['gained_coverage'])} / {len(graph['lost_coverage'])}",
+        ),
+    ):
+        parts.append(f"<tr><th>{escape(label)}</th><td>{escape(value)}</td></tr>")
+    parts.append(
+        "</table><p>NetworkX compares source-anchored graphs. Edge edits are exact additions/removals with fixed source identities, not an unrestricted graph-edit-distance search.</p>"
+    )
+    parts.append(
+        "<h3>Question wording similarity</h3><p>These are lexical scores, not semantic correctness or answer-quality scores. TF-IDF is fitted only on the displayed comparison pairs. No embeddings or API calls.</p><table><tr><th>Questions</th><th>Compared</th><th>Exact after case/punctuation normalization</th><th>Token Jaccard</th><th>TF-IDF cosine</th></tr>"
+    )
+    for label, scores in (
+        ("Source-unit questions", data["unit_questions"]),
+        ("Aligned shared-group questions", alignment["questions"]),
+    ):
+        parts.append(
+            f"<tr><th>{escape(label)}</th><td>{scores['compared']}</td><td>{_percent(scores['normalized_exact_fraction'])}</td><td>{_percent(scores['mean_token_jaccard'])}</td><td>{_percent(scores['mean_tfidf_cosine'])}</td></tr>"
+        )
+    parts.append("</table>")
+    parts.append(
+        "<p>Group questions are compared only where groups share source members, including partial overlaps; inspect the alignment below before interpreting a wording score. Missing questions are excluded, not scored as identical.</p>"
+    )
+    for label, pairs in (
+        ("Lost cross-paper pairs", graph["removed_pairs"]),
+        ("Added cross-paper pairs", graph["added_pairs"]),
+    ):
+        parts.append(f"<details><summary>{label}: {len(pairs)} (inspect source passages)</summary>")
+        for pair in pairs:
+            parts.append(
+                f"<details><summary>{escape(' / '.join(pair))}</summary><table><tr><th>Source 1</th><th>Source 2</th></tr><tr>"
+            )
+            for key in pair:
+                source = data["sources"][key]
+                parts.append(
+                    f"<td><strong>{escape(source['paper'])}: {escape(source.get('title', key))}</strong><blockquote>{escape(source['text'])}</blockquote></td>"
+                )
+            parts.append("</tr></table></details>")
+        parts.append("</details>")
+    parts.append(
+        f"<h3>NetworkX shared-group alignment</h3><p>{escape(alignment['method'])}. {alignment['aligned_groups']} aligned; {alignment['unmatched_left']} baseline and {alignment['unmatched_right']} comparison groups unaligned. Mean membership Jaccard including unaligned groups as zero: {_percent(alignment['mean_member_jaccard_with_unmatched_zero'])}. Groups overlapping multiple counterparts: {alignment['left_groups_overlapping_multiple_right']} baseline / {alignment['right_groups_overlapping_multiple_left']} comparison.</p>"
+    )
+    question_rows = iter(alignment["questions"]["rows"])
+    for row in alignment["rows"]:
+        title = f"Membership Jaccard {_percent(row['member_jaccard'])}: " + " / ".join(
+            ", ".join(row[side]["members"]) if row[side] else "Unaligned"
+            for side in ("left", "right")
+        )
+        parts.append(
+            f"<details><summary>{escape(title)}</summary><table><tr><th>Baseline group</th><th>Comparison group</th></tr><tr>"
+        )
+        for side in ("left", "right"):
+            group = row[side]
+            parts.append(
+                "<td>Unaligned</td>"
+                if group is None
+                else f"<td><p>{escape(group['question'])}</p><pre>{escape(chr(10).join(group['members']))}</pre><p>Original group members: {escape(', '.join(group['full_members']))}</p></td>"
+            )
+        parts.append("</tr></table>")
+        if row["left"] and row["right"]:
+            scores = next(question_rows)
+            parts.append(
+                "<p>Question token Jaccard: "
+                f"{_percent(scores['token_jaccard'])}; TF-IDF cosine: {_percent(scores['tfidf_cosine'])}. "
+                f"Identical projected membership: {scores['same_membership']}.</p>"
+            )
+        parts.append("</details>")
+    parts.append(
+        "<details><summary>Inspect all source-unit questions, least lexical overlap first</summary>"
+    )
+    for row in sorted(
+        data["unit_questions"]["rows"],
+        key=lambda row: (
+            row["tfidf_cosine"] if row["tfidf_cosine"] is not None else -1,
+            row["unit"],
+        ),
+    ):
+        parts.append(
+            f"<details><summary>{escape(row['unit'])}: TF-IDF {_percent(row['tfidf_cosine'])}</summary><table><tr><th>Baseline</th><th>Comparison</th></tr><tr><td>{escape(row['left'])}</td><td>{escape(row['right'])}</td></tr></table></details>"
+        )
+    parts.append("</details>")
+    return "\n".join(parts)
+
+
+def render_html(report: dict) -> str:
     parts = [
         """<!doctype html><html lang="en"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -224,11 +423,17 @@ body>table:first-of-type th:first-child{width:25%}
 pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}details{border:1px solid #000;margin:.8rem 0;padding:.6rem}
 blockquote{margin:1rem 0;white-space:pre-wrap}summary{cursor:pointer} @media(max-width:600px){body{margin:1rem auto}td,th{padding:.25rem}}
 </style><h1>SMELTER run comparison</h1>
+<nav><a href="#section">Structural units</a> | <a href="#paragraph">Paragraphs</a></nav>
 <p>Left is the baseline; right is the comparison. Memberships use source IDs, not graph node IDs.
 Agreement is not accuracy: neither run is treated as ground truth. Pair changes use only shared papers
-with identical source text and boundaries. Full-run counts include all papers. Paragraph scope changes
+with identical source IDs and text. Full-run counts include all papers. Paragraph scope changes
 also appear below, including added papers in a parent group.</p>"""
     ]
+    parts.append(
+        "<h2>Comparison limits</h2><ul>"
+        + "".join(f"<li>{escape(warning)}</li>" for warning in report["warnings"])
+        + "</ul>"
+    )
     parts.append(
         "<p><strong>Changed shared-source assignments: "
         + "; ".join(
@@ -278,16 +483,20 @@ also appear below, including added papers in a parent group.</p>"""
         + "</pre></details>"
     )
     for level, data in report["levels"].items():
-        score = (
-            "Not applicable (no pairs in either run)"
-            if data["pair_jaccard"] is None
-            else f"{data['pair_jaccard']:.3f}"
-        )
+        graph = data["metrics"]["graph"]
         parts.append(
-            f"<h2>{escape(level.title())} comparison</h2><p>{data['changed_units']} of {data['common_units']} shared units changed membership or scope. "
-            f"Added co-member pairs: {len(data['added_pairs'])}; removed: {len(data['removed_pairs'])}; "
-            f"unchanged: {data['unchanged_pairs']}. Pair Jaccard: {score}.</p>"
+            f'<h2 id="{level}">{"Structural-unit" if level == "section" else "Paragraph"} comparison</h2>'
+            f"<p>{data['membership_changed_units']} of {data['common_units']} shared units changed membership; "
+            f"another {data['scope_only_changed_units']} changed only parent scope. "
+            f"Cross-paper pairs added: {len(graph['added_pairs'])}; removed: {len(graph['removed_pairs'])}; "
+            f"retained: {graph['unchanged_pairs']}. Pair Jaccard: {_percent(graph['pair_jaccard'])}.</p>"
         )
+        projection = data["source_projection"]
+        parts.append(
+            f"<p>Compared {data['common_units']} identical source units. Excluded from this shared-paper projection: {len(projection['left_excluded_units'])} baseline / {len(projection['right_excluded_units'])} comparison units. Source metadata differs for {len(projection['metadata_changed_units'])} units.</p>"
+        )
+        parts.append(_metrics_html(data))
+        parts.append("<details><summary>Full-run counts and all assignment changes</summary>")
         parts.append("<table><tr><th>Full-run count</th><th>Left</th><th>Right</th></tr>")
         for field, value in data["left_stats"].items():
             parts.append(
@@ -314,14 +523,17 @@ also appear below, including added papers in a parent group.</p>"""
                 f"<details><summary>{escape(', '.join(change['members']))}</summary><p>Left: {escape(change['left'])}</p>"
                 f"<p>Right: {escape(change['right'])}</p></details>"
             )
+        parts.append("</details>")
     parts.append(
         "<p>The adjacent comparison.json contains all pair additions/removals and the report data. No API calls were made to compare these runs.</p></html>"
     )
     return "\n".join(parts)
 
 
-def write_comparison(left: Path, right: Path, output: Path) -> dict:
-    report = compare_revisions(left, right)
+def write_comparison(
+    left: Path, right: Path, output: Path, *, shared_sources: bool = False
+) -> dict:
+    report = compare_revisions(left, right, shared_sources=shared_sources)
     output.mkdir(parents=True, exist_ok=False)
     write_json(output / "comparison.json", report)
     (output / "index.html").write_text(render_html(report), encoding="utf-8")
@@ -336,8 +548,20 @@ def main() -> None:
     parser.add_argument("left", type=Path, help="Baseline run directory or completed revision")
     parser.add_argument("right", type=Path, help="Comparison run directory or completed revision")
     parser.add_argument("output", type=Path, help="New directory for HTML and JSON reports")
+    parser.add_argument(
+        "--shared-sources",
+        action="store_true",
+        help="Explicitly project onto identical source IDs/text when granularity or scope metadata differs",
+    )
     args = parser.parse_args()
-    print(json.dumps(write_comparison(args.left, args.right, args.output), indent=2))
+    print(
+        json.dumps(
+            write_comparison(
+                args.left, args.right, args.output, shared_sources=args.shared_sources
+            ),
+            indent=2,
+        )
+    )
 
 
 if __name__ == "__main__":
