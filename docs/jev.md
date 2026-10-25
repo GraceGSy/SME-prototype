@@ -183,6 +183,48 @@ generative responses separately **per process**. They are not dollar limits.
 Usage-based token guards apply after receiving a response, and a timeout may
 already have incurred a charge. Inspect usage before retrying.
 
+## Compare prompts on saved decisions
+
+For a cheaper selector-only test, reuse saved Jev requests rather than rebuilding
+the graph. This command needs only `TYPESAFE_API_KEY` when `--live` is present;
+it never calls Claude or changes the source run. Without `--live`, it makes no
+network calls and writes an inspectable plan:
+
+```bash
+python -m pipeline.jev_prompt_comparison runs/hci-first-two-jev-20261025-01/revisions/revision-0002 --cases datasets/jev-smoke/hci-prompt-cases.json --out output/jev-prompt-comparison/hci-20261025-corrected
+```
+
+The case file explicitly selects 12 attempts before seeing new results. Each
+case keeps the original sources, generated questions, complete candidate pool,
+order, and model. The tool checks a lossless source-encoding round trip and the
+original request fingerprint. It compares cleaned Choice against cleaned
+Choice-plus-Noul, retaining the saved legacy answer without buying it again.
+This is a directional decision comparison, not a new graph or an accuracy score.
+
+To authorize the bounded live comparison, add `--live`:
+
+```bash
+python -m pipeline.jev_prompt_comparison runs/hci-first-two-jev-20261025-01/revisions/revision-0002 --cases datasets/jev-smoke/hci-prompt-cases.json --out output/jev-prompt-comparison/hci-20261025-corrected --live --max-calls 24 --max-input-tokens 500000
+```
+
+The call guard spans both modes. The token guard uses reported usage after each
+response, so it can overshoot by one response; it is not a hard dollar cap.
+Any transport, validation, or size error stops the experiment. It does not split
+the frozen candidate pools, retry HTTP requests, truncate evidence, or substitute
+another provider. Inspect a failure before running again.
+
+`plan.json` contains exact proposed requests. `comparison.json` records original
+and new selections, Noul probabilities, usage, and elapsed selector-call time.
+`cache/` preserves exact requests and responses. A repeat with unchanged prompts
+reuses valid caches and retains the first measured latency. Changing a prompt or
+case list requires a new output directory. API behavior remains probabilistic;
+the case selection, source decoding, cache checks, and reporting are deterministic.
+
+The [October 25 update report](reports/jev-prompt-update-20261025.html) records the
+stopped inline-text experiment and corrected offline plan. **No live comparison
+result is available yet.** The failed experiment remains in
+`output/jev-prompt-comparison/hci-20261025`; do not overwrite it.
+
 ## View the result
 
 With Node.js 22 installed, build the existing viewer once:

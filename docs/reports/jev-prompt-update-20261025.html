@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jev prompt update and stopped live comparison</title>
+  <style>
+    @page { margin: 1in; }
+    body { margin: 1in; font: 12pt/1.4 "Times New Roman", Times, serif; color: #000; background: #fff; }
+    h1, h2 { font-size: 12pt; }
+    a { color: #000; }
+    code { overflow-wrap: anywhere; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #000; padding: 6px; text-align: left; vertical-align: top; }
+    @media print { body { margin: 0; } }
+    @media (max-width: 600px) { body { margin: 24px; } }
+  </style>
+</head>
+<body>
+  <h1>Jev prompt update: implemented; live comparison stopped</h1>
+  <p>October 25, 2026. The code supports cleaned Jev prompts and an optional
+  Choice-plus-Noul mode. Offline checks pass. The first live comparison request
+  failed with TypeSafe's <code>max_tokens_exceeded</code> error. No new match
+  decision completed, so this test establishes no quality, speed, or cost improvement.</p>
+
+  <h2>What changed</h2>
+  <p>Jev receives the existing role-selection and cross-paper group policies, plus
+  the same six example lessons without Claude's output-JSON and quotation-writing
+  instructions. Candidate criteria now include existing question metadata and a
+  named evidence record instead of an array index. Questions remain fallible
+  metadata; the full source text remains authoritative.</p>
+  <p>The default still uses Choice with <code>NO_MATCH</code>. The optional
+  <code>choice_noul</code> mode asks Choice to rank real candidates and Noul to judge
+  whether any candidate supports a defensible match. Python accepts the ranked
+  candidate only when Noul is greater than 0.5; ties abstain. With one candidate,
+  it asks only Noul. Both questions receive the policies and examples independently.</p>
+  <p>Reciprocity, eligibility, source preparation, generated questions, and
+  fixed-target evidence validation remain unchanged. The complete judgment cache
+  includes the exact Jev request, preventing prompt changes from reusing stale
+  complete judgments. Budget changes still do not invalidate scientific caches.</p>
+
+  <h2>What the live probe found</h2>
+  <p>The planned comparison covered 12 saved directional decisions from
+  <code>hci-first-two-jev-20261025-01/revisions/revision-0002</code>, with two new
+  variants and the saved legacy answers as a reference. It included broad
+  structural pools, existing introduction and participant matches, role-boundary
+  cases, and both directions of the previously asymmetric funding match.
+  These cases have no human ground-truth labels.</p>
+  <table>
+    <tr><th>Item</th><th>Observed result</th></tr>
+    <tr><td>First case</td><td>CorpusStudio abstract against 30 structural candidates, attempt-000170</td></tr>
+    <tr><td>HTTP attempts</td><td>1; stopped immediately after rejection</td></tr>
+    <tr><td>Response</td><td>HTTP 400, <code>{"detail":{"error_type":"max_tokens_exceeded"}}</code></td></tr>
+    <tr><td>Successful decisions / Claude calls</td><td>0 / 0</td></tr>
+    <tr><td>Billing</td><td>The rejection supplied no usage. No charge or zero-charge claim can be made from this response.</td></tr>
+  </table>
+  <p>The initial implementation inlined every passage. Sections and subsections
+  share passages, so this duplicated source text. The rejected serialized request
+  contained 162,570 bytes. The corrected request uses 109,630 bytes with the
+  existing lossless shared-text table. Byte counts describe the payloads; they
+  are not token counts or proof that the corrected request fits the provider's
+  context window.</p>
+  <p>The correction retains all source text, candidate identities, order, and
+  questions. It introduces no local byte cap and performs no truncation or
+  candidate shortlisting. It retains text-reference lookup as a necessary tradeoff
+  against duplication. The frozen-pool comparison stops on size errors rather
+  than silently splitting the candidate pool. No further paid calls followed.</p>
+
+  <h2>Verification and next run</h2>
+  <p>Thirty-seven focused tests passed across the implementation steps, including
+  response validation, Noul ties and single-candidate behavior, splitting, cache
+  identity, CLI configuration, both modes' scripted smoke runs, viewer export,
+  retry, and frozen-source replay. After restoring shared-text encoding, eight
+  affected checks passed again. The full repository suite was not rerun.</p>
+  <p>The corrected 12-case plan was generated offline. Every source case passed
+  an exact encoding round trip. Live acceptance of the corrected requests,
+  actual Noul responses, paired-mode latency and usage, and semantic quality
+  remain unverified. Keep Noul opt-in until that comparison and the minimal live
+  smoke run succeed. A new full graph run is still required to measure downstream
+  coverage changes; frozen decisions cannot predict a changed graph trajectory.</p>
+  <p>Use the <a href="../jev.md#compare-prompts-on-saved-decisions">saved-decision instructions</a>
+  to continue with the corrected plan. The old run remains untouched and viewable.
+  Changed prompts require a new pipeline run, not a retry under rewritten policy hashes.</p>
+  <p>Local evidence:
+  <a href="../../output/jev-prompt-comparison/hci-20261025/comparison.json">stopped comparison</a>,
+  <a href="../../output/jev-prompt-comparison/hci-20261025/cache/responses/7c1ca77f1de04d609ae5ee13420be9ab.json">raw rejection</a>,
+  <a href="../../output/jev-prompt-comparison/hci-20261025-corrected/plan.json">corrected offline plan</a>.
+  These output files are local research artifacts and are not committed.</p>
+
+  <h2>Provider guidance</h2>
+  <p>The changes follow TypeSafe's guidance on
+  <a href="https://docs.typesafe.ai/primitives/choice">descriptive Choice criteria and companion Noul questions</a>,
+  the <a href="https://docs.typesafe.ai/primitives/noul">Noul request/response contract</a>, and its
+  <a href="https://raw.githubusercontent.com/typesafe-ai/skills/main/skills/typesafe-ai/SKILL.md">integration skill</a>:
+  use concrete questions and named records, keep output-format instructions out
+  of model questions, and supply each independent question with its required
+  context. This integration guidance does not give Jev Claude's native Skill runtime.</p>
+</body>
+</html>

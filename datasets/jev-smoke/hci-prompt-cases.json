@@ -1,0 +1,14 @@
+[
+  {"attempt_id": "attempt-000170", "label": "Abstract against 30 structural candidates", "reason": "First structural abstention; broad pool"},
+  {"attempt_id": "attempt-000171", "label": "Introduction forward", "reason": "Existing reciprocal positive control"},
+  {"attempt_id": "attempt-000206", "label": "Ablation study against 36 structural candidates", "reason": "First reverse structural abstention; broad pool"},
+  {"attempt_id": "attempt-000230", "label": "Introduction reverse", "reason": "Paired positive control"},
+  {"attempt_id": "attempt-000363", "label": "Writing-guidance problem paragraph", "reason": "First paragraph abstention; eight candidates"},
+  {"attempt_id": "attempt-000367", "label": "Tool-support overview paragraph", "reason": "First accepted paragraph; eight candidates"},
+  {"attempt_id": "attempt-000390", "label": "Learning theory versus design goals", "reason": "Role-boundary challenge with one candidate"},
+  {"attempt_id": "attempt-000417", "label": "Participants forward", "reason": "Existing reciprocal positive control; one candidate"},
+  {"attempt_id": "attempt-000418", "label": "Participants reverse", "reason": "Paired positive control"},
+  {"attempt_id": "attempt-000434", "label": "Study generalization versus tool generalization", "reason": "Role-boundary challenge with two candidates"},
+  {"attempt_id": "attempt-000437", "label": "Funding forward", "reason": "Previously observed one-way funding match"},
+  {"attempt_id": "attempt-000438", "label": "Funding reverse", "reason": "Previously observed funding abstention"}
+]
