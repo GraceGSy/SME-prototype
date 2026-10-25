@@ -66,6 +66,10 @@ class JevSelector:
         """Name candidate records and share repeated passages without truncation."""
         candidates = {candidate_handle(item): item for item in context["candidates"]}
         state = encode_evidence({**context, "candidates": candidates})
+        # The shared decoder contract must not tell a Noul to output a candidate ID.
+        state["text_reference_contract"] = state["text_reference_contract"].removesuffix(
+            " Return only the candidate handle required by the matching instructions, never a text ID."
+        )
         criteria = {}
         for key, candidate in candidates.items():
             center = candidate.get("paragraph_under_consideration", candidate)

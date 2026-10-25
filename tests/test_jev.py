@@ -89,16 +89,27 @@ class JevTest(unittest.TestCase):
         request = self.request(2)
         original = request.model_copy(deep=True)
         body = selector.build_request(request.context)
+        expected = encode_evidence(
+            {
+                **request.context,
+                "candidates": dict(zip(request.allowed_match_ids, request.context["candidates"])),
+            }
+        )
+        self.assertNotIn(
+            "Return only the candidate handle", body["state"]["text_reference_contract"]
+        )
+        self.assertTrue(
+            expected.pop("text_reference_contract").startswith(
+                body["state"]["text_reference_contract"]
+            )
+        )
         self.assertEqual(
-            body["state"],
-            encode_evidence(
-                {
-                    **request.context,
-                    "candidates": dict(
-                        zip(request.allowed_match_ids, request.context["candidates"])
-                    ),
-                }
-            ),
+            {
+                key: value
+                for key, value in body["state"].items()
+                if key != "text_reference_contract"
+            },
+            expected,
         )
         self.assertEqual(request, original)
         self.assertEqual(len(selector.examples), 6)
