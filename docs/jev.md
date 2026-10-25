@@ -8,10 +8,11 @@ and explanations with source quotations. **A TypeSafe key alone is not enough:
 the default Jev run needs both `TYPESAFE_API_KEY` and `ANTHROPIC_API_KEY`.**
 
 The earlier two-paper HCI run is saved locally. The revised prompts and optional
-Choice-plus-Noul mode pass offline tests, but still need live verification. The
-first live prompt-comparison request hit the provider's context limit; testing
-stopped without a completed decision. The implementation now retains lossless
-shared-text encoding instead of duplicating every passage inline.
+Choice-plus-Noul mode completed a bounded live comparison: all 24 requests across
+12 frozen HCI decisions passed. Lossless shared-text encoding resolved the first
+probe's context-limit failure. Results were mixed, so Choice remains the default;
+Noul still needs a minimal end-to-end live smoke run before scaling. See the
+[live comparison report](reports/jev-prompt-comparison-20261025.html).
 
 ## Detailed flow
 
@@ -220,10 +221,14 @@ reuses valid caches and retains the first measured latency. Changing a prompt or
 case list requires a new output directory. API behavior remains probabilistic;
 the case selection, source decoding, cache checks, and reporting are deterministic.
 
-The [October 25 update report](reports/jev-prompt-update-20261025.html) records the
-stopped inline-text experiment and corrected offline plan. **No live comparison
-result is available yet.** The failed experiment remains in
-`output/jev-prompt-comparison/hci-20261025`; do not overwrite it.
+The [October 25 live report](reports/jev-prompt-comparison-20261025.html) records the
+completed 24-call comparison and result checks. Cleaned Choice selected 7/12
+directions and Noul 8/12, versus 6/12 in the saved legacy answers; these are not
+accuracy scores. Choice recovered reciprocal funding selection, while Noul did
+not. Noul remains opt-in. The corrected output directory now contains completed
+results; repeating the command unchanged reuses caches, not a fresh sample.
+The [earlier stopped experiment](reports/jev-prompt-update-20261025.html) remains
+in `output/jev-prompt-comparison/hci-20261025`; do not overwrite it.
 
 ## View the result
 
@@ -515,11 +520,12 @@ fixed-target evidence, complete smoke orchestration, viewer export, failure/retr
 and membership-based comparisons. Existing graph tests cover reciprocal, recovery,
 adjacency, and reparenting rules. They do not establish real model behavior.
 
-Before scaling the revised prompts, complete a bounded live decision comparison
-and the optional mode's live smoke run. Inspect requests, usage, memberships, and
-quotations before running the corpus again. No live Noul response has been verified
-by this update. Human source-by-source evaluation is still necessary to assess
-whether either model makes useful correspondences.
+The bounded live decision comparison now verifies Choice and Noul requests and
+responses on 12 saved HCI cases. Before scaling the optional mode, complete its
+minimal live smoke run through evidence generation, reconciliation, and export.
+Inspect memberships and quotations before running the corpus again. Human
+source-by-source evaluation is still necessary to assess whether either model
+makes useful correspondences; the unlabeled comparison does not establish accuracy.
 
 Regenerate both diagrams with Graphviz installed:
 

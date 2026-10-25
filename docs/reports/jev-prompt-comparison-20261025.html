@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jev live prompt comparison: completed, mixed results</title>
+  <style>
+    @page { margin: 1in; }
+    body { margin: 1in; font: 12pt/1.4 "Times New Roman", Times, serif; color: #000; background: #fff; }
+    h1, h2 { font-size: 12pt; }
+    a { color: #000; }
+    code { overflow-wrap: anywhere; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #000; padding: 6px; text-align: left; vertical-align: top; }
+    @media print { body { margin: 0; } }
+    @media (max-width: 600px) { body { margin: 24px; } }
+  </style>
+</head>
+<body>
+  <h1>Corrected Jev comparison completed; Noul did not clearly improve matching</h1>
+  <p>October 25, 2026. All 24 live requests succeeded on the 12 preselected HCI
+  decisions. The corrected shared-text requests fit TypeSafe's context limits
+  without splitting candidates, truncating evidence, or enabling long context.
+  Cleaned Choice selected the funding match in both directions. Choice-plus-Noul
+  added two plausible matches but still rejected the reverse funding match.
+  Keep cleaned Choice as the default and Noul opt-in.</p>
+
+  <h2>Comparison</h2>
+  <table>
+    <tr><th>Measure</th><th>Saved legacy Choice</th><th>Cleaned Choice</th><th>Cleaned Choice + Noul</th></tr>
+    <tr><td>Positive directional selections</td><td>6 / 12</td><td>7 / 12</td><td>8 / 12</td></tr>
+    <tr><td>Changed selections versus legacy</td><td>Reference</td><td>1 / 12</td><td>2 / 12</td></tr>
+    <tr><td>Funding pair reciprocal in these frozen decisions</td><td>No</td><td>Yes</td><td>No</td></tr>
+    <tr><td>Input tokens</td><td>137,521, previously purchased</td><td>145,864</td><td>158,547</td></tr>
+    <tr><td>Median measured selector-call time</td><td>Not recorded</td><td>0.227 seconds</td><td>0.236 seconds</td></tr>
+  </table>
+  <p>These counts describe directional selections, not final graph groups or
+  accuracy. Both new modes retained all six legacy positive selections. Cleaned
+  Choice changed only the reverse funding decision. Noul changed the abstract
+  and writing-guidance problem cases instead. The two new modes agree on 9 of
+  the 12 final selections.</p>
+
+  <h2>Case results</h2>
+  <p>Attempt numbers identify the original saved revision. "Match" means the same
+  candidate wherever both columns select one. Noul is its probability that at
+  least one candidate supports a defensible match, not a similarity score.</p>
+  <table>
+    <tr><th>Attempt / case</th><th>Legacy</th><th>Cleaned Choice</th><th>Choice + Noul</th><th>Noul</th></tr>
+    <tr><td>170: Abstract, 30 candidates</td><td>None</td><td>None</td><td>Match</td><td>0.55</td></tr>
+    <tr><td>171: Introduction forward</td><td>Match</td><td>Match</td><td>Match</td><td>0.86</td></tr>
+    <tr><td>206: Ablation study, 36 candidates</td><td>None</td><td>None</td><td>None</td><td>0.26</td></tr>
+    <tr><td>230: Introduction reverse</td><td>Match</td><td>Match</td><td>Match</td><td>0.76</td></tr>
+    <tr><td>363: Writing-guidance problem</td><td>None</td><td>None</td><td>Match</td><td>0.55</td></tr>
+    <tr><td>367: Tool-support overview</td><td>Match</td><td>Match</td><td>Match</td><td>0.62</td></tr>
+    <tr><td>390: Learning theory versus design goals</td><td>None</td><td>None</td><td>None</td><td>0.20</td></tr>
+    <tr><td>417: Participants forward</td><td>Match</td><td>Match</td><td>Match</td><td>0.87</td></tr>
+    <tr><td>418: Participants reverse</td><td>Match</td><td>Match</td><td>Match</td><td>0.70</td></tr>
+    <tr><td>434: Study versus tool generalization</td><td>None</td><td>None</td><td>None</td><td>0.41</td></tr>
+    <tr><td>437: Funding forward</td><td>Match</td><td>Match</td><td>Match</td><td>0.77</td></tr>
+    <tr><td>438: Funding reverse</td><td>None</td><td>Match</td><td>None</td><td>0.35</td></tr>
+  </table>
+  <p>Source review supports a funding-disclosure correspondence: both passages
+  acknowledge NSF support and a Sloan fellowship, among other sources. Cleaned
+  Choice assigned the candidate 0.57 in each direction. Noul gave the forward
+  direction 0.77 but the reverse 0.35, preserving the earlier asymmetry. This is
+  an assistant's qualitative assessment, not a human ground-truth label.</p>
+  <p>Noul's two additions also have plausible shared roles on source inspection:
+  both abstracts summarize a proposed tool and its evaluation; the problem
+  paragraphs explain limitations of existing support that motivate a new approach.
+  The latter requires a broader abstraction across writing guidance and literature
+  exploration. Both additions had Noul 0.55, only slightly above the unchanged
+  0.5 decision boundary. Their reverse directions were not part of this sample,
+  so neither addition establishes a new reciprocal group.</p>
+
+  <h2>Time and cost</h2>
+  <p>The 24 fresh calls used 304,411 input tokens, approximately $0.0128 (1.28 US
+  cents) at TypeSafe's published $0.042 per million input tokens; output tokens
+  are free. This is a token-based estimate, not an invoice. It excludes any
+  unknown charge for the earlier rejected request. See the
+  <a href="https://docs.typesafe.ai/models">official model and pricing table</a>.</p>
+  <p>Noul used 8.7% more input tokens than cleaned Choice and had similar observed
+  latency. Cleaned Choice itself used 6.1% more tokens than the saved legacy
+  requests. This probe therefore does not show a token-cost reduction. Total
+  measured selector-call time was 6.72 seconds, including transport and local
+  selection/cache work but excluding process startup and report processing.</p>
+  <p>No Claude calls occurred. These selector timings and costs do not describe
+  a full pipeline run, where question and explanation generation still contribute
+  cost and latency. One observation per case and fixed variant order are insufficient
+  for a reliable speed benchmark.</p>
+
+  <h2>Checks and limits</h2>
+  <p>The offline result check verified all 24 request fingerprints, exact agreement
+  with the saved plan, response schemas and probabilities, selected targets, and
+  the 304,411-token total. Each variant used the same source state and full candidate
+  pool. Every selection used one fresh request, with no cache hits or splits.
+  The original run remained untouched. Existing unit tests were not rerun.</p>
+  <p>The case list was fixed before these answers. It deliberately includes
+  positives, abstentions, broad pools, and the previously observed funding problem;
+  it is not a random or labeled accuracy sample. The legacy answers were reused
+  rather than resampled, so individual changes cannot be attributed solely to
+  prompting rather than model variability. No thresholds were tuned after the run.</p>
+  <p>Actual Choice and Noul response handling is now live-verified for these cases.
+  The new mode still needs a minimal end-to-end live smoke run through generated
+  evidence, reconciliation, and export. A fresh full graph run and human source
+  review remain necessary before claiming improved match quality or coverage.</p>
+  <p>Evidence:
+  <a href="../../output/jev-prompt-comparison/hci-20261025-corrected/comparison.json">complete comparison JSON</a>,
+  <a href="../../output/jev-prompt-comparison/hci-20261025-corrected/plan.json">exact requests and case plan</a>,
+  <a href="../../datasets/jev-smoke/hci-prompt-cases.json">versioned case list</a>,
+  <a href="jev-prompt-update-20261025.html">earlier stopped probe</a>, and
+  <a href="../jev.md#compare-prompts-on-saved-decisions">run instructions</a>.
+  Raw response caches remain local research artifacts under the corrected output directory.</p>
+</body>
+</html>
