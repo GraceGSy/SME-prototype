@@ -59,6 +59,11 @@ def main() -> None:
     )
     start.add_argument("--jev-max-calls", type=int, help="Maximum Jev HTTP calls per process")
     start.add_argument("--max-api-responses", type=int, help="Generative provider response guard")
+    start.add_argument(
+        "--cache-from",
+        type=Path,
+        help="Copy an existing run's cache; reuse only exact matching request fingerprints",
+    )
     add = commands.add_parser("add", help="Append prepared papers in manifest order")
     add.add_argument("manifest", type=Path)
     add.add_argument("run_dir", type=Path)
@@ -86,6 +91,7 @@ def main() -> None:
             jev_selection_mode=args.jev_selection_mode,
             jev_max_calls=args.jev_max_calls,
             max_api_responses=args.max_api_responses,
+            cache_from=args.cache_from,
         )
     elif args.command == "add":
         result = add_papers(args.manifest, args.run_dir)

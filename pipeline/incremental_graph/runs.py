@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import shutil
 from importlib.metadata import version
 from pathlib import Path
 from typing import Annotated, Any, Literal
@@ -132,6 +133,7 @@ def start_graph(
     jev_selection_mode: str | None = None,
     jev_max_calls: int | None = None,
     max_api_responses: int | None = None,
+    cache_from: Path | None = None,
 ) -> dict[str, Any]:
     if (provider is None) != (model is None):
         raise ValueError("Pass provider and model together, or use the saved configuration")
@@ -168,7 +170,23 @@ def start_graph(
         config=config, max_granularity=manifest.max_granularity, policy_sha256=_policy_hash(config)
     )
     run_dir = run_dir.resolve()
+    if cache_from is not None:
+        cache_from = cache_from.resolve()
+        if not (cache_from / "run.json").is_file() or not (cache_from / "cache").is_dir():
+            raise ValueError("Cache source must be an existing run with saved judgments")
+        if run_dir.is_relative_to(cache_from):
+            raise ValueError("A new run must be outside its cache source run")
     run_dir.mkdir(parents=True, exist_ok=False)
+    if cache_from is not None:
+        # Entries remain subject to normal exact-request fingerprint and evidence validation.
+        shutil.copytree(cache_from / "cache", run_dir / "cache")
+        write_json(
+            run_dir / "cache-source.json",
+            {
+                "run_dir": str(cache_from),
+                "policy_sha256": read_json(cache_from / "run.json")["policy_sha256"],
+            },
+        )
     return _execute(run_dir, state, manifest, documents, reviews)
 
 

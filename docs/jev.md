@@ -41,6 +41,25 @@ saved runs and comparison reports remain unchanged. The frozen-decision comparis
 tool replays historical selector requests directly, so it does not exercise this
 runner-level shortcut and should not be used to re-test inherited paragraph matches.
 
+## Execution limits are opt-in
+
+New runs have no local cumulative-token, request-count, per-request input-token,
+or prompt-character cap. Usage is still recorded. Set a positive limit only when
+you want one; omit it or use `null` in a configuration file for no local limit.
+The default configuration does not add stage-level input-token caps either.
+Old saved runs retain their original settings until explicitly overridden.
+
+Provider-enforced context, request-size and choice-count limits still apply.
+The existing `max_tokens` output-generation settings and context-management
+settings remain unchanged: they affect model behavior, not cumulative run budgets.
+Transport errors and invalid responses still stop execution.
+
+When code changes require a new run, `start --cache-from runs/previous-run`
+copies the old cache without changing the old run. Only exact matching request
+fingerprints are reused, and cached evidence is validated normally. The new run
+records its cache source separately. This avoids buying unchanged decisions again
+without rewriting an earlier run's scientific-policy hash.
+
 ## Detailed flow
 
 The flow has two separate diagrams. Every step has a single responsibility:
@@ -161,7 +180,7 @@ Expect `water`, then `warning`, each with two sections, two paragraphs, and zero
 missing questions. After setting both keys, run:
 
 ```bash
-python -m pipeline.incremental_graph.cli start datasets/jev-smoke/manifest.yaml runs/jev-smoke-01 --jev --jev-model jev-1.14.0 --jev-max-calls 12 --max-api-responses 80
+python -m pipeline.incremental_graph.cli start datasets/jev-smoke/manifest.yaml runs/jev-smoke-01 --jev --jev-model jev-1.14.0
 python -m pipeline.incremental_graph.smoke_check runs/jev-smoke-01
 ```
 
@@ -183,7 +202,7 @@ The default remains `--jev-selection-mode choice`, with `NO_MATCH` as an option.
 To test the alternative in a **new** small run:
 
 ```bash
-python -m pipeline.incremental_graph.cli start datasets/jev-smoke/manifest.yaml runs/jev-smoke-noul-01 --jev --jev-selection-mode choice_noul --jev-model jev-1.14.0 --jev-max-calls 12 --max-api-responses 80
+python -m pipeline.incremental_graph.cli start datasets/jev-smoke/manifest.yaml runs/jev-smoke-noul-01 --jev --jev-selection-mode choice_noul --jev-model jev-1.14.0
 python -m pipeline.incremental_graph.smoke_check runs/jev-smoke-noul-01
 ```
 
@@ -210,10 +229,11 @@ invocations: two structural-match explanations and two shared-group questions.
 The paragraph pair inherits its structural match, saving two Jev requests and two
 explanation invocations compared with the previous implementation. Live
 choices can change that count. Native Skill invocations can require multiple API
-responses, and evidence repair can add more. The flags cap Jev requests and
-generative responses separately **per process**. They are not dollar limits.
-Usage-based token guards apply after receiving a response, and a timeout may
-already have incurred a charge. Inspect usage before retrying.
+responses, and evidence repair can add more. Optional `--jev-max-calls` and
+`--max-api-responses` flags cap requests/responses separately **per process**
+only when supplied. They are not dollar limits. Optional token guards apply
+after receiving a response, and a timeout may already have incurred a charge.
+Inspect usage before retrying.
 
 ## Compare prompts on saved decisions
 
@@ -284,7 +304,7 @@ report plus machine-readable JSON. It requires neither API keys nor a web server
 For a baseline using the original generative selector, omit `--jev`:
 
 ```bash
-python -m pipeline.incremental_graph.cli start datasets/jev-smoke/manifest.yaml runs/llm-smoke-01 --max-api-responses 80
+python -m pipeline.incremental_graph.cli start datasets/jev-smoke/manifest.yaml runs/llm-smoke-01
 python -m pipeline.incremental_graph.compare runs/llm-smoke-01 runs/jev-smoke-01 output/comparisons/llm-vs-jev-smoke-01
 ```
 
@@ -372,11 +392,10 @@ before graph construction. Inspect the offline unit counts first:
 
 ```bash
 python -m pipeline.incremental_graph.cli validate datasets/my-corpus/manifest.yaml
-python -m pipeline.incremental_graph.cli start datasets/my-corpus/manifest.yaml runs/my-corpus-jev --jev --jev-model jev-1.14.0 --jev-max-calls 500 --max-api-responses 3000
+python -m pipeline.incremental_graph.cli start datasets/my-corpus/manifest.yaml runs/my-corpus-jev --jev --jev-model jev-1.14.0
 ```
 
-Those are upper guards, not a recommended spending allowance or a completion
-guarantee. The prepared two-paper HCI example has 66 structural units and 221
+This command has no local spending or token cap. The prepared two-paper HCI example has 66 structural units and 221
 paragraphs; it is much larger than this smoke test. Review counts and account
 limits before starting it. Earlier run costs do not establish the cost or accuracy
 of the revised prompts and optional Noul mode.
@@ -407,7 +426,9 @@ and source data remain fixed. Do not edit `run.json` or frozen inputs.
 python -m pipeline.incremental_graph.cli retry runs/jev-smoke-01
 ```
 
-If a budget stopped the attempt, review usage and supply a new allowance:
+If an explicitly configured budget stopped the attempt, review usage. To remove
+it, supply a copy of the saved config with its execution-limit fields set to `null`.
+To keep a cap but change its allowance, supply explicit flags instead:
 
 ```bash
 python -m pipeline.incremental_graph.cli retry runs/jev-smoke-01 --jev-max-calls 12 --max-api-responses 40
@@ -527,7 +548,7 @@ Advanced configuration can add a `jev` mapping to a copy of
 `pipeline/incremental_graph/configs/incremental-v1.yaml`, keeping that copy in
 the same directory so relative policy paths stay correct. Use `--config` with it.
 Supported fields are `model`, `selection_mode`, `max_calls`, `max_input_tokens`, and
-`timeout_seconds`. Defaults are `jev-1.14.0`, `choice`, 500, 2,000,000, and 120 respectively.
+`timeout_seconds`. Defaults are `jev-1.14.0`, `choice`, `null`, `null`, and 120 respectively.
 A configured `jev` mapping also enables Jev without the flag. Remove the obsolete
 `max_request_bytes` field from older custom configuration files.
 

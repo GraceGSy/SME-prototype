@@ -98,6 +98,50 @@ def scripted_http(request, **kwargs):
 
 
 class JevPipelineTest(unittest.TestCase):
+    def test_new_uncapped_run_reuses_exact_cached_requests(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            skills = ScriptedSkills()
+            with (
+                patch("pipeline.incremental_graph.runs.load_api_key", return_value="offline-key"),
+                patch("pipeline.providers.jev.load_api_key", return_value="offline-key"),
+                patch("pipeline.providers.jev.urlopen", side_effect=scripted_http) as network,
+                patch(
+                    "pipeline.incremental_graph.judgments.create_skill_client", return_value=skills
+                ),
+            ):
+                source = root / "capped"
+                start_graph(MANIFEST, source, jev=True, jev_max_calls=12, max_api_responses=80)
+                source_state = (source / "run.json").read_bytes()
+                paid_calls = (network.call_count, skills.calls)
+                destination = root / "uncapped"
+                start_graph(MANIFEST, destination, jev=True, cache_from=source)
+                self.assertEqual((network.call_count, skills.calls), paid_calls)
+                self.assertTrue(check_smoke(destination)["passed"])
+                self.assertEqual((source / "run.json").read_bytes(), source_state)
+                config = read_json(destination / "run.json")["config"]
+                self.assertIsNone(config["jev"]["max_calls"])
+                self.assertIsNone(config["jev"]["max_input_tokens"])
+                self.assertIsNone(config["model"]["max_api_responses_per_process"])
+                self.assertEqual(
+                    read_json(destination / "cache-source.json")["run_dir"], str(source)
+                )
+                start_graph(
+                    MANIFEST,
+                    root / "changed",
+                    jev=True,
+                    jev_selection_mode="choice_noul",
+                    cache_from=source,
+                )
+                self.assertGreater(network.call_count, paid_calls[0])
+
+    def test_invalid_cache_source_fails_before_run_creation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            with self.assertRaisesRegex(ValueError, "Cache source"):
+                start_graph(MANIFEST, root / "new", cache_from=root / "missing")
+            self.assertFalse((root / "new").exists())
+
     def test_noul_smoke_exports_and_retries_without_paid_calls(self):
         with tempfile.TemporaryDirectory() as directory:
             run = Path(directory) / "run"
