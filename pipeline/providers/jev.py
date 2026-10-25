@@ -70,10 +70,10 @@ def validate_response(payload: dict, body: dict) -> dict:
     probabilities = answer.probabilities
     if set(probabilities) != options or answer.choice not in options:
         raise ValueError("Jev returned missing or unknown choices")
-    if any(not 0 <= value <= 1 for value in probabilities.values()) or not math.isclose(
-        sum(probabilities.values()), 1, abs_tol=1e-5
-    ):
-        raise ValueError("Jev returned an invalid probability distribution")
+    # Returned probabilities are rounded; preserve them without renormalizing.
+    total = math.fsum(probabilities.values())
+    if any(not 0 <= value <= 1 for value in probabilities.values()) or not 0.98 < total <= 1.02:
+        raise ValueError(f"Jev returned an invalid probability distribution (sum={total})")
     if probabilities[answer.choice] < max(probabilities.values()):
         raise ValueError("Jev choice is not a highest-probability option")
     return response.model_dump()

@@ -316,6 +316,10 @@ model, and token usage. The response must satisfy the
 [Choice contract](https://docs.typesafe.ai/primitives/choice); probabilities and
 confidence do not become a new acceptance threshold.
 
+Rounded probabilities must total more than 0.98 and at most 1.02. Every value
+must still be finite and within 0-1; the selected option must have the highest
+probability. The pipeline preserves the returned values without renormalizing.
+
 There is no local 24,000-byte cap or bytes-to-tokens estimate. The local body check
 uses TypeSafe's documented [32 MiB transport limit](https://docs.typesafe.ai/api/errors).
 Within that limit and 254 candidates, the selector sends the full request first.

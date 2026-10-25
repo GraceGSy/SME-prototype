@@ -249,6 +249,36 @@ class JevTest(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     validate_response(value, body)
 
+    def test_probability_rounding_preserves_original_values(self):
+        body = {
+            "model": "jev-1.14.0",
+            "questions": {"match": {"criteria": {"a": "A", NO_MATCH: "None"}}},
+        }
+        for total in (0.981, 0.99, 1.0, 1.01, 1.02):
+            with self.subTest(total=total):
+                value = answer(body)
+                value["answers"]["match"]["probabilities"] = {"a": 0.6, NO_MATCH: total - 0.6}
+                self.assertEqual(validate_response(value, body), value)
+
+    def test_probability_rounding_does_not_accept_invalid_distributions(self):
+        body = {
+            "model": "jev-1.14.0",
+            "questions": {"match": {"criteria": {"a": "A", NO_MATCH: "None"}}},
+        }
+        for probabilities in (
+            {"a": 0.6, NO_MATCH: 0.38},
+            {"a": 0.6, NO_MATCH: 0.37},
+            {"a": 0.6, NO_MATCH: 0.43},
+            {"a": 1.01, NO_MATCH: -0.01},
+            {"a": float("inf"), NO_MATCH: 0.0},
+            {"a": float("nan"), NO_MATCH: 0.0},
+        ):
+            with self.subTest(probabilities=probabilities):
+                value = answer(body)
+                value["answers"]["match"]["probabilities"] = probabilities
+                with self.assertRaises(ValueError):
+                    validate_response(value, body)
+
     def test_bad_response_is_saved_but_not_cached(self):
         selector = self.selector()
         with (
