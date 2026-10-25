@@ -28,6 +28,7 @@ from .match_evidence import (
     EvidenceValidationError,
     JudgmentError,
     candidate_handle,
+    center_texts,
     quote_length_feedback,
     validate_evidence,
 )
@@ -37,6 +38,39 @@ from .models import JudgmentRequest, JudgmentResult
 class JudgmentProvider(Protocol):
     def judge(self, request: JudgmentRequest) -> JudgmentResult:
         """Return one validated structured judgment."""
+
+
+def inherited_structural_match(request: JudgmentRequest) -> JudgmentResult:
+    """Record an inherited match without calling a selector or explanation model."""
+    if request.output_kind != "match" or len(request.allowed_match_ids) != 1:
+        raise ValueError("An inherited structural match requires exactly one candidate")
+    rule = "single_paragraph_structural_match"
+    target = request.allowed_match_ids[0]
+    basis = (
+        "Inherited the accepted section/subsection match: each structural unit represented here "
+        "consists of exactly one paragraph. Quotations are deterministic source excerpts, "
+        "not a new model judgment."
+    )
+    evidence = {
+        side: [text.strip()[:240] for text in center_texts(value)]
+        for side, value in (
+            ("focus", request.context["focus"]),
+            ("target", request.context["candidates"][0]),
+        )
+    }
+    validate_evidence(request.context, target, evidence)
+    context = json.dumps(request.context, ensure_ascii=False, sort_keys=True)
+    return JudgmentResult(
+        fingerprint=hashlib.sha256(f"{rule}:{context}".encode("utf-8")).hexdigest(),
+        normalized={"target_id": target, "basis": basis, "evidence": evidence},
+        raw_response={"rule": rule, "parent_group_id": request.context["scope"]["parent_group_id"]},
+        rendered_system=basis,
+        rendered_user=context,
+        prompt_hash="",
+        context_hash=hashlib.sha256(context.encode("utf-8")).hexdigest(),
+        schema_hash="",
+        model={"provider": "deterministic", "name": rule},
+    )
 
 
 class CachedJudgments:

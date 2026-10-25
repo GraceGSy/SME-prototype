@@ -137,16 +137,16 @@ class JevPipelineTest(unittest.TestCase):
             ):
                 first = start_graph(MANIFEST, run, jev=True, jev_max_calls=12, max_api_responses=80)
                 self.assertTrue(check_smoke(run)["passed"])
-                self.assertEqual(network.call_count, 6)
-                self.assertEqual(skills.calls, 6)
+                self.assertEqual(network.call_count, 4)
+                self.assertEqual(skills.calls, 4)
                 data = validate_dataset(
                     Path(first["dataset_dir"]), "offline-smoke", "Offline smoke"
                 )
                 self.assertTrue(data)
                 original_state = read_json(run / "run.json")
                 retry_graph(run, jev_max_calls=24, max_api_responses=160)
-                self.assertEqual(network.call_count, 6)
-                self.assertEqual(skills.calls, 6)
+                self.assertEqual(network.call_count, 4)
+                self.assertEqual(skills.calls, 4)
                 retry_config = read_json(run / "run.json")["config"]
                 retry_config["jev"].update(max_input_tokens=4_000_000, timeout_seconds=240)
                 retry_config["model"].update(
@@ -159,8 +159,8 @@ class JevPipelineTest(unittest.TestCase):
                     stage["max_input_tokens"] = 400_000
                 write_json(run / "retry-config.json", retry_config)
                 retry_graph(run, config_path=run / "retry-config.json")
-                self.assertEqual(network.call_count, 6)
-                self.assertEqual(skills.calls, 6)
+                self.assertEqual(network.call_count, 4)
+                self.assertEqual(skills.calls, 4)
                 self.assertEqual(
                     read_json(run / "run.json")["policy_sha256"], original_state["policy_sha256"]
                 )
@@ -198,8 +198,8 @@ class JevPipelineTest(unittest.TestCase):
                 failure = run / "revisions/revision-0001/failure.json"
                 original_failure = failure.read_bytes()
                 retry_graph(run, jev_max_calls=12)
-                self.assertEqual(network.call_count, 6)
-                self.assertEqual(skills.calls, 6)
+                self.assertEqual(network.call_count, 4)
+                self.assertEqual(skills.calls, 4)
                 self.assertEqual(failure.read_bytes(), original_failure)
                 self.assertTrue(check_smoke(run)["passed"])
 
@@ -228,7 +228,7 @@ class JevPipelineTest(unittest.TestCase):
                 self.assertEqual(network.call_count, 1)
                 self.assertIsNone(read_json(run / "run.json")["current_revision"])
                 retry_graph(run)
-                self.assertEqual(network.call_count, 6)
+                self.assertEqual(network.call_count, 4)
                 self.assertTrue(check_smoke(run)["passed"])
 
     def test_smoke_checker_fails_on_wrong_membership(self):

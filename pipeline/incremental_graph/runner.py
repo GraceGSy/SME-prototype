@@ -12,7 +12,7 @@ from .evidence import Evidence
 from .export import export_revision
 from .graph import QuestionGraph
 from .journal import RevisionJournal
-from .judgments import JudgmentProvider
+from .judgments import JudgmentProvider, inherited_structural_match
 from .match_rules import (
     adjacent_core_anchors,
     adjacent_paragraph_fan_in,
@@ -580,6 +580,9 @@ class IncrementalGraphRunner:
     ) -> MatchBatch:
         self._require_match_prompts(stage)
         batch = MatchBatch(existing_group_ids=existing_group_ids, new_unit_ids=new_unit_ids)
+        inherit = level == "paragraph" and self._can_inherit_paragraph_match(
+            insertion, parent_id, new_unit_ids, existing_group_ids
+        )
         scope = self.evidence.scope_context(level, parent_id)
         group_candidates = [
             self.evidence.match_group_context(group_id, selectable=True)
@@ -607,6 +610,7 @@ class IncrementalGraphRunner:
                 source_id=unit_id,
                 allowed_ids=existing_group_ids,
                 context=context,
+                inherit_structural_match=inherit,
             )
             batch.forward[unit_id] = decision
 
@@ -625,9 +629,45 @@ class IncrementalGraphRunner:
                 source_id=group_id,
                 allowed_ids=new_unit_ids,
                 context=context,
+                inherit_structural_match=inherit,
             )
             batch.reverse[group_id] = decision
         return batch
+
+    def _can_inherit_paragraph_match(
+        self,
+        insertion: InsertionState,
+        parent_id: str | None,
+        new_unit_ids: list[str],
+        existing_group_ids: list[str],
+    ) -> bool:
+        # A paragraph-only corpus root is not an established structural match.
+        if (
+            self.max_granularity == "paragraph"
+            or parent_id is None
+            or len(new_unit_ids) != 1
+            or len(existing_group_ids) != 1
+        ):
+            return False
+        structural_members = {
+            (member["paper_id"], member["unit_id"])
+            for member in self.question_graph.members(parent_id)
+        }
+        sources = [(insertion.paper.paper_id, new_unit_ids[0])] + [
+            (member["paper_id"], member["unit_id"])
+            for member in self.question_graph.members(existing_group_ids[0])
+        ]
+        for paper_id, paragraph_id in sources:
+            section, paragraph = self.evidence.paragraph_lookup[(paper_id, paragraph_id)]
+            if (
+                (paper_id, section.id) not in structural_members
+                or len(section.paragraphs) != 1
+                or not paragraph.text.strip()
+                # A section's structural text can also contain subsection paragraphs.
+                or section.text.strip() != paragraph.text.strip()
+            ):
+                return False
+        return True
 
     def _match(
         self,
@@ -638,6 +678,7 @@ class IncrementalGraphRunner:
         source_id: str,
         allowed_ids: list[str],
         context: dict[str, Any],
+        inherit_structural_match: bool = False,
     ) -> MatchDecision:
         request = JudgmentRequest(
             key=f"{insertion.paper.paper_id}:{stage.id}:{direction}:{source_id}",
@@ -653,7 +694,11 @@ class IncrementalGraphRunner:
             max_input_tokens=stage.max_input_tokens,
             force=self._forced(stage, insertion),
         )
-        result = self.judge.judge(request)
+        result = (
+            inherited_structural_match(request)
+            if inherit_structural_match
+            else self.judge.judge(request)
+        )
         attempt_id = self.journal.attempt(request, result)
         target_id = result.normalized.get("target_id")
         self.journal.event(

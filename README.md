@@ -168,7 +168,10 @@ The graph processes documents in order. For each document it compares
 structural roles in both directions, accepts reciprocal choices, revisits
 eligible singletons, then repeats the process for paragraphs inside their
 assigned structural groups. Paragraphs may join an adjacent accepted core
-under a limited fan-in rule. Each match request chooses one candidate or null;
+under a limited fan-in rule. When matched structural units each consist of one
+paragraph, their paragraphs inherit the match without selection or explanation
+calls. Multi-paragraph cases keep the normal matching process. Each model-judged
+match request chooses one candidate or null;
 Python controls the final mapping. The [flow diagrams](PIPELINE_FLOW.md) show
 the stage order, including paragraph-only mode and reparented sections.
 

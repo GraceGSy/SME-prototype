@@ -1,7 +1,8 @@
 # Run SMELTER with Jev and compare results
 
-Jev now selects matches in every initial and singleton-recovery pass, including
-paragraphs moved into a new structural scope. Python still controls candidate
+Jev selects model-judged matches in initial and singleton-recovery passes, including
+paragraphs moved into a new structural scope. Single-paragraph structural matches
+inherit their paragraph match without a model call, as described below. Python controls candidate
 eligibility, reciprocity, paragraph fan-in, evidence validation, and graph updates.
 The existing generative provider still writes missing questions, group questions,
 and explanations with source quotations. **A TypeSafe key alone is not enough:
@@ -13,6 +14,32 @@ Choice-plus-Noul mode completed a bounded live comparison: all 24 requests acros
 probe's context-limit failure. Results were mixed, so Choice remains the default;
 Noul still needs a minimal end-to-end live smoke run before scaling. See the
 [live comparison report](reports/jev-prompt-comparison-20261025.html).
+
+## Single-paragraph inheritance
+
+When already-matched sections/subsections each consist of exactly one paragraph,
+Python matches those paragraphs directly. It makes no paragraph-selection call
+to Jev or an LLM and no explanation-generation call. This applies to all selector
+modes, including paragraphs revisited after structural recovery.
+
+The shortcut requires one incoming paragraph, one existing paragraph-group
+candidate, and each represented source unit's complete structural evidence to
+equal its sole paragraph. One candidate alone is not sufficient: a group formed
+from multi-paragraph units still requires normal matching. A section with extra
+subsection text is not a one-paragraph unit, and a paragraph-only corpus root is
+not an established structural match.
+
+The run records both inherited directions with `provider: deterministic`, rule
+`single_paragraph_structural_match`, the parent group ID, and validated source
+excerpts. Normal graph reconciliation and viewer export remain in place. These
+excerpts document inheritance; they are not new model judgments. Question
+generation is unchanged. The HCI funding pair now takes this path after its
+Acknowledgments sections match, so neither Choice nor Noul can reject it again.
+
+This is a scientific matching-policy change. Start a new run to apply it; existing
+saved runs and comparison reports remain unchanged. The frozen-decision comparison
+tool replays historical selector requests directly, so it does not exercise this
+runner-level shortcut and should not be used to re-test inherited paragraph matches.
 
 ## Detailed flow
 
@@ -43,6 +70,8 @@ recursive Jev selection, and fixed-target evidence. Unlike the earlier Decisions
 API proposal, this implementation calls TypeSafe directly. These diagrams show
 the default Choice/NO_MATCH mode. The optional Noul gate described below replaces
 the NO_MATCH option inside the Jev selection step; all later steps stay the same.
+The runner applies single-paragraph inheritance before entering diagram B;
+inherited paragraph matches bypass its selection and explanation steps.
 
 ## Directory and setup
 
@@ -176,8 +205,10 @@ Reciprocity, candidate eligibility, source preparation, questions, and fixed-tar
 evidence validation are unchanged. Mode and prompt changes invalidate scientific
 caches and require a new run. They are not budget-only retry overrides.
 
-The scripted successful test uses six Jev requests and six generative Skill
-invocations: four evidence explanations and two shared-group questions. Live
+The scripted successful test now uses four Jev requests and four generative Skill
+invocations: two structural-match explanations and two shared-group questions.
+The paragraph pair inherits its structural match, saving two Jev requests and two
+explanation invocations compared with the previous implementation. Live
 choices can change that count. Native Skill invocations can require multiple API
 responses, and evidence repair can add more. The flags cap Jev requests and
 generative responses separately **per process**. They are not dollar limits.
