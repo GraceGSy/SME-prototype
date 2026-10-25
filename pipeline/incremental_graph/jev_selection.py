@@ -14,6 +14,7 @@ from ..providers.jev import (
     JevClient,
     JevRequestTooLarge,
     JevSettings,
+    choice_from_probabilities,
     encode_request,
     validate_response,
 )
@@ -192,12 +193,22 @@ class JevSelector:
                 except JevRequestTooLarge:
                     return split(indices)
                 write_json(path, {"request": body, "response": response})
-            calls.append({"fingerprint": fingerprint, "cache_hit": hit, "response": response})
+            call = {"fingerprint": fingerprint, "cache_hit": hit, "response": response}
+            answer = response["answers"].get("match")
+            if answer is not None:
+                effective_choice = choice_from_probabilities(answer)
+                if effective_choice != answer["choice"]:
+                    call["choice_correction"] = {
+                        "reported_choice": answer["choice"],
+                        "effective_choice": effective_choice,
+                        "reason": "highest_returned_probability",
+                    }
+            calls.append(call)
             return response
 
         response = choose(list(range(len(ids))))
         answer = response["answers"].get("match")
-        target = answer["choice"] if answer else ids[0]
+        target = choice_from_probabilities(answer) if answer else ids[0]
         has_match = response["answers"].get("has_match")
         # Binary maximum-probability decision, not a tuned confidence cutoff.
         # An exactly tied existence judgment abstains.

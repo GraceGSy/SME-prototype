@@ -499,8 +499,14 @@ substitutes for the source. Repeated passages still use the existing lossless
 The complete judgment cache now also fingerprints the exact Jev request.
 
 Rounded probabilities must total more than 0.98 and at most 1.02. Every value
-must still be finite and within 0-1; the selected option must have the highest
-probability. The pipeline preserves the returned values without renormalizing.
+must still be finite and within 0-1. Selection uses the highest returned
+probability, even if Jev's `choice` field names a lower-probability option. On a
+tie, keep Jev's choice if it is tied for highest; otherwise use the
+lexicographically first tied option ID. This makes tie-breaking deterministic.
+The pipeline preserves the raw response and probabilities without rewriting or
+renormalizing them. Each affected selection-call trace records a
+`choice_correction` with the reported and effective choices. `NO_MATCH` can still
+win, and the optional Noul gate still controls acceptance in `choice_noul` mode.
 
 There is no local 24,000-byte cap or bytes-to-tokens estimate. The local body check
 uses TypeSafe's documented [32 MiB transport limit](https://docs.typesafe.ai/api/errors).

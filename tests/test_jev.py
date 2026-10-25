@@ -24,6 +24,7 @@ from pipeline.providers.jev import (
     JevClient,
     JevRequestTooLarge,
     JevSettings,
+    choice_from_probabilities,
     validate_response,
 )
 
@@ -365,7 +366,6 @@ class JevTest(unittest.TestCase):
             "confidence",
             "model",
             "usage",
-            "wrong-winner",
         ):
             with self.subTest(corruption=corruption):
                 value = answer(body)
@@ -382,10 +382,77 @@ class JevTest(unittest.TestCase):
                     value["model"] = "jev-latest"
                 elif corruption == "usage":
                     value["usage"]["input_tokens"] = True
-                else:
-                    item["choice"] = NO_MATCH
                 with self.assertRaises(ValueError):
                     validate_response(value, body)
+
+    def test_inconsistent_choice_uses_probabilities_and_preserves_raw_response(self):
+        selector = self.selector()
+        request = self.request(3)
+        body = selector.build_request(request.context)
+        payload = answer(body, NO_MATCH)
+        payload["answers"]["match"].update(
+            confidence=0.44,
+            probabilities={
+                "candidate-0": 0.48,
+                NO_MATCH: 0.47,
+                "candidate-1": 0.03,
+                "candidate-2": 0.02,
+            },
+        )
+        self.assertEqual(validate_response(payload, body), payload)
+        with (
+            patch("pipeline.providers.jev.load_api_key", return_value="offline-key"),
+            patch(
+                "pipeline.providers.jev.urlopen",
+                return_value=io.BytesIO(json.dumps(payload).encode()),
+            ) as network,
+        ):
+            first = selector.select(request)
+            second = selector.select(request)
+        self.assertEqual(network.call_count, 1)
+        for result in (first, second):
+            self.assertEqual(result["target_id"], "candidate-0")
+            self.assertEqual(result["calls"][0]["response"], payload)
+            self.assertEqual(
+                result["calls"][0]["choice_correction"],
+                {
+                    "reported_choice": NO_MATCH,
+                    "effective_choice": "candidate-0",
+                    "reason": "highest_returned_probability",
+                },
+            )
+        self.assertTrue(second["calls"][0]["cache_hit"])
+        raw_path = next((self.root / "jev/responses").glob("*.json"))
+        self.assertEqual(json.loads(json.loads(raw_path.read_text())["response_text"]), payload)
+
+    def test_probability_choice_ties_are_deterministic(self):
+        for reported, expected in (("b", "b"), ("c", "a")):
+            for probabilities in ({"b": 0.5, "a": 0.5, "c": 0.0}, {"c": 0.0, "a": 0.5, "b": 0.5}):
+                with self.subTest(reported=reported, probabilities=probabilities):
+                    self.assertEqual(
+                        choice_from_probabilities(
+                            {"choice": reported, "probabilities": probabilities}
+                        ),
+                        expected,
+                    )
+
+    def test_corrected_choice_still_respects_no_match_and_noul_gate(self):
+        for mode, probability in (("choice", None), ("choice_noul", 0.5), ("choice_noul", 0.8)):
+            selector = self.selector(selection_mode=mode)
+            request = self.request(2)
+            body = selector.build_request(request.context)
+            payload = answer(body, "candidate-0", noul=probability)
+            payload["answers"]["match"]["probabilities"] = (
+                {"candidate-0": 0.1, "candidate-1": 0.2, NO_MATCH: 0.7}
+                if mode == "choice"
+                else {"candidate-0": 0.1, "candidate-1": 0.9}
+            )
+            with (
+                self.subTest(mode=mode, noul=probability),
+                patch.object(selector.client, "choose", return_value=payload),
+            ):
+                result = selector.select(request, force=True)
+            self.assertEqual(result["target_id"], "candidate-1" if probability == 0.8 else None)
 
     def test_probability_rounding_preserves_original_values(self):
         body = {

@@ -86,9 +86,19 @@ def validate_response(payload: dict, body: dict) -> dict:
         total = math.fsum(probabilities.values())
         if any(not 0 <= value <= 1 for value in probabilities.values()) or not 0.98 < total <= 1.02:
             raise ValueError(f"Jev returned an invalid probability distribution (sum={total})")
-        if probabilities[answer.choice] < max(probabilities.values()):
-            raise ValueError("Jev choice is not a highest-probability option")
     return response.model_dump()
+
+
+def choice_from_probabilities(answer: dict) -> str:
+    """Use validated probabilities, retaining the reported choice only if tied for first."""
+    return min(
+        answer["probabilities"],
+        key=lambda option: (
+            -answer["probabilities"][option],
+            option != answer["choice"],
+            option,
+        ),
+    )
 
 
 def encode_request(body: dict) -> bytes:
