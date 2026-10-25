@@ -168,7 +168,7 @@ class CachedJudgments:
                     fingerprint=fingerprint,
                     normalized={
                         "target_id": None,
-                        "basis": "Jev selected NO_MATCH; no generative explanation was requested.",
+                        "basis": "Jev found no supported match; no generative explanation was requested.",
                         "evidence": {"focus": [], "target": []},
                     },
                     raw_response={"jev": selection},
@@ -312,6 +312,8 @@ class CachedJudgments:
             "skill_hash": skill_hash,
             "jev": self.jev.settings.result_settings() if self.jev else None,
         }
+        if self.jev and request.output_kind == "match":
+            payload["jev_request"] = self.jev.build_request(request.context)
         encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
         return hashlib.sha256(encoded).hexdigest()
 

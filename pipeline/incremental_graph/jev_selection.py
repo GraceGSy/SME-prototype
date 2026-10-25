@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import hashlib
+import json
+import re
 from pathlib import Path
 
 from ..files import read_json, write_json
@@ -20,6 +22,28 @@ from .match_evidence import candidate_handle
 from .models import JudgmentRequest
 
 
+def matching_examples(path: Path) -> list[dict]:
+    """Reuse the canonical lessons, without Claude's JSON/quotation instructions."""
+    examples = []
+    for case in re.findall(
+        r"### (.*?)(?=\n### |\nFor the actual request,|\Z)",
+        path.read_text(encoding="utf-8"),
+        flags=re.DOTALL,
+    ):
+        evidence, output = case.split("\nExpected output:\n", 1)
+        result = json.loads(output.strip().removeprefix("```json").removesuffix("```").strip())
+        examples.append(
+            {
+                "case": evidence.strip(),
+                "corresponding_candidate": result["target_id"],
+                "reason": result["basis"],
+            }
+        )
+    if not examples:
+        raise ValueError("No canonical matching examples found")
+    return examples
+
+
 class JevSelector:
     def __init__(self, settings: JevSettings, cache: Path, skill_root: Path, prompt_root: Path):
         self.settings = settings
@@ -30,17 +54,77 @@ class JevSelector:
             + "\n\n"
             + (prompt_root / "shared/group-role.md").read_text(encoding="utf-8")
             + "\n\n"
-            + (prompt_root / "shared/role-matching-examples.md").read_text(encoding="utf-8")
-            + "\n\nChoose one candidate from state.candidates for state.focus, or NO_MATCH. "
-            "Each criterion names its candidate's index. IDs are opaque output handles. "
+            + "The caller has already filtered the eligible candidates. "
+            "IDs are opaque handles, not evidence of correspondence. "
             "Judge this direction independently; no reverse votes are supplied. "
-            "NO_MATCH means no defensible role correspondence in this pool. "
-            "The examples use a generative output format; here return a Choice only, "
-            "with NO_MATCH equivalent to their null selections. "
-            "Do not use the order of options as evidence."
+            "Adjacency and option order do not establish a match. "
+            "Examples illustrate the policy; they are not candidates."
         )
+        self.examples = matching_examples(prompt_root / "shared/role-matching-examples.md")
 
-    def select(self, request: JudgmentRequest, *, force: bool = False) -> dict:
+    def build_request(self, context: dict) -> dict:
+        """Name candidate records and share repeated passages without truncation."""
+        candidates = {candidate_handle(item): item for item in context["candidates"]}
+        state = encode_evidence({**context, "candidates": candidates})
+        criteria = {}
+        for key, candidate in candidates.items():
+            center = candidate.get("paragraph_under_consideration", candidate)
+            criteria[key] = {
+                "evidence": f"`candidates[{json.dumps(key)}]`",
+                "generated_question_metadata": center.get("generated_question_metadata", ""),
+                "meaning": "This candidate supports the same source-grounded role as `focus`.",
+            }
+        shared = {"policy": self.instructions, "examples": self.examples}
+        questions = {}
+        choice_policy = shared
+        choice_question = (
+            "Which candidate has the strongest defensible role correspondence with `focus`?"
+        )
+        if self.settings.selection_mode == "choice":
+            criteria[NO_MATCH] = (
+                "Every candidate performs a different role or lacks support for a shared role."
+            )
+        else:
+            # Noul owns abstention in this mode; Choice only ranks the real options.
+            choice_policy = {
+                **shared,
+                "policy": self.instructions.replace(
+                    "Choose the strongest defensible correspondence, not the least-bad candidate.\n"
+                    "Abstain when there is none. ",
+                    "",
+                ),
+            }
+            choice_question = (
+                "Which candidate comes closest to the role and relevant relations of `focus`, "
+                "even if none supports a defensible match? Selection alone does not assert a match."
+            )
+        # Choice needs at least two options; a sole candidate only needs the Noul.
+        if len(criteria) > 1:
+            questions["match"] = {
+                "type": "choice",
+                "instructions": {
+                    "question": choice_question,
+                    **choice_policy,
+                },
+                "criteria": criteria,
+            }
+        if self.settings.selection_mode == "choice_noul":
+            questions["has_match"] = {
+                "type": "noul",
+                "instructions": {
+                    "question": "Does at least one candidate in `candidates` support a defensible shared role with `focus`?",
+                    **shared,
+                },
+                "criteria": {
+                    "true": "At least one candidate preserves the focus's role and relevant relations, supported by each represented paper.",
+                    "false": "All candidates perform different roles or lack source support; shared topics or question wording do not establish correspondence.",
+                },
+            }
+        return {"model": self.settings.model, "state": state, "questions": questions}
+
+    def select(
+        self, request: JudgmentRequest, *, force: bool = False, allow_splitting: bool = True
+    ) -> dict:
         candidates = request.context["candidates"]
         ids = request.allowed_match_ids
         if (
@@ -53,29 +137,11 @@ class JevSelector:
             return {"target_id": None, "calls": []}
         calls = []
 
-        def body_for(indices: list[int]) -> dict:
-            state = {**request.context, "candidates": [candidates[index] for index in indices]}
-            return {
-                "model": self.settings.model,
-                "state": encode_evidence(state),
-                "questions": {
-                    "match": {
-                        "type": "choice",
-                        "instructions": self.instructions,
-                        "criteria": {
-                            **{
-                                ids[
-                                    index
-                                ]: f"The role correspondence in state.candidates[{position}]"
-                                for position, index in enumerate(indices)
-                            },
-                            NO_MATCH: "None of these candidates supports a defensible shared role",
-                        },
-                    }
-                },
-            }
-
         def split(indices: list[int]) -> dict:
+            if not allow_splitting:
+                raise ValueError(
+                    "Frozen-pool comparison cannot split candidates; no text was truncated"
+                )
             if len(indices) == 1:
                 raise ValueError(
                     "Jev focus plus one candidate exceeds the provider's request limits; "
@@ -84,14 +150,15 @@ class JevSelector:
             middle = len(indices) // 2
             shortlist = []
             for half in (indices[:middle], indices[middle:]):
-                answer = choose(half)
+                response = choose(half)
+                # Do not discard a half because its existence judgment abstained.
+                # The final combined pool receives its own independent Noul.
+                probabilities = (
+                    response["answers"].get("match", {}).get("probabilities", {ids[half[0]]: 1.0})
+                )
                 # Compare probabilities only within the same response distribution.
-                ranked = sorted(
-                    half, key=lambda index: -answer["probabilities"].get(ids[index], -1)
-                )
-                shortlist.extend(
-                    index for index in ranked[:5] if ids[index] in answer["probabilities"]
-                )
+                ranked = sorted(half, key=lambda index: -probabilities.get(ids[index], -1))
+                shortlist.extend(index for index in ranked[:5] if ids[index] in probabilities)
             if len(shortlist) >= len(indices):
                 raise ValueError(
                     "Jev reranking pool cannot fit the provider's request limits; "
@@ -100,9 +167,12 @@ class JevSelector:
             return choose(shortlist)
 
         def choose(indices: list[int]) -> dict:
-            body = body_for(indices)
+            body = self.build_request(
+                {**request.context, "candidates": [candidates[index] for index in indices]}
+            )
             encoded = encode_request(body)
-            if len(indices) > 254 or len(encoded) > MAX_REQUEST_BYTES:
+            limit = 254 if self.settings.selection_mode == "choice" else 255
+            if len(indices) > limit or len(encoded) > MAX_REQUEST_BYTES:
                 return split(indices)
             fingerprint = hashlib.sha256(encoded).hexdigest()
             path = self.cache / f"{fingerprint}.json"
@@ -119,11 +189,19 @@ class JevSelector:
                     return split(indices)
                 write_json(path, {"request": body, "response": response})
             calls.append({"fingerprint": fingerprint, "cache_hit": hit, "response": response})
-            return response["answers"]["match"]
+            return response
 
-        answer = choose(list(range(len(ids))))
+        response = choose(list(range(len(ids))))
+        answer = response["answers"].get("match")
+        target = answer["choice"] if answer else ids[0]
+        has_match = response["answers"].get("has_match")
+        # Binary maximum-probability decision, not a tuned confidence cutoff.
+        # An exactly tied existence judgment abstains.
+        if target == NO_MATCH or (has_match is not None and has_match["noul"] <= 0.5):
+            target = None
         return {
-            "target_id": None if answer["choice"] == NO_MATCH else answer["choice"],
+            "target_id": target,
             "choice": answer,
+            "has_match": has_match,
             "calls": calls,
         }

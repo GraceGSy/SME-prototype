@@ -7,8 +7,11 @@ The existing generative provider still writes missing questions, group questions
 and explanations with source quotations. **A TypeSafe key alone is not enough:
 the default Jev run needs both `TYPESAFE_API_KEY` and `ANTHROPIC_API_KEY`.**
 
-The implementation and scripted end-to-end tests work offline. No live Jev run
-has been verified here. Run the small fixture below before a real corpus.
+The earlier two-paper HCI run is saved locally. The revised prompts and optional
+Choice-plus-Noul mode pass offline tests, but still need live verification. The
+first live prompt-comparison request hit the provider's context limit; testing
+stopped without a completed decision. The implementation now retains lossless
+shared-text encoding instead of duplicating every passage inline.
 
 ## Detailed flow
 
@@ -36,7 +39,9 @@ runs once per directional request before Python reconciles the complete set.
 B expands the common matching operation used by all initial, recovery, and
 older-paragraph passes in A. Its three columns show complete-cache lookup,
 recursive Jev selection, and fixed-target evidence. Unlike the earlier Decisions
-API proposal, this implementation calls TypeSafe directly.
+API proposal, this implementation calls TypeSafe directly. These diagrams show
+the default Choice/NO_MATCH mode. The optional Noul gate described below replaces
+the NO_MATCH option inside the Jev selection step; all later steps stay the same.
 
 ## Directory and setup
 
@@ -141,6 +146,34 @@ two mechanism units and two singleton groups. A different completed graph is a
 failed semantic smoke check, even if the API requests succeeded. The checker
 also reports `selector: "jev"` or `"llm"`; verify that the Jev run says `jev`.
 Passing this synthetic example does not establish corpus-level accuracy.
+
+### Optional Choice-plus-Noul mode
+
+The default remains `--jev-selection-mode choice`, with `NO_MATCH` as an option.
+To test the alternative in a **new** small run:
+
+```bash
+python -m pipeline.incremental_graph.cli start datasets/jev-smoke/manifest.yaml runs/jev-smoke-noul-01 --jev --jev-selection-mode choice_noul --jev-model jev-1.14.0 --jev-max-calls 12 --max-api-responses 80
+python -m pipeline.incremental_graph.smoke_check runs/jev-smoke-noul-01
+```
+
+This makes paid Jev and generative-provider calls. It is an experimental mode,
+not a demonstrated quality improvement. TypeSafe recommends testing a companion
+[Noul existence question](https://docs.typesafe.ai/primitives/choice) when a
+none-of-the-above Choice performs poorly.
+
+For two or more candidates, one HTTP request asks two independent questions:
+Choice ranks only real candidates; Noul asks whether any candidate supports a
+defensible shared role. Python accepts the Choice only when Noul is greater than
+0.5. At or below 0.5, it abstains. This uses the more probable binary answer, with
+ties abstaining; it is not a calibrated quality threshold or a match-similarity
+score. A single candidate needs only Noul, avoiding an invalid one-option Choice.
+Both questions receive the shared semantic policy and examples independently.
+Noul controls abstention; the ranking question does not also instruct abstention.
+
+Reciprocity, candidate eligibility, source preparation, questions, and fixed-target
+evidence validation are unchanged. Mode and prompt changes invalidate scientific
+caches and require a new run. They are not budget-only retry overrides.
 
 The scripted successful test uses six Jev requests and six generative Skill
 invocations: four evidence explanations and two shared-group questions. Live
@@ -267,7 +300,8 @@ python -m pipeline.incremental_graph.cli start datasets/my-corpus/manifest.yaml 
 Those are upper guards, not a recommended spending allowance or a completion
 guarantee. The prepared two-paper HCI example has 66 structural units and 221
 paragraphs; it is much larger than this smoke test. Review counts and account
-limits before starting it. No live cost or accuracy estimate has been established.
+limits before starting it. Earlier run costs do not establish the cost or accuracy
+of the revised prompts and optional Noul mode.
 
 To extend a successful run, use a manifest containing only new papers:
 
@@ -340,7 +374,7 @@ the underlying issue in a new run if it requires a policy change. Do not delete
 caches to bypass validation. Avoid `retry --stage` / `--paper-index` unless you
 intend to force judgments and potentially pay again.
 
-Runs created before this request-limit and fingerprint correction retain their
+Runs created before these request, prompt, and fingerprint corrections retain their
 original policy identity. They remain viewable and comparable; retry them using
 their original code, or start a new run under this corrected policy. Do not rewrite
 old policy hashes to bypass that distinction.
@@ -348,11 +382,22 @@ old policy hashes to bypass that distinction.
 ## Selection, evidence, and saved artifacts
 
 The transport calls [TypeSafe System One](https://docs.typesafe.ai/api/system-one)
-with one named Choice question per request. Each pool contains eligible candidate
-handles plus `NO_MATCH`. It records the selected option, distribution, confidence,
-model, and token usage. The response must satisfy the
+with one named Choice question per request in default mode. Each pool contains
+eligible candidate handles plus `NO_MATCH`. The optional `choice_noul` mode uses
+the separate existence question described above. It records the selected option,
+distribution, confidence, Noul answer when requested, model, and token usage.
+The response must satisfy the
 [Choice contract](https://docs.typesafe.ai/primitives/choice); probabilities and
 confidence do not become a new acceptance threshold.
+
+Jev reuses the role-selection policy and cross-paper group policy used by Claude.
+It derives the same six example lessons from the canonical examples, excluding
+Claude's output-JSON and quotation-generation instructions. Candidate criteria
+include the existing question metadata and reference a record named by candidate
+handle, rather than an array index. Questions remain fallible metadata, not
+substitutes for the source. Repeated passages still use the existing lossless
+`source_texts` table: all text remains available in order, with no truncation.
+The complete judgment cache now also fingerprints the exact Jev request.
 
 Rounded probabilities must total more than 0.98 and at most 1.02. Every value
 must still be finite and within 0-1; the selected option must have the highest
@@ -360,13 +405,15 @@ probability. The pipeline preserves the returned values without renormalizing.
 
 There is no local 24,000-byte cap or bytes-to-tokens estimate. The local body check
 uses TypeSafe's documented [32 MiB transport limit](https://docs.typesafe.ai/api/errors).
-Within that limit and 254 candidates, the selector sends the full request first.
+Within that limit and 254 candidates (255 in Noul mode), the selector sends the full request first.
 The service enforces its [token context limits](https://docs.typesafe.ai/models).
 Only an explicit HTTP 400 `max_tokens_exceeded` or HTTP 413 size rejection triggers
 size-based splitting; unrelated errors stop rather than causing more calls.
 
 Too many candidates or a real size limit triggers recursive half-pool selection,
-up to five retained candidate IDs from each half, then reranking with `NO_MATCH`.
+up to five retained candidate IDs from each half, then reranking in the configured
+mode. In Noul mode, an abstaining half still contributes its ranked candidates;
+the final combined pool receives a fresh existence judgment.
 Probabilities are only ranked within their own response distribution. A single
 oversized candidate or an unshrinkable reranking pool stops the run. The
 implementation never truncates source text or opts into long context. Shortlisting
@@ -377,7 +424,7 @@ For every non-null directional choice, the existing generative Skill receives
 only the chosen target and must return that same target with a basis and source
 quotations. This happens before reciprocal reconciliation, preserving evidence
 for rejected one-way choices too. Quote errors allow two repair attempts without
-changing Jev's selection. `NO_MATCH` uses a deterministic basis and empty evidence,
+changing Jev's selection. Abstention uses a deterministic basis and empty evidence,
 with no generative call. Attribution checks do not independently establish the
 semantic correctness of a match; the explanation model cannot veto the choice.
 
@@ -401,8 +448,8 @@ viewer export, if you need cached recovery.
 Advanced configuration can add a `jev` mapping to a copy of
 `pipeline/incremental_graph/configs/incremental-v1.yaml`, keeping that copy in
 the same directory so relative policy paths stay correct. Use `--config` with it.
-Supported fields are `model`, `max_calls`, `max_input_tokens`, and
-`timeout_seconds`. Defaults are `jev-1.14.0`, 500, 2,000,000, and 120 respectively.
+Supported fields are `model`, `selection_mode`, `max_calls`, `max_input_tokens`, and
+`timeout_seconds`. Defaults are `jev-1.14.0`, `choice`, 500, 2,000,000, and 120 respectively.
 A configured `jev` mapping also enables Jev without the flag. Remove the obsolete
 `max_request_bytes` field from older custom configuration files.
 
@@ -426,11 +473,11 @@ fixed-target evidence, complete smoke orchestration, viewer export, failure/retr
 and membership-based comparisons. Existing graph tests cover reciprocal, recovery,
 adjacency, and reparenting rules. They do not establish real model behavior.
 
-Before scaling, still verify both accounts' model access and native Skills support,
-complete the live smoke run and inspect its actual requests/usage, check its
-memberships and quotations in the viewer, then compare Jev and baseline runs on
-the same reviewed corpus. Human source-by-source evaluation is still necessary
-to assess whether either model makes useful correspondences.
+Before scaling the revised prompts, complete a bounded live decision comparison
+and the optional mode's live smoke run. Inspect requests, usage, memberships, and
+quotations before running the corpus again. No live Noul response has been verified
+by this update. Human source-by-source evaluation is still necessary to assess
+whether either model makes useful correspondences.
 
 Regenerate both diagrams with Graphviz installed:
 

@@ -14,6 +14,7 @@ from test_graph_runs import manifest
 from test_incremental_graph import CONFIG_PATH
 
 from pipeline.incremental_graph.configuration import PromptRepository, load_pipeline_config
+from pipeline.incremental_graph.evidence_encoding import encode_evidence
 from pipeline.incremental_graph.jev_selection import JevSelector
 from pipeline.incremental_graph.judgments import CachedJudgments, JudgmentError
 from pipeline.incremental_graph.runs import start_graph
@@ -27,19 +28,25 @@ from pipeline.providers.jev import (
 )
 
 
-def answer(body, choice=None):
-    options = body["questions"]["match"]["criteria"]
-    choice = choice or next(iter(options))
+def answer(body, choice=None, noul=None):
+    answers = {}
+    if "match" in body["questions"]:
+        options = body["questions"]["match"]["criteria"]
+        selected = choice if choice in options else next(iter(options))
+        answers["match"] = {
+            "type": "choice",
+            "choice": selected,
+            "confidence": 1.0,
+            "probabilities": {option: float(option == selected) for option in options},
+        }
+    if "has_match" in body["questions"]:
+        answers["has_match"] = {
+            "type": "noul",
+            "noul": float(choice != NO_MATCH) if noul is None else noul,
+        }
     return {
         "model": body["model"],
-        "answers": {
-            "match": {
-                "type": "choice",
-                "choice": choice,
-                "confidence": 1.0,
-                "probabilities": {option: float(option == choice) for option in options},
-            }
-        },
+        "answers": answers,
         "usage": {"input_tokens": 100, "output_tokens": 20},
     }
 
@@ -68,14 +75,134 @@ class JevTest(unittest.TestCase):
         ]
         return request
 
-    def provider(self):
+    def provider(self, **settings):
         return CachedJudgments(
             PromptRepository(self.config.prompt_root, self.config.context_root),
             self.config.model,
             self.root / "cache",
             self.config.skill_root,
-            jev=JevSettings(),
+            jev=JevSettings(**settings),
         )
+
+    def test_prompt_keeps_sources_and_shared_lessons_without_generation_instructions(self):
+        selector = self.selector()
+        request = self.request(2)
+        original = request.model_copy(deep=True)
+        body = selector.build_request(request.context)
+        self.assertEqual(
+            body["state"],
+            encode_evidence(
+                {
+                    **request.context,
+                    "candidates": dict(
+                        zip(request.allowed_match_ids, request.context["candidates"])
+                    ),
+                }
+            ),
+        )
+        self.assertEqual(request, original)
+        self.assertEqual(len(selector.examples), 6)
+        examples = json.dumps(selector.examples)
+        self.assertNotIn("Expected output", examples)
+        self.assertNotIn('"target_id"', examples)
+        self.assertNotIn('"evidence"', examples)
+        self.assertIn(
+            "same source-grounded role",
+            body["questions"]["match"]["criteria"]["candidate-0"]["meaning"],
+        )
+        self.assertIn("Generated questions are fallible summaries", selector.instructions)
+
+    def test_noul_mode_uses_only_real_candidates_and_abstains_on_no_or_tie(self):
+        selector = self.selector(selection_mode="choice_noul")
+        for probability, expected in (
+            (0.0, None),
+            (0.5, None),
+            (0.51, "candidate-1"),
+            (1.0, "candidate-1"),
+        ):
+            with (
+                self.subTest(probability=probability),
+                patch.object(
+                    selector.client,
+                    "choose",
+                    side_effect=lambda body: answer(body, "candidate-1", probability),
+                ) as client,
+            ):
+                result = selector.select(self.request(2), force=True)
+                body = client.call_args.args[0]
+                self.assertEqual(set(body["questions"]), {"match", "has_match"})
+                self.assertNotIn(NO_MATCH, body["questions"]["match"]["criteria"])
+                self.assertEqual(result["target_id"], expected)
+                self.assertEqual(result["has_match"]["noul"], probability)
+
+    def test_single_candidate_uses_noul_only_and_caches_it(self):
+        selector = self.selector(selection_mode="choice_noul")
+        with (
+            patch("pipeline.providers.jev.load_api_key", return_value="hidden-key"),
+            patch(
+                "pipeline.providers.jev.urlopen",
+                side_effect=lambda req, **kw: io.BytesIO(
+                    json.dumps(answer(json.loads(req.data))).encode()
+                ),
+            ) as network,
+        ):
+            first = selector.select(self.request())
+            second = selector.select(self.request())
+            self.assertEqual(first["target_id"], "candidate-0")
+            self.assertIsNone(first["choice"])
+            self.assertTrue(second["calls"][0]["cache_hit"])
+            self.assertEqual(network.call_count, 1)
+            body = json.loads(network.call_args.args[0].data)
+            self.assertEqual(set(body["questions"]), {"has_match"})
+
+    def test_noul_splits_rerank_even_when_half_pool_abstains(self):
+        selector = self.selector(selection_mode="choice_noul")
+
+        def choose(body):
+            count = len(body["state"]["candidates"])
+            return answer(body, noul=1.0 if count == 10 else 0.0)
+
+        with patch.object(selector.client, "choose", side_effect=choose) as client:
+            result = selector.select(self.request(256))
+            self.assertEqual(client.call_count, 3)
+            self.assertEqual(result["target_id"], "candidate-0")
+            self.assertEqual(
+                [len(call.args[0]["state"]["candidates"]) for call in client.call_args_list],
+                [128, 128, 10],
+            )
+
+    def test_frozen_pool_stops_on_size_error_without_splitting(self):
+        selector = self.selector()
+        with patch.object(selector.client, "choose", side_effect=JevRequestTooLarge) as client:
+            with self.assertRaisesRegex(ValueError, "cannot split candidates"):
+                selector.select(self.request(20), allow_splitting=False)
+            self.assertEqual(client.call_count, 1)
+
+    def test_noul_response_validates_finite_probability_question_names_and_types(self):
+        body = self.selector(selection_mode="choice_noul").build_request(self.request().context)
+        for probability in (-0.01, 1.01, float("nan"), float("inf")):
+            with self.subTest(probability=probability), self.assertRaises(ValueError):
+                validate_response(answer(body, noul=probability), body)
+        good = answer(body, noul=0.8)
+        self.assertEqual(validate_response(good, body), good)
+        with self.assertRaises(ValueError):
+            validate_response({**good, "answers": {}}, body)
+        with self.assertRaisesRegex(ValueError, "question type"):
+            validate_response(good, {**body, "questions": {"has_match": {"type": "choice"}}})
+
+    def test_complete_cache_tracks_jev_prompt_and_mode_not_budgets(self):
+        request = self.request(2)
+        provider = self.provider()
+        with patch(
+            "pipeline.providers.jev.JevClient.choose",
+            side_effect=lambda body: answer(body, NO_MATCH),
+        ) as client:
+            provider.judge(request)
+            self.assertTrue(self.provider(max_calls=1000).judge(request).cache_hit)
+            provider.jev.instructions += " Changed policy."
+            self.assertFalse(provider.judge(request).cache_hit)
+            self.assertFalse(self.provider(selection_mode="choice_noul").judge(request).cache_hit)
+            self.assertEqual(client.call_count, 3)
 
     def test_transport_uses_documented_body_and_never_records_credentials(self):
         selector = self.selector()

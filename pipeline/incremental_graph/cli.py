@@ -52,6 +52,11 @@ def main() -> None:
     start.add_argument("--model", help="Model name; supply together with --provider")
     start.add_argument("--jev", action="store_true", help="Use Jev for all match selection")
     start.add_argument("--jev-model", help="Pinned Jev version, for example jev-1.14.0")
+    start.add_argument(
+        "--jev-selection-mode",
+        choices=("choice", "choice_noul"),
+        help="Choice with NO_MATCH (default), or Choice with a separate Noul existence question",
+    )
     start.add_argument("--jev-max-calls", type=int, help="Maximum Jev HTTP calls per process")
     start.add_argument("--max-api-responses", type=int, help="Generative provider response guard")
     add = commands.add_parser("add", help="Append prepared papers in manifest order")
@@ -78,6 +83,7 @@ def main() -> None:
             model=args.model,
             jev=args.jev,
             jev_model=args.jev_model,
+            jev_selection_mode=args.jev_selection_mode,
             jev_max_calls=args.jev_max_calls,
             max_api_responses=args.max_api_responses,
         )

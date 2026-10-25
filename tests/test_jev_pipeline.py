@@ -89,7 +89,7 @@ def scripted_http(request, **kwargs):
     selected = next(
         (
             candidate_handle(candidate)
-            for candidate in state["candidates"]
+            for candidate in state["candidates"].values()
             if role(candidate) == role(state["focus"])
         ),
         NO_MATCH,
@@ -98,6 +98,31 @@ def scripted_http(request, **kwargs):
 
 
 class JevPipelineTest(unittest.TestCase):
+    def test_noul_smoke_exports_and_retries_without_paid_calls(self):
+        with tempfile.TemporaryDirectory() as directory:
+            run = Path(directory) / "run"
+            skills = ScriptedSkills()
+            with (
+                patch("pipeline.incremental_graph.runs.load_api_key", return_value="offline-key"),
+                patch("pipeline.providers.jev.load_api_key", return_value="offline-key"),
+                patch("pipeline.providers.jev.urlopen", side_effect=scripted_http) as network,
+                patch(
+                    "pipeline.incremental_graph.judgments.create_skill_client", return_value=skills
+                ),
+            ):
+                first = start_graph(MANIFEST, run, jev=True, jev_selection_mode="choice_noul")
+                self.assertTrue(check_smoke(run)["passed"])
+                self.assertTrue(validate_dataset(Path(first["dataset_dir"]), "noul", "Noul smoke"))
+                paid_calls = (network.call_count, skills.calls)
+                retry_graph(run)
+                self.assertEqual((network.call_count, skills.calls), paid_calls)
+                config = read_json(run / "run.json")["config"]
+                self.assertEqual(config["jev"]["selection_mode"], "choice_noul")
+                config["jev"]["selection_mode"] = "choice"
+                write_json(run / "changed.json", config)
+                with self.assertRaisesRegex(ValueError, "scientific configuration changed"):
+                    retry_graph(run, config_path=run / "changed.json")
+
     def test_smoke_exports_viewer_data_and_retry_reuses_both_caches(self):
         with tempfile.TemporaryDirectory() as directory:
             run = Path(directory) / "run"

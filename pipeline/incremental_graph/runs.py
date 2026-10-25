@@ -129,6 +129,7 @@ def start_graph(
     model: str | None = None,
     jev: bool = False,
     jev_model: str | None = None,
+    jev_selection_mode: str | None = None,
     jev_max_calls: int | None = None,
     max_api_responses: int | None = None,
 ) -> dict[str, Any]:
@@ -138,13 +139,17 @@ def start_graph(
     if len(manifest.papers) < 2:
         raise ValueError("A new graph requires at least two prepared papers")
     config = load_pipeline_config(config_path)
-    if (jev_model is not None or jev_max_calls is not None) and not (jev or config.jev):
+    if any(value is not None for value in (jev_model, jev_selection_mode, jev_max_calls)) and not (
+        jev or config.jev
+    ):
         raise ValueError("Jev overrides require --jev or a Jev configuration")
     if jev or config.jev:
         settings = config.jev or JevSettings()
         overrides = {}
         if jev_model is not None:
             overrides["model"] = jev_model
+        if jev_selection_mode is not None:
+            overrides["selection_mode"] = jev_selection_mode
         config.jev = JevSettings.model_validate({**settings.model_dump(), **overrides})
     if provider is not None:
         config.model = ModelSettings.model_validate(

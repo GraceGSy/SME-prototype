@@ -1,11 +1,11 @@
-"""TypeSafe's Choice transport. No graph rules, Skills, or automatic paid retries."""
+"""TypeSafe's Choice/Noul transport; no graph rules or automatic paid retries."""
 
 from __future__ import annotations
 
 import json
 import math
 from pathlib import Path
-from typing import Literal
+from typing import Annotated, Literal
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 from uuid import uuid4
@@ -30,12 +30,13 @@ class JevSettings(BaseModel):
 
     model_config = ConfigDict(extra="forbid", strict=True)
     model: str = Field(default="jev-1.14.0", pattern=r"^jev-\d+\.\d+\.\d+$")
+    selection_mode: Literal["choice", "choice_noul"] = "choice"
     max_calls: int = Field(default=500, gt=0)
     max_input_tokens: int = Field(default=2_000_000, gt=0)
     timeout_seconds: int = Field(default=120, gt=0)
 
     def result_settings(self) -> dict:
-        """Budgets and timeouts do not change a successful Choice request."""
+        """Budgets and timeouts do not change a successful judgment."""
         return self.model_dump(exclude={"max_calls", "max_input_tokens", "timeout_seconds"})
 
 
@@ -53,29 +54,40 @@ class Usage(BaseModel):
     output_tokens: int = Field(ge=0)
 
 
-class ChoiceResponse(BaseModel):
+class NoulAnswer(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True, allow_inf_nan=False)
+    type: Literal["noul"]
+    noul: float = Field(ge=0, le=1)
+
+
+class JevResponse(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
     model: str
-    answers: dict[str, ChoiceAnswer]
+    answers: dict[str, Annotated[ChoiceAnswer | NoulAnswer, Field(discriminator="type")]]
     usage: Usage
 
 
 def validate_response(payload: dict, body: dict) -> dict:
     """Require the exact requested options, model, and a valid distribution."""
-    response = ChoiceResponse.model_validate(payload)
-    if response.model != body["model"] or set(response.answers) != {"match"}:
+    response = JevResponse.model_validate(payload)
+    if response.model != body["model"] or set(response.answers) != set(body["questions"]):
         raise ValueError("Jev returned a different model or question set")
-    answer = response.answers["match"]
-    options = set(body["questions"]["match"]["criteria"])
-    probabilities = answer.probabilities
-    if set(probabilities) != options or answer.choice not in options:
-        raise ValueError("Jev returned missing or unknown choices")
-    # Returned probabilities are rounded; preserve them without renormalizing.
-    total = math.fsum(probabilities.values())
-    if any(not 0 <= value <= 1 for value in probabilities.values()) or not 0.98 < total <= 1.02:
-        raise ValueError(f"Jev returned an invalid probability distribution (sum={total})")
-    if probabilities[answer.choice] < max(probabilities.values()):
-        raise ValueError("Jev choice is not a highest-probability option")
+    for name, answer in response.answers.items():
+        question = body["questions"][name]
+        if answer.type != question.get("type", "choice"):
+            raise ValueError("Jev returned a different question type")
+        if isinstance(answer, NoulAnswer):
+            continue
+        options = set(question["criteria"])
+        probabilities = answer.probabilities
+        if set(probabilities) != options or answer.choice not in options:
+            raise ValueError("Jev returned missing or unknown choices")
+        # Returned probabilities are rounded; preserve them without renormalizing.
+        total = math.fsum(probabilities.values())
+        if any(not 0 <= value <= 1 for value in probabilities.values()) or not 0.98 < total <= 1.02:
+            raise ValueError(f"Jev returned an invalid probability distribution (sum={total})")
+        if probabilities[answer.choice] < max(probabilities.values()):
+            raise ValueError("Jev choice is not a highest-probability option")
     return response.model_dump()
 
 
@@ -95,9 +107,12 @@ class JevClient:
 
     def choose(self, body: dict) -> dict:
         encoded = encode_request(body)
-        count = len(body["questions"]["match"]["criteria"])
-        if not 2 <= count <= 255:
-            raise ValueError("Jev request exceeds the choice limit")
+        for question in body["questions"].values():
+            if question.get("type", "choice") == "choice":
+                if not 2 <= len(question["criteria"]) <= 255:
+                    raise ValueError("Jev request exceeds the choice limit")
+            elif question["type"] != "noul":
+                raise ValueError("Only Choice and Noul questions are supported")
         if len(encoded) > MAX_REQUEST_BYTES:
             raise JevRequestTooLarge("Jev request exceeds TypeSafe's 32 MiB body limit")
         if self.calls >= self.settings.max_calls:
