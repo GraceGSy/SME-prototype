@@ -20,10 +20,10 @@ digraph JevPipelineB {
     complete_cache [shape=diamond, label="PYTHON: complete judgment\ncached and not forced?"];
     reuse [label="PYTHON: validate and reuse the complete judgment\nCheck allowed target and source-bound evidence\nRequire evidence target to equal its recorded Jev choice\nReturn to A; no Jev or generative call"];
     select [shape=ellipse, label="PYTHON: invoke selector B2\nUse its final outer distribution in B3"];
-    failure_note [shape=plain, style="", label="Any invalid cache, unrelated contract error, exhausted repair,\nHTTP/network error, size failure, or exceeded guard stops the attempt."];
+    failure_note [shape=plain, style="", label="Any invalid cache, unrelated contract error, exhausted repair,\nnon-size HTTP/network error, impossible size, or exceeded guard stops the attempt."];
     fail [label="PYTHON: record failure in the attempted revision\nRetain raw responses, valid caches, and last completed revision\nNo silent repair, truncation, or generative-selector fallback"];
     retry [label="PYTHON: retry RUN after operator inspection\nVerify unchanged frozen inputs and policy\nCreate a new revision; replay stages using valid caches\nChanged policy/source requires a new run\nA killed process may not have written failure.json"];
-    limits [shape=plain, style="", label="Defaults: Jev 1.14.0; 24,000 UTF-8 request bytes;\n500 Jev calls and 2,000,000 input tokens per process.\nSeparate generative-provider guards; no guaranteed dollar ceiling.\nNo long-context opt-in or confidence threshold.\nTimeouts may have billed; process budgets reset on retry."];
+    limits [shape=plain, style="", label="Defaults: Jev 1.14.0; provider's 32 MiB body limit;\n500 Jev calls and 2,000,000 input tokens per process.\nService checks token context; no bytes-to-tokens estimate.\nNo long-context opt-in or confidence threshold.\nTimeouts may have billed; process budgets reset on retry."];
 
     request -> empty;
     empty -> empty_result [label="yes"];
@@ -39,7 +39,7 @@ digraph JevPipelineB {
   subgraph cluster_selector {
     label="B2. Cached Jev selector (recursive)";
     build [label="PYTHON: build Choice request for this candidate pool\nstate = focus, full candidate evidence, shared source-text table\ncriteria = candidate handles + NO_MATCH; pin model version"];
-    fits [shape=diamond, label="PYTHON: 1-254 candidates\nand within byte guard?"];
+    fits [shape=diamond, label="PYTHON: 1-254 candidates\nand body at most 32 MiB?"];
     single [shape=diamond, label="PYTHON: only\none candidate?"];
     too_large [label="PYTHON: stop; focus + candidate cannot fit\nNever truncate source evidence"];
     split [label="PYTHON: split the ordered pool into two halves\nInvoke B2 recursively for each half with the same focus\nDo not generate explanations for intermediate choices"];
@@ -52,6 +52,7 @@ digraph JevPipelineB {
     guard [label="PYTHON: check Jev call / cumulative input-token guards\nLoad credentials; submit one request; no automatic HTTP retry\nNever store the Authorization header"];
     api [fillcolor="#f1eafb", color="#7054a0", peripheries=2,
       label="JEV: evaluate one Choice named match\nPOST https://api.typesafe.ai/v1/systemone\nReturn choice, probabilities, confidence, model and token usage"];
+    size_error [shape=diamond, label="PYTHON: HTTP 400\nmax_tokens_exceeded\nor HTTP 413?"];
     contract [label="PYTHON: retain raw response before accepting it\nValidate model, exact options, finite normalized probabilities,\nhighest-probability choice, confidence range and usage\nCheck post-response token guard; cache a valid selection"];
     distribution [shape=ellipse, label="PYTHON: return final distribution + recorded trace\nTo recursive caller, or to B3 for the outer request"];
     caveat [shape=plain, style="", label="Recursive half-pool calls use this same Jev API step.\nShortlisting can discard a globally preferable candidate.\nA valid probability distribution does not establish match quality."];
@@ -68,7 +69,10 @@ digraph JevPipelineB {
     fits -> selection_cache [label="yes"];
     selection_cache -> cached_choice [label="hit; not forced"];
     selection_cache -> guard [label="miss / forced"];
-    guard -> api -> contract -> distribution;
+    guard -> api -> size_error;
+    size_error -> single [label="yes: retain error; split", style=dashed, constraint=false];
+    size_error -> contract [label="success; other errors stop"];
+    contract -> distribution;
     cached_choice -> distribution;
     distribution -> caveat [style=invis];
   }

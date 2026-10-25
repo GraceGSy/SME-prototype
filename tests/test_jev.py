@@ -18,7 +18,13 @@ from pipeline.incremental_graph.jev_selection import JevSelector
 from pipeline.incremental_graph.judgments import CachedJudgments, JudgmentError
 from pipeline.incremental_graph.runs import start_graph
 from pipeline.providers.contracts import SkillRef
-from pipeline.providers.jev import NO_MATCH, JevClient, JevSettings, validate_response
+from pipeline.providers.jev import (
+    NO_MATCH,
+    JevClient,
+    JevRequestTooLarge,
+    JevSettings,
+    validate_response,
+)
 
 
 def answer(body, choice=None):
@@ -105,7 +111,7 @@ class JevTest(unittest.TestCase):
             self.assertIsNone(selector.select(self.request())["target_id"])
 
     def test_oversized_pool_splits_then_reranks_and_preserves_partial_cache(self):
-        selector = self.selector(max_request_bytes=200_000)
+        selector = self.selector()
         with patch.object(selector.client, "choose", side_effect=answer) as client:
             selection = selector.select(self.request(300))
             self.assertEqual(client.call_count, 3)
@@ -121,21 +127,81 @@ class JevTest(unittest.TestCase):
             self.assertEqual(client.call_count, 6)
 
     def test_recursive_splits_do_not_compare_probabilities_across_halves(self):
-        selector = self.selector(max_request_bytes=300_000)
+        selector = self.selector()
         with patch.object(selector.client, "choose", side_effect=answer) as client:
             result = selector.select(self.request(600))
             self.assertEqual(len(result["calls"]), 7)
             self.assertEqual(client.call_count, 7)
             self.assertEqual(result["target_id"], "candidate-0")
 
-    def test_oversized_single_candidate_stops_without_truncation(self):
+    def test_request_above_old_byte_cap_reaches_transport_without_truncation(self):
         selector = self.selector()
         request = self.request()
-        request.context["focus"]["paragraph_under_consideration"]["full_text"] = "x" * 30_000
-        with patch.object(selector.client, "choose") as client:
+        source = "Full source evidence. " * 2500
+        request.context["focus"]["paragraph_under_consideration"]["full_text"] = source
+
+        def http(req, **kwargs):
+            self.assertGreater(len(req.data), 48_228)
+            self.assertIn(source, req.data.decode())
+            self.assertNotIn("Typesafe-danger-zone-long-context", req.headers)
+            return io.BytesIO(json.dumps(answer(json.loads(req.data))).encode())
+
+        with (
+            patch("pipeline.providers.jev.load_api_key", return_value="key"),
+            patch("pipeline.providers.jev.urlopen", side_effect=http) as network,
+        ):
+            self.assertEqual(selector.select(request)["target_id"], "candidate-0")
+            self.assertEqual(network.call_count, 1)
+
+    def test_provider_context_limit_splits_then_reranks(self):
+        selector = self.selector()
+
+        def http(req, **kwargs):
+            body = json.loads(req.data)
+            if len(body["questions"]["match"]["criteria"]) > 11:
+                raise HTTPError(
+                    "url",
+                    400,
+                    "Bad Request",
+                    {},
+                    io.BytesIO(b'{"detail":{"error_type":"max_tokens_exceeded"}}'),
+                )
+            return io.BytesIO(json.dumps(answer(body)).encode())
+
+        with (
+            patch("pipeline.providers.jev.load_api_key", return_value="key"),
+            patch("pipeline.providers.jev.urlopen", side_effect=http) as network,
+        ):
+            result = selector.select(self.request(20))
+            self.assertEqual(network.call_count, 4)
+            self.assertEqual(len(result["calls"]), 3)
+            self.assertEqual(result["target_id"], "candidate-0")
+        records = [
+            json.loads(path.read_text()) for path in (self.root / "jev/responses").glob("*.json")
+        ]
+        rejected = [record for record in records if record.get("http_status") == 400]
+        self.assertEqual(len(rejected), 1)
+        self.assertIn("max_tokens_exceeded", rejected[0]["response_text"])
+
+    def test_provider_rejects_single_candidate_without_truncation(self):
+        selector = self.selector()
+        with patch.object(selector.client, "choose", side_effect=JevRequestTooLarge) as client:
             with self.assertRaisesRegex(ValueError, "no source text was truncated"):
-                selector.select(request)
-            client.assert_not_called()
+                selector.select(self.request())
+            self.assertEqual(client.call_count, 1)
+
+    def test_unshrinkable_context_pool_stops(self):
+        selector = self.selector()
+
+        def choose(body):
+            if len(body["questions"]["match"]["criteria"]) > 2:
+                raise JevRequestTooLarge()
+            return answer(body)
+
+        with patch.object(selector.client, "choose", side_effect=choose) as client:
+            with self.assertRaisesRegex(ValueError, "no automatic truncation"):
+                selector.select(self.request(2))
+            self.assertEqual(client.call_count, 3)
 
     def test_changed_evidence_model_or_policy_cannot_reuse_a_selection(self):
         selector = self.selector()
@@ -195,7 +261,12 @@ class JevTest(unittest.TestCase):
         self.assertEqual(list((self.root / "jev").glob("*.json")), [])
 
     def test_http_and_connection_errors_do_not_retry_automatically(self):
-        for error in (HTTPError("url", 429, "rate limit", {}, None), URLError("offline")):
+        for error in (
+            HTTPError("url", 429, "rate limit", {}, io.BytesIO(b"")),
+            HTTPError("url", 400, "Bad Request", {}, io.BytesIO(b'{"detail":"invalid request"}')),
+            HTTPError("url", 400, "Bad Request", {}, io.BytesIO(b"not json")),
+            URLError("offline"),
+        ):
             with (
                 patch("pipeline.providers.jev.load_api_key", return_value="key"),
                 patch("pipeline.providers.jev.urlopen", side_effect=error) as network,
@@ -212,6 +283,34 @@ class JevTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "call limit"):
                 client.choose(body)
             network.assert_not_called()
+
+    def test_provider_body_guard_stops_before_request(self):
+        client = JevClient(JevSettings(), self.root, self.root)
+        body = {"questions": {"match": {"criteria": {"a": "A", "b": "B"}}}}
+        with (
+            patch("pipeline.providers.jev.MAX_REQUEST_BYTES", 1),
+            patch("pipeline.providers.jev.urlopen") as network,
+        ):
+            with self.assertRaisesRegex(JevRequestTooLarge, "32 MiB"):
+                client.choose(body)
+            network.assert_not_called()
+
+    def test_only_explicit_provider_size_errors_allow_splitting(self):
+        for status, body in (
+            (400, b'{"detail":"max_tokens_exceeded"}'),
+            (413, b"payload too large"),
+        ):
+            with (
+                self.subTest(status=status),
+                patch("pipeline.providers.jev.load_api_key", return_value="key"),
+                patch(
+                    "pipeline.providers.jev.urlopen",
+                    side_effect=HTTPError("url", status, "rejected", {}, io.BytesIO(body)),
+                ) as network,
+            ):
+                with self.assertRaisesRegex(ValueError, "no source text was truncated"):
+                    self.selector().select(self.request())
+                self.assertEqual(network.call_count, 1)
 
     def test_jev_requires_both_credentials_before_run_creation(self):
         docs = manifest(self.root, ["a", "b"], "source")

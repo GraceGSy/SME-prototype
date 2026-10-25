@@ -17,6 +17,12 @@ from .registry import load_api_key
 
 ENDPOINT = "https://api.typesafe.ai/v1/systemone"
 NO_MATCH = "NO_MATCH"
+# TypeSafe's transport limit, not an estimate of its token context window.
+MAX_REQUEST_BYTES = 32 * 1024 * 1024
+
+
+class JevRequestTooLarge(ValueError):
+    """The provider's body or context limit requires a smaller candidate pool."""
 
 
 class JevSettings(BaseModel):
@@ -26,8 +32,6 @@ class JevSettings(BaseModel):
     model: str = Field(default="jev-1.14.0", pattern=r"^jev-\d+\.\d+\.\d+$")
     max_calls: int = Field(default=500, gt=0)
     max_input_tokens: int = Field(default=2_000_000, gt=0)
-    # Conservative byte guard, not a tokenizer or an opt-in to long context.
-    max_request_bytes: int = Field(default=24_000, ge=1024)
     timeout_seconds: int = Field(default=120, gt=0)
 
 
@@ -88,8 +92,10 @@ class JevClient:
     def choose(self, body: dict) -> dict:
         encoded = encode_request(body)
         count = len(body["questions"]["match"]["criteria"])
-        if not 2 <= count <= 255 or len(encoded) > self.settings.max_request_bytes:
-            raise ValueError("Jev request exceeds the choice or byte limit")
+        if not 2 <= count <= 255:
+            raise ValueError("Jev request exceeds the choice limit")
+        if len(encoded) > MAX_REQUEST_BYTES:
+            raise JevRequestTooLarge("Jev request exceeds TypeSafe's 32 MiB body limit")
         if self.calls >= self.settings.max_calls:
             raise ValueError("Jev call limit reached; inspect usage before retrying")
         if self.input_tokens >= self.settings.max_input_tokens:
@@ -108,7 +114,18 @@ class JevClient:
             with urlopen(request, timeout=self.settings.timeout_seconds) as response:
                 text = response.read().decode("utf-8")
         except HTTPError as error:
-            write_json(path, {**record, "http_status": error.code})
+            text = error.read().decode("utf-8", errors="replace")
+            write_json(path, {**record, "http_status": error.code, "response_text": text})
+            try:
+                payload = json.loads(text)
+            except ValueError:
+                payload = None
+            detail = payload.get("detail") if isinstance(payload, dict) else None
+            error_type = detail.get("error_type") if isinstance(detail, dict) else detail
+            if error.code == 413 or (error.code == 400 and error_type == "max_tokens_exceeded"):
+                raise JevRequestTooLarge(
+                    "Jev rejected the request's body or context size; response retained"
+                ) from None
             raise RuntimeError(
                 f"Jev HTTP {error.code}; check credentials, limits, or service availability. "
                 "No automatic retry was made."

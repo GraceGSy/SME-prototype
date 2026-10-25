@@ -261,8 +261,9 @@ judgments. A saved Jev choice survives an evidence-generation failure, so an
 ordinary retry need not buy that choice again. Failed attempts do not replace
 the last completed revision. This is cached replay, not resuming a Python stack.
 
-Jev HTTP failures, malformed responses, impossible request sizes, and exhausted
-evidence repairs stop the attempt. There is no silent generative-selector fallback.
+Jev HTTP failures other than explicit size rejections, malformed responses,
+impossible request sizes, and exhausted evidence repairs stop the attempt.
+There is no silent generative-selector fallback.
 If a request times out without a saved valid response, retry may repeat a paid
 request; the pipeline cannot prove the service did not bill it. Do not repeatedly
 retry an unchanged contract or size error. Inspect the retained response and fix
@@ -279,13 +280,20 @@ model, and token usage. The response must satisfy the
 [Choice contract](https://docs.typesafe.ai/primitives/choice); probabilities and
 confidence do not become a new acceptance threshold.
 
-The default request guard is 24,000 UTF-8 bytes, separate from the service's token
-limit. More than 254 candidates or too many bytes triggers recursive half-pool
-selection, up to five retained candidate IDs from each half, then reranking with
-`NO_MATCH`. Probabilities are only ranked within their own response distribution.
-A single oversized candidate or an unshrinkable reranking pool stops the run.
-The implementation never truncates source text or opts into long context.
-Shortlisting can discard a candidate that a full-pool comparison would prefer.
+There is no local 24,000-byte cap or bytes-to-tokens estimate. The local body check
+uses TypeSafe's documented [32 MiB transport limit](https://docs.typesafe.ai/api/errors).
+Within that limit and 254 candidates, the selector sends the full request first.
+The service enforces its [token context limits](https://docs.typesafe.ai/models).
+Only an explicit HTTP 400 `max_tokens_exceeded` or HTTP 413 size rejection triggers
+size-based splitting; unrelated errors stop rather than causing more calls.
+
+Too many candidates or a real size limit triggers recursive half-pool selection,
+up to five retained candidate IDs from each half, then reranking with `NO_MATCH`.
+Probabilities are only ranked within their own response distribution. A single
+oversized candidate or an unshrinkable reranking pool stops the run. The
+implementation never truncates source text or opts into long context. Shortlisting
+can discard a candidate that a full-pool comparison would prefer. Rejected HTTP
+requests count toward the call guard, and their response bodies are retained.
 
 For every non-null directional choice, the existing generative Skill receives
 only the chosen target and must return that same target with a basis and source
@@ -314,11 +322,10 @@ viewer export, if you need cached recovery.
 Advanced configuration can add a `jev` mapping to a copy of
 `pipeline/incremental_graph/configs/incremental-v1.yaml`, keeping that copy in
 the same directory so relative policy paths stay correct. Use `--config` with it.
-Supported fields are `model`, `max_calls`, `max_input_tokens`,
-`max_request_bytes`, and `timeout_seconds`. Defaults are `jev-1.14.0`, 500,
-2,000,000, 24,000, and 120 respectively. A configured `jev` mapping also enables
-Jev without the flag. Do not raise byte limits blindly to force a large corpus
-through; first assess the provider's current limits and the evidence size.
+Supported fields are `model`, `max_calls`, `max_input_tokens`, and
+`timeout_seconds`. Defaults are `jev-1.14.0`, 500, 2,000,000, and 120 respectively.
+A configured `jev` mapping also enables Jev without the flag. Remove the obsolete
+`max_request_bytes` field from older custom configuration files.
 
 ## Offline checks and outstanding live verification
 

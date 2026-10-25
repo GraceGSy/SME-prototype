@@ -6,7 +6,15 @@ import hashlib
 from pathlib import Path
 
 from ..files import read_json, write_json
-from ..providers.jev import NO_MATCH, JevClient, JevSettings, encode_request, validate_response
+from ..providers.jev import (
+    MAX_REQUEST_BYTES,
+    NO_MATCH,
+    JevClient,
+    JevRequestTooLarge,
+    JevSettings,
+    encode_request,
+    validate_response,
+)
 from .evidence_encoding import encode_evidence
 from .match_evidence import candidate_handle
 from .models import JudgmentRequest
@@ -67,35 +75,36 @@ class JevSelector:
                 },
             }
 
+        def split(indices: list[int]) -> dict:
+            if len(indices) == 1:
+                raise ValueError(
+                    "Jev focus plus one candidate exceeds the provider's request limits; "
+                    "no source text was truncated. Use smaller prepared units."
+                )
+            middle = len(indices) // 2
+            shortlist = []
+            for half in (indices[:middle], indices[middle:]):
+                answer = choose(half)
+                # Compare probabilities only within the same response distribution.
+                ranked = sorted(
+                    half, key=lambda index: -answer["probabilities"].get(ids[index], -1)
+                )
+                shortlist.extend(
+                    index for index in ranked[:5] if ids[index] in answer["probabilities"]
+                )
+            if len(shortlist) >= len(indices):
+                raise ValueError(
+                    "Jev reranking pool cannot fit the provider's request limits; "
+                    "no automatic truncation or fallback is allowed"
+                )
+            return choose(shortlist)
+
         def choose(indices: list[int]) -> dict:
             body = body_for(indices)
-            fits = (
-                len(indices) <= 254 and len(encode_request(body)) <= self.settings.max_request_bytes
-            )
-            if not fits:
-                if len(indices) == 1:
-                    raise ValueError(
-                        "Jev focus plus one candidate exceeds max_request_bytes; "
-                        "no source text was truncated. Use smaller prepared units or review the limit."
-                    )
-                middle = len(indices) // 2
-                shortlist = []
-                for half in (indices[:middle], indices[middle:]):
-                    answer = choose(half)
-                    # Compare probabilities only within the same response distribution.
-                    ranked = sorted(
-                        half, key=lambda index: -answer["probabilities"].get(ids[index], -1)
-                    )
-                    shortlist.extend(
-                        index for index in ranked[:5] if ids[index] in answer["probabilities"]
-                    )
-                if len(shortlist) >= len(indices):
-                    raise ValueError(
-                        "Jev reranking pool cannot fit the byte limit without discarding evidence; "
-                        "no automatic truncation or fallback is allowed"
-                    )
-                return choose(shortlist)
-            fingerprint = hashlib.sha256(encode_request(body)).hexdigest()
+            encoded = encode_request(body)
+            if len(indices) > 254 or len(encoded) > MAX_REQUEST_BYTES:
+                return split(indices)
+            fingerprint = hashlib.sha256(encoded).hexdigest()
             path = self.cache / f"{fingerprint}.json"
             hit = path.is_file() and not force
             if hit:
@@ -104,7 +113,10 @@ class JevSelector:
                     raise ValueError("Jev cached request changed")
                 response = validate_response(saved["response"], body)
             else:
-                response = self.client.choose(body)
+                try:
+                    response = self.client.choose(body)
+                except JevRequestTooLarge:
+                    return split(indices)
                 write_json(path, {"request": body, "response": response})
             calls.append({"fingerprint": fingerprint, "cache_hit": hit, "response": response})
             return response["answers"]["match"]
