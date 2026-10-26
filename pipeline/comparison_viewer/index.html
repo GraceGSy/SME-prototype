@@ -23,10 +23,10 @@
     <main id="top">
       <section class="intro">
         <p class="eyebrow">SAVED RUN COMPARISON <span> / OFFLINE &amp; DETERMINISTIC</span></p>
-        <h1>See what changed<br />between matches.</h1>
+        <h1>See which passages match.</h1>
         <p class="intro-copy">
-          Read the same passage against two runs. See which partners were added, removed, or kept,
-          with the original text beside each decision.
+          One source in the middle. Each run's matches beside it. Click any box to read the full
+          passage.
         </p>
         <div id="run-strip" class="run-strip"></div>
         <p class="caution">
@@ -47,8 +47,8 @@
       <section class="review-section" id="review" aria-labelledby="review-title">
         <div class="section-title">
           <div>
-            <p class="eyebrow">PASSAGE BY PASSAGE</p>
-            <h2 id="review-title">Inspect the differences</h2>
+            <p class="eyebrow">SIDE-BY-SIDE MATCH MAP</p>
+            <h2 id="review-title">What matched this passage?</h2>
           </div>
           <div class="legend">
             <span class="removed">- Removed</span><span class="added">+ Added</span
@@ -64,7 +64,7 @@
               autocomplete="off"
           /></label>
           <label
-            >Source paper<select id="paper">
+            >Read from<select id="paper">
               <option value="">All papers</option>
             </select></label
           >
@@ -79,23 +79,24 @@
               <option value="all">All source units</option>
             </select></label
           >
-          <label class="check-label"><input type="checkbox" id="full-text" />Expand all text</label>
+          <label class="check-label"
+            ><input type="checkbox" id="full-text" />Full text on cards</label
+          >
         </div>
         <div class="result-bar">
           <p id="result-count" role="status" aria-live="polite"></p>
           <button id="reset" class="text-button">Reset filters</button>
         </div>
         <p class="review-help">
-          Each card follows one source passage. Its partners appear in both run columns. A pair can
-          appear from either paper's perspective; the totals above count each cross-paper pair once.
+          Outlined boxes show changed matches; gray boxes show matches both runs kept. Lines connect
+          each run's group to the same source, not a before/after edit to the text. Start with one
+          paper to avoid seeing both ends of each pair.
         </p>
-        <div class="review-layout">
-          <aside class="index-panel">
-            <h3>Source index</h3>
-            <nav id="source-index" aria-label="Jump to source passage"></nav>
-          </aside>
-          <div id="cards"></div>
-        </div>
+        <details class="quick-jump">
+          <summary>Jump to a passage</summary>
+          <nav id="source-index" aria-label="Jump to source passage"></nav>
+        </details>
+        <div id="cards"></div>
       </section>
       <section class="method" id="method">
         <p class="eyebrow">READ BEFORE INTERPRETING</p>
@@ -120,6 +121,21 @@
       </section>
       <footer>SMELTER / Match review <span>Saved evidence. No new model calls.</span></footer>
     </main>
+    <dialog id="passage-dialog" aria-labelledby="passage-title">
+      <div class="dialog-panel">
+        <div class="dialog-heading">
+          <p class="eyebrow">ORIGINAL SOURCE TEXT</p>
+          <button id="close-passage" class="close-button">Close</button>
+        </div>
+        <h2 id="passage-title"></h2>
+        <code id="passage-id"></code>
+        <p id="passage-text" class="passage"></p>
+        <details>
+          <summary>Saved source questions</summary>
+          <div id="passage-questions" class="context-columns"></div>
+        </details>
+      </div>
+    </dialog>
     <noscript
       ><p>
         Enable JavaScript for the passage diff. The detailed metrics above and comparison.json

@@ -75,6 +75,14 @@ export function sourceLabel(source, sections) {
   return `${section?.title || source.section_id} / paragraph ${number ? Number(number) : source.id}`;
 }
 
+export function partitionPeers(row, side, sources) {
+  const peers = side === "left" ? row.oldPeers : row.newPeers;
+  return {
+    crossPaper: peers.filter((key) => sources[key].paper !== row.source.paper),
+    samePaper: peers.filter((key) => sources[key].paper === row.source.paper),
+  };
+}
+
 if (typeof document !== "undefined") {
   const report = JSON.parse(document.getElementById("comparison-data").textContent);
   const $ = (id) => document.getElementById(id);
@@ -87,6 +95,9 @@ if (typeof document !== "undefined") {
     ]),
   );
   const titles = report.paper_titles;
+  const defaultPaper = report.left.summary.paper_order.find((paper) =>
+    report.common_papers.includes(paper),
+  );
   $("comparison-context").textContent =
     report.common_papers.map((paper) => titles[paper] || paper).join(" + ") +
     (report.warnings.some((warning) => warning.includes("not a controlled"))
@@ -106,29 +117,81 @@ if (typeof document !== "undefined") {
   let level = "paragraph";
   let visible = [];
 
-  function passage(text) {
-    return `<div class="passage-block"><p class="passage passage-preview">${esc(text)}</p><details class="passage-details"${$("full-text").checked ? " open" : ""}><summary>Full passage</summary><p class="passage">${esc(text)}</p></details></div>`;
-  }
-
-  function partner(key, state, sourcePaper) {
+  function passageBox(key, state) {
     const source = report.levels[level].sources[key];
-    const samePaper = source.paper === sourcePaper;
-    return `<div class="partner ${state}"><div class="partner-head"><span class="partner-sign" aria-hidden="true">${state === "added" ? "+" : state === "removed" ? "-" : "="}</span><div><span class="partner-state">${state === "same" ? "Kept in both runs" : state === "added" ? "Added in comparison" : "Removed in comparison"}${samePaper ? " / same-paper co-member" : ""}</span><strong>${esc(titles[source.paper] || source.paper)}</strong> / ${esc(sourceLabel(source, report.levels.section.sources))}</div></div>${passage(source.text)}<code class="partner-id">${esc(key)}</code></div>`;
+    const label = sourceLabel(source, report.levels.section.sources);
+    const stateText =
+      state === "source"
+        ? "Shared source"
+        : state === "same"
+          ? "Kept in both runs"
+          : state === "added"
+            ? "+ Only in " + names.right
+            : "- Only in " + names.left;
+    return `<button class="passage-card ${state}" data-passage="${esc(key)}" aria-label="Read ${esc(titles[source.paper] || source.paper)}: ${esc(label)}"><span class="box-state">${esc(stateText)}</span><span class="box-paper">${esc(titles[source.paper] || source.paper)}</span><span class="box-title">${esc(label)}</span><span class="box-excerpt">${esc(source.text)}</span><span class="box-footer"><code>${esc(source.id)}</code><span>Read passage</span></span></button>`;
   }
 
   function column(row, side) {
-    // Cross-paper partners come first; adjacent same-paper co-members remain visible.
-    const peers = [...(side === "left" ? row.oldPeers : row.newPeers)].sort(
-      (a, b) =>
-        Number(report.levels[level].sources[a].paper === row.source.paper) -
-        Number(report.levels[level].sources[b].paper === row.source.paper),
-    );
+    const peers = partitionPeers(row, side, report.levels[level].sources);
     const changed = side === "left" ? row.removed : row.added;
-    const state = side === "left" ? "removed" : "added";
-    const otherPaperCount = peers.filter(
-      (key) => report.levels[level].sources[key].paper !== row.source.paper,
-    ).length;
-    return `<section class="run-column" aria-label="${side === "left" ? "Baseline" : "Comparison"} partners"><h4 class="column-heading"><span>${esc(names[side])} <small>/ ${side === "left" ? "baseline" : "comparison"}</small></span><small>${otherPaperCount} cross-paper</small></h4>${peers.length ? peers.map((key) => partner(key, changed.includes(key) ? state : "same", row.source.paper)).join("") : '<div class="no-match">No matching partner. This passage stands alone.</div>'}<div class="group-question"><small>${peers.length ? "GROUP QUESTION" : "SINGLETON QUESTION"}</small><p>${esc(row[side].question || "No saved question")}</p></div></section>`;
+    const state = (key) =>
+      changed.includes(key) ? (side === "left" ? "removed" : "added") : "same";
+    const coMembers = peers.samePaper
+      .map((key) => {
+        const source = report.levels[level].sources[key];
+        return `<button class="co-member ${state(key)}" data-passage="${esc(key)}" title="${esc(sourceLabel(source, report.levels.section.sources))}">${state(key) === "same" ? "=" : side === "left" ? "-" : "+"} ${esc(source.id)}</button>`;
+      })
+      .join("");
+    return `<section class="match-column ${side}" aria-label="${side === "left" ? "Baseline" : "Comparison"} partners"><h4 class="column-label"><span>${esc(names[side])}</span><small>${peers.crossPaper.length} cross-paper ${peers.crossPaper.length === 1 ? "match" : "matches"}</small></h4><div class="partner-stack">${peers.crossPaper.length ? peers.crossPaper.map((key) => passageBox(key, state(key))).join("") : '<div class="no-match"><strong>No cross-paper match</strong><span>This run leaves the source without a partner in another paper.</span></div>'}${coMembers ? `<div class="co-members"><span>Also grouped from the source paper</span>${coMembers}</div>` : ""}</div></section>`;
+  }
+
+  function showPassage(key) {
+    const source = report.levels[level].sources[key];
+    $("passage-title").textContent =
+      `${titles[source.paper] || source.paper} / ${sourceLabel(source, report.levels.section.sources)}`;
+    $("passage-id").textContent = key;
+    $("passage-text").textContent = source.text;
+    const questions = report.levels[level].unit_questions.rows.find((item) => item.unit === key);
+    $("passage-questions").innerHTML = ["left", "right"]
+      .map(
+        (side) =>
+          `<div><strong>${esc(names[side])}</strong><p>${esc(questions?.[side] || "No saved source question")}</p></div>`,
+      )
+      .join("");
+    $("passage-dialog").showModal();
+  }
+
+  function drawLinks() {
+    if (!window.matchMedia("(min-width: 651px)").matches) return;
+    for (const layout of document.querySelectorAll(".match-layout")) {
+      const bounds = layout.getBoundingClientRect();
+      const source = layout.querySelector(".source-column .passage-card").getBoundingClientRect();
+      const svg = layout.querySelector(".match-links");
+      svg.setAttribute("viewBox", `0 0 ${bounds.width} ${bounds.height}`);
+      // Connect actual cross-paper partners only, never an empty state or same-paper chip.
+      svg.innerHTML = ["left", "right"]
+        .flatMap((side) =>
+          [...layout.querySelectorAll(`.match-column.${side} .passage-card`)].map((card) => {
+            const target = card.getBoundingClientRect();
+            const x1 = (side === "left" ? target.right : source.right) - bounds.left;
+            const x2 = (side === "left" ? source.left : target.left) - bounds.left;
+            const y1 =
+              (side === "left" ? target.top + target.height / 2 : source.top + source.height / 2) -
+              bounds.top;
+            const y2 =
+              (side === "left" ? source.top + source.height / 2 : target.top + target.height / 2) -
+              bounds.top;
+            const middle = (x1 + x2) / 2;
+            const state = card.classList.contains("added")
+              ? "added"
+              : card.classList.contains("removed")
+                ? "removed"
+                : "same";
+            return `<path class="match-link ${state}" d="M ${x1} ${y1} C ${middle} ${y1}, ${middle} ${y2}, ${x2} ${y2}"/>`;
+          }),
+        )
+        .join("");
+    }
   }
 
   function scopeLabel(key) {
@@ -138,11 +201,11 @@ if (typeof document !== "undefined") {
       : key;
   }
 
-  function card(row) {
+  function card(row, index) {
     const questions = report.levels[level].unit_questions.rows.find(
       (item) => item.unit === row.key,
     );
-    return `<article class="diff-card" id="unit-${esc(row.key)}" data-unit="${esc(row.key)}" data-status="${row.status}"><header class="source-heading"><h3><strong>${esc(titles[row.source.paper] || row.source.paper)}</strong>${esc(sourceLabel(row.source, report.levels.section.sources))}</h3><span class="badge ${row.status}">${signs[row.status]} ${statusLabels[row.status]}</span></header><div class="source-body"><p class="eyebrow">SOURCE ${level === "paragraph" ? "PARAGRAPH" : "STRUCTURAL UNIT"} / IDENTICAL TEXT IN BOTH RUNS</p>${passage(row.source.text)}<code>${esc(row.key)}</code></div><div class="diff-columns">${column(row, "left")}${column(row, "right")}</div><details class="card-details"><summary>Source questions &amp; parent scope${row.scopeChanged ? " (scope changed)" : ""}</summary><div class="context-columns">${["left", "right"].map((side) => `<div><strong>${esc(names[side])}</strong><p>${esc(questions?.[side] || "No saved source question")}</p><strong>Parent scope</strong>${row[side].scope.length ? row[side].scope.map((key) => `<code>${esc(scopeLabel(key))}</code>`).join("") : "<p>No parent scope</p>"}</div>`).join("")}</div></details></article>`;
+    return `<article class="diff-card" id="unit-${esc(row.key)}" data-unit="${esc(row.key)}" data-status="${row.status}"><header class="row-heading"><span class="row-number">${String(index + 1).padStart(2, "0")}</span><h3>${esc(sourceLabel(row.source, report.levels.section.sources))}</h3><span class="badge ${row.status}">${signs[row.status]} ${statusLabels[row.status]}</span></header><div class="match-layout"><svg class="match-links" aria-hidden="true"></svg>${column(row, "left")}<span class="link-gap" aria-hidden="true"></span><section class="source-column" aria-label="Source passage"><h4 class="column-label"><span>The same source</span><small>Identical text in both runs</small></h4>${passageBox(row.key, "source")}</section><span class="link-gap" aria-hidden="true"></span>${column(row, "right")}</div><details class="card-details"><summary>Compare questions &amp; parent scope${row.scopeChanged ? " (scope changed)" : ""}</summary><div class="context-columns">${["left", "right"].map((side) => `<div><strong>${esc(names[side])}</strong><p class="context-label">Group question</p><p>${esc(row[side].question || "No saved group question")}</p><p class="context-label">Source question</p><p>${esc(questions?.[side] || "No saved source question")}</p><p class="context-label">Parent scope</p>${row[side].scope.length ? row[side].scope.map((key) => `<code>${esc(scopeLabel(key))}</code>`).join("") : "<p>No parent scope</p>"}</div>`).join("")}</div></details></article>`;
   }
 
   function overview() {
@@ -156,54 +219,46 @@ if (typeof document !== "undefined") {
       .forEach((button) =>
         button.setAttribute("aria-pressed", String(button.dataset.level === level)),
       );
-    const counts = {
-      changes: data.membership_changed_units,
-      scope: data.scope_only_changed_units,
-      ...Object.fromEntries(
-        ["added", "removed", "mixed"].map((status) => [
-          status,
-          rowsByLevel[level].filter((row) => row.status === status).length,
-        ]),
-      ),
-      kept: rowsByLevel[level].filter(
-        (row) => !row.added.length && !row.removed.length && row.oldPeers.length,
-      ).length,
-      all: data.common_units,
-    };
-    for (const option of $("filter").options) {
-      option.dataset.label ||= option.textContent;
-      option.textContent = `${option.dataset.label} (${counts[option.value]})`;
-    }
   }
 
   function render() {
+    const filters = { paper: $("paper").value, search: $("search").value };
+    for (const option of $("filter").options) {
+      option.dataset.label ||= option.textContent;
+      const count = filterRows(
+        rowsByLevel[level],
+        { ...filters, filter: option.value },
+        report.levels[level].sources,
+      ).length;
+      option.textContent = `${option.dataset.label} (${count})`;
+    }
     visible = filterRows(
       rowsByLevel[level],
       { filter: $("filter").value, paper: $("paper").value, search: $("search").value },
       report.levels[level].sources,
     );
+    const total = rowsByLevel[level].filter(
+      (row) => !filters.paper || row.source.paper === filters.paper,
+    ).length;
     $("result-count").textContent =
-      `${visible.length} of ${report.levels[level].common_units} shared ${level === "paragraph" ? "paragraphs" : "structural units"} shown`;
+      `${visible.length} of ${total} ${level === "paragraph" ? "paragraphs" : "structural units"} shown${filters.paper ? " from " + titles[filters.paper] : " across all papers"}`;
+    $("cards").classList.toggle("full-text", $("full-text").checked);
     $("cards").innerHTML = visible.length
       ? visible.map(card).join("")
       : '<div class="empty"><h3>No passages in this view</h3><p>Try a different filter, another paper, or a broader search.</p><button class="text-button" data-reset>Clear filters and show match changes</button></div>';
-    let paper = "";
     $("source-index").innerHTML = visible
-      .map((row) => {
-        const heading =
-          row.source.paper !== paper
-            ? `<p class="index-paper">${esc(titles[row.source.paper] || row.source.paper)}</p>`
-            : "";
-        paper = row.source.paper;
-        return `${heading}<a class="index-link" href="#${level}/${encodeURIComponent(row.key)}"><span class="index-sign ${row.status}">${signs[row.status]}</span><span>${esc(sourceLabel(row.source, report.levels.section.sources))}<code>${esc(row.source.id)}</code></span></a>`;
-      })
+      .map(
+        (row, index) =>
+          `<a class="index-link ${row.status}" href="#${level}/${encodeURIComponent(row.key)}" title="${esc(titles[row.source.paper] || row.source.paper)}: ${esc(sourceLabel(row.source, report.levels.section.sources))}" aria-label="Jump to passage ${index + 1}: ${esc(sourceLabel(row.source, report.levels.section.sources))}">${String(index + 1).padStart(2, "0")} <span>${signs[row.status]}</span></a>`,
+      )
       .join("");
     $("cards").querySelector("[data-reset]")?.addEventListener("click", reset);
+    requestAnimationFrame(drawLinks);
   }
 
   function reset() {
     $("search").value = "";
-    $("paper").value = "";
+    $("paper").value = defaultPaper;
     $("filter").value = "changes";
     render();
   }
@@ -225,7 +280,7 @@ if (typeof document !== "undefined") {
     }
     if (!visible.some((row) => row.key === key)) {
       $("search").value = "";
-      $("paper").value = "";
+      $("paper").value = report.levels[level].sources[key].paper;
       $("filter").value = "all";
       render();
     }
@@ -266,15 +321,25 @@ if (typeof document !== "undefined") {
       .map((paper) => `<option value="${esc(paper)}">${esc(titles[paper] || paper)}</option>`)
       .join(""),
   );
+  $("paper").value = defaultPaper;
   for (const name of ["paragraph", "section"])
     $(name + "-total").textContent = report.levels[name].common_units;
   for (const id of ["paper", "filter"]) $(id).addEventListener("change", render);
   $("search").addEventListener("input", render);
   $("reset").addEventListener("click", reset);
   $("full-text").addEventListener("change", () => {
-    document.querySelectorAll(".passage-details").forEach((details) => {
-      details.open = $("full-text").checked;
-    });
+    $("cards").classList.toggle("full-text", $("full-text").checked);
+  });
+  $("cards").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-passage]");
+    if (button) showPassage(button.dataset.passage);
+  });
+  $("close-passage").addEventListener("click", () => $("passage-dialog").close());
+  $("passage-dialog").addEventListener("click", (event) => {
+    if (event.target === $("passage-dialog")) $("passage-dialog").close();
+  });
+  $("source-index").addEventListener("click", (event) => {
+    if (event.target.closest("a")?.hash === location.hash) followHash();
   });
   document.querySelectorAll("[data-level]").forEach((button) =>
     button.addEventListener("click", () => {
@@ -284,6 +349,7 @@ if (typeof document !== "undefined") {
     }),
   );
   window.addEventListener("hashchange", followHash);
+  new ResizeObserver(drawLinks).observe($("cards"));
   overview();
   render();
   followHash();

@@ -5,6 +5,7 @@ import {
   filterRows,
   reviewRows,
   sourceLabel,
+  partitionPeers,
 } from "../pipeline/comparison_viewer/app.mjs";
 
 const sources = Object.fromEntries(
@@ -90,6 +91,31 @@ test("same-paper co-members are preserved for display", () => {
   const copy = structuredClone(data);
   copy.sources.b.paper = "a";
   assert.deepEqual(reviewRows(copy)[0].oldPeers, ["b"]);
+});
+
+test("match map separates cross-paper partners from same-paper group members", () => {
+  const copy = structuredClone(data);
+  copy.sources.b.paper = "a";
+  copy.assignments.left.a = assignment(["a", "b", "c"]);
+  const row = reviewRows(copy)[0];
+  assert.deepEqual(partitionPeers(row, "left", copy.sources), {
+    crossPaper: ["c"],
+    samePaper: ["b"],
+  });
+  assert.deepEqual(partitionPeers(row, "right", copy.sources), { crossPaper: [], samePaper: [] });
+  assert.deepEqual(row.oldPeers, ["b", "c"]);
+});
+
+test("one-paper perspective omits reverse duplicates without changing match data", () => {
+  const rows = reviewRows(data);
+  const visible = filterRows(rows, { filter: "changes", paper: "b", search: "" }, sources);
+  assert.deepEqual(
+    visible.map((row) => row.key),
+    ["b"],
+  );
+  assert.deepEqual(visible[0].oldPeers, ["a"]);
+  assert.deepEqual(visible[0].newPeers, ["c"]);
+  assert.equal(rows.length, 4);
 });
 
 test("source content cannot become HTML", () => {

@@ -334,13 +334,18 @@ the old run's code hash to match today's checkout.
 The Python comparison is deterministic and makes no model, embedding, or API
 calls. It uses the existing pinned NetworkX dependency. The HTML report includes:
 
-- **Passage diff:** each source passage sits above baseline/comparison columns.
-  Red marks removed partners, green marks added partners, and neutral cards mark
-  retained partners. Colors describe changes, not correctness. Expand a passage
-  to read its full text, or inspect both group questions below the matches.
+- **Match map:** the source passage sits between baseline matches on the left and
+  comparison matches on the right. Red outlines mark removed partners, green
+  outlines mark added partners, and gray outlines mark retained partners. Lines
+  connect each cross-paper partner to the source. Colors describe changes, not
+  correctness. Click a compact box to read the full passage in a dialog, or turn
+  on full text on all cards. Group questions and parent scopes stay collapsed
+  beneath each row. Same-paper group members appear as separate labeled chips.
 - **Review controls:** switch between paragraphs and structural units, filter by
   paper or change type, and search passages, partner text, source IDs, or questions.
-  The source index jumps directly to a passage. Parent-scope-only changes have a
+  The view starts from the first paper to avoid duplicate pair perspectives;
+  choose another paper or All papers with Read from. Filter counts follow this
+  choice and the search. The jump index goes directly to a passage. Parent-scope-only changes have a
   separate filter; they do not count as changed paragraph memberships. Each card
   shows one source's perspective, so a pair can appear in both papers' cards;
   the summary counts each cross-paper pair once.
