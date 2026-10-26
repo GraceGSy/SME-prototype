@@ -397,6 +397,9 @@ added matches are correct and whether removed matches are genuine improvements.
 
 ### Publish a saved comparison
 
+Hosted demo: [Jev versus LLM-only match review](https://smelter-run-comparison.vercel.app/).
+It compares AbstractExplorer and CorpusStudio, using the completed revisions below.
+
 The HTML embeds its data, styles, and browser code. It works locally without a
 server and can be hosted as a static site alongside `comparison.json`. Add
 `--public` to omit local filesystem paths; this still publishes source passages,
