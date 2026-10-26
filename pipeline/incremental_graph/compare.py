@@ -148,6 +148,7 @@ def compare_revisions(left: Path, right: Path, *, shared_sources: bool = False) 
         "left": {key: a[key] for key in ("path", "summary", "settings")},
         "right": {key: b[key] for key in ("path", "summary", "settings")},
         "common_papers": sorted(common_papers),
+        "paper_titles": {key: a["papers"][key] for key in sorted(common_papers)},
         "left_only_papers": sorted(set(a["papers"]) - common_papers),
         "right_only_papers": sorted(set(b["papers"]) - common_papers),
         "levels": {},
@@ -251,6 +252,16 @@ def compare_revisions(left: Path, right: Path, *, shared_sources: bool = False) 
             "changes": changes,
             "question_changes": question_changes,
             "sources": {key: a["sources"][level][key] for key in sorted(common)},
+            "assignments": {
+                side: {
+                    key: {**assignments[key], "question": questions[assignments[key]["members"]]}
+                    for key in sorted(common)
+                }
+                for side, assignments, questions in (
+                    ("left", before, old_questions),
+                    ("right", after, new_questions),
+                )
+            },
             "metrics": membership_metrics(
                 project_groups(a, level, common),
                 project_groups(b, level, common),
@@ -410,130 +421,48 @@ def _metrics_html(data: dict) -> str:
 
 
 def render_html(report: dict) -> str:
-    parts = [
-        """<!doctype html><html lang="en"><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" href="data:,">
-<title>SMELTER run comparison</title>
-<style>
-body{font:12pt 'Times New Roman',serif;color:#000;background:#fff;max-width:1100px;margin:1in auto;padding:0 1rem}
-h1,h2,h3{font-size:12pt}table{border-collapse:collapse;width:100%;margin:1rem 0}
-td,th{border:1px solid #000;padding:.5rem;text-align:left;vertical-align:top;overflow-wrap:anywhere}
-body>table:first-of-type th:first-child{width:25%}
-pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}details{border:1px solid #000;margin:.8rem 0;padding:.6rem}
-blockquote{margin:1rem 0;white-space:pre-wrap}summary{cursor:pointer} @media(max-width:600px){body{margin:1rem auto}td,th{padding:.25rem}}
-</style><h1>SMELTER run comparison</h1>
-<nav><a href="#section">Structural units</a> | <a href="#paragraph">Paragraphs</a></nav>
-<p>Left is the baseline; right is the comparison. Memberships use source IDs, not graph node IDs.
-Agreement is not accuracy: neither run is treated as ground truth. Pair changes use only shared papers
-with identical source IDs and text. Full-run counts include all papers. Paragraph scope changes
-also appear below, including added papers in a parent group.</p>"""
-    ]
-    parts.append(
-        "<h2>Comparison limits</h2><ul>"
-        + "".join(f"<li>{escape(warning)}</li>" for warning in report["warnings"])
-        + "</ul>"
-    )
-    parts.append(
-        "<p><strong>Changed shared-source assignments: "
-        + "; ".join(
-            f"{data['changed_units']} / {data['common_units']} {level} units"
-            for level, data in report["levels"].items()
-        )
-        + ".</strong></p>"
-    )
-    parts.append("<table><tr><th></th><th>Left</th><th>Right</th></tr>")
-    for label, values in (
-        ("Revision", [report[side]["path"] for side in ("left", "right")]),
-        (
-            "Paper order",
-            [", ".join(report[side]["summary"]["paper_order"]) for side in ("left", "right")],
-        ),
-        (
-            "Only in this run",
-            [", ".join(report[side + "_only_papers"]) or "None" for side in ("left", "right")],
-        ),
-        (
-            "Generative model",
-            [
-                " / ".join(
-                    str((report[side]["settings"]["model"] or {}).get(field, "Unknown"))
-                    for field in ("provider", "name")
-                )
-                for side in ("left", "right")
-            ],
-        ),
-        (
-            "Jev model",
-            [
-                (report[side]["settings"]["jev"] or {}).get("model", "Not enabled")
-                for side in ("left", "right")
-            ],
-        ),
-    ):
-        parts.append(
-            f"<tr><th>{escape(label)}</th><td><pre>{escape(values[0])}</pre></td><td><pre>{escape(values[1])}</pre></td></tr>"
-        )
-    parts.append("</table>")
-    parts.append(
-        "<details><summary>Full model and policy settings</summary><pre>"
-        + escape(
-            json.dumps({side: report[side]["settings"] for side in ("left", "right")}, indent=2)
-        )
-        + "</pre></details>"
-    )
+    """Embed the offline viewer and data in one portable HTML file."""
+    assets = Path(__file__).parents[1] / "comparison_viewer"
+    detail = []
     for level, data in report["levels"].items():
         graph = data["metrics"]["graph"]
-        parts.append(
-            f'<h2 id="{level}">{"Structural-unit" if level == "section" else "Paragraph"} comparison</h2>'
-            f"<p>{data['membership_changed_units']} of {data['common_units']} shared units changed membership; "
-            f"another {data['scope_only_changed_units']} changed only parent scope. "
-            f"Cross-paper pairs added: {len(graph['added_pairs'])}; removed: {len(graph['removed_pairs'])}; "
-            f"retained: {graph['unchanged_pairs']}. Pair Jaccard: {_percent(graph['pair_jaccard'])}.</p>"
+        detail.append(
+            f'<section id="metrics-{level}"><h3>{escape(level.title())} metrics</h3>'
+            f"<p>Cross-paper pairs added: {len(graph['added_pairs'])}; "
+            f"removed: {len(graph['removed_pairs'])}; retained: {graph['unchanged_pairs']}.</p>"
+            + _metrics_html(data)
+            + "</section>"
         )
-        projection = data["source_projection"]
-        parts.append(
-            f"<p>Compared {data['common_units']} identical source units. Excluded from this shared-paper projection: {len(projection['left_excluded_units'])} baseline / {len(projection['right_excluded_units'])} comparison units. Source metadata differs for {len(projection['metadata_changed_units'])} units.</p>"
-        )
-        parts.append(_metrics_html(data))
-        parts.append("<details><summary>Full-run counts and all assignment changes</summary>")
-        parts.append("<table><tr><th>Full-run count</th><th>Left</th><th>Right</th></tr>")
-        for field, value in data["left_stats"].items():
-            parts.append(
-                f"<tr><th>{escape(field.replace('_', ' '))}</th><td>{value}</td><td>{data['right_stats'][field]}</td></tr>"
-            )
-        parts.append("</table>")
-        for change in data["changes"]:
-            parts.append(
-                f"<details><summary>{escape(change['unit'])} {escape(change['source']['title'])}</summary>"
-                f"<blockquote>{escape(change['source']['text'])}</blockquote><table><tr><th>Left</th><th>Right</th></tr><tr>"
-            )
-            for side in ("left", "right"):
-                assignment = change[side]
-                parts.append(
-                    f"<td><p>{escape(change[side + '_question'])}</p><p>Members: {escape(', '.join(assignment['members']))}</p>"
-                    f"<p>Parent scope: {escape(', '.join(assignment['scope'])) or 'None'}</p></td>"
-                )
-            parts.append("</tr></table></details>")
-        parts.append(
-            f"<h3>Question changes with unchanged shared-paper membership: {len(data['question_changes'])}</h3>"
-        )
-        for change in data["question_changes"]:
-            parts.append(
-                f"<details><summary>{escape(', '.join(change['members']))}</summary><p>Left: {escape(change['left'])}</p>"
-                f"<p>Right: {escape(change['right'])}</p></details>"
-            )
-        parts.append("</details>")
-    parts.append(
-        "<p>The adjacent comparison.json contains all pair additions/removals and the report data. No API calls were made to compare these runs.</p></html>"
+    # Escape HTML delimiters in JSON so source text cannot close the script element.
+    payload = (
+        json.dumps(report, ensure_ascii=True)
+        .replace("<", "\\u003c")
+        .replace(">", "\\u003e")
+        .replace("&", "\\u0026")
     )
-    return "\n".join(parts)
+    replacements = {
+        "STYLE": (assets / "styles.css").read_text(encoding="utf-8"),
+        "DATA": payload,
+        "SCRIPT": (assets / "app.mjs").read_text(encoding="utf-8"),
+        "METRICS": "\n".join(detail),
+    }
+    return re.sub(
+        r"@@(STYLE|DATA|SCRIPT|METRICS)@@",
+        lambda match: replacements[match[1]],
+        (assets / "index.html").read_text(encoding="utf-8"),
+    )
 
 
 def write_comparison(
-    left: Path, right: Path, output: Path, *, shared_sources: bool = False
+    left: Path, right: Path, output: Path, *, shared_sources: bool = False, public: bool = False
 ) -> dict:
     report = compare_revisions(left, right, shared_sources=shared_sources)
+    if public:
+        # Publish run identifiers, never the operator's absolute filesystem paths.
+        for side in ("left", "right"):
+            revision = Path(report[side]["path"])
+            report[side]["path"] = "/".join(revision.parts[-3:])
+            report[side]["summary"].pop("dataset_dir", None)
     output.mkdir(parents=True, exist_ok=False)
     write_json(output / "comparison.json", report)
     (output / "index.html").write_text(render_html(report), encoding="utf-8")
@@ -549,6 +478,9 @@ def main() -> None:
     parser.add_argument("right", type=Path, help="Comparison run directory or completed revision")
     parser.add_argument("output", type=Path, help="New directory for HTML and JSON reports")
     parser.add_argument(
+        "--public", action="store_true", help="Omit local filesystem paths for hosting"
+    )
+    parser.add_argument(
         "--shared-sources",
         action="store_true",
         help="Explicitly project onto identical source IDs/text when granularity or scope metadata differs",
@@ -557,7 +489,11 @@ def main() -> None:
     print(
         json.dumps(
             write_comparison(
-                args.left, args.right, args.output, shared_sources=args.shared_sources
+                args.left,
+                args.right,
+                args.output,
+                shared_sources=args.shared_sources,
+                public=args.public,
             ),
             indent=2,
         )

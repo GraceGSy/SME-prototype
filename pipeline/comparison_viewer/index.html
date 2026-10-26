@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="data:," />
+    <title>Match review | SMELTER</title>
+    <!-- prettier-ignore -->
+    <style>
+      @@STYLE@@
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#review">Skip to match differences</a>
+    <header class="masthead">
+      <a class="brand" href="#top">SMELTER<span> / Match review</span></a>
+      <nav aria-label="Report">
+        <a href="#method">Run details &amp; methods</a
+        ><a href="comparison.json" download>Download JSON</a>
+      </nav>
+    </header>
+    <main id="top">
+      <section class="intro">
+        <p class="eyebrow">SAVED RUN COMPARISON <span> / OFFLINE &amp; DETERMINISTIC</span></p>
+        <h1>See what changed<br />between matches.</h1>
+        <p class="intro-copy">
+          Read the same passage against two runs. See which partners were added, removed, or kept,
+          with the original text beside each decision.
+        </p>
+        <div id="run-strip" class="run-strip"></div>
+        <p class="caution">
+          <strong>Changes, not quality scores.</strong> Green means added; red means removed.
+          Neither run is ground truth. <a href="#method">Check comparison limits.</a>
+        </p>
+        <p id="comparison-context" class="caution"></p>
+      </section>
+      <div class="level-tabs" role="group" aria-label="Comparison level">
+        <button data-level="paragraph" aria-pressed="true">
+          Paragraph matches <span id="paragraph-total"></span>
+        </button>
+        <button data-level="section" aria-pressed="false">
+          Sections &amp; subsections <span id="section-total"></span>
+        </button>
+      </div>
+      <section id="overview" class="overview" aria-label="Comparison summary"></section>
+      <section class="review-section" id="review" aria-labelledby="review-title">
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">PASSAGE BY PASSAGE</p>
+            <h2 id="review-title">Inspect the differences</h2>
+          </div>
+          <div class="legend">
+            <span class="removed">- Removed</span><span class="added">+ Added</span
+            ><span>= Kept</span>
+          </div>
+        </div>
+        <div class="toolbar">
+          <label class="search-field"
+            >Search passages, IDs, or questions<input
+              id="search"
+              type="search"
+              placeholder="Try funding, participants, or s0002..."
+              autocomplete="off"
+          /></label>
+          <label
+            >Source paper<select id="paper">
+              <option value="">All papers</option>
+            </select></label
+          >
+          <label
+            >Show<select id="filter">
+              <option value="changes">Match changes</option>
+              <option value="added">Only added partners</option>
+              <option value="removed">Only removed partners</option>
+              <option value="mixed">Replaced / mixed partners</option>
+              <option value="scope">Parent scope only</option>
+              <option value="kept">Unchanged matches</option>
+              <option value="all">All source units</option>
+            </select></label
+          >
+          <label class="check-label"><input type="checkbox" id="full-text" />Expand all text</label>
+        </div>
+        <div class="result-bar">
+          <p id="result-count" role="status" aria-live="polite"></p>
+          <button id="reset" class="text-button">Reset filters</button>
+        </div>
+        <p class="review-help">
+          Each card follows one source passage. Its partners appear in both run columns. A pair can
+          appear from either paper's perspective; the totals above count each cross-paper pair once.
+        </p>
+        <div class="review-layout">
+          <aside class="index-panel">
+            <h3>Source index</h3>
+            <nav id="source-index" aria-label="Jump to source passage"></nav>
+          </aside>
+          <div id="cards"></div>
+        </div>
+      </section>
+      <section class="method" id="method">
+        <p class="eyebrow">READ BEFORE INTERPRETING</p>
+        <h2>Runs &amp; comparison limits</h2>
+        <ul id="warnings"></ul>
+        <div id="run-details" class="run-details"></div>
+        <p>
+          Matching partners, parent scope, and question wording are separate changes. Source IDs and
+          text anchor this comparison, not generated node IDs. A shared group can contain adjacent
+          paragraphs from the same paper; those are labeled and do not count toward cross-paper pair
+          totals.
+        </p>
+        <p>
+          The Jev-assisted pipeline still uses a generative model for questions and explanations,
+          plus deterministic rules. This report reads saved results only. It makes no model calls
+          and does not grade correctness.
+        </p>
+        <details class="technical">
+          <summary>Detailed metrics, question similarity &amp; NetworkX alignment</summary>
+          <div class="metrics-content">@@METRICS@@</div>
+        </details>
+      </section>
+      <footer>SMELTER / Match review <span>Saved evidence. No new model calls.</span></footer>
+    </main>
+    <noscript
+      ><p>
+        Enable JavaScript for the passage diff. The detailed metrics above and comparison.json
+        remain available without it.
+      </p></noscript
+    >
+    <script id="comparison-data" type="application/json">
+      @@DATA@@
+    </script>
+    <script type="module">
+      @@SCRIPT@@
+    </script>
+  </body>
+</html>

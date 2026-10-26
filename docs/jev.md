@@ -334,6 +334,17 @@ the old run's code hash to match today's checkout.
 The Python comparison is deterministic and makes no model, embedding, or API
 calls. It uses the existing pinned NetworkX dependency. The HTML report includes:
 
+- **Passage diff:** each source passage sits above baseline/comparison columns.
+  Red marks removed partners, green marks added partners, and neutral cards mark
+  retained partners. Colors describe changes, not correctness. Expand a passage
+  to read its full text, or inspect both group questions below the matches.
+- **Review controls:** switch between paragraphs and structural units, filter by
+  paper or change type, and search passages, partner text, source IDs, or questions.
+  The source index jumps directly to a passage. Parent-scope-only changes have a
+  separate filter; they do not count as changed paragraph memberships. Each card
+  shows one source's perspective, so a pair can appear in both papers' cards;
+  the summary counts each cross-paper pair once.
+
 - **Coverage:** the fraction of shared source units with at least one match in
   another paper, overall and per paper. Singleton units remain in the denominator.
 - **Match similarity:** cross-paper pair Jaccard (intersection / union), pair F1
@@ -383,6 +394,32 @@ Neither run is ground truth: agreement measures consistency, not accuracy or cau
 Keep source preparation, order, granularity, and generative settings constant
 when testing the effect of Jev alone. Human labels are needed to establish whether
 added matches are correct and whether removed matches are genuine improvements.
+
+### Publish a saved comparison
+
+The HTML embeds its data, styles, and browser code. It works locally without a
+server and can be hosted as a static site alongside `comparison.json`. Add
+`--public` to omit local filesystem paths; this still publishes source passages,
+questions, memberships, and model settings, so review the inputs before sharing.
+No API credentials, provider caches, or run directories need to be uploaded.
+
+The Jev-versus-LLM demo uses the same two papers and subsection granularity:
+
+```bash
+python -m pipeline.incremental_graph.compare runs/hci-concise-fresh-20260907/revisions/revision-0001 runs/hci-first-two-jev-uncapped-20261025-01/revisions/revision-0001 output/comparisons/llm-vs-jev-review --public
+vercel link --yes --project smelter-run-comparison --scope kanishk-tantias-projects --cwd output/comparisons/llm-vs-jev-review
+vercel deploy --prod --cwd output/comparisons/llm-vs-jev-review
+```
+
+These historical runs differ in prompts, questions, and model settings. The
+comparison is not a controlled test of Jev's accuracy. The failed three-paper
+attempt is not included. Use a new output directory when generating another
+comparison; deployment replaces only this demo, not the existing manual matcher.
+
+The display lives in `pipeline/comparison_viewer/`; Python still computes all
+comparison metrics. Run its focused checks with `node --test
+tests/comparison-viewer.test.mjs` and `python -m unittest discover -s tests -p
+test_run_comparison.py -q`.
 
 ## Run a real corpus
 

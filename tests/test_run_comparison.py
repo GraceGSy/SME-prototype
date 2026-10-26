@@ -204,6 +204,34 @@ class RunComparisonTest(unittest.TestCase):
         self.assertIsNone(result["levels"]["section"]["pair_jaccard"])
         self.assertIsNone(result["levels"]["section"]["metrics"]["graph"]["pair_f1_agreement"])
 
+    def test_report_includes_unchanged_assignments_for_interactive_review(self):
+        a = self.run_fixture("a", [["a", "b"], ["c"]])
+        result = compare_revisions(a, a)
+        self.assertEqual(result["paper_titles"], {"a": "a", "b": "b", "c": "c"})
+        for data in result["levels"].values():
+            self.assertEqual(set(data["assignments"]["left"]), set(data["sources"]))
+            self.assertEqual(data["assignments"]["left"], data["assignments"]["right"])
+            self.assertTrue(
+                all(
+                    item["question"] == "Shared role"
+                    for item in data["assignments"]["left"].values()
+                )
+            )
+
+    def test_public_export_omits_machine_paths_and_embeds_safe_json(self):
+        a = self.run_fixture("a", [["a", "b"]], question="</script><img src=x>@@SCRIPT@@")
+        output = self.root / "public"
+        paths = write_comparison(a, a, output, public=True)
+        result = read_json(Path(paths["data"]))
+        self.assertEqual(result["left"]["path"], "a/revisions/revision-0001")
+        self.assertNotIn("dataset_dir", result["left"]["summary"])
+        page = Path(paths["report"]).read_text(encoding="utf-8")
+        self.assertNotIn(str(self.root), page)
+        self.assertNotIn("</script><img", page)
+        self.assertIn('id="comparison-data"', page)
+        self.assertIn("\\u003c/script\\u003e", page)
+        self.assertIn("@@SCRIPT@@", page)  # Source text must not become a template replacement.
+
     def test_explicit_projection_reports_scope_metadata_and_excluded_units(self):
         a = self.run_fixture("a", [["a", "b"]])
         b = self.run_fixture("b", [["a", "b"]])
