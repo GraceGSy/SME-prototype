@@ -1,8 +1,8 @@
 schema_version: 1
 pipeline_id: incremental-question-graph-v1
-prompt_root: ../prompts
-context_root: ../contexts
-skill_root: ../../../skills
+prompt_root: ../../../prompts/graph
+context_root: ../../../prompts/contexts
+skill_root: ../../../prompts/skills
 
 model:
   provider: anthropic

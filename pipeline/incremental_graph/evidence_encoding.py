@@ -2,6 +2,10 @@
 
 from typing import Any
 
+from ..prompts import request_prompts
+
+EVIDENCE_PROMPTS = request_prompts("evidence")
+
 
 def encode_evidence(evidence: dict[str, Any]) -> dict[str, Any]:
     texts: dict[str, str] = {}
@@ -32,10 +36,8 @@ def encode_evidence(evidence: dict[str, Any]) -> dict[str, Any]:
     encoded = visit(evidence)
     return {
         "text_reference_contract": (
-            "Every full_text_refs list is the complete original text: look up each ID "
-            "in source_texts in list order and join with two newline characters. "
-            "Read all referenced text. References share storage only, not candidate identity. "
-            "Return only the candidate handle required by the matching instructions, never a text ID."
+            EVIDENCE_PROMPTS["text_reference_contract"]
+            + EVIDENCE_PROMPTS["candidate_handle_suffix"]
         ),
         "source_texts": texts,
         **encoded,

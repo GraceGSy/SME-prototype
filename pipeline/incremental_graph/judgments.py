@@ -12,6 +12,7 @@ from uuid import uuid4
 
 from ..document import QUESTION_FIELD
 from ..files import directory_hash, write_json
+from ..prompts import REPO_ROOT, request_prompts
 from ..providers.contracts import (
     SkillCallPolicy,
     SkillClient,
@@ -21,7 +22,7 @@ from ..providers.contracts import (
 from ..providers.factory import create_skill_client
 from ..providers.jev import JevSettings
 from ..providers.settings import ModelSettings
-from .configuration import PromptRepository, RenderedPrompt
+from .configuration import CONTEXT_HEADER, PromptRepository, RenderedPrompt
 from .evidence_encoding import encode_evidence
 from .jev_selection import JevSelector
 from .match_evidence import (
@@ -33,6 +34,8 @@ from .match_evidence import (
     validate_evidence,
 )
 from .models import JudgmentRequest, JudgmentResult
+
+REPAIR_PROMPTS = request_prompts("evidence-repair")
 
 
 class JudgmentProvider(Protocol):
@@ -109,7 +112,7 @@ class CachedJudgments:
                 )
                 rendered = replace(
                     rendered,
-                    cacheable_context="Shared context for this judgment:\n\n" + encoded,
+                    cacheable_context=CONTEXT_HEADER + encoded,
                     prompt_hash=hashlib.sha256(
                         (rendered.prompt_hash + "\0shared-text-v1").encode()
                     ).hexdigest(),
@@ -165,12 +168,7 @@ class CachedJudgments:
                 failure = error
             if attempt == 2:
                 raise failure
-            feedback = (
-                "\n\nEvidence validation failed: "
-                + str(failure)
-                + " Reconsider this judgment using the unchanged source evidence. "
-                "Return a complete response with source-bound quotations or valid excerpts."
-            )
+            feedback = REPAIR_PROMPTS["retry"].format(error=failure)
         raise AssertionError("Unreachable retry state")
 
     def _judge_once(self, request: JudgmentRequest, feedback: str) -> JudgmentResult:
@@ -241,8 +239,8 @@ class CachedJudgments:
 
         if self.skills is None:
             self.skills = create_skill_client(
-                self.skill_root.parent,
-                self.skill_root.parent / "_cache" / "skill-registry.json",
+                REPO_ROOT,
+                REPO_ROOT / "_cache" / "skill-registry.json",
                 self.model.name,
                 session_budget=SkillSessionBudget(
                     max_api_responses=self.model.max_api_responses_per_process,
@@ -323,13 +321,9 @@ class CachedJudgments:
             if isinstance(error, EvidenceValidationError):
                 # Retries are separate requests, so they cannot see the prior answer.
                 raise EvidenceValidationError(
-                    f"{error}\nPrevious rejected response (not source evidence): "
-                    + json.dumps(normalized, ensure_ascii=False)
-                    + "\nCorrect the reported error and check every quotation against its "
-                    "required source. Retain already valid quotations if the selection "
-                    "remains supported. Prefer short contiguous exact substrings; preserve "
-                    "case and punctuation. If using ' ... ', each endpoint must contain "
-                    "exactly five whitespace-separated words. Return the complete response."
+                    REPAIR_PROMPTS["rejected_response"].format(
+                        error=error, response=json.dumps(normalized, ensure_ascii=False)
+                    )
                 ) from error
             raise
         write_json(cache_path, result.model_dump(mode="json"))

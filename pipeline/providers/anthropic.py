@@ -6,6 +6,7 @@ import warnings
 from pathlib import Path
 from typing import Any, Iterable
 
+from ..prompts import request_prompts
 from .contracts import (
     RunResult,
     SkillBudgetExceeded,
@@ -34,11 +35,7 @@ FIVE_MINUTE_CACHE = {"type": "ephemeral"}
 CACHEABLE_SYSTEM = [
     {
         "type": "text",
-        "text": (
-            "Use the configured Agent Skill on the complete input in the user message. "
-            "Finish within this single Messages API request and return only the "
-            "schema-constrained result."
-        ),
+        "text": request_prompts("providers")["anthropic"],
         "cache_control": FIVE_MINUTE_CACHE,
     }
 ]

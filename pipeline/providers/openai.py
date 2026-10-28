@@ -7,6 +7,7 @@ import warnings
 from pathlib import Path
 from typing import Any, Iterable
 
+from ..prompts import request_prompts
 from .contracts import (
     RunResult,
     SkillBudgetExceeded,
@@ -18,12 +19,8 @@ from .limits import SessionLimits
 from .registry import SkillRegistry, load_api_key
 from .responses import parse_json, save_response, usage_record, validate_value, without_constraints
 
-INSTRUCTIONS = (
-    "Use the configured Agent Skill on the complete input in the user message. "
-    "Read its SKILL.md and relevant supporting files using the hosted shell. "
-    "Finish within this single Responses API request and return only the "
-    "schema-constrained result."
-)
+PROVIDER_PROMPTS = request_prompts("providers")
+INSTRUCTIONS = PROVIDER_PROMPTS["openai"]
 
 
 class OpenAISkills(SessionLimits):
@@ -147,9 +144,7 @@ class OpenAISkills(SessionLimits):
         response = self.client.responses.create(
             model=self.model,
             instructions=INSTRUCTIONS
-            + (
-                " Put the Skill's canonical result in the required result field." if wrapped else ""
-            ),
+            + (PROVIDER_PROMPTS["openai_result_wrapper"] if wrapped else ""),
             input=messages,
             tools=[{"type": "shell", "environment": environment}],
             text={

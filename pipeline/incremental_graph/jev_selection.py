@@ -8,6 +8,7 @@ import re
 from pathlib import Path
 
 from ..files import read_json, write_json
+from ..prompts import REPO_ROOT, request_prompts
 from ..providers.jev import (
     MAX_REQUEST_BYTES,
     NO_MATCH,
@@ -49,17 +50,15 @@ class JevSelector:
     def __init__(self, settings: JevSettings, cache: Path, skill_root: Path, prompt_root: Path):
         self.settings = settings
         self.cache = cache
-        self.client = JevClient(settings, skill_root.parent, cache / "responses")
+        self.client = JevClient(settings, REPO_ROOT, cache / "responses")
+        self.wording = request_prompts("jev")
+        self.evidence_wording = request_prompts("evidence")
         self.instructions = (
             (skill_root / "match-role/references/selection.md").read_text(encoding="utf-8")
             + "\n\n"
             + (prompt_root / "shared/group-role.md").read_text(encoding="utf-8")
             + "\n\n"
-            + "The caller has already filtered the eligible candidates. "
-            "IDs are opaque handles, not evidence of correspondence. "
-            "Judge this direction independently; no reverse votes are supplied. "
-            "Adjacency and option order do not establish a match. "
-            "Examples illustrate the policy; they are not candidates."
+            + self.wording["policy_suffix"]
         )
         self.examples = matching_examples(prompt_root / "shared/role-matching-examples.md")
 
@@ -69,7 +68,7 @@ class JevSelector:
         state = encode_evidence({**context, "candidates": candidates})
         # The shared decoder contract must not tell a Noul to output a candidate ID.
         state["text_reference_contract"] = state["text_reference_contract"].removesuffix(
-            " Return only the candidate handle required by the matching instructions, never a text ID."
+            self.evidence_wording["candidate_handle_suffix"]
         )
         criteria = {}
         for key, candidate in candidates.items():
@@ -77,32 +76,24 @@ class JevSelector:
             criteria[key] = {
                 "evidence": f"`candidates[{json.dumps(key)}]`",
                 "generated_question_metadata": center.get("generated_question_metadata", ""),
-                "meaning": "This candidate supports the same source-grounded role as `focus`.",
+                "meaning": self.wording["candidate_meaning"],
             }
         shared = {"policy": self.instructions, "examples": self.examples}
         questions = {}
         choice_policy = shared
-        choice_question = (
-            "Which candidate has the strongest defensible role correspondence with `focus`?"
-        )
+        choice_question = self.wording["choice_question"]
         if self.settings.selection_mode == "choice":
-            criteria[NO_MATCH] = (
-                "Every candidate performs a different role or lacks support for a shared role."
-            )
+            criteria[NO_MATCH] = self.wording["no_match_criterion"]
         else:
             # Noul owns abstention in this mode; Choice only ranks the real options.
             choice_policy = {
                 **shared,
                 "policy": self.instructions.replace(
-                    "Choose the strongest defensible correspondence, not the least-bad candidate.\n"
-                    "Abstain when there is none. ",
+                    self.wording["ranking_policy_omission"],
                     "",
                 ),
             }
-            choice_question = (
-                "Which candidate comes closest to the role and relevant relations of `focus`, "
-                "even if none supports a defensible match? Selection alone does not assert a match."
-            )
+            choice_question = self.wording["ranking_question"]
         # Choice needs at least two options; a sole candidate only needs the Noul.
         if len(criteria) > 1:
             questions["match"] = {
@@ -117,12 +108,12 @@ class JevSelector:
             questions["has_match"] = {
                 "type": "noul",
                 "instructions": {
-                    "question": "Does at least one candidate in `candidates` support a defensible shared role with `focus`?",
+                    "question": self.wording["has_match_question"],
                     **shared,
                 },
                 "criteria": {
-                    "true": "At least one candidate preserves the focus's role and relevant relations, supported by each represented paper.",
-                    "false": "All candidates perform different roles or lack source support; shared topics or question wording do not establish correspondence.",
+                    "true": self.wording["has_match_true"],
+                    "false": self.wording["has_match_false"],
                 },
             }
         return {"model": self.settings.model, "state": state, "questions": questions}

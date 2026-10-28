@@ -10,6 +10,7 @@ from typing import Literal
 
 from .document import content_schema, strip_questions, validate_document
 from .files import directory_hash, file_sha256, read_json, write_json
+from .prompts import PROMPT_ROOT, REPO_ROOT, request_prompts
 from .providers.contracts import SkillCallPolicy, SkillClient
 from .providers.factory import create_skill_client
 from .providers.settings import ModelSettings
@@ -23,8 +24,9 @@ from .source_review import (
     write_review_report,
 )
 
-ROOT = Path(__file__).resolve().parents[1]
-SKILL = ROOT / "skills" / "extract-section-and-subsection-paragraphs"
+ROOT = REPO_ROOT
+SKILL = PROMPT_ROOT / "skills" / "extract-section-and-subsection-paragraphs"
+EXTRACTION_PROMPTS = request_prompts("extraction")
 Domain = Literal["academic", "legal", "narrative"]
 
 
@@ -143,16 +145,11 @@ def extract_document(
 def _extract_source(source, source_sha256, domain, title, settings, policy, client, skill) -> dict:
     result = client.run_json_file(
         skill,
-        f"Extract the attached document: {title}",
+        EXTRACTION_PROMPTS["request"].format(title=title),
         source,
         content_schema(),
         policy=policy,
-        cacheable_prompt=(
-            f"Use the attached extraction Skill in {domain} mode. Preserve only "
-            "source-marked structural boundaries and the original paragraphs. "
-            "Return canonical content directly; do not create files, generate "
-            "questions, infer divisions, or add explanatory prose."
-        ),
+        cacheable_prompt=EXTRACTION_PROMPTS["instructions"].format(domain=domain),
     )
     return {
         "content": result.value,

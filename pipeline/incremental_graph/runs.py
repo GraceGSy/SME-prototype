@@ -18,6 +18,7 @@ import yaml
 from pydantic import Field
 
 from ..files import directory_hash, read_json, write_json
+from ..prompts import REPO_ROOT, request_prompts
 from ..providers.jev import JevSettings
 from ..providers.registry import load_api_key
 from ..providers.settings import ModelSettings
@@ -54,6 +55,7 @@ def _policy_hash(config: PipelineConfig) -> str:
         ),
         pipeline / "document.py",
         pipeline / "files.py",
+        pipeline / "prompts.py",
         pipeline / "source_review.py",
         *(pipeline / "providers").glob("*.py"),
     ]
@@ -68,6 +70,10 @@ def _policy_hash(config: PipelineConfig) -> str:
             for name in (config.model.provider, "networkx", "pydantic", "PyYAML", "jsonschema")
         },
         "prompts": directory_hash(config.prompt_root),
+        "request_prompts": {
+            name: request_prompts(name)
+            for name in ("jev", "providers", "evidence", "evidence-repair")
+        },
         "contexts": directory_hash(config.context_root),
         "skills": {
             name: directory_hash(config.skill_root / name)
@@ -164,8 +170,8 @@ def start_graph(
     _set_execution_limits(config, jev_max_calls, max_api_responses)
     if config.jev:
         # Fail before buying question generation or creating a run with missing credentials.
-        load_api_key(config.skill_root.parent, "TYPESAFE_API_KEY")
-        load_api_key(config.skill_root.parent, f"{config.model.provider.upper()}_API_KEY")
+        load_api_key(REPO_ROOT, "TYPESAFE_API_KEY")
+        load_api_key(REPO_ROOT, f"{config.model.provider.upper()}_API_KEY")
     state = RunState(
         config=config, max_granularity=manifest.max_granularity, policy_sha256=_policy_hash(config)
     )

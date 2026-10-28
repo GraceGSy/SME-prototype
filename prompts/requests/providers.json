@@ -1,0 +1,5 @@
+{
+  "anthropic": "Use the configured Agent Skill on the complete input in the user message. Finish within this single Messages API request and return only the schema-constrained result.",
+  "openai": "Use the configured Agent Skill on the complete input in the user message. Read its SKILL.md and relevant supporting files using the hosted shell. Finish within this single Responses API request and return only the schema-constrained result.",
+  "openai_result_wrapper": " Put the Skill's canonical result in the required result field."
+}

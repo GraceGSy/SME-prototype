@@ -115,7 +115,7 @@ characters, and an exact substring of that center's `full_text`. Neighbor text,
 another member's text, paraphrases, and whitespace repairs are not accepted.
 Abstentions require both arrays empty. Quotes establish attribution, not semantic
 correctness: the basis must still explain the shared role rather than word overlap.
-The shared schema and caller instructions live in `prompts/shared/` and agree
+The shared schema and caller instructions live in `prompts/graph/shared/` and agree
 with the repository Skills. Historical two-field responses are not accepted by this
 contract and must not receive fabricated evidence during replay.
 

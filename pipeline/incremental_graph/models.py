@@ -129,7 +129,7 @@ class PipelineConfig(StrictModel):
     pipeline_id: str
     prompt_root: WirePath
     context_root: WirePath
-    skill_root: WirePath = Path("skills")
+    skill_root: WirePath = Path("prompts/skills")
     model: ModelSettings = Field(default_factory=ModelSettings)
     jev: JevSettings | None = None
     stages: list[StageConfig]

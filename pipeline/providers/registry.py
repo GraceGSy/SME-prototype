@@ -32,6 +32,9 @@ class SkillRegistry:
         relative = skill_path.relative_to(self.repo_root).as_posix()
         fingerprint = directory_hash(skill_path)
         existing = self.skills.get(relative)
+        # Reuse the uploaded version when an existing Skill moves under prompts/.
+        if existing is None and relative.startswith("prompts/skills/"):
+            existing = self.skills.get(relative.removeprefix("prompts/"))
         previous = SkillRef(relative, **existing) if existing else None
         if previous and previous.source_sha256 == fingerprint:
             return previous

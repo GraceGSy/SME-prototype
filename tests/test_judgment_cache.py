@@ -155,7 +155,7 @@ class JudgmentCacheTest(unittest.TestCase):
             self.assertFalse(first.cache_hit)
             self.assertEqual(
                 client.call_args.args[1],
-                config.skill_root.parent / "_cache" / "skill-registry.json",
+                Path(__file__).resolve().parents[1] / "_cache" / "skill-registry.json",
             )
             self.assertTrue(provider().judge(request).cache_hit)
             guards = config.model.model_copy(

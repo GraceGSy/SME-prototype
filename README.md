@@ -19,8 +19,8 @@ standalone comparisons of completed runs. Jev selects matches; the existing
 generative provider still writes questions and quoted evidence. Both keys are
 required. See the [detailed pipeline diagram](docs/diagrams/jev-pipeline.svg).
 
-**Prompts and exact requests:** the [prompt index](docs/prompts/README.md) links
-the prompt templates, Jev's Python-built instructions, Skills, and saved requests.
+**Prompts and exact requests:** [prompts/](prompts/) contains the live prompt
+templates, Jev instructions, and Skills, with Python wiring and saved-request guidance.
 
 ## Run the prepared example
 
@@ -198,7 +198,7 @@ its actual configuration in `config.json`.
 | [`pipeline/source_review.py`](pipeline/source_review.py) | Offline coverage/boundary checks, review reports, and approval receipts |
 | [`pipeline/incremental_graph/`](pipeline/incremental_graph/) | Ordered graph, judgments, deterministic rules, revisions, and export |
 | [`pipeline/providers/`](pipeline/providers/README.md) | Anthropic/OpenAI native Skill transports |
-| [`skills/`](skills/) | Maintained extraction, question, and matching instructions |
+| [`prompts/`](prompts/) | Runtime Skills, Jev instructions, graph templates, and context definitions |
 | [`pipeline/viewer/`](pipeline/viewer/) | Browser views, local server, and static packaging |
 | [`datasets/`](datasets/) | Raw sources, prepared content, manifests, and provenance |
 | [`helpers/`](helpers/README.md) | Optional one-time content preparation and report regeneration |

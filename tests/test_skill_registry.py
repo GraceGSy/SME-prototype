@@ -9,6 +9,30 @@ from pipeline.providers.registry import SkillRegistry, _credential_registry
 
 
 class SkillRegistryTest(unittest.TestCase):
+    def test_consolidated_skill_reuses_registration_until_its_content_changes(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            old = root / "skills" / "test"
+            old.mkdir(parents=True)
+            (old / "SKILL.md").write_text("Original instructions")
+            path = root / "registry.json"
+            upload = Mock(return_value=("skill-1", "v1"))
+            first = SkillRegistry(root, path, "account").register(old, upload)
+            moved = root / "prompts" / "skills" / "test"
+            moved.parent.mkdir(parents=True)
+            old.rename(moved)
+            reused = SkillRegistry(root, path, "account").register(moved, upload)
+            self.assertEqual(upload.call_count, 1)
+            self.assertEqual(reused.path, "prompts/skills/test")
+            self.assertEqual(reused.skill_id, first.skill_id)
+            self.assertEqual(reused.version, first.version)
+            (moved / "SKILL.md").write_text("Changed instructions")
+            upload.return_value = ("skill-1", "v2")
+            updated = SkillRegistry(root, path, "account").register(moved, upload)
+            self.assertEqual(upload.call_count, 2)
+            self.assertEqual(upload.call_args.args[1], reused)
+            self.assertEqual(updated.version, "v2")
+
     def test_failed_version_upload_preserves_the_last_good_registration(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

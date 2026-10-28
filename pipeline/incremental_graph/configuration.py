@@ -12,7 +12,10 @@ import yaml
 from jsonschema import Draft202012Validator
 from pydantic import Field, model_validator
 
+from ..prompts import request_prompts
 from .models import PipelineConfig, StrictModel
+
+CONTEXT_HEADER = request_prompts("evidence")["context_header"]
 
 
 class ConfigurationError(ValueError):
@@ -90,7 +93,7 @@ class PromptRepository:
         self._validate_context_size(context_ref, context_config, context_json)
         prefix_fields = context_config.cache_prefix
         cacheable_context = (
-            "Shared context for this judgment:\n\n"
+            CONTEXT_HEADER
             + json.dumps(
                 {field: filtered[field] for field in prefix_fields},
                 indent=2,

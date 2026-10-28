@@ -1,0 +1,4 @@
+{
+  "request": "Extract the attached document: {title}",
+  "instructions": "Use the attached extraction Skill in {domain} mode. Preserve only source-marked structural boundaries and the original paragraphs. Return canonical content directly; do not create files, generate questions, infer divisions, or add explanatory prose."
+}

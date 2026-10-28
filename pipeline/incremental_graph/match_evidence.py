@@ -5,6 +5,10 @@ import re
 from collections.abc import Iterator
 from typing import Any
 
+from ..prompts import request_prompts
+
+REPAIR_PROMPTS = request_prompts("evidence-repair")
+
 
 class JudgmentError(RuntimeError):
     """A model response violates the requested contract."""
@@ -15,12 +19,7 @@ class EvidenceValidationError(JudgmentError):
 
 
 def quote_length_feedback(side: str, index: int, quote: str) -> str:
-    return (
-        f"evidence.{side}[{index}] has {len(quote)} characters; the limit is 240. "
-        "Return a shorter exact quotation from the same matched center, or its first five "
-        "and last five words separated by ' ... '. Keep both parts verbatim and in source "
-        "order; the complete excerpt must still fit within 240 characters. Do not paraphrase."
-    )
+    return REPAIR_PROMPTS["quote_length"].format(side=side, index=index, length=len(quote))
 
 
 def _quote_matches(quote: str, text: str) -> bool:
@@ -109,12 +108,12 @@ def _attribution_feedback(
         if location is not None
         else "No exact occurrence was found in the supplied source text, including neighbors."
     )
-    return (
-        f"evidence.{side}[{index}]: quote {json.dumps(quote, ensure_ascii=False)} is not an exact "
-        f"quotation or valid five-word-endpoint excerpt from its required center, {expected}. "
-        f"{occurrence} Copy a short exact quotation from the required center's full_text "
-        "or resolve its existing full_text_refs; do not borrow from another unit or neighbor. "
-        "A quotation's presence elsewhere does not establish a role match."
+    return REPAIR_PROMPTS["attribution"].format(
+        side=side,
+        index=index,
+        quote=json.dumps(quote, ensure_ascii=False),
+        expected=expected,
+        occurrence=occurrence,
     )
 
 
@@ -144,13 +143,14 @@ def validate_evidence(context: dict[str, Any], chosen: str | None, evidence: Any
                 for index, (path, member) in enumerate(_centers(value, root))
             )
             errors.append(
-                f"evidence.{side} has {received}; expected exactly {len(texts)}. "
-                f"For this selection the array lengths are evidence.focus: "
-                f"{len(center_texts(context['focus']))}, evidence.target: "
-                f"{len(center_texts(candidates[0]))}. Required member order: {positions}. "
-                "Use one short exact substring per center, not one quote for the entire "
-                "group or multiple quotes for one center. Preserve punctuation. "
-                "Every quotation must still pass source attribution and length checks."
+                REPAIR_PROMPTS["array_length"].format(
+                    side=side,
+                    received=received,
+                    expected=len(texts),
+                    focus_count=len(center_texts(context["focus"])),
+                    target_count=len(center_texts(candidates[0])),
+                    positions=positions,
+                )
             )
             continue
         for index, (quote, text) in enumerate(zip(quotes, texts, strict=True)):

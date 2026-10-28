@@ -1,0 +1,11 @@
+{
+  "policy_suffix": "The caller has already filtered the eligible candidates. IDs are opaque handles, not evidence of correspondence. Judge this direction independently; no reverse votes are supplied. Adjacency and option order do not establish a match. Examples illustrate the policy; they are not candidates.",
+  "candidate_meaning": "This candidate supports the same source-grounded role as `focus`.",
+  "choice_question": "Which candidate has the strongest defensible role correspondence with `focus`?",
+  "no_match_criterion": "Every candidate performs a different role or lacks support for a shared role.",
+  "ranking_policy_omission": "Choose the strongest defensible correspondence, not the least-bad candidate.\nAbstain when there is none. ",
+  "ranking_question": "Which candidate comes closest to the role and relevant relations of `focus`, even if none supports a defensible match? Selection alone does not assert a match.",
+  "has_match_question": "Does at least one candidate in `candidates` support a defensible shared role with `focus`?",
+  "has_match_true": "At least one candidate preserves the focus's role and relevant relations, supported by each represented paper.",
+  "has_match_false": "All candidates perform different roles or lack source support; shared topics or question wording do not establish correspondence."
+}

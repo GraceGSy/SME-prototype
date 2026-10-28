@@ -1,0 +1,5 @@
+{
+  "context_header": "Shared context for this judgment:\n\n",
+  "text_reference_contract": "Every full_text_refs list is the complete original text: look up each ID in source_texts in list order and join with two newline characters. Read all referenced text. References share storage only, not candidate identity.",
+  "candidate_handle_suffix": " Return only the candidate handle required by the matching instructions, never a text ID."
+}
