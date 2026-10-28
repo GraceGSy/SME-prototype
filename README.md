@@ -19,6 +19,9 @@ standalone comparisons of completed runs. Jev selects matches; the existing
 generative provider still writes questions and quoted evidence. Both keys are
 required. See the [detailed pipeline diagram](docs/diagrams/jev-pipeline.svg).
 
+**Prompts and exact requests:** the [prompt index](docs/prompts/README.md) links
+the prompt templates, Jev's Python-built instructions, Skills, and saved requests.
+
 ## Run the prepared example
 
 From this repository root in PowerShell:
