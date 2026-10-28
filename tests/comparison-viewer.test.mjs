@@ -75,16 +75,78 @@ test("search includes partner passages and combines with paper filter", () => {
   );
 });
 
-test("unchanged matches exclude singletons but allow changed parent scope", () => {
+test("shared matches exclude singletons but allow changed parent scope and question wording", () => {
   const copy = structuredClone(data);
   copy.assignments.right = structuredClone(copy.assignments.left);
   copy.assignments.right.a.scope = ["new scope"];
+  copy.assignments.right.a.question = "New question?";
   assert.deepEqual(
     filterRows(reviewRows(copy), { filter: "kept", paper: "", search: "" }, sources).map(
       (row) => row.key,
     ),
     ["a", "b"],
   );
+});
+
+test("shared matches include retained pairs inside groups with changed partners", () => {
+  const copy = structuredClone(data);
+  copy.assignments = {
+    left: {
+      a: assignment(["a", "b", "c"]),
+      b: assignment(["a", "b", "c"]),
+      c: assignment(["a", "b", "c"]),
+      d: assignment(["d"]),
+    },
+    right: {
+      a: assignment(["a", "b", "d"]),
+      b: assignment(["a", "b", "d"]),
+      c: assignment(["c"]),
+      d: assignment(["a", "b", "d"]),
+    },
+  };
+  const rows = reviewRows(copy);
+  const shared = filterRows(rows, { filter: "kept", paper: "", search: "" }, sources);
+  assert.deepEqual(
+    shared.map((row) => row.key),
+    ["a", "b"],
+  );
+  assert.deepEqual(shared[0].sharedMatches, ["b"]);
+  assert.equal(shared[0].status, "mixed");
+  assert.deepEqual(shared[0].removed, ["c"]);
+  assert.deepEqual(shared[0].added, ["d"]);
+  assert.deepEqual(
+    filterRows(rows, { filter: "kept", paper: "a", search: "b passage" }, sources).map(
+      (row) => row.key,
+    ),
+    ["a"],
+  );
+});
+
+test("default match view includes changes and shared matches, not stable singletons", () => {
+  const copy = structuredClone(data);
+  copy.assignments.right = structuredClone(copy.assignments.left);
+  copy.assignments.right.a.scope = ["new scope"];
+  copy.assignments.right.d.scope = ["another scope"];
+  const filter = (fixture) =>
+    filterRows(
+      reviewRows(fixture),
+      { filter: "matches", paper: "", search: "" },
+      fixture.sources,
+    ).map((row) => row.key);
+  assert.deepEqual(filter(copy), ["a", "b"]);
+  assert.deepEqual(filter(data), ["a", "b", "c"]);
+});
+
+test("same-paper grouping alone is not a shared cross-paper match", () => {
+  const copy = structuredClone(data);
+  copy.assignments.right = structuredClone(copy.assignments.left);
+  copy.sources.b.paper = "a";
+  const rows = reviewRows(copy);
+  assert.deepEqual(rows[0].sharedMatches, []);
+  assert.deepEqual(rows[0].oldPeers, ["b"]);
+  for (const filter of ["kept", "matches"]) {
+    assert.deepEqual(filterRows(rows, { filter, paper: "", search: "" }, copy.sources), []);
+  }
 });
 
 test("same-paper co-members are preserved for display", () => {

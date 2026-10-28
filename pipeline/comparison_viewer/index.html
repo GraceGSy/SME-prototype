@@ -12,7 +12,7 @@
     </style>
   </head>
   <body>
-    <a class="skip-link" href="#review">Skip to match differences</a>
+    <a class="skip-link" href="#review">Skip to match comparison</a>
     <header class="masthead">
       <a class="brand" href="#top">SMELTER<span> / Match review</span></a>
       <nav aria-label="Report">
@@ -30,8 +30,9 @@
         </p>
         <div id="run-strip" class="run-strip"></div>
         <p class="caution">
-          <strong>Changes, not quality scores.</strong> Green means added; red means removed.
-          Neither run is ground truth. <a href="#method">Check comparison limits.</a>
+          <strong>Changes, not quality scores.</strong> Green means added; red means removed; gray
+          means the same match in both runs. Neither run is ground truth.
+          <a href="#method">Check comparison limits.</a>
         </p>
         <p id="comparison-context" class="caution"></p>
       </section>
@@ -52,7 +53,7 @@
           </div>
           <div class="legend">
             <span class="removed">- Removed</span><span class="added">+ Added</span
-            ><span>= Kept</span>
+            ><span>= Shared in both</span>
           </div>
         </div>
         <div class="toolbar">
@@ -70,12 +71,13 @@
           >
           <label
             >Show<select id="filter">
+              <option value="matches">Changes + shared matches</option>
+              <option value="kept">Shared matches (in both runs)</option>
               <option value="changes">Match changes</option>
               <option value="added">Only added partners</option>
               <option value="removed">Only removed partners</option>
               <option value="mixed">Replaced / mixed partners</option>
               <option value="scope">Parent scope only</option>
-              <option value="kept">Unchanged matches</option>
               <option value="all">All source units</option>
             </select></label
           >
@@ -90,7 +92,13 @@
         <p class="review-help">
           Outlined boxes show changed matches; gray boxes show matches both runs kept. Lines connect
           each run's group to the same source, not a before/after edit to the text. Start with one
-          paper to avoid seeing both ends of each pair.
+          paper to avoid seeing both ends of each pair. Changes and shared matches appear together
+          by default; sources with no matches in either run remain available under All source units.
+        </p>
+        <p id="shared-help" class="review-help shared-help" hidden>
+          Each row has at least one cross-paper match in both runs. Look for the gray "= Shared
+          match" boxes on both sides. Any additional red or green partners remain visible for
+          context. Shared matches can have different question wording or parent scopes.
         </p>
         <details class="quick-jump">
           <summary>Jump to a passage</summary>

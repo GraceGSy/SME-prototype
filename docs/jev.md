@@ -343,6 +343,12 @@ calls. It uses the existing pinned NetworkX dependency. The HTML report includes
   beneath each row. Same-paper group members appear as separate labeled chips.
 - **Review controls:** switch between paragraphs and structural units, filter by
   paper or change type, and search passages, partner text, source IDs, or questions.
+  Changes and shared matches appear together by default. Click **View shared
+  matches** or select **Shared matches (in both runs)** to see sources with a
+  cross-paper partner retained in both runs, even when other partners changed.
+  Gray `= Shared match` boxes and row badges identify those shared pairs; question
+  wording and parent scope may still differ. The shared-pair count in the result
+  line follows the current filters and counts each pair once.
   The view starts from the first paper to avoid duplicate pair perspectives;
   choose another paper or All papers with Read from. Filter counts follow this
   choice and the search. The jump index goes directly to a passage. Parent-scope-only changes have a

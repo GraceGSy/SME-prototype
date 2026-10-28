@@ -9,6 +9,10 @@ export function reviewRows(data) {
       const newPeers = right.members.filter((member) => member !== key);
       const removed = oldPeers.filter((member) => !newPeers.includes(member));
       const added = newPeers.filter((member) => !oldPeers.includes(member));
+      const sharedMatches = oldPeers.filter(
+        (member) =>
+          newPeers.includes(member) && data.sources[member].paper !== data.sources[key].paper,
+      );
       const scopeChanged = JSON.stringify(left.scope) !== JSON.stringify(right.scope);
       const status =
         added.length && removed.length
@@ -29,6 +33,7 @@ export function reviewRows(data) {
         newPeers,
         removed,
         added,
+        sharedMatches,
         scopeChanged,
         status,
       };
@@ -40,10 +45,11 @@ export function filterRows(rows, { filter, paper, search }, sources) {
   return rows.filter((row) => {
     if (paper && row.source.paper !== paper) return false;
     const changed = row.added.length > 0 || row.removed.length > 0;
+    if (filter === "matches" && !changed && !row.sharedMatches.length) return false;
     if (filter === "changes" && !changed) return false;
     if (["added", "removed", "mixed", "scope"].includes(filter) && row.status !== filter)
       return false;
-    if (filter === "kept" && (changed || !row.oldPeers.length)) return false;
+    if (filter === "kept" && !row.sharedMatches.length) return false;
     if (!query) return true;
     const peers = [...new Set([...row.oldPeers, ...row.newPeers])];
     return [
@@ -124,7 +130,7 @@ if (typeof document !== "undefined") {
       state === "source"
         ? "Shared source"
         : state === "same"
-          ? "Kept in both runs"
+          ? "= Shared match in both runs"
           : state === "added"
             ? "+ Only in " + names.right
             : "- Only in " + names.left;
@@ -205,7 +211,14 @@ if (typeof document !== "undefined") {
     const questions = report.levels[level].unit_questions.rows.find(
       (item) => item.unit === row.key,
     );
-    return `<article class="diff-card" id="unit-${esc(row.key)}" data-unit="${esc(row.key)}" data-status="${row.status}"><header class="row-heading"><span class="row-number">${String(index + 1).padStart(2, "0")}</span><h3>${esc(sourceLabel(row.source, report.levels.section.sources))}</h3><span class="badge ${row.status}">${signs[row.status]} ${statusLabels[row.status]}</span></header><div class="match-layout"><svg class="match-links" aria-hidden="true"></svg>${column(row, "left")}<span class="link-gap" aria-hidden="true"></span><section class="source-column" aria-label="Source passage"><h4 class="column-label"><span>The same source</span><small>Identical text in both runs</small></h4>${passageBox(row.key, "source")}</section><span class="link-gap" aria-hidden="true"></span>${column(row, "right")}</div><details class="card-details"><summary>Compare questions &amp; parent scope${row.scopeChanged ? " (scope changed)" : ""}</summary><div class="context-columns">${["left", "right"].map((side) => `<div><strong>${esc(names[side])}</strong><p class="context-label">Group question</p><p>${esc(row[side].question || "No saved group question")}</p><p class="context-label">Source question</p><p>${esc(questions?.[side] || "No saved source question")}</p><p class="context-label">Parent scope</p>${row[side].scope.length ? row[side].scope.map((key) => `<code>${esc(scopeLabel(key))}</code>`).join("") : "<p>No parent scope</p>"}</div>`).join("")}</div></details></article>`;
+    const sharedBadge = row.sharedMatches.length
+      ? `<span class="badge same">= ${row.sharedMatches.length} shared ${row.sharedMatches.length === 1 ? "match" : "matches"}</span>`
+      : "";
+    const changeBadge =
+      row.status === "same" && sharedBadge
+        ? ""
+        : `<span class="badge ${row.status}">${signs[row.status]} ${statusLabels[row.status]}</span>`;
+    return `<article class="diff-card" id="unit-${esc(row.key)}" data-unit="${esc(row.key)}" data-status="${row.status}"><header class="row-heading"><span class="row-number">${String(index + 1).padStart(2, "0")}</span><h3>${esc(sourceLabel(row.source, report.levels.section.sources))}</h3>${sharedBadge}${changeBadge}</header><div class="match-layout"><svg class="match-links" aria-hidden="true"></svg>${column(row, "left")}<span class="link-gap" aria-hidden="true"></span><section class="source-column" aria-label="Source passage"><h4 class="column-label"><span>The same source</span><small>Identical text in both runs</small></h4>${passageBox(row.key, "source")}</section><span class="link-gap" aria-hidden="true"></span>${column(row, "right")}</div><details class="card-details"><summary>Compare questions &amp; parent scope${row.scopeChanged ? " (scope changed)" : ""}</summary><div class="context-columns">${["left", "right"].map((side) => `<div><strong>${esc(names[side])}</strong><p class="context-label">Group question</p><p>${esc(row[side].question || "No saved group question")}</p><p class="context-label">Source question</p><p>${esc(questions?.[side] || "No saved source question")}</p><p class="context-label">Parent scope</p>${row[side].scope.length ? row[side].scope.map((key) => `<code>${esc(scopeLabel(key))}</code>`).join("") : "<p>No parent scope</p>"}</div>`).join("")}</div></details></article>`;
   }
 
   function overview() {
@@ -213,7 +226,7 @@ if (typeof document !== "undefined") {
     const graph = data.metrics.graph;
     const coverage = data.metrics.coverage;
     $("overview").innerHTML =
-      `<div class="stat removed"><span class="stat-number">-${graph.removed_pairs.length}</span><span class="stat-label">Removed pairs</span><small>Baseline only</small></div><div class="stat added"><span class="stat-number">+${graph.added_pairs.length}</span><span class="stat-label">Added pairs</span><small>Comparison only</small></div><div class="stat"><span class="stat-number">${graph.unchanged_pairs}</span><span class="stat-label">Kept pairs</span><small>In both runs</small></div><div class="stat">${["left", "right"].map((side) => `<div class="coverage-row"><div class="coverage-title"><span>${esc(names[side])} coverage</span><strong>${coverage[side].matched_units}/${data.common_units} <span>(${percent(coverage[side].fraction)})</span></strong></div><div class="coverage-track"><div class="coverage-fill" style="width:${percent(coverage[side].fraction)}"></div></div></div>`).join("")}<p class="coverage-caption">${level === "paragraph" ? "Paragraphs" : "Structural units"} with a cross-paper partner. Pair counts are unique across all shared papers, unaffected by filters.</p></div>`;
+      `<div class="stat removed"><span class="stat-number">-${graph.removed_pairs.length}</span><span class="stat-label">Removed pairs</span><small>Baseline only</small></div><div class="stat added"><span class="stat-number">+${graph.added_pairs.length}</span><span class="stat-label">Added pairs</span><small>Comparison only</small></div><button class="stat shared-stat" data-show-shared aria-controls="cards"><span class="stat-number">${graph.unchanged_pairs}</span><span class="stat-label">Shared pairs</span><small>Same match in both runs</small><span class="stat-action">View shared matches</span></button><div class="stat">${["left", "right"].map((side) => `<div class="coverage-row"><div class="coverage-title"><span>${esc(names[side])} coverage</span><strong>${coverage[side].matched_units}/${data.common_units} <span>(${percent(coverage[side].fraction)})</span></strong></div><div class="coverage-track"><div class="coverage-fill" style="width:${percent(coverage[side].fraction)}"></div></div></div>`).join("")}<p class="coverage-caption">${level === "paragraph" ? "Paragraphs" : "Structural units"} with a cross-paper partner. Pair counts are unique across all shared papers, unaffected by filters.</p></div>`;
     document
       .querySelectorAll("[data-level]")
       .forEach((button) =>
@@ -240,12 +253,18 @@ if (typeof document !== "undefined") {
     const total = rowsByLevel[level].filter(
       (row) => !filters.paper || row.source.paper === filters.paper,
     ).length;
+    const sharedPairCount = new Set(
+      visible.flatMap((row) =>
+        row.sharedMatches.map((key) => JSON.stringify([row.key, key].sort())),
+      ),
+    ).size;
     $("result-count").textContent =
-      `${visible.length} of ${total} ${level === "paragraph" ? "paragraphs" : "structural units"} shown${filters.paper ? " from " + titles[filters.paper] : " across all papers"}`;
+      `${visible.length} of ${total} ${level === "paragraph" ? "paragraphs" : "structural units"} shown${filters.paper ? " from " + titles[filters.paper] : " across all papers"}; ${sharedPairCount} shared ${sharedPairCount === 1 ? "pair" : "pairs"} in this view`;
+    $("shared-help").hidden = $("filter").value !== "kept";
     $("cards").classList.toggle("full-text", $("full-text").checked);
     $("cards").innerHTML = visible.length
       ? visible.map(card).join("")
-      : '<div class="empty"><h3>No passages in this view</h3><p>Try a different filter, another paper, or a broader search.</p><button class="text-button" data-reset>Clear filters and show match changes</button></div>';
+      : '<div class="empty"><h3>No passages in this view</h3><p>Try a different filter, another paper, or a broader search.</p><button class="text-button" data-reset>Clear filters and show changes + shared matches</button></div>';
     $("source-index").innerHTML = visible
       .map(
         (row, index) =>
@@ -259,7 +278,7 @@ if (typeof document !== "undefined") {
   function reset() {
     $("search").value = "";
     $("paper").value = defaultPaper;
-    $("filter").value = "changes";
+    $("filter").value = "matches";
     render();
   }
 
@@ -326,6 +345,13 @@ if (typeof document !== "undefined") {
     $(name + "-total").textContent = report.levels[name].common_units;
   for (const id of ["paper", "filter"]) $(id).addEventListener("change", render);
   $("search").addEventListener("input", render);
+  $("overview").addEventListener("click", (event) => {
+    if (!event.target.closest("[data-show-shared]")) return;
+    $("filter").value = "kept";
+    render();
+    $("review").scrollIntoView({ block: "start" });
+    $("filter").focus({ preventScroll: true });
+  });
   $("reset").addEventListener("click", reset);
   $("full-text").addEventListener("change", () => {
     $("cards").classList.toggle("full-text", $("full-text").checked);
