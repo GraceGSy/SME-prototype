@@ -77,7 +77,10 @@ def _policy_hash(config: PipelineConfig) -> str:
         "contexts": directory_hash(config.context_root),
         "skills": {
             name: directory_hash(config.skill_root / name)
-            for name in sorted({stage.skill for stage in config.stages if stage.skill})
+            for name in sorted(
+                {stage.skill for stage in config.stages if stage.skill}
+                | ({"explain-match"} if config.jev else set())
+            )
         },
     }
     return hashlib.sha256(json.dumps(assets, sort_keys=True).encode()).hexdigest()

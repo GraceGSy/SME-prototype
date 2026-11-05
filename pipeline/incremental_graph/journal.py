@@ -45,7 +45,13 @@ class RevisionJournal:
             "output_kind": request.output_kind,
             "prompt_ref": request.prompt_ref,
             "context_ref": request.context_ref,
-            "skill_ref": request.skill_ref,
+            "skill_ref": (
+                Path(result.model["skill"]["path"]).name
+                if result.model.get("skill")
+                else None
+                if "jev" in result.raw_response
+                else request.skill_ref
+            ),
             "candidate_ids": request.allowed_match_ids,
             "max_tokens": request.max_tokens,
             "max_input_tokens": request.max_input_tokens,

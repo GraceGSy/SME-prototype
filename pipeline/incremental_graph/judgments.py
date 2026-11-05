@@ -101,12 +101,19 @@ class CachedJudgments:
             request.prompt_ref,
             request.context_ref,
             request.context,
+            instructions=(
+                "Document the supplied selection using the explain-match Skill."
+                if self.jev and request.output_kind == "match"
+                else None
+            ),
         )
         if request.output_kind == "match":
             if rendered.cacheable_context:
                 prefix = json.loads(rendered.cacheable_context.split("\n\n", 1)[1])
                 encoded = json.dumps(
-                    encode_evidence(prefix), ensure_ascii=False, separators=(",", ":")
+                    encode_evidence(prefix, candidate_handles=self.jev is None),
+                    ensure_ascii=False,
+                    separators=(",", ":"),
                 )
                 rendered = replace(
                     rendered,
@@ -171,7 +178,10 @@ class CachedJudgments:
 
     def _judge_once(self, request: JudgmentRequest, feedback: str) -> JudgmentResult:
         rendered = self.render_request(request)
-        skill_path = self.skill_root / request.skill_ref if request.skill_ref else None
+        skill_ref = (
+            "explain-match" if self.jev and request.output_kind == "match" else request.skill_ref
+        )
+        skill_path = self.skill_root / skill_ref if skill_ref else None
         if not skill_path:
             raise JudgmentError(f"Every LLM judgment requires a configured Skill: {request.key}")
         if not skill_path.is_dir():

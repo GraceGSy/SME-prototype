@@ -58,7 +58,7 @@ class PromptRepository:
         self.prompt_root = prompt_root
         self.context_root = context_root
 
-    def render(self, prompt_ref: str, context_ref: str, context: dict[str, Any]) -> RenderedPrompt:
+    def _stage_instructions(self, prompt_ref: str, context_ref: str) -> str:
         prompt_dir = self.prompt_root / prompt_ref
         system = self._read(prompt_dir / "system.md")
         for name in ("role_matching_examples", "group_question_examples"):
@@ -72,6 +72,21 @@ class PromptRepository:
             system += "\n\n" + self._read(self.prompt_root / "shared" / "group-role.md")
         if context_ref == "matching":
             system += "\n\n" + self._read(self.prompt_root / "shared" / "match-evidence.md")
+        return system
+
+    def render(
+        self,
+        prompt_ref: str,
+        context_ref: str,
+        context: dict[str, Any],
+        *,
+        instructions: str | None = None,
+    ) -> RenderedPrompt:
+        system = (
+            instructions
+            if instructions is not None
+            else self._stage_instructions(prompt_ref, context_ref)
+        )
         schema_name = "match-output" if context_ref == "matching" else "question-output"
         schema_path = self.prompt_root / "shared" / f"{schema_name}.schema.json"
         schema_text = self._read(schema_path)

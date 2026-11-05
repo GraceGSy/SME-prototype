@@ -591,7 +591,7 @@ class JevTest(unittest.TestCase):
 
     def test_evidence_is_fixed_and_cached_independently_of_selection(self):
         provider = self.provider()
-        request = self.request()
+        request = self.request(2)
         raw = {"id": "evidence-response", "usage": {"input_tokens": 10}}
         value = {
             "target_id": "candidate-0",
@@ -599,7 +599,7 @@ class JevTest(unittest.TestCase):
             "evidence": {"focus": ["focus"], "target": ["Repeated corpus"]},
         }
         client = SimpleNamespace(
-            register=lambda path: SkillRef("match-role", "skill", "1", "hash"),
+            register=lambda path: SkillRef(str(path), "skill", "1", "hash"),
             run_json=lambda *args, **kwargs: SimpleNamespace(value=value, raw_response=raw),
         )
         with (
@@ -609,8 +609,11 @@ class JevTest(unittest.TestCase):
             first = provider.judge(request)
             self.assertEqual(first.raw_response["jev"]["target_id"], "candidate-0")
             self.assertIn('"fixed_target_id": "candidate-0"', first.rendered_user)
+            self.assertTrue(first.model["skill"]["path"].endswith("explain-match"))
+            self.assertNotIn("candidate-1", first.rendered_user)
+            self.assertNotIn("Constructed matching examples", first.rendered_system)
             self.assertTrue(self.provider().judge(request).cache_hit)
-            self.assertEqual(choose.call_count, 1)
+            self.assertEqual(choose.call_count, 2)
 
     def test_quotation_retries_do_not_reselect_and_cannot_override_jev(self):
         provider = self.provider()
