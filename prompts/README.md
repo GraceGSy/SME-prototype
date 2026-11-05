@@ -10,10 +10,11 @@ directly. They are the runtime sources, not copies maintained for documentation.
 |---|---|
 | Question-writing Skill | [skills/generate-question/SKILL.md](skills/generate-question/SKILL.md) |
 | Matching and explanation Skill | [skills/match-role/SKILL.md](skills/match-role/SKILL.md) |
-| Semantic matching policy shared by Jev and the LLM | [skills/match-role/references/selection.md](skills/match-role/references/selection.md) |
+| Generative selector policy | [skills/match-role/references/selection.md](skills/match-role/references/selection.md) |
 | Shared role across all papers in a group | [graph/shared/group-role.md](graph/shared/group-role.md) |
 | Jev Choice/Noul questions, criteria, and policy additions | [requests/jev.json](requests/jev.json) |
-| Matching demonstrations | [graph/shared/role-matching-examples.md](graph/shared/role-matching-examples.md) |
+| Fixed-target explanation after Jev selects | [skills/explain-match/SKILL.md](skills/explain-match/SKILL.md) |
+| Generative matching demonstrations | [graph/shared/role-matching-examples.md](graph/shared/role-matching-examples.md) |
 | Claude/OpenAI top-level instructions | [requests/providers.json](requests/providers.json) |
 | Extraction instructions and domain-specific Skills | [requests/extraction.json](requests/extraction.json), [skills/extract-section-and-subsection-paragraphs/](skills/extract-section-and-subsection-paragraphs/) |
 | Shared-context and text-reference instructions | [requests/evidence.json](requests/evidence.json) |
@@ -53,7 +54,7 @@ connects stage names to these templates, contexts, and Skills.
 |---|---|
 | [pipeline/prompts.py](../pipeline/prompts.py) | Locates this directory and loads the request JSON files. |
 | [configuration.py](../pipeline/incremental_graph/configuration.py), `PromptRepository.render` | Reads graph templates and context definitions, expands examples, appends shared rules, and loads output schemas. |
-| [jev_selection.py](../pipeline/incremental_graph/jev_selection.py), `JevSelector` | Reads `requests/jev.json`, the shared selection policy, group-role rules, and matching examples. Builds the `model`, `state`, and `questions` body. Jev receives adapted examples and selection rules, not the full Claude Skill or its quotation-output instructions. |
+| [jev_selection.py](../pipeline/incremental_graph/jev_selection.py), `JevSelector` | Reads the short policy and phase-specific examples in `requests/jev.json`. Sends the existence question first, then ranking only when needed. |
 | [judgments.py](../pipeline/incremental_graph/judgments.py), `CachedJudgments` | Registers the configured Skill, renders evidence, binds candidate IDs into the schema, adds Jev's fixed selection, and applies repair prompts when needed. |
 | [evidence_encoding.py](../pipeline/incremental_graph/evidence_encoding.py) | Adds `requests/evidence.json` instructions to the shared-text representation. |
 | [match_evidence.py](../pipeline/incremental_graph/match_evidence.py) | Fills `requests/evidence-repair.json` templates with validation diagnostics. |
