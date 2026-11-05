@@ -7,7 +7,7 @@ from ..prompts import request_prompts
 EVIDENCE_PROMPTS = request_prompts("evidence")
 
 
-def encode_evidence(evidence: dict[str, Any]) -> dict[str, Any]:
+def encode_evidence(evidence: dict[str, Any], *, candidate_handles: bool = True) -> dict[str, Any]:
     texts: dict[str, str] = {}
     references: dict[str, str] = {}
 
@@ -37,7 +37,7 @@ def encode_evidence(evidence: dict[str, Any]) -> dict[str, Any]:
     return {
         "text_reference_contract": (
             EVIDENCE_PROMPTS["text_reference_contract"]
-            + EVIDENCE_PROMPTS["candidate_handle_suffix"]
+            + (EVIDENCE_PROMPTS["candidate_handle_suffix"] if candidate_handles else "")
         ),
         "source_texts": texts,
         **encoded,

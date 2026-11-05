@@ -88,9 +88,6 @@ class GraphRunTest(unittest.TestCase):
         changed.jev.model = "jev-1.13.0"
         self.assertNotEqual(_policy_hash(changed), original)
         changed = config.model_copy(deep=True)
-        changed.jev.selection_mode = "choice_noul"
-        self.assertNotEqual(_policy_hash(changed), original)
-        changed = config.model_copy(deep=True)
         changed.stages[0].max_tokens = 123
         self.assertNotEqual(_policy_hash(changed), original)
 
@@ -147,7 +144,7 @@ class GraphRunTest(unittest.TestCase):
                 max_api_responses=50,
             )
 
-    def test_start_cli_passes_jev_selection_mode(self):
+    def test_start_cli_enables_jev_without_a_mode(self):
         with (
             patch(
                 "sys.argv",
@@ -157,8 +154,6 @@ class GraphRunTest(unittest.TestCase):
                     "manifest.yaml",
                     "run",
                     "--jev",
-                    "--jev-selection-mode",
-                    "choice_noul",
                 ],
             ),
             patch("sys.stdout", new_callable=io.StringIO),
@@ -166,7 +161,7 @@ class GraphRunTest(unittest.TestCase):
         ):
             main()
             self.assertTrue(start.call_args.kwargs["jev"])
-            self.assertEqual(start.call_args.kwargs["jev_selection_mode"], "choice_noul")
+            self.assertNotIn("jev_selection_mode", start.call_args.kwargs)
 
     def test_sequence_and_separate_additions_produce_the_same_realignments(self):
         structural = stable_id("section-group", "root", "a", "s0001")

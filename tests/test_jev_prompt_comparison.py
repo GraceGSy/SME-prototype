@@ -79,12 +79,13 @@ class PromptComparisonTest(unittest.TestCase):
                 self.assertEqual(plan["http_attempts"], 0)
                 network.assert_not_called()
                 result = compare_prompts(revision, cases, root / "out", live=True)
-                self.assertEqual(result["last_invocation"]["http_attempts"], 2)
-                self.assertEqual(set(result["cases"][0]["variants"]), {"choice", "choice_noul"})
+                self.assertEqual(result["last_invocation"]["http_attempts"], 1)
+                self.assertEqual(set(result["cases"][0]["variants"]), {"sequential"})
                 compare_prompts(revision, cases, root / "out", live=True)
-                self.assertEqual(network.call_count, 2)
+                self.assertEqual(network.call_count, 1)
                 with patch(
-                    "pipeline.incremental_graph.jev_selection.matching_examples", return_value=[]
+                    "pipeline.incremental_graph.jev_selection.JevSelector.build_request",
+                    return_value={},
                 ):
                     with self.assertRaisesRegex(ValueError, "prompts changed"):
                         compare_prompts(revision, cases, root / "out", live=True)

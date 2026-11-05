@@ -9,15 +9,13 @@ from pathlib import Path
 from time import perf_counter
 
 from .files import read_json, write_json
-from .incremental_graph.configuration import load_pipeline_config
 from .incremental_graph.evidence_encoding import encode_evidence
 from .incremental_graph.jev_selection import JevSelector
 from .incremental_graph.match_evidence import candidate_handle
 from .incremental_graph.models import JudgmentRequest
-from .providers.jev import JevClient, JevSettings, encode_request, validate_response
+from .providers.jev import JevSettings, encode_request, validate_response
 
 ROOT = Path(__file__).resolve().parents[1]
-MODES = ("choice", "choice_noul")
 
 
 def decode_saved_state(state: dict) -> dict:
@@ -119,26 +117,15 @@ def compare_prompts(
     models = {case["legacy_response"]["model"] for case, _ in cases}
     if len(models) != 1:
         raise ValueError("Compare one pinned model at a time")
-    config = load_pipeline_config(ROOT / "pipeline/incremental_graph/configs/incremental-v1.yaml")
     settings = JevSettings(
         model=models.pop(), max_calls=max_calls, max_input_tokens=max_input_tokens
     )
-    client = JevClient(settings, ROOT, output / "cache/responses")
-    selectors = {}
-    for mode in MODES:
-        selector = JevSelector(
-            settings.model_copy(update={"selection_mode": mode}),
-            output / "cache",
-            config.skill_root,
-            config.prompt_root,
-        )
-        selector.client = client  # One process-wide spending guard across both variants.
-        selectors[mode] = selector
+    selector = JevSelector(settings, output / "cache")
+    client = selector.client
     plan = {"revision": str(revision), "cases": [], "model": settings.model}
     for case, request in cases:
-        payloads = {
-            mode: selector.build_request(request.context) for mode, selector in selectors.items()
-        }
+        phases = ("has_match", "match") if len(request.allowed_match_ids) > 1 else ("has_match",)
+        payloads = {phase: selector.build_request(request.context, phase) for phase in phases}
         plan["cases"].append({**case, "requests": payloads})
     plan_path = output / "plan.json"
     if plan_path.exists() and read_json(plan_path) != plan:
@@ -159,7 +146,7 @@ def compare_prompts(
         return {
             "plan": str(plan_path),
             "cases": len(cases),
-            "planned_calls": 2 * len(cases),
+            "max_planned_calls": sum(len(case["requests"]) for case in plan["cases"]),
             "http_attempts": 0,
         }
     try:
@@ -170,25 +157,24 @@ def compare_prompts(
             if row is None:
                 row = {**case, "variants": {}}
                 report["cases"].append(row)
-            for mode, selector in selectors.items():
-                start = perf_counter()
-                selection = selector.select(request, allow_splitting=False)
-                elapsed = perf_counter() - start
-                # Retain the original measured latency when resuming from valid caches.
-                if mode not in row["variants"] or not all(
-                    call["cache_hit"] for call in selection["calls"]
-                ):
-                    row["variants"][mode] = {
-                        **selection,
-                        "elapsed_seconds": None
-                        if all(call["cache_hit"] for call in selection["calls"])
-                        else elapsed,
-                        "input_tokens": sum(
-                            call["response"]["usage"]["input_tokens"] for call in selection["calls"]
-                        ),
-                    }
-                write_json(report_path, report)
-                print(f"{case['attempt_id']} {mode}: {selection['target_id']}", flush=True)
+            start = perf_counter()
+            selection = selector.select(request, allow_splitting=False)
+            elapsed = perf_counter() - start
+            # Retain the original measured latency when resuming from valid caches.
+            if "sequential" not in row["variants"] or not all(
+                call["cache_hit"] for call in selection["calls"]
+            ):
+                row["variants"]["sequential"] = {
+                    **selection,
+                    "elapsed_seconds": None
+                    if all(call["cache_hit"] for call in selection["calls"])
+                    else elapsed,
+                    "input_tokens": sum(
+                        call["response"]["usage"]["input_tokens"] for call in selection["calls"]
+                    ),
+                }
+            write_json(report_path, report)
+            print(f"{case['attempt_id']} sequential: {selection['target_id']}", flush=True)
         report["status"] = "complete"
         report.pop("error", None)
     except Exception as error:

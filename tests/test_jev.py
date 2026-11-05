@@ -1,5 +1,6 @@
 """Jev transport, selection, caching, and evidence tests without network access."""
 
+import hashlib
 import io
 import json
 import tempfile
@@ -25,6 +26,7 @@ from pipeline.providers.jev import (
     JevRequestTooLarge,
     JevSettings,
     choice_from_probabilities,
+    encode_request,
     validate_response,
 )
 
@@ -63,8 +65,6 @@ class JevTest(unittest.TestCase):
         return JevSelector(
             JevSettings(**settings),
             self.root / "jev",
-            self.config.skill_root,
-            self.config.prompt_root,
         )
 
     def request(self, count=1):
@@ -85,7 +85,7 @@ class JevTest(unittest.TestCase):
             jev=JevSettings(**settings),
         )
 
-    def test_prompt_keeps_sources_and_shared_lessons_without_generation_instructions(self):
+    def test_gate_and_rank_share_evidence_not_examples(self):
         selector = self.selector()
         request = self.request(2)
         original = request.model_copy(deep=True)
@@ -113,19 +113,52 @@ class JevTest(unittest.TestCase):
             expected,
         )
         self.assertEqual(request, original)
-        self.assertEqual(len(selector.examples), 6)
-        examples = json.dumps(selector.examples)
-        self.assertNotIn("Expected output", examples)
-        self.assertNotIn('"target_id"', examples)
-        self.assertNotIn('"evidence"', examples)
-        self.assertIn(
-            "same source-grounded role",
-            body["questions"]["match"]["criteria"]["candidate-0"]["meaning"],
+        self.assertEqual(set(body["questions"]), {"has_match"})
+        rank = selector.build_request(request.context, "match")
+        self.assertEqual(body["state"], rank["state"])
+        self.assertEqual(set(rank["questions"]), {"match"})
+        self.assertNotEqual(
+            body["questions"]["has_match"]["instructions"]["example"],
+            rank["questions"]["match"]["instructions"]["example"],
         )
-        self.assertIn("Generated questions are fallible summaries", selector.instructions)
+        criteria = rank["questions"]["match"]["criteria"]
+        self.assertEqual(
+            criteria,
+            {
+                k: f"Candidate described in candidates[{json.dumps(k)}]."
+                for k in request.allowed_match_ids
+            },
+        )
 
-    def test_noul_mode_uses_only_real_candidates_and_abstains_on_no_or_tie(self):
-        selector = self.selector(selection_mode="choice_noul")
+    def test_old_verbose_request_cache_is_not_reused_or_modified(self):
+        selector = self.selector()
+        request = self.request(2)
+        compact = selector.build_request(request.context, "match")
+        legacy = json.loads(json.dumps(compact))
+        for key, candidate in legacy["state"]["candidates"].items():
+            center = candidate.get("paragraph_under_consideration", candidate)
+            legacy["questions"]["match"]["criteria"][key] = {
+                "evidence": f"`candidates[{json.dumps(key)}]`",
+                "generated_question_metadata": center.get("generated_question_metadata", ""),
+                "meaning": "This candidate supports the same source-grounded role as `focus`.",
+            }
+        self.assertLess(len(encode_request(compact)), len(encode_request(legacy)))
+        self.assertEqual(compact["state"], legacy["state"])
+        selector.cache.mkdir(parents=True)
+        path = selector.cache / f"{hashlib.sha256(encode_request(legacy)).hexdigest()}.json"
+        saved = json.dumps({"request": legacy, "response": answer(legacy, NO_MATCH)})
+        path.write_text(saved, encoding="utf-8")
+        with patch.object(selector.client, "choose", side_effect=answer) as client:
+            first = selector.select(request)
+            second = selector.select(request)
+        self.assertFalse(first["calls"][0]["cache_hit"])
+        self.assertTrue(second["calls"][0]["cache_hit"])
+        self.assertEqual(client.call_count, 2)
+        self.assertEqual(client.call_args.args[0], compact)
+        self.assertEqual(path.read_text(encoding="utf-8"), saved)
+
+    def test_rank_runs_only_after_positive_gate(self):
+        selector = self.selector()
         for probability, expected in (
             (0.0, None),
             (0.5, None),
@@ -141,14 +174,13 @@ class JevTest(unittest.TestCase):
                 ) as client,
             ):
                 result = selector.select(self.request(2), force=True)
-                body = client.call_args.args[0]
-                self.assertEqual(set(body["questions"]), {"match", "has_match"})
-                self.assertNotIn(NO_MATCH, body["questions"]["match"]["criteria"])
+                phases = [next(iter(c.args[0]["questions"])) for c in client.call_args_list]
+                self.assertEqual(phases, ["has_match", "match"] if expected else ["has_match"])
                 self.assertEqual(result["target_id"], expected)
                 self.assertEqual(result["has_match"]["noul"], probability)
 
     def test_single_candidate_uses_noul_only_and_caches_it(self):
-        selector = self.selector(selection_mode="choice_noul")
+        selector = self.selector()
         with (
             patch("pipeline.providers.jev.load_api_key", return_value="hidden-key"),
             patch(
@@ -167,21 +199,53 @@ class JevTest(unittest.TestCase):
             body = json.loads(network.call_args.args[0].data)
             self.assertEqual(set(body["questions"]), {"has_match"})
 
-    def test_noul_splits_rerank_even_when_half_pool_abstains(self):
-        selector = self.selector(selection_mode="choice_noul")
+    def test_negative_shards_do_not_rank_and_no_candidate_is_revived(self):
+        selector = self.selector()
 
-        def choose(body):
+        def respond(body):
             count = len(body["state"]["candidates"])
-            return answer(body, noul=1.0 if count == 10 else 0.0)
+            return answer(body, noul=float(count > 255))
 
-        with patch.object(selector.client, "choose", side_effect=choose) as client:
+        with patch.object(selector.client, "choose", side_effect=respond) as client:
             result = selector.select(self.request(256))
-            self.assertEqual(client.call_count, 3)
-            self.assertEqual(result["target_id"], "candidate-0")
+            self.assertIsNone(result["target_id"])
             self.assertEqual(
-                [len(call.args[0]["state"]["candidates"]) for call in client.call_args_list],
-                [128, 128, 10],
+                [list(c.args[0]["questions"]) for c in client.call_args_list], [["has_match"]] * 3
             )
+
+    def test_failed_rank_reuses_gate_after_restart(self):
+        selector = self.selector()
+        request = self.request(2)
+        gate = selector.build_request(request.context)
+        with patch.object(
+            selector.client, "choose", side_effect=[answer(gate), RuntimeError("offline")]
+        ):
+            with self.assertRaisesRegex(RuntimeError, "offline"):
+                selector.select(request)
+        resumed = self.selector()
+        with patch.object(resumed.client, "choose", side_effect=answer) as client:
+            result = resumed.select(request)
+            self.assertEqual([c["cache_hit"] for c in result["calls"]], [True, False])
+            client.assert_called_once_with(resumed.build_request(request.context, "match"))
+
+    def test_paid_gate_is_cached_before_token_overshoot_stops_run(self):
+        selector = self.selector(max_input_tokens=50)
+        request = self.request(2)
+        with (
+            patch("pipeline.providers.jev.load_api_key", return_value="offline-key"),
+            patch(
+                "pipeline.providers.jev.urlopen",
+                side_effect=lambda req, **kw: io.BytesIO(
+                    json.dumps(answer(json.loads(req.data))).encode()
+                ),
+            ) as network,
+        ):
+            with self.assertRaisesRegex(ValueError, "input-token limit exceeded"):
+                selector.select(request)
+            self.assertEqual(network.call_count, 1)
+            result = self.selector(max_input_tokens=200).select(request)
+            self.assertEqual(network.call_count, 2)
+            self.assertEqual([c["cache_hit"] for c in result["calls"]], [True, False])
 
     def test_frozen_pool_stops_on_size_error_without_splitting(self):
         selector = self.selector()
@@ -191,7 +255,7 @@ class JevTest(unittest.TestCase):
             self.assertEqual(client.call_count, 1)
 
     def test_noul_response_validates_finite_probability_question_names_and_types(self):
-        body = self.selector(selection_mode="choice_noul").build_request(self.request().context)
+        body = self.selector().build_request(self.request().context)
         for probability in (-0.01, 1.01, float("nan"), float("inf")):
             with self.subTest(probability=probability), self.assertRaises(ValueError):
                 validate_response(answer(body, noul=probability), body)
@@ -202,7 +266,7 @@ class JevTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "question type"):
             validate_response(good, {**body, "questions": {"has_match": {"type": "choice"}}})
 
-    def test_complete_cache_tracks_jev_prompt_and_mode_not_budgets(self):
+    def test_complete_cache_tracks_jev_prompt_not_budgets(self):
         request = self.request(2)
         provider = self.provider()
         with patch(
@@ -213,8 +277,7 @@ class JevTest(unittest.TestCase):
             self.assertTrue(self.provider(max_calls=1000).judge(request).cache_hit)
             provider.jev.instructions += " Changed policy."
             self.assertFalse(provider.judge(request).cache_hit)
-            self.assertFalse(self.provider(selection_mode="choice_noul").judge(request).cache_hit)
-            self.assertEqual(client.call_count, 3)
+            self.assertEqual(client.call_count, 2)
 
     def test_transport_uses_documented_body_and_never_records_credentials(self):
         selector = self.selector()
@@ -253,24 +316,29 @@ class JevTest(unittest.TestCase):
         selector = self.selector()
         with patch.object(selector.client, "choose", side_effect=answer) as client:
             selection = selector.select(self.request(300))
-            self.assertEqual(client.call_count, 3)
+            self.assertEqual(client.call_count, 7)
             bodies = [call.args[0] for call in client.call_args_list]
             self.assertEqual(
-                [len(body["questions"]["match"]["criteria"]) for body in bodies], [151, 151, 11]
+                [
+                    len(body["questions"]["match"]["criteria"])
+                    for body in bodies
+                    if "match" in body["questions"]
+                ],
+                [150, 150, 10],
             )
             self.assertEqual(selection["target_id"], "candidate-0")
-            self.assertEqual(len(selection["calls"]), 3)
+            self.assertEqual(len(selection["calls"]), 7)
             selector.select(self.request(300))
-            self.assertEqual(client.call_count, 3)
+            self.assertEqual(client.call_count, 7)
             selector.select(self.request(300), force=True)
-            self.assertEqual(client.call_count, 6)
+            self.assertEqual(client.call_count, 14)
 
     def test_recursive_splits_do_not_compare_probabilities_across_halves(self):
         selector = self.selector()
         with patch.object(selector.client, "choose", side_effect=answer) as client:
             result = selector.select(self.request(600))
-            self.assertEqual(len(result["calls"]), 7)
-            self.assertEqual(client.call_count, 7)
+            self.assertEqual(len(result["calls"]), 17)
+            self.assertEqual(client.call_count, 17)
             self.assertEqual(result["target_id"], "candidate-0")
 
     def test_request_above_old_byte_cap_reaches_transport_without_truncation(self):
@@ -297,7 +365,7 @@ class JevTest(unittest.TestCase):
 
         def http(req, **kwargs):
             body = json.loads(req.data)
-            if len(body["questions"]["match"]["criteria"]) > 11:
+            if len(body["state"]["candidates"]) > 11:
                 raise HTTPError(
                     "url",
                     400,
@@ -312,8 +380,8 @@ class JevTest(unittest.TestCase):
             patch("pipeline.providers.jev.urlopen", side_effect=http) as network,
         ):
             result = selector.select(self.request(20))
-            self.assertEqual(network.call_count, 4)
-            self.assertEqual(len(result["calls"]), 3)
+            self.assertEqual(network.call_count, 7)
+            self.assertEqual(len(result["calls"]), 6)
             self.assertEqual(result["target_id"], "candidate-0")
         records = [
             json.loads(path.read_text()) for path in (self.root / "jev/responses").glob("*.json")
@@ -333,7 +401,7 @@ class JevTest(unittest.TestCase):
         selector = self.selector()
 
         def choose(body):
-            if len(body["questions"]["match"]["criteria"]) > 2:
+            if len(body["state"]["candidates"]) > 1:
                 raise JevRequestTooLarge()
             return answer(body)
 
@@ -385,45 +453,28 @@ class JevTest(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     validate_response(value, body)
 
-    def test_inconsistent_choice_uses_probabilities_and_preserves_raw_response(self):
+    def test_inconsistent_choice_preserves_raw_response_and_caches_both_phases(self):
         selector = self.selector()
-        request = self.request(3)
-        body = selector.build_request(request.context)
-        payload = answer(body, NO_MATCH)
-        payload["answers"]["match"].update(
-            confidence=0.44,
-            probabilities={
-                "candidate-0": 0.48,
-                NO_MATCH: 0.47,
-                "candidate-1": 0.03,
-                "candidate-2": 0.02,
-            },
-        )
-        self.assertEqual(validate_response(payload, body), payload)
-        with (
-            patch("pipeline.providers.jev.load_api_key", return_value="offline-key"),
-            patch(
-                "pipeline.providers.jev.urlopen",
-                return_value=io.BytesIO(json.dumps(payload).encode()),
-            ) as network,
-        ):
-            first = selector.select(request)
-            second = selector.select(request)
-        self.assertEqual(network.call_count, 1)
-        for result in (first, second):
-            self.assertEqual(result["target_id"], "candidate-0")
-            self.assertEqual(result["calls"][0]["response"], payload)
-            self.assertEqual(
-                result["calls"][0]["choice_correction"],
-                {
-                    "reported_choice": NO_MATCH,
-                    "effective_choice": "candidate-0",
-                    "reason": "highest_returned_probability",
-                },
-            )
-        self.assertTrue(second["calls"][0]["cache_hit"])
-        raw_path = next((self.root / "jev/responses").glob("*.json"))
-        self.assertEqual(json.loads(json.loads(raw_path.read_text())["response_text"]), payload)
+        request = self.request(2)
+
+        def respond(body):
+            payload = answer(body, "candidate-1")
+            if "match" in payload["answers"]:
+                payload["answers"]["match"]["probabilities"] = {
+                    "candidate-0": 0.6,
+                    "candidate-1": 0.4,
+                }
+            return payload
+
+        with patch.object(selector.client, "choose", side_effect=respond) as client:
+            selector.select(request)
+            result = selector.select(request)
+        self.assertEqual(client.call_count, 2)
+        self.assertTrue(all(c["cache_hit"] for c in result["calls"]))
+        self.assertEqual(result["target_id"], "candidate-0")
+        ranking = result["calls"][-1]
+        self.assertEqual(ranking["response"]["answers"]["match"]["choice"], "candidate-1")
+        self.assertEqual(ranking["choice_correction"]["effective_choice"], "candidate-0")
 
     def test_probability_choice_ties_are_deterministic(self):
         for reported, expected in (("b", "b"), ("c", "a")):
@@ -435,24 +486,6 @@ class JevTest(unittest.TestCase):
                         ),
                         expected,
                     )
-
-    def test_corrected_choice_still_respects_no_match_and_noul_gate(self):
-        for mode, probability in (("choice", None), ("choice_noul", 0.5), ("choice_noul", 0.8)):
-            selector = self.selector(selection_mode=mode)
-            request = self.request(2)
-            body = selector.build_request(request.context)
-            payload = answer(body, "candidate-0", noul=probability)
-            payload["answers"]["match"]["probabilities"] = (
-                {"candidate-0": 0.1, "candidate-1": 0.2, NO_MATCH: 0.7}
-                if mode == "choice"
-                else {"candidate-0": 0.1, "candidate-1": 0.9}
-            )
-            with (
-                self.subTest(mode=mode, noul=probability),
-                patch.object(selector.client, "choose", return_value=payload),
-            ):
-                result = selector.select(request, force=True)
-            self.assertEqual(result["target_id"], "candidate-1" if probability == 0.8 else None)
 
     def test_probability_rounding_preserves_original_values(self):
         body = {

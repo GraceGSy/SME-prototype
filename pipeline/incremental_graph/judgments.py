@@ -20,7 +20,7 @@ from ..providers.contracts import (
     StructuredOutputValidationError,
 )
 from ..providers.factory import create_skill_client
-from ..providers.jev import JevSettings
+from ..providers.jev import JevSettings, encode_request
 from ..providers.settings import ModelSettings
 from .configuration import CONTEXT_HEADER, PromptRepository, RenderedPrompt
 from .evidence_encoding import encode_evidence
@@ -92,9 +92,7 @@ class CachedJudgments:
         self.cache_dir = cache_dir
         self.skill_root = skill_root
         self.skills: SkillClient | None = None
-        self.jev = (
-            JevSelector(jev, cache_dir / "jev", skill_root, prompts.prompt_root) if jev else None
-        )
+        self.jev = JevSelector(jev, cache_dir / "jev") if jev else None
         cache_dir.mkdir(parents=True, exist_ok=True)
 
     def render_request(self, request: JudgmentRequest) -> RenderedPrompt:
@@ -341,7 +339,15 @@ class CachedJudgments:
             "jev": self.jev.settings.result_settings() if self.jev else None,
         }
         if self.jev and request.output_kind == "match":
-            payload["jev_request"] = self.jev.build_request(request.context)
+            phases = (
+                ("has_match", "match") if len(request.allowed_match_ids) > 1 else ("has_match",)
+            )
+            payload["jev_requests"] = [
+                hashlib.sha256(
+                    encode_request(self.jev.build_request(request.context, phase))
+                ).hexdigest()
+                for phase in phases
+            ]
         encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
         return hashlib.sha256(encoded).hexdigest()
 

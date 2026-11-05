@@ -47,11 +47,9 @@ class PromptAssetsTest(unittest.TestCase):
                 write_json(assets / "extraction.json", extraction)
                 self.assertEqual(_policy_hash(config), original)
                 wording = read_json(assets / "jev.json")
-                wording["choice_question"] = "Edited selection question?"
+                wording["has_match_question"] = "Edited selection question?"
                 write_json(assets / "jev.json", wording)
-                selector = JevSelector(
-                    JevSettings(), root / "cache", config.skill_root, config.prompt_root
-                )
+                selector = JevSelector(JevSettings(), root / "cache")
                 body = selector.build_request(
                     {
                         "focus": {"full_text": "Source evidence"},
@@ -59,8 +57,8 @@ class PromptAssetsTest(unittest.TestCase):
                     }
                 )
                 self.assertEqual(
-                    body["questions"]["match"]["instructions"]["question"],
-                    wording["choice_question"],
+                    body["questions"]["has_match"]["instructions"]["question"],
+                    wording["has_match_question"],
                 )
                 self.assertNotEqual(_policy_hash(config), original)
                 self.assertEqual(selector.client.repo_root, REPO_ROOT)

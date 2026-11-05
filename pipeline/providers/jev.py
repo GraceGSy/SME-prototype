@@ -30,7 +30,6 @@ class JevSettings(BaseModel):
 
     model_config = ConfigDict(extra="forbid", strict=True)
     model: str = Field(default="jev-1.14.0", pattern=r"^jev-\d+\.\d+\.\d+$")
-    selection_mode: Literal["choice", "choice_noul"] = "choice"
     max_calls: int | None = Field(default=None, gt=0)
     max_input_tokens: int | None = Field(default=None, gt=0)
     timeout_seconds: int = Field(default=120, gt=0)
@@ -170,9 +169,12 @@ class JevClient:
         write_json(path, {**record, "response_text": text})
         payload = validate_response(json.loads(text), body)
         self.input_tokens += payload["usage"]["input_tokens"]
+        return payload
+
+    def check_reported_usage(self) -> None:
+        """Stop on an overshoot after the selector caches the valid paid response."""
         if (
             self.settings.max_input_tokens is not None
             and self.input_tokens > self.settings.max_input_tokens
         ):
             raise ValueError("Jev input-token limit exceeded; paid response retained")
-        return payload

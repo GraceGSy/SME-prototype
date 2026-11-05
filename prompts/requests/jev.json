@@ -1,11 +1,10 @@
 {
-  "policy_suffix": "The caller has already filtered the eligible candidates. IDs are opaque handles, not evidence of correspondence. Judge this direction independently; no reverse votes are supplied. Adjacency and option order do not establish a match. Examples illustrate the policy; they are not candidates.",
-  "candidate_meaning": "This candidate supports the same source-grounded role as `focus`.",
-  "choice_question": "Which candidate has the strongest defensible role correspondence with `focus`?",
-  "no_match_criterion": "Every candidate performs a different role or lacks support for a shared role.",
-  "ranking_policy_omission": "Choose the strongest defensible correspondence, not the least-bad candidate.\nAbstain when there is none. ",
-  "ranking_question": "Which candidate comes closest to the role and relevant relations of `focus`, even if none supports a defensible match? Selection alone does not assert a match.",
-  "has_match_question": "Does at least one candidate in `candidates` support a defensible shared role with `focus`?",
-  "has_match_true": "At least one candidate preserves the focus's role and relevant relations, supported by each represented paper.",
-  "has_match_false": "All candidates perform different roles or lack source support; shared topics or question wording do not establish correspondence."
+  "policy": "Compare what each passage does and how its participants relate, not shared topics or names. Read the source; generated questions are only hints. For paragraph windows judge the center, not its neighbors. Each paper in a group must support the role; read its accepted members together and require each to contribute.",
+  "candidate_reference": "Candidate described in candidates[{candidate_id}].",
+  "has_match_question": "Does any eligible candidate perform the same source-supported role as the focus?",
+  "has_match_true": "At least one does.",
+  "has_match_false": "None does.",
+  "gate_example": "Focus describes a comparison tool. Candidates report its evaluation results or its recruitment procedure. Neither describes the capability: no match.",
+  "ranking_question": "Which eligible candidate best preserves the focus's role and relevant relationships?",
+  "rank_example": "Focus explains how readers compare two excerpts. A measures speed using the same tool; B describes another tool's side-by-side comparison. Choose B: it explains the capability."
 }
