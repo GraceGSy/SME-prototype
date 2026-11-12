@@ -12,7 +12,7 @@ from .evidence import Evidence
 from .export import export_revision
 from .graph import QuestionGraph
 from .journal import RevisionJournal
-from .judgments import JudgmentProvider, inherited_structural_match
+from .judgments import CachedJudgments, JudgmentProvider, inherited_structural_match
 from .match_rules import (
     adjacent_core_anchors,
     adjacent_paragraph_fan_in,
@@ -54,6 +54,8 @@ class IncrementalGraphRunner:
         validate_pipeline_config(config)
         self.config = config
         self.judge = judge
+        self.jev_judge = judge if isinstance(judge, CachedJudgments) and judge.jev else None
+        self.pending_votes = {}
         self.revision_dir = revision_dir
         self.revision_dir.mkdir(parents=True, exist_ok=False)
         self.max_granularity = max_granularity
@@ -85,6 +87,7 @@ class IncrementalGraphRunner:
 
     def run(self, papers: list[Paper]) -> dict[str, Any]:
         for paper_index, paper in enumerate(papers, start=1):
+            self.pending_votes.clear()
             self._register_paper(paper)
             insertion = InsertionState(paper=paper, paper_index=paper_index)
             self.insertions_by_paper[paper.paper_id] = insertion
@@ -117,6 +120,11 @@ class IncrementalGraphRunner:
             )
             if skip_structural_stage:
                 continue
+            if self.jev_judge and stage.handler in {
+                "generate_section_group_questions",
+                "generate_paragraph_group_questions",
+            }:
+                continue  # Generate questions once after singleton recovery.
             handler = self.handlers.get(stage.handler)
             if handler is None:
                 raise PipelineError(f"Unknown stage handler {stage.handler!r} for stage {stage.id}")
@@ -273,6 +281,16 @@ class IncrementalGraphRunner:
                 )
                 if not allowed:
                     continue
+
+                def recovery_unit(node_id, selectable=False):
+                    unit = self.evidence.node_match_context(node_id, selectable=selectable)
+                    if level == "paragraph" and len(unit["members"]) == 1:
+                        return {
+                            **unit["members"][0],
+                            **({"selection_id": node_id} if selectable else {}),
+                        }
+                    return unit
+
                 decisions[source_id] = self._match(
                     stage,
                     insertion,
@@ -284,10 +302,9 @@ class IncrementalGraphRunner:
                             **self.evidence.scope_context(level, nodes[source_id].get("parent_id")),
                             "match_mode": "rerepresentation",
                         },
-                        "focus": self.evidence.node_match_context(source_id),
+                        "focus": recovery_unit(source_id),
                         "candidates": [
-                            self.evidence.node_match_context(node_id, selectable=True)
-                            for node_id in allowed
+                            recovery_unit(node_id, selectable=True) for node_id in allowed
                         ],
                     },
                 )
@@ -362,6 +379,10 @@ class IncrementalGraphRunner:
                         "membership_role": "fan_in",
                     }
                 )
+        for entry in merged:
+            self._explain_accepted(
+                entry["attempt_id"], entry["target_group_id"], entry.get("reverse_attempt_id")
+            )
         return {
             "singleton_ids": singletons,
             "established_group_ids": established,
@@ -389,7 +410,10 @@ class IncrementalGraphRunner:
         if result is None:
             raise PipelineError(f"{stage.id} requires {level}_rerepresentation")
         return self._generate_group_questions(
-            stage, insertion, level, group_ids=result["changed_group_ids"]
+            stage,
+            insertion,
+            level,
+            group_ids=None if self.jev_judge else result["changed_group_ids"],
         )
 
     def _generate_paragraph_questions(
@@ -503,13 +527,13 @@ class IncrementalGraphRunner:
                     batch=batch,
                 )
             )
-            # The incoming paper must see the updated child role, not its old question.
-            self._generate_group_questions(
-                questions,
-                insertion,
-                "paragraph",
-                group_ids=self.question_graph.group_ids("paragraph", parent_id),
-            )
+            if not self.jev_judge:
+                self._generate_group_questions(
+                    questions,
+                    insertion,
+                    "paragraph",
+                    group_ids=self.question_graph.group_ids("paragraph", parent_id),
+                )
             results.append(
                 {
                     "paper_id": owner.paper.paper_id,
@@ -694,13 +718,21 @@ class IncrementalGraphRunner:
             max_input_tokens=stage.max_input_tokens,
             force=self._forced(stage, insertion),
         )
+        vote_request = request
+        if self.jev_judge and not inherit_structural_match:
+            annotations = self.evidence.jev_annotations(context, self.shared_root_id)
+            vote_request = request.model_copy(update={"context": {**context, "outline": annotations}})
         result = (
             inherited_structural_match(request)
             if inherit_structural_match
+            else self.jev_judge.vote(vote_request)
+            if self.jev_judge
             else self.judge.judge(request)
         )
         attempt_id = self.journal.attempt(request, result)
         target_id = result.normalized.get("target_id")
+        if self.jev_judge and not inherit_structural_match and target_id is not None:
+            self.pending_votes[attempt_id] = (request, target_id)
         self.journal.event(
             "match_recorded",
             paper_index=insertion.paper_index,
@@ -722,6 +754,21 @@ class IncrementalGraphRunner:
             target_id=target_id,
             direction=direction,
             attempt_id=attempt_id,
+        )
+
+    def _explain_accepted(self, vote_id: str, group_id: str, reverse_id: str | None = None) -> None:
+        if vote_id not in self.pending_votes:
+            return  # Non-Jev and inherited matches already carry their own evidence.
+        request, target = self.pending_votes.pop(vote_id)
+        result = self.jev_judge.judge(request, accepted={"target_id": target, "vote_id": vote_id})
+        explanation_id = self.journal.attempt(request, result)
+        self.journal.event(
+            "accepted_match_explained",
+            paper_index=request.paper_index,
+            node_id=group_id,
+            vote_attempt_id=vote_id,
+            reverse_attempt_id=reverse_id,
+            explanation_attempt_id=explanation_id,
         )
 
     def _reconcile(
@@ -863,6 +910,14 @@ class IncrementalGraphRunner:
                     absorbed_group_id=absorbed_group,
                     attempt_id=decision.attempt_id,
                 )
+        for unit_id, group_id in reciprocal.items():
+            self._explain_accepted(
+                batch.forward[unit_id].attempt_id, group_id, batch.reverse[group_id].attempt_id
+            )
+        for unit_id, group_id in forward_fan_in.items():
+            self._explain_accepted(batch.forward[unit_id].attempt_id, group_id)
+        for source_id, (group_id, _, _) in reverse_fan_in.items():
+            self._explain_accepted(batch.reverse[source_id].attempt_id, group_id)
         return assignments
 
     def _adjacent_existing_group_fan_in(

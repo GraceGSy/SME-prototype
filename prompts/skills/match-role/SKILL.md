@@ -14,25 +14,10 @@ merely because it chose this group. Adjacency alone is insufficient for a match.
 
 ## Input And Candidate IDs
 
-The user message may split the input across text blocks: shared `scope` and
-`candidates` come first, and the single `focus` comes last. Read them together
-as one request. The pool is complete and already filtered by the caller.
-
-Copy the selected candidate's output handle exactly, using these input shapes:
-
-| Candidate shape | Field to copy into `target_id` |
-|---|---|
-| Has an outer `selection_id` (paragraph matching or singleton realignment) | Outer `selection_id` |
-| Structural graph node with `group_id` and `members` | Outer `group_id` |
-| New structural unit with `paper_id` and `section_id` | Outer `section_id` |
-
-Never use a member's ID, the focus ID, `paper_id`, `parent_unit_id`, `family_id`,
-a label, an ordinal, or a generated question as the output handle. IDs are
-opaque output handles, never semantic evidence: do not concatenate, prefix,
-trim, reformat, or reconstruct them.
-For example, a candidate with `paper_id: "corpusstudio"` and
-`section_id: "s0003"` must be returned as `"s0003"`, NOT
-`"corpusstudio-s0003"`. This example is not an additional candidate.
+Read all supplied paper blocks together. Only the labeled focus and candidates
+are being compared. Return the option label exactly as supplied (for example,
+"Group A" or "Paragraph B"). A context-only passage cannot be selected. Member numbers specify quote
+order within a group, not semantic similarity. Positions are not output IDs.
 
 ## Matching Rules
 

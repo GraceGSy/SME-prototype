@@ -52,6 +52,7 @@ class PromptAssetsTest(unittest.TestCase):
                 selector = JevSelector(JevSettings(), root / "cache")
                 body = selector.build_request(
                     {
+                        "scope": {"level": "section"},
                         "focus": {"full_text": "Source evidence"},
                         "candidates": [{"section_id": "s1", "full_text": "Candidate evidence"}],
                     }

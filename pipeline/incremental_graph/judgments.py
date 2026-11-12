@@ -23,13 +23,20 @@ from ..providers.factory import create_skill_client
 from ..providers.jev import JevSettings, encode_request
 from ..providers.settings import ModelSettings
 from .configuration import CONTEXT_HEADER, PromptRepository, RenderedPrompt
-from .evidence_encoding import encode_evidence
+from .evidence_encoding import (
+    EVIDENCE_PROMPTS,
+    encode_evidence,
+    paragraph_comparison,
+    paragraph_options,
+    passage_state,
+)
 from .jev_selection import JevSelector
 from .match_evidence import (
     EvidenceValidationError,
     JudgmentError,
     candidate_handle,
     center_texts,
+    quote_catalogue,
     quote_length_feedback,
     validate_evidence,
 )
@@ -95,20 +102,81 @@ class CachedJudgments:
         self.jev = JevSelector(jev, cache_dir / "jev") if jev else None
         cache_dir.mkdir(parents=True, exist_ok=True)
 
-    def render_request(self, request: JudgmentRequest) -> RenderedPrompt:
+    def render_request(
+        self, request: JudgmentRequest, labels: dict[str, str] | None = None
+    ) -> RenderedPrompt:
         """Bind decoding to this pool without repairing model output."""
+        comparison = (
+            paragraph_comparison(request.context, labels)
+            if request.output_kind == "match"
+            else None
+        )
+        instructions = None
+        if self.jev and request.output_kind == "match":
+            instructions = "Document the supplied selection using the explain-match Skill."
+        if comparison:
+            wording = request_prompts("jev")[comparison.direction]
+            instructions = (
+                (
+                    instructions
+                    or (
+                        wording["match"] + " Return the option label or null. "
+                        "Explain the decision. Quote each side's members in member-number order, one short verbatim "
+                        "quote per member. If none fits, return empty evidence arrays."
+                    )
+                )
+                + "\n"
+                + wording["guide"]
+            )
         rendered = self.prompts.render(
             request.prompt_ref,
             request.context_ref,
             request.context,
-            instructions=(
-                "Document the supplied selection using the explain-match Skill."
-                if self.jev and request.output_kind == "match"
-                else None
-            ),
+            instructions=instructions,
         )
         if request.output_kind == "match":
-            if rendered.cacheable_context:
+            state = None if comparison else passage_state(request.context)
+            if comparison:
+                rendered = replace(
+                    rendered,
+                    cacheable_context=comparison.prefix or None,
+                    user=comparison.remainder,
+                    context_hash=hashlib.sha256(
+                        (rendered.context_hash + "\0" + comparison.text).encode()
+                    ).hexdigest(),
+                )
+            elif state is not None:
+                # Keep a reusable candidate prefix only when it precedes the focus
+                # in paper order. Never split overlapping windows into two blocks.
+                prefix_papers = {}
+                for paper, rows in state["papers"].items():
+                    if any(
+                        "focus" in tag or "focus_group" in tag
+                        for row in rows
+                        for tag in row.get("roles", [row])
+                    ):
+                        break
+                    prefix_papers[paper] = rows
+                other_papers = {k: v for k, v in state["papers"].items() if k not in prefix_papers}
+
+                def dump(value):
+                    return json.dumps(value, ensure_ascii=False, separators=(",", ":"))
+
+                prefix = {**state, "papers": prefix_papers} if prefix_papers else None
+                rendered = replace(
+                    rendered,
+                    system=rendered.system + "\n\n" + EVIDENCE_PROMPTS["passage_layout"],
+                    user=dump({"papers": other_papers} if prefix else state),
+                    cacheable_context=CONTEXT_HEADER + dump(prefix) if prefix else None,
+                    prompt_hash=hashlib.sha256(
+                        (
+                            rendered.prompt_hash
+                            + "\0source-order-v1\0"
+                            + EVIDENCE_PROMPTS["passage_layout"]
+                        ).encode()
+                    ).hexdigest(),
+                )
+            elif rendered.cacheable_context:
                 prefix = json.loads(rendered.cacheable_context.split("\n\n", 1)[1])
                 encoded = json.dumps(
                     encode_evidence(prefix, candidate_handles=self.jev is None),
@@ -126,7 +194,12 @@ class CachedJudgments:
             schema["properties"]["target_id"] = (
                 {
                     "anyOf": [
-                        {"type": "string", "enum": list(request.allowed_match_ids)},
+                        {
+                            "type": "string",
+                            "enum": list(comparison.labels.values())
+                            if comparison
+                            else list(request.allowed_match_ids),
+                        },
                         {"type": "null"},
                     ]
                 }
@@ -139,13 +212,34 @@ class CachedJudgments:
             )
         return rendered
 
-    def judge(self, request: JudgmentRequest) -> JudgmentResult:
+    def vote(self, request: JudgmentRequest) -> JudgmentResult:
+        """Record a directional Jev result without commissioning an explanation."""
+        selection = self.jev.select(request, force=request.force)
+        calls = selection["calls"]
+        return JudgmentResult(
+            fingerprint=hashlib.sha256(
+                json.dumps([c["fingerprint"] for c in calls]).encode()
+            ).hexdigest(),
+            normalized={"target_id": selection["target_id"]},
+            raw_response={"jev": selection},
+            model={"jev": self.jev.settings.model_dump()},
+            rendered_system="",
+            rendered_user="",
+            prompt_hash="",
+            context_hash="",
+            schema_hash="",
+            cache_hit=bool(calls) and all(c["cache_hit"] for c in calls),
+        )
+
+    def judge(self, request: JudgmentRequest, *, accepted: dict | None = None) -> JudgmentResult:
         # Retry attribution and quote-length failures, never unrelated contract errors.
         # Each attempt uses the same source pool and native Skill; only feedback changes.
         feedback = ""
         for attempt in range(3):
             try:
-                return self._judge_once(request, feedback)
+                return self._judge_once(
+                    request, feedback, accepted, use_catalogue=attempt == 2 and accepted is not None
+                )
             except StructuredOutputValidationError as error:
                 if (
                     request.output_kind != "match"
@@ -176,7 +270,14 @@ class CachedJudgments:
             feedback = REPAIR_PROMPTS["retry"].format(error=failure)
         raise AssertionError("Unreachable retry state")
 
-    def _judge_once(self, request: JudgmentRequest, feedback: str) -> JudgmentResult:
+    def _judge_once(
+        self,
+        request: JudgmentRequest,
+        feedback: str,
+        accepted: dict | None = None,
+        *,
+        use_catalogue: bool = False,
+    ) -> JudgmentResult:
         rendered = self.render_request(request)
         skill_ref = (
             "explain-match" if self.jev and request.output_kind == "match" else request.skill_ref
@@ -188,6 +289,10 @@ class CachedJudgments:
             raise JudgmentError(f"Skill directory does not exist: {skill_path}")
         skill_hash = directory_hash(skill_path)
         fingerprint = self._fingerprint(request, rendered, skill_hash)
+        if accepted is not None:
+            fingerprint = hashlib.sha256(
+                (fingerprint + ":accepted:" + accepted["target_id"]).encode()
+            ).hexdigest()
         cache_path = self.cache_dir / f"{fingerprint}.json"
         if cache_path.is_file() and not request.force and not feedback:
             payload = json.loads(cache_path.read_text(encoding="utf-8"))
@@ -200,8 +305,15 @@ class CachedJudgments:
             return result
 
         selection = None
+        validation_request = request
+        options = paragraph_options(request.context) if request.output_kind == "match" else None
+        labels = options[1] if options else {}
         if self.jev and request.output_kind == "match":
-            selection = self.jev.select(request, force=request.force and not feedback)
+            selection = (
+                accepted
+                if accepted is not None
+                else self.jev.select(request, force=request.force and not feedback)
+            )
             target = selection["target_id"]
             if target is None:
                 result = JudgmentResult(
@@ -212,8 +324,9 @@ class CachedJudgments:
                         "evidence": {"focus": [], "target": []},
                     },
                     raw_response={"jev": selection},
-                    rendered_system=self.jev.instructions,
-                    rendered_user=json.dumps(request.context, ensure_ascii=False),
+                    # No generative prompt was sent. Each actual Jev body is in its call cache.
+                    rendered_system="",
+                    rendered_user="",
                     prompt_hash=rendered.prompt_hash,
                     context_hash=rendered.context_hash,
                     schema_hash=rendered.schema_hash,
@@ -235,11 +348,40 @@ class CachedJudgments:
                     "allowed_match_ids": [target],
                 }
             )
-            rendered = self.render_request(evidence_request)
-            rendered.schema["properties"]["target_id"] = {"type": "string", "enum": [target]}
+            rendered = self.render_request(evidence_request, labels)
+            validation_request = evidence_request
+            wire_target = labels.get(target, target)
+            rendered.schema["properties"]["target_id"] = {"type": "string", "enum": [wire_target]}
             rendered = replace(
                 rendered,
-                user=rendered.user + "\n\n" + json.dumps({"fixed_target_id": target}),
+                user=rendered.user + "\n\n" + json.dumps({"fixed_target_id": wire_target}),
+                schema_hash=hashlib.sha256(
+                    json.dumps(rendered.schema, sort_keys=True).encode()
+                ).hexdigest(),
+            )
+
+        catalogue = {}
+        if use_catalogue:
+            catalogue = quote_catalogue(
+                validation_request.context["focus"], validation_request.context["candidates"][0]
+            )
+            rendered.schema["properties"]["evidence"] = {
+                "type": "object",
+                "required": list(catalogue),
+                "additionalProperties": False,
+                "properties": {
+                    slot: {"type": "string", "enum": list(choices)}
+                    for slot, choices in catalogue.items()
+                },
+            }
+            feedback = (
+                "\n\nQuotation repair: for each required evidence slot, select the number of one "
+                "verbatim excerpt from that slot's list. Choose the excerpt that supports your comparison "
+                "or shows its limitation. Do not change the selected target. Return the basis and all required slots.\n"
+                + json.dumps(catalogue, ensure_ascii=False)
+            )
+            rendered = replace(
+                rendered,
                 schema_hash=hashlib.sha256(
                     json.dumps(rendered.schema, sort_keys=True).encode()
                 ).hexdigest(),
@@ -276,6 +418,16 @@ class CachedJudgments:
             cacheable_context=rendered.cacheable_context,
         )
         api_normalized = dict(response.value)
+        if catalogue:
+            slots = api_normalized["evidence"]
+            api_normalized["evidence"] = {
+                side: [
+                    choices[slots[key]]
+                    for key, choices in catalogue.items()
+                    if key.startswith(side + "_")
+                ]
+                for side in ("focus", "target")
+            }
         model = {
             **self.model.model_dump(mode="json"),
             "effective_max_tokens": request.max_tokens or self.model.max_tokens,
@@ -297,6 +449,11 @@ class CachedJudgments:
             model["jev"] = self.jev.settings.model_dump()
 
         normalized = api_normalized
+        if labels and api_normalized.get("target_id") is not None:
+            by_label = {label: key for key, label in labels.items()}
+            if api_normalized["target_id"] not in by_label:
+                raise JudgmentError("Returned an unknown paragraph comparison label")
+            normalized = {**api_normalized, "target_id": by_label[api_normalized["target_id"]]}
         result = JudgmentResult(
             fingerprint=fingerprint,
             normalized=normalized,
@@ -315,7 +472,19 @@ class CachedJudgments:
         try:
             if selection is not None and normalized.get("target_id") != selection["target_id"]:
                 raise JudgmentError("Generative evidence must not change Jev's selection")
-            self._validate(request, normalized)
+            if labels:
+                # Repair messages must describe only the visible options, by their wire labels.
+                candidates = [
+                    {**c, "selection_id": labels[candidate_handle(c)]}
+                    for c in validation_request.context["candidates"]
+                ]
+                validation_request = validation_request.model_copy(
+                    update={
+                        "context": {**validation_request.context, "candidates": candidates},
+                        "allowed_match_ids": [candidate_handle(c) for c in candidates],
+                    }
+                )
+            self._validate(validation_request, api_normalized)
         except JudgmentError as error:
             # Preserve paid evidence without accepting or repairing the rejected output.
             write_json(
@@ -330,7 +499,7 @@ class CachedJudgments:
                 # Retries are separate requests, so they cannot see the prior answer.
                 raise EvidenceValidationError(
                     REPAIR_PROMPTS["rejected_response"].format(
-                        error=error, response=json.dumps(normalized, ensure_ascii=False)
+                        error=error, response=json.dumps(api_normalized, ensure_ascii=False)
                     )
                 ) from error
             raise

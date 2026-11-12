@@ -222,13 +222,17 @@ class MatchEvidenceTest(unittest.TestCase):
 
     def check_retry(self, failures, succeeds):
         config = load_pipeline_config(CONFIG_PATH)
-        bad = evidence_response()
+        bad = {**evidence_response(), "target_id": "Group A"}
         bad["evidence"]["focus"] = ["Costs are awarded"]
         responses = [
             SimpleNamespace(value=copy.deepcopy(bad), raw_response={"id": str(i)})
             for i in range(failures)
         ]
-        responses.append(SimpleNamespace(value=evidence_response(), raw_response={"id": "good"}))
+        responses.append(
+            SimpleNamespace(
+                value={**evidence_response(), "target_id": "Group A"}, raw_response={"id": "good"}
+            )
+        )
         with (
             tempfile.TemporaryDirectory() as directory,
             patch("pipeline.incremental_graph.judgments.create_skill_client") as client,
@@ -381,7 +385,13 @@ class MatchEvidenceTest(unittest.TestCase):
                     bad["unexpected"] = True
                 adapter, messages = _adapter(
                     *[
-                        _Response(str(i), "end_turn", 100, 20, text=json.dumps(value))
+                        _Response(
+                            str(i),
+                            "end_turn",
+                            100,
+                            20,
+                            text=json.dumps({**value, "target_id": "Group A"}),
+                        )
                         for i, value in enumerate([bad] * failures + [corrected])
                     ]
                 )

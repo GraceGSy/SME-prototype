@@ -98,7 +98,7 @@ class ConfigurationTest(unittest.TestCase):
                         payload.index('"paragraph_under_consideration"'),
                         payload.index('"next_paragraph"'),
                     )
-                self.assertIn("paragraph_under_consideration", rendered.system)
+                self.assertIn("labeled center", rendered.system)
                 instructions = (config.skill_root / "match-role/references/selection.md").read_text(
                     encoding="utf-8"
                 )

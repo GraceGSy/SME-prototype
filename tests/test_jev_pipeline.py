@@ -13,7 +13,6 @@ from test_jev import answer
 from pipeline.document import QUESTION_FIELD
 from pipeline.files import read_json, write_json
 from pipeline.incremental_graph.compare import compare_revisions, load_revision
-from pipeline.incremental_graph.match_evidence import candidate_handle, center_texts
 from pipeline.incremental_graph.runs import retry_graph, start_graph
 from pipeline.incremental_graph.smoke_check import check_smoke
 from pipeline.providers.contracts import SkillRef
@@ -24,20 +23,17 @@ ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "datasets/jev-smoke/manifest.yaml"
 
 
-def decode_state(value):
-    texts = value["source_texts"]
-
-    def decode(item):
-        if isinstance(item, list):
-            return [decode(child) for child in item]
-        if not isinstance(item, dict):
-            return item
-        result = {key: decode(child) for key, child in item.items() if key != "full_text_refs"}
-        if "full_text_refs" in item:
-            result["full_text"] = "\n\n".join(texts[key] for key in item["full_text_refs"])
-        return result
-
-    return decode(value)
+def labeled_texts(papers):
+    members = {}
+    for rows in papers.values():
+        for row in rows:
+            for tag in row.get("roles", [row]):
+                if row.get("context_only"):
+                    continue
+                side = tag.get("candidate", tag.get("candidate_group", "focus"))
+                by_member = members.setdefault(side, {})
+                by_member.setdefault(tag.get("member", 1), []).append(row["text"])
+    return {side: ["\n\n".join(parts[i]) for i in sorted(parts)] for side, parts in members.items()}
 
 
 class ScriptedSkills:
@@ -54,17 +50,15 @@ class ScriptedSkills:
         else:
             target = schema["properties"]["target_id"]["enum"][0]
             focus, _ = json.JSONDecoder().raw_decode(user)
-            prefix = json.loads(kwargs["cacheable_context"].split("\n\n", 1)[1])
-            context = {**decode_state(prefix), **focus}
-            candidate = next(
-                item for item in context["candidates"] if candidate_handle(item) == target
-            )
+            prefix = kwargs["cacheable_context"]
+            papers = json.loads(prefix.split("\n\n", 1)[1])["papers"] if prefix else {}
+            centers = labeled_texts({**papers, **focus["papers"]})
             value = {
                 "target_id": target,
                 "basis": "Scripted offline explanation of the fixed choice.",
                 "evidence": {
-                    "focus": [text[:80] for text in center_texts(context["focus"])],
-                    "target": [text[:80] for text in center_texts(candidate)],
+                    "focus": [text[:80] for text in centers["focus"]],
+                    "target": [text[:80] for text in centers[target]],
                 },
             }
         return SimpleNamespace(
@@ -78,19 +72,27 @@ class ScriptedSkills:
 
 def scripted_http(request, **kwargs):
     body = json.loads(request.data)
-    state = decode_state(body["state"])
+    # This fixture has two disjoint sections per paper, one paragraph per section.
+    centers = {}
+    side = None
+    for line in body["state"].splitlines():
+        if "[focus]" in line or "[candidate]" in line:
+            side = "focus" if "[focus]" in line else line.split()[0]
+            centers[side] = []
+        elif side and line.startswith("    "):
+            centers[side].append(line.strip())
 
     def role(value):
-        text = " ".join(center_texts(value))
+        text = " ".join(value)
         if "water supply" in text or "warning from reaching" in text:
             return "mechanism"
         return "limitation" if "small sample" in text else "future"
 
     selected = next(
         (
-            candidate_handle(candidate)
-            for candidate in state["candidates"].values()
-            if role(candidate) == role(state["focus"])
+            key
+            for key, candidate in centers.items()
+            if key != "focus" and role(candidate) == role(centers["focus"])
         ),
         NO_MATCH,
     )
@@ -182,7 +184,29 @@ class JevPipelineTest(unittest.TestCase):
                 first = start_graph(MANIFEST, run, jev=True, jev_max_calls=12, max_api_responses=80)
                 self.assertTrue(check_smoke(run)["passed"])
                 self.assertEqual(network.call_count, 6)
-                self.assertEqual(skills.calls, 4)
+                self.assertEqual(skills.calls, 3)
+                revision = run / "revisions/revision-0001"
+                explanations = [
+                    e
+                    for e in read_json(revision / "events.json")
+                    if e["action"] == "accepted_match_explained"
+                ]
+                self.assertEqual(len(explanations), 1)
+                by_id = {
+                    a["attempt_id"]: a
+                    for a in map(
+                        json.loads,
+                        (revision / "provenance/attempts.jsonl").read_text().splitlines(),
+                    )
+                }
+                accepted = explanations[0]
+                for direction in ("vote_attempt_id", "reverse_attempt_id"):
+                    vote = by_id[accepted[direction]]
+                    self.assertNotIn("basis", vote["normalized"])
+                    self.assertTrue(vote["raw_response"]["jev"]["calls"])
+                self.assertTrue(
+                    by_id[accepted["explanation_attempt_id"]]["normalized"]["evidence"]["target"]
+                )
                 data = validate_dataset(
                     Path(first["dataset_dir"]), "offline-smoke", "Offline smoke"
                 )
@@ -190,7 +214,7 @@ class JevPipelineTest(unittest.TestCase):
                 original_state = read_json(run / "run.json")
                 retry_graph(run, jev_max_calls=24, max_api_responses=160)
                 self.assertEqual(network.call_count, 6)
-                self.assertEqual(skills.calls, 4)
+                self.assertEqual(skills.calls, 3)
                 retry_config = read_json(run / "run.json")["config"]
                 retry_config["jev"].update(max_input_tokens=4_000_000, timeout_seconds=240)
                 retry_config["model"].update(
@@ -204,7 +228,7 @@ class JevPipelineTest(unittest.TestCase):
                 write_json(run / "retry-config.json", retry_config)
                 retry_graph(run, config_path=run / "retry-config.json")
                 self.assertEqual(network.call_count, 6)
-                self.assertEqual(skills.calls, 4)
+                self.assertEqual(skills.calls, 3)
                 self.assertEqual(
                     read_json(run / "run.json")["policy_sha256"], original_state["policy_sha256"]
                 )
@@ -243,7 +267,7 @@ class JevPipelineTest(unittest.TestCase):
                 original_failure = failure.read_bytes()
                 retry_graph(run, jev_max_calls=12)
                 self.assertEqual(network.call_count, 6)
-                self.assertEqual(skills.calls, 4)
+                self.assertEqual(skills.calls, 3)
                 self.assertEqual(failure.read_bytes(), original_failure)
                 self.assertTrue(check_smoke(run)["passed"])
 
@@ -269,7 +293,7 @@ class JevPipelineTest(unittest.TestCase):
                 with patch.object(skills, "run_json", side_effect=broken):
                     with self.assertRaisesRegex(RuntimeError, "evidence outage"):
                         start_graph(MANIFEST, run, jev=True)
-                self.assertEqual(network.call_count, 2)
+                self.assertEqual(network.call_count, 6)
                 self.assertIsNone(read_json(run / "run.json")["current_revision"])
                 retry_graph(run)
                 self.assertEqual(network.call_count, 6)

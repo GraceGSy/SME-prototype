@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import hashlib
-import json
 from pathlib import Path
 
 from ..files import read_json, write_json
@@ -18,7 +17,8 @@ from ..providers.jev import (
     encode_request,
     validate_response,
 )
-from .evidence_encoding import encode_evidence
+from .evidence_encoding import paragraph_options
+from .jev_outline import focus_outline
 from .match_evidence import candidate_handle
 from .models import JudgmentRequest
 
@@ -33,38 +33,42 @@ class JevSelector:
 
     def build_request(self, context: dict, phase: str = "has_match") -> dict:
         """One question per request; candidate text is stored only in state."""
-        candidates = {candidate_handle(item): item for item in context["candidates"]}
-        state = encode_evidence({**context, "candidates": candidates}, candidate_handles=False)
-        # Keep candidate evidence and question metadata in one place: state.
+        return self._request_and_labels(context, phase)[0]
+
+    def _request_and_labels(self, context, phase):
+        state, labels = focus_outline(context)
+        options = paragraph_options(context)
+        wording = self.wording[options[0]] if options else None
         if phase == "has_match":
-            question = {
-                "type": "noul",
-                "instructions": {
-                    "question": self.wording["has_match_question"],
-                    "policy": self.instructions,
-                    "example": self.wording["gate_example"],
-                },
-                "criteria": {
-                    "true": self.wording["has_match_true"],
-                    "false": self.wording["has_match_false"],
-                },
+            kind = "noul"
+            criteria = {
+                "true": self.wording["has_match_true"],
+                "false": self.wording["has_match_false"],
             }
-        elif phase == "match" and len(candidates) > 1:
-            question = {
-                "type": "choice",
-                "instructions": {
-                    "question": self.wording["ranking_question"],
-                    "policy": self.instructions,
-                    "example": self.wording["rank_example"],
-                },
-                "criteria": {
-                    key: self.wording["candidate_reference"].format(candidate_id=json.dumps(key))
-                    for key in candidates
-                },
-            }
+            question = self.wording["has_match_question"]
+        elif phase == "match" and len(labels) > 1:
+            kind = "choice"
+            criteria = {v: v for v in labels.values()}
+            question = self.wording["ranking_question"]
         else:
             raise ValueError("Ranking requires multiple candidates")
-        return {"model": self.settings.model, "state": state, "questions": {phase: question}}
+        instructions = {
+            "question": wording[phase] if wording else question,
+            "policy": (wording["guide"] if wording else self.instructions)
+            + " "
+            + self.wording["outline_rule"],
+        }
+        if not wording:
+            instructions["example"] = self.wording[
+                "gate_example" if phase == "has_match" else "rank_example"
+            ]
+        return {
+            "model": self.settings.model,
+            "state": state,
+            "questions": {
+                phase: {"type": kind, "instructions": instructions, "criteria": criteria}
+            },
+        }, labels
 
     def select(
         self, request: JudgmentRequest, *, force: bool = False, allow_splitting: bool = True
@@ -112,7 +116,7 @@ class JevSelector:
             return choose(shortlist)
 
         def ask(context: dict, phase: str) -> dict:
-            body = self.build_request(context, phase)
+            body, labels = self._request_and_labels(context, phase)
             encoded = encode_request(body)
             if len(encoded) > MAX_REQUEST_BYTES:
                 raise JevRequestTooLarge("Local request size limit exceeded")
@@ -129,6 +133,7 @@ class JevSelector:
                 write_json(path, {"request": body, "response": response})
                 self.client.check_reported_usage()
             call = {"fingerprint": fingerprint, "cache_hit": hit, "response": response}
+            call["option_ids"] = {label: key for key, label in labels.items()}
             answer = response["answers"].get("match")
             if answer is not None:
                 effective_choice = choice_from_probabilities(answer)
@@ -139,6 +144,15 @@ class JevSelector:
                         "reason": "highest_returned_probability",
                     }
             calls.append(call)
+            if answer is not None:
+                ids_by_label = call["option_ids"]
+                return {
+                    **answer,
+                    "choice": ids_by_label[choice_from_probabilities(answer)],
+                    "probabilities": {
+                        ids_by_label[k]: v for k, v in answer["probabilities"].items()
+                    },
+                }
             return response["answers"][phase]
 
         def choose(indices: list[int]) -> tuple:

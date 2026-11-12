@@ -1,6 +1,26 @@
 {
+  "paragraph_to_paragraph": {
+    "has_match": "Does any candidate paragraph do the same job in its article as the passage to match?",
+    "match": "Which candidate paragraph best matches the job of the passage to match?",
+    "guide": "Compare the marked paragraphs, not just their topics. Neighboring paragraphs give context; they are not part of the match."
+  },
+  "paragraph_to_mixed": {
+    "has_match": "Does the new paragraph fit the role of any candidate paragraph or group?",
+    "match": "Which paragraph or group best fits the role of the new paragraph?",
+    "guide": "A Paragraph option stands alone. For a Group option, compare the role its members support together in each paper. Shared topic alone is not enough. Neighbors give context only."
+  },
+  "paragraph_to_group": {
+    "has_match": "Does the new paragraph fit the shared role of any candidate group?",
+    "match": "Which candidate group best fits the role of the new paragraph?",
+    "guide": "Each group is one option. Read its members together: what job do they perform in each paper? The new paragraph must do that job too. Matching one member or sharing a topic is not enough. Before and after passages give context; they are not extra members."
+  },
+  "group_to_paragraph": {
+    "has_match": "Does any candidate paragraph perform the shared role of the existing group?",
+    "match": "Which candidate paragraph best performs the existing group's shared role?",
+    "guide": "First read the existing group's members together and identify the job they share across papers. Then judge each new paragraph separately against that job. Do not combine candidates. Before and after passages give context; judge only the marked paragraph."
+  },
   "policy": "Compare what each passage does and how its participants relate, not shared topics or names. Read the source; generated questions are only hints. For paragraph windows judge the center, not its neighbors. Each paper in a group must support the role; read its accepted members together and require each to contribute.",
-  "candidate_reference": "Candidate described in candidates[{candidate_id}].",
+  "outline_rule": "Only the candidates are options. Prior matches are context; judge the source text, not just the questions.",
   "has_match_question": "Does any eligible candidate perform the same source-supported role as the focus?",
   "has_match_true": "At least one does.",
   "has_match_false": "None does.",

@@ -7,19 +7,15 @@ a list, Markdown fences, a string containing JSON, extra fields, or the string
 sides need not use the same words.
 Put quotations only in evidence, never repeat them in basis.
 
-Each paragraph window is ordered previous_paragraph, paragraph_under_consideration,
-next_paragraph. Only paragraph_under_consideration.full_text is being matched;
-neighbors are context only, not replacement evidence. Apply this to the focus,
-each member, and each candidate. Null neighbors mark a window boundary.
-A question does not become an answer because its next paragraph answers it.
+For paragraph matching, judge the labeled center. Its immediate neighbors
+are context only, even if one is independently a candidate. A prediction
+does not become a result because its next paragraph reports that result.
 For structural units, compare their complete source text.
 
 For a match, evidence.focus and evidence.target are arrays of short verbatim
 quotations or excerpts. Supply exactly one per member in that side's supplied
-members order; a single unit has an array of length one. Evidence must come from that
-specific paragraph_under_consideration.full_text (or actual structural unit's
-full_text). Never quote a neighbor or another member in its place. Resolve
-full_text_refs before quoting. Copy punctuation, capitalization, and whitespace
+member order; a single unit has an array of length one. Quote the marked
+center or actual structural unit, never a neighbor or another member. Copy punctuation, capitalization, and whitespace
 exactly. Prefer a short contiguous quotation of 3-12 words. If a longer passage
 is needed, quote its first five and last five whitespace-separated words, joined
 by exactly ` ... ` (space, three periods, space). Both parts must appear verbatim,

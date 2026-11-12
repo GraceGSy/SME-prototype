@@ -419,6 +419,7 @@ class IncrementalGraphTest(unittest.TestCase):
             forward.context["focus"],
             {
                 "paper_key": "paper-2",
+                "source_position": [1, 2],
                 "previous_paragraph": {"full_text": "B before."},
                 "paragraph_under_consideration": {
                     "generated_question_metadata": "What does b2 address?",
@@ -455,6 +456,7 @@ class IncrementalGraphTest(unittest.TestCase):
                 list(item),
                 [
                     "paper_key",
+                    "source_position",
                     "previous_paragraph",
                     "paragraph_under_consideration",
                     "next_paragraph",

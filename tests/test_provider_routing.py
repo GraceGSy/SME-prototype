@@ -54,11 +54,14 @@ class ProviderRoutingTest(unittest.TestCase):
             for name in ("anthropic", "openai"):
                 client = Mock()
                 client.register.return_value = SkillRef("skills/match-role", name, "1", "a" * 64)
-                bad = evidence_response()
+                bad = {**evidence_response(), "target_id": "Group A"}
                 bad["evidence"]["focus"] = ["Costs are awarded"]
                 client.run_json.side_effect = [
                     SimpleNamespace(value=bad, raw_response={"id": "bad"}),
-                    SimpleNamespace(value=evidence_response(), raw_response={"id": "good"}),
+                    SimpleNamespace(
+                        value={**evidence_response(), "target_id": "Group A"},
+                        raw_response={"id": "good"},
+                    ),
                 ]
                 clients[name] = client
             with patch(

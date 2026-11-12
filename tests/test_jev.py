@@ -72,7 +72,12 @@ class JevTest(unittest.TestCase):
         request.allowed_match_ids = [f"candidate-{i}" for i in range(count)]
         source = request.context["candidates"][0]
         request.context["candidates"] = [
-            {**source, "selection_id": key} for key in request.allowed_match_ids
+            {
+                **source,
+                "selection_id": key,
+                "paragraph_under_consideration": {"full_text": f"Repeated corpus passage {n}."},
+            }
+            for n, key in enumerate(request.allowed_match_ids)
         ]
         return request
 
@@ -85,33 +90,205 @@ class JevTest(unittest.TestCase):
             jev=JevSettings(**settings),
         )
 
-    def test_gate_and_rank_share_evidence_not_examples(self):
+    def test_source_order_and_group_labels_survive_overlapping_windows(self):
+        def unit(paper, i, center, before=None, after=None):
+            return {
+                "paper_key": paper,
+                "source_position": [1, i],
+                "paragraph_under_consideration": {"full_text": center},
+                "previous_paragraph": {"full_text": before} if before else None,
+                "next_paragraph": {"full_text": after} if after else None,
+            }
+
+        req = self.request(2)
+        req.context.update(
+            focus=unit("paper-3", 1, "The trial found fewer errors."),
+            candidates=[
+                {
+                    "selection_id": "design",
+                    "members": [unit("paper-1", 3, "Users compared two screens.", "Errors fell.")],
+                },
+                {
+                    "selection_id": "results",
+                    "members": [
+                        unit("paper-2", 1, "Accuracy improved."),
+                        unit(
+                            "paper-1",
+                            2,
+                            "Errors fell.",
+                            "We tested the tool.",
+                            "Users compared two screens.",
+                        ),
+                    ],
+                },
+            ],
+        )
+        req.allowed_match_ids = ["design", "results"]
+        reverse = req.model_copy(deep=True)
+        reverse.context.update(
+            focus=req.context["candidates"][1],
+            candidates=[
+                {**req.context["focus"], "selection_id": "private-id-1"},
+                {**unit("paper-3", 2, "We invited volunteers."), "selection_id": "private-id-2"},
+            ],
+        )
+        reverse.allowed_match_ids = ["private-id-1", "private-id-2"]
+        for request, option, question in [
+            (req, "Group P1", "Does the new paragraph fit"),
+            (reverse, "C1.2", "Does any candidate paragraph"),
+        ]:
+            selector = self.selector()
+            gate = selector.build_request(request.context)
+            rank = selector.build_request(request.context, "match")
+            self.assertTrue(
+                gate["questions"]["has_match"]["instructions"]["question"].startswith(question)
+            )
+            self.assertEqual(rank["state"], gate["state"])
+            if request is req:
+                self.assertEqual(list(rank["questions"]["match"]["criteria"]), ["A1.3", "Group P1"])
+                self.assertNotIn("Group A", rank["state"])
+            focus, candidates = rank["state"].split("\nCandidates\n")
+            self.assertIn("The trial found fewer errors.", focus if request is req else candidates)
+            self.assertIn("Accuracy improved.", candidates if request is req else focus)
+            self.assertIn("context only", rank["state"])
+            self.assertLess(
+                rank["state"].index("Errors fell."), rank["state"].index("Accuracy improved.")
+            )
+            self.assertEqual(rank["state"].count("Errors fell."), 1)
+            self.assertIn(option, rank["questions"]["match"]["criteria"])
+            wire = json.dumps(rank)
+            rendered = self.provider().render_request(request)
+            for key in request.allowed_match_ids:
+                self.assertNotIn(key, wire)
+                self.assertNotIn(
+                    key,
+                    (rendered.cacheable_context or "")
+                    + rendered.user
+                    + json.dumps(rendered.schema),
+                )
+            with patch.object(
+                selector.client, "choose", side_effect=lambda body: answer(body, option)
+            ) as client:
+                self.assertEqual(
+                    selector.select(request)["target_id"], request.allowed_match_ids[1]
+                )
+                self.assertTrue(all(c["cache_hit"] for c in selector.select(request)["calls"]))
+                self.assertEqual(client.call_count, 2)
+
+    def test_singletons_render_identically_regardless_of_which_side_is_wrapped(self):
+        req = self.request(2)
+        focus = {**req.context["focus"], "source_position": [1, 1]}
+        units = [
+            {**c, "source_position": [1, i]} for i, c in enumerate(req.context["candidates"], 1)
+        ]
+
+        def wrap(unit):
+            return {"members": [unit], "selection_id": unit.get("selection_id", "hidden-focus")}
+
+        ctx = {**req.context, "focus": focus, "candidates": [wrap(c) for c in units]}
+        other = {**ctx, "focus": wrap(focus), "candidates": units}
+        for phase in ("has_match", "match"):
+            body = self.selector().build_request(ctx, phase)
+            self.assertEqual(body, self.selector().build_request(other, phase))
+            self.assertNotIn("group", json.dumps(body).lower())
+            self.assertIn("B1.1 [focus]", body["state"])
+            self.assertIn("A1.2 [candidate]", body["state"])
+
+    def test_explanation_keeps_original_option_label_and_python_restores_graph_id(self):
+        request = self.request(2)
+        request.context["focus"]["source_position"] = [1, 1]
+        for i, candidate in enumerate(request.context["candidates"], 1):
+            candidate["source_position"] = [1, i]
+            candidate["paragraph_under_consideration"] = {"full_text": f"Member {i}."}
+        request.context["candidates"] = [
+            {"selection_id": key, "members": [member]}
+            for key, member in zip(request.allowed_match_ids, request.context["candidates"])
+        ]
+        provider = self.provider()
+
+        def explain(skills, user, schema, **kwargs):
+            wire = (kwargs["cacheable_context"] or "") + user + json.dumps(schema)
+            for hidden in [*request.allowed_match_ids, "Paragraph A", "Member 1."]:
+                self.assertNotIn(hidden, wire)
+            self.assertIn('"fixed_target_id": "Paragraph B"', user)
+            self.assertEqual(schema["properties"]["target_id"]["enum"], ["Paragraph B"])
+            return SimpleNamespace(
+                value={
+                    "target_id": "Paragraph B",
+                    "basis": "Shared role.",
+                    "evidence": {"focus": ["First focus"], "target": ["Member 2."]},
+                },
+                raw_response={"id": "offline"},
+            )
+
+        provider.skills = SimpleNamespace(
+            register=lambda path: SkillRef(str(path), "id", "1", "hash"), run_json=explain
+        )
+        with patch.object(
+            provider.jev.client, "choose", side_effect=lambda body: answer(body, "A1.2")
+        ):
+            result = provider.judge(request)
+        self.assertEqual(result.normalized["target_id"], request.allowed_match_ids[1])
+        self.assertEqual(
+            result.raw_response["jev"]["calls"][-1]["option_ids"]["A1.2"],
+            request.allowed_match_ids[1],
+        )
+
+    def test_overlapping_sections_share_only_the_same_source_occurrence(self):
+        def section(handle, spans, text):
+            return {
+                "paper_key": "paper-1",
+                "section_id": handle,
+                "full_text": text,
+                "source_spans": spans,
+            }
+
+        parent = section("parent", [(1, 1, 4), (2, 1, 4)], "Same\n\nSame")
+        child = section("child", [(2, 1, 4)], "Same")
+        focus = {**section("new", [(1, 1, 3)], "New"), "paper_key": "paper-2"}
+        state = self.selector().build_request(
+            {"scope": {"level": "section"}, "focus": focus, "candidates": [child, parent]}
+        )["state"]
+        self.assertEqual(state.count("    Same"), 2)
+        self.assertIn("A2 [candidate; part of A1]", state)
+        self.assertLess(state.index("New"), state.index("Same"))
+
+    def test_focus_first_collocates_questions_and_only_lists_offscreen_members_at_end(self):
+        req = self.request()
+        req.context["focus"]["source_position"] = [1, 1]
+        req.context["candidates"][0]["source_position"] = [1, 2]
+        req.context["focus"]["next_paragraph"] = {"full_text": "Neighbor."}
+        req.context["outline"] = {
+            "units": {
+                "B1": ("Methods", "Study question?"),
+                "B1.1": ("", "Focus question?"),
+                "B1.2": ("", "Neighbor question?"),
+                "A1.2": ("", "Candidate question?"),
+            },
+            "groups": {
+                "S1": {"members": {"A1": None, "B1": None}, "question": "Shared section role?"},
+                "P1": {"members": {"A1.2": "core", "C2.4": "fan_in"}, "question": "Shared role?"},
+                "P2": {"members": {"A9.1": "core", "C4.5": "core"}, "question": "Past role?"},
+            },
+        }
+        state = self.selector().build_request(req.context)["state"]
+        focus, rest = state.split("\nCandidates\n")
+        choices, history = rest.split("\nPrior matches (context only)\n")
+        self.assertIn("B1 Methods [in Group S1] | Q: Study question?", focus)
+        self.assertIn("B1.1 [focus] | Q: Focus question?\n    First focus", focus)
+        self.assertIn("B1.2 [context only] | Q: Neighbor question?\n    Neighbor.", focus)
+        self.assertIn("A1.2 [candidate; in Group P1] | Q: Candidate question?", choices)
+        self.assertEqual(state.count("Shared section role?"), 1)
+        self.assertIn("Group P1 also includes C2.4 (fan-in)", history)
+        self.assertIn("Group P2: A9.1, C4.5 | Q: Past role?", history)
+        self.assertNotIn("Group S1", history)
+
+    def test_frozen_inputs_without_coordinates_still_put_the_focus_first(self):
         selector = self.selector()
         request = self.request(2)
         original = request.model_copy(deep=True)
         body = selector.build_request(request.context)
-        expected = encode_evidence(
-            {
-                **request.context,
-                "candidates": dict(zip(request.allowed_match_ids, request.context["candidates"])),
-            }
-        )
-        self.assertNotIn(
-            "Return only the candidate handle", body["state"]["text_reference_contract"]
-        )
-        self.assertTrue(
-            expected.pop("text_reference_contract").startswith(
-                body["state"]["text_reference_contract"]
-            )
-        )
-        self.assertEqual(
-            {
-                key: value
-                for key, value in body["state"].items()
-                if key != "text_reference_contract"
-            },
-            expected,
-        )
+        self.assertLess(body["state"].index("First focus"), body["state"].index("Candidates"))
         self.assertEqual(request, original)
         self.assertEqual(set(body["questions"]), {"has_match"})
         rank = selector.build_request(request.context, "match")
@@ -122,19 +299,19 @@ class JevTest(unittest.TestCase):
             rank["questions"]["match"]["instructions"]["example"],
         )
         criteria = rank["questions"]["match"]["criteria"]
-        self.assertEqual(
-            criteria,
-            {
-                k: f"Candidate described in candidates[{json.dumps(k)}]."
-                for k in request.allowed_match_ids
-            },
-        )
+        self.assertEqual(criteria, {"Option 1": "Option 1", "Option 2": "Option 2"})
 
     def test_old_verbose_request_cache_is_not_reused_or_modified(self):
         selector = self.selector()
         request = self.request(2)
         compact = selector.build_request(request.context, "match")
         legacy = json.loads(json.dumps(compact))
+        legacy["state"] = encode_evidence(
+            {
+                **request.context,
+                "candidates": dict(zip(request.allowed_match_ids, request.context["candidates"])),
+            }
+        )
         for key, candidate in legacy["state"]["candidates"].items():
             center = candidate.get("paragraph_under_consideration", candidate)
             legacy["questions"]["match"]["criteria"][key] = {
@@ -143,7 +320,7 @@ class JevTest(unittest.TestCase):
                 "meaning": "This candidate supports the same source-grounded role as `focus`.",
             }
         self.assertLess(len(encode_request(compact)), len(encode_request(legacy)))
-        self.assertEqual(compact["state"], legacy["state"])
+        self.assertNotEqual(compact["state"], legacy["state"])
         selector.cache.mkdir(parents=True)
         path = selector.cache / f"{hashlib.sha256(encode_request(legacy)).hexdigest()}.json"
         saved = json.dumps({"request": legacy, "response": answer(legacy, NO_MATCH)})
@@ -170,7 +347,7 @@ class JevTest(unittest.TestCase):
                 patch.object(
                     selector.client,
                     "choose",
-                    side_effect=lambda body: answer(body, "candidate-1", probability),
+                    side_effect=lambda body: answer(body, "Option 2", probability),
                 ) as client,
             ):
                 result = selector.select(self.request(2), force=True)
@@ -203,7 +380,7 @@ class JevTest(unittest.TestCase):
         selector = self.selector()
 
         def respond(body):
-            count = len(body["state"]["candidates"])
+            count = body["state"].count("\nOption ")
             return answer(body, noul=float(count > 255))
 
         with patch.object(selector.client, "choose", side_effect=respond) as client:
@@ -365,7 +542,7 @@ class JevTest(unittest.TestCase):
 
         def http(req, **kwargs):
             body = json.loads(req.data)
-            if len(body["state"]["candidates"]) > 11:
+            if body["state"].count("\nOption ") > 11:
                 raise HTTPError(
                     "url",
                     400,
@@ -401,7 +578,7 @@ class JevTest(unittest.TestCase):
         selector = self.selector()
 
         def choose(body):
-            if len(body["state"]["candidates"]) > 1:
+            if body["state"].count("\nOption ") > 1:
                 raise JevRequestTooLarge()
             return answer(body)
 
@@ -458,11 +635,11 @@ class JevTest(unittest.TestCase):
         request = self.request(2)
 
         def respond(body):
-            payload = answer(body, "candidate-1")
+            payload = answer(body, "Option 2")
             if "match" in payload["answers"]:
                 payload["answers"]["match"]["probabilities"] = {
-                    "candidate-0": 0.6,
-                    "candidate-1": 0.4,
+                    "Option 1": 0.6,
+                    "Option 2": 0.4,
                 }
             return payload
 
@@ -473,8 +650,8 @@ class JevTest(unittest.TestCase):
         self.assertTrue(all(c["cache_hit"] for c in result["calls"]))
         self.assertEqual(result["target_id"], "candidate-0")
         ranking = result["calls"][-1]
-        self.assertEqual(ranking["response"]["answers"]["match"]["choice"], "candidate-1")
-        self.assertEqual(ranking["choice_correction"]["effective_choice"], "candidate-0")
+        self.assertEqual(ranking["response"]["answers"]["match"]["choice"], "Option 2")
+        self.assertEqual(ranking["choice_correction"]["effective_choice"], "Option 1")
 
     def test_probability_choice_ties_are_deterministic(self):
         for reported, expected in (("b", "b"), ("c", "a")):
@@ -653,6 +830,45 @@ class JevTest(unittest.TestCase):
             ]
             with self.assertRaisesRegex(JudgmentError, "must not change"):
                 provider.judge(request)
+
+    def test_final_accepted_repair_picks_one_verbatim_quote_from_each_required_member(self):
+        provider = self.provider()
+        request = self.request()
+        target = request.allowed_match_ids[0]
+        member = request.context["candidates"][0]
+        request.context["candidates"] = [
+            {
+                "selection_id": target,
+                "members": [
+                    member,
+                    {**member, "paragraph_under_consideration": {"full_text": "Second target."}},
+                ],
+            }
+        ]
+        bad = {
+            "target_id": "Group A",
+            "basis": "Comparable role",
+            "evidence": {"focus": [], "target": []},
+        }
+
+        def respond(_skill, prompt, schema, **_):
+            if "Quotation repair:" not in prompt:
+                return SimpleNamespace(value=bad, raw_response={"id": "rejected"})
+            slots = schema["properties"]["evidence"]["required"]
+            self.assertEqual(slots, ["focus_1", "target_1", "target_2"])
+            return SimpleNamespace(
+                value={**bad, "evidence": {slot: "1" for slot in slots}}, raw_response={"id": "ok"}
+            )
+
+        provider.skills = SimpleNamespace(
+            register=lambda path: SkillRef(str(path), "id", "1", "hash"), run_json=respond
+        )
+        with patch.object(provider.jev.client, "choose") as jev:
+            result = provider.judge(request, accepted={"target_id": target, "vote_id": "v1"})
+            jev.assert_not_called()
+        self.assertEqual(result.normalized["target_id"], target)
+        self.assertEqual(result.normalized["evidence"]["target"][-1], "Second target.")
+        self.assertEqual(len(result.normalized["evidence"]["focus"]), 1)
 
     def test_no_match_does_not_buy_a_generative_explanation(self):
         provider = self.provider()

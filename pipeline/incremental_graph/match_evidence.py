@@ -18,6 +18,32 @@ class EvidenceValidationError(JudgmentError):
     """The selected correspondence lacks correctly attributed source quotations."""
 
 
+def quote_catalogue(focus: dict, target: dict) -> dict[str, dict[str, str]]:
+    """Offer exact contiguous excerpts from every required center, never neighbors."""
+    catalogue = {}
+    for side, node in (("focus", focus), ("target", target)):
+        for i, text in enumerate(center_texts(node), 1):
+            pieces = []
+            start = end = count = 0
+            for word in re.finditer(r"\S+", text):
+                if count and (count >= 12 or word.end() - start > 240):
+                    pieces.append(text[start:end])
+                    count = 0
+                if not count:
+                    start = word.start()
+                end = word.end()
+                count += 1
+                if end - start > 240:
+                    pieces.extend(text[j : min(j + 240, end)] for j in range(start, end, 240))
+                    count = 0
+            if count:
+                pieces.append(text[start:end])
+            if not pieces:
+                raise JudgmentError("Cannot quote empty accepted source")
+            catalogue[f"{side}_{i}"] = {str(j): piece for j, piece in enumerate(pieces, 1)}
+    return catalogue
+
+
 def quote_length_feedback(side: str, index: int, quote: str) -> str:
     return REPAIR_PROMPTS["quote_length"].format(side=side, index=index, length=len(quote))
 

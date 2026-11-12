@@ -194,9 +194,17 @@ Passing this synthetic example does not establish corpus-level accuracy.
 An empty pool makes no call. Otherwise Jev first answers Noul: does any candidate
 match? A probability at or below 0.5 stops selection. After yes, a sole candidate
 is selected directly; otherwise a separate Choice request ranks real candidates
-only. Each question has one example. A positive decision sends only the focus
-and selected candidate to the generative explanation Skill. A negative
-decision does not request an explanation. Reciprocity still happens in Python.
+only. Jev's choice is a directional vote, not an accepted match. Python applies
+the reciprocal and adjacent-paragraph rules before commissioning one explanation
+per accepted relationship. Rejected and reverse votes do not trigger duplicate
+explanations. Inherited paragraph matches still require no model explanation.
+
+For alternatives, inspect the vote's candidate IDs and exact Jev call caches:
+they retain gate probabilities, all returned ranking probabilities, and the
+local-label-to-ID map when applicable. A negative gate produces no ranking.
+An `accepted_match_explained` event links the vote, reciprocal vote (when
+applicable), and explanation attempt. Paragraph singleton recovery uses the
+same two directional prompts; group questions are generated after recovery.
 
 Each phase caches its validated response by the hash of its exact request.
 A retry after a ranking failure reuses the gate. A new positive multi-candidate
@@ -499,12 +507,26 @@ old policy hashes to bypass that distinction.
 
 The transport calls [TypeSafe System One](https://docs.typesafe.ai/api/system-one)
 with one named question per request. The gate and ranking prompts are in
-`prompts/requests/jev.json`, separate from the explanation Skill. Candidate criteria
-are short references to records in `state.candidates`, keyed by candidate handle
-rather than array index. They do not repeat question metadata or a per-option
-matching rule. Questions remain in the candidate evidence as fallible metadata, not
-substitutes for the source. Repeated passages still use the existing lossless
-`source_texts` table: all text remains available in order, with no truncation.
+`prompts/requests/jev.json`, separate from the explanation Skill. Both scopes put
+the **focus first**, then the candidates. For the forward vote the focus is the
+incoming unit; for the reverse vote it is the existing unit or group. The gate
+and ranking use the same outline. Within each block, passages follow source order.
+Section headings and questions sit beside the source; paragraph rows carry the
+full text and available question. Section comparisons show their constituent
+paragraphs, paragraph comparisons also show immediate neighbors as context.
+Overlapping windows and parent/subsection scopes share physical occurrences, not
+equal strings at different positions.
+
+Addresses such as `C3.1:p2` mean paper C, subsection 3.1, paragraph 2.
+The paragraph marker distinguishes the first paragraph of section 3 (`C3:p1`)
+from its first subsection (`C3.1`). Historical runs retain their original addresses. An individual
+option uses its address; a multi-member option uses a label such as `Group P3`.
+Python maps labels to handles in `option_ids`. Accepted section and paragraph
+memberships at vote time appear beside visible members, with the group question
+once. Only off-screen member addresses go at the end; one-way votes, later
+decisions and the synthetic shared root are not prior matches. Old frozen inputs
+without source coordinates retain full windows, focus first; the renderer does
+not fabricate addresses or deduplicate unknown locations.
 The complete judgment cache now also fingerprints the exact Jev request.
 
 `JevSelector.build_request()` in `pipeline/incremental_graph/jev_selection.py`

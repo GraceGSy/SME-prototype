@@ -16,6 +16,6 @@ members together; identify any paper that does not support the correspondence.
 
 Return target_id (copy fixed_target_id), a brief basis, and evidence with focus
 and target arrays. In each array give one short contiguous verbatim quote per
-member, in input order, from that member's center or structural text. Keep each
+member, in numbered member order, from that member's center or structural text. Keep each
 quote within 240 characters. Quotes may document differences; do not repeat
 them in basis.
