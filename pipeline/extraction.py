@@ -8,7 +8,7 @@ import shutil
 from pathlib import Path
 from typing import Literal
 
-from .document import content_schema, strip_questions, validate_document
+from .document import content_schema, relabel_extraction, strip_questions
 from .files import directory_hash, file_sha256, read_json, write_json
 from .prompts import PROMPT_ROOT, REPO_ROOT, request_prompts
 from .providers.contracts import SkillCallPolicy, SkillClient
@@ -115,12 +115,11 @@ def extract_document(
         )
         write_json(extracted_path, saved)
 
-    content = saved["content"]
-    validate_document(content)
+    content = relabel_extraction(saved["content"])
     if strip_questions(content) != content:
         raise ValueError("Extraction must return content only, without generated questions")
     if approved:
-        receipt = validate_approval(approved["review"], content)
+        receipt = validate_approval(approved["review"], saved["content"])
         if (
             receipt["source_sha256"] != source_sha256
             or receipt["reference_sha256"]
@@ -131,7 +130,7 @@ def extract_document(
             )
     write_json(provenance, {**saved["provenance"], "requires_source_review": True})
     write_json(output, content)
-    if approved:
+    if approved and content == saved["content"]:
         receipt = {**approved["review"], "source": str(source)}
         write_json(review_path(output), receipt)
         require_approved(output, content)

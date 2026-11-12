@@ -11,6 +11,7 @@ from ..document import (
     QUESTION_FIELD,
     iter_structural_units,
     paragraph_unit_id,
+    relabel_extraction,
     validate_document,
 )
 from ..files import read_json
@@ -51,7 +52,11 @@ def load_paper(
         payload = read_json(path)
         validate_document(payload)
         require_approved(path, payload)
-        return _from_canonical_document(payload, paper_id, title, max_granularity)
+        # Authenticate archived bytes first; number the working copy consistently
+        # even for older corpora with printed, missing, or overlapping labels.
+        return _from_canonical_document(
+            relabel_extraction(payload), paper_id, title, max_granularity
+        )
     except (OSError, ValueError) as error:
         raise InputError(f"Could not load canonical document {path}: {error}") from error
 
@@ -84,7 +89,7 @@ def _from_canonical_document(
             paragraphs.append(
                 Paragraph(
                     id=paragraph_unit_id(unit.unit_id, paragraph_index),
-                    label=str(raw_paragraph["paragraph_number"]),
+                    label=str(paragraph_index + 1),
                     text=raw_paragraph["text"],
                     question=_question(raw_paragraph),
                     ordinal=paragraph_ordinals[family_id],
@@ -95,6 +100,7 @@ def _from_canonical_document(
         sections.append(
             Section(
                 id=unit.unit_id,
+                number=unit.source["section_number"] or "",
                 label=unit.name,
                 text="\n\n".join(paragraph["text"] for paragraph in unit.evidence),
                 paragraphs=paragraphs,
@@ -131,7 +137,7 @@ def _from_section_documents(
                 paragraphs.append(
                     Paragraph(
                         id=paragraph_unit_id(unit.unit_id, paragraph_index),
-                        label=str(raw_paragraph["paragraph_number"]),
+                        label=str(len(paragraphs) + 1),
                         text=raw_paragraph["text"],
                         question=_question(raw_paragraph),
                         ordinal=len(paragraphs) + 1,
@@ -140,6 +146,7 @@ def _from_section_documents(
         sections.append(
             Section(
                 id=section_unit.unit_id,
+                number=section_unit.source["section_number"] or "",
                 label=section_unit.name,
                 text="\n\n".join(paragraph["text"] for paragraph in section_unit.evidence),
                 paragraphs=paragraphs,

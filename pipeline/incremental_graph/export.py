@@ -75,7 +75,7 @@ def _viewer_paper(paper: Paper) -> dict[str, Any]:
         "sections": [
             {
                 "id": section.id,
-                "title": section.label,
+                "title": f"{section.number} {section.label}".strip(),
                 "tag": section.question,
                 "text": section.text,
                 "unit_type": section.kind,

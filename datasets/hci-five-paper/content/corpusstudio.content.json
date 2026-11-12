@@ -1,7 +1,7 @@
 [
   {
     "section_name": "Abstract",
-    "section_number": null,
+    "section_number": "1",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -12,7 +12,7 @@
   },
   {
     "section_name": "Introduction",
-    "section_number": "1",
+    "section_number": "2",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -51,7 +51,7 @@
   },
   {
     "section_name": "Background and Related Work",
-    "section_number": "2",
+    "section_number": "3",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -61,29 +61,29 @@
     "subsections": [
       {
         "section_name": "Community Writing Norms",
-        "section_number": "2.1",
+        "section_number": "3.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
-            "text": "2.1.1 The Importance of Understanding Writing Norms. Flower [12] highlights the difference between writer-based and reader-based prose, arguing that the former represents the writers' unrefined thoughts while the latter requires their careful transformation with the reader goals in mind while ensuring a shared language and shared context. Prior writing literature emphasizes the importance of writing for an audience [1, 16, 45], but writing for academic or professional communities can be especially difficult because they have implicit writing expectations and failing to address them may confuse its members or waste their time with \"unfocused and pointless discussions\" [12]."
+            "text": "The Importance of Understanding Writing Norms. Flower [12] highlights the difference between writer-based and reader-based prose, arguing that the former represents the writers' unrefined thoughts while the latter requires their careful transformation with the reader goals in mind while ensuring a shared language and shared context. Prior writing literature emphasizes the importance of writing for an audience [1, 16, 45], but writing for academic or professional communities can be especially difficult because they have implicit writing expectations and failing to address them may confuse its members or waste their time with \"unfocused and pointless discussions\" [12]."
           },
           {
             "paragraph_number": 1,
-            "text": "2.1.2 Aspects of Writing Norms. Writing norms are comprised of many aspects, including the language, content, organization of information, and scope of the written document. Although academic venues may provide a high-level overview of the expected content and style of writing such as encouraging authors to write \"clearly and concisely, avoid jargon, organize the submission to flow logically and smoothly, provide the right level of detail\", it can be challenging for novice writers to apply these suggestions in their own writing, e.g., What is the expected level of detail for that audience?"
+            "text": "Aspects of Writing Norms. Writing norms are comprised of many aspects, including the language, content, organization of information, and scope of the written document. Although academic venues may provide a high-level overview of the expected content and style of writing such as encouraging authors to write \"clearly and concisely, avoid jargon, organize the submission to flow logically and smoothly, provide the right level of detail\", it can be challenging for novice writers to apply these suggestions in their own writing, e.g., What is the expected level of detail for that audience?"
           },
           {
             "paragraph_number": 2,
-            "text": "2.1.3 Learning about a Community's Writing Norms. To support writing in an academic context, prior research has proposed the cognitive apprenticeship theoretic approach to teach novices complex cognitive tasks by mimicking experienced members of the community [8]. Drawing from these ideas, our work instantiates two strategies of cognitive apprenticeship, namely modeling and reflection."
+            "text": "Learning about a Community's Writing Norms. To support writing in an academic context, prior research has proposed the cognitive apprenticeship theoretic approach to teach novices complex cognitive tasks by mimicking experienced members of the community [8]. Drawing from these ideas, our work instantiates two strategies of cognitive apprenticeship, namely modeling and reflection."
           }
         ]
       },
       {
         "section_name": "Writing with External Text",
-        "section_number": "2.2",
+        "section_number": "3.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
-            "text": "2.2.1 Writing with Retrieved or Generated Additional Text. Many writing support tools facilitate writing by suggesting content that users did not write themselves. Sentence completions are a frequent form of writing assistance [2, 28]. However, direct content generation can have negative impacts such as diminishing the author's self-expression and ownership over the final text outcome [30]. Related work has also looked into providing writing inspirations [6, 14, 43]."
+            "text": "Writing with Retrieved or Generated Additional Text. Many writing support tools facilitate writing by suggesting content that users did not write themselves. Sentence completions are a frequent form of writing assistance [2, 28]. However, direct content generation can have negative impacts such as diminishing the author's self-expression and ownership over the final text outcome [30]. Related work has also looked into providing writing inspirations [6, 14, 43]."
           },
           {
             "paragraph_number": 1,
@@ -91,13 +91,13 @@
           },
           {
             "paragraph_number": 2,
-            "text": "2.2.2 Writing with Text from a Corpus. Hui and Sprouse [19] proposed a writing support tool to help college students write in a professional context assisted by scaffolded annotations. The authors proposed a checklist with multiple annotations that provide cues about the content to include in the professional email. This checklist is complemented with model texts where sections of that text have been annotated with the elements of the checklist. This approach helps users understand the overall structure and expected content while also demonstrating concrete instantiations of the high-level guidelines. Our concepts help users plan the structure and content of their writing by showing many concrete examples of how other members of their target community have written similar texts."
+            "text": "Writing with Text from a Corpus. Hui and Sprouse [19] proposed a writing support tool to help college students write in a professional context assisted by scaffolded annotations. The authors proposed a checklist with multiple annotations that provide cues about the content to include in the professional email. This checklist is complemented with model texts where sections of that text have been annotated with the elements of the checklist. This approach helps users understand the overall structure and expected content while also demonstrating concrete instantiations of the high-level guidelines. Our concepts help users plan the structure and content of their writing by showing many concrete examples of how other members of their target community have written similar texts."
           }
         ]
       },
       {
         "section_name": "Finding Relevant Examples",
-        "section_number": "2.3",
+        "section_number": "3.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -113,7 +113,7 @@
   },
   {
     "section_name": "Corpus Studio",
-    "section_number": "3",
+    "section_number": "4",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -123,7 +123,7 @@
     "subsections": [
       {
         "section_name": "Design Goals",
-        "section_number": "3.1",
+        "section_number": "4.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -133,7 +133,7 @@
       },
       {
         "section_name": "Usage Scenario",
-        "section_number": "3.2",
+        "section_number": "4.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -159,7 +159,7 @@
       },
       {
         "section_name": "System Characteristics",
-        "section_number": "3.3",
+        "section_number": "4.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -175,7 +175,7 @@
           },
           {
             "paragraph_number": 3,
-            "text": "3.3.1 Text Editor. Users outline their paper and draft their prose in the central text editor (Figure 1B). The editor supports two text cell types: section title and paragraph."
+            "text": "Text Editor. Users outline their paper and draft their prose in the central text editor (Figure 1B). The editor supports two text cell types: section title and paragraph."
           },
           {
             "paragraph_number": 4,
@@ -183,7 +183,7 @@
           },
           {
             "paragraph_number": 5,
-            "text": "3.3.2 Surfacing Document-level Community-specific Emergent Norms and Outliers. Inspecting outlines from other papers in the target community can help writers develop their own. To help writers understand how papers are commonly (and uncommonly) structured within their target community at the document level, we show an ordered distribution of section title clusters from the entire corpus immediately to the left of the central text editor (Figure 1A Section Titles From Other Papers). This ordered distribution is computed by applying Positional Diction Clustering (PDC) [15] to the ordered lists of top-level section titles extracted from each paper in the corpus."
+            "text": "Surfacing Document-level Community-specific Emergent Norms and Outliers. Inspecting outlines from other papers in the target community can help writers develop their own. To help writers understand how papers are commonly (and uncommonly) structured within their target community at the document level, we show an ordered distribution of section title clusters from the entire corpus immediately to the left of the central text editor (Figure 1A Section Titles From Other Papers). This ordered distribution is computed by applying Positional Diction Clustering (PDC) [15] to the ordered lists of top-level section titles extracted from each paper in the corpus."
           },
           {
             "paragraph_number": 6,
@@ -199,7 +199,7 @@
           },
           {
             "paragraph_number": 9,
-            "text": "3.3.3 Surfacing Sentence-level Community-specific Emergent Norms and Outliers. This writing support is intended to provide insights into both established conventions and areas where variation is common at the sentence level. By retrieving and displaying many relevant sentences simultaneously, users can observe how similar content is expressed across different papers. These distributions can reveal both rigid conventions (narrow distributions) and areas of flexibility (wide distributions). For instance, participant descriptions in user studies often follow stereotypical patterns, while discussion sections typically show more variation to accommodate novel findings."
+            "text": "Surfacing Sentence-level Community-specific Emergent Norms and Outliers. This writing support is intended to provide insights into both established conventions and areas where variation is common at the sentence level. By retrieving and displaying many relevant sentences simultaneously, users can observe how similar content is expressed across different papers. These distributions can reveal both rigid conventions (narrow distributions) and areas of flexibility (wide distributions). For instance, participant descriptions in user studies often follow stereotypical patterns, while discussion sections typically show more variation to accommodate novel findings."
           },
           {
             "paragraph_number": 10,
@@ -223,15 +223,15 @@
           },
           {
             "paragraph_number": 15,
-            "text": "3.3.4 User Notes. As shown in Figure 3 and the top right callout in Figure 1C, users can bookmark a sentence and then comment on it in the User Notes section, e.g., with a reminder of why it fulfills its purpose particularly well or poorly. These annotated sentence examples can be exported as a csv file to facilitate sharing observations, preferences, and insights with others."
+            "text": "User Notes. As shown in Figure 3 and the top right callout in Figure 1C, users can bookmark a sentence and then comment on it in the User Notes section, e.g., with a reminder of why it fulfills its purpose particularly well or poorly. These annotated sentence examples can be exported as a csv file to facilitate sharing observations, preferences, and insights with others."
           },
           {
             "paragraph_number": 16,
-            "text": "3.3.5 Contextual Tooltips. Writers may want to know more of the context surrounding a retrieved sentence, e.g., to avoid misinterpreting it. As shown in Figure 1D, users can hover over a retrieved sentence to view a floating window showing the paper's title, the hierarchical section title path, and the sentences immediately before and after. The paper title links to the full paper in the ACM Digital Library. Additionally, if any retrieved sentence includes a citation, users can hover over it to display the full citation information, including the authors and the referenced paper title."
+            "text": "Contextual Tooltips. Writers may want to know more of the context surrounding a retrieved sentence, e.g., to avoid misinterpreting it. As shown in Figure 1D, users can hover over a retrieved sentence to view a floating window showing the paper's title, the hierarchical section title path, and the sentences immediately before and after. The paper title links to the full paper in the ACM Digital Library. Additionally, if any retrieved sentence includes a citation, users can hover over it to display the full citation information, including the authors and the referenced paper title."
           },
           {
             "paragraph_number": 17,
-            "text": "3.3.6 Features for Promoting Learning, not Plagiarism. A combination of features are intended to work together to support users in actively engaging with many examples, rather than anchoring on and copying any one. More specifically, showing multiple examples at once may help novice writers make more informed decisions about plagiarism: when sentences are highly similar across papers, this often indicates accepted community writing norms (like in methodology sections), while sections with more varied writing styles suggest areas where similar phrasing should be avoided."
+            "text": "Features for Promoting Learning, not Plagiarism. A combination of features are intended to work together to support users in actively engaging with many examples, rather than anchoring on and copying any one. More specifically, showing multiple examples at once may help novice writers make more informed decisions about plagiarism: when sentences are highly similar across papers, this often indicates accepted community writing norms (like in methodology sections), while sections with more varied writing styles suggest areas where similar phrasing should be avoided."
           },
           {
             "paragraph_number": 18,
@@ -241,7 +241,7 @@
       },
       {
         "section_name": "Implementation Details",
-        "section_number": "3.4",
+        "section_number": "4.4",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -257,7 +257,7 @@
   },
   {
     "section_name": "Data & Processing",
-    "section_number": "4",
+    "section_number": "5",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -267,7 +267,7 @@
     "subsections": [
       {
         "section_name": "Pre-processing Documents",
-        "section_number": "4.1",
+        "section_number": "5.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -277,7 +277,7 @@
       },
       {
         "section_name": "Embedding Process",
-        "section_number": "4.2",
+        "section_number": "5.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -287,7 +287,7 @@
       },
       {
         "section_name": "Extracting an Ordered Distribution over Section Titles",
-        "section_number": "4.3",
+        "section_number": "5.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -303,7 +303,7 @@
   },
   {
     "section_name": "User Study",
-    "section_number": "5",
+    "section_number": "6",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -313,17 +313,25 @@
     "subsections": [
       {
         "section_name": "Participants",
-        "section_number": "5.1",
+        "section_number": "6.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
-            "text": "Sixteen participants were recruited through mailing lists and Slack channels from different universities in the USA, Germany, United Kingdom and South Korea (Table 1). Participants had most commonly authored or co-authored 3-5 academic papers already, but two had authored less and four had authored more than twenty (see Appendix Figure 12 for the entire distribution). The average few times per month, 5/16 a few times a week, and 3/16 once a day or more."
+            "text": "Sixteen participants were recruited through mailing lists and Slack channels from different universities in the USA, Germany, United Kingdom and South Korea (Table 1). Participants had most commonly authored or co-authored 3-5 academic papers already, but two had authored less and four had authored more than twenty (see Appendix Figure 12 for the entire distribution). The average Need for Cognition (NCS-6) score [31] across all participants was high—4.57 out of 5 (standard deviation: 0.46)—so participants were particularly willing to exert cognitive effort on a given task."
+          },
+          {
+            "paragraph_number": 1,
+            "text": "Most participants were targeting HCI venues, and one was targeting a machine learning venue. All participants reported referencing published papers during their writing process: 50% always did, 30% (5/16) often did, and 20% (3/16) sometimes did."
+          },
+          {
+            "paragraph_number": 2,
+            "text": "All but one participant had previously used at least one writing support tool. Tools included Grammarly (12), DeepL (3), ChatGPT (4), Google Docs add-ons for reference search (1), Zotero plugins (1), SciSpace (1), and OpenAI’s Grammar Checker plug-in (1). Usage frequency varied: 2/16 used them occasionally, 6/16 used them a few times per month, 5/16 a few times a week, and 3/16 once a day or more."
           }
         ]
       },
       {
         "section_name": "Study Procedure",
-        "section_number": "5.2",
+        "section_number": "6.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -331,11 +339,11 @@
           },
           {
             "paragraph_number": 1,
-            "text": "5.2.1 Consent & Pre-Study Survey. Each participant, after giving informed consent, completed a brief survey about their demographics, experience with scientific communication and writing for a target venue, current strategies for writing, use and experience with writing support tools, and questions relevant to the task that they would be completing. All survey questions are included in Appendix A."
+            "text": "Consent & Pre-Study Survey. Each participant, after giving informed consent, completed a brief survey about their demographics, experience with scientific communication and writing for a target venue, current strategies for writing, use and experience with writing support tools, and questions relevant to the task that they would be completing. All survey questions are included in Appendix A."
           },
           {
             "paragraph_number": 2,
-            "text": "5.2.2 Task Preparation. Participants were informed that CorpusStudio's corpus, from which they would be viewing section titles and retrieved sentences, consisted of papers from two HCI venues, IUI and UIST, between 2021 and 2023. This information was disclosed to ensure participants had a clear understanding of the corpus context, allowing them to engage with the examples accordingly, regardless of their own specific target venue."
+            "text": "Task Preparation. Participants were informed that CorpusStudio's corpus, from which they would be viewing section titles and retrieved sentences, consisted of papers from two HCI venues, IUI and UIST, between 2021 and 2023. This information was disclosed to ensure participants had a clear understanding of the corpus context, allowing them to engage with the examples accordingly, regardless of their own specific target venue."
           },
           {
             "paragraph_number": 3,
@@ -343,7 +351,7 @@
           },
           {
             "paragraph_number": 4,
-            "text": "5.2.3 Task 1: Outline Writing. We chose outlining as our first task because it let us examine how participants structured their work after seeing an ordered distribution over section titles from published papers."
+            "text": "Task 1: Outline Writing. We chose outlining as our first task because it let us examine how participants structured their work after seeing an ordered distribution over section titles from published papers."
           },
           {
             "paragraph_number": 5,
@@ -351,7 +359,7 @@
           },
           {
             "paragraph_number": 6,
-            "text": "5.2.4 Task 2: Paper Writing. Participants began writing or revising sections of their manuscript for their target venue. They were given the option to bring the outline created in the previous task and any supporting text that they may have already written into this task."
+            "text": "Task 2: Paper Writing. Participants began writing or revising sections of their manuscript for their target venue. They were given the option to bring the outline created in the previous task and any supporting text that they may have already written into this task."
           },
           {
             "paragraph_number": 7,
@@ -363,7 +371,7 @@
           },
           {
             "paragraph_number": 9,
-            "text": "5.2.5 Post-Tasks Survey and Interview. To conclude the task and study, participants completed a post-task survey (see Appendix A.4) followed by a brief semi-structured interview (see Appendix A.5)."
+            "text": "Post-Tasks Survey and Interview. To conclude the task and study, participants completed a post-task survey (see Appendix A.4) followed by a brief semi-structured interview (see Appendix A.5)."
           }
         ]
       }
@@ -371,7 +379,7 @@
   },
   {
     "section_name": "Qualitative Results",
-    "section_number": "6",
+    "section_number": "7",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -379,21 +387,29 @@
       },
       {
         "paragraph_number": 1,
-        "text": "Overview. Participants reported that seeing retrieved sentences and section titles helped them overcome the blank page problem and continue drafting. They also found it helpful to view multiple contextually relevant sentences from various papers on a single page within a centralized writing environment, which allowed for easier comparison of structure and patterns. They reported that this layout was more efficient and less overwhelming than traditional methods, such as having multiple papers open to compare texts. Participants used the retrieved sentences and section titles to gather ideas or mimic good writing, and found the tool helpful for tasks such as drafting introductions, starting sections, describing systems, and beginning paragraphs. Some participants reported that their understanding of a venue's norms remained the same after utilizing the tool, but they still found value from other aspects such as terminology, phrasing, structure, and ideas. For example, a participant noted that they were inspired to think more critically about how they wrote rather than just following norms."
+        "text": "Overview. Participants reported that seeing retrieved sentences and section titles helped them overcome the blank page problem and continue drafting. They also found it helpful to view multiple contextually relevant sentences from various papers on a single page within a centralized writing environment, which allowed for easier comparison of structure and patterns. They reported that this layout was more efficient and less overwhelming than traditional methods, such as having multiple papers open to compare texts."
+      },
+      {
+        "paragraph_number": 2,
+        "text": "Participants used the retrieved sentences and section titles to gather ideas or mimic good writing, and found the tool helpful for tasks such as drafting introductions, starting sections, describing systems, and beginning paragraphs."
+      },
+      {
+        "paragraph_number": 3,
+        "text": "Some participants reported that their understanding of a venue's norms remained the same after utilizing the tool, but they still found value from other aspects such as terminology, phrasing, structure, and ideas. For example, a participant noted that they were inspired to think more critically about how they wrote rather than just following norms."
       }
     ],
     "subsections": [
       {
         "section_name": "Document-level Writing Support",
-        "section_number": "6.1",
+        "section_number": "7.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
-            "text": "6.1.1 Existing Practices for Creating Section Titles. Prior to Task 1, participants described their methods for drafting outlines. Many saved a list of papers in Google Docs or a local folder, reviewed the individual works, and aligned their section titles with papers they deemed most relevant to their topic. Some participants followed section titles from their own prior work, while others consulted colleagues familiar with their target venue or reviewed papers from the venue to follow a similar structure."
+            "text": "Existing Practices for Creating Section Titles. Prior to Task 1, participants described their methods for drafting outlines. Many saved a list of papers in Google Docs or a local folder, reviewed the individual works, and aligned their section titles with papers they deemed most relevant to their topic. Some participants followed section titles from their own prior work, while others consulted colleagues familiar with their target venue or reviewed papers from the venue to follow a similar structure."
           },
           {
             "paragraph_number": 1,
-            "text": "6.1.2 Ways of Reading and Using the Section Titles From Other Papers Feature. Some participants entered the study with an existing notion of the section titles they needed and used the distribution of section titles as a checklist to validate their choices (P1, P3). P13 found the feature useful for identifying structure, particularly for new writers. Several participants either chose a section title from the distribution and adapted it to align with their writing goals or modified their pre-existing section title based on inspiration from the distribution. P7 decided to use the feature to find top-level section titles and then create their own subsection titles."
+            "text": "Ways of Reading and Using the Section Titles From Other Papers Feature. Some participants entered the study with an existing notion of the section titles they needed and used the distribution of section titles as a checklist to validate their choices (P1, P3). P13 found the feature useful for identifying structure, particularly for new writers. Several participants either chose a section title from the distribution and adapted it to align with their writing goals or modified their pre-existing section title based on inspiration from the distribution. P7 decided to use the feature to find top-level section titles and then create their own subsection titles."
           },
           {
             "paragraph_number": 2,
@@ -405,7 +421,7 @@
           },
           {
             "paragraph_number": 4,
-            "text": "6.1.3 User Insights on Variation, Norms, and Breaking Norms. Participants noticed variation across section titles, noting that there were different ways to describe conceptually similar sections. Differences ranged from minor, such as singular versus plural titles (e.g., \"Related Work\" versus \"Related Works\") to more significant, like adding new details to a more generic title or the existence of a more distinct title indicating a more unusual paper component. Evaluating the distribution of titles helped some participants see an unexpected range of possible titles and exposed them to new options. For example, P2 noted, \"The section titles are more diverse than I thought. There are things like, you know, 'expert interviews' which I've never done... There were a few others that I found which are pretty new to me... It definitely broadens my sort of—my horizon.\""
+            "text": "User Insights on Variation, Norms, and Breaking Norms. Participants noticed variation across section titles, noting that there were different ways to describe conceptually similar sections. Differences ranged from minor, such as singular versus plural titles (e.g., \"Related Work\" versus \"Related Works\") to more significant, like adding new details to a more generic title or the existence of a more distinct title indicating a more unusual paper component. Evaluating the distribution of titles helped some participants see an unexpected range of possible titles and exposed them to new options. For example, P2 noted, \"The section titles are more diverse than I thought. There are things like, you know, 'expert interviews' which I've never done... There were a few others that I found which are pretty new to me... It definitely broadens my sort of—my horizon.\""
           },
           {
             "paragraph_number": 5,
@@ -415,11 +431,11 @@
       },
       {
         "section_name": "Sentence-level Writing Support",
-        "section_number": "6.2",
+        "section_number": "7.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
-            "text": "6.2.1 Reading and Processing Sentences. We observed that participants read and processed what they had read in two different styles: some did selective reading by skimming across sentences, while others read sentences in their entirety. Regardless of engagement style, participants identified new takeaways. For example, P2 discovered new ways of structuring sentences through analyzing examples. Some of the (sub)communities represented in the corpus were unfamiliar to P4 and P6, and they learned about the habits reflected in that text. P14 likes control over the content of her writing, and valued learning about sentence structures that could guide her own composition choices."
+            "text": "Reading and Processing Sentences. We observed that participants read and processed what they had read in two different styles: some did selective reading by skimming across sentences, while others read sentences in their entirety. Regardless of engagement style, participants identified new takeaways. For example, P2 discovered new ways of structuring sentences through analyzing examples. Some of the (sub)communities represented in the corpus were unfamiliar to P4 and P6, and they learned about the habits reflected in that text. P14 likes control over the content of her writing, and valued learning about sentence structures that could guide her own composition choices."
           },
           {
             "paragraph_number": 1,
@@ -431,23 +447,23 @@
           },
           {
             "paragraph_number": 3,
-            "text": "6.2.2 Aligning, Understanding, and Addressing Terminology. Writing for different venues requires aligning terminology with community expectations to ensure consistency and clarity. Misunderstandings in terminology can make a paper difficult to follow or cause confusion, as P1 noted about differing definitions of terms like \"LLMs\" in different venues. P6 emphasized the importance of using correct terminology, especially in the analysis section, where there are expected norms to follow to avoid confusion. Participants found that they sometimes overlooked writing about important terms, as P11 realized when seeing the word \"rubric\" in the retrieved results, prompting him to address it in his manuscript. However, P6 cautioned that related terms might appear in different contexts, which requires careful consideration by the reader to avoid misinterpretation."
+            "text": "Aligning, Understanding, and Addressing Terminology. Writing for different venues requires aligning terminology with community expectations to ensure consistency and clarity. Misunderstandings in terminology can make a paper difficult to follow or cause confusion, as P1 noted about differing definitions of terms like \"LLMs\" in different venues. P6 emphasized the importance of using correct terminology, especially in the analysis section, where there are expected norms to follow to avoid confusion. Participants found that they sometimes overlooked writing about important terms, as P11 realized when seeing the word \"rubric\" in the retrieved results, prompting him to address it in his manuscript. However, P6 cautioned that related terms might appear in different contexts, which requires careful consideration by the reader to avoid misinterpretation."
           },
           {
             "paragraph_number": 4,
-            "text": "6.2.3 Finding Related Work. Many participants used the interface as a tool to find related work to cite in their manuscript (P8, P9, P10, P11, P15, P16). Sometimes they intentionally searched for sources, while other times they came across works that highlighted a necessary concept or a limitation that they had not considered, prompting them to bookmark these sentences for later reference. P10 noted that they would use the tool more in the future to retrieve similar papers to cite and P11 would use it to find papers that included arguments related to their own work. P15 noted that they used the tool primarily for finding related work, not for identifying norms of a venue. In summary, the prototype demonstrated dual utility, serving not only as a writing aid for experienced and novice writers, but also as a research tool. Participants could develop their outline and manuscripts to align with, or break, expected norms and also discover related work for citation, all within one centralized platform."
+            "text": "Finding Related Work. Many participants used the interface as a tool to find related work to cite in their manuscript (P8, P9, P10, P11, P15, P16). Sometimes they intentionally searched for sources, while other times they came across works that highlighted a necessary concept or a limitation that they had not considered, prompting them to bookmark these sentences for later reference. P10 noted that they would use the tool more in the future to retrieve similar papers to cite and P11 would use it to find papers that included arguments related to their own work. P15 noted that they used the tool primarily for finding related work, not for identifying norms of a venue. In summary, the prototype demonstrated dual utility, serving not only as a writing aid for experienced and novice writers, but also as a research tool. Participants could develop their outline and manuscripts to align with, or break, expected norms and also discover related work for citation, all within one centralized platform."
           },
           {
             "paragraph_number": 5,
-            "text": "6.2.4 Closing Content Gaps. Writers also used the tool to address content gaps in their drafts. P11 mentioned reading a sentence that helped her connect two key aspects of her work, confirming an idea she had previously considered but had not fully decided on. Another sentence prompted her to highlight a strength of her system in her manuscript. The sentences reminded participants of details they had forgotten to include, such as participant compensation (P13). P15 used the sentences to identify gaps in their writing, stating, \"It's great to read what others wrote because we perform a similar process, but we did not mention that [...] in our own writing. So it would be great if we can add those.\""
+            "text": "Closing Content Gaps. Writers also used the tool to address content gaps in their drafts. P11 mentioned reading a sentence that helped her connect two key aspects of her work, confirming an idea she had previously considered but had not fully decided on. Another sentence prompted her to highlight a strength of her system in her manuscript. The sentences reminded participants of details they had forgotten to include, such as participant compensation (P13). P15 used the sentences to identify gaps in their writing, stating, \"It's great to read what others wrote because we perform a similar process, but we did not mention that [...] in our own writing. So it would be great if we can add those.\""
           },
           {
             "paragraph_number": 6,
-            "text": "6.2.5 Confidence and Perception. Participants felt more confident in their writing when they discovered that other authors had written about similar ideas or expressed them in a similar style. They also gained confidence in their related works section when they found papers in the retrieved results that aligned with their own literature review (P8, P15). Two participants, after not finding many related results for their initial text queries, perceived novelty in their writing topics and concluded that the community might not have discussed their topic yet. For example, P8 noted that his terminology appeared in other contexts but not his specific focus. P9 saw this as an opportunity to contribute novel insights. Similarly, P4 was encouraged by the lack of similar work, noting \"I'm also pretty happy that apparently this is a work that might not be yet that present [in] those two communities, or in the HCI community in general. So this is not something that I find bad, but actually something that encourages me, that I'm on the right track.\" Note that participants were informed at the beginning of the study that the corpus included papers from two venues over three years, so some relevant work may not have been included."
+            "text": "Confidence and Perception. Participants felt more confident in their writing when they discovered that other authors had written about similar ideas or expressed them in a similar style. They also gained confidence in their related works section when they found papers in the retrieved results that aligned with their own literature review (P8, P15). Two participants, after not finding many related results for their initial text queries, perceived novelty in their writing topics and concluded that the community might not have discussed their topic yet. For example, P8 noted that his terminology appeared in other contexts but not his specific focus. P9 saw this as an opportunity to contribute novel insights. Similarly, P4 was encouraged by the lack of similar work, noting \"I'm also pretty happy that apparently this is a work that might not be yet that present [in] those two communities, or in the HCI community in general. So this is not something that I find bad, but actually something that encourages me, that I'm on the right track.\" Note that participants were informed at the beginning of the study that the corpus included papers from two venues over three years, so some relevant work may not have been included."
           },
           {
             "paragraph_number": 7,
-            "text": "6.2.6 Sentence Rendering Modes. We analyzed participants' perception of the cross-sentence structure mapping engine support features and how these features helped participants process the retrieved sentences. While initially overwhelming for some, participants found distinctly colorized recurring words valuable. It helped participants scan text efficiently. P7 explained, \"I can just look [for the] participants in that color rather than spending my whole time reading over every block.\" P4 noted, \"I do like the color version the most while it could be perceived as a bit overwhelming... the color does help me find the relevant words.\" P6 and P9 emphasized the ability to read and skim through the text faster. The feature served multiple purposes: P8 found it helpful for providing structure, while P13 used it to guide their attention to content (\"I just looked at where's like the least or the lowest redundancy\")."
+            "text": "Sentence Rendering Modes. We analyzed participants' perception of the cross-sentence structure mapping engine support features and how these features helped participants process the retrieved sentences. While initially overwhelming for some, participants found distinctly colorized recurring words valuable. It helped participants scan text efficiently. P7 explained, \"I can just look [for the] participants in that color rather than spending my whole time reading over every block.\" P4 noted, \"I do like the color version the most while it could be perceived as a bit overwhelming... the color does help me find the relevant words.\" P6 and P9 emphasized the ability to read and skim through the text faster. The feature served multiple purposes: P8 found it helpful for providing structure, while P13 used it to guide their attention to content (\"I just looked at where's like the least or the lowest redundancy\")."
           },
           {
             "paragraph_number": 8,
@@ -457,7 +473,7 @@
       },
       {
         "section_name": "Bookmark and User Notes",
-        "section_number": "6.3",
+        "section_number": "7.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -471,7 +487,7 @@
       },
       {
         "section_name": "Tooltips",
-        "section_number": "6.4",
+        "section_number": "7.4",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -497,7 +513,7 @@
       },
       {
         "section_name": "Use of Features, Especially Across Writing Stages",
-        "section_number": "6.5",
+        "section_number": "7.5",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -515,7 +531,7 @@
       },
       {
         "section_name": "Efficacy of Anti-plagiarism Features",
-        "section_number": "6.6",
+        "section_number": "7.6",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -527,7 +543,7 @@
   },
   {
     "section_name": "Quantitative Results",
-    "section_number": "7",
+    "section_number": "8",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -537,19 +553,19 @@
     "subsections": [
       {
         "section_name": "Task 1: Outline Writing",
-        "section_number": "7.1",
+        "section_number": "8.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
-            "text": "7.1.1 Usefulness of Drafting Tools. Participants rated the usefulness of drafting their outline in a blank document (baseline) and drafting it in CorpusStudio (Figure 6). Results indicated a statistically significant preference for CorpusStudio (p = 0.003). As discussed in Section 6.1, participants valued aspects such as creating a better structure for their outline, learning how to write for a new venue or topic, and confirming their existing titles."
+            "text": "Usefulness of Drafting Tools. Participants rated the usefulness of drafting their outline in a blank document (baseline) and drafting it in CorpusStudio (Figure 6). Results indicated a statistically significant preference for CorpusStudio (p = 0.003). As discussed in Section 6.1, participants valued aspects such as creating a better structure for their outline, learning how to write for a new venue or topic, and confirming their existing titles."
           },
           {
             "paragraph_number": 1,
-            "text": "7.1.2 Ease of Drafting Section Title Outlines and Venue Alignment. For both conditions, participants answered a series of questions focusing on how easily they drafted section titles that were relevant to their work, aligned with the style of the target venue, adhered to norms, included all desired aspects, and identified when others had broken norms. The average responses for each condition are shown in Figure 7. A Mann-Whitney U test revealed no statistically significant differences between the interface conditions for any of these five Likert items."
+            "text": "Ease of Drafting Section Title Outlines and Venue Alignment. For both conditions, participants answered a series of questions focusing on how easily they drafted section titles that were relevant to their work, aligned with the style of the target venue, adhered to norms, included all desired aspects, and identified when others had broken norms. The average responses for each condition are shown in Figure 7. A Mann-Whitney U test revealed no statistically significant differences between the interface conditions for any of these five Likert items."
           },
           {
             "paragraph_number": 2,
-            "text": "7.1.3 Differences Between Tasks. Between the sub-tasks, i.e., drafting the first half of the document compared to the second half, there was a statistically significant difference (p=0.014) in participants' responses to the question, \"It was easy to create the section title structure that my target venue expects.\" This suggests potential learning effects as participants found it easier to create the section title structure in the second half. Participants could have adapted their writing strategies from drafting the first half to the second half. We found no significant differences in the other questions within this category (see Appendix A.3.2 for the full questions)."
+            "text": "Differences Between Tasks. Between the sub-tasks, i.e., drafting the first half of the document compared to the second half, there was a statistically significant difference (p=0.014) in participants' responses to the question, \"It was easy to create the section title structure that my target venue expects.\" This suggests potential learning effects as participants found it easier to create the section title structure in the second half. Participants could have adapted their writing strategies from drafting the first half to the second half. We found no significant differences in the other questions within this category (see Appendix A.3.2 for the full questions)."
           },
           {
             "paragraph_number": 3,
@@ -557,7 +573,7 @@
           },
           {
             "paragraph_number": 4,
-            "text": "7.1.4 Participant Perceptions of Ease and Overwhelm. Fourteen of the 16 participants (87.5%) reported that writing the section titles in CorpusStudio with Section Titles of Other Papers made the task easier (via alleviating the blank page problem and having examples at hand in a centralized writing environment), while the remaining two participants reported that writing in the baseline interface was easier."
+            "text": "Participant Perceptions of Ease and Overwhelm. Fourteen of the 16 participants (87.5%) reported that writing the section titles in CorpusStudio with Section Titles of Other Papers made the task easier (via alleviating the blank page problem and having examples at hand in a centralized writing environment), while the remaining two participants reported that writing in the baseline interface was easier."
           },
           {
             "paragraph_number": 5,
@@ -565,13 +581,13 @@
           },
           {
             "paragraph_number": 6,
-            "text": "7.1.5 Identifying and Breaking Norms. We evaluated whether there was any significant difference in participants' ability to identify norms of their target venue when reading past papers (prior to the study or during the study in the baseline condition) in comparison to reviewing the distribution over section titles. The results showed no significant difference. Similarly, for identifying when it is appropriate to break norms, no significant differences were found (see Appendix A.4.3 for the full questions). However, qualitative data highlighted that with CorpusStudio, participants more frequently reflected on breaking norms intentionally, using the example distributions and their own writing to justify deviations. While these reflections did not result in significant quantitative differences, they suggest a deeper engagement with norms during the task."
+            "text": "Identifying and Breaking Norms. We evaluated whether there was any significant difference in participants' ability to identify norms of their target venue when reading past papers (prior to the study or during the study in the baseline condition) in comparison to reviewing the distribution over section titles. The results showed no significant difference. Similarly, for identifying when it is appropriate to break norms, no significant differences were found (see Appendix A.4.3 for the full questions). However, qualitative data highlighted that with CorpusStudio, participants more frequently reflected on breaking norms intentionally, using the example distributions and their own writing to justify deviations. While these reflections did not result in significant quantitative differences, they suggest a deeper engagement with norms during the task."
           }
         ]
       },
       {
         "section_name": "Task 2: Writing a Section of a Manuscript",
-        "section_number": "7.2",
+        "section_number": "8.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -595,7 +611,7 @@
   },
   {
     "section_name": "Discussion",
-    "section_number": "8",
+    "section_number": "9",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -605,7 +621,7 @@
     "subsections": [
       {
         "section_name": "Relevance of Retrieved Sentences",
-        "section_number": "8.1",
+        "section_number": "9.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -613,7 +629,7 @@
           },
           {
             "paragraph_number": 1,
-            "text": "8.1.1 Users' Diverse Applications of Retrieved Sentences. While CorpusStudio uses text embeddings to capture semantic and syntactic relationships [36], our study revealed that relevance was also determined by participants' writing goals rather than semantic similarity alone. For instance, semantically similar sentences were sometimes less useful than structurally similar ones when writers sought to understand the organization of the paper."
+            "text": "Users' Diverse Applications of Retrieved Sentences. While CorpusStudio uses text embeddings to capture semantic and syntactic relationships [36], our study revealed that relevance was also determined by participants' writing goals rather than semantic similarity alone. For instance, semantically similar sentences were sometimes less useful than structurally similar ones when writers sought to understand the organization of the paper."
           },
           {
             "paragraph_number": 2,
@@ -621,13 +637,13 @@
           },
           {
             "paragraph_number": 3,
-            "text": "8.1.2 Interpreting Retrieved Results: User Behaviors and Dataset Limitations. Our study revealed how retrieved examples influenced participants' writing in unexpected ways. When participants were looking for something specific and did not find it in the retrieved results, this led to two notable behaviors: First, participants often rephrased their text to get different results, blurring the line between writing and querying. Second, some interpreted a lack of results as evidence of their work's novelty, a problematic conclusion given CorpusStudio's limited scope (two HCI venues: IUI and UIST from 2021-2023). These findings suggest that writing support systems should actively communicate their scope and limitations, for instance by suggesting broader venue searches when topic-specific queries yield no results, helping writers make informed decisions about how to interpret search results."
+            "text": "Interpreting Retrieved Results: User Behaviors and Dataset Limitations. Our study revealed how retrieved examples influenced participants' writing in unexpected ways. When participants were looking for something specific and did not find it in the retrieved results, this led to two notable behaviors: First, participants often rephrased their text to get different results, blurring the line between writing and querying. Second, some interpreted a lack of results as evidence of their work's novelty, a problematic conclusion given CorpusStudio's limited scope (two HCI venues: IUI and UIST from 2021-2023). These findings suggest that writing support systems should actively communicate their scope and limitations, for instance by suggesting broader venue searches when topic-specific queries yield no results, helping writers make informed decisions about how to interpret search results."
           }
         ]
       },
       {
         "section_name": "Designing a System with Many Retrieved Examples",
-        "section_number": "8.2",
+        "section_number": "9.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -645,21 +661,25 @@
       },
       {
         "section_name": "Designing Writing Support for and with Community Integration, not AI Integration",
-        "section_number": "8.3",
+        "section_number": "9.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
-            "text": "Our concept provides relevant text snippets to support writing but it does not use any AI-generated text, in contrast to recent trends in writing assistant systems [27]. Instead of training AI on a corpus, we surface examples from the corpus directly. In our case, these examples can be assumed to meet the community's quality standards, because they are evaluated by its members beforehand, that is, the published papers in the corpus went through peer review. We argue that this approach values and supports communities. For example, it might aid communities in discovering their own community-level patterns of expression and in \"onboarding\" new community members. Supporting this, our design includes functionality for taking one's own notes, which might later contribute to exchanges between community members about writing norms, i.e., beyond individual interactions with our system."
+            "text": "Our concept provides relevant text snippets to support writing but it does not use any AI-generated text, in contrast to recent trends in writing assistant systems [27]. Instead of training AI on a corpus, we surface examples from the corpus directly. In our case, these examples can be assumed to meet the community's quality standards, because they are evaluated by its members beforehand, that is, the published papers in the corpus went through peer review."
           },
           {
             "paragraph_number": 1,
+            "text": "We argue that this approach values and supports communities. For example, it might aid communities in discovering their own community-level patterns of expression and in \"onboarding\" new community members. Supporting this, our design includes functionality for taking one's own notes, which might later contribute to exchanges between community members about writing norms, i.e., beyond individual interactions with our system."
+          },
+          {
+            "paragraph_number": 2,
             "text": "This approach may also make a community's past work more discoverable to its members. Our retrieval method is based on the local text in the draft, and not on other metrics, such as paper citation counts or author metrics. In this way, our concept might contribute to discovering less well known but relevant work that the writer would not have noticed otherwise. This could be examined in a dedicated future study, and the UI design could be developed further in this direction."
           }
         ]
       },
       {
         "section_name": "Putting Metacognitive Strategies “Ready to Hand”",
-        "section_number": "8.4",
+        "section_number": "9.4",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -673,7 +693,7 @@
       },
       {
         "section_name": "Limitations and Future Work",
-        "section_number": "8.5",
+        "section_number": "9.5",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -685,7 +705,7 @@
   },
   {
     "section_name": "Conclusion",
-    "section_number": "9",
+    "section_number": "10",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -696,7 +716,7 @@
   },
   {
     "section_name": "Acknowledgments",
-    "section_number": null,
+    "section_number": "11",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -707,7 +727,7 @@
   },
   {
     "section_name": "References",
-    "section_number": null,
+    "section_number": "12",
     "paragraphs": [],
     "subsections": []
   }

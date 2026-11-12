@@ -8,6 +8,7 @@ from tempfile import TemporaryDirectory
 from pipeline.document import (
     QUESTION_FIELD,
     iter_structural_units,
+    relabel_extraction,
     strip_questions,
     validate_document,
 )
@@ -35,6 +36,30 @@ def _document() -> list[dict]:
 
 
 class CanonicalDocumentTest(unittest.TestCase):
+    def test_relabel_extraction_preserves_hierarchy_and_authored_numbers(self):
+        original = _document()
+        original[0]["section_name"] = "4 Results"
+        original[0]["paragraphs"][0].update(paragraph_number=8, text="See Section 4.1 and [8].")
+        original.insert(
+            0,
+            {
+                "section_name": "Abstract",
+                "section_number": None,
+                "paragraphs": [],
+                "subsections": [],
+            },
+        )
+        result = relabel_extraction(original)
+        self.assertEqual(
+            [u.source["section_number"] for u in iter_structural_units(result)], ["1", "2", "2.1"]
+        )
+        self.assertEqual(result[1]["section_name"], "Results")
+        self.assertEqual(
+            result[1]["paragraphs"], [{"paragraph_number": 0, "text": "See Section 4.1 and [8]."}]
+        )
+        self.assertEqual(result, relabel_extraction(result))
+        self.assertEqual(original[1]["paragraphs"][0]["paragraph_number"], 8)
+
     def test_graph_loading_preserves_source_whitespace(self):
         document = _document()
         text = "  Evidence\n    with original spacing.  "

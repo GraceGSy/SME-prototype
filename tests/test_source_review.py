@@ -69,6 +69,9 @@ class SourceReviewTest(unittest.TestCase):
         )
         source = "Findings\n\nFirst finding.\n\nConclusion\n\nMiddle evidence.\n\nFinal conclusion."
         self.assertFalse(inspect_document(source, content)["issues"])
+        self.assertFalse(
+            inspect_document(source.replace("Findings\n", "7 Findings\n"), content)["issues"]
+        )
         content[0]["paragraphs"].append({"paragraph_number": 1, "text": "Middle evidence."})
         content[1]["paragraphs"] = [{"paragraph_number": 0, "text": "Final conclusion."}]
         self.assertFalse(inspect_document(source, content)["order_ok"])

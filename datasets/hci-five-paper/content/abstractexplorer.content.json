@@ -1,7 +1,7 @@
 [
   {
     "section_name": "Abstract",
-    "section_number": null,
+    "section_number": "1",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -12,7 +12,7 @@
   },
   {
     "section_name": "Introduction",
-    "section_number": "1",
+    "section_number": "2",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -51,7 +51,7 @@
   },
   {
     "section_name": "Related Work",
-    "section_number": "2",
+    "section_number": "3",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -61,7 +61,7 @@
     "subsections": [
       {
         "section_name": "Tools for Close Reading",
-        "section_number": "2.1",
+        "section_number": "3.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -79,7 +79,7 @@
       },
       {
         "section_name": "Text Alignment",
-        "section_number": "2.2",
+        "section_number": "3.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -101,7 +101,7 @@
       },
       {
         "section_name": "Text-Centric Tools for Sensemaking over Document Corpora via Shared Structure",
-        "section_number": "2.3",
+        "section_number": "3.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -119,7 +119,7 @@
       },
       {
         "section_name": "Theories Operationalized for Supporting Inductive Sensemaking",
-        "section_number": "2.4",
+        "section_number": "3.4",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -135,7 +135,7 @@
   },
   {
     "section_name": "Formative Interview Study",
-    "section_number": "3",
+    "section_number": "4",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -145,7 +145,7 @@
     "subsections": [
       {
         "section_name": "Procedure",
-        "section_number": "3.1",
+        "section_number": "4.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -163,15 +163,15 @@
       },
       {
         "section_name": "Key Findings",
-        "section_number": "3.2",
+        "section_number": "4.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
-            "text": "3.2.1 Existing Challenges to Sensemaking. Participants’ approaches to reading and gathering information from papers varied significantly, and despite leveraging some tools, these tools were often less helpful than hoped for. Participants frequently mentioned difficulties with search, e.g., needing to try searching “at least 10 times with different keywords to find the initial set of relevant papers” (P8). Some participants also mentioned using generative AI tools to “help [them] figure out ... the key points of a specific piece” (P12) but may find it unhelpful if “they often miss some of the key information” (P8). In contrast, many participants described their paper comparison process to be manual, with minimal tool usage."
+            "text": "Existing Challenges to Sensemaking. Participants’ approaches to reading and gathering information from papers varied significantly, and despite leveraging some tools, these tools were often less helpful than hoped for. Participants frequently mentioned difficulties with search, e.g., needing to try searching “at least 10 times with different keywords to find the initial set of relevant papers” (P8). Some participants also mentioned using generative AI tools to “help [them] figure out ... the key points of a specific piece” (P12) but may find it unhelpful if “they often miss some of the key information” (P8). In contrast, many participants described their paper comparison process to be manual, with minimal tool usage."
           },
           {
             "paragraph_number": 1,
-            "text": "3.2.2 Feedback on Mock-ups. Participants commented that alignment and/or highlighting were useful for identifying and comparing information:“this... helps to recognize the differences or similarities” (P7). However, some thought that this would require some amount of trust in the algorithm performing the highlighting, especially if judgments of importance were being delegated to the system designer or an AI: “I don’t know if I would agree with whoever’s classification of what’s important” (P2). Visually, participants commented that color highlights made it easier for them to read “important” parts of the sentences. However, they were divided on alignment formatting: while some participants disliked seeing extra spacing necessary to create vertical alignments because it “[causes] a little bit of annoyance... why is the gap there?” (P3), others said that it was helpful if the “user wants to look at [a particular common component]... instead of looking at the whole sentence” (P4)."
+            "text": "Feedback on Mock-ups. Participants commented that alignment and/or highlighting were useful for identifying and comparing information:“this... helps to recognize the differences or similarities” (P7). However, some thought that this would require some amount of trust in the algorithm performing the highlighting, especially if judgments of importance were being delegated to the system designer or an AI: “I don’t know if I would agree with whoever’s classification of what’s important” (P2). Visually, participants commented that color highlights made it easier for them to read “important” parts of the sentences. However, they were divided on alignment formatting: while some participants disliked seeing extra spacing necessary to create vertical alignments because it “[causes] a little bit of annoyance... why is the gap there?” (P3), others said that it was helpful if the “user wants to look at [a particular common component]... instead of looking at the whole sentence” (P4)."
           },
           {
             "paragraph_number": 2,
@@ -183,7 +183,7 @@
   },
   {
     "section_name": "AbstractExplorer",
-    "section_number": "4",
+    "section_number": "5",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -193,11 +193,11 @@
     "subsections": [
       {
         "section_name": "System Components",
-        "section_number": "4.1",
+        "section_number": "5.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
-            "text": "4.1.1 Slicing abstracts for sentence-level aspect reading and comparison (same-role sentences). To keep details at the forefront of the interface, we designed a mechanism to slice abstracts for viewing them from specific angles, allowing for comparative close reading at scale at the sentence level. We chose the sentence as our unit for cross-document alignment because: (1) it preserves complete propositional content (unlike phrases or words), (2) maintains grammatical coherence when isolated (unlike arbitrary text spans), and (3) serves as the minimal self-contained unit where aspects can be meaningfully compared. “Aspects” are either pre-defined or userdefined on the fly; they are collections of sentences across abstracts that serve the same or similar purposes within their abstract."
+            "text": "Slicing abstracts for sentence-level aspect reading and comparison (same-role sentences). To keep details at the forefront of the interface, we designed a mechanism to slice abstracts for viewing them from specific angles, allowing for comparative close reading at scale at the sentence level. We chose the sentence as our unit for cross-document alignment because: (1) it preserves complete propositional content (unlike phrases or words), (2) maintains grammatical coherence when isolated (unlike arbitrary text spans), and (3) serves as the minimal self-contained unit where aspects can be meaningfully compared. “Aspects” are either pre-defined or userdefined on the fly; they are collections of sentences across abstracts that serve the same or similar purposes within their abstract."
           },
           {
             "paragraph_number": 1,
@@ -213,7 +213,7 @@
           },
           {
             "paragraph_number": 4,
-            "text": "4.1.2 Grammar-preserving sentence segmentation and role highlighting. Inspired by GP-TSM [24], AbstractExplorer first segments sentences into grammar-preserving chunks—segments that respect grammatical boundaries, i.e., an LLM judges that the sentence can be truncated at that chunk boundary without breaking the grammatical integrity of the preceding text. Each chunk is then classified by an LLM as having one of nine pre-defined roles, each of which has its own assigned color."
+            "text": "Grammar-preserving sentence segmentation and role highlighting. Inspired by GP-TSM [24], AbstractExplorer first segments sentences into grammar-preserving chunks—segments that respect grammatical boundaries, i.e., an LLM judges that the sentence can be truncated at that chunk boundary without breaking the grammatical integrity of the preceding text. Each chunk is then classified by an LLM as having one of nine pre-defined roles, each of which has its own assigned color."
           },
           {
             "paragraph_number": 5,
@@ -225,7 +225,7 @@
           },
           {
             "paragraph_number": 7,
-            "text": "4.1.3 Organizing sentences into structure groups. We consider common sequences of chunk roles to be alignable structures that could be used to support users in identifying structural similarities and differences across sentences in different abstracts, in line with Structure-Mapping Theory [17]. In SMT terminology, rendering and arranging according to corresponding chunks reify “commonalities in structure,” while variation within corresponding chunks are “alignable differences” that users are predicted to notice."
+            "text": "Organizing sentences into structure groups. We consider common sequences of chunk roles to be alignable structures that could be used to support users in identifying structural similarities and differences across sentences in different abstracts, in line with Structure-Mapping Theory [17]. In SMT terminology, rendering and arranging according to corresponding chunks reify “commonalities in structure,” while variation within corresponding chunks are “alignable differences” that users are predicted to notice."
           },
           {
             "paragraph_number": 8,
@@ -237,7 +237,7 @@
           },
           {
             "paragraph_number": 10,
-            "text": "4.1.4 Ordering and Alignment of Sentences within Structure Groups. Structural mappings between objects are part of the cognitive process of comparison according to the Structure-Mapping Theory [17], and juxtaposition can facilitate humans in recognizing particular possible structural mappings between objects [75]. We design and implement two types of juxtapositions:"
+            "text": "Ordering and Alignment of Sentences within Structure Groups. Structural mappings between objects are part of the cognitive process of comparison according to the Structure-Mapping Theory [17], and juxtaposition can facilitate humans in recognizing particular possible structural mappings between objects [75]. We design and implement two types of juxtapositions:"
           },
           {
             "paragraph_number": 11,
@@ -249,7 +249,7 @@
           },
           {
             "paragraph_number": 13,
-            "text": "4.1.5 Additional Features for Context and Familiarity. Abstract and TLDR panel. Sentence-level reading may be new to readers. To allow users to contextualize individual sentences within their respective abstracts, we link the Cross-Sentence Relationship and Abstract panels (Figure 1B and C): when users click on any sentence in the Cross-Sentence Relationships pane (Figure 1B), the corresponding full abstract is automatically highlighted and scrolled into view in the Abstracts panel (Figure 1C), offering additional context when needed. It also includes paper metadata such as the full author list and the session name. The Abstracts panel can be customized by users to display the full abstract text, an abstract “TLDR” (a shorter abstractive summary generated by an LLM), or both at the same time."
+            "text": "Additional Features for Context and Familiarity. Abstract and TLDR panel. Sentence-level reading may be new to readers. To allow users to contextualize individual sentences within their respective abstracts, we link the Cross-Sentence Relationship and Abstract panels (Figure 1B and C): when users click on any sentence in the Cross-Sentence Relationships pane (Figure 1B), the corresponding full abstract is automatically highlighted and scrolled into view in the Abstracts panel (Figure 1C), offering additional context when needed. It also includes paper metadata such as the full author list and the session name. The Abstracts panel can be customized by users to display the full abstract text, an abstract “TLDR” (a shorter abstractive summary generated by an LLM), or both at the same time."
           },
           {
             "paragraph_number": 14,
@@ -263,7 +263,7 @@
       },
       {
         "section_name": "User Scenario",
-        "section_number": "4.2",
+        "section_number": "5.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -285,7 +285,7 @@
       },
       {
         "section_name": "Implementation Details",
-        "section_number": "4.3",
+        "section_number": "5.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -317,7 +317,7 @@
   },
   {
     "section_name": "Ablation Study",
-    "section_number": "5",
+    "section_number": "6",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -335,7 +335,7 @@
     "subsections": [
       {
         "section_name": "Participants",
-        "section_number": "5.1",
+        "section_number": "6.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -345,11 +345,11 @@
       },
       {
         "section_name": "Procedure",
-        "section_number": "5.2",
+        "section_number": "6.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
-            "text": "5.2.1 Setup. We collected 80 sentences from our abstracts dataset labeled by our system as “Methodology/Contribution.” Participants viewed the same 80 sentences in each condition—often with a different subset of sentences initially visible due to ordering changes—but only had two minutes to look at them in each condition."
+            "text": "Setup. We collected 80 sentences from our abstracts dataset labeled by our system as “Methodology/Contribution.” Participants viewed the same 80 sentences in each condition—often with a different subset of sentences initially visible due to ordering changes—but only had two minutes to look at them in each condition."
           },
           {
             "paragraph_number": 1,
@@ -361,7 +361,7 @@
           },
           {
             "paragraph_number": 3,
-            "text": "5.2.2 Participant experience. All sessions were conducted in person. At the start, participants received a brief introduction, an informed consent form, and an opportunity to ask questions. After signing the consent form, they filled out a questionnaire to determine their Need for Cognition (NFC) levels via the NCS-6 survey [42]. As a final onboarding step, the eye tracker was calibrated to better track their eyes using its standard software."
+            "text": "Participant experience. All sessions were conducted in person. At the start, participants received a brief introduction, an informed consent form, and an opportunity to ask questions. After signing the consent form, they filled out a questionnaire to determine their Need for Cognition (NFC) levels via the NCS-6 survey [42]. As a final onboarding step, the eye tracker was calibrated to better track their eyes using its standard software."
           },
           {
             "paragraph_number": 4,
@@ -375,11 +375,11 @@
       },
       {
         "section_name": "Results",
-        "section_number": "5.3",
+        "section_number": "6.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
-            "text": "5.3.1 The three features lose their effectiveness when not used together. The most popular condition had all three features enabled, i.e., 11 out of 24 participants (≈50%) preferred Figure 7C, as shown in the “Preferred” columns of Table 1. The remaining participants were roughly evenly split between the no-features baseline (6 participants) and the without-alignment ablation condition (5 participants). One participant each liked the without-highlighting and without-ordering ablation conditions most, respectively."
+            "text": "The three features lose their effectiveness when not used together. The most popular condition had all three features enabled, i.e., 11 out of 24 participants (≈50%) preferred Figure 7C, as shown in the “Preferred” columns of Table 1. The remaining participants were roughly evenly split between the no-features baseline (6 participants) and the without-alignment ablation condition (5 participants). One participant each liked the without-highlighting and without-ordering ablation conditions most, respectively."
           },
           {
             "paragraph_number": 1,
@@ -387,15 +387,15 @@
           },
           {
             "paragraph_number": 2,
-            "text": "5.3.2 Participants’ Need for Cognition (NFC) explained some of participants’ perceived cognitive load and preferences. For simplicity of analysis, we denote participants with NFC scores above the overall participants’ median NFC of 5.42 (IQR = 0.583) as higher NFC, and lower NFC otherwise. 9 Figures in Appendix G show the distribution of participants’ NFC scores as a function of the conditions in which they reported the least cognitive load (Figure 29) and which they preferred most (Figure 30). Participants with lower NFC more frequently preferred and experienced less cognitive load when skimming with all the features enabled. 10 Likewise, Figure 8 shows that most lower-NFC participants reported their lowest cognitive load when all features were enabled, while most higher-NFC participants reported their lowest cognitive load when no features were enabled (baseline)."
+            "text": "Participants’ Need for Cognition (NFC) explained some of participants’ perceived cognitive load and preferences. For simplicity of analysis, we denote participants with NFC scores above the overall participants’ median NFC of 5.42 (IQR = 0.583) as higher NFC, and lower NFC otherwise. 9 Figures in Appendix G show the distribution of participants’ NFC scores as a function of the conditions in which they reported the least cognitive load (Figure 29) and which they preferred most (Figure 30). Participants with lower NFC more frequently preferred and experienced less cognitive load when skimming with all the features enabled. 10 Likewise, Figure 8 shows that most lower-NFC participants reported their lowest cognitive load when all features were enabled, while most higher-NFC participants reported their lowest cognitive load when no features were enabled (baseline)."
           },
           {
             "paragraph_number": 3,
-            "text": "5.3.3 Eye Tracking. Lower NFC participants were generally guided by emergent visual patterns created by the interactions between features, especially blocks of color spanning multiple sentences created when all three features are turned on. Figure 9 shows a typical lower-NFC participant reading down, across documents rather than left to right within a single document’s sentence when all three features are working together; this is a radically different reading pattern. These participants also often verbally described in their interviews how they appreciated the colors guiding them in where and how to skim. Meanwhile, higher NFC participants often skimmed from left to right, line by line, regardless of what features were available to them (e.g., P16, whose gaze plots are shown in Figure 31 in Appendix G)."
+            "text": "Eye Tracking. Lower NFC participants were generally guided by emergent visual patterns created by the interactions between features, especially blocks of color spanning multiple sentences created when all three features are turned on. Figure 9 shows a typical lower-NFC participant reading down, across documents rather than left to right within a single document’s sentence when all three features are working together; this is a radically different reading pattern. These participants also often verbally described in their interviews how they appreciated the colors guiding them in where and how to skim. Meanwhile, higher NFC participants often skimmed from left to right, line by line, regardless of what features were available to them (e.g., P16, whose gaze plots are shown in Figure 31 in Appendix G)."
           },
           {
             "paragraph_number": 4,
-            "text": "5.3.4 Lower NFC participants’ skimming experiences. Both gaze data and the semi-structured interviews revealed that lower NFC participants were more willing to be guided by the three features and took advantage of them consciously. Specifically, many lower NFC participants used color to help them decide what to read, even without remembering what the colors meant: “I think the colors definitely guide attention, even though I didn’t know what the colors meant” (P4) and “I just read in groups. So, I did all the blue, all the orange, ... ” (P12). P13 used the features to help them decide what was important for them to read: “When you’re skimming something, you’re trying to see what’s the most important but given this legend, this coloring, this organization, you have a rough idea of what’s the most important and that makes skimming much ... easier.”"
+            "text": "Lower NFC participants’ skimming experiences. Both gaze data and the semi-structured interviews revealed that lower NFC participants were more willing to be guided by the three features and took advantage of them consciously. Specifically, many lower NFC participants used color to help them decide what to read, even without remembering what the colors meant: “I think the colors definitely guide attention, even though I didn’t know what the colors meant” (P4) and “I just read in groups. So, I did all the blue, all the orange, ... ” (P12). P13 used the features to help them decide what was important for them to read: “When you’re skimming something, you’re trying to see what’s the most important but given this legend, this coloring, this organization, you have a rough idea of what’s the most important and that makes skimming much ... easier.”"
           },
           {
             "paragraph_number": 5,
@@ -403,7 +403,7 @@
           },
           {
             "paragraph_number": 6,
-            "text": "5.3.5 Higher NFC participants’ skimming experiences. In contrast, higher NFC participants reported an easier and more pleasant experience reading in the baseline condition. Many said they appreciated that they could read as they normally would: “[ The baseline] was easiest to read just because maybe I’m used to this in general; this is how I usually read things” (P16). P10 describes how they did not have to constantly “restructure” their eyes."
+            "text": "Higher NFC participants’ skimming experiences. In contrast, higher NFC participants reported an easier and more pleasant experience reading in the baseline condition. Many said they appreciated that they could read as they normally would: “[ The baseline] was easiest to read just because maybe I’m used to this in general; this is how I usually read things” (P16). P10 describes how they did not have to constantly “restructure” their eyes."
           },
           {
             "paragraph_number": 7,
@@ -419,7 +419,7 @@
   },
   {
     "section_name": "Summative User Study",
-    "section_number": "6",
+    "section_number": "7",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -429,7 +429,7 @@
     "subsections": [
       {
         "section_name": "Participants",
-        "section_number": "6.1",
+        "section_number": "7.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -439,7 +439,7 @@
       },
       {
         "section_name": "Study Procedure",
-        "section_number": "6.2",
+        "section_number": "7.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -447,19 +447,19 @@
           },
           {
             "paragraph_number": 1,
-            "text": "6.2.1 Consent, Pre-Study Survey, and Tutorial. After providing verbal informed consent, participants completed a pre-study survey (Appendix J.1). They then accessed AbstractExplorer via a web link (no installation required) and watched a 3.5-min tutorial video demonstrating its features on the corpus of CHI 2024 paper abstracts. Participants were also provided with a reference sheet listing key terms and their definitions and annotated screenshots that explain different features. This reference sheet was available to participants throughout the study session. To help familiarize participants with AbstractExplorer, the study coordinator instructed them to practice three core interactions—comparing alignment options, toggling chunk highlighting, and creating a custom aspect—as warm-up exercises. This phase ensured that participants were aware of key features of AbstractExplorer."
+            "text": "Consent, Pre-Study Survey, and Tutorial. After providing verbal informed consent, participants completed a pre-study survey (Appendix J.1). They then accessed AbstractExplorer via a web link (no installation required) and watched a 3.5-min tutorial video demonstrating its features on the corpus of CHI 2024 paper abstracts. Participants were also provided with a reference sheet listing key terms and their definitions and annotated screenshots that explain different features. This reference sheet was available to participants throughout the study session. To help familiarize participants with AbstractExplorer, the study coordinator instructed them to practice three core interactions—comparing alignment options, toggling chunk highlighting, and creating a custom aspect—as warm-up exercises. This phase ensured that participants were aware of key features of AbstractExplorer."
           },
           {
             "paragraph_number": 2,
-            "text": "6.2.2 Task 1: General Reading. Following the warm-up exercises, participants performed a general reading task using AbstractExplorer. They were presented with the following task: imagine writing a survey on CHI 2024 papers, skim as many abstracts as possible, develop a mental model of the range of contributions, methodologies, problem domains, and study results, and identify three emergent patterns in content or style (exact wording in Appendix I.1) and instructed to use all interface features except filters, to ensure exposure to a sufficient number of papers. They shared their screens (recorded by the research team) and were encouraged to think aloud while optionally taking notes in a provided document. The task had a 15-minute time limit, and participants received a reminder when 5 minutes remained."
+            "text": "Task 1: General Reading. Following the warm-up exercises, participants performed a general reading task using AbstractExplorer. They were presented with the following task: imagine writing a survey on CHI 2024 papers, skim as many abstracts as possible, develop a mental model of the range of contributions, methodologies, problem domains, and study results, and identify three emergent patterns in content or style (exact wording in Appendix I.1) and instructed to use all interface features except filters, to ensure exposure to a sufficient number of papers. They shared their screens (recorded by the research team) and were encouraged to think aloud while optionally taking notes in a provided document. The task had a 15-minute time limit, and participants received a reminder when 5 minutes remained."
           },
           {
             "paragraph_number": 3,
-            "text": "6.2.3 Task 2: Focused Reading. In the second task, participants performed a focused reading task using AbstractExplorer. The task description and goals were similar to Task 1, but this time participants were instructed to target abstracts relevant to their own research or personal interests (exact wording in Appendix I.2). This task aimed to evaluate how users personalized the interface for work-related exploration, where deeper engagement might occur naturally. Participants used all interface features, especially filters and user-defined aspects, while screensharing (recorded by the research team as well) with optional thinking aloud and note taking. The task also lasted 15 minutes with a 5-minute reminder."
+            "text": "Task 2: Focused Reading. In the second task, participants performed a focused reading task using AbstractExplorer. The task description and goals were similar to Task 1, but this time participants were instructed to target abstracts relevant to their own research or personal interests (exact wording in Appendix I.2). This task aimed to evaluate how users personalized the interface for work-related exploration, where deeper engagement might occur naturally. Participants used all interface features, especially filters and user-defined aspects, while screensharing (recorded by the research team as well) with optional thinking aloud and note taking. The task also lasted 15 minutes with a 5-minute reminder."
           },
           {
             "paragraph_number": 4,
-            "text": "6.2.4 Interview and Post-Study Survey. Immediately after the focused reading task, we conducted a short interview asking participants to reflect on their experience with both tasks (Appendix J.2), followed by a post-study survey (Appendix J.3). Throughout the two tasks, we also collected detailed interaction logs including counts of user-defined aspects created, duration of highlighting usage, and time allocation across the three possible alignment options."
+            "text": "Interview and Post-Study Survey. Immediately after the focused reading task, we conducted a short interview asking participants to reflect on their experience with both tasks (Appendix J.2), followed by a post-study survey (Appendix J.3). Throughout the two tasks, we also collected detailed interaction logs including counts of user-defined aspects created, duration of highlighting usage, and time allocation across the three possible alignment options."
           }
         ]
       }
@@ -467,7 +467,7 @@
   },
   {
     "section_name": "Results",
-    "section_number": "7",
+    "section_number": "8",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -481,11 +481,11 @@
     "subsections": [
       {
         "section_name": "SMT-Inspired Chunk Ordering, Highlighting and Alignment",
-        "section_number": "7.1",
+        "section_number": "8.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
-            "text": "7.1.1 Skimming similarly structured sentences efficiently. More than half of the participants noted that AbstractExplorer increased their reading or skimming efficiency (P1, P4, P6, P9, P10, P11, P14, P15, P16). As for how it helped, many participants mentioned the two main features they noticed—highlighting and alignment. For instance, P15 said “The color coding is quite effective for skimming; the alignment also helps and is flexible enough to accommodate different situations.” P9 further explained, “It allows me to focus on analogous sentences across papers. It’s easier to read the same type of sentences with similar sentence structures.” Similarly, P10 reported faster reading through what they described as vertical reading, which we also observed in the Ablation Study (Section 5). We observed this strategy among multiple summative study participants, i.e., skimming similarly colored chunks across sentences. Using this strategy, participants focused primarily on one highlighted cross-sentence block of same-colored chunks and moved across sentences quickly, reading other chunks only when necessary. P3 and P6 also utilized this reading strategy and kept highlighting on for just their chosen focal chunk roles to minimize distractions."
+            "text": "Skimming similarly structured sentences efficiently. More than half of the participants noted that AbstractExplorer increased their reading or skimming efficiency (P1, P4, P6, P9, P10, P11, P14, P15, P16). As for how it helped, many participants mentioned the two main features they noticed—highlighting and alignment. For instance, P15 said “The color coding is quite effective for skimming; the alignment also helps and is flexible enough to accommodate different situations.” P9 further explained, “It allows me to focus on analogous sentences across papers. It’s easier to read the same type of sentences with similar sentence structures.” Similarly, P10 reported faster reading through what they described as vertical reading, which we also observed in the Ablation Study (Section 5). We observed this strategy among multiple summative study participants, i.e., skimming similarly colored chunks across sentences. Using this strategy, participants focused primarily on one highlighted cross-sentence block of same-colored chunks and moved across sentences quickly, reading other chunks only when necessary. P3 and P6 also utilized this reading strategy and kept highlighting on for just their chosen focal chunk roles to minimize distractions."
           },
           {
             "paragraph_number": 1,
@@ -497,15 +497,15 @@
           },
           {
             "paragraph_number": 3,
-            "text": "7.1.2 Reading Sentences at Scale. As reflected in Figure 11, participants highlighted how the interface scaled up the number of papers they could review (P2, P4, P9, P11, P16), finding the interface to be highly helpful for exploring a greater number (M=6.19, STD=0.91) and broader range (M=5.94, STD=1.18) of paper abstracts along a given aspect than they typically would. For example, P2 said, “It’s very helpful in getting familiar with large numbers of articles/topics in a short time, esp. most papers have the similar structure.” Similarly, P16 wrote, “The way it groups and renders sentences make it very easy to skim through many papers in this conference, something hard to do with traditional interfaces.” P9 also noted reading a greater number and diversity of abstracts in the same timeframe with Abstract- Explorer. Participants also rated the interface as very helpful for discovering otherwise-missed papers (M=5.81, STD=1.22). Many mentioned serendipitous discoveries of new papers (P4, P8, P11) and a more comprehensive grasp of the collection (P7, P11, P15). As P4 remarked, “I ran into many interesting papers that I will probably miss if using a traditional reader.”"
+            "text": "Reading Sentences at Scale. As reflected in Figure 11, participants highlighted how the interface scaled up the number of papers they could review (P2, P4, P9, P11, P16), finding the interface to be highly helpful for exploring a greater number (M=6.19, STD=0.91) and broader range (M=5.94, STD=1.18) of paper abstracts along a given aspect than they typically would. For example, P2 said, “It’s very helpful in getting familiar with large numbers of articles/topics in a short time, esp. most papers have the similar structure.” Similarly, P16 wrote, “The way it groups and renders sentences make it very easy to skim through many papers in this conference, something hard to do with traditional interfaces.” P9 also noted reading a greater number and diversity of abstracts in the same timeframe with Abstract- Explorer. Participants also rated the interface as very helpful for discovering otherwise-missed papers (M=5.81, STD=1.22). Many mentioned serendipitous discoveries of new papers (P4, P8, P11) and a more comprehensive grasp of the collection (P7, P11, P15). As P4 remarked, “I ran into many interesting papers that I will probably miss if using a traditional reader.”"
           },
           {
             "paragraph_number": 4,
-            "text": "7.1.3 Comparing sentences to find common patterns and outliers. Participants leveraged chunk highlighting and alignment for crosspaper comparison as well. For instance, P5 valued how the interface enabled them to “compare a well-defined aspect across selected papers, such as methodology and study size.” Beyond identifying differences, participants rated the interface as very helpful for recognizing common patterns in CHI abstracts (M=5.81, STD=1.17) (Figure 11) and discovered interesting patterns in both content and writing style (P2, P4, P8, P14). For example, P2 noted a recurring sentence structure “we developed xxx, using xxx, showing xxx” when authors introduced novel systems, while P4 investigated typical participant counts for different study types. Two participants (P4, P14) reported that recognizing these common patterns helped them write their own abstracts for HCI venues."
+            "text": "Comparing sentences to find common patterns and outliers. Participants leveraged chunk highlighting and alignment for crosspaper comparison as well. For instance, P5 valued how the interface enabled them to “compare a well-defined aspect across selected papers, such as methodology and study size.” Beyond identifying differences, participants rated the interface as very helpful for recognizing common patterns in CHI abstracts (M=5.81, STD=1.17) (Figure 11) and discovered interesting patterns in both content and writing style (P2, P4, P8, P14). For example, P2 noted a recurring sentence structure “we developed xxx, using xxx, showing xxx” when authors introduced novel systems, while P4 investigated typical participant counts for different study types. Two participants (P4, P14) reported that recognizing these common patterns helped them write their own abstracts for HCI venues."
           },
           {
             "paragraph_number": 5,
-            "text": "7.1.4 Improving readability, context, and classification accuracy. Despite broad preference for the AbstractExplorer interface, participants identified several opportunities for improvement. Two noted that the need for horizontal scrolling interfered with skimming. P10 said that “horizontal scroll makes switching to different lines a bit hard,” and P6 added that “some sentences are too long, requiring users to scroll to the end. Implementing a Line Break Mode or providing sentence breakdowns/summarization could improve readability.” While some found the interface “visually appealing” (P4), “intuitive,” and “not too cluttered” (P7), others described it as “overwhelming” (P8, P16). P8 elaborated, “There are so many colors, sometimes it distracted me or [made me] lose my attention.”"
+            "text": "Improving readability, context, and classification accuracy. Despite broad preference for the AbstractExplorer interface, participants identified several opportunities for improvement. Two noted that the need for horizontal scrolling interfered with skimming. P10 said that “horizontal scroll makes switching to different lines a bit hard,” and P6 added that “some sentences are too long, requiring users to scroll to the end. Implementing a Line Break Mode or providing sentence breakdowns/summarization could improve readability.” While some found the interface “visually appealing” (P4), “intuitive,” and “not too cluttered” (P7), others described it as “overwhelming” (P8, P16). P8 elaborated, “There are so many colors, sometimes it distracted me or [made me] lose my attention.”"
           },
           {
             "paragraph_number": 6,
@@ -515,7 +515,7 @@
       },
       {
         "section_name": "User-Defined Aspects",
-        "section_number": "7.2",
+        "section_number": "8.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -529,7 +529,7 @@
       },
       {
         "section_name": "Real-World Usages",
-        "section_number": "7.3",
+        "section_number": "8.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -541,7 +541,7 @@
   },
   {
     "section_name": "Discussion",
-    "section_number": "8",
+    "section_number": "9",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -551,7 +551,7 @@
     "subsections": [
       {
         "section_name": "Rethinking Sensemaking and Information Seeking Paradigms",
-        "section_number": "8.1",
+        "section_number": "9.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -569,7 +569,7 @@
       },
       {
         "section_name": "Facilitating Structured Variation Seeking to Invite Cognitive Engagement",
-        "section_number": "8.2",
+        "section_number": "9.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -583,7 +583,7 @@
       },
       {
         "section_name": "Limitations and Future Work",
-        "section_number": "8.3",
+        "section_number": "9.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -599,7 +599,7 @@
   },
   {
     "section_name": "Acknowledgments",
-    "section_number": null,
+    "section_number": "10",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -610,7 +610,7 @@
   },
   {
     "section_name": "References",
-    "section_number": null,
+    "section_number": "11",
     "paragraphs": [],
     "subsections": []
   }

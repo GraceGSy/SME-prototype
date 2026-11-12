@@ -175,6 +175,16 @@ def inspect_document(
             key = tuple(token.casefold() for token in _tokens(candidate))
             if key:
                 headings.setdefault(key, []).append(unit.unit_id)
+    # The reference may use printed numbers while the extraction uses local
+    # numbers. Match an entire titled heading, not numbers inside prose.
+    for line in source_text.splitlines():
+        printed = re.fullmatch(r"\s*(?:\d+(?:\.\d+)*|[IVXLCDM]+|[A-Z])[.)]?\s+(.+?)\s*", line)
+        if printed:
+            title = tuple(token.casefold() for token in _tokens(printed[1]))
+            if title in headings:
+                headings.setdefault(
+                    tuple(token.casefold() for token in _tokens(line)), headings[title]
+                )
     blocks = []
     for block in re.split(r"\n\s*\n", source_text.replace("\r\n", "\n")):
         lines = []

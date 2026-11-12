@@ -46,6 +46,7 @@ class Paragraph(StrictModel):
 
 class Section(StrictModel):
     id: str
+    number: str = ""
     label: str = ""
     text: str
     paragraphs: list[Paragraph] = Field(default_factory=list)

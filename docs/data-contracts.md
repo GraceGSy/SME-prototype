@@ -11,14 +11,14 @@ and malformed model output rather than normalizing them.
 [
   {
     "section_name": "Results",
-    "section_number": "4",
+    "section_number": "1",
     "paragraphs": [
       {"paragraph_number": 0, "text": "Lead-in text."}
     ],
     "subsections": [
       {
         "section_name": "Findings",
-        "section_number": "4.1",
+        "section_number": "1.1",
         "paragraphs": [
           {"paragraph_number": 0, "text": "Finding text."}
         ]
@@ -28,7 +28,9 @@ and malformed model output rather than normalizing them.
 ]
 ```
 
-Only source-marked divisions belong here. Paragraph numbers are exact integers,
+The extractor numbers top-level sections from 1 in source order (including the
+abstract) and restarts subsection numbers at each parent, e.g. 3.1, 3.2. Original
+section references inside prose are not rewritten. Paragraph storage indexes are exact integers,
 zero-based, contiguous, and restart inside each paragraph array. Text must be a
 nonblank string; its whitespace is preserved. Unknown fields are errors.
 

@@ -676,7 +676,7 @@ class IncrementalGraphTest(unittest.TestCase):
             )
             descriptor = validate_dataset(revision / "dataset", "hci-five", "HCI Five")
             self.assertEqual(descriptor["paper_count"], 5)
-            self.assertEqual(descriptor["paragraph_count"], 459)
+            self.assertEqual(descriptor["paragraph_count"], 464)
             self.assertFalse((revision / "dataset" / "graph_categories.json").exists())
             snapshot = json.loads(
                 (revision / "dataset" / "final_snapshot.json").read_text(encoding="utf-8")

@@ -1,7 +1,7 @@
 [
   {
     "section_name": "ABSTRACT",
-    "section_number": null,
+    "section_number": "1",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -12,7 +12,7 @@
   },
   {
     "section_name": "INTRODUCTION",
-    "section_number": null,
+    "section_number": "2",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -51,12 +51,12 @@
   },
   {
     "section_name": "RELATED WORK",
-    "section_number": null,
+    "section_number": "3",
     "paragraphs": [],
     "subsections": [
       {
         "section_name": "Interfaces for Exploring Collections of Complex Objects",
-        "section_number": null,
+        "section_number": "3.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -78,7 +78,7 @@
       },
       {
         "section_name": "Learning APIs with Code Examples",
-        "section_number": null,
+        "section_number": "3.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -96,7 +96,7 @@
       },
       {
         "section_name": "Mining and Visualization of API Usage",
-        "section_number": null,
+        "section_number": "3.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -116,7 +116,7 @@
   },
   {
     "section_name": "SYNTHETIC CODE SKELETON",
-    "section_number": null,
+    "section_number": "4",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -139,7 +139,7 @@
   },
   {
     "section_name": "SCENARIO: INTERACTING WITH CODE DISTRIBUTIONS",
-    "section_number": null,
+    "section_number": "5",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -170,7 +170,7 @@
   },
   {
     "section_name": "SYSTEM ARCHITECTURE AND IMPLEMENTATION",
-    "section_number": null,
+    "section_number": "6",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -180,7 +180,7 @@
     "subsections": [
       {
         "section_name": "Data Collection",
-        "section_number": null,
+        "section_number": "6.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -190,7 +190,7 @@
       },
       {
         "section_name": "Post-processing",
-        "section_number": null,
+        "section_number": "6.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -212,7 +212,7 @@
       },
       {
         "section_name": "Visualization",
-        "section_number": null,
+        "section_number": "6.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -224,7 +224,7 @@
   },
   {
     "section_name": "USER STUDY",
-    "section_number": null,
+    "section_number": "7",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -234,7 +234,7 @@
     "subsections": [
       {
         "section_name": "API Methods",
-        "section_number": null,
+        "section_number": "7.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -248,7 +248,7 @@
       },
       {
         "section_name": "Participants",
-        "section_number": null,
+        "section_number": "7.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -258,7 +258,7 @@
       },
       {
         "section_name": "Methodology",
-        "section_number": null,
+        "section_number": "7.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -282,12 +282,12 @@
   },
   {
     "section_name": "RESULTS",
-    "section_number": null,
+    "section_number": "8",
     "paragraphs": [],
     "subsections": [
       {
         "section_name": "Quantitative Analysis",
-        "section_number": null,
+        "section_number": "8.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -321,7 +321,7 @@
       },
       {
         "section_name": "Qualitative Analysis",
-        "section_number": null,
+        "section_number": "8.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -345,7 +345,7 @@
   },
   {
     "section_name": "DISCUSSION AND LIMITATIONS",
-    "section_number": null,
+    "section_number": "9",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -368,7 +368,7 @@
   },
   {
     "section_name": "CONCLUSION",
-    "section_number": null,
+    "section_number": "10",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -379,7 +379,7 @@
   },
   {
     "section_name": "ACKNOWLEDGMENTS",
-    "section_number": null,
+    "section_number": "11",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -390,7 +390,7 @@
   },
   {
     "section_name": "REFERENCES",
-    "section_number": null,
+    "section_number": "12",
     "paragraphs": [],
     "subsections": []
   }

@@ -6,6 +6,8 @@ array positions so model-generated labels and questions never become identity.
 
 from __future__ import annotations
 
+import re
+from copy import deepcopy
 from dataclasses import dataclass
 from typing import Any, Iterator, Literal
 
@@ -78,6 +80,42 @@ def strip_questions(value: Any) -> Any:
 
 def section_unit_id(section_index: int) -> str:
     return f"s{section_index + 1:04d}"
+
+
+def relabel_extraction(document: Any) -> list[dict[str, Any]]:
+    """Assign local numbers from the ordered hierarchy, never from citations or prose."""
+    result = deepcopy(document)
+    if not isinstance(result, list):
+        raise ValueError("A document must be a JSON array")
+
+    def label(unit, number):
+        if not isinstance(unit, dict) or not isinstance(unit.get("paragraphs"), list):
+            raise ValueError("Expected an ordered structural unit and its paragraphs")
+        old = unit.get("section_number")
+        if old is not None and not isinstance(old, str):
+            raise ValueError("Invalid source section number")
+        if old and isinstance(unit.get("section_name"), str):
+            unit["section_name"] = re.sub(
+                r"^" + re.escape(old) + r"[.):]?\s+", "", unit["section_name"]
+            )
+        unit["section_number"] = number
+        for i, paragraph in enumerate(unit["paragraphs"]):
+            if (
+                not isinstance(paragraph, dict)
+                or type(paragraph.get("paragraph_number")) is not int
+                or paragraph["paragraph_number"] < 0
+            ):
+                raise ValueError("Paragraph number must be a non-negative integer")
+            paragraph["paragraph_number"] = i
+
+    for i, section in enumerate(result, 1):
+        label(section, str(i))
+        if not isinstance(section.get("subsections"), list):
+            raise ValueError("Expected an ordered list of subsections")
+        for j, subsection in enumerate(section["subsections"], 1):
+            label(subsection, f"{i}.{j}")
+    validate_document(result)
+    return result
 
 
 def subsection_unit_id(section_index: int, subsection_index: int) -> str:

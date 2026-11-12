@@ -2,7 +2,9 @@
 
 The request supplies a PDF and an ordered manifest of known top-level sections
 and subsections. Preserve the manifest's section names and numbers. Locate those
-boundaries in the PDF; do not decide new section or subsection identities.
+boundaries in the PDF; do not decide new section or subsection identities. If no
+manifest is supplied, follow the PDF headings in reading order. Put the printed
+number in the number field, not in the title; Python assigns final local numbers.
 
 1. Extract `pdftotext -layout` text and `pdfplumber` word positions once for the
    complete PDF. Detect recurring running headers and footers across pages and
@@ -22,7 +24,11 @@ boundaries in the PDF; do not decide new section or subsection identities.
 6. Exclude running chrome, page numbers, figure and table captions, chart labels,
    and non-substantive footnote markers. Keep lists together unless the source
    clearly presents separate prose paragraphs. Merge a standalone lower-level
-   heading forward into the prose paragraph it introduces.
+   heading forward into the prose paragraph it introduces, keeping the heading
+   words but omitting its printed outline marker. Preserve numeric citations,
+   measurements, numbered lists and in-text references to the original sections.
+   Follow body text below tables and across columns; excluding a table must not
+   exclude the paragraphs that resume beneath it.
 7. Check that every source span is represented exactly once and in order. The
    last subsection runs to its enclosing top-level section boundary; never move
    later text into the top-level lead-in.
