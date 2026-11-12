@@ -22,6 +22,24 @@ def parse_json(text: str, schema: dict[str, Any], response_id: str) -> Any:
     return validate_value(json.loads(text), schema, response_id)
 
 
+def send_recorded(create, directory, provider, parameters):
+    """Keep failed SDK requests inspectable without storing headers or exception text."""
+    try:
+        return create(**parameters)
+    except Exception as exc:
+        if directory is not None:
+            write_json(
+                directory / f"{uuid4().hex}.json",
+                {
+                    "provider": provider,
+                    "request_parameters": parameters,
+                    "error_type": type(exc).__name__,
+                    "http_status": getattr(exc, "status_code", None),
+                },
+            )
+        raise
+
+
 def save_response(
     directory: Path | None,
     *,
@@ -33,6 +51,7 @@ def save_response(
     messages: list[dict[str, Any]],
     input_tokens: int,
     api_schema: dict[str, Any] | None = None,
+    request_parameters: dict[str, Any] | None = None,
 ) -> None:
     """Call before budget, completion, and JSON checks to retain paid responses."""
     if directory is None:
@@ -54,6 +73,10 @@ def save_response(
     }
     if api_schema is not None:
         record["api_schema"] = api_schema
+    if request_parameters is not None:
+        # Messages already live in this receipt; do not duplicate the input text.
+        field = "messages" if provider == "anthropic" else "input"
+        record["request_parameters"] = {k: v for k, v in request_parameters.items() if k != field}
     write_json(directory / f"{uuid4().hex}.json", record)
 
 

@@ -16,7 +16,7 @@ from .contracts import (
 )
 from .limits import SessionLimits
 from .registry import SkillRegistry, load_api_key
-from .responses import parse_json, save_response, usage_record, without_constraints
+from .responses import parse_json, save_response, send_recorded, usage_record, without_constraints
 
 MESSAGE_BETAS = [
     "code-execution-2025-08-25",
@@ -188,7 +188,7 @@ class ClaudeSkills(SessionLimits):
             for skill in skills
         ]
         self._check_session_budget()
-        response = self.client.beta.messages.create(
+        parameters = dict(
             model=self.model,
             max_tokens=policy.max_tokens,
             betas=MESSAGE_BETAS,
@@ -219,10 +219,15 @@ class ClaudeSkills(SessionLimits):
                 ]
             },
         )
+        directory = getattr(self, "response_dir", None)
+        response = send_recorded(
+            self.client.beta.messages.create, directory, "anthropic", parameters
+        )
         response_usage = response.usage.model_dump(mode="json") if response.usage else {}
         # Persist paid evidence before any budget, stop-reason, or JSON rejection.
         save_response(
-            getattr(self, "response_dir", None),
+            directory,
+            request_parameters=parameters,
             provider="anthropic",
             response=response.model_dump(mode="json"),
             usage=response_usage,

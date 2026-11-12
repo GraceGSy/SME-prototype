@@ -17,7 +17,14 @@ from .contracts import (
 )
 from .limits import SessionLimits
 from .registry import SkillRegistry, load_api_key
-from .responses import parse_json, save_response, usage_record, validate_value, without_constraints
+from .responses import (
+    parse_json,
+    save_response,
+    send_recorded,
+    usage_record,
+    validate_value,
+    without_constraints,
+)
 
 PROVIDER_PROMPTS = request_prompts("providers")
 INSTRUCTIONS = PROVIDER_PROMPTS["openai"]
@@ -141,7 +148,7 @@ class OpenAISkills(SessionLimits):
         if file_ids:
             environment["file_ids"] = file_ids
         messages = [{"role": "user", "content": content}]
-        response = self.client.responses.create(
+        parameters = dict(
             model=self.model,
             instructions=INSTRUCTIONS
             + (PROVIDER_PROMPTS["openai_result_wrapper"] if wrapped else ""),
@@ -162,6 +169,9 @@ class OpenAISkills(SessionLimits):
             # The pinned SDK predates explicit cache controls, but preserves extra_body.
             extra_body={"prompt_cache_options": {"mode": "explicit", "ttl": "30m"}},
         )
+        response = send_recorded(
+            self.client.responses.create, self.response_dir, "openai", parameters
+        )
         raw_response = response.model_dump(mode="json")
         raw_usage = response.usage.model_dump(mode="json") if response.usage else {}
         # OpenAI input_tokens already includes cache reads and writes. Do not add them again.
@@ -169,6 +179,7 @@ class OpenAISkills(SessionLimits):
         save_response(
             self.response_dir,
             provider="openai",
+            request_parameters=parameters,
             response=raw_response,
             usage=raw_usage,
             policy=policy,
