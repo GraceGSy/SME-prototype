@@ -70,8 +70,8 @@ class JudgmentCacheTest(unittest.TestCase):
     def test_question_prompts_do_not_cache_unique_evidence(self):
         config = load_pipeline_config(CONFIG_PATH)
         rendered = PromptRepository(config.prompt_root, config.context_root).render(
-            "section-question/v1",
-            "section-question",
+            "section-role-statement/v1",
+            "section-role-statement",
             {"paper": {"title": "Title"}, "section": {"full_text": "Unique evidence"}},
         )
         self.assertIsNone(rendered.cacheable_context)

@@ -4,7 +4,7 @@ Jev selects model-judged matches in initial and singleton-recovery passes, inclu
 paragraphs moved into a new structural scope. Single-paragraph structural matches
 inherit their paragraph match without a model call, as described below. Python controls candidate
 eligibility, reciprocity, paragraph fan-in, evidence validation, and graph updates.
-The existing generative provider still writes missing questions, group questions,
+The existing generative provider still writes missing role statements, group role statements,
 and explanations with source quotations. **A TypeSafe key alone is not enough:
 the default Jev run needs both `TYPESAFE_API_KEY` and `ANTHROPIC_API_KEY`.**
 
@@ -27,7 +27,7 @@ not an established structural match.
 The run records both inherited directions with `provider: deterministic`, rule
 `single_paragraph_structural_match`, the parent group ID, and validated source
 excerpts. Normal graph reconciliation and viewer export remain in place. These
-excerpts document inheritance; they are not new model judgments. Question
+excerpts document inheritance; they are not new model judgments. Role statement
 generation is unchanged. The HCI funding pair now takes this path after its
 Acknowledgments sections match, so neither Choice nor Noul can reject it again.
 
@@ -67,7 +67,7 @@ deterministic Python steps. No striped or mixed-responsibility boxes remain.
 
 ![A. Run lifecycle, document insertion, and comparison](diagrams/jev-pipeline.png)
 
-Read A's numbered columns in order. They separate question generation, Jev
+Read A's numbered columns in order. They separate role statement generation, Jev
 selection, fixed-target explanations, validation, reconciliation, and recovery.
 Named connectors continue execution in another column. Each matching sequence
 runs once per directional request before Python reconciles the complete set.
@@ -159,7 +159,7 @@ verification; Jev always uses the separate TypeSafe key.
 ## Minimal live Jev run
 
 The fixture contains two synthetic documents with two sections and two paragraphs
-each. Stored unit questions avoid unnecessary generation. One pair describes the
+each. Stored unit role statements avoid unnecessary generation. One pair describes the
 same interruption mechanism in different domains; the remaining units have
 different roles. These inputs are manually authored, so no extraction is needed.
 
@@ -170,7 +170,7 @@ python -m pipeline.incremental_graph.cli validate datasets/jev-smoke/manifest.ya
 ```
 
 Expect `water`, then `warning`, each with two sections, two paragraphs, and zero
-missing questions. After setting both keys, run:
+missing role statements. After setting both keys, run:
 
 ```bash
 python -m pipeline.incremental_graph.cli start datasets/jev-smoke/manifest.yaml runs/jev-smoke-01 --jev --jev-model jev-1.14.0
@@ -204,7 +204,7 @@ they retain gate probabilities, all returned ranking probabilities, and the
 local-label-to-ID map when applicable. A negative gate produces no ranking.
 An `accepted_match_explained` event links the vote, reciprocal vote (when
 applicable), and explanation attempt. Paragraph singleton recovery uses the
-same two directional prompts; group questions are generated after recovery.
+same two directional prompts; group role statements are generated after recovery.
 
 Each phase caches its validated response by the hash of its exact request.
 A retry after a ranking failure reuses the gate. A new positive multi-candidate
@@ -266,7 +266,7 @@ python -m pipeline.viewer.server runs --port 8073
 ```
 
 Open `http://127.0.0.1:8073/`, select `jev-smoke-01`, then its completed revision.
-Use Question Groups for memberships and quotations, Paper Map for the individual
+Use Passage Groups for memberships and quotations, Paper Map for the individual
 documents, or Graphical Explorer for the layout. Two documents are sufficient.
 Keep the server terminal open; Ctrl+C stops it. The viewer makes no model calls
 and exposes the exported dataset rather than credentials or private caches.
@@ -313,14 +313,14 @@ calls. It uses the existing pinned NetworkX dependency. The HTML report includes
   outlines mark added partners, and gray outlines mark retained partners. Lines
   connect each cross-paper partner to the source. Colors describe changes, not
   correctness. Click a compact box to read the full passage in a dialog, or turn
-  on full text on all cards. Group questions and parent scopes stay collapsed
+  on full text on all cards. Group role statements and parent scopes stay collapsed
   beneath each row. Same-paper group members appear as separate labeled chips.
 - **Review controls:** switch between paragraphs and structural units, filter by
-  paper or change type, and search passages, partner text, source IDs, or questions.
+  paper or change type, and search passages, partner text, source IDs, or role statements.
   Changes and shared matches appear together by default. Click **View shared
   matches** or select **Shared matches (in both runs)** to see sources with a
   cross-paper partner retained in both runs, even when other partners changed.
-  Gray `= Shared match` boxes and row badges identify those shared pairs; question
+  Gray `= Shared match` boxes and row badges identify those shared pairs; role statement
   wording and parent scope may still differ. The shared-pair count in the result
   line follows the current filters and counts each pair once.
   The view starts from the first paper to avoid duplicate pair perspectives;
@@ -341,16 +341,16 @@ calls. It uses the existing pinned NetworkX dependency. The HTML report includes
   also preserves source IDs, so similarly shaped but unrelated matches do not
   count as equivalent.
 - **Group alignment:** NetworkX `max_weight_matching` finds a global one-to-one
-  alignment maximizing shared-member counts, without using question wording.
+  alignment maximizing shared-member counts, without using role statement wording.
   Unaligned groups count as zero in mean membership Jaccard. Overlap counts expose
   possible splits and merges; this alignment does not prove semantic equivalence.
-- **Question similarity:** normalized exact agreement, token-set Jaccard, and
-  TF-IDF cosine for source-unit questions and aligned cross-paper group questions.
+- **Role statement similarity:** normalized exact agreement, token-set Jaccard, and
+  TF-IDF cosine for source-unit role statements and aligned cross-paper group role statements.
   These measure wording, not meaning. TF-IDF uses raw token counts and smoothed
-  IDF fitted separately on each comparison's nonempty question pairs; scores from
-  different comparison corpora are not calibrated. Missing questions are excluded.
+  IDF fitted separately on each comparison's nonempty role statement pairs; scores from
+  different comparison corpora are not calibrated. Missing role statements are excluded.
 - **Review details:** added/lost pairs with source passages, aligned group
-  questions, unit-question changes, and membership changes separated from
+  role statements, unit-role statement changes, and membership changes separated from
   parent-scope-only changes. `comparison.json` contains the complete metric data.
 
 Comparisons ignore generated group IDs. By default, shared papers must have the
@@ -388,7 +388,7 @@ It compares AbstractExplorer and CorpusStudio, using the completed revisions bel
 The HTML embeds its data, styles, and browser code. It works locally without a
 server and can be hosted as a static site alongside `comparison.json`. Add
 `--public` to omit local filesystem paths; this still publishes source passages,
-questions, memberships, and model settings, so review the inputs before sharing.
+role statements, memberships, and model settings, so review the inputs before sharing.
 No API credentials, provider caches, or run directories need to be uploaded.
 
 The Jev-versus-LLM demo uses the same two papers and subsection granularity:
@@ -511,8 +511,8 @@ with one named question per request. The gate and ranking prompts are in
 the **focus first**, then the candidates. For the forward vote the focus is the
 incoming unit; for the reverse vote it is the existing unit or group. The gate
 and ranking use the same outline. Within each block, passages follow source order.
-Section headings and questions sit beside the source; paragraph rows carry the
-full text and available question. Section comparisons show their constituent
+Section headings and role statements sit beside the source; paragraph rows carry the
+full text and available role statement. Section comparisons show their constituent
 paragraphs, paragraph comparisons also show immediate neighbors as context.
 Overlapping windows and parent/subsection scopes share physical occurrences, not
 equal strings at different positions.
@@ -522,7 +522,7 @@ The paragraph marker distinguishes the first paragraph of section 3 (`C3:p1`)
 from its first subsection (`C3.1`). Historical runs retain their original addresses. An individual
 option uses its address; a multi-member option uses a label such as `Group P3`.
 Python maps labels to handles in `option_ids`. Accepted section and paragraph
-memberships at vote time appear beside visible members, with the group question
+memberships at vote time appear beside visible members, with the group role statement
 once. Only off-screen member addresses go at the end; one-way votes, later
 decisions and the synthetic shared root are not prior matches. Old frozen inputs
 without source coordinates retain full windows, focus first; the renderer does
@@ -579,7 +579,7 @@ Within `runs/<name>/`:
 | `inputs/`                             | Frozen prepared source documents and manifest                                  |
 | `cache/jev/<hash>.json`               | Exact Jev request and validated selection, independent of generated evidence   |
 | `cache/jev/responses/`                | Raw response records, including responses rejected by validation               |
-| `cache/<hash>.json`                   | Complete validated questions/matches, Jev traces, and generated evidence       |
+| `cache/<hash>.json`                   | Complete validated role statements/matches, Jev traces, and generated evidence       |
 | `cache/responses/`, `cache/rejected/` | Generative responses and rejected evidence for diagnosis                       |
 | `revisions/revision-XXXX/`            | Attempt outputs; completed attempts include reports and `dataset/`             |
 | `revisions/revision-XXXX/config.json` | Full configuration used for that attempt, including its budgets and timeout    |

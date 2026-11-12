@@ -30,8 +30,8 @@ export async function localDatasetBase(): Promise<URL | null> {
     const legend = document.querySelector<HTMLElement>("#legend");
     if (legend)
       legend.textContent = run.sourceTextRevisions?.includes(revision)
-        ? "This run includes the original Reuters paragraphs alongside the questions and matches."
-        : "This run shows questions and group memberships without the source passages.";
+        ? "This run includes the original Reuters paragraphs alongside the passage labels and matches."
+        : "This run shows passage labels and group memberships without the source passages.";
   }
   const form = document.createElement("form");
   form.className = "local-runs";

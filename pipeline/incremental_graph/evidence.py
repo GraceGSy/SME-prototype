@@ -5,12 +5,12 @@ from __future__ import annotations
 from typing import Any
 
 from .evidence_encoding import source_address
-from .graph import QuestionGraph
+from .graph import RoleGraph
 from .models import InsertionState, Paper, Paragraph, Section
 
 
 class Evidence:
-    def __init__(self, graph: QuestionGraph):
+    def __init__(self, graph: RoleGraph):
         self.graph = graph
         self.section_lookup: dict[tuple[str, str], Section] = {}
         self.paragraph_lookup: dict[tuple[str, str], tuple[Section, Paragraph]] = {}
@@ -58,7 +58,7 @@ class Evidence:
         data = self.graph.node(group_id)
         return {
             "group_id": group_id,
-            "generated_question_metadata": data.get("generated_question", ""),
+            "role_statement": data.get("role_statement", ""),
             "members": [
                 self.unit_context(member["paper_id"], member["unit_id"], data["level"])
                 for member in data["members"]
@@ -104,7 +104,7 @@ class Evidence:
             "parent_unit_id": section.parent_id,
             "family_id": section.family_id,
             "ordinal": section.ordinal,
-            "generated_question_metadata": section.question,
+            "role_statement": section.role_statement,
             "full_text": section.text,
         }
 
@@ -131,14 +131,14 @@ class Evidence:
             "paragraph_id": paragraph.id,
             "paragraph_label": paragraph.label,
             "ordinal": paragraph.ordinal,
-            "generated_question_metadata": paragraph.question,
+            "role_statement": paragraph.role_statement,
             "full_text": paragraph.text,
             "parent_section": {
                 "section_id": section.id,
                 "section_label": section.label,
                 "unit_kind": section.kind,
                 "family_id": section.family_id,
-                "generated_question_metadata": section.question,
+                "role_statement": section.role_statement,
             },
         }
 
@@ -161,7 +161,7 @@ class Evidence:
             ),
             "paragraph_under_consideration": {
                 "full_text": paragraph.text,
-                "generated_question_metadata": paragraph.question,
+                "role_statement": paragraph.role_statement,
             },
             "next_paragraph": self.neighbor_text(
                 section.paragraphs[position + 1] if position + 1 < len(section.paragraphs) else None
@@ -181,7 +181,7 @@ class Evidence:
 
         data = self.graph.node(group_id)
         context = {
-            "generated_question_metadata": data.get("generated_question", ""),
+            "role_statement": data.get("role_statement", ""),
             "members": [
                 self.paragraph_match_context(member["paper_id"], member["unit_id"])
                 for member in data["members"]
@@ -239,7 +239,7 @@ class Evidence:
         return self.structural_match_group(group_id)
 
     def jev_annotations(self, context: dict, shared_root_id: str | None) -> dict:
-        """Snapshot headings, questions and accepted memberships at the time of the vote."""
+        """Snapshot headings, role_statements and accepted memberships at the time of the vote."""
         visible = set()
         for node in [context["focus"], *context["candidates"]]:
             for unit in node.get("members", [node]):
@@ -254,9 +254,9 @@ class Evidence:
             paper, sec = self.paper_keys[paper_id], self.section_positions[paper_id, sid]
             if (paper, sec) not in visible:
                 continue
-            metadata[self.address(paper, sec)] = (section.label, section.question)
+            metadata[self.address(paper, sec)] = (section.label, section.role_statement)
             for i, para in enumerate(section.paragraphs, 1):
-                metadata[self.address(paper, sec, i)] = ("", para.question)
+                metadata[self.address(paper, sec, i)] = ("", para.role_statement)
 
         groups = {}
         for level in ("section", "paragraph"):
@@ -281,14 +281,14 @@ class Evidence:
                 label = f"{level[0].upper()}{self.source_ordinals[ordered[0]]}"
                 groups[label] = {
                     "members": {addr: members[addr] for addr in ordered},
-                    "question": node.get("generated_question", ""),
+                    "role_statement": node.get("role_statement", ""),
                 }
         return {"units": metadata, "groups": groups, "numbers": dict(self.section_numbers)}
 
     def scope_context(self, level: str, parent_id: str | None) -> dict[str, Any]:
         scope = {"level": level, "parent_group_id": parent_id}
         if parent_id:
-            scope["parent_group_question_metadata"] = self.graph.node(parent_id).get(
-                "generated_question", ""
+            scope["parent_group_role_statement"] = self.graph.node(parent_id).get(
+                "role_statement", ""
             )
         return scope

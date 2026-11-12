@@ -5,9 +5,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from pipeline.document import QUESTION_FIELD
+from pipeline.document import ROLE_FIELD
 from pipeline.incremental_graph.configuration import load_pipeline_config
-from pipeline.incremental_graph.graph import QuestionGraph, graph_from_events, stable_id
+from pipeline.incremental_graph.graph import RoleGraph, graph_from_events, stable_id
 from pipeline.incremental_graph.input_data import load_manifest, load_paper
 from pipeline.incremental_graph.journal import RevisionJournal
 from pipeline.incremental_graph.models import (
@@ -58,9 +58,9 @@ class ScriptedJudge:
 
     def judge(self, request):
         self.requests.append(request)
-        if request.output_kind == "question":
+        if request.output_kind == "role_statement":
             focus = request.key.rsplit(":", 1)[-1]
-            normalized = {QUESTION_FIELD: f"What does {focus} address?"}
+            normalized = {ROLE_FIELD: f"Establishes the purpose of {focus}."}
         else:
             normalized = {
                 "target_id": self.matches.get(request.key),
@@ -80,7 +80,7 @@ class ScriptedJudge:
 
 
 class IncrementalGraphTest(unittest.TestCase):
-    def test_reuses_questions_already_present_in_canonical_input(self) -> None:
+    def test_reuses_role_statements_already_present_in_canonical_input(self) -> None:
         decorated = Paper(
             paper_id="p1",
             title="P1",
@@ -88,12 +88,12 @@ class IncrementalGraphTest(unittest.TestCase):
                 Section(
                     id="s1",
                     text="Section text",
-                    question="What does the section establish?",
+                    role_statement="Introduces the study design.",
                     paragraphs=[
                         Paragraph(
                             id="p1",
                             text="Paragraph text",
-                            question="What does the paragraph establish?",
+                            role_statement="Explains the sampling procedure.",
                         )
                     ],
                 )
@@ -109,20 +109,24 @@ class IncrementalGraphTest(unittest.TestCase):
             runner.run([decorated])
 
         called_stages = {request.stage_id for request in judge.requests}
-        self.assertNotIn("section_questions", called_stages)
-        self.assertNotIn("paragraph_questions", called_stages)
-        self.assertNotIn("section_group_questions", called_stages)
-        self.assertNotIn("paragraph_group_questions", called_stages)
-        generated_questions = {
-            data["level"]: data["generated_question"] for _, data in runner.question_graph.nodes()
+        self.assertNotIn("section_role_statements", called_stages)
+        self.assertNotIn("paragraph_role_statements", called_stages)
+        self.assertNotIn("section_group_role_statements", called_stages)
+        self.assertNotIn("paragraph_group_role_statements", called_stages)
+        role_statements = {
+            data["level"]: data["role_statement"] for _, data in runner.role_graph.nodes()
         }
-        self.assertEqual(generated_questions["section"], "What does the section establish?")
-        self.assertEqual(generated_questions["paragraph"], "What does the paragraph establish?")
+        self.assertEqual(role_statements["section"], "Introduces the study design.")
+        self.assertEqual(role_statements["paragraph"], "Explains the sampling procedure.")
         deterministic_events = [
-            event for event in runner.journal.events if event["action"] == "question_generated"
+            event
+            for event in runner.journal.events
+            if event["action"] == "role_statement_generated"
         ]
         self.assertTrue(deterministic_events)
-        self.assertTrue(all(event["source"] == "member_question" for event in deterministic_events))
+        self.assertTrue(
+            all(event["source"] == "member_role_statement" for event in deterministic_events)
+        )
 
     def test_rejects_noncanonical_pseudo_sections(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -153,7 +157,7 @@ class IncrementalGraphTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "canonical document"):
                 load_paper(path, "paper-a", "Paper A")
 
-    def test_normalizes_nested_paragraphs_and_existing_questions(self) -> None:
+    def test_normalizes_nested_paragraphs_and_existing_role_statements(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "paper.json"
             path.write_text(
@@ -162,12 +166,12 @@ class IncrementalGraphTest(unittest.TestCase):
                         {
                             "section_name": "Method",
                             "section_number": "3",
-                            "question_this_text_answers": "How does the method work?",
+                            "role_statement": "Describes how the method works.",
                             "paragraphs": [
                                 {
                                     "paragraph_number": 0,
                                     "text": "Method overview.",
-                                    "question_this_text_answers": "What is the method overview?",
+                                    "role_statement": "Introduces the method.",
                                 }
                             ],
                             "subsections": [
@@ -177,7 +181,7 @@ class IncrementalGraphTest(unittest.TestCase):
                                         {
                                             "paragraph_number": 0,
                                             "text": "Implementation details.",
-                                            "question_this_text_answers": "How was it implemented?",
+                                            "role_statement": "Explains the implementation.",
                                         }
                                     ],
                                 }
@@ -197,7 +201,7 @@ class IncrementalGraphTest(unittest.TestCase):
 
             section = normalized.sections[0]
             subsection = normalized.sections[1]
-            self.assertEqual(section.question, "How does the method work?")
+            self.assertEqual(section.role_statement, "Describes how the method works.")
             self.assertEqual(section.ordinal, 1)
             self.assertEqual(section.text, "Method overview.\n\nImplementation details.")
             self.assertEqual([paragraph.id for paragraph in section.paragraphs], ["s0001.p0001"])
@@ -206,7 +210,9 @@ class IncrementalGraphTest(unittest.TestCase):
             self.assertEqual(subsection.parent_id, "s0001")
             self.assertEqual(subsection.family_id, "s0001")
             self.assertEqual(subsection.ordinal, 2)
-            self.assertEqual(subsection.paragraphs[0].question, "How was it implemented?")
+            self.assertEqual(
+                subsection.paragraphs[0].role_statement, "Explains the implementation."
+            )
 
     def test_section_granularity_collapses_subsection_paragraphs(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -286,19 +292,21 @@ class IncrementalGraphTest(unittest.TestCase):
             )
             summary = runner.run(papers)
 
-        section_nodes = list(runner.question_graph.nodes("section"))
+        section_nodes = list(runner.role_graph.nodes("section"))
         self.assertEqual(len(section_nodes), 1)
         self.assertEqual(
             {member["paper_id"] for member in section_nodes[0][1]["members"]},
             {"p1", "p2"},
         )
         self.assertFalse(any(request.stage_id.startswith("section_") for request in judge.requests))
-        paragraph_questions = [
-            request for request in judge.requests if request.stage_id == "paragraph_questions"
+        paragraph_role_statements = [
+            request for request in judge.requests if request.stage_id == "paragraph_role_statements"
         ]
-        self.assertEqual(len(paragraph_questions), 2)
-        self.assertTrue(all(request.output_kind == "question" for request in paragraph_questions))
-        self.assertTrue(all(request.max_tokens == 2048 for request in paragraph_questions))
+        self.assertEqual(len(paragraph_role_statements), 2)
+        self.assertTrue(
+            all(request.output_kind == "role_statement" for request in paragraph_role_statements)
+        )
+        self.assertTrue(all(request.max_tokens == 2048 for request in paragraph_role_statements))
         expected_context = {
             "paper",
             "previous_paragraph",
@@ -306,7 +314,7 @@ class IncrementalGraphTest(unittest.TestCase):
             "next_paragraph",
         }
         self.assertTrue(
-            all(set(request.context) == expected_context for request in paragraph_questions)
+            all(set(request.context) == expected_context for request in paragraph_role_statements)
         )
         paragraph_matches = [
             request
@@ -323,15 +331,17 @@ class IncrementalGraphTest(unittest.TestCase):
             forward_match.context["candidates"][0]["selection_id"],
             paragraph_group,
         )
-        paragraph_group_questions = [
-            request for request in judge.requests if request.stage_id == "paragraph_group_questions"
+        paragraph_group_role_statements = [
+            request
+            for request in judge.requests
+            if request.stage_id == "paragraph_group_role_statements"
         ]
-        self.assertEqual(len(paragraph_group_questions), 1)
-        self.assertEqual(paragraph_group_questions[0].output_kind, "question")
-        self.assertEqual(paragraph_group_questions[0].max_tokens, 2048)
+        self.assertEqual(len(paragraph_group_role_statements), 1)
+        self.assertEqual(paragraph_group_role_statements[0].output_kind, "role_statement")
+        self.assertEqual(paragraph_group_role_statements[0].max_tokens, 2048)
         self.assertEqual(summary["max_granularity"], "paragraph")
 
-    def test_paragraph_questions_use_one_bounded_request_per_paragraph(self) -> None:
+    def test_paragraph_role_statements_use_one_bounded_request_per_paragraph(self) -> None:
         document = Paper(
             paper_id="p1",
             title="P1",
@@ -359,16 +369,16 @@ class IncrementalGraphTest(unittest.TestCase):
             runner.run([document])
 
         requests = [
-            request for request in judge.requests if request.stage_id == "paragraph_questions"
+            request for request in judge.requests if request.stage_id == "paragraph_role_statements"
         ]
         self.assertEqual(
             [request.key for request in requests],
             [
-                "p1:paragraph_questions:a1",
-                "p1:paragraph_questions:a2",
+                "p1:paragraph_role_statements:a1",
+                "p1:paragraph_role_statements:a2",
             ],
         )
-        self.assertTrue(all(request.output_kind == "question" for request in requests))
+        self.assertTrue(all(request.output_kind == "role_statement" for request in requests))
         self.assertTrue(all(request.max_tokens == 2048 for request in requests))
         self.assertTrue(all("section" not in request.context for request in requests))
         self.assertIsNone(requests[0].context["previous_paragraph"])
@@ -422,7 +432,7 @@ class IncrementalGraphTest(unittest.TestCase):
                 "source_position": [1, 2],
                 "previous_paragraph": {"full_text": "B before."},
                 "paragraph_under_consideration": {
-                    "generated_question_metadata": "What does b2 address?",
+                    "role_statement": "Establishes the purpose of b2.",
                     "full_text": "B middle.",
                 },
                 "next_paragraph": {"full_text": "B after."},
@@ -465,7 +475,7 @@ class IncrementalGraphTest(unittest.TestCase):
             )
             self.assertEqual(
                 set(item["paragraph_under_consideration"]),
-                {"full_text", "generated_question_metadata"},
+                {"full_text", "role_statement"},
             )
             if index == 0:
                 self.assertIsNone(item["previous_paragraph"])
@@ -504,7 +514,7 @@ class IncrementalGraphTest(unittest.TestCase):
             )
             summary = runner.run(papers)
 
-            graph = runner.question_graph.graph
+            graph = runner.role_graph.graph
             self.assertEqual(len(graph.nodes[group_a]["members"]), 3)
             self.assertEqual(len(graph.nodes[paragraph_group_a]["members"]), 3)
             self.assertNotIn("classification", graph.nodes[group_a])
@@ -540,11 +550,11 @@ class IncrementalGraphTest(unittest.TestCase):
             model_group_question_stages = {
                 request.stage_id
                 for request in runner.judge.requests
-                if request.stage_id.endswith("group_questions")
+                if request.stage_id.endswith("group_role_statements")
             }
             self.assertEqual(
                 model_group_question_stages,
-                {"section_group_questions", "paragraph_group_questions"},
+                {"section_group_role_statements", "paragraph_group_role_statements"},
             )
             self.assertEqual(graph.number_of_edges(), 0)
             ignored = [
@@ -559,7 +569,7 @@ class IncrementalGraphTest(unittest.TestCase):
             replayed = graph_from_events(runner.journal.events)
             self.assertEqual(set(replayed.nodes), set(graph.nodes))
             self.assertEqual(set(replayed.edges(keys=True)), set(graph.edges(keys=True)))
-            self.assertEqual(summary["graph_hash"], runner.question_graph.graph_hash())
+            self.assertEqual(summary["graph_hash"], runner.role_graph.graph_hash())
             replay = json.loads(
                 (revision / "dataset" / "graph-replay.json").read_text(encoding="utf-8")
             )
@@ -568,7 +578,7 @@ class IncrementalGraphTest(unittest.TestCase):
             self.assertIn("paragraph", replay["layouts"])
             paragraph_nodes = [
                 node
-                for node in runner.question_graph.serialize()["nodes"]
+                for node in runner.role_graph.serialize()["nodes"]
                 if node["level"] == "paragraph"
             ]
             self.assertEqual(len(replay["layouts"]["paragraph"]), len(paragraph_nodes))
@@ -644,7 +654,7 @@ class IncrementalGraphTest(unittest.TestCase):
 
     def test_rejects_two_members_from_one_paper(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
-            graph = QuestionGraph(RevisionJournal(Path(directory) / "revision"))
+            graph = RoleGraph(RevisionJournal(Path(directory) / "revision"))
             graph.add_paper("p1", "P1", 1)
             node_id = graph.create_group(
                 level="section",
@@ -670,12 +680,10 @@ class IncrementalGraphTest(unittest.TestCase):
             summary = runner.run(papers)
 
             self.assertEqual(summary["paper_count"], 5)
-            edges = list(runner.question_graph.graph.edges(data=True))
+            edges = list(runner.role_graph.graph.edges(data=True))
             self.assertEqual(len(edges), 87)
             self.assertTrue(all(data["kind"] == "contains" for _, _, data in edges))
-            self.assertTrue(
-                all(len(data["members"]) == 1 for _, data in runner.question_graph.nodes())
-            )
+            self.assertTrue(all(len(data["members"]) == 1 for _, data in runner.role_graph.nodes()))
             descriptor = validate_dataset(revision / "dataset", "hci-five", "HCI Five")
             self.assertEqual(descriptor["paper_count"], 5)
             self.assertEqual(descriptor["paragraph_count"], 464)
@@ -853,9 +861,9 @@ class IncrementalGraphTest(unittest.TestCase):
             )
             runner.run([first, second, third])
 
-        self.assertNotIn(subsection_id, runner.question_graph.graph)
+        self.assertNotIn(subsection_id, runner.role_graph.graph)
         self.assertEqual(
-            {member["unit_id"] for member in runner.question_graph.members(target_id)},
+            {member["unit_id"] for member in runner.role_graph.members(target_id)},
             {"shared1", "shared2", "sub3"},
         )
         self.assertEqual(
@@ -882,12 +890,12 @@ class IncrementalGraphTest(unittest.TestCase):
         regenerated = [
             request
             for request in judge.requests
-            if request.stage_id == "section_rerepresentation_questions"
+            if request.stage_id == "section_rerepresentation_role_statements"
         ]
         self.assertEqual(len(regenerated), 1)
         self.assertEqual(
             regenerated[0].key,
-            f"p3:section_rerepresentation_questions:{target_id}",
+            f"p3:section_rerepresentation_role_statements:{target_id}",
         )
         self.assertEqual(
             {member["section_id"] for member in regenerated[0].context["group"]["members"]},
@@ -903,9 +911,9 @@ class IncrementalGraphTest(unittest.TestCase):
             judge.requests.index(regenerated[0]),
             judge.requests.index(paragraph_request),
         )
-        self.assertIn(root_id, runner.question_graph.graph)
+        self.assertIn(root_id, runner.role_graph.graph)
         self.assertEqual(
-            {(source, target) for source, target in runner.question_graph.graph.edges()},
+            {(source, target) for source, target in runner.role_graph.graph.edges()},
             {(root_id, target_id)},
         )
         merge_event = next(
@@ -916,10 +924,10 @@ class IncrementalGraphTest(unittest.TestCase):
         )
         self.assertEqual(merge_event["source_node_id"], subsection_id)
         replayed = graph_from_events(runner.journal.events)
-        self.assertEqual(set(replayed.nodes), set(runner.question_graph.graph.nodes))
+        self.assertEqual(set(replayed.nodes), set(runner.role_graph.graph.nodes))
         self.assertEqual(
             set(replayed.edges(keys=True)),
-            set(runner.question_graph.graph.edges(keys=True)),
+            set(runner.role_graph.graph.edges(keys=True)),
         )
 
     def test_structural_realignment_uses_group_choice_not_singleton_iteration_order(self) -> None:
@@ -958,9 +966,9 @@ class IncrementalGraphTest(unittest.TestCase):
             )
             runner.run(papers)
 
-        self.assertNotIn(source_ids[1], runner.question_graph.graph)
-        self.assertIn(source_ids[0], runner.question_graph.graph)
-        self.assertEqual(len(runner.question_graph.members(target_id)), 3)
+        self.assertNotIn(source_ids[1], runner.role_graph.graph)
+        self.assertIn(source_ids[0], runner.role_graph.graph)
+        self.assertEqual(len(runner.role_graph.members(target_id)), 3)
         rerepresentation_requests = [
             request for request in judge.requests if request.stage_id == "section_rerepresentation"
         ]
@@ -977,7 +985,7 @@ class IncrementalGraphTest(unittest.TestCase):
         regenerated = [
             request
             for request in judge.requests
-            if request.stage_id == "section_rerepresentation_questions"
+            if request.stage_id == "section_rerepresentation_role_statements"
         ]
         self.assertEqual(len(regenerated), 1)
 
@@ -1049,13 +1057,11 @@ class IncrementalGraphTest(unittest.TestCase):
                 (revision / "dataset" / "correspondences.json").read_text(encoding="utf-8")
             )
 
-        member_ids = {
-            member["unit_id"] for member in runner.question_graph.members(paragraph_group)
-        }
+        member_ids = {member["unit_id"] for member in runner.role_graph.members(paragraph_group)}
         self.assertEqual(member_ids, {"a3", "a4", "a5", "b3", "b4", "b5"})
         b7_group = next(
             data
-            for _, data in runner.question_graph.nodes("paragraph")
+            for _, data in runner.role_graph.nodes("paragraph")
             if any(member["unit_id"] == "b7" for member in data["members"])
         )
         self.assertEqual([member["unit_id"] for member in b7_group["members"]], ["b7"])
@@ -1100,19 +1106,19 @@ class IncrementalGraphTest(unittest.TestCase):
             row["cells"]["p2"],
             [["¶3", False], ["¶4", True], ["¶5", False]],
         )
-        group_question = next(
+        group_role_statement = next(
             request
             for request in runner.judge.requests
-            if request.key == f"p2:paragraph_group_questions:{paragraph_group}"
+            if request.key == f"p2:paragraph_group_role_statements:{paragraph_group}"
         )
         question_member_ids = {
-            member["paragraph_id"] for member in group_question.context["group"]["members"]
+            member["paragraph_id"] for member in group_role_statement.context["group"]["members"]
         }
         self.assertEqual(
             question_member_ids,
             {"a3", "a4", "a5", "b3", "b4", "b5"},
         )
-        self.assertNotIn("provenance", group_question.context)
+        self.assertNotIn("provenance", group_role_statement.context)
 
     def test_third_paper_matches_nodes_and_merges_adjacent_multi_paper_node(self) -> None:
         def make_paper(paper_id: str, section_id: str, paragraph_ids: list[str]) -> Paper:
@@ -1178,14 +1184,14 @@ class IncrementalGraphTest(unittest.TestCase):
             },
             {"Paragraph a3", "Paragraph b3"},
         )
-        self.assertNotIn(adjacent_group, runner.question_graph.graph)
+        self.assertNotIn(adjacent_group, runner.role_graph.graph)
         self.assertEqual(
-            {member["unit_id"] for member in runner.question_graph.members(anchor_group)},
+            {member["unit_id"] for member in runner.role_graph.members(anchor_group)},
             {"a3", "a4", "b3", "b4", "c4"},
         )
         fan_in_members = {
             member["unit_id"]
-            for member in runner.question_graph.members(anchor_group)
+            for member in runner.role_graph.members(anchor_group)
             if member.get("membership_role") == "fan_in"
         }
         self.assertEqual(fan_in_members, {"a3", "b3"})

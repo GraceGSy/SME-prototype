@@ -399,12 +399,12 @@
         min-height: 0;
         text-align: left;
       }
-      .question {
+      .statement {
         font-size: 14px;
         margin-top: 5px;
         line-height: 1.25;
       }
-      .question.pending {
+      .statement.pending {
         color: #7c857f;
         font-style: italic;
       }
@@ -422,7 +422,7 @@
         height: 8px;
         border-radius: 2px;
       }
-      .question.generated {
+      .statement.generated {
         background: var(--orange);
         border-radius: 4px;
       }
@@ -542,7 +542,7 @@
         border: 1px dashed #a3aca5;
         padding: 12px;
       }
-      .role.retired .question,
+      .role.retired .statement,
       .role.retired .members,
       .role.retired .choice,
       .role.retired .node-count {
@@ -929,7 +929,7 @@
         <span><i class="swatch shared"></i>Shared node</span
         ><span><i class="swatch singleton"></i>Singleton / not yet matched</span
         ><span><i class="swatch decision"></i>Purple arrows: API choices</span
-        ><span><i class="swatch llm"></i>Orange pointers: generated evidence or questions</span>
+        ><span><i class="swatch llm"></i>Orange pointers: generated evidence or role statements</span>
       </div>
       <div id="connections" class="connections" aria-label="Connection playback" hidden>
         <div>
@@ -1085,14 +1085,14 @@
           (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c],
         );
       const motion = matchMedia("(prefers-reduced-motion: reduce)");
-      const unit = (id, paper, label, level, section, ordinal, question, text) => ({
+      const unit = (id, paper, label, level, section, ordinal, statement, text) => ({
         id,
         paper,
         label,
         level,
         section,
         ordinal,
-        question,
+        statement,
         text,
       });
       const units = Object.fromEntries(
@@ -1104,7 +1104,7 @@
             "section",
             null,
             1,
-            "How does feedback correct an error?",
+            "Explains how feedback corrects an error.",
             "The interface gives spoken corrections after a learner makes an error.",
           ),
           unit(
@@ -1114,7 +1114,7 @@
             "section",
             null,
             2,
-            "Which baseline did the study use?",
+            "Identifies the baseline for the evaluation.",
             "We compared spoken feedback with silent practice using timed tasks and confidence ratings.",
           ),
           unit(
@@ -1124,7 +1124,7 @@
             "section",
             null,
             3,
-            "What limits the findings?",
+            "Limits the scope of the findings.",
             "The study used one task and a small participant sample.",
           ),
           unit(
@@ -1134,7 +1134,7 @@
             "section",
             null,
             1,
-            "How does feedback correct an error?",
+            "Explains how feedback corrects an error.",
             "The interface gives a vibration after a learner makes an error.",
           ),
           unit(
@@ -1144,7 +1144,7 @@
             "section",
             null,
             2,
-            "How were haptic trials evaluated?",
+            "Defines how the trials were evaluated.",
             "We compared haptic feedback with silent practice using timed tasks and confidence ratings.",
           ),
           unit(
@@ -1154,7 +1154,7 @@
             "section",
             null,
             3,
-            "What limits the findings?",
+            "Limits the scope of the findings.",
             "The study used one task and recruited participants from one site.",
           ),
           unit(
@@ -1164,7 +1164,7 @@
             "section",
             null,
             1,
-            "How does feedback correct an error?",
+            "Explains how feedback corrects an error.",
             "The interface displays a corrective gesture after a learner makes an error.",
           ),
           unit(
@@ -1174,7 +1174,7 @@
             "section",
             null,
             2,
-            "How does training affect performance?",
+            "Reports the effect of training on performance.",
             "We compared gesture feedback with silent practice using timed tasks and confidence ratings.",
           ),
           unit(
@@ -1184,7 +1184,7 @@
             "section",
             null,
             3,
-            "What will later training support?",
+            "Outlines future applications of the training.",
             "A future version will study confidence during collaborative training over several weeks.",
           ),
           unit(
@@ -1194,7 +1194,7 @@
             "paragraph",
             "A-S2",
             1,
-            "Which conditions did the study compare?",
+            "Defines the comparison conditions.",
             "Participants completed the same tasks with spoken feedback and with silent practice.",
           ),
           unit(
@@ -1204,7 +1204,7 @@
             "paragraph",
             "A-S2",
             2,
-            "How did feedback affect speed?",
+            "Reports a change in task speed.",
             "We recorded completion time in both conditions and compared their mean times.",
           ),
           unit(
@@ -1214,7 +1214,7 @@
             "paragraph",
             "A-S2",
             3,
-            "What did learners report after practice?",
+            "Reports what participants experienced after practice.",
             "Learners rated how confident they felt after completing the training tasks.",
           ),
           unit(
@@ -1224,7 +1224,7 @@
             "paragraph",
             "B-S2",
             1,
-            "How were haptic trials organized?",
+            "Describes the trial procedure.",
             "Participants completed the same tasks with haptic feedback and with silent practice.",
           ),
           unit(
@@ -1234,7 +1234,7 @@
             "paragraph",
             "B-S2",
             2,
-            "When were haptic trials timed?",
+            "Specifies the timing protocol.",
             "We recorded completion time in both conditions and compared their mean times.",
           ),
           unit(
@@ -1244,7 +1244,7 @@
             "paragraph",
             "B-S2",
             3,
-            "Which trials were excluded from timing?",
+            "Defines which trials count toward timing.",
             "Practice trials were excluded from the completion-time comparison.",
           ),
           unit(
@@ -1254,7 +1254,7 @@
             "paragraph",
             "B-S2",
             4,
-            "How did learners rate calibration?",
+            "Reports calibration ratings.",
             "Learners rated their confidence after each calibration exercise.",
           ),
           unit(
@@ -1264,7 +1264,7 @@
             "paragraph",
             "C-S2",
             1,
-            "Which conditions did the study compare?",
+            "Defines the comparison conditions.",
             "Participants completed the same tasks with gesture feedback and with silent practice.",
           ),
           unit(
@@ -1274,7 +1274,7 @@
             "paragraph",
             "C-S2",
             2,
-            "How was comparison order controlled?",
+            "Explains how the study controls for order effects.",
             "The order of gesture feedback and silent practice was counterbalanced.",
           ),
           unit(
@@ -1284,7 +1284,7 @@
             "paragraph",
             "C-S2",
             3,
-            "How was the comparison setting controlled?",
+            "Describes the controls on the comparison setting.",
             "Both feedback conditions were tested in the same controlled indoor setting.",
           ),
           unit(
@@ -1294,7 +1294,7 @@
             "paragraph",
             "C-S2",
             4,
-            "How did training affect confidence?",
+            "Reports how training affected confidence.",
             "Learners rated their confidence before and after the gesture training tasks.",
           ),
           unit(
@@ -1304,7 +1304,7 @@
             "paragraph",
             "C-S2",
             5,
-            "How did feedback affect speed?",
+            "Reports a change in task speed.",
             "We recorded completion time in both conditions and compared their mean times.",
           ),
           unit(
@@ -1314,7 +1314,7 @@
             "paragraph",
             "C-S2",
             6,
-            "Where are the study materials available?",
+            "Directs readers to the study materials.",
             "The study materials will be deposited in the laboratory archive.",
           ),
           unit(
@@ -1324,7 +1324,7 @@
             "paragraph",
             "C-S3",
             1,
-            "How will collaborative training affect confidence?",
+            "Proposes a follow-up test of collaborative training.",
             "Next, we will measure learner confidence during collaborative training sessions.",
           ),
         ].map((u) => [u.id, u]),
@@ -1357,7 +1357,7 @@
         level,
         parent,
         label: names[id] || units[members[0]].label,
-        question: units[members[0]].question,
+        statement: units[members[0]].statement,
         members: members.map((id) => ({ id, role: "core" })),
       });
       const initialGraph = Object.fromEntries(
@@ -1415,23 +1415,23 @@
             graph[key] = node(key, units[id].level, scope(graph, id), [id]);
           }
       }
-      function sharedQuestion(n) {
-        if (n.members.length === 1) return units[n.members[0].id].question;
+      function sharedStatement(n) {
+        if (n.members.length === 1) return units[n.members[0].id].statement;
         if (n.id === "n-eval")
           return n.members.length > 2
-            ? "How does feedback training compare with silent practice?"
-            : "How does feedback training affect performance?";
+            ? "Compares training with and without feedback."
+            : "Evaluates how feedback affects performance.";
         if (n.id === "n-task")
           return n.members.some((m) => m.role === "fan-in")
-            ? "Which conditions are compared, and how is trial order controlled?"
-            : "Which feedback conditions did the study compare?";
+            ? "Defines the conditions and controls for trial order."
+            : "Defines the feedback conditions being compared.";
         if (n.id === "n-speed")
-          return "How is completion time measured across feedback conditions?";
+          return "Describes how the study measures completion time.";
         if (n.id === "n-confidence")
           return n.members.length > 2
-            ? "How confident do learners feel after training?"
-            : "How did training affect learner confidence?";
-        return n.question;
+            ? "Reports confidence after training."
+            : "Reports how training affected learner confidence.";
+        return n.statement;
       }
       function evidence(graph, source, target) {
         const sources = units[source] ? [source] : graph[source].members.map((m) => m.id);
@@ -1452,7 +1452,7 @@
           paper: "none",
           verified: false,
           level: "section",
-          questions: [],
+          statements: [],
           focus: [],
           edges: [],
           ghosts: [],
@@ -1467,12 +1467,12 @@
         const sourceKey = (id) => (groupFor(graph, id) ? groupFor(graph, id).id : id);
         const refresh = (chapter, changed) => {
           const updates = changed
-            .map((id) => ({ id, before: graph[id].question, after: sharedQuestion(graph[id]) }))
+            .map((id) => ({ id, before: graph[id].statement, after: sharedStatement(graph[id]) }))
             .filter((q) => q.before !== q.after);
-          for (const q of updates) graph[q.id].question = q.after;
+          for (const q of updates) graph[q.id].statement = q.after;
           add(
-            "Generate the shared-node questions",
-            "The orange labels replace document-specific questions with questions supported by the accepted group.",
+            "Generate the shared-node role statements",
+            "The orange labels replace document-specific role statements with role statements supported by the accepted group.",
             {
               chapter,
               kind: "llm",
@@ -1480,8 +1480,8 @@
               generating: updates.map((q) => q.id),
               updates,
               facts: updates.length
-                ? updates.map((q) => names[q.id] + ": the question broadens as more passages join.")
-                : ["Only changed groups need updated questions. Unchanged labels stay in place."],
+                ? updates.map((q) => names[q.id] + ": the role statement broadens as more passages join.")
+                : ["Only changed groups need updated role statements. Unchanged labels stay in place."],
             },
           );
         };
@@ -1501,7 +1501,7 @@
         state.paper = "raw";
         add(
           "A new paper enters the scene",
-          "The gesture-training paper arrives as authored text. It has no generated questions yet.",
+          "The gesture-training paper arrives as authored text. It has no generated role statements yet.",
           {
             arrive: true,
             facts: [
@@ -1519,7 +1519,7 @@
             split: true,
             edges: sectionIds.map((id) => edge("paper-top", id, "llm")),
             facts: [
-              "The small strips are extracted paragraphs, not generated questions.",
+              "The small strips are extracted paragraphs, not generated role statements.",
               "The source passages remain available throughout the animation.",
             ],
           },
@@ -1539,16 +1539,16 @@
             ],
           },
         );
-        state.questions = sectionIds;
+        state.statements = sectionIds;
         add(
-          "Generate each section's implicit question",
-          "Orange pointers show the missing questions being added to the extracted units.",
+          "Generate each section's role statement",
+          "Orange pointers show the missing role statements being added to the extracted units.",
           {
             kind: "llm",
             generating: sectionIds,
             edges: sectionIds.map(actorEdge),
             facts: [
-              "Questions describe the role of a passage rather than its vocabulary.",
+              "Role statements describe the role of a passage rather than its vocabulary.",
               "They were absent before this step.",
             ],
           },
@@ -1642,7 +1642,7 @@
           );
           if (options.scopeExample)
             add(
-              "A similar question in the wrong section is excluded",
+              "A similar role statement in the wrong section is excluded",
               "C-P7 asks about confidence, but belongs to Future work, not the shared Evaluation section.",
               {
                 kind: "python",
@@ -1651,7 +1651,7 @@
                 edges: [edge("C-P7", "n-confidence", "reject", false, "wrong scope")],
                 facts: [
                   "The crossed arrow is excluded before any decision request.",
-                  "Question similarity alone does not override structural ownership.",
+                  "Role statement similarity alone does not override structural ownership.",
                 ],
               },
             );
@@ -1918,7 +1918,7 @@
                 .map(([s, t]) => edge(s, t)),
               facts: [
                 Object.keys(fw).length +
-                  " logical questions, not one request per singleton-node pair.",
+                  " logical match questions, not one request per singleton-node pair.",
                 "Cross-paper core candidates are not restricted to geographic neighbors.",
                 "The retained gray nodes stay visible even when they have no eligible pool.",
               ],
@@ -1936,7 +1936,7 @@
                 .filter(([, s]) => s)
                 .map(([t, s]) => edge(t, s)),
               facts: [
-                Object.keys(rv).length + " logical reverse questions.",
+                Object.keys(rv).length + " logical reverse match questions.",
                 "All eligible core singletons are candidates, not only forward proposers.",
                 "Same-paper fan-in candidates are not new reciprocal core candidates.",
               ],
@@ -2054,7 +2054,7 @@
         state.nodeVotes = {};
         add(
           "Expand C's extracted paragraphs",
-          "The paragraph strips open into numbered units. They are still unmatched and have no generated paragraph questions.",
+          "The paragraph strips open into numbered units. They are still unmatched and have no generated paragraph role statements.",
           {
             kind: "source",
             expand: true,
@@ -2066,17 +2066,17 @@
             ],
           },
         );
-        state.questions = [...sectionIds, ...paragraphIds];
+        state.statements = [...sectionIds, ...paragraphIds];
         add(
-          "Generate paragraph questions",
-          "Orange pointers add each paragraph's implicit question. Source text and paragraph order remain unchanged.",
+          "Generate paragraph role statements",
+          "Orange pointers add each paragraph's role statement. Source text and paragraph order remain unchanged.",
           {
             kind: "llm",
             generating: paragraphIds,
             edges: paragraphIds.map(actorEdge),
             facts: [
               "The numbered gray units become selectable evidence, not automatic matches.",
-              "Their questions are generated at this stage rather than being visible from the start.",
+              "Their role statements are generated at this stage rather than being visible from the start.",
             ],
           },
         );
@@ -2114,7 +2114,7 @@
             edges: [edge("n-task", "n-speed", "accept"), edge("n-speed", "n-confidence", "accept")],
             export: true,
             facts: [
-              "Question Groups collect passages for each shared role; Paper Map preserves each document's ordering.",
+              "Passage Groups collect passages for each shared role; Paper Map preserves each document's ordering.",
               "The same roles can occur in a different sequence: C discusses confidence before timing.",
               "C-P3, C-P6, and C-P7 remain separate. Shared roles do not imply identical findings.",
               "The pipeline continues in document order, then exports graph, evidence, decisions, and reader views.",
@@ -2275,7 +2275,7 @@
           esc(id.slice(2)) +
           '</span><button class="label" type="button">' +
           esc(u.label) +
-          '</button></div><p class="question pending" id="q-' +
+          '</button></div><p class="statement pending" id="q-' +
           id +
           '"></p><div class="paragraph-stubs"></div><p class="scope-tag"></p><p class="membership"></p><p class="choice" hidden></p>';
         el.querySelector("button").addEventListener("click", () => {
@@ -2305,7 +2305,7 @@
         el.id = "g-" + id;
         el.className = "role";
         el.innerHTML =
-          '<button class="role-title" type="button"></button><span class="node-count"></span><p class="question" id="q-' +
+          '<button class="role-title" type="button"></button><span class="node-count"></span><p class="statement" id="q-' +
           id +
           '"></p><div class="members"></div><p class="choice" hidden></p>';
         el.querySelector("button").addEventListener("click", () => {
@@ -2744,9 +2744,9 @@
           const u = units[id],
             n = groupFor(f.graph, id),
             joined = n && n.members.length > 1;
-          const q = el.querySelector(".question"),
-            generated = f.questions.includes(id);
-          q.textContent = generated ? u.question : "Question not generated";
+          const q = el.querySelector(".statement"),
+            generated = f.statements.includes(id);
+          q.textContent = generated ? u.statement : "Role statement not generated";
           q.classList.toggle("pending", !generated);
           q.classList.toggle("generated", (f.generating || []).includes(id));
           el.className = "passage " + (joined ? "joined" : n ? "singleton" : "pending");
@@ -2813,8 +2813,8 @@
             " " +
             (docs.size === 1 ? "paper" : "papers") +
             (ghosts.length ? " + proposed" : "");
-          const q = el.querySelector(".question");
-          q.textContent = n.question;
+          const q = el.querySelector(".statement");
+          q.textContent = n.statement;
           q.classList.toggle("generated", (f.generating || []).includes(id));
           el.querySelector(".members").innerHTML =
             n.members

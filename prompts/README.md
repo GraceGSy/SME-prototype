@@ -8,7 +8,7 @@ directly. They are the runtime sources, not copies maintained for documentation.
 
 | What to read or edit | Location |
 |---|---|
-| Question-writing Skill | [skills/generate-question/SKILL.md](skills/generate-question/SKILL.md) |
+| Role statement-writing Skill | [skills/generate-role-statement/SKILL.md](skills/generate-role-statement/SKILL.md) |
 | Matching and explanation Skill | [skills/match-role/SKILL.md](skills/match-role/SKILL.md) |
 | Generative selector policy | [skills/match-role/references/selection.md](skills/match-role/references/selection.md) |
 | Shared role across all papers in a group | [graph/shared/group-role.md](graph/shared/group-role.md) |
@@ -33,9 +33,9 @@ provider instruction comes from `requests/providers.json`.
 
 | Stage | Template |
 |---|---|
-| Section and subsection questions | [graph/section-question/](graph/section-question/v1/system.md) |
-| Paragraph questions | [graph/paragraph-question/](graph/paragraph-question/v1/system.md) |
-| Shared-group and regenerated questions | [graph/group-question/](graph/group-question/v1/system.md) |
+| Section and subsection role statements | [graph/section-role-statement/](graph/section-role-statement/v1/system.md) |
+| Paragraph role statements | [graph/paragraph-role-statement/](graph/paragraph-role-statement/v1/system.md) |
+| Shared-group and regenerated role statements | [graph/group-role-statement/](graph/group-role-statement/v1/system.md) |
 | Forward structural matching | [graph/section-to-group-match/](graph/section-to-group-match/v1/system.md) |
 | Reverse structural matching | [graph/group-to-section-match/](graph/group-to-section-match/v1/system.md) |
 | Forward paragraph matching | [graph/paragraph-to-group-match/](graph/paragraph-to-group-match/v1/system.md) |
@@ -60,7 +60,7 @@ connects stage names to these templates, contexts, and Skills.
 | [match_evidence.py](../pipeline/incremental_graph/match_evidence.py) | Fills `requests/evidence-repair.json` templates with validation diagnostics. |
 | [providers/anthropic.py](../pipeline/providers/anthropic.py) and [providers/openai.py](../pipeline/providers/openai.py) | Read `requests/providers.json` and attach the registered Skills, tools, and output schema. |
 | [extraction.py](../pipeline/extraction.py) | Reads `requests/extraction.json` and registers the extraction Skill from this directory. Extraction runs separately from graph construction. |
-| [evidence.py](../pipeline/incremental_graph/evidence.py) and [runner.py](../pipeline/incremental_graph/runner.py) | Supply dynamic source text, focus, candidate IDs, scope, and question metadata. Python retains graph rules and validation; those are not prompt instructions. |
+| [evidence.py](../pipeline/incremental_graph/evidence.py) and [runner.py](../pipeline/incremental_graph/runner.py) | Supply dynamic source text, focus, candidate IDs, scope, and role statement metadata. Python retains graph rules and validation; those are not prompt instructions. |
 
 Start a new Python process after editing prompt files. Existing saved runs retain
 their original metadata and request caches. This relocation changes code and

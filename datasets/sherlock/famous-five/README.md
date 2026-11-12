@@ -2,7 +2,7 @@
 
 Content-only inputs for whole-story-scoped **paragraph matching**. The whole story
 is one scope, not one matching unit. Source paragraphs are kept intact; paragraphs
-are not turned into artificial sections. No generated questions or old matching
+are not turned into artificial sections. No generated role statements or old matching
 results are included.
 
 | Insertion order | Story | Words | Paragraphs |
@@ -33,7 +33,7 @@ The one-time preparation script was retired; its commit remains in Git history.
 The graph consumes the prepared files directly. The other Sherlock corpus
 remains unchanged.
 
-Fresh here means newly prepared source-only inputs and newly generated questions
+Fresh here means newly prepared source-only inputs and newly generated role statements
 in a separate run, not stories unseen during the model's training. Familiarity
 with Sherlock is a limitation of this experiment, not eliminated by fresh inputs.
 

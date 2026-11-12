@@ -1,4 +1,4 @@
-import type { Group, Paper, Snapshot } from "../../pipeline/viewer/src/contracts";
+import type { RoleGroup as Group, Paper, Snapshot } from "../../pipeline/viewer/src/contracts";
 
 export function patternFixture(paths: Record<string, string[]>) {
   const groups = new Map<string, Group>();
@@ -10,7 +10,7 @@ export function patternFixture(paths: Record<string, string[]>) {
       const id = `s${index + 1}`;
       const group = groups.get(role) ?? {
         group_id: role,
-        overarching_question: `What is the ${role} role?`,
+        role_statement: `Establishes the ${role} role.`,
         parent_group_id: null,
         members: [],
       };
@@ -35,7 +35,7 @@ export function patternFixture(paths: Record<string, string[]>) {
     }),
   }));
   const snapshot: Snapshot = {
-    schema_version: 1,
+    schema_version: 2,
     mode: "final_snapshot",
     section_groups: [...groups.values()],
     groups: [],

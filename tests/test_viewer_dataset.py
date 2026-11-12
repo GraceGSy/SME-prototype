@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 from pipeline.incremental_graph.export import export_revision
-from pipeline.incremental_graph.graph import QuestionGraph
+from pipeline.incremental_graph.graph import RoleGraph
 from pipeline.incremental_graph.journal import RevisionJournal
 from pipeline.incremental_graph.models import Paper, Paragraph, Section
 from pipeline.viewer.package import (
@@ -35,8 +35,17 @@ def make_snapshot_dataset(root: Path) -> None:
                     label="Section A",
                     text="Section A",
                     paragraphs=[
-                        Paragraph(id="pa1", text="Shared A", question="What is shared?"),
-                        Paragraph(id="pa2", text="Unique A", question="What is unique?", ordinal=2),
+                        Paragraph(
+                            id="pa1",
+                            text="Shared A",
+                            role_statement="Introduces the shared method.",
+                        ),
+                        Paragraph(
+                            id="pa2",
+                            text="Unique A",
+                            role_statement="Explains a distinct limitation.",
+                            ordinal=2,
+                        ),
                     ],
                 )
             ],
@@ -50,13 +59,17 @@ def make_snapshot_dataset(root: Path) -> None:
                     label="Section B",
                     text="Section B",
                     paragraphs=[
-                        Paragraph(id="pb1", text="Shared B", question="What is shared?"),
+                        Paragraph(
+                            id="pb1",
+                            text="Shared B",
+                            role_statement="Introduces the shared method.",
+                        ),
                     ],
                 )
             ],
         ),
     ]
-    graph = QuestionGraph(RevisionJournal(root.parent / "fixture-provenance"))
+    graph = RoleGraph(RevisionJournal(root.parent / "fixture-provenance"))
     graph.add_paper("paper_a", "Paper A", 1)
     section = graph.create_group(
         level="section",
@@ -87,8 +100,8 @@ def make_snapshot_dataset(root: Path) -> None:
     graph.add_paper("paper_b", "Paper B", 2)
     graph.add_member(section, "sb1", "paper_b", 2, 1)
     graph.add_member(shared, "pb1", "paper_b", 2, 1, unit_kind="paragraph")
-    graph.set_question(shared, "What is shared?", 2, None)
-    graph.set_question(single, "What is unique?", 2, None)
+    graph.set_role_statement(shared, "Introduces the shared method.", 2, None)
+    graph.set_role_statement(single, "Explains a distinct limitation.", 2, None)
     export_revision(root, graph, papers)
 
 

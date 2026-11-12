@@ -1,10 +1,10 @@
-# SMELTER: comparative reading with question-role graphs
+# SMELTER: comparative reading with role statements
 
 SMELTER (Structural Mapping Engine for Long TExtual Reading) compares long
-documents by the questions their sections and paragraphs answer. An LLM
-proposes questions and local matches; Python applies fixed graph
+documents by the roles their sections and paragraphs play. An LLM
+describes those roles and proposes local matches; Python applies fixed graph
 rules and saves every judgment with its source evidence. A browser viewer shows
-the resulting Question Groups and each document's Paper Map. The system is
+the resulting Passage Groups and each document's Paper Map. The system is
 experimental: a generated match is not a verified analogy or a complete
 implementation of the canonical Structure-Mapping Engine.
 
@@ -16,7 +16,7 @@ CLI, so inspect the corpus and model configuration before starting a large run.
 **Jev and run comparisons:** the [Jev guide](docs/jev.md) includes a much smaller
 two-document smoke test, macOS/Windows key setup, recovery instructions, and
 standalone comparisons of completed runs. Jev selects matches; the existing
-generative provider still writes questions and quoted evidence. Both keys are
+generative provider still writes role statements and quoted evidence. Both keys are
 required. See the [detailed pipeline diagram](docs/diagrams/jev-pipeline.svg).
 
 **Prompts and exact requests:** [prompts/](prompts/) contains the live prompt
@@ -57,7 +57,7 @@ To rebuild that site after building the viewer, use
 Both Reuters runs include the five articles' paragraph text. All other public runs omit source text.
 
 For the local viewer with source text, open `http://127.0.0.1:8073/`, select the run and a completed revision, then
-use Question Groups, Paper Map, or Graphical Explorer. Serving the viewer makes
+use Passage Groups, Paper Map, or Graphical Explorer. Serving the viewer makes
 no model calls. The server exposes viewer data, not keys or judgment caches.
 Graphical Explorer arranges roles as a compact top-to-bottom pattern board.
 
@@ -121,7 +121,7 @@ review. Record exclusions in the approval notes; never build that reference
 from the extraction being checked.
 
 Approved receipts bind the source and prepared content by hash. Formatting
-JSON or changing generated question metadata does not invalidate source
+JSON or changing generated role statement metadata does not invalidate source
 approval; changing authored text or ownership does. Approvals travel with
 frozen run inputs. Identical raw source bytes reuse approved content even at a
 new path or with a different requested model. Existing manually curated corpora

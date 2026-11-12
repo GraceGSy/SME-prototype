@@ -10,7 +10,7 @@ In basis, state what each passage does and which specific role or relationship
 they share. If they share only a topic or support only part of the proposed
 correspondence, say so plainly. Do not change the selected ID.
 
-Use source text, not generated questions. For paragraphs, neighbors clarify
+Use source text, not generated role statements. For paragraphs, neighbors clarify
 meaning but only the center is evidence. For groups, read each paper's accepted
 members together; identify any paper that does not support the correspondence.
 

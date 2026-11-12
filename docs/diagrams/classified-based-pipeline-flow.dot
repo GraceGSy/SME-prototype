@@ -17,8 +17,8 @@ digraph ClassifiedPipeline {
   </TABLE>>];
   prepared [fillcolor="#edf4f8", color="#7f9aa8",
             label="Extract each new source once; verify and approve it\nReuse approved content. Graph construction never re-extracts text."];
-  questions [fillcolor="#fff0d8", color="#b68a49",
-             label="Reuse / generate implicit questions for the next document's units\nSections first, then paragraphs. Questions remain metadata; retain source text."];
+  labels [fillcolor="#fff0d8", color="#b68a49",
+             label="Reuse / generate implicit role statements for the next document's units\nSections first, then paragraphs. Role statements remain metadata; retain source text."];
   pool [label="Python: build the eligible candidate pools\nStructural units: existing section / subsection nodes.\nParagraphs: exact structural scope; exclude nodes containing this paper.\nEmpty pools skip choice calls; other pools go directly to the Decisions API."];
   forward [peripheries=2, fillcolor="#f1eafb", color="#7054a0",
            label="FORWARD - Decisions API\nEach incoming unit sees all eligible nodes.\nChoose one node or NO_MATCH.\nReturn choice, probabilities, and confidence."];
@@ -30,11 +30,11 @@ digraph ClassifiedPipeline {
   validate [label="Python: validate each quotation against its own source passage\nCheck attribution, length, scope, and membership constraints.\nInvalid evidence: retry / stop without committing. No semantic API checks."];
   commit [label="Python: commit reciprocal cores, then eligible adjacent paragraph fan-in\nCreate / retain singleton nodes for all unmatched units.\nSave choices, rejected selections, evidence, assignments, and source links."];
   labels [fillcolor="#fff0d8", color="#b68a49",
-          label="Describe accepted nodes with implicit questions\nShared nodes use accepted evidence; singletons reuse their member question."];
+          label="Describe accepted nodes with implicit role statements\nShared nodes use accepted evidence; singletons reuse their member role statement."];
   freeze [fillcolor="#edf4f8", color="#7f9aa8",
           label="Freeze one singleton-recovery snapshot at this level\nSingletons: one member, from any inserted document. Established nodes: 2+ members.\nPython requires the same level and exact parent scope.\nCross-paper cores need a paper absent from the target; same-paper fan-in needs adjacency."];
   singleton_forward [peripheries=2, fillcolor="#f1eafb", color="#7054a0",
-                     label="SINGLETON FORWARD - Decisions API\nEach singleton sees all its eligible established nodes.\nChoose one node or NO_MATCH.\nOne question per singleton, not per singleton-node pair."];
+                     label="SINGLETON FORWARD - Decisions API\nEach singleton sees all its eligible established nodes.\nChoose one node or NO_MATCH.\nOne role statement per singleton, not per singleton-node pair."];
   singleton_reverse [peripheries=2, fillcolor="#f1eafb", color="#7054a0",
                      label="SINGLETON REVERSE - Decisions API\nEach established node sees all eligible core singletons.\nChoose one singleton or NO_MATCH, independently.\nDo not restrict this pool to forward proposers."];
   recovery_proposals [label="Python: check IDs and propose recovery memberships\nPropose mutual top-1 cores before checking paragraph fan-in anchors.\nFan-in needs an immediate same-paper, same-owner core accepted before commit.\nNo singleton-to-singleton comparisons; no fan-in chains."];
@@ -43,16 +43,16 @@ digraph ClassifiedPipeline {
   recovery_validate [label="Python: validate recovery quotations, IDs, scope, and adjacency\nInvalid evidence: retry / stop without committing.\nOnly accepted cores can anchor committed paragraph fan-in."];
   merge [label="Python: merge accepted singletons and update their assignments\nAt most one recovered reciprocal core per target in this frozen pass.\nRemove absorbed singleton nodes; leave all others unchanged."];
   refresh [fillcolor="#fff0d8", color="#b68a49",
-           label="Refresh questions only for changed target nodes\nUse accepted evidence, not rejected candidates."];
+           label="Refresh role statements only for changed target nodes\nUse accepted evidence, not rejected candidates."];
   next [fillcolor="#edf4f8", color="#7f9aa8",
         label="Continue levels and documents in order\nAfter structural recovery: reparent / recompare absorbed older paragraphs\nbefore matching incoming paragraphs, using the same bidirectional stages.\nAfter paragraph recovery: advance to the next document. No convergence loop."];
   export [fillcolor="#edf4f8", color="#7f9aa8",
-          label="After the last document: export graph, evidence, reports, and reader views\nQuestion Groups, Paper Map, and Graphical Explorer expose the accepted mappings."];
+          label="After the last document: export graph, evidence, reports, and reader views\nPassage Groups, Paper Map, and Graphical Explorer expose the accepted mappings."];
   notes [shape=plain, style="",
          label="Every purple stage uses the same choice helper: up to 254 candidates + NO_MATCH.\nIf larger: split in half, query both halves, keep the top 5 candidates from each,\nthen run a third choice question over those candidates + NO_MATCH. Split recursively if needed.\nRerank original evidence; do not compare probabilities from different halves.\nThis is a proposed flow and an illustrative demo, not an implemented API integration."];
 
   legend -> prepared [style=invis];
-  prepared -> questions -> pool;
+  prepared -> labels -> pool;
   pool -> forward;
   pool -> reverse;
   {rank=same; forward; reverse;}
@@ -65,7 +65,7 @@ digraph ClassifiedPipeline {
   singleton_forward -> recovery_proposals;
   singleton_reverse -> recovery_proposals;
   recovery_proposals -> recovery_evidence -> recovery_validate -> merge -> refresh -> next;
-  next -> questions [style=dashed, constraint=false, label="next scope / document"];
+  next -> labels [style=dashed, constraint=false, label="next scope / document"];
   next -> export [label="finished"];
   export -> notes [style=invis];
 }

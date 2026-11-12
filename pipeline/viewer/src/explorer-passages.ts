@@ -2,7 +2,7 @@ import type { Group } from "./contracts";
 import { html } from "./explorer-dom";
 import { type Model, PAPER_COLORS } from "./model";
 
-// Evidence unfolds on the canvas under its question, never in a separate sidebar.
+// Evidence unfolds on the canvas under its label, never in a separate sidebar.
 export function renderPassages(model: Model, group: Group): HTMLElement {
   const content = html("div", "gx-passages");
   content.setAttribute("aria-label", "Original paragraphs across papers");

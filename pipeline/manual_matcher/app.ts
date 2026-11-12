@@ -42,7 +42,7 @@ let level: Level = "sections";
 let scope = "";
 let query = "";
 let selected = new Set<string>();
-let groupQuestion = "";
+let groupLabel = "";
 let outsideSource = "";
 let savedMessage = "Saved in this browser";
 const uploaded: [Source | null, Source | null] = [null, null];
@@ -147,7 +147,7 @@ function renderSetup(): string {
 }
 
 function groupName(group: AnnotationGroup, index: number): string {
-  return group.question || `Group ${index + 1}`;
+  return group.label || `Group ${index + 1}`;
 }
 
 function groupStyle(group: AnnotationGroup, groups: AnnotationGroup[]): string {
@@ -161,7 +161,7 @@ function scopeLabel(group: AnnotationGroup): string {
   const s = current();
   const lookup = new Map(units(s, "sections").map((unit) => [unit.key, unit]));
   return (
-    group.question ||
+    group.label ||
     group.members
       .map((key) => {
         const unit = lookup.get(key)!;
@@ -186,7 +186,7 @@ function unitCard(
   const ws = workspace(s);
   const group = memberMap.get(unit.key)!;
   const index = groups.filter((g) => g.members.length > 1).indexOf(group);
-  const questionText = ws.questions[unit.key] ?? unit.question;
+  const labelText = ws.labels[unit.key] ?? unit.label;
   const marked = ws.outside.some((flag) => flag.source === unit.key || flag.target === unit.key);
   const section = units(s, "sections").find((u) => u.key === `${unit.paper}:${unit.section}`);
   return `<article class="mm-unit${selected.has(unit.key) ? " selected" : ""}${unit.kind === "subsection" ? " subsection" : ""}" data-key="${html(unit.key)}" style="${groupStyle(group, groups)}">
@@ -196,7 +196,7 @@ function unitCard(
     </div>
     ${unit.kind === "paragraph" && !inScope(unit) ? '<div class="mm-outside-mark">Outside the current section group</div>' : ""}
     ${unit.kind === "paragraph" ? `<p class="mm-passage">${html(unit.text)}</p>` : `<details class="mm-section-detail" data-detail="${html(unit.key)}"><summary>Read section (${unit.text.split(/\s+/).length} words)</summary><p class="mm-passage">${html(unit.text)}</p></details>`}
-    <details class="mm-question-detail" data-detail="question-${html(unit.key)}"><summary>${questionText ? "Edit question" : "Add question (optional)"}</summary><textarea data-unit-question="${html(unit.key)}" aria-label="Question for ${html(unit.title)}">${html(questionText)}</textarea></details>
+    <details class="mm-label-detail" data-detail="label-${html(unit.key)}"><summary>${labelText ? "Edit label" : "Add passage label (optional)"}</summary><textarea data-unit-label="${html(unit.key)}" aria-label="Label for ${html(unit.title)}">${html(labelText)}</textarea></details>
     ${unit.kind === "paragraph" ? `<button class="mm-text-button mm-outside" data-action="outside" data-unit="${html(unit.key)}">Match outside this group</button>` : ""}
     ${marked ? '<div class="mm-outside-mark">Outside-group match recorded</div>' : ""}
   </article>`;
@@ -214,7 +214,7 @@ function renderWorkspace(): string {
     (unit) =>
       (inScope(unit) || selected.has(unit.key)) &&
       (!query ||
-        `${unit.title} ${unit.text} ${ws.questions[unit.key] ?? unit.question}`
+        `${unit.title} ${unit.text} ${ws.labels[unit.key] ?? unit.label}`
           .toLowerCase()
           .includes(query.toLowerCase())),
   );
@@ -247,8 +247,8 @@ function renderWorkspace(): string {
     <aside class="mm-sidebar">
       <section class="mm-composer"><h2>${selected.size ? `${selected.size} selected` : "Create a group"}</h2>
         <p>${selected.size ? `${counts[0]} from the first paper &middot; ${counts[1]} from the second` : "Select one or more passages. Each passage stays in exactly one group."}</p>
-        <label for="groupQuestion">Shared question (optional)</label>
-        <textarea id="groupQuestion" placeholder="What do these passages answer together?">${html(groupQuestion)}</textarea>
+        <label for="groupLabel">Shared role statement (optional)</label>
+        <textarea id="groupLabel" placeholder="What do these passages answer together?">${html(groupLabel)}</textarea>
         ${button("Group selected", "group", true, selected.size ? "" : "disabled")}
         <div class="mm-selection-actions"><button class="mm-text-button" data-action="clear">Clear selection</button><button class="mm-text-button" data-action="ungroup" ${selected.size ? "" : "disabled"}>Separate selected</button></div>
         <div class="mm-history"><button class="mm-text-button" data-action="undo" ${undo.length ? "" : "disabled"}>Undo</button><button class="mm-text-button" data-action="redo" ${redo.length ? "" : "disabled"}>Redo</button></div>
@@ -316,7 +316,7 @@ function showTutorialStep(stage: TutorialStage): void {
   level = practice.level;
   scope = practice.scope;
   selected = new Set(practice.selected);
-  groupQuestion = practice.question;
+  groupLabel = practice.label;
   query = "";
   outsideSource = "";
   undo.length = 0;
@@ -355,14 +355,14 @@ function resetTutorial(): void {
 
 function clearSelection(): void {
   selected.clear();
-  groupQuestion = "";
+  groupLabel = "";
 }
-function reflectSelectionQuestion(): void {
+function reflectSelectionLabel(): void {
   const exact = workspace(current())[level].find(
     (group) =>
       group.members.length === selected.size && group.members.every((key) => selected.has(key)),
   );
-  groupQuestion = exact?.question ?? "";
+  groupLabel = exact?.label ?? "";
 }
 
 async function start(): Promise<void> {
@@ -421,7 +421,7 @@ async function exportViewer(): Promise<void> {
   data["styles.css"] = strToU8(assets[2]);
   data["manual-labels.json"] = strToU8(JSON.stringify(s, null, 2));
   data["README.txt"] = strToU8(
-    "Human-labelled Question Atlas dataset\n\nThe data/ directory uses the pipeline viewer contract.\nmanual-labels.json contains both granularities, source documents, optional questions, and outside-group flags. Open it in the manual matcher to resume.\n\nTo view this export, serve this directory with any static HTTP server.\nFor example: python -m http.server 8000\nThen visit http://localhost:8000\n\nNo model calls, pipeline attempts, or synthetic execution traces are included.\nUnlabelled passages remain separate groups; this is not a completion certificate.\n",
+    "Human-labelled Question Atlas dataset\n\nThe data/ directory uses the pipeline viewer contract.\nmanual-labels.json contains both granularities, source documents, optional labels, and outside-group flags. Open it in the manual matcher to resume.\n\nTo view this export, serve this directory with any static HTTP server.\nFor example: python -m http.server 8000\nThen visit http://localhost:8000\n\nNo model calls, pipeline attempts, or synthetic execution traces are included.\nUnlabelled passages remain separate groups; this is not a completion certificate.\n",
   );
   const zipped = zipSync(data);
   download(`human-labels-${s.mode}-viewer.zip`, zipped.buffer as ArrayBuffer, "application/zip");
@@ -548,7 +548,7 @@ element("#matcher").addEventListener("click", (event) => {
     } else if (action === "edit") {
       const group = workspace(s)[level].find((g) => g.id === target.dataset.group)!;
       selected = new Set(group.members);
-      groupQuestion = group.question;
+      groupLabel = group.label;
       render();
     } else if (action === "group") {
       if (level === "paragraphs") {
@@ -566,7 +566,7 @@ element("#matcher").addEventListener("click", (event) => {
           );
       }
       commit(() => {
-        groupUnits(s, level, [...selected], groupQuestion);
+        groupUnits(s, level, [...selected], groupLabel);
         clearSelection();
       });
     } else if (action === "ungroup")
@@ -597,7 +597,7 @@ element("#matcher").addEventListener("change", (event) => {
   if (target.dataset.pick) {
     if (target.checked) selected.add(target.dataset.pick);
     else selected.delete(target.dataset.pick);
-    reflectSelectionQuestion();
+    reflectSelectionLabel();
     render();
   } else if (target.dataset.document !== undefined) {
     choices[Number(target.dataset.document)] = target.value;
@@ -625,19 +625,19 @@ element("#matcher").addEventListener("change", (event) => {
     clearSelection();
     query = "";
     render();
-  } else if (target.dataset.unitQuestion) {
+  } else if (target.dataset.unitLabel) {
     commit(() => {
-      workspace(current()).questions[target.dataset.unitQuestion!] = target.value.trim();
+      workspace(current()).labels[target.dataset.unitLabel!] = target.value.trim();
     }, false);
     target.closest("details")!.querySelector("summary")!.textContent = target.value.trim()
-      ? "Edit question"
-      : "Add question (optional)";
+      ? "Edit label"
+      : "Add passage label (optional)";
   }
 });
 
 element("#matcher").addEventListener("input", (event) => {
   const target = event.target as HTMLInputElement;
-  if (target.id === "groupQuestion") groupQuestion = target.value;
+  if (target.id === "groupLabel") groupLabel = target.value;
   else if (target.id === "search") {
     query = target.value;
     render();
@@ -679,7 +679,7 @@ element("#outsideDialog").addEventListener("click", (event) => {
     commit(() => {
       matchOutside(current(), outsideSource, target.dataset.target!);
       selected = new Set(membership(workspace(current()).paragraphs).get(outsideSource)!.members);
-      reflectSelectionQuestion();
+      reflectSelectionLabel();
     });
   element<HTMLDialogElement>("#outsideDialog").close();
 });

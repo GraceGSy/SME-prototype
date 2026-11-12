@@ -295,7 +295,7 @@ class SkillApiTest(unittest.TestCase):
                 self.assertEqual(call["model"], "claude-sonnet-5")
                 self.assertEqual(call["thinking"], {"type": "adaptive"})
                 self.assertEqual(call["output_config"]["effort"], "medium")
-                expected_tokens = 2048 if stage.skill == "generate-question" else 8192
+                expected_tokens = 2048 if stage.skill == "generate-role-statement" else 8192
                 self.assertEqual(call["max_tokens"], expected_tokens)
 
     def test_sections_allow_large_cached_skill_iterations_without_an_opt_in_cap(self) -> None:

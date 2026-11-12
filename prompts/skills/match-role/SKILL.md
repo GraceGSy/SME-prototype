@@ -8,7 +8,7 @@ description: "Select one role-corresponding candidate for one focus unit or grap
 Compare one focus unit or node with the supplied candidates. Apply the caller's
 shared-role and evidence contracts.
 The reverse judgment is a separate request. Do not batch, invent candidates,
-generate questions, or mutate the graph.
+generate role statements, or mutate the graph.
 Choose independently; do not predict the reverse vote or select a singleton
 merely because it chose this group. Adjacency alone is insufficient for a match.
 

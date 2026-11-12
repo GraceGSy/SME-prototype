@@ -16,7 +16,7 @@ test("groups, paper map, explorer, and tutorial work on canonical exports", asyn
   await expect(page.locator(".paper-map-paragraph:visible")).toHaveCount(2);
   await page.getByRole("button", { name: "Clear selection" }).click();
   await expect(page.locator(".paper-map-paragraph:visible")).toHaveCount(3);
-  await page.getByRole("button", { name: "Show singleton questions" }).click();
+  await page.getByRole("button", { name: "Show singleton passages" }).click();
   await expect(page.locator(".paper-map-singleton-legend button")).toBeVisible();
   await page.screenshot({ path: "output/playwright/desktop-map.png" });
   await page.getByRole("button", { name: "Graphical Explorer", exact: true }).click();

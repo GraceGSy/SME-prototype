@@ -8,11 +8,11 @@ from typing import Any
 from ..files import write_json
 from .correspondence_table import render_correspondence_report_markdown
 from .correspondences import build_correspondences
-from .graph import QuestionGraph
+from .graph import RoleGraph
 from .models import Paper
 
 
-def export_revision(dataset_dir: Path, graph: QuestionGraph, papers: list[Paper]) -> None:
+def export_revision(dataset_dir: Path, graph: RoleGraph, papers: list[Paper]) -> None:
     dataset_dir.mkdir(parents=True, exist_ok=True)
     section_lookup = {
         (paper.paper_id, section.id): section for paper in papers for section in paper.sections
@@ -55,7 +55,7 @@ def export_revision(dataset_dir: Path, graph: QuestionGraph, papers: list[Paper]
     write_json(
         dataset_dir / "final_snapshot.json",
         {
-            "schema_version": 1,
+            "schema_version": 2,
             "mode": "final_snapshot",
             "groups": paragraph_groups,
             "singletons": paragraph_singletons,
@@ -76,7 +76,7 @@ def _viewer_paper(paper: Paper) -> dict[str, Any]:
             {
                 "id": section.id,
                 "title": f"{section.number} {section.label}".strip(),
-                "tag": section.question,
+                "tag": section.role_statement,
                 "text": section.text,
                 "unit_type": section.kind,
                 "parent_id": section.parent_id,
@@ -88,7 +88,7 @@ def _viewer_paper(paper: Paper) -> dict[str, Any]:
             {
                 "id": paragraph.id,
                 "title": paragraph.label,
-                "tag": paragraph.question,
+                "tag": paragraph.role_statement,
                 "text": paragraph.text,
                 "section_id": section.id,
                 "family_id": section.family_id,
@@ -117,7 +117,7 @@ def _viewer_group(
                     "paper": paper_id,
                     "unit_id": unit_id,
                     "section_id": unit_id,
-                    "tag": section.question,
+                    "tag": section.role_statement,
                     "unit_type": section.kind,
                     "ordinal": section.ordinal,
                 }
@@ -129,14 +129,14 @@ def _viewer_group(
                     "paper": paper_id,
                     "unit_id": unit_id,
                     "section_id": section.id,
-                    "tag": paragraph.question,
+                    "tag": paragraph.role_statement,
                     "unit_type": "paragraph",
                     "ordinal": paragraph.ordinal,
                 }
             )
     return {
         "group_id": node_id,
-        "overarching_question": data.get("generated_question") or node_id,
+        "role_statement": data.get("role_statement") or node_id,
         "parent_group_id": data.get("parent_id"),
         "members": members,
     }

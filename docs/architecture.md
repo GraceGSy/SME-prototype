@@ -4,7 +4,7 @@
 
 The goal is to expose cross-document correspondences that ordinary topical
 similarity may miss: two passages about different subjects can perform a similar
-explanatory, evidential, causal, or discourse function. Questions summarize these
+explanatory, evidential, causal, or discourse function. Role statements summarize these
 functions for inspection; they are not node identities or proof of equivalence.
 
 The current implementation delegates local semantic judgments to an LLM and
@@ -37,7 +37,7 @@ introduced.
 Every new extraction publishes a pending JSON receipt and an HTML comparison.
 Approval requires no unresolved automatic discrepancies, a reviewer, and notes
 confirming original-source/heading/boundary/footnote review. The receipt binds
-source, reference, and authored content by hash; generated questions are outside
+source, reference, and authored content by hash; generated role statements are outside
 its scope. The loader rejects pending, missing-required, or changed approvals.
 Run snapshots copy approved receipts, so add/retry does not re-extract or
 re-review earlier sources. Existing manually prepared corpora remain explicit
@@ -53,22 +53,22 @@ The stage order is fixed. Complete this sequence for each document before
 inserting the next, whether documents arrive in one manifest or separate adds:
 
 1. Register each paper in manifest order.
-2. Reuse or generate its structural questions.
+2. Reuse or generate its structural role statements.
 3. Match each new structural unit against existing nodes in both directions.
 4. Accept reciprocal selections; create nodes for unmatched units.
-5. Generate display questions for the structural groups.
+5. Generate display role statements for the structural groups.
 6. Revisit all structural singletons, including those from earlier documents.
    Each selects its best eligible established group or null; each established
    group independently selects its best eligible singleton or null. Merge only
    mutual top-1 choices, excluding groups that already contain the source paper.
-7. Regenerate changed structural questions.
+7. Regenerate changed structural role statements.
 8. For each absorbed older section, insert its existing paragraphs into the
    destination's child scope using ordinary bidirectional matching and
    reconciliation. Retain unaccepted singleton IDs; merge accepted ones and
-   update their questions. Then process the incoming document's paragraphs
+   update their role statements. Then process the incoming document's paragraphs
    through that same procedure within their exact structural nodes.
 9. Apply the same singleton realignment algorithm to paragraph nodes, bounded
-   to each exact structural node, and regenerate changed group questions.
+   to each exact structural node, and regenerate changed group role statements.
 
 Both levels use one shared realignment implementation. Each pass freezes the
 candidate pools and obtains all forward/reverse judgments before any merge.
@@ -172,7 +172,7 @@ are not copied into the system prompt. Matching context declares `cache_prefix:
 scope/candidates, then the changing focus without a cache marker. This applies
 to both directions at both levels, including singleton realignment. Complete
 eligible pools and neighbor windows are preserved, not shortened or normalized.
-Question prompts keep unique evidence uncached rather than paying to write a
+Role statement prompts keep unique evidence uncached rather than paying to write a
 large prefix that will not repeat.
 
 Existing cache markers also enable Anthropic's automatic caching of code

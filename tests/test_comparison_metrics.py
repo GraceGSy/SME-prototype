@@ -2,16 +2,16 @@
 
 import unittest
 
-from pipeline.comparison_metrics import membership_metrics, question_similarity
+from pipeline.comparison_metrics import label_similarity, membership_metrics
 
 
-def group(members, question="What role do these passages share?"):
+def group(members, label="What role do these passages share?"):
     return {
         "id": "/".join(members),
         "members": sorted(members),
         "full_members": sorted(members),
         "scope": [],
-        "question": question,
+        "label": label,
     }
 
 
@@ -56,12 +56,12 @@ class ComparisonMetricsTest(unittest.TestCase):
         self.assertIsNone(result["graph"]["mean_peer_jaccard_active_units"])
         self.assertIsNone(result["group_alignment"]["mean_member_jaccard_with_unmatched_zero"])
 
-    def test_lexical_questions_normalize_case_not_meaning(self):
-        result = question_similarity(
+    def test_lexical_labels_normalize_case_not_meaning(self):
+        result = label_similarity(
             [
                 {"left": "What enables access?", "right": "WHAT enables access!"},
                 {"left": "What enables access?", "right": "What prevents access?"},
-                {"left": "", "right": "A question"},
+                {"left": "", "right": "A label"},
             ]
         )
         same, different, missing = result["rows"]

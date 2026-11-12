@@ -13,7 +13,7 @@ Examples do not waive the requirement to read every member of a real node.
 Focus: "The permit rule allows only temporary structures, meaning structures
 removable without demolition. The shed has a poured foundation that must be
 broken up to remove it. It therefore fails the rule, and we deny the permit."
-Generated question metadata: "Does the poured foundation make the shed permanent?"
+Role statement: "Assesses whether the shed satisfies the permanence criterion."
 
 Candidate `demo-analysis`: "The protocol admits only reversible responses,
 meaning the signal must return to baseline after the stimulus is removed.
@@ -25,7 +25,7 @@ April. The inspector visited in May, and the office scheduled a hearing in June.
 
 Expected output:
 ```json
-{"target_id":"demo-analysis","basis":"Both interpret an eligibility condition, apply observed facts, and conclude exclusion. The permit rule and experimental protocol govern eligibility; the foundation and persistent signal establish failure. demo-topic only recounts procedural history. The specific question about the shed does not override the focus's reasoning role.","evidence":{"focus":["removable without demolition"],"target":["return to baseline"]}}
+{"target_id":"demo-analysis","basis":"Both interpret an eligibility condition, apply observed facts, and conclude exclusion. The permit rule and experimental protocol govern eligibility; the foundation and persistent signal establish failure. demo-topic only recounts procedural history. The specific statement about the shed does not override the focus's reasoning role.","evidence":{"focus":["removable without demolition"],"target":["return to baseline"]}}
 ```
 
 ### 2. Same tool, different job: abstain
@@ -89,17 +89,17 @@ Expected output:
 {"target_id":"demo-comparison","basis":"Each paper explains how an interface supports direct comparison. Paper 2 distributes operation and purpose across two accepted paragraphs; both contribute, without each having to restate the full role. The focus performs that role in one paragraph.","evidence":{"focus":["compare the original wording without switching screens"],"target":["alongside one another for direct comparison","selected excerpts in two columns","avoids switching screens while checking their wording"]}}
 ```
 
-### 6. A broad group question cannot supply missing support: abstain
+### 6. A broad group role statement cannot supply missing support: abstain
 
 Focus, paper_key `paper-3`: "Readers pin two passages side by side for direct comparison."
-Candidate `demo-unsupported`, generated question: "How does the interface support comparison?"
+Candidate `demo-unsupported`, generated role statement: "Describes how the interface supports comparison."
 Accepted members:
 - paper_key `paper-1`: "The viewer places selected passages alongside one another."
 - paper_key `paper-2`: "Readers completed the task faster with the tool than without it."
 
 Expected output:
 ```json
-{"target_id":null,"basis":"The focus and paper 1 describe interface operation. Paper 2 reports an evaluation outcome, not the operation enabling comparison. The generated question cannot make the shared role source-supported. Being about the same tool or appearing beside its description would not justify admitting a result paragraph.","evidence":{"focus":[],"target":[]}}
+{"target_id":null,"basis":"The focus and paper 1 describe interface operation. Paper 2 reports an evaluation outcome, not the operation enabling comparison. The generated role statement cannot make the shared role source-supported. Being about the same tool or appearing beside its description would not justify admitting a result paragraph.","evidence":{"focus":[],"target":[]}}
 ```
 
 For the actual request, choose the strongest supported correspondence or null.

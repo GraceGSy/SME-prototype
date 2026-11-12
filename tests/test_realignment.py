@@ -61,17 +61,16 @@ class RealignmentTest(unittest.TestCase):
                 )
                 self.assertTrue(all(r.paper_index == 3 for r in child_calls))
                 self.assertEqual(
-                    {m["unit_id"] for m in runner.question_graph.members(core)},
+                    {m["unit_id"] for m in runner.role_graph.members(core)},
                     {"pa", "pb", "pb2"} if reverse else {"pa"},
                 )
                 if reverse:
                     roles = {
-                        m["unit_id"]: m["membership_role"]
-                        for m in runner.question_graph.members(core)
+                        m["unit_id"]: m["membership_role"] for m in runner.role_graph.members(core)
                     }
                     self.assertEqual(roles[reverse], "core")
                     self.assertEqual(roles["pb2" if reverse == "pb" else "pb"], "fan_in")
-                self.assertEqual(moved in dict(runner.question_graph.nodes()), reverse is None)
+                self.assertEqual(moved in dict(runner.role_graph.nodes()), reverse is None)
                 self.assertEqual(
                     runner.insertions_by_paper["p2"].paragraph_assignments["pb"],
                     core if reverse else moved,
@@ -133,10 +132,10 @@ class RealignmentTest(unittest.TestCase):
                 ]
             )
             self.assertEqual(
-                {m["unit_id"]: m["membership_role"] for m in runner.question_graph.members(target)},
+                {m["unit_id"]: m["membership_role"] for m in runner.role_graph.members(target)},
                 {"core": "core", "neighbor": "fan_in", "pb": "core"},
             )
-            self.assertIn(farther, dict(runner.question_graph.nodes()))
+            self.assertIn(farther, dict(runner.role_graph.nodes()))
             self.assertFalse(
                 any(
                     farther in r.key
@@ -144,11 +143,13 @@ class RealignmentTest(unittest.TestCase):
                     if r.stage_id == "paragraph_rerepresentation"
                 )
             )
-            question = next(
-                r for r in judge.requests if r.stage_id == "paragraph_rerepresentation_questions"
+            role_statement = next(
+                r
+                for r in judge.requests
+                if r.stage_id == "paragraph_rerepresentation_role_statements"
             )
             self.assertEqual(
-                [m["paper_key"] for m in question.context["group"]["members"]],
+                [m["paper_key"] for m in role_statement.context["group"]["members"]],
                 ["paper-1", "paper-1", "paper-2"],
             )
             self.assert_replay_matches(runner)
@@ -199,7 +200,7 @@ class RealignmentTest(unittest.TestCase):
                 )
             )
             with self.assertRaisesRegex(ValueError, "same exact parent"):
-                runner.question_graph.merge_singleton(
+                runner.role_graph.merge_singleton(
                     source, right_paragraph, paper_index=3, attempt_id="a", reverse_attempt_id="b"
                 )
             self.assert_replay_matches(runner)
@@ -226,14 +227,14 @@ class RealignmentTest(unittest.TestCase):
             )
             requests = [r for r in judge.requests if r.stage_id == "section_rerepresentation"]
             self.assertEqual(len(requests), 2)
-            self.assertIn(source, dict(runner.question_graph.nodes()))
-            self.assertEqual(len(runner.question_graph.members(target)), 2)
+            self.assertIn(source, dict(runner.role_graph.nodes()))
+            self.assertEqual(len(runner.role_graph.members(target)), 2)
             self.assertFalse(any(e["action"] == "node_merged" for e in runner.journal.events))
 
     def assert_replay_matches(self, runner):
         before = json.dumps(runner.journal.events, sort_keys=True)
         replay = graph_from_events(runner.journal.events)
-        graph = runner.question_graph.graph
+        graph = runner.role_graph.graph
         self.assertEqual(set(replay.nodes), set(graph.nodes))
         self.assertEqual(set(replay.edges(keys=True)), set(graph.edges(keys=True)))
         for node_id, data in graph.nodes(data=True):
@@ -283,13 +284,13 @@ class RealignmentTest(unittest.TestCase):
                 runner.insertions_by_paper["p2"].paragraph_assignments["pb"], first_paragraph
             )
             self.assertEqual(
-                {m["paper_id"] for m in runner.question_graph.members(first_paragraph)},
+                {m["paper_id"] for m in runner.role_graph.members(first_paragraph)},
                 {"p1", "p2", "p3"},
             )
             self.assertTrue(
                 all(
                     m["owner_group_id"] == target
-                    for m in runner.question_graph.members(first_paragraph)
+                    for m in runner.role_graph.members(first_paragraph)
                 )
             )
             moves = [e for e in runner.journal.events if e["action"] == "node_reparented"]
@@ -363,10 +364,10 @@ class RealignmentTest(unittest.TestCase):
                     all(r.context["scope"]["parent_group_id"] == root for r in requests)
                 )
                 self.assertFalse(any(r.stage_id.startswith("section_") for r in judge.requests))
-                members = runner.question_graph.members(target)
+                members = runner.role_graph.members(target)
                 self.assertEqual(len(members), 3 if forward and reverse else 2)
                 self.assertEqual(
-                    source in {n for n, _ in runner.question_graph.nodes()},
+                    source in {n for n, _ in runner.role_graph.nodes()},
                     not (forward and reverse),
                 )
                 self.assert_replay_matches(runner)

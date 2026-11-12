@@ -8,7 +8,7 @@ import shutil
 from pathlib import Path
 from typing import Literal
 
-from .document import content_schema, relabel_extraction, strip_questions
+from .document import content_schema, relabel_extraction, strip_annotations
 from .files import directory_hash, file_sha256, read_json, write_json
 from .prompts import PROMPT_ROOT, REPO_ROOT, request_prompts
 from .providers.contracts import SkillCallPolicy, SkillClient
@@ -116,8 +116,8 @@ def extract_document(
         write_json(extracted_path, saved)
 
     content = relabel_extraction(saved["content"])
-    if strip_questions(content) != content:
-        raise ValueError("Extraction must return content only, without generated questions")
+    if strip_annotations(content) != content:
+        raise ValueError("Extraction must return content only, without generated role statements")
     if approved:
         receipt = validate_approval(approved["review"], saved["content"])
         if (

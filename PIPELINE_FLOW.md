@@ -1,8 +1,8 @@
 # Pipeline flow
 
-The supported pipeline builds an ordered, question-role graph from canonical
+The supported pipeline builds an ordered, role graph from canonical
 documents. Extraction prepares a new source once; graph construction never
-extracts it. Language models make bounded question and match judgments. Python
+extracts it. Language models make bounded role statement and match judgments. Python
 validates those judgments, applies graph rules, and writes inspectable outputs.
 This is an SME-inspired comparison system, not the canonical symbolic SME.
 
@@ -17,7 +17,7 @@ The [Jev guide](docs/jev.md) gives exact startup and minimal-run commands.
 ![Implemented Jev pipeline](docs/diagrams/jev-pipeline.png)
 
 Jev chooses candidates through TypeSafe's Choice endpoint. The existing
-generative provider writes questions and source-bound evidence; Python retains
+generative provider writes role statements and source-bound evidence; Python retains
 all graph rules. Every non-null directional choice gets evidence before
 reconciliation, including choices Python ultimately rejects. This preserves
 the existing directional-judgment audit contract. Earlier Decisions API plans
@@ -38,10 +38,10 @@ flowchart TD
     Start["start / add<br/>freeze inputs and policy"]:::det
     Saved["Existing run with<br/>frozen inputs and policy"]:::input
     Retry["retry<br/>reuse saved inputs and policy"]:::det
-    Judge["For each document in order:<br/>question and match judgments"]:::model
+    Judge["For each document in order:<br/>role statement and match judgments"]:::model
     Graph["Apply reciprocal, fan-in, and<br/>singleton rules in Python"]:::det
     Outputs["Immutable revision:<br/>events, reports, graph, viewer dataset"]:::artifact
-    Viewer["Local viewer or static package<br/>Question Groups, Paper Map, Explorer"]:::det
+    Viewer["Local viewer or static package<br/>Passage Groups, Paper Map, Explorer"]:::det
 
     Raw --> Extract --> Content --> Manifest
     Prepared --> Manifest
@@ -78,10 +78,10 @@ packaging make no model calls.
 flowchart TD
     Paper["Next prepared document<br/>in manifest order"]:::input
     Mode{"Granularity"}:::det
-    Structural["Structural phase<br/>1. Reuse/generate section questions<br/>2. Match units and groups both ways<br/>3. Reconcile reciprocal choices<br/>4. Set group questions<br/>5. Revisit singletons and refresh questions"]:::model
+    Structural["Structural phase<br/>1. Reuse/generate section role statements<br/>2. Match units and groups both ways<br/>3. Reconcile reciprocal choices<br/>4. Set group role statements<br/>5. Revisit singletons and refresh role statements"]:::model
     Older["Recompare paragraphs from older<br/>sections absorbed into shared groups"]:::model
     Root["Paragraph-only: one section per<br/>document joins a deterministic shared root"]:::det
-    Paragraph["Paragraph phase, within each exact structural group<br/>1. Reuse/generate questions with adjacent context<br/>2. Match paragraphs and groups both ways<br/>3. Reconcile reciprocal cores and adjacent fan-in<br/>4. Set group questions<br/>5. Revisit singletons and refresh questions"]:::model
+    Paragraph["Paragraph phase, within each exact structural group<br/>1. Reuse/generate role statements with adjacent context<br/>2. Match paragraphs and groups both ways<br/>3. Reconcile reciprocal cores and adjacent fan-in<br/>4. Set group role statements<br/>5. Revisit singletons and refresh role statements"]:::model
     Next{"More documents?"}:::det
     Export["Finalize journal; export graph,<br/>correspondences, replay, singleton report,<br/>and viewer dataset"]:::artifact
 
@@ -99,7 +99,7 @@ flowchart TD
 ```
 
 Orange stages mix model judgments and deterministic Python reconciliation;
-the model is called only when a question is missing or a judgment is not
+the model is called only when a role statement is missing or a judgment is not
 already in the run cache. Each match request selects one eligible
 candidate or null; it does not return a batch of matches. Python accepts
 reciprocal selections, applies the limited paragraph adjacency rule, and keeps
@@ -135,7 +135,7 @@ Paragraph-only fan-in additionally permits immediate core neighbors, including
 qualifying existing nodes whose members are each adjacent to same-paper target
 cores. This is a local membership rule, not a formal global structural
 alignment. The shared-role and participant-consistency requirements are model
-instructions; no independent semantic verifier checks them. Group-question
+instructions; no independent semantic verifier checks them. Group-role statement
 generation labels accepted evidence and does not reconsider membership.
 Quote-attribution and quote-length failures receive up to two additional
 attempts using the same source pool. Other contract failures or exhausted
@@ -187,14 +187,14 @@ pool. All documents, probabilities, and choices are scripted examples; the demo
 makes no model calls and does not measure matching quality.
 
 The animation keeps one corpus graph on screen. A new paper arrives without
-questions, separates into sections and paragraphs, gains implicit questions,
+role statements, separates into sections and paragraphs, gains implicit role statements,
 and joins existing nodes through visible choice and reciprocity arrows. Gray
 singletons remain in place during recovery. Connections play one at a time,
 with highlighted endpoints and Previous/Next arrow controls. The demo hides
 background ownership edges during comparisons and waits for the arrow sequence
 before advancing in Play mode. The example shows accepted fan-in,
 a rejected fan-in chain, wrong-scope exclusion, and a misattributed quotation
-that blocks a commit until repaired. Updated node questions visibly broaden
+that blocks a commit until repaired. Updated node role statements visibly broaden
 as their accepted evidence changes. The cache/receipt bookkeeping is omitted
 from the presentation.
 
@@ -209,7 +209,7 @@ Reverse questions see all eligible candidates, not only forward proposers, and
 do not receive the forward votes. Empty pools make no choice calls.
 
 Python proposes reciprocal cores and the existing immediate-core paragraph
-fan-in. A generative LLM still supplies missing questions and the explanations
+fan-in. A generative LLM still supplies missing role statements and the explanations
 and quotations required to document admissible proposals. The Decisions API
 does not generate that evidence. Python checks each quotation against its own
 source passage before committing a proposal. It retries/stops on invalid
@@ -251,7 +251,7 @@ adjacent fan-in. Cross-paper core matching is not neighbor-only. It does not
 compare singletons with each other or repeat until convergence. After a structural
 singleton joins a node, its older paragraphs move into the shared scope and use
 the same forward/reverse stages before the incoming paragraphs. Changed target
-nodes get updated questions. The pipeline then advances to the next document
+nodes get updated role statements. The pipeline then advances to the next document
 and eventually exports its graph, evidence, and reader views.
 
 The editable source is

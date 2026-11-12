@@ -18,7 +18,7 @@ def stable_id(prefix: str, *parts: str) -> str:
     return f"{prefix}-{hashlib.sha256(payload).hexdigest()[:12]}"
 
 
-class QuestionGraph:
+class RoleGraph:
     """Own deterministic node state and replay events."""
 
     def __init__(self, journal: RevisionJournal):
@@ -71,7 +71,7 @@ class QuestionGraph:
             level=level,
             parent_id=parent_id,
             members=[member],
-            generated_question="",
+            role_statement="",
             created_paper_index=paper_index,
         )
         self.journal.event(
@@ -297,24 +297,24 @@ class QuestionGraph:
             if not any(member["paper_id"] == paper_id for member in data["members"])
         )
 
-    def set_question(
+    def set_role_statement(
         self,
         node_id: str,
-        question: str,
+        role_statement: str,
         paper_index: int,
         attempt_id: str | None,
         *,
         source: str = "model",
     ) -> None:
-        normalized = question.strip()
-        previous = self.graph.nodes[node_id].get("generated_question", "")
-        self.graph.nodes[node_id]["generated_question"] = normalized
+        normalized = role_statement.strip()
+        previous = self.graph.nodes[node_id].get("role_statement", "")
+        self.graph.nodes[node_id]["role_statement"] = normalized
         self.journal.event(
-            "question_generated",
+            "role_statement_generated",
             paper_index=paper_index,
             node_id=node_id,
             previous=previous,
-            question=normalized,
+            role_statement=normalized,
             attempt_id=attempt_id,
             source=source,
         )
@@ -383,7 +383,7 @@ def graph_from_events(events: list[dict[str, Any]]) -> nx.MultiDiGraph:
                 level=event["level"],
                 parent_id=event.get("parent_id"),
                 members=[event["member"]],
-                generated_question="",
+                role_statement="",
             )
         elif action == "member_added":
             graph.nodes[event["node_id"]]["members"].append(event["member"])
@@ -405,6 +405,8 @@ def graph_from_events(events: list[dict[str, Any]]) -> nx.MultiDiGraph:
                 attempt_id=event.get("attempt_id"),
                 paper_id=event.get("paper_id"),
             )
+        elif action == "role_statement_generated":
+            graph.nodes[event["node_id"]]["role_statement"] = event["role_statement"]
         elif action == "question_generated":
             graph.nodes[event["node_id"]]["generated_question"] = event["question"]
     return graph

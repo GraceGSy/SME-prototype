@@ -19,8 +19,8 @@
     "match": "Which candidate paragraph best performs the existing group's shared role?",
     "guide": "First read the existing group's members together and identify the job they share across papers. Then judge each new paragraph separately against that job. Do not combine candidates. Before and after passages give context; judge only the marked paragraph."
   },
-  "policy": "Compare what each passage does and how its participants relate, not shared topics or names. Read the source; generated questions are only hints. For paragraph windows judge the center, not its neighbors. Each paper in a group must support the role; read its accepted members together and require each to contribute.",
-  "outline_rule": "Only the candidates are options. Prior matches are context; judge the source text, not just the questions.",
+  "policy": "Compare what each passage does and how its participants relate, not shared topics or names. Read the source; generated role statements are only hints. For paragraph windows judge the center, not its neighbors. Each paper in a group must support the role; read its accepted members together and require each to contribute.",
+  "outline_rule": "Only the candidates are options. Prior matches are context; judge the source text, not just the role statements.",
   "has_match_question": "Does any eligible candidate perform the same source-supported role as the focus?",
   "has_match_true": "At least one does.",
   "has_match_false": "None does.",

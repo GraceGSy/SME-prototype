@@ -26,7 +26,7 @@ export const paperSchema = z.strictObject({
 });
 export const groupSchema = z.strictObject({
   group_id: id,
-  overarching_question: id,
+  role_statement: id,
   parent_group_id: id.nullable(),
   members: z
     .array(
@@ -41,8 +41,11 @@ export const groupSchema = z.strictObject({
     )
     .min(1),
 });
-export const snapshotSchema = z.strictObject({
-  schema_version: z.literal(1),
+const legacyGroupSchema = groupSchema
+  .omit({ role_statement: true })
+  .extend({ overarching_question: id });
+const currentSnapshot = z.strictObject({
+  schema_version: z.literal(2),
   mode: z.literal("final_snapshot"),
   groups: z.array(groupSchema),
   singletons: z.array(groupSchema),
@@ -52,6 +55,16 @@ export const snapshotSchema = z.strictObject({
     paragraph_nodes: z.number().int().nonnegative(),
   }),
 });
+const historicalSnapshot = currentSnapshot.extend({
+  schema_version: z.literal(1),
+  groups: z.array(legacyGroupSchema),
+  singletons: z.array(legacyGroupSchema),
+  section_groups: z.array(legacyGroupSchema),
+});
+export const snapshotSchema = z.discriminatedUnion("schema_version", [
+  historicalSnapshot,
+  currentSnapshot,
+]);
 const fileName = z.string().regex(/^[a-zA-Z0-9][a-zA-Z0-9_.-]*\.json$/);
 export const manifestSchema = z
   .array(z.strictObject({ paper_id: id, title: id, file: fileName }))
@@ -64,7 +77,7 @@ export const descriptorSchema = z.strictObject({
   paper_count: ordinal,
   paragraph_count: z.number().int().nonnegative(),
   snapshot_file: z.literal("final_snapshot.json"),
-  stats: snapshotSchema.shape.stats,
+  stats: currentSnapshot.shape.stats,
 });
 export const routeSchema = z.strictObject({
   dataset_id: z.string().regex(/^[a-zA-Z0-9][a-zA-Z0-9_-]*$/),
@@ -78,6 +91,10 @@ export const studySchema = z.strictObject({
 });
 export type Paper = z.infer<typeof paperSchema>;
 export type Paragraph = Paper["paragraphs"][number];
-export type Group = z.infer<typeof groupSchema>;
+export type RoleGroup = z.infer<typeof groupSchema>;
+export type Group = RoleGroup | z.infer<typeof legacyGroupSchema>;
+export function groupLabel(group: Group): string {
+  return "role_statement" in group ? group.role_statement : group.overarching_question;
+}
 export type Snapshot = z.infer<typeof snapshotSchema>;
 export type Routes = z.infer<typeof studySchema>["datasets"];

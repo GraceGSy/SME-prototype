@@ -10,7 +10,7 @@ from test_graph_runs import manifest
 from test_incremental_graph import CONFIG_PATH
 from test_match_evidence import evidence_request, evidence_response
 
-from pipeline.document import QUESTION_FIELD
+from pipeline.document import ROLE_FIELD
 from pipeline.files import read_json
 from pipeline.incremental_graph.configuration import PromptRepository, load_pipeline_config
 from pipeline.incremental_graph.judgments import CachedJudgments
@@ -117,7 +117,7 @@ class ProviderRoutingTest(unittest.TestCase):
                             "evidence": {"focus": [], "target": []},
                         }
                         if "target_id" in schema["properties"]
-                        else {QUESTION_FIELD: "What happens?"}
+                        else {ROLE_FIELD: "Introduces the approach."}
                     )
                     return SimpleNamespace(value=value, raw_response={"id": "response"})
 

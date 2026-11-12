@@ -1,0 +1,8 @@
+{
+  "type": "object",
+  "properties": {
+    "role_statement": {"type": "string", "minLength": 1}
+  },
+  "required": ["role_statement"],
+  "additionalProperties": false
+}

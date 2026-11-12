@@ -37,17 +37,20 @@ test("paragraph selection aligns first occurrences, disables sync, and reveals i
     unit_type: "paragraph" as const,
     ordinal: index + 1,
   });
-  const groups: Group[] = Array.from({ length: 24 }, (_, index) => ({
-    group_id: `role-${index}`,
-    overarching_question: `What purpose does shared role ${index} serve?`,
-    parent_group_id: null,
-    members: [
-      member(papers[0], index * 2),
-      member(papers[0], index * 2 + 1),
-      member(papers[1], (23 - index) * 2),
-      member(papers[1], (23 - index) * 2 + 1),
-    ],
-  }));
+  const groups: Extract<Group, { overarching_question: string }>[] = Array.from(
+    { length: 24 },
+    (_, index) => ({
+      group_id: `role-${index}`,
+      overarching_question: `What purpose does shared role ${index} serve?`,
+      parent_group_id: null,
+      members: [
+        member(papers[0], index * 2),
+        member(papers[0], index * 2 + 1),
+        member(papers[1], (23 - index) * 2),
+        member(papers[1], (23 - index) * 2 + 1),
+      ],
+    }),
+  );
   const snapshot: Snapshot = {
     schema_version: 1,
     mode: "final_snapshot",
@@ -122,7 +125,7 @@ test("paragraph selection aligns first occurrences, disables sync, and reveals i
   // Selecting the same paragraph again navigates; clearing is an explicit action.
   await matches.first().press("Enter");
   await expect(question).toHaveAttribute("aria-pressed", "true");
-  await page.getByRole("button", { name: "Question Groups", exact: true }).click();
+  await page.getByRole("button", { name: "Passage Groups", exact: true }).click();
   await page.getByRole("button", { name: "Paper Map", exact: true }).click();
   await expect(sync).not.toBeChecked();
   await expect(page.locator(".paper-map-column.has-selection")).toHaveCount(2);

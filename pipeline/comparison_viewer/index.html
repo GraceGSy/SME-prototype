@@ -58,7 +58,7 @@
         </div>
         <div class="toolbar">
           <label class="search-field"
-            >Search passages, IDs, or questions<input
+            >Search passages, IDs, or labels<input
               id="search"
               type="search"
               placeholder="Try funding, participants, or s0002..."
@@ -98,7 +98,7 @@
         <p id="shared-help" class="review-help shared-help" hidden>
           Each row has at least one cross-paper match in both runs. Look for the gray "= Shared
           match" boxes on both sides. Any additional red or green partners remain visible for
-          context. Shared matches can have different question wording or parent scopes.
+          context. Shared matches can have different label wording or parent scopes.
         </p>
         <details class="quick-jump">
           <summary>Jump to a passage</summary>
@@ -112,18 +112,18 @@
         <ul id="warnings"></ul>
         <div id="run-details" class="run-details"></div>
         <p>
-          Matching partners, parent scope, and question wording are separate changes. Source IDs and
+          Matching partners, parent scope, and label wording are separate changes. Source IDs and
           text anchor this comparison, not generated node IDs. A shared group can contain adjacent
           paragraphs from the same paper; those are labeled and do not count toward cross-paper pair
           totals.
         </p>
         <p>
-          The Jev-assisted pipeline still uses a generative model for questions and explanations,
+          The Jev-assisted pipeline still uses a generative model for labels and explanations,
           plus deterministic rules. This report reads saved results only. It makes no model calls
           and does not grade correctness.
         </p>
         <details class="technical">
-          <summary>Detailed metrics, question similarity &amp; NetworkX alignment</summary>
+          <summary>Detailed metrics, label similarity &amp; NetworkX alignment</summary>
           <div class="metrics-content">@@METRICS@@</div>
         </details>
       </section>
@@ -139,8 +139,8 @@
         <code id="passage-id"></code>
         <p id="passage-text" class="passage"></p>
         <details>
-          <summary>Saved source questions</summary>
-          <div id="passage-questions" class="context-columns"></div>
+          <summary>Saved source labels</summary>
+          <div id="passage-labels" class="context-columns"></div>
         </details>
       </div>
     </dialog>

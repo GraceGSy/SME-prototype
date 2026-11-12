@@ -13,8 +13,8 @@ digraph Matching {
   </TABLE>>];
   input [fillcolor="#edf4f8", color="#7f9aa8",
          label="Next prepared document + current graph"];
-  questions [fillcolor="#fff0d8", color="#b68a49",
-             label="Reuse or generate implicit questions for each unit\nRetain source text; questions are fallible metadata."];
+  labels [fillcolor="#fff0d8", color="#b68a49",
+             label="Reuse or generate implicit role statements for each unit\nRetain source text; role statements are fallible metadata."];
   pool [label="Build the allowed candidate pool in Python\nStructural: all existing section/subsection nodes.\nParagraphs: exact structural node; exclude nodes containing this paper."];
   forward [fillcolor="#fff0d8", color="#b68a49",
            label="FORWARD: one judgment per new unit\nSee all eligible existing nodes.\nChoose ONE node or NULL."];
@@ -22,16 +22,16 @@ digraph Matching {
            label="REVERSE: one judgment per existing node\nSee all incoming units in this pool.\nChoose ONE unit or NULL, independently."];
   accept [label="Python validates quotes and applies membership rules\nMutual top-1 choices: accept a reciprocal core.\nEligible immediate-core paragraph neighbors: accept one-way fan-in.\nOtherwise: create / retain separate singleton nodes."];
   labels [fillcolor="#fff0d8", color="#b68a49",
-          label="Describe each node's shared role with a question\nSingleton: copy member question. Shared node: LLM reads accepted evidence."];
+          label="Describe each node's shared role with a role statement\nSingleton: copy member role statement. Shared node: LLM reads accepted evidence."];
   recovery [fillcolor="#edf4f8", color="#7f9aa8",
-            label="Revisit singletons once at this level\nFrozen recovery pool; refresh changed-node questions afterward."];
+            label="Revisit singletons once at this level\nFrozen recovery pool; refresh changed-node role statements afterward."];
   next [fillcolor="#edf4f8", color="#7f9aa8",
         label="Continue to the next level / document, then export\nRecompare absorbed older sections' paragraphs before incoming paragraphs."];
   notes [shape=plain, style="", fontname="Calibri", fontsize=15, fontcolor="#42574c",
          label="LLM instructions: read source evidence; role first, relations second, topic last.\nNonempty pools: N new units + G existing nodes = N + G logical judgments; caches / retries affect model calls.\nEmpty pools skip judgments. Paragraph-only mode skips structural matching and uses one shared root.\nQuote attribution is checked in code; semantic correctness has no independent verifier. No top-k shortlist."];
 
   legend -> input [style=invis];
-  input -> questions -> pool;
+  input -> labels -> pool;
   pool -> forward;
   pool -> reverse;
   {rank=same; forward; reverse;}

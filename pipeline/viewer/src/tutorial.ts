@@ -13,19 +13,19 @@ const STEPS: Step[] = [
     view: "groups",
     target: "#granularityTabs",
     title: "Three ways to inspect the same graph",
-    body: "Question Groups compares matching passages. Paper Map keeps document order. Graphical Explorer arranges roles in a top-to-bottom pattern board. Select a paper to trace its route; open a block to inspect its contents.",
+    body: "Passage Groups compares matching passages. Paper Map keeps document order. Graphical Explorer arranges roles in a top-to-bottom pattern board. Select a paper to trace its route; open a block to inspect its contents.",
   },
   {
     view: "groups",
     target: ".group-card",
-    title: "Questions summarize groups",
-    body: "Each card represents a shared question. The colored squares show which documents contribute passages. Singletons are kept separately.",
+    title: "How to read a group",
+    body: "Each card represents a shared role. The colored squares show which documents contribute passages. Singletons are kept separately.",
   },
   {
     view: "groups",
     target: ".group-detail-slot",
     title: "Check the actual evidence",
-    body: "Open a group to compare source passages side by side. Generated questions are aids for reading, not proof that a match is correct.",
+    body: "Open a group to compare source passages side by side. Generated labels are aids for reading, not proof that a match is correct.",
     openGroup: true,
   },
   {
@@ -44,14 +44,14 @@ const STEPS: Step[] = [
   {
     view: "paper-map",
     target: ".paper-map-overview",
-    title: "Select a question",
-    body: "Hover to preview a group. Click a question or passage to pin its highlights across documents. Click again or Clear selection to unpin.",
+    title: "Select a group",
+    body: "Hover to preview a group. Click a group or passage to pin its highlights across documents. Click again or Clear selection to unpin.",
   },
   {
     view: "paper-map",
     target: ".paper-map-control-row",
     title: "Focus your reading",
-    body: "After selecting a question, Hide unselected filters the passages. Sync paper scrolling links the columns by relative position. Singleton questions can be shown separately.",
+    body: "After selecting a group, Hide unselected filters the passages. Sync paper scrolling links the columns by relative position. Singleton passages can be shown separately.",
   },
   {
     view: "paper-map",

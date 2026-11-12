@@ -3,7 +3,7 @@
 `raw/` holds the source PDFs. `content/` holds one content-only canonical JSON
 file per paper. `content/manifest.yaml` lists all five in insertion order;
 `content/first-two.manifest.yaml` selects AbstractExplorer and CorpusStudio for
-a smaller first run. The graph generates missing questions from these files.
+a smaller first run. The graph generates missing role statements from these files.
 Do not re-extract unchanged PDFs or reuse judgments from a different run.
 
 The stored corpus has 52 top-level sections, 87 subsections, and 464

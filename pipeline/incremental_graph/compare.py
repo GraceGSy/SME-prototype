@@ -9,7 +9,7 @@ import re
 from itertools import combinations
 from pathlib import Path
 
-from ..comparison_metrics import membership_metrics, project_groups, question_similarity
+from ..comparison_metrics import label_similarity, membership_metrics, project_groups
 from ..files import read_json, write_json
 
 
@@ -38,7 +38,7 @@ def load_revision(path: Path) -> dict:
     snapshot = read_json(dataset / "final_snapshot.json")
     if (
         summary.get("schema_version") != 1
-        or snapshot.get("schema_version") != 1
+        or snapshot.get("schema_version") not in {1, 2}
         or snapshot.get("mode") != "final_snapshot"
     ):
         raise ValueError("Unsupported summary or viewer snapshot contract")
@@ -113,14 +113,14 @@ def _source_identity(unit: dict, level: str) -> dict:
 
 def _assignments(run: dict, level: str, common: set[str]) -> tuple[dict, dict]:
     memberships = {}
-    questions = {}
+    labels = {}
     for group in project_groups(run, level, common):
         members = tuple(group["members"])
         scope = tuple(group["scope"])
         for key in members:
             memberships[key] = {"members": members, "scope": scope}
-        questions[members] = group["question"]
-    return memberships, questions
+        labels[members] = group["label"]
+    return memberships, labels
 
 
 def _stats(run: dict, level: str) -> dict:
@@ -142,7 +142,7 @@ def compare_revisions(left: Path, right: Path, *, shared_sources: bool = False) 
     if not common_papers:
         raise ValueError("Runs have no source papers in common")
     result = {
-        "schema_version": 2,
+        "schema_version": 3,
         "comparison_mode": "shared-sources" if shared_sources else "strict",
         "warnings": ["Agreement and coverage are not accuracy; neither run is ground truth."],
         "left": {key: a[key] for key in ("path", "summary", "settings")},
@@ -159,7 +159,7 @@ def compare_revisions(left: Path, right: Path, *, shared_sources: bool = False) 
         )
     if a["summary"]["paper_order"] != b["summary"]["paper_order"]:
         result["warnings"].append(
-            "Corpus membership or insertion order differs. Extra papers can affect matches and group questions even after projection."
+            "Corpus membership or insertion order differs. Extra papers can affect matches and group labels even after projection."
         )
     if any(
         a["settings"][field] != b["settings"][field] for field in ("model", "jev", "policy_sha256")
@@ -196,8 +196,8 @@ def compare_revisions(left: Path, right: Path, *, shared_sources: bool = False) 
             raise ValueError(
                 f"Shared {level} source content or boundaries differ; memberships are not directly comparable"
             )
-        before, old_questions = _assignments(a, level, common)
-        after, new_questions = _assignments(b, level, common)
+        before, old_labels = _assignments(a, level, common)
+        after, new_labels = _assignments(b, level, common)
         old_pairs = {
             pair for value in before.values() for pair in combinations(value["members"], 2)
         }
@@ -213,14 +213,14 @@ def compare_revisions(left: Path, right: Path, *, shared_sources: bool = False) 
                         "source": a["sources"][level][key],
                         "left": before[key],
                         "right": after[key],
-                        "left_question": old_questions[before[key]["members"]],
-                        "right_question": new_questions[after[key]["members"]],
+                        "left_label": old_labels[before[key]["members"]],
+                        "right_label": new_labels[after[key]["members"]],
                     }
                 )
-        question_changes = [
-            {"members": members, "left": old_questions[members], "right": new_questions[members]}
-            for members in sorted(old_questions.keys() & new_questions.keys())
-            if old_questions[members] != new_questions[members]
+        label_changes = [
+            {"members": members, "left": old_labels[members], "right": new_labels[members]}
+            for members in sorted(old_labels.keys() & new_labels.keys())
+            if old_labels[members] != new_labels[members]
         ]
         result["levels"][level] = {
             "left_stats": _stats(a, level),
@@ -250,16 +250,16 @@ def compare_revisions(left: Path, right: Path, *, shared_sources: bool = False) 
             "removed_pairs": sorted(old_pairs - new_pairs),
             "pair_jaccard": len(old_pairs & new_pairs) / len(union) if union else None,
             "changes": changes,
-            "question_changes": question_changes,
+            "label_changes": label_changes,
             "sources": {key: a["sources"][level][key] for key in sorted(common)},
             "assignments": {
                 side: {
-                    key: {**assignments[key], "question": questions[assignments[key]["members"]]}
+                    key: {**assignments[key], "label": labels[assignments[key]["members"]]}
                     for key in sorted(common)
                 }
-                for side, assignments, questions in (
-                    ("left", before, old_questions),
-                    ("right", after, new_questions),
+                for side, assignments, labels in (
+                    ("left", before, old_labels),
+                    ("right", after, new_labels),
                 )
             },
             "metrics": membership_metrics(
@@ -267,7 +267,7 @@ def compare_revisions(left: Path, right: Path, *, shared_sources: bool = False) 
                 project_groups(b, level, common),
                 {key: a["sources"][level][key] for key in sorted(common)},
             ),
-            "unit_questions": question_similarity(
+            "unit_labels": label_similarity(
                 [
                     {
                         "unit": key,
@@ -346,18 +346,18 @@ def _metrics_html(data: dict) -> str:
         "</table><p>NetworkX compares source-anchored graphs. Edge edits are exact additions/removals with fixed source identities, not an unrestricted graph-edit-distance search.</p>"
     )
     parts.append(
-        "<h3>Question wording similarity</h3><p>These are lexical scores, not semantic correctness or answer-quality scores. TF-IDF is fitted only on the displayed comparison pairs. No embeddings or API calls.</p><table><tr><th>Questions</th><th>Compared</th><th>Exact after case/punctuation normalization</th><th>Token Jaccard</th><th>TF-IDF cosine</th></tr>"
+        "<h3>Label wording similarity</h3><p>These are lexical scores, not semantic correctness or answer-quality scores. TF-IDF is fitted only on the displayed comparison pairs. No embeddings or API calls.</p><table><tr><th>Labels</th><th>Compared</th><th>Exact after case/punctuation normalization</th><th>Token Jaccard</th><th>TF-IDF cosine</th></tr>"
     )
     for label, scores in (
-        ("Source-unit questions", data["unit_questions"]),
-        ("Aligned shared-group questions", alignment["questions"]),
+        ("Source-unit labels", data["unit_labels"]),
+        ("Aligned shared-group labels", alignment["labels"]),
     ):
         parts.append(
             f"<tr><th>{escape(label)}</th><td>{scores['compared']}</td><td>{_percent(scores['normalized_exact_fraction'])}</td><td>{_percent(scores['mean_token_jaccard'])}</td><td>{_percent(scores['mean_tfidf_cosine'])}</td></tr>"
         )
     parts.append("</table>")
     parts.append(
-        "<p>Group questions are compared only where groups share source members, including partial overlaps; inspect the alignment below before interpreting a wording score. Missing questions are excluded, not scored as identical.</p>"
+        "<p>Group labels are compared only where groups share source members, including partial overlaps; inspect the alignment below before interpreting a wording score. Missing labels are excluded, not scored as identical.</p>"
     )
     for label, pairs in (
         ("Lost cross-paper pairs", graph["removed_pairs"]),
@@ -378,7 +378,7 @@ def _metrics_html(data: dict) -> str:
     parts.append(
         f"<h3>NetworkX shared-group alignment</h3><p>{escape(alignment['method'])}. {alignment['aligned_groups']} aligned; {alignment['unmatched_left']} baseline and {alignment['unmatched_right']} comparison groups unaligned. Mean membership Jaccard including unaligned groups as zero: {_percent(alignment['mean_member_jaccard_with_unmatched_zero'])}. Groups overlapping multiple counterparts: {alignment['left_groups_overlapping_multiple_right']} baseline / {alignment['right_groups_overlapping_multiple_left']} comparison.</p>"
     )
-    question_rows = iter(alignment["questions"]["rows"])
+    label_rows = iter(alignment["labels"]["rows"])
     for row in alignment["rows"]:
         title = f"Membership Jaccard {_percent(row['member_jaccard'])}: " + " / ".join(
             ", ".join(row[side]["members"]) if row[side] else "Unaligned"
@@ -392,22 +392,22 @@ def _metrics_html(data: dict) -> str:
             parts.append(
                 "<td>Unaligned</td>"
                 if group is None
-                else f"<td><p>{escape(group['question'])}</p><pre>{escape(chr(10).join(group['members']))}</pre><p>Original group members: {escape(', '.join(group['full_members']))}</p></td>"
+                else f"<td><p>{escape(group['label'])}</p><pre>{escape(chr(10).join(group['members']))}</pre><p>Original group members: {escape(', '.join(group['full_members']))}</p></td>"
             )
         parts.append("</tr></table>")
         if row["left"] and row["right"]:
-            scores = next(question_rows)
+            scores = next(label_rows)
             parts.append(
-                "<p>Question token Jaccard: "
+                "<p>Label token Jaccard: "
                 f"{_percent(scores['token_jaccard'])}; TF-IDF cosine: {_percent(scores['tfidf_cosine'])}. "
                 f"Identical projected membership: {scores['same_membership']}.</p>"
             )
         parts.append("</details>")
     parts.append(
-        "<details><summary>Inspect all source-unit questions, least lexical overlap first</summary>"
+        "<details><summary>Inspect all source-unit labels, least lexical overlap first</summary>"
     )
     for row in sorted(
-        data["unit_questions"]["rows"],
+        data["unit_labels"]["rows"],
         key=lambda row: (
             row["tfidf_cosine"] if row["tfidf_cosine"] is not None else -1,
             row["unit"],

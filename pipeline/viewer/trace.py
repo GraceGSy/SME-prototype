@@ -126,7 +126,9 @@ class Trace:
             elif "target_id" in out:
                 outcome = "Selected candidate" if out["target_id"] else "No match"
             else:
-                outcome = "Question" if a.get("output_kind") == "question" else "Recorded"
+                outcome = {"question": "Question", "role_statement": "Role statement"}.get(
+                    a.get("output_kind"), "Recorded"
+                )
             rows.append(
                 dict(
                     id=key,

@@ -10,7 +10,7 @@ from unittest.mock import patch
 
 from test_jev import answer
 
-from pipeline.document import QUESTION_FIELD
+from pipeline.document import ROLE_FIELD
 from pipeline.files import read_json, write_json
 from pipeline.incremental_graph.compare import compare_revisions, load_revision
 from pipeline.incremental_graph.runs import retry_graph, start_graph
@@ -45,8 +45,8 @@ class ScriptedSkills:
 
     def run_json(self, skills, user, schema, **kwargs):
         self.calls += 1
-        if QUESTION_FIELD in schema["properties"]:
-            value = {QUESTION_FIELD: "What role do these passages perform?"}
+        if ROLE_FIELD in schema["properties"]:
+            value = {ROLE_FIELD: "Describes how the intervention was evaluated."}
         else:
             target = schema["properties"]["target_id"]["enum"][0]
             focus, _ = json.JSONDecoder().raw_decode(user)
@@ -186,6 +186,13 @@ class JevPipelineTest(unittest.TestCase):
                 self.assertEqual(network.call_count, 6)
                 self.assertEqual(skills.calls, 3)
                 revision = run / "revisions/revision-0001"
+                snapshot = read_json(revision / "dataset/final_snapshot.json")
+                self.assertEqual(snapshot["schema_version"], 2)
+                for group in (
+                    snapshot["groups"] + snapshot["singletons"] + snapshot["section_groups"]
+                ):
+                    self.assertIn("role_statement", group)
+                    self.assertNotIn("overarching_question", group)
                 explanations = [
                     e
                     for e in read_json(revision / "events.json")

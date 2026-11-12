@@ -5,12 +5,12 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import Any
 
-from .graph import QuestionGraph
+from .graph import RoleGraph
 from .models import Paper
 
 
 def build_correspondences(
-    graph: QuestionGraph,
+    graph: RoleGraph,
     events: list[dict[str, Any]],
     papers: list[Paper],
 ) -> dict[str, Any]:
@@ -94,7 +94,7 @@ def build_correspondences(
 
 
 def _find_member(
-    graph: QuestionGraph,
+    graph: RoleGraph,
     node_id: str,
     paper_id: str,
     unit_id: str,

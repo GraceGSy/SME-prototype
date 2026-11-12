@@ -16,7 +16,7 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from .document import iter_structural_units, strip_questions, validate_document
+from .document import iter_structural_units, strip_annotations, validate_document
 from .files import file_sha256, read_json, write_json
 
 SOURCE_CACHE = Path(__file__).resolve().parents[1] / "_cache" / "source-extractions"
@@ -54,8 +54,8 @@ def source_cache_dir(source_sha256: str) -> Path:
 
 
 def content_digest(document: Any) -> str:
-    # Approval covers authored content and ownership, not generated questions.
-    encoded = json.dumps(strip_questions(document), ensure_ascii=False, sort_keys=True).encode()
+    # Approval covers authored content and ownership, not generated role_statements.
+    encoded = json.dumps(strip_annotations(document), ensure_ascii=False, sort_keys=True).encode()
     return hashlib.sha256(encoded).hexdigest()
 
 
@@ -345,7 +345,7 @@ def review_document(
         write_json(
             cache / "approved.json",
             {
-                "content": strip_questions(document),
+                "content": strip_annotations(document),
                 "review": payload,
                 "reference_text": source_text,
                 "provenance": read_json(provenance)

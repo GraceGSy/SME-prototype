@@ -335,7 +335,7 @@
   margin-top: 8px;
 }
 .mm-section-detail summary,
-.mm-question-detail summary {
+.mm-label-detail summary {
   color: #868e96;
   font-size: 10px;
 }
@@ -343,10 +343,10 @@
   max-height: 320px;
   overflow: auto;
 }
-.mm-question-detail {
+.mm-label-detail {
   margin-top: 11px;
 }
-.mm-question-detail textarea {
+.mm-label-detail textarea {
   width: 100%;
   resize: vertical;
   min-height: 65px;

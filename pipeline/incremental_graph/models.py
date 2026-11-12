@@ -40,7 +40,7 @@ class Paragraph(StrictModel):
     id: str
     label: str = ""
     text: str
-    question: str = ""
+    role_statement: str = ""
     ordinal: int = Field(default=1, ge=1)
 
 
@@ -50,7 +50,7 @@ class Section(StrictModel):
     label: str = ""
     text: str
     paragraphs: list[Paragraph] = Field(default_factory=list)
-    question: str = ""
+    role_statement: str = ""
     ordinal: int = Field(default=1, ge=1)
     kind: StructuralKind = "section"
     parent_id: str | None = None
@@ -156,7 +156,7 @@ class JudgmentRequest(StrictModel):
     key: str
     paper_index: int
     stage_id: str
-    output_kind: Literal["question", "match"]
+    output_kind: Literal["role_statement", "match"]
     prompt_ref: str
     context_ref: str
     context: dict[str, Any]

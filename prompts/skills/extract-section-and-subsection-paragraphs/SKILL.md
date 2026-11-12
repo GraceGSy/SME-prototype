@@ -52,5 +52,5 @@ whitespace needed to form plain paragraphs.
 
 When `subsections` is empty, a top-level section's `paragraphs` contains all of
 that section's prose. When `subsections` is non-empty, it contains only prose
-before the first subsection. Do not add questions, summaries, page numbers,
+before the first subsection. Do not add role statements, summaries, page numbers,
 word counts, warnings, or any other fields.

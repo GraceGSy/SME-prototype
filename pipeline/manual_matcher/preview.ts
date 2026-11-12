@@ -16,7 +16,7 @@ try {
   const groups = new GroupsView(host, model);
   const paperMap = new PaperMapView(host, model);
   const explorer = new GraphicalExplorer(host, model);
-  const labels = ["Question Groups", "Paper Map", "Graphical Explorer"];
+  const labels = ["Passage Groups", "Paper Map", "Graphical Explorer"];
   let active = 0;
   const render = (index: number): void => {
     active = index;

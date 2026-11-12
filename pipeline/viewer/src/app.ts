@@ -20,7 +20,7 @@ async function main(): Promise<void> {
   const explorer = new GraphicalExplorer(host, model);
   let view: View = "groups";
   const labels: Record<View, string> = {
-    groups: "Question Groups",
+    groups: "Passage Groups",
     "paper-map": "Paper Map",
     "graphical-explorer": "Graphical Explorer",
   };

@@ -10,14 +10,14 @@ backend. Vercel serves only static assets and five prepared HCI example inputs.
 
 Choose **Tutorial** in the header for an eight-step walkthrough with highlighted
 controls and short practice papers. Next and Back show section grouping, optional
-questions, paragraph matching, the outside-group picker, and saving/exporting.
+role statements, paragraph matching, the outside-group picker, and saving/exporting.
 Finish, Exit, and Escape discard the practice example and return to the selection
 page. The tutorial never writes its examples to autosave or overwrites real labels.
 
 1. Choose two prepared HCI papers, or upload two canonical extracted JSON files.
 2. Choose Sections or Sections + subsections. Start matching.
 3. Select any number of structural units from either paper and choose Group selected.
-   A shared question is optional. Select a group to edit or separate its members.
+   A shared role statement is optional. Select a group to edit or separate its members.
 4. Choose Match paragraphs on a group, or continue to the Paragraphs step and select
    a structural group. Group its paragraphs the same way.
 5. On a paragraph, choose Match outside this group to search the other paper and
@@ -27,7 +27,7 @@ page. The tutorial never writes its examples to autosave or overwrites real labe
 6. Save labels downloads a self-contained JSON file with both granularities and
    the original inputs. Open labels restores it. Browser autosave survives reloads,
    but it is local to that browser and origin, not shared cloud storage.
-7. View in viewer opens a snapshot using the existing Question Groups, Paper Map,
+7. View in viewer opens a snapshot using the existing Passage Groups, Paper Map,
    and Graphical Explorer components. Export viewer downloads a complete static
    viewer ZIP, including the pipeline-compatible data directory and resumable labels.
 
@@ -53,7 +53,7 @@ environment files, or the repository. Deploy that directory, not the repo root.
 
 `npm run test:matcher` includes exact Python/browser loading parity on the first two
 HCI papers, contract validation, grouping invariants, both granularities, optional
-questions, and cross-group matches. It uses the repository's Python dependencies.
+role statements, and cross-group matches. It uses the repository's Python dependencies.
 
 ## Files And Contracts
 
@@ -64,9 +64,9 @@ questions, and cross-group matches. It uses the repository's Python dependencies
 - `preview.ts`, `viewer.html`: existing viewer components on a manual snapshot.
 - `build.ts`: allowlisted static deployment package.
 
-The label JSON identifies itself as `kind: manual_matching`, `schema_version: 1`.
-It stores both original sources, the active mode, each mode's complete partition,
-optional unit/group questions, and explicit outside-group selections. Import rejects
+The label JSON identifies itself as `kind: manual_matching`, `schema_version: 2`.
+Version 1 sessions import as legacy question labels rather than role statements. It stores both original sources, the active mode, each mode's complete partition,
+optional unit/group role statements, and explicit outside-group selections. Import rejects
 unknown units, duplicate memberships, omitted units, and inconsistent flags.
 
 The viewer ZIP uses the same `manifest.json`, per-paper JSON, `final_snapshot.json`,
@@ -75,6 +75,6 @@ judgments, event history, or replay. Groups spanning structural groups use a nul
 `parent_group_id`; the shared explorer displays them at the document level. Source
 paragraph IDs, text, order, and section ownership remain unchanged.
 
-Blank group questions get neutral display labels, not generated questions. Untouched
+Blank group role statements get neutral display labels, not generated role statements. Untouched
 units remain separate, but export does not claim that they were reviewed or that the
 label set is complete. Evaluation/adjudication workflows are outside this version.

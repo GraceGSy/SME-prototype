@@ -28,12 +28,12 @@ def manifest(root: Path, ids: list[str], name: str) -> Path:
                     "section_name": paper_id,
                     "section_number": None,
                     "subsections": [],
-                    "question_this_text_answers": "What happens?",
+                    "role_statement": "Introduces the approach.",
                     "paragraphs": [
                         {
                             "paragraph_number": 0,
                             "text": f"Evidence from {paper_id}.",
-                            "question_this_text_answers": "What happens?",
+                            "role_statement": "Introduces the approach.",
                         }
                     ],
                 }

@@ -66,11 +66,10 @@ class MatchingExamplesTest(unittest.TestCase):
                     stage.prompt, stage.context, {k: None for k in spec.include}
                 )
                 self.assertNotIn("Constructed matching examples", rendered.system)
-                if stage.context == "group-question":
-                    self.assertIn("Each paper's accepted contribution", rendered.system)
-                    self.assertEqual(
-                        rendered.system.count("Constructed group-question examples"), 1
-                    )
+                self.assertIn(
+                    "Answer with a single concise statement, focusing on role not content.",
+                    rendered.system,
+                )
 
     def test_one_question_schema_controls_all_question_stages_and_their_cache_keys(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -87,9 +86,9 @@ class MatchingExamplesTest(unittest.TestCase):
 
             before = [render(stage) for stage in stages]
             self.assertEqual(len({result.schema_hash for result in before}), 1)
-            path = root / "shared/question-output.schema.json"
+            path = root / "shared/role-statement-output.schema.json"
             schema = json.loads(path.read_text())
-            schema["properties"]["question_this_text_answers"]["minLength"] = 2
+            schema["properties"]["role_statement"]["minLength"] = 2
             path.write_text(json.dumps(schema))
             after = [render(stage) for stage in stages]
             self.assertEqual(len({result.schema_hash for result in after}), 1)

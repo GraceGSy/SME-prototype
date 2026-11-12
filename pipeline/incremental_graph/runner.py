@@ -5,12 +5,12 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Callable
 
-from ..document import QUESTION_FIELD
+from ..document import ROLE_FIELD
 from ..files import write_json
 from .configuration import validate_pipeline_config
 from .evidence import Evidence
 from .export import export_revision
-from .graph import QuestionGraph
+from .graph import RoleGraph
 from .journal import RevisionJournal
 from .judgments import CachedJudgments, JudgmentProvider, inherited_structural_match
 from .match_rules import (
@@ -62,27 +62,27 @@ class IncrementalGraphRunner:
         self.force_paper_index = force_paper_index
         self.force_stage_id = force_stage_id
         self.journal = RevisionJournal(revision_dir)
-        self.question_graph = QuestionGraph(self.journal)
+        self.role_graph = RoleGraph(self.journal)
         self.papers: list[Paper] = []
         self.insertions_by_paper: dict[str, InsertionState] = {}
-        self.evidence = Evidence(self.question_graph)
+        self.evidence = Evidence(self.role_graph)
         self.shared_root_id: str | None = None
         self.handlers: dict[str, Callable[[StageConfig, InsertionState], Any]] = {
             "ingest_paper": self._ingest_paper,
-            "generate_section_questions": self._generate_section_questions,
+            "generate_section_role_statements": self._generate_section_role_statements,
             "match_sections": self._match_sections,
             "reconcile_sections": self._reconcile_sections,
-            "generate_section_group_questions": self._generate_section_group_questions,
+            "generate_section_group_role_statements": self._generate_section_group_role_statements,
             "rerepresent_section_singletons": self._rerepresent_section_singletons,
-            "regenerate_rerepresented_section_questions": (
-                self._regenerate_rerepresented_section_questions
+            "regenerate_rerepresented_section_role_statements": (
+                self._regenerate_rerepresented_section_role_statements
             ),
-            "generate_paragraph_questions": self._generate_paragraph_questions,
+            "generate_paragraph_role_statements": self._generate_paragraph_role_statements,
             "match_paragraphs": self._match_paragraphs,
             "reconcile_paragraphs": self._reconcile_paragraphs,
-            "generate_paragraph_group_questions": self._generate_paragraph_group_questions,
+            "generate_paragraph_group_role_statements": self._generate_paragraph_group_role_statements,
             "rerepresent_paragraph_singletons": self._rerepresent_paragraph_singletons,
-            "regenerate_rerepresented_paragraph_questions": self._regenerate_rerepresented_paragraph_questions,
+            "regenerate_rerepresented_paragraph_role_statements": self._regenerate_rerepresented_paragraph_role_statements,
         }
 
     def run(self, papers: list[Paper]) -> dict[str, Any]:
@@ -95,7 +95,7 @@ class IncrementalGraphRunner:
             self._recurse_reparented_sections(insertion)
             self._run_phase("paragraph", insertion)
         self.journal.finalize()
-        export_revision(self.revision_dir / "dataset", self.question_graph, self.papers)
+        export_revision(self.revision_dir / "dataset", self.role_graph, self.papers)
         write_singleton_report(self.journal.events, self.revision_dir / "reports")
         summary = {
             "schema_version": 1,
@@ -103,7 +103,7 @@ class IncrementalGraphRunner:
             "max_granularity": self.max_granularity,
             "paper_count": len(self.papers),
             "paper_order": [paper.paper_id for paper in self.papers],
-            "graph_hash": self.question_graph.graph_hash(),
+            "graph_hash": self.role_graph.graph_hash(),
             "event_count": len(self.journal.events),
             "attempt_count": self.journal.attempt_count,
             "dataset_dir": str((self.revision_dir / "dataset").resolve()),
@@ -121,10 +121,10 @@ class IncrementalGraphRunner:
             if skip_structural_stage:
                 continue
             if self.jev_judge and stage.handler in {
-                "generate_section_group_questions",
-                "generate_paragraph_group_questions",
+                "generate_section_group_role_statements",
+                "generate_paragraph_group_role_statements",
             }:
-                continue  # Generate questions once after singleton recovery.
+                continue  # Generate role statements once after singleton recovery.
             handler = self.handlers.get(stage.handler)
             if handler is None:
                 raise PipelineError(f"Unknown stage handler {stage.handler!r} for stage {stage.id}")
@@ -137,7 +137,7 @@ class IncrementalGraphRunner:
         self.evidence.register(paper)
 
     def _ingest_paper(self, stage: StageConfig, insertion: InsertionState) -> dict[str, Any]:
-        self.question_graph.add_paper(
+        self.role_graph.add_paper(
             insertion.paper.paper_id, insertion.paper.title, insertion.paper_index
         )
         result = {
@@ -156,7 +156,7 @@ class IncrementalGraphRunner:
             raise PipelineError("paragraph granularity requires one section per document")
         section = insertion.paper.sections[0]
         if self.shared_root_id is None:
-            self.shared_root_id = self.question_graph.create_group(
+            self.shared_root_id = self.role_graph.create_group(
                 level="section",
                 parent_id=None,
                 member_id=section.id,
@@ -167,7 +167,7 @@ class IncrementalGraphRunner:
                 family_id=section.family_id,
             )
         else:
-            self.question_graph.add_member(
+            self.role_graph.add_member(
                 self.shared_root_id,
                 section.id,
                 insertion.paper.paper_id,
@@ -179,27 +179,31 @@ class IncrementalGraphRunner:
         insertion.section_assignments[section.id] = self.shared_root_id
         return self.shared_root_id
 
-    def _generate_section_questions(
+    def _generate_section_role_statements(
         self, stage: StageConfig, insertion: InsertionState
     ) -> list[dict[str, str]]:
         self._require_prompt(stage)
         results = []
         for section in insertion.paper.sections:
-            if section.question:
+            if section.role_statement:
                 results.append(
-                    {"section_id": section.id, "question": section.question, "source": "input"}
+                    {
+                        "section_id": section.id,
+                        "role_statement": section.role_statement,
+                        "source": "input",
+                    }
                 )
                 continue
             context = {
                 "paper": {"paper_id": insertion.paper.paper_id, "title": insertion.paper.title},
                 "section": self.evidence.section_context(insertion.paper.paper_id, section.id),
             }
-            question, attempt_id = self._question(stage, insertion, section.id, context)
-            section.question = question
+            role_statement, attempt_id = self._role_statement(stage, insertion, section.id, context)
+            section.role_statement = role_statement
             results.append(
                 {
                     "section_id": section.id,
-                    "question": question,
+                    "role_statement": role_statement,
                     "source": "model",
                     "attempt_id": attempt_id,
                 }
@@ -207,7 +211,7 @@ class IncrementalGraphRunner:
         return results
 
     def _match_sections(self, stage: StageConfig, insertion: InsertionState) -> dict[str, Any]:
-        existing = self.question_graph.group_ids("section")
+        existing = self.role_graph.group_ids("section")
         unit_ids = [section.id for section in insertion.paper.sections]
         insertion.section_matches = self._match_units(
             stage, insertion, "section", None, unit_ids, existing
@@ -225,7 +229,7 @@ class IncrementalGraphRunner:
         )
         for unit in insertion.paper.sections:
             if unit.parent_id:
-                self.question_graph.add_hierarchy_edge(
+                self.role_graph.add_hierarchy_edge(
                     insertion.section_assignments[unit.parent_id],
                     insertion.section_assignments[unit.id],
                     paper_id=insertion.paper.paper_id,
@@ -233,10 +237,10 @@ class IncrementalGraphRunner:
                 )
         return insertion.section_assignments
 
-    def _generate_section_group_questions(
+    def _generate_section_group_role_statements(
         self, stage: StageConfig, insertion: InsertionState
     ) -> list[dict[str, str]]:
-        return self._generate_group_questions(stage, insertion, "section")
+        return self._generate_group_role_statements(stage, insertion, "section")
 
     def _rerepresent_section_singletons(
         self, stage: StageConfig, insertion: InsertionState
@@ -252,7 +256,7 @@ class IncrementalGraphRunner:
         self, stage: StageConfig, insertion: InsertionState, level: str
     ) -> dict[str, Any]:
         """Apply reciprocal top-1 decisions from one frozen per-insertion snapshot."""
-        nodes = dict(self.question_graph.nodes(level))
+        nodes = dict(self.role_graph.nodes(level))
         singletons = [node_id for node_id, data in nodes.items() if len(data["members"]) == 1]
         established = [node_id for node_id, data in nodes.items() if len(data["members"]) > 1]
         eligible = {
@@ -319,7 +323,7 @@ class IncrementalGraphRunner:
                 raise PipelineError(f"Assignment for {source_id} is stale")
             forward = batch.forward[source_id]
             reverse = batch.reverse[target_id]
-            self.question_graph.merge_singleton(
+            self.role_graph.merge_singleton(
                 source_id,
                 target_id,
                 paper_index=insertion.paper_index,
@@ -344,13 +348,13 @@ class IncrementalGraphRunner:
                 if source_id in accepted_cores or target_id is None:
                     continue
                 anchors = adjacent_core_anchors(
-                    nodes[source_id]["members"], self.question_graph.members(target_id)
+                    nodes[source_id]["members"], self.role_graph.members(target_id)
                 )
                 if not anchors:
                     continue
                 member = nodes[source_id]["members"][0]
                 anchor = anchors[(member["paper_id"], member["unit_id"])]
-                self.question_graph.merge_paragraph_group(
+                self.role_graph.merge_paragraph_group(
                     source_id, target_id, paper_index=insertion.paper_index
                 )
                 self.insertions_by_paper[member["paper_id"]].paragraph_assignments[
@@ -393,41 +397,41 @@ class IncrementalGraphRunner:
             "changed_group_ids": sorted({item["target_group_id"] for item in merged}),
         }
 
-    def _regenerate_rerepresented_section_questions(
+    def _regenerate_rerepresented_section_role_statements(
         self, stage: StageConfig, insertion: InsertionState
     ) -> list[dict[str, str]]:
-        return self._regenerate_rerepresented_questions(stage, insertion, "section")
+        return self._regenerate_rerepresented_role_statements(stage, insertion, "section")
 
-    def _regenerate_rerepresented_paragraph_questions(
+    def _regenerate_rerepresented_paragraph_role_statements(
         self, stage: StageConfig, insertion: InsertionState
     ) -> list[dict[str, str]]:
-        return self._regenerate_rerepresented_questions(stage, insertion, "paragraph")
+        return self._regenerate_rerepresented_role_statements(stage, insertion, "paragraph")
 
-    def _regenerate_rerepresented_questions(
+    def _regenerate_rerepresented_role_statements(
         self, stage: StageConfig, insertion: InsertionState, level: str
     ) -> list[dict[str, str]]:
         result = insertion.stage_results.get(f"{level}_rerepresentation")
         if result is None:
             raise PipelineError(f"{stage.id} requires {level}_rerepresentation")
-        return self._generate_group_questions(
+        return self._generate_group_role_statements(
             stage,
             insertion,
             level,
             group_ids=None if self.jev_judge else result["changed_group_ids"],
         )
 
-    def _generate_paragraph_questions(
+    def _generate_paragraph_role_statements(
         self, stage: StageConfig, insertion: InsertionState
     ) -> list[dict[str, str]]:
         self._require_prompt(stage)
         results = []
         for section in insertion.paper.sections:
             for index, paragraph in enumerate(section.paragraphs):
-                if paragraph.question:
+                if paragraph.role_statement:
                     results.append(
                         {
                             "paragraph_id": paragraph.id,
-                            "question": paragraph.question,
+                            "role_statement": paragraph.role_statement,
                             "source": "input",
                         }
                     )
@@ -446,12 +450,14 @@ class IncrementalGraphRunner:
                         else None
                     ),
                 }
-                question, attempt_id = self._question(stage, insertion, paragraph.id, context)
-                paragraph.question = question
+                role_statement, attempt_id = self._role_statement(
+                    stage, insertion, paragraph.id, context
+                )
+                paragraph.role_statement = role_statement
                 results.append(
                     {
                         "paragraph_id": paragraph.id,
-                        "question": question,
+                        "role_statement": role_statement,
                         "source": "model",
                         "attempt_id": attempt_id,
                     }
@@ -465,7 +471,7 @@ class IncrementalGraphRunner:
         for unit in insertion.paper.sections:
             structural_group_id = insertion.section_assignments[unit.id]
             unit_ids = [paragraph.id for paragraph in unit.paragraphs]
-            existing = self.question_graph.paragraph_groups_for_section(
+            existing = self.role_graph.paragraph_groups_for_section(
                 structural_group_id, insertion.paper.paper_id
             )
             batch = self._match_units(
@@ -487,8 +493,8 @@ class IncrementalGraphRunner:
         if not pending:
             return
         matching = next(s for s in self.config.stages if s.handler == "match_paragraphs")
-        questions = next(
-            s for s in self.config.stages if s.handler == "generate_paragraph_group_questions"
+        role_statements = next(
+            s for s in self.config.stages if s.handler == "generate_paragraph_group_role_statements"
         )
         results = []
         for merge in pending:
@@ -499,7 +505,7 @@ class IncrementalGraphRunner:
                 continue
             # A singleton section cannot already own cross-paper paragraph groups.
             for unit_id in unit_ids:
-                node = self.question_graph.node(owner.paragraph_assignments[unit_id])
+                node = self.role_graph.node(owner.paragraph_assignments[unit_id])
                 if len(node["members"]) != 1:
                     raise PipelineError(
                         "A reparented singleton section must own singleton paragraphs"
@@ -517,7 +523,7 @@ class IncrementalGraphRunner:
                 "paragraph",
                 parent_id,
                 unit_ids,
-                self.question_graph.paragraph_groups_for_section(parent_id, owner.paper.paper_id),
+                self.role_graph.paragraph_groups_for_section(parent_id, owner.paper.paper_id),
             )
             owner.paragraph_assignments.update(
                 self._reconcile(
@@ -528,11 +534,11 @@ class IncrementalGraphRunner:
                 )
             )
             if not self.jev_judge:
-                self._generate_group_questions(
-                    questions,
+                self._generate_group_role_statements(
+                    role_statements,
                     insertion,
                     "paragraph",
-                    group_ids=self.question_graph.group_ids("paragraph", parent_id),
+                    group_ids=self.role_graph.group_ids("paragraph", parent_id),
                 )
             results.append(
                 {
@@ -564,12 +570,12 @@ class IncrementalGraphRunner:
         insertion.paragraph_assignments = assignments
         return assignments
 
-    def _generate_paragraph_group_questions(
+    def _generate_paragraph_group_role_statements(
         self, stage: StageConfig, insertion: InsertionState
     ) -> list[dict[str, str]]:
-        return self._generate_group_questions(stage, insertion, "paragraph")
+        return self._generate_group_role_statements(stage, insertion, "paragraph")
 
-    def _question(
+    def _role_statement(
         self,
         stage: StageConfig,
         insertion: InsertionState,
@@ -580,7 +586,7 @@ class IncrementalGraphRunner:
             key=f"{insertion.paper.paper_id}:{stage.id}:{source_id}",
             paper_index=insertion.paper_index,
             stage_id=stage.id,
-            output_kind="question",
+            output_kind="role_statement",
             prompt_ref=stage.prompt or "",
             context_ref=stage.context or "",
             context=context,
@@ -591,7 +597,7 @@ class IncrementalGraphRunner:
         )
         result = self.judge.judge(request)
         attempt_id = self.journal.attempt(request, result)
-        return str(result.normalized[QUESTION_FIELD]).strip(), attempt_id
+        return str(result.normalized[ROLE_FIELD]).strip(), attempt_id
 
     def _match_units(
         self,
@@ -674,12 +680,11 @@ class IncrementalGraphRunner:
         ):
             return False
         structural_members = {
-            (member["paper_id"], member["unit_id"])
-            for member in self.question_graph.members(parent_id)
+            (member["paper_id"], member["unit_id"]) for member in self.role_graph.members(parent_id)
         }
         sources = [(insertion.paper.paper_id, new_unit_ids[0])] + [
             (member["paper_id"], member["unit_id"])
-            for member in self.question_graph.members(existing_group_ids[0])
+            for member in self.role_graph.members(existing_group_ids[0])
         ]
         for paper_id, paragraph_id in sources:
             section, paragraph = self.evidence.paragraph_lookup[(paper_id, paragraph_id)]
@@ -721,7 +726,9 @@ class IncrementalGraphRunner:
         vote_request = request
         if self.jev_judge and not inherit_structural_match:
             annotations = self.evidence.jev_annotations(context, self.shared_root_id)
-            vote_request = request.model_copy(update={"context": {**context, "outline": annotations}})
+            vote_request = request.model_copy(
+                update={"context": {**context, "outline": annotations}}
+            )
         result = (
             inherited_structural_match(request)
             if inherit_structural_match
@@ -800,7 +807,7 @@ class IncrementalGraphRunner:
             reverse_fan_in = self._adjacent_existing_group_fan_in(batch, reciprocal)
             for source_id in sorted(reverse_fan_in):
                 target_id, selected_unit_id, anchors = reverse_fan_in[source_id]
-                moved = self.question_graph.merge_paragraph_group(
+                moved = self.role_graph.merge_paragraph_group(
                     source_id,
                     target_id,
                     paper_index=insertion.paper_index,
@@ -837,11 +844,11 @@ class IncrementalGraphRunner:
                     metadata["membership_role"] = "fan_in" if unit_id in forward_fan_in else "core"
                 if previous_group:
                     if unit_id in forward_fan_in:
-                        self.question_graph.merge_paragraph_group(
+                        self.role_graph.merge_paragraph_group(
                             previous_group, selected_group, paper_index=insertion.paper_index
                         )
                     else:
-                        self.question_graph.merge_singleton(
+                        self.role_graph.merge_singleton(
                             previous_group,
                             selected_group,
                             paper_index=insertion.paper_index,
@@ -850,7 +857,7 @@ class IncrementalGraphRunner:
                             recursive=True,
                         )
                 else:
-                    self.question_graph.add_member(
+                    self.role_graph.add_member(
                         selected_group,
                         unit_id,
                         insertion.paper.paper_id,
@@ -883,7 +890,7 @@ class IncrementalGraphRunner:
                 metadata = self.evidence.member_metadata(insertion, unit_id, level)
                 if level == "paragraph":
                     metadata["membership_role"] = "core"
-                group_id = self.question_graph.create_group(
+                group_id = self.role_graph.create_group(
                     level=level,
                     parent_id=parent_id,
                     member_id=unit_id,
@@ -937,13 +944,13 @@ class IncrementalGraphRunner:
             if target_id is None or source_id == target_id:
                 continue
             anchors = adjacent_core_anchors(
-                self.question_graph.members(source_id), self.question_graph.members(target_id)
+                self.role_graph.members(source_id), self.role_graph.members(target_id)
             )
             if anchors is not None:
                 accepted[source_id] = (target_id, selected_unit_id, anchors)
         return accepted
 
-    def _generate_group_questions(
+    def _generate_group_role_statements(
         self,
         stage: StageConfig,
         insertion: InsertionState,
@@ -954,42 +961,44 @@ class IncrementalGraphRunner:
         self._require_prompt(stage)
         results = []
         selected_ids = (
-            [group_id for group_id, _ in self.question_graph.nodes(level)]
+            [group_id for group_id, _ in self.role_graph.nodes(level)]
             if group_ids is None
             else sorted(group_ids)
         )
         for group_id in selected_ids:
             group = self.evidence.group_context(group_id)
             if len(group["members"]) == 1:
-                question = str(group["members"][0]["generated_question_metadata"]).strip()
-                self.question_graph.set_question(
+                role_statement = str(group["members"][0]["role_statement"]).strip()
+                self.role_graph.set_role_statement(
                     group_id,
-                    question,
+                    role_statement,
                     insertion.paper_index,
                     None,
-                    source="member_question",
+                    source="member_role_statement",
                 )
                 results.append(
                     {
                         "group_id": group_id,
-                        "question": question,
-                        "source": "member_question",
+                        "role_statement": role_statement,
+                        "source": "member_role_statement",
                     }
                 )
                 continue
-            group.pop("generated_question_metadata", None)
+            group.pop("role_statement", None)
             context = {
                 "scope": self.evidence.scope_context(
-                    level, self.question_graph.node(group_id).get("parent_id")
+                    level, self.role_graph.node(group_id).get("parent_id")
                 ),
                 "group": group,
             }
-            question, attempt_id = self._question(stage, insertion, group_id, context)
-            self.question_graph.set_question(group_id, question, insertion.paper_index, attempt_id)
+            role_statement, attempt_id = self._role_statement(stage, insertion, group_id, context)
+            self.role_graph.set_role_statement(
+                group_id, role_statement, insertion.paper_index, attempt_id
+            )
             results.append(
                 {
                     "group_id": group_id,
-                    "question": question,
+                    "role_statement": role_statement,
                     "source": "model",
                     "attempt_id": attempt_id,
                 }
@@ -1004,7 +1013,7 @@ class IncrementalGraphRunner:
         if not stage.prompt or not stage.context:
             raise PipelineError(f"Stage {stage.id} requires prompt and context references")
         if not stage.skill:
-            raise PipelineError(f"Stage {stage.id} requires a question Skill")
+            raise PipelineError(f"Stage {stage.id} requires a role_statement Skill")
 
     @staticmethod
     def _require_match_prompts(stage: StageConfig) -> None:

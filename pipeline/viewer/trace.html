@@ -507,6 +507,7 @@
       if (e.action === "match_recorded")
         return words(e.direction) + ": " + e.source_id + " selected " + (e.target_id || "no match");
       if (e.action === "question_generated") return e.question;
+      if (e.action === "role_statement_generated") return e.role_statement;
       if (e.action === "accepted_match_explained") return "Accepted group: " + e.node_id;
       return [e.node_id, e.target_node_id, e.member?.unit_id, e.title].filter(Boolean).join(" / ");
     }
@@ -553,7 +554,8 @@
               "div",
               row.status +
                 "  /  " +
-                (d.result?.question_this_text_answers ||
+                (d.result?.role_statement ||
+                  d.result?.question_this_text_answers ||
                   d.result?.target_id ||
                   d.result?.basis ||
                   row.provider),
@@ -568,7 +570,9 @@
             panel.append(
               el(
                 "p",
-                "Saved the question on " +
+                (d.result?.role_statement
+                  ? "Saved the role statement on "
+                  : "Saved the question on ") +
                   (w.paragraph_id || w.section_id || w.group_id || "the stage record") +
                   ".",
               ),

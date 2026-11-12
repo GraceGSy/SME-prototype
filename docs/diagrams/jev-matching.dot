@@ -7,7 +7,7 @@ digraph JevPipelineB {
   edge [fontname="Times New Roman,", fontsize=12, color=black, arrowsize=0.65];
 
   legend [shape=plain, style="", label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="5" CELLPADDING="6">
-    <TR><TD BGCOLOR="#f1eafb">JEV: match selection</TD><TD BGCOLOR="#fff0d8">LLM: questions / quoted evidence</TD>
+    <TR><TD BGCOLOR="#f1eafb">JEV: match selection</TD><TD BGCOLOR="#fff0d8">LLM: role statements / quoted evidence</TD>
     <TD BGCOLOR="#e7f4e8">PYTHON: deterministic steps</TD></TR>
     <TR><TD COLSPAN="3">Read B1, B2, then B3. B2 is recursive; only its final outer result enters B3.</TD></TR>
   </TABLE>>];

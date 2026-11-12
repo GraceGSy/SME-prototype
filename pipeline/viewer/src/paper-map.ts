@@ -1,3 +1,4 @@
+import { groupLabel } from "./contracts";
 import { element, escapeHtml as html } from "./dom";
 import { type GroupEntry, type Model, unitKey } from "./model";
 
@@ -17,15 +18,15 @@ export class PaperMapView {
   render(): void {
     this.host.innerHTML = `<div class="paper-map-shell"><div class="paper-map-overview">
       <div class="paper-map-control-row">
-        <span class="paper-map-summary">${this.model.shared.length} shared groups; ${this.model.singletons.length} singleton questions</span>
+        <span class="paper-map-summary">${this.model.shared.length} shared groups; ${this.model.singletons.length} singleton passages</span>
         <label class="paper-map-sync-toggle"><input id="paperMapSyncScroll" type="checkbox"${this.syncScroll ? " checked" : ""}> Sync paper scrolling</label>
         <label class="paper-map-hide-unselected-toggle"><input id="paperMapHideUnselected" type="checkbox"> Hide unselected</label>
-        <button class="paper-map-action-button" id="paperMapSingletonToggle" type="button" aria-pressed="${this.showSingletons}">${this.showSingletons ? "Hide" : "Show"} singleton questions</button>
+        <button class="paper-map-action-button" id="paperMapSingletonToggle" type="button" aria-pressed="${this.showSingletons}">${this.showSingletons ? "Hide" : "Show"} singleton passages</button>
         <button class="paper-map-action-button" id="paperMapClear" type="button">Clear selection</button>
       </div>
-      <div class="paper-map-legend paper-map-shared-legend" aria-label="Shared questions">${this.legend(this.model.shared)}</div>
+      <div class="paper-map-legend paper-map-shared-legend" aria-label="Shared groups">${this.legend(this.model.shared)}</div>
       <div class="paper-map-singleton-tray"${this.showSingletons ? "" : " hidden"}>
-        <div class="paper-map-singleton-label">Singleton questions</div>
+        <div class="paper-map-singleton-label">Singleton passages</div>
         <div class="paper-map-legend paper-map-singleton-legend">${this.legend(this.model.singletons)}</div>
       </div>
       </div><div class="paper-map-columns" style="--paper-count:${this.model.papers.length}">
@@ -140,7 +141,7 @@ export class PaperMapView {
         (entry) =>
           `<button type="button" class="paper-map-legend-item${entry.singleton ? " singleton" : ""}" data-group="${html(entry.group.group_id)}"
         style="--group-color:${entry.color};--group-fill:${entry.fill}">
-        <span class="paper-map-swatch"></span><span class="paper-map-legend-question">${html(entry.group.overarching_question)}</span>
+        <span class="paper-map-swatch"></span><span class="paper-map-legend-question">${html(groupLabel(entry.group))}</span>
         <span class="paper-map-legend-count">${entry.group.members.length}</span></button>`,
       )
       .join("");
@@ -240,7 +241,7 @@ export class PaperMapView {
   private tooltip(anchor: HTMLElement, id: string): void {
     const entry = this.model.groups.get(id)!;
     const tip = element("#paperMapQuestionPreview");
-    element("#paperMapQuestionPreviewText").textContent = entry.group.overarching_question;
+    element("#paperMapQuestionPreviewText").textContent = groupLabel(entry.group);
     element("#paperMapQuestionPreviewMeta").textContent =
       `${entry.group.members.length} paragraphs; ${new Set(entry.group.members.map((member) => member.paper)).size} papers`;
     tip.style.setProperty("--group-color", entry.color);

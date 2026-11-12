@@ -61,16 +61,12 @@ class PromptRepository:
     def _stage_instructions(self, prompt_ref: str, context_ref: str) -> str:
         prompt_dir = self.prompt_root / prompt_ref
         system = self._read(prompt_dir / "system.md")
-        for name in ("role_matching_examples", "group_question_examples"):
-            placeholder = "{{" + name + "}}"
-            if placeholder in system:
-                system = system.replace(
-                    placeholder,
-                    self._read(self.prompt_root / "shared" / (name.replace("_", "-") + ".md")),
-                )
-        if context_ref in {"matching", "group-question"}:
-            system += "\n\n" + self._read(self.prompt_root / "shared" / "group-role.md")
         if context_ref == "matching":
+            system = system.replace(
+                "{{role_matching_examples}}",
+                self._read(self.prompt_root / "shared" / "role-matching-examples.md"),
+            )
+            system += "\n\n" + self._read(self.prompt_root / "shared" / "group-role.md")
             system += "\n\n" + self._read(self.prompt_root / "shared" / "match-evidence.md")
         return system
 
@@ -87,7 +83,7 @@ class PromptRepository:
             if instructions is not None
             else self._stage_instructions(prompt_ref, context_ref)
         )
-        schema_name = "match-output" if context_ref == "matching" else "question-output"
+        schema_name = "match-output" if context_ref == "matching" else "role-statement-output"
         schema_path = self.prompt_root / "shared" / f"{schema_name}.schema.json"
         schema_text = self._read(schema_path)
         try:
@@ -175,24 +171,24 @@ class ContextConfig(StrictModel):
 # The implemented algorithm has one dependency order, not a general workflow engine.
 STAGE_ORDER = (
     ("ingest", "ingest_paper", "structural"),
-    ("section_questions", "generate_section_questions", "structural"),
+    ("section_role_statements", "generate_section_role_statements", "structural"),
     ("section_matching", "match_sections", "structural"),
     ("section_reconciliation", "reconcile_sections", "structural"),
-    ("section_group_questions", "generate_section_group_questions", "structural"),
+    ("section_group_role_statements", "generate_section_group_role_statements", "structural"),
     ("section_rerepresentation", "rerepresent_section_singletons", "structural"),
     (
-        "section_rerepresentation_questions",
-        "regenerate_rerepresented_section_questions",
+        "section_rerepresentation_role_statements",
+        "regenerate_rerepresented_section_role_statements",
         "structural",
     ),
-    ("paragraph_questions", "generate_paragraph_questions", "paragraph"),
+    ("paragraph_role_statements", "generate_paragraph_role_statements", "paragraph"),
     ("paragraph_matching", "match_paragraphs", "paragraph"),
     ("paragraph_reconciliation", "reconcile_paragraphs", "paragraph"),
-    ("paragraph_group_questions", "generate_paragraph_group_questions", "paragraph"),
+    ("paragraph_group_role_statements", "generate_paragraph_group_role_statements", "paragraph"),
     ("paragraph_rerepresentation", "rerepresent_paragraph_singletons", "paragraph"),
     (
-        "paragraph_rerepresentation_questions",
-        "regenerate_rerepresented_paragraph_questions",
+        "paragraph_rerepresentation_role_statements",
+        "regenerate_rerepresented_paragraph_role_statements",
         "paragraph",
     ),
 )

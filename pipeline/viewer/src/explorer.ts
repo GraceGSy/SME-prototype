@@ -1,3 +1,4 @@
+import { groupLabel } from "./contracts";
 import { html, button } from "./explorer-dom";
 import { renderPassages } from "./explorer-passages";
 import { type Model, PAPER_COLORS } from "./model";
@@ -87,12 +88,12 @@ export class GraphicalExplorer {
         html(
           "span",
           "gx-breadcrumb",
-          "/ " + this.model.sections.find((g) => g.group_id === this.section)!.overarching_question,
+          "/ " + groupLabel(this.model.sections.find((g) => g.group_id === this.section)!),
         ),
       );
     const search = html("input", "gx-search");
     search.type = "search";
-    search.placeholder = "Find a question or passage...";
+    search.placeholder = "Find a group label or passage...";
     search.setAttribute("aria-label", "Find graph nodes");
     search.value = this.query;
     search.addEventListener("input", () => {
@@ -363,19 +364,19 @@ export class GraphicalExplorer {
           (node === anchor ? " gx-anchor" : ""),
         tabindex: 0,
         role: "button",
-        "aria-label": `${node.group.overarching_question} (${node.papers.length} of ${this.model.papers.length} documents)`,
+        "aria-label": `${groupLabel(node.group)} (${node.papers.length} of ${this.model.papers.length} documents)`,
         "aria-expanded": String(node === anchor || node.group.group_id === this.evidence),
       });
       group.dataset.id = node.group.group_id;
       group.dataset.row = String(node.row);
       group.dataset.support = String(node.papers.length);
       const title = svg("title");
-      title.textContent = node.group.overarching_question;
+      title.textContent = groupLabel(node.group);
       group.append(title, svg("rect", { width: NODE_WIDTH, height: NODE_HEIGHT, rx: 3 }));
       const badge = svg("text", { x: 15, y: 22, class: "gx-node-meta" });
       badge.textContent = `${node.papers.length}/${this.model.papers.length} DOCUMENTS / ${node === anchor ? "PARENT" : structural ? "SECTION" : "PARAGRAPH"}`;
       group.append(badge);
-      const wrapped = lines(node.group.overarching_question);
+      const wrapped = lines(groupLabel(node.group));
       wrapped.slice(0, 3).forEach((line, i) => {
         const text = svg("text", { x: 15, y: 42 + i * 16, class: "gx-node-title" });
         text.textContent = line + (i === 2 && wrapped.length > 3 ? "..." : "");
@@ -452,7 +453,7 @@ export class GraphicalExplorer {
     for (const node of this.graph.nodes) {
       const shared = node.papers.length > 1;
       const text =
-        node.group.overarching_question +
+        groupLabel(node.group) +
         " " +
         node.group.members
           .map((m) => {

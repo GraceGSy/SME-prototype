@@ -11,7 +11,7 @@ import {
 const sources = Object.fromEntries(
   ["a", "b", "c", "d"].map((key) => [key, { paper: key, text: `${key} passage`, title: key }]),
 );
-const assignment = (members, scope = [], question = "Question?") => ({ members, scope, question });
+const assignment = (members, scope = [], label = "Label?") => ({ members, scope, label });
 const data = {
   sources,
   assignments: {
@@ -42,10 +42,10 @@ test("classifies removed, mixed, added, and scope-only changes without counting 
   assert.deepEqual(data.assignments.left.a.members, ["a", "b"]);
 });
 
-test("question-only changes do not become membership changes", () => {
+test("label-only changes do not become membership changes", () => {
   const copy = structuredClone(data);
   copy.assignments.right = structuredClone(copy.assignments.left);
-  copy.assignments.right.a.question = "Different wording?";
+  copy.assignments.right.a.label = "Different wording?";
   assert.ok(reviewRows(copy).every((row) => row.status === "same"));
 });
 
@@ -75,11 +75,11 @@ test("search includes partner passages and combines with paper filter", () => {
   );
 });
 
-test("shared matches exclude singletons but allow changed parent scope and question wording", () => {
+test("shared matches exclude singletons but allow changed parent scope and label wording", () => {
   const copy = structuredClone(data);
   copy.assignments.right = structuredClone(copy.assignments.left);
   copy.assignments.right.a.scope = ["new scope"];
-  copy.assignments.right.a.question = "New question?";
+  copy.assignments.right.a.label = "New label?";
   assert.deepEqual(
     filterRows(reviewRows(copy), { filter: "kept", paper: "", search: "" }, sources).map(
       (row) => row.key,

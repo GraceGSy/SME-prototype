@@ -81,7 +81,7 @@ const SECTIONS = ["practice_a:s0001", "practice_b:s0001"];
 const PARAGRAPHS = ["practice_a:s0001.p0001", "practice_b:s0001.p0001"];
 export const OUTSIDE_SOURCE = "practice_a:s0001.p0002";
 export const OUTSIDE_TARGET = "practice_b:s0002.p0001";
-const QUESTION = "Why is comparing papers difficult?";
+const LABEL = "Explains why readers struggle to compare papers.";
 
 export const TUTORIAL_STEPS = [
   {
@@ -99,9 +99,9 @@ export const TUTORIAL_STEPS = [
     next: "Next",
   },
   {
-    id: "question",
-    title: "Create a group; questions are optional",
-    text: "Group selected joins the selected passages. You may add a shared question, as shown here, or leave it blank. Individual passages also have an optional Add question control.",
+    id: "label",
+    title: "Create a group; labels are optional",
+    text: "Group selected joins the selected passages. You may add a shared label, as shown here, or leave it blank. Individual passages also have an optional Add label control.",
     targets: [".mm-composer"],
     next: "Show grouped sections",
   },
@@ -146,16 +146,16 @@ export type TutorialStage = (typeof TUTORIAL_STEPS)[number]["id"];
 // Every step is reproducible, so Back never depends on earlier practice edits.
 export function practiceState(stage: TutorialStage) {
   const session = createSession(PRACTICE_SOURCES);
-  const sectionPhase = ["documents", "select", "question"].includes(stage);
-  if (!sectionPhase) groupUnits(session, "sections", SECTIONS, QUESTION);
+  const sectionPhase = ["documents", "select", "label"].includes(stage);
+  if (!sectionPhase) groupUnits(session, "sections", SECTIONS, LABEL);
   if (["outside", "picker", "save"].includes(stage))
-    groupUnits(session, "paragraphs", PARAGRAPHS, QUESTION);
+    groupUnits(session, "paragraphs", PARAGRAPHS, LABEL);
   if (stage === "save") matchOutside(session, OUTSIDE_SOURCE, OUTSIDE_TARGET);
   const level: Level = ["paragraphs", "outside", "picker", "save"].includes(stage)
     ? "paragraphs"
     : "sections";
   const selected =
-    stage === "select" || stage === "question"
+    stage === "select" || stage === "label"
       ? SECTIONS
       : stage === "paragraphs"
         ? PARAGRAPHS
@@ -168,7 +168,7 @@ export function practiceState(stage: TutorialStage) {
     selected,
     setup: stage === "documents",
     scope: membership(workspace(session).sections).get(SECTIONS[0])!.id,
-    question: stage === "question" ? QUESTION : "",
+    label: stage === "label" ? LABEL : "",
     openPicker: stage === "picker",
   };
 }

@@ -42,8 +42,8 @@ class ConfigurationTest(unittest.TestCase):
     def test_source_braces_are_not_treated_as_template_instructions(self):
         config = load_pipeline_config(CONFIG_PATH)
         rendered = PromptRepository(config.prompt_root, config.context_root).render(
-            "section-question/v1",
-            "section-question",
+            "section-role-statement/v1",
+            "section-role-statement",
             {"paper": {"title": "Title"}, "section": {"full_text": "{{literal_source}}"}},
         )
         self.assertIn("{{literal_source}}", rendered.user)
@@ -61,7 +61,7 @@ class ConfigurationTest(unittest.TestCase):
                 (root / "test.yaml").write_text(content)
                 with self.assertRaises(ValueError):
                     PromptRepository(config.prompt_root, root).render(
-                        "section-question/v1", "test", {"paper": {}, "section": {}}
+                        "section-role-statement/v1", "test", {"paper": {}, "section": {}}
                     )
 
     def test_matching_windows_render_in_reading_order_in_both_directions(self):

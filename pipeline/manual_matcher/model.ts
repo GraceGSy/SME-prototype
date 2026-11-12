@@ -5,15 +5,16 @@ import {
   paperSchema,
   snapshotSchema,
 } from "../viewer/src/contracts";
-import type { Group, Paper } from "../viewer/src/contracts";
+import type { Paper } from "../viewer/src/contracts";
 import { buildModel, unitKey } from "../viewer/src/model";
 
 const nonblank = z.string().refine((text) => text.trim().length > 0, "Must not be blank");
-const question = nonblank.optional();
+const label = nonblank.optional();
 const paragraph = z.strictObject({
   paragraph_number: z.number().int().nonnegative(),
   text: nonblank,
-  question_this_text_answers: question,
+  role_statement: label,
+  question_this_text_answers: label,
 });
 const paragraphs = z
   .array(paragraph)
@@ -24,6 +25,7 @@ const paragraphs = z
 const structural = {
   section_name: nonblank,
   section_number: z.string().nullable().optional(),
+  role_statement: nonblank.nullable().optional(),
   question_this_text_answers: nonblank.nullable().optional(),
   paragraphs,
 };
@@ -48,18 +50,19 @@ export type Level = "sections" | "paragraphs";
 const annotationGroupSchema = z.strictObject({
   id: nonblank,
   members: z.array(nonblank).min(1),
-  question: z.string(),
+  label: z.string(),
 });
 export type AnnotationGroup = z.infer<typeof annotationGroupSchema>;
 const workspaceSchema = z.strictObject({
   sections: z.array(annotationGroupSchema),
   paragraphs: z.array(annotationGroupSchema),
-  questions: z.record(z.string(), z.string()),
+  labels: z.record(z.string(), z.string()),
   outside: z.array(z.strictObject({ source: nonblank, target: nonblank })),
 });
 export type Workspace = z.infer<typeof workspaceSchema>;
 export const sessionSchema = z.strictObject({
-  schema_version: z.literal(1),
+  schema_version: z.literal(2),
+  label_format: z.enum(["role_statement", "legacy_question"]),
   kind: z.literal("manual_matching"),
   id: z.string().uuid(),
   title: nonblank,
@@ -68,6 +71,34 @@ export const sessionSchema = z.strictObject({
   workspaces: z.strictObject({ section: workspaceSchema, subsection: workspaceSchema }),
 });
 export type Session = z.infer<typeof sessionSchema>;
+const oldGroup = annotationGroupSchema.omit({ label: true }).extend({ question: z.string() });
+const oldWorkspace = workspaceSchema.omit({ labels: true }).extend({
+  sections: z.array(oldGroup),
+  paragraphs: z.array(oldGroup),
+  questions: z.record(z.string(), z.string()),
+});
+const oldSession = sessionSchema.omit({ label_format: true }).extend({
+  schema_version: z.literal(1),
+  workspaces: z.strictObject({ section: oldWorkspace, subsection: oldWorkspace }),
+});
+
+function importWorkspace({
+  sections,
+  paragraphs,
+  questions,
+  outside,
+}: z.infer<typeof oldWorkspace>): Workspace {
+  const asLabel = ({ question, ...group }: z.infer<typeof oldGroup>) => ({
+    ...group,
+    label: question,
+  });
+  return {
+    sections: sections.map(asLabel),
+    paragraphs: paragraphs.map(asLabel),
+    labels: questions,
+    outside,
+  };
+}
 export interface Unit {
   key: string;
   paper: string;
@@ -77,14 +108,14 @@ export interface Unit {
   section: string;
   kind: "section" | "subsection" | "paragraph";
   ordinal: number;
-  question: string;
+  label: string;
 }
 
 const position = (index: number): string => String(index + 1).padStart(4, "0");
 
 // Match input_data.py: source positions own identity; section mode folds descendants,
 // while subsection mode keeps each paragraph with its exact structural owner.
-export function sourcePaper(source: Source, mode: Mode): Paper {
+export function sourcePaper(source: Source, mode: Mode, legacy = false): Paper {
   const sections: Paper["sections"] = [];
   const items: Paper["paragraphs"] = [];
   source.content.forEach((section, sectionIndex) => {
@@ -105,9 +136,9 @@ export function sourcePaper(source: Source, mode: Mode): Paper {
         if (evidence.length)
           sections.push({
             id,
-            title: data.section_name,
+            title: [data.section_number, data.section_name].filter(Boolean).join(" "),
             text: evidence.map((p) => p.text).join("\n\n"),
-            tag: data.question_this_text_answers?.trim() ?? "",
+            tag: (legacy ? data.question_this_text_answers : data.role_statement)?.trim() ?? "",
             unit_type: parent === null ? "section" : "subsection",
             parent_id: parent,
             ordinal: sections.length + 1,
@@ -116,9 +147,9 @@ export function sourcePaper(source: Source, mode: Mode): Paper {
       data.paragraphs.forEach((p, index) =>
         items.push({
           id: `${id}.p${position(index)}`,
-          title: String(p.paragraph_number),
+          title: String(mode === "section" ? ordinal + 1 : index + 1),
           text: p.text,
-          tag: p.question_this_text_answers?.trim() ?? "",
+          tag: (legacy ? p.question_this_text_answers : p.role_statement)?.trim() ?? "",
           section_id: mode === "section" ? root : id,
           family_id: root,
           ordinal: ++ordinal,
@@ -136,7 +167,7 @@ export function sourcePaper(source: Source, mode: Mode): Paper {
 
 export function units(session: Session, level: Level): Unit[] {
   return session.sources.flatMap<Unit>((source) => {
-    const paper = sourcePaper(source, session.mode);
+    const paper = sourcePaper(source, session.mode, session.label_format === "legacy_question");
     return level === "sections"
       ? paper.sections.map((s) => ({
           key: unitKey(paper.paper_id, s.id),
@@ -147,7 +178,7 @@ export function units(session: Session, level: Level): Unit[] {
           section: s.id,
           kind: s.unit_type,
           ordinal: s.ordinal,
-          question: s.tag,
+          label: s.tag,
         }))
       : paper.paragraphs.map((p) => ({
           key: unitKey(paper.paper_id, p.id),
@@ -158,7 +189,7 @@ export function units(session: Session, level: Level): Unit[] {
           section: p.section_id,
           kind: "paragraph" as const,
           ordinal: p.ordinal,
-          question: p.tag,
+          label: p.tag,
         }));
   });
 }
@@ -169,7 +200,8 @@ export function workspace(session: Session): Workspace {
 
 export function createSession(sources: [Source, Source]): Session {
   const session: Session = {
-    schema_version: 1,
+    schema_version: 2,
+    label_format: "role_statement",
     kind: "manual_matching",
     id: crypto.randomUUID(),
     title: `${sources[0].title} / ${sources[1].title}`,
@@ -183,12 +215,12 @@ export function createSession(sources: [Source, Source]): Session {
       units(session, level).map((unit, index) => ({
         id: `human-${mode}-${level}-${index + 1}`,
         members: [unit.key],
-        question: "",
+        label: "",
       }));
     session.workspaces[mode] = {
       sections: groups("sections"),
       paragraphs: groups("paragraphs"),
-      questions: {},
+      labels: {},
       outside: [],
     };
   }
@@ -197,6 +229,23 @@ export function createSession(sources: [Source, Source]): Session {
 }
 
 export function parseSession(payload: unknown): Session {
+  if (
+    payload &&
+    typeof payload === "object" &&
+    "schema_version" in payload &&
+    payload.schema_version === 1
+  ) {
+    const saved = oldSession.parse(payload);
+    payload = {
+      ...saved,
+      schema_version: 2,
+      label_format: "legacy_question",
+      workspaces: {
+        section: importWorkspace(saved.workspaces.section),
+        subsection: importWorkspace(saved.workspaces.subsection),
+      },
+    };
+  }
   const session = sessionSchema.parse(payload);
   if (session.sources[0].paper_id === session.sources[1].paper_id)
     throw new Error("Choose two different paper IDs");
@@ -221,8 +270,8 @@ export function parseSession(payload: unknown): Session {
     const all = new Set(
       [...units(scoped, "sections"), ...units(scoped, "paragraphs")].map((unit) => unit.key),
     );
-    if (Object.keys(ws.questions).some((key) => !all.has(key)))
-      throw new Error("Question refers to an unknown unit");
+    if (Object.keys(ws.labels).some((key) => !all.has(key)))
+      throw new Error("Label refers to an unknown unit");
     const ps = new Map(units(scoped, "paragraphs").map((unit) => [unit.key, unit]));
     for (const flag of ws.outside) {
       if (
@@ -252,7 +301,7 @@ export function groupUnits(
   session: Session,
   level: Level,
   selected: string[],
-  questionText: string,
+  labelText: string,
 ): void {
   if (!selected.length || new Set(selected).size !== selected.length)
     throw new Error("Select one or more distinct passages");
@@ -264,7 +313,7 @@ export function groupUnits(
     (group) =>
       group.members.length === chosen.size && group.members.every((key) => chosen.has(key)),
   );
-  if (existing) existing.question = questionText.trim();
+  if (existing) existing.label = labelText.trim();
   else {
     ws[level] = ws[level]
       .map((group) => ({ ...group, members: group.members.filter((key) => !chosen.has(key)) }))
@@ -272,7 +321,7 @@ export function groupUnits(
     ws[level].push({
       id: `human-${crypto.randomUUID()}`,
       members: selected,
-      question: questionText.trim(),
+      label: labelText.trim(),
     });
   }
   pruneFlags(ws);
@@ -304,7 +353,7 @@ export function matchOutside(session: Session, source: string, target: string): 
     session,
     "paragraphs",
     [...new Set([...first.members, ...second.members])],
-    first.question || second.question,
+    first.label || second.label,
   );
   if (!ws.outside.some((flag) => flag.source === source && flag.target === target))
     ws.outside.push({ source, target });
@@ -314,13 +363,13 @@ export function exportDataset(session: Session) {
   parseSession(session);
   const ws = workspace(session);
   const papers = session.sources.map((source) => {
-    const paper = sourcePaper(source, session.mode);
+    const paper = sourcePaper(source, session.mode, session.label_format === "legacy_question");
     for (const unit of [...paper.sections, ...paper.paragraphs])
-      unit.tag = ws.questions[unitKey(paper.paper_id, unit.id)] ?? unit.tag;
+      unit.tag = ws.labels[unitKey(paper.paper_id, unit.id)] ?? unit.tag;
     return paper;
   });
   const structuralMembership = membership(ws.sections);
-  const makeGroups = (level: Level): Group[] => {
+  const makeGroups = (level: Level) => {
     const sourceUnits = units(session, level);
     const lookup = new Map(sourceUnits.map((unit) => [unit.key, unit]));
     const order = new Map(sourceUnits.map((unit, index) => [unit.key, index]));
@@ -333,7 +382,7 @@ export function exportDataset(session: Session) {
             paper: unit.paper,
             unit_id: unit.id,
             section_id: unit.section,
-            tag: ws.questions[key] ?? unit.question,
+            tag: ws.labels[key] ?? unit.label,
             unit_type: unit.kind,
             ordinal: unit.ordinal,
           };
@@ -343,8 +392,8 @@ export function exportDataset(session: Session) {
       );
       return {
         group_id: group.id,
-        overarching_question:
-          group.question || `${level === "sections" ? "Section" : "Paragraph"} group ${index + 1}`,
+        [session.label_format === "legacy_question" ? "overarching_question" : "role_statement"]:
+          group.label || `${level === "sections" ? "Section" : "Paragraph"} group ${index + 1}`,
         parent_group_id: level === "paragraphs" && parents.size === 1 ? [...parents][0] : null,
         members,
       };
@@ -352,9 +401,10 @@ export function exportDataset(session: Session) {
   };
   const sections = makeGroups("sections");
   const ps = makeGroups("paragraphs");
-  const shared = (group: Group): boolean => new Set(group.members.map((m) => m.paper)).size > 1;
+  const shared = (group: (typeof ps)[number]): boolean =>
+    new Set(group.members.map((m) => m.paper)).size > 1;
   const snapshot = snapshotSchema.parse({
-    schema_version: 1,
+    schema_version: session.label_format === "legacy_question" ? 1 : 2,
     mode: "final_snapshot",
     groups: ps.filter(shared),
     singletons: ps.filter((g) => !shared(g)),

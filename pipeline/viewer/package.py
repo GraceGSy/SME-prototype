@@ -132,7 +132,8 @@ def validate_dataset(
     singleton_groups = snapshot.get("singletons")
     section_groups = snapshot.get("section_groups")
     _require(
-        snapshot.get("schema_version") == 1, f"{SNAPSHOT_FILE} has an unsupported schema version"
+        snapshot.get("schema_version") in {1, 2},
+        f"{SNAPSHOT_FILE} has an unsupported schema version",
     )
     _require(snapshot.get("mode") == "final_snapshot", f"{SNAPSHOT_FILE} has an invalid mode")
     _require(isinstance(shared_groups, list), f"{SNAPSHOT_FILE} has no shared groups list")

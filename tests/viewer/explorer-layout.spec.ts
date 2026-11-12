@@ -8,7 +8,7 @@ import {
   COLUMN_GAP,
 } from "../../pipeline/viewer/src/explorer-layout";
 import { buildModel } from "../../pipeline/viewer/src/model";
-import type { Group, Paper, Snapshot } from "../../pipeline/viewer/src/contracts";
+import type { RoleGroup as Group, Paper, Snapshot } from "../../pipeline/viewer/src/contracts";
 import { patternFixture } from "./pattern-fixture";
 
 function fixture() {
@@ -52,7 +52,7 @@ function fixture() {
     parent: string | null,
   ): Group => ({
     group_id: id,
-    overarching_question: "What role?",
+    role_statement: "Introduces the method.",
     parent_group_id: parent,
     members: units.map(([paper, unit_id], i) => ({
       paper,
@@ -64,7 +64,7 @@ function fixture() {
     })),
   });
   const snapshot: Snapshot = {
-    schema_version: 1,
+    schema_version: 2,
     mode: "final_snapshot",
     section_groups: [
       group(

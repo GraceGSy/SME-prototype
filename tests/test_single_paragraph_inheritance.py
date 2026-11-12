@@ -21,7 +21,7 @@ def single_unit_paper(paper_id, count=1, subsection=False):
         Paragraph(
             id=f"p{i}",
             text=f"{paper_id} funding paragraph {i}. " * 20,
-            question="Who funded it?",
+            role_statement="Who funded it?",
             ordinal=i,
         )
         for i in range(1, count + 1)
@@ -30,14 +30,16 @@ def single_unit_paper(paper_id, count=1, subsection=False):
         id="s",
         text="\n\n".join(p.text for p in paragraphs),
         paragraphs=paragraphs,
-        question="Who funded it?",
+        role_statement="Who funded it?",
         kind="subsection" if subsection else "section",
         parent_id="root" if subsection else None,
     )
     sections = (
         [
             Section(
-                id="root", text="Parent framing. " + unit.text, question="What is the context?"
+                id="root",
+                text="Parent framing. " + unit.text,
+                role_statement="What is the context?",
             ),
             unit,
         ]
@@ -89,7 +91,7 @@ class SingleParagraphInheritanceTest(unittest.TestCase):
                     granularity="subsection" if subsection else "section",
                 )
                 self.assertEqual(self.paragraph_requests(judge), [])
-                groups = list(runner.question_graph.nodes("paragraph"))
+                groups = list(runner.role_graph.nodes("paragraph"))
                 self.assertEqual(len(groups), 1)
                 self.assertEqual(len(groups[0][1]["members"]), 2)
                 attempts = [
@@ -113,20 +115,20 @@ class SingleParagraphInheritanceTest(unittest.TestCase):
                     validate_dataset(runner.revision_dir / "dataset", "inherited", "Inherited")
                 )
                 replayed = graph_from_events(runner.journal.events)
-                self.assertEqual(set(replayed.nodes), set(runner.question_graph.graph.nodes))
+                self.assertEqual(set(replayed.nodes), set(runner.role_graph.graph.nodes))
                 for node_id in replayed.nodes:
                     self.assertEqual(
-                        replayed.nodes[node_id]["members"], runner.question_graph.members(node_id)
+                        replayed.nodes[node_id]["members"], runner.role_graph.members(node_id)
                     )
                 self.assertEqual(
                     set(replayed.edges(keys=True)),
-                    set(runner.question_graph.graph.edges(keys=True)),
+                    set(runner.role_graph.graph.edges(keys=True)),
                 )
 
     def test_extends_an_existing_multi_paper_single_paragraph_group(self):
         runner, judge = self.run_papers([single_unit_paper(p) for p in ("a", "b", "c")])
         self.assertEqual(self.paragraph_requests(judge), [])
-        groups = list(runner.question_graph.nodes("paragraph"))
+        groups = list(runner.role_graph.nodes("paragraph"))
         self.assertEqual(len(groups), 1)
         self.assertEqual({m["paper_id"] for m in groups[0][1]["members"]}, {"a", "b", "c"})
 
@@ -167,7 +169,7 @@ class SingleParagraphInheritanceTest(unittest.TestCase):
         ]
         self.assertEqual(len(requests), 2)
         self.assertTrue(all(len(r.allowed_match_ids) == 1 for r in requests))
-        self.assertEqual(len(list(runner.question_graph.nodes("paragraph"))), 2)
+        self.assertEqual(len(list(runner.role_graph.nodes("paragraph"))), 2)
 
     def test_canonical_hci_funding_sections_inherit_without_paragraph_judgment(self):
         _, papers = load_manifest(CANONICAL_MANIFEST)
@@ -186,7 +188,7 @@ class SingleParagraphInheritanceTest(unittest.TestCase):
         }
         runner, judge = self.run_papers(papers, matches, granularity="subsection")
         self.assertEqual(self.paragraph_requests(judge), [])
-        groups = list(runner.question_graph.nodes("paragraph"))
+        groups = list(runner.role_graph.nodes("paragraph"))
         self.assertEqual(len(groups), 1)
         self.assertEqual(
             {m["paper_id"] for m in groups[0][1]["members"]}, {p.paper_id for p in papers}
@@ -197,14 +199,14 @@ class SingleParagraphInheritanceTest(unittest.TestCase):
             [single_unit_paper("a"), single_unit_paper("b")], granularity="paragraph"
         )
         self.assertEqual(len(self.paragraph_requests(judge)), 2)
-        self.assertEqual(len(list(runner.question_graph.nodes("paragraph"))), 2)
+        self.assertEqual(len(list(runner.role_graph.nodes("paragraph"))), 2)
 
     def test_unmatched_sections_do_not_inherit_a_paragraph_match(self):
         runner, judge = self.run_papers(
             [single_unit_paper("a"), single_unit_paper("b")], matches={}
         )
         self.assertEqual(self.paragraph_requests(judge), [])
-        self.assertEqual(len(list(runner.question_graph.nodes("paragraph"))), 2)
+        self.assertEqual(len(list(runner.role_graph.nodes("paragraph"))), 2)
 
     def test_structural_recovery_inherits_older_paragraph_match_before_new_paper(self):
         parent = stable_id("section-group", "root", "a", "s")
@@ -217,7 +219,7 @@ class SingleParagraphInheritanceTest(unittest.TestCase):
         }
         runner, judge = self.run_papers([single_unit_paper(p) for p in ("a", "b", "c")], matches)
         self.assertEqual(self.paragraph_requests(judge), [])
-        groups = list(runner.question_graph.nodes("paragraph"))
+        groups = list(runner.role_graph.nodes("paragraph"))
         self.assertEqual(len(groups), 1)
         self.assertEqual({m["paper_id"] for m in groups[0][1]["members"]}, {"a", "b", "c"})
 

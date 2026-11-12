@@ -39,11 +39,11 @@ def _unpositioned(nodes, level):
             labels[candidate_handle(node)] = label
         members = node.get("members", [node])
         lines = [f"{label} ({level}{' group' if len(members) > 1 else ''})"]
-        if len(members) > 1 and node.get("generated_question_metadata"):
-            lines.append("Group Q: " + node["generated_question_metadata"])
+        if len(members) > 1 and node.get("role_statement"):
+            lines.append("Group role: " + node["role_statement"])
         for n, unit in enumerate(members, 1):
             center = unit.get("paragraph_under_consideration", unit)
-            q = center.get("generated_question_metadata")
+            q = center.get("role_statement")
             lines.append(
                 " ".join(
                     filter(
@@ -52,7 +52,7 @@ def _unpositioned(nodes, level):
                             unit.get("paper_key"),
                             unit.get("section_label"),
                             f"Member {n}" if len(members) > 1 else "",
-                            f"Q: {q}" if q else "",
+                            f"Role: {q}" if q else "",
                         ],
                     )
                 )
@@ -94,7 +94,7 @@ def focus_outline(context):
                     n += 1
                 groups[group] = {
                     "members": dict.fromkeys(addresses),
-                    "question": node.get("generated_question_metadata"),
+                    "role_statement": node.get("role_statement"),
                 }
             name = "Group " + group
         else:
@@ -109,9 +109,7 @@ def focus_outline(context):
         for unit, addr in zip(members, addresses):
             paper, sec, pos = _location(unit)
             center = unit.get("paragraph_under_consideration", unit)
-            metadata.setdefault(
-                addr, (unit.get("section_label"), center.get("generated_question_metadata"))
-            )
+            metadata.setdefault(addr, (unit.get("section_label"), center.get("role_statement")))
             role = "focus" if index == 0 else "candidate"
             tag = f"{role} {name}" if group or name != addr else role
             marks[addr].append(tag)
@@ -142,7 +140,7 @@ def focus_outline(context):
 
     def heading(addr, extra=()):
         tags = list(marks[addr]) + list(extra)
-        name, question = metadata.get(addr, (None, None))
+        name, role_statement = metadata.get(addr, (None, None))
         notes = []
         if addr not in shown:
             for group, role in affiliations[addr]:
@@ -150,9 +148,9 @@ def focus_outline(context):
                     tags.append("in Group " + group)
                 if role == "fan_in":
                     tags.append("fan-in member")
-                gq = groups[group]["question"]
-                if group not in stated and gq and gq != question:
-                    notes.append(f"  Group {group} Q: {gq}")
+                gq = groups[group]["role_statement"]
+                if group not in stated and gq and gq != role_statement:
+                    notes.append(f"  Group {group} Role: {gq}")
                 stated.add(group)
         line = " ".join(
             filter(
@@ -164,8 +162,8 @@ def focus_outline(context):
                 ],
             )
         )
-        if addr not in shown and question:
-            line += " | Q: " + question
+        if addr not in shown and role_statement:
+            line += " | Role: " + role_statement
         shown.add(addr)
         return [line, *notes]
 
@@ -195,9 +193,9 @@ def focus_outline(context):
         ]
         if missing:
             more = " also includes " if group in stated else ": "
-            q = data["question"] if group not in stated else None
+            q = data["role_statement"] if group not in stated else None
             history.append(
-                "Group " + group + more + ", ".join(missing) + (f" | Q: {q}" if q else "")
+                "Group " + group + more + ", ".join(missing) + (f" | Role: {q}" if q else "")
             )
     if history:
         lines.extend(["\nPrior matches (context only)", *history])

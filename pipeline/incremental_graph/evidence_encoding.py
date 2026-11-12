@@ -171,15 +171,15 @@ def passage_state(context: dict) -> dict | None:
     equal text: identical sentences at different positions are distinct evidence.
     """
     rows = {}
-    questions = {}
+    role_statements = {}
     for is_focus, node in [(True, context["focus"]), *((False, c) for c in context["candidates"])]:
         group = "members" in node
         handle = "focus" if is_focus else candidate_handle(node)
         role = ("focus" if is_focus else "candidate") + ("_group" if group else "")
         members = node["members"] if group else [node]
-        group_question = node.get("generated_question_metadata") if group else None
-        if group_question:
-            questions[handle] = group_question
+        group_role_statement = node.get("role_statement") if group else None
+        if group_role_statement:
+            role_statements[handle] = group_role_statement
         for n, unit in enumerate(members, 1):
             label = {role: True if is_focus else handle}
             if len(members) > 1:
@@ -193,7 +193,7 @@ def passage_state(context: dict) -> dict | None:
                     passage = unit.get(key)
                     if passage is not None:
                         parts.append((section, center + offset, passage["full_text"], offset == 0))
-                question = unit["paragraph_under_consideration"].get("generated_question_metadata")
+                role_statement = unit["paragraph_under_consideration"].get("role_statement")
             elif "source_spans" in unit:
                 parts = []
                 start = 0
@@ -202,7 +202,7 @@ def passage_state(context: dict) -> dict | None:
                         (section, position, unit["full_text"][start : start + length], True)
                     )
                     start += length + 2
-                question = unit.get("generated_question_metadata")
+                role_statement = unit.get("role_statement")
             else:
                 return None
 
@@ -214,13 +214,13 @@ def passage_state(context: dict) -> dict | None:
                     raise ValueError(f"Inconsistent source text at {key}")
                 if judged:
                     tag = dict(label)
-                    if question and question != group_question:
-                        tag["question"] = question
+                    if role_statement and role_statement != group_role_statement:
+                        tag["role_statement"] = role_statement
                     if section_label:
                         tag["section"] = section_label
                     labels.append(tag)
                     # A structural unit may span several rows. State its metadata once.
-                    question = None
+                    role_statement = None
                     section_label = None
 
     papers = {}
@@ -237,7 +237,7 @@ def passage_state(context: dict) -> dict | None:
         papers.setdefault(paper, []).append({"at": f"{section}.{position}", **role, "text": text})
     return {
         "scope": context["scope"],
-        **({"group_questions": questions} if questions else {}),
+        **({"group_role_statements": role_statements} if role_statements else {}),
         "papers": papers,
     }
 

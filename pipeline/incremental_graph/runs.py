@@ -167,7 +167,7 @@ def start_graph(
         )
     _set_execution_limits(config, jev_max_calls, max_api_responses)
     if config.jev:
-        # Fail before buying question generation or creating a run with missing credentials.
+        # Fail before buying role statement generation or creating a run with missing credentials.
         load_api_key(REPO_ROOT, "TYPESAFE_API_KEY")
         load_api_key(REPO_ROOT, f"{config.model.provider.upper()}_API_KEY")
     state = RunState(

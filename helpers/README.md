@@ -4,7 +4,7 @@ The graph CLI does not import these utilities. Use them only when the input or
 inspection task requires them.
 
 - `python -m helpers.prepare_content_corpus MANIFEST OUTPUT` strips precomputed
-  questions into a new content-only corpus. Add `--whole-section` to store
+  role statements into a new content-only corpus. Add `--whole-section` to store
   each document's paragraphs under one section for paragraph-only graphing.
   The prepared output is explicit; the graph never flattens inputs at runtime.
 - `python -m helpers.report_singletons EVENTS_JSON OUTPUT_DIR` regenerates a

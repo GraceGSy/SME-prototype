@@ -96,11 +96,11 @@ class SourceReviewTest(unittest.TestCase):
                 self.assertEqual(
                     len(load_paper(output, "paper", "Paper").sections[0].paragraphs), 3
                 )
-                with_questions = document()
-                with_questions[0]["question_this_text_answers"] = (
-                    "What findings support the conclusion?"
+                with_role_statements = document()
+                with_role_statements[0]["role_statement"] = (
+                    "Presents findings that support the conclusion."
                 )
-                write_json(output, with_questions)
+                write_json(output, with_role_statements)
                 load_paper(output, "paper", "Paper")
                 changed = document()
                 changed[0]["paragraphs"][1]["text"] = "Changed evidence."

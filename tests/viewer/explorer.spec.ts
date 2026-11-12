@@ -65,6 +65,7 @@ test("parallel reading paths draw once and remain visible for either contributin
   await page.route("**/data/final_snapshot.json", async (route) => {
     const response = await route.fetch();
     const snapshot: Snapshot = await response.json();
+    if (snapshot.schema_version !== 2) throw new Error("Expected the role statement fixture");
     const group = snapshot.singletons.pop()!;
     group.members.push({ ...snapshot.groups[0].members[1], unit_id: "pb2", ordinal: 2 });
     snapshot.groups.push(group);
@@ -163,7 +164,7 @@ test("the board aligns options and reveals only the selected document's skip or 
 test("leaving the explorer cancels an unfinished camera animation", async ({ page }) => {
   await openExplorer(page);
   await page.locator(".gx-node").press("Enter");
-  await page.getByRole("button", { name: "Question Groups", exact: true }).click();
+  await page.getByRole("button", { name: "Passage Groups", exact: true }).click();
   await expect(page.locator(".group-card").first()).toBeVisible();
   // Wait beyond the camera duration to catch a stale callback replacing the view.
   await page.waitForTimeout(600);

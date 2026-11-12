@@ -6,10 +6,10 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from pipeline.document import (
-    QUESTION_FIELD,
+    ROLE_FIELD,
     iter_structural_units,
     relabel_extraction,
-    strip_questions,
+    strip_annotations,
     validate_document,
 )
 from pipeline.files import write_json
@@ -21,13 +21,13 @@ def _document() -> list[dict]:
         {
             "section_name": "Results",
             "section_number": "4",
-            QUESTION_FIELD: "What did the study find?",
+            ROLE_FIELD: "Reports the evaluation findings.",
             "paragraphs": [{"paragraph_number": 0, "text": "Lead-in."}],
             "subsections": [
                 {
                     "section_name": "Qualitative Findings",
                     "section_number": "4.1",
-                    QUESTION_FIELD: "What themes emerged?",
+                    ROLE_FIELD: "Identifies recurring themes in the findings.",
                     "paragraphs": [{"paragraph_number": 0, "text": "Theme evidence."}],
                 }
             ],
@@ -36,6 +36,27 @@ def _document() -> list[dict]:
 
 
 class CanonicalDocumentTest(unittest.TestCase):
+    def test_archived_questions_remain_readable_but_never_supply_roles(self):
+        doc = strip_annotations(_document())
+        doc[0]["question_this_text_answers"] = "How was the evaluation conducted?"
+        doc[0]["paragraphs"][0]["question_this_text_answers"] = "Who participated?"
+        authored = strip_annotations(doc)
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "legacy.json"
+            write_json(path, doc)
+            saved = path.read_bytes()
+            section = load_paper(path, "paper", "Paper").sections[0]
+            self.assertEqual(
+                (section.role_statement, section.paragraphs[0].role_statement), ("", "")
+            )
+            self.assertEqual(path.read_bytes(), saved)
+        doc[0][ROLE_FIELD] = "Describes the evaluation procedure."
+        self.assertEqual(strip_annotations(doc), authored)
+        validate_document(doc)
+        for invalid in ("Who participated?", "First role.\nSecond role.", " "):
+            with self.subTest(invalid=invalid), self.assertRaises(ValueError):
+                validate_document([{**doc[0], ROLE_FIELD: invalid}])
+
     def test_relabel_extraction_preserves_hierarchy_and_authored_numbers(self):
         original = _document()
         original[0]["section_name"] = "4 Results"
@@ -81,19 +102,19 @@ class CanonicalDocumentTest(unittest.TestCase):
     def test_ids_depend_on_position_not_question_or_label(self) -> None:
         changed = copy.deepcopy(_document())
         changed[0]["section_name"] = "Renamed"
-        changed[0][QUESTION_FIELD] = "A different generated question?"
+        changed[0][ROLE_FIELD] = "Contrasts two approaches."
 
         original_ids = [unit.unit_id for unit in iter_structural_units(_document())]
         changed_ids = [unit.unit_id for unit in iter_structural_units(changed)]
 
         self.assertEqual(original_ids, changed_ids)
 
-    def test_strip_questions_preserves_the_canonical_content(self) -> None:
-        content = strip_questions(_document())
+    def test_strip_annotations_preserves_the_canonical_content(self) -> None:
+        content = strip_annotations(_document())
 
         validate_document(content)
-        self.assertNotIn(QUESTION_FIELD, content[0])
-        self.assertNotIn(QUESTION_FIELD, content[0]["subsections"][0])
+        self.assertNotIn(ROLE_FIELD, content[0])
+        self.assertNotIn(ROLE_FIELD, content[0]["subsections"][0])
 
     def test_strict_validation_rejects_alternate_fields(self) -> None:
         document = _document()

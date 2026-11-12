@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Protocol
 from uuid import uuid4
 
-from ..document import QUESTION_FIELD
+from ..document import ROLE_FIELD, is_role_statement
 from ..files import directory_hash, write_json
 from ..prompts import REPO_ROOT, request_prompts
 from ..providers.contracts import (
@@ -532,12 +532,14 @@ class CachedJudgments:
 
     @staticmethod
     def _validate(request: JudgmentRequest, value: dict) -> None:
-        if request.output_kind == "question":
-            if not isinstance(value, dict) or set(value) != {QUESTION_FIELD}:
-                raise JudgmentError(f"{request.key} requires exactly {QUESTION_FIELD}")
-            question = value.get(QUESTION_FIELD)
-            if not isinstance(question, str) or not question.strip():
-                raise JudgmentError(f"{request.key} returned an empty question")
+        if request.output_kind == "role_statement":
+            if not isinstance(value, dict) or set(value) != {ROLE_FIELD}:
+                raise JudgmentError(f"{request.key} requires exactly {ROLE_FIELD}")
+            role_statement = value.get(ROLE_FIELD)
+            if not is_role_statement(role_statement):
+                raise JudgmentError(
+                    f"{request.key} requires one nonempty declarative role statement"
+                )
             return
         if not isinstance(value, dict) or set(value) != {"target_id", "basis", "evidence"}:
             raise JudgmentError(f"{request.key} requires exactly target_id, basis, and evidence")

@@ -9,7 +9,7 @@ real `<hr>` scene separators; the extraction names the resulting spans `Scene
 the same paragraphs in the same order, but places them directly in one
 top-level section and has no subsections. Its manifest sets
 `max_granularity: paragraph`, which creates one shared corpus root and skips
-section questions, section matching, and structural rerepresentation.
+section role statements, section matching, and structural rerepresentation.
 
 The manifest is ordered by first publication: `speckled_band`,
 `wisteria_lodge`, `bruce_partington_plans`, `lady_frances_carfax`, then

@@ -1,3 +1,4 @@
+import { groupLabel } from "../pipeline/viewer/src/contracts";
 import { strict as assert } from "node:assert";
 import { readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
@@ -56,6 +57,33 @@ const source = (id: string): Source => ({
   ],
 });
 const session = () => createSession([source("a"), source("b")]);
+
+test("new sessions use role statements and imported question sessions keep their original labels", () => {
+  const a = source("a");
+  a.content[0].role_statement = "Introduces the research problem.";
+  a.content[0].question_this_text_answers = "What problem does the paper address?";
+  const current = createSession([a, source("b")]);
+  assert.equal(units(current, "sections")[0].label, a.content[0].role_statement);
+  assert.equal(exportDataset(current).snapshot.schema_version, 2);
+  const saved = JSON.parse(JSON.stringify(current));
+  saved.schema_version = 1;
+  delete saved.label_format;
+  for (const mode of ["section", "subsection"]) {
+    const ws = saved.workspaces[mode];
+    ws.questions = ws.labels;
+    delete ws.labels;
+    for (const g of [...ws.sections, ...ws.paragraphs]) {
+      g.question = "What is the common purpose?";
+      delete g.label;
+    }
+  }
+  const restored = parseSession(saved);
+  assert.equal(units(restored, "sections")[0].label, a.content[0].question_this_text_answers);
+  const archived = exportDataset(restored).snapshot;
+  assert.equal(archived.schema_version, 1);
+  assert.equal(groupLabel(archived.section_groups[0]), "What is the common purpose?");
+  assert.ok(!("role_statement" in archived.section_groups[0]));
+});
 
 test("source IDs, exact ownership, and paragraph order agree with pipeline loading", () => {
   const sections = sourcePaper(source("a"), "section");
@@ -134,7 +162,7 @@ test("switching granularity preserves independent labels and stable paragraph id
   assert.ok(workspace(s).sections.every((g) => g.members.length === 1));
   groupUnits(s, "sections", ["a:s0001.ss0001", "b:s0001.ss0001"], "Background");
   s.mode = "section";
-  assert.equal(workspace(s).sections.find((g) => g.members.length > 1)!.question, "Introduction");
+  assert.equal(workspace(s).sections.find((g) => g.members.length > 1)!.label, "Introduction");
   assert.doesNotThrow(() => parseSession(s));
 });
 
@@ -160,16 +188,16 @@ test("outside matching rejects a paragraph from the same paper", () => {
   assert.throws(() => matchOutside(s, "a:s0001.p0001", "a:s0002.p0001"));
 });
 
-test("source and shared questions are optional and preserve exact original text", () => {
+test("source and shared labels are optional and preserve exact original text", () => {
   const s = session();
   s.sources[0].content[0].paragraphs[0].text = "  Original\n text.  ";
   groupUnits(s, "sections", ["a:s0001", "b:s0001"], "");
   groupUnits(s, "paragraphs", ["a:s0001.p0001", "b:s0001.p0001"], "");
-  workspace(s).questions["a:s0001.p0001"] = "Why?";
+  workspace(s).labels["a:s0001.p0001"] = "Why?";
   const result = exportDataset(s);
   assert.equal(result.papers[0].paragraphs[0].text, "  Original\n text.  ");
   assert.equal(result.papers[0].paragraphs[0].tag, "Why?");
-  assert.ok(result.snapshot.groups[0].overarching_question);
+  assert.ok(groupLabel(result.snapshot.groups[0]));
   assert.equal(
     result.snapshot.groups[0].parent_group_id,
     result.snapshot.section_groups.find((g) => g.members.length > 1)!.group_id,

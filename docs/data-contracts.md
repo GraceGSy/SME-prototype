@@ -34,12 +34,12 @@ section references inside prose are not rewritten. Paragraph storage indexes are
 zero-based, contiguous, and restart inside each paragraph array. Text must be a
 nonblank string; its whitespace is preserved. Unknown fields are errors.
 
-`question_this_text_answers` is optional metadata on a section, subsection, or
-paragraph. Extraction omits it; the graph reuses valid existing questions and
+`role_statement` is optional metadata on a section, subsection, or
+paragraph. Extraction omits it; the graph reuses valid existing role statements and
 generates missing ones. It is not an alternate document format or an identity.
 
 Stable IDs derive from array positions: `s0001`, `s0001.ss0001`,
-`s0001.p0001`, `s0001.ss0001.p0001`. Changing questions or labels leaves
+`s0001.p0001`, `s0001.ss0001.p0001`. Changing role statements or labels leaves
 identity unchanged; reordering source structure changes it by design.
 
 ## Prepared-Source Review
@@ -49,14 +49,14 @@ New extractions write `content.provenance.json` with
 Graph loading requires an approved receipt with matching authored-content hash,
 passing coverage/order checks, no unresolved issues, and reviewer/notes/time.
 TXT/XHTML paragraph-boundary checks must pass; PDF/layout boundaries need
-explicit original-source review. Approval does not certify generated questions
+explicit original-source review. Approval does not certify generated role statements
 or semantic matches. Older manually prepared files without this marker remain
 accepted, not automatically verified.
 
 The strict version-1 receipt records source/reference/content SHA-256 values,
 `boundary_mode`, `coverage_ok`, `order_ok`, `boundary_ok`, `paragraph_count`,
 `issues`, and review status/attribution. Authored-content hashing excludes
-question metadata and JSON formatting. Raw-source hashing is byte-exact.
+role statement metadata and JSON formatting. Raw-source hashing is byte-exact.
 Frozen inputs include approved receipts in the directory integrity hash.
 
 `_cache/source-extractions/<source-sha256>/` retains the first request and
@@ -99,7 +99,7 @@ Neither focus nor member windows expose paragraph IDs, numbers, or labels.
 Each unit carries an anonymous `paper_key`, stable within the run. Group members
 remain ordered by paper, then source order. Members with the same key form one
 paper's accepted contribution; each paper must support the shared role and each
-member must contribute directly. Matching and question generation share this
+member must contribute directly. Matching and role statement generation share this
 instruction and retain constructed examples. The key is not an output handle.
 Source text and generated metadata are not rewritten to remove numbers in prose.
 The exact response is:
@@ -121,8 +121,8 @@ The shared schema and caller instructions live in `prompts/graph/shared/` and ag
 with the repository Skills. Historical two-field responses are not accepted by this
 contract and must not receive fabricated evidence during replay.
 
-Question requests return exactly `question_this_text_answers` with a nonblank
-string. There is no batched-result interface.
+Role statement requests return exactly `role_statement` with a nonblank
+declarative string. Historical `question_this_text_answers` annotations are readable but never used as role statements. A new run regenerates missing statements; it does not change archived questions. New viewer snapshots use version 2 with `role_statement` on groups; version 1 keeps `overarching_question`. There is no batched-result interface.
 
 ## Run Storage
 

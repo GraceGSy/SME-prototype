@@ -8,10 +8,10 @@ digraph JevPipelineA {
   edge [fontname="Times New Roman,", fontsize=12, color=black, arrowsize=0.65];
 
   legend [shape=plain, style="", label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="5" CELLPADDING="6">
-    <TR><TD BGCOLOR="#f1eafb">JEV: match selection</TD><TD BGCOLOR="#fff0d8">LLM: questions / quoted evidence</TD>
+    <TR><TD BGCOLOR="#f1eafb">JEV: match selection</TD><TD BGCOLOR="#fff0d8">LLM: role statements / quoted evidence</TD>
     <TD BGCOLOR="#e7f4e8">PYTHON: deterministic steps</TD></TR>
     <TR><TD COLSPAN="3">Each selection / evidence / validation sequence repeats per directional judgment, before reconciliation.</TD></TR>
-    <TR><TD COLSPAN="3">Stored questions and valid caches avoid paid calls. NO_MATCH skips the explanation step. See B for these branches.</TD></TR>
+    <TR><TD COLSPAN="3">Stored role statements and valid caches avoid paid calls. NO_MATCH skips the explanation step. See B for these branches.</TD></TR>
   </TABLE>>];
 
   subgraph cluster_initial {
@@ -22,18 +22,18 @@ digraph JevPipelineA {
     paper [label="PYTHON: ingest next document in manifest order\nFirst document seeds groups; empty match pools make no calls"];
     mode [shape=diamond, label="PYTHON: granularity?"];
     root [label="PYTHON: paragraph-only mode\nAssign the document's one section to a shared root\nSkip structural judgments; continue at column 3"];
-    stored_s [label="PYTHON: reuse stored / cached structural questions\nIdentify only missing section or subsection questions"];
+    stored_s [label="PYTHON: reuse stored / cached structural role statements\nIdentify only missing section or subsection role statements"];
     question_s [fillcolor="#fff0d8", color="#b68a49",
-      label="LLM: generate missing structural questions\nQuestions describe source units; they do not define identity"];
+      label="LLM: generate missing structural role statements\nRole statements describe source units; they do not define identity"];
     pool_s [label="PYTHON: build initial structural candidate pools\nForward: each incoming unit sees eligible existing nodes\nReverse: each node sees all eligible incoming units\nKeep directions independent; never supply opposite votes"];
     choose_s [fillcolor="#f1eafb", color="#7054a0",
       label="JEV: choose for one structural direction\nOne candidate handle or NO_MATCH\nForward and reverse each use the selector in B"];
     explain_s [fillcolor="#fff0d8", color="#b68a49",
       label="LLM: explain this non-null structural choice\nGenerate basis + focus/target quotations\nThe selected target is fixed; no replacement or veto"];
     check_s [label="PYTHON: validate this directional judgment\nCheck allowed ID, quote source, attribution and length\nRepair quote errors or stop as shown in B\nFinish all forward/reverse judgments before reconciliation"];
-    reconcile_s [label="PYTHON: reconcile structural choices\nAccept reciprocal top-1 cores; preserve unmatched singletons\nRetain rejected one-way choices and their evidence\nReuse singleton questions; identify group questions to update"];
+    reconcile_s [label="PYTHON: reconcile structural choices\nAccept reciprocal top-1 cores; preserve unmatched singletons\nRetain rejected one-way choices and their evidence\nReuse singleton role statements; identify group role statements to update"];
     label_s [fillcolor="#fff0d8", color="#b68a49",
-      label="LLM: generate required structural group questions\nDescribe accepted evidence; do not reconsider membership"];
+      label="LLM: generate required structural group role statements\nDescribe accepted evidence; do not reconsider membership"];
     to_recovery [shape=ellipse, label="Continue at column 2\nStructural singleton recovery"];
 
     inputs -> validate -> start -> paper -> mode;
@@ -52,9 +52,9 @@ digraph JevPipelineA {
     recovery_explain_s [fillcolor="#fff0d8", color="#b68a49",
       label="LLM: explain this non-null recovery choice\nKeep the chosen target; provide source-bound quotations"];
     recovery_check_s [label="PYTHON: validate recovery judgment and quotations\nUse B's evidence repair / failure rules\nComplete all directional requests from the frozen pools"];
-    merge_s [label="PYTHON: merge reciprocal structural recoveries\nUpdate assignments; leave unaccepted singletons unchanged\nRecord changed structural nodes for question refresh"];
+    merge_s [label="PYTHON: merge reciprocal structural recoveries\nUpdate assignments; leave unaccepted singletons unchanged\nRecord changed structural nodes for role statement refresh"];
     refresh_s [fillcolor="#fff0d8", color="#b68a49",
-      label="LLM: refresh changed structural group questions\nUse only the group's accepted source evidence"];
+      label="LLM: refresh changed structural group role statements\nUse only the group's accepted source evidence"];
     old_sections [label="PYTHON: find absorbed sections from older documents\nFor each with paragraphs: enter its new exact parent scope\nProcess all older contributions before incoming paragraphs"];
     old_pool [label="PYTHON: build older-paragraph candidate pools\nUse the new parent group; exclude nodes containing the owner\nApply the same independent forward / reverse pool rules"];
     old_choose [fillcolor="#f1eafb", color="#7054a0",
@@ -62,9 +62,9 @@ digraph JevPipelineA {
     old_explain [fillcolor="#fff0d8", color="#b68a49",
       label="LLM: explain this non-null older-paragraph choice\nKeep the target fixed and quote both sources"];
     old_check [label="PYTHON: validate older-paragraph judgments\nCheck quotations; complete both directional passes"];
-    old_reconcile [label="PYTHON: reconcile older paragraphs in their new scope\nAccept reciprocal cores and eligible immediate-core fan-in\nUpdate the older document's paragraph assignments\nReuse singleton questions; identify required group labels"];
+    old_reconcile [label="PYTHON: reconcile older paragraphs in their new scope\nAccept reciprocal cores and eligible immediate-core fan-in\nUpdate the older document's paragraph assignments\nReuse singleton role statements; identify required group labels"];
     old_labels [fillcolor="#fff0d8", color="#b68a49",
-      label="LLM: update required paragraph group questions\nThe incoming document must see the updated child roles"];
+      label="LLM: update required paragraph group role statements\nThe incoming document must see the updated child roles"];
     to_paragraphs [shape=ellipse, label="Continue at column 3\nIncoming paragraph phase"];
 
     freeze_s -> recovery_pool_s -> recovery_choose_s -> recovery_explain_s;
@@ -76,18 +76,18 @@ digraph JevPipelineA {
 
   subgraph cluster_paragraphs {
     label="3. Incoming paragraphs and completed outputs";
-    stored_p [label="PYTHON: enter from column 2, or paragraph-only root\nReuse stored / cached incoming paragraph questions\nIdentify missing questions; collect adjacent source context"];
+    stored_p [label="PYTHON: enter from column 2, or paragraph-only root\nReuse stored / cached incoming paragraph role statements\nIdentify missing role statements; collect adjacent source context"];
     question_p [fillcolor="#fff0d8", color="#b68a49",
-      label="LLM: generate missing paragraph questions\nUse the paragraph and its adjacent context"];
+      label="LLM: generate missing paragraph role statements\nUse the paragraph and its adjacent context"];
     pool_p [label="PYTHON: build incoming paragraph candidate pools\nRequire the exact structural parent group\nExclude nodes already containing the incoming paper\nForward: paragraph -> nodes; reverse: node -> all eligible units"];
     choose_p [fillcolor="#f1eafb", color="#7054a0",
       label="JEV: choose for one incoming paragraph direction\nOne candidate or NO_MATCH; independent forward / reverse"];
     explain_p [fillcolor="#fff0d8", color="#b68a49",
       label="LLM: explain this non-null paragraph choice\nKeep the target fixed; provide basis and quotations"];
     check_p [label="PYTHON: validate incoming paragraph judgments\nCheck quote attribution and length using B\nFinish both directional passes before reconciliation"];
-    reconcile_p [label="PYTHON: reconcile incoming paragraphs\nAccept reciprocal cores, then immediate-core adjacent fan-in\nReject fan-in chains; preserve paper / parent restrictions\nRetain singletons and reuse their member questions"];
+    reconcile_p [label="PYTHON: reconcile incoming paragraphs\nAccept reciprocal cores, then immediate-core adjacent fan-in\nReject fan-in chains; preserve paper / parent restrictions\nRetain singletons and reuse their member role statements"];
     labels_p [fillcolor="#fff0d8", color="#b68a49",
-      label="LLM: generate required paragraph group questions\nLabel accepted evidence without changing membership"];
+      label="LLM: generate required paragraph group role statements\nLabel accepted evidence without changing membership"];
     freeze_p [label="PYTHON: freeze one paragraph recovery snapshot\nBuild singleton -> established-node pools at the exact parent\nReverse pools include all eligible core singletons\nCross-paper cores need not be neighbors; same-paper fan-in does\nNo singleton-to-singleton matching or convergence loop"];
     recovery_choose_p [fillcolor="#f1eafb", color="#7054a0",
       label="JEV: choose for one paragraph recovery direction\nOne candidate or NO_MATCH; independent forward / reverse"];
@@ -96,12 +96,12 @@ digraph JevPipelineA {
     recovery_check_p [label="PYTHON: validate recovery judgments\nUse B's quote-repair / failure rules\nComplete all requests from the frozen snapshot"];
     merge_p [label="PYTHON: apply paragraph recovery memberships\nAccept reciprocal cores, then eligible adjacent fan-in\nUpdate assignments and record changed target nodes"];
     refresh_p [fillcolor="#fff0d8", color="#b68a49",
-      label="LLM: refresh only changed paragraph group questions"];
+      label="LLM: refresh only changed paragraph group role statements"];
     more [shape=diamond, label="PYTHON: more documents?"];
     next_paper [shape=ellipse, label="Return to column 1\nIngest the next document"];
     export [label="PYTHON: export the completed immutable revision\nGraph, events/judgments, correspondence + singleton reports\nViewer manifest, source texts and final_snapshot.json\nOnly now update run.json current_revision"];
-    viewer [label="PYTHON / BROWSER: inspect a completed revision offline\nQuestion Groups / Paper Map / Graphical Explorer\nNo model calls; serve exported data, not keys or caches"];
-    compare [label="PYTHON: compare completed runs / revisions offline\nRequire shared source IDs, text and boundaries to agree\nReport membership / scope changes, co-member pair differences,\nsingletons, question changes and provider/model settings\nWrite standalone index.html + comparison.json\nShared-paper pair metrics; agreement does not measure accuracy"];
+    viewer [label="PYTHON / BROWSER: inspect a completed revision offline\nPassage Groups / Paper Map / Graphical Explorer\nNo model calls; serve exported data, not keys or caches"];
+    compare [label="PYTHON: compare completed runs / revisions offline\nRequire shared source IDs, text and boundaries to agree\nReport membership / scope changes, co-member pair differences,\nsingletons, role statement changes and provider/model settings\nWrite standalone index.html + comparison.json\nShared-paper pair metrics; agreement does not measure accuracy"];
 
     stored_p -> question_p -> pool_p -> choose_p -> explain_p -> check_p -> reconcile_p -> labels_p;
     labels_p -> freeze_p -> recovery_choose_p -> recovery_explain_p -> recovery_check_p;

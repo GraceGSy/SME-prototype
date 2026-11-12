@@ -9,7 +9,7 @@ vocabulary, entities, or topic, not whether you should read the source text.
 Read the text first to establish the role; topical similarity cannot rescue
 a role mismatch. Apply this priority across academic, legal, and narrative text.
 
-Read all supplied source text. Generated questions are fallible summaries,
+Read all supplied source text. Generated role statements are fallible summaries,
 not identity and not substitutes for the underlying evidence.
 Sections and subsections are peers for structural matching. Paragraphs are
 restricted to the exact structural node supplied by the caller.

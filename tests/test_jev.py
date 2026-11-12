@@ -253,34 +253,43 @@ class JevTest(unittest.TestCase):
         self.assertIn("A2 [candidate; part of A1]", state)
         self.assertLess(state.index("New"), state.index("Same"))
 
-    def test_focus_first_collocates_questions_and_only_lists_offscreen_members_at_end(self):
+    def test_focus_first_collocates_role_statements_and_only_lists_offscreen_members_at_end(self):
         req = self.request()
         req.context["focus"]["source_position"] = [1, 1]
         req.context["candidates"][0]["source_position"] = [1, 2]
         req.context["focus"]["next_paragraph"] = {"full_text": "Neighbor."}
         req.context["outline"] = {
             "units": {
-                "B1": ("Methods", "Study question?"),
-                "B1.1": ("", "Focus question?"),
-                "B1.2": ("", "Neighbor question?"),
-                "A1.2": ("", "Candidate question?"),
+                "B1": ("Methods", "Defines the study design."),
+                "B1.1": ("", "Introduces recruitment."),
+                "B1.2": ("", "Describes the task."),
+                "A1.2": ("", "Defines eligibility."),
             },
             "groups": {
-                "S1": {"members": {"A1": None, "B1": None}, "question": "Shared section role?"},
-                "P1": {"members": {"A1.2": "core", "C2.4": "fan_in"}, "question": "Shared role?"},
-                "P2": {"members": {"A9.1": "core", "C4.5": "core"}, "question": "Past role?"},
+                "S1": {
+                    "members": {"A1": None, "B1": None},
+                    "role_statement": "Describes study methods.",
+                },
+                "P1": {
+                    "members": {"A1.2": "core", "C2.4": "fan_in"},
+                    "role_statement": "Explains recruitment.",
+                },
+                "P2": {
+                    "members": {"A9.1": "core", "C4.5": "core"},
+                    "role_statement": "Describes evaluation.",
+                },
             },
         }
         state = self.selector().build_request(req.context)["state"]
         focus, rest = state.split("\nCandidates\n")
         choices, history = rest.split("\nPrior matches (context only)\n")
-        self.assertIn("B1 Methods [in Group S1] | Q: Study question?", focus)
-        self.assertIn("B1.1 [focus] | Q: Focus question?\n    First focus", focus)
-        self.assertIn("B1.2 [context only] | Q: Neighbor question?\n    Neighbor.", focus)
-        self.assertIn("A1.2 [candidate; in Group P1] | Q: Candidate question?", choices)
-        self.assertEqual(state.count("Shared section role?"), 1)
+        self.assertIn("B1 Methods [in Group S1] | Role: Defines the study design.", focus)
+        self.assertIn("B1.1 [focus] | Role: Introduces recruitment.\n    First focus", focus)
+        self.assertIn("B1.2 [context only] | Role: Describes the task.\n    Neighbor.", focus)
+        self.assertIn("A1.2 [candidate; in Group P1] | Role: Defines eligibility.", choices)
+        self.assertEqual(state.count("Describes study methods."), 1)
         self.assertIn("Group P1 also includes C2.4 (fan-in)", history)
-        self.assertIn("Group P2: A9.1, C4.5 | Q: Past role?", history)
+        self.assertIn("Group P2: A9.1, C4.5 | Role: Describes evaluation.", history)
         self.assertNotIn("Group S1", history)
 
     def test_frozen_inputs_without_coordinates_still_put_the_focus_first(self):
@@ -316,7 +325,7 @@ class JevTest(unittest.TestCase):
             center = candidate.get("paragraph_under_consideration", candidate)
             legacy["questions"]["match"]["criteria"][key] = {
                 "evidence": f"`candidates[{json.dumps(key)}]`",
-                "generated_question_metadata": center.get("generated_question_metadata", ""),
+                "role_statement": center.get("role_statement", ""),
                 "meaning": "This candidate supports the same source-grounded role as `focus`.",
             }
         self.assertLess(len(encode_request(compact)), len(encode_request(legacy)))

@@ -1,3 +1,4 @@
+import { groupLabel } from "./contracts";
 import type { Group } from "./contracts";
 import { element, escapeHtml as html, preview } from "./dom";
 import { PAPER_COLORS, type Model, unitKey } from "./model";
@@ -18,7 +19,7 @@ export class GroupsView {
       .map((entry) => entry.group);
     const singleton: Group = {
       group_id: "__singleton_questions__",
-      overarching_question: "Singleton Questions",
+      role_statement: "Singleton passages",
       parent_group_id: null,
       members: this.model.singletons.flatMap((entry) => entry.group.members),
     };
@@ -26,7 +27,7 @@ export class GroupsView {
     this.host.innerHTML = `<label class="epoch-groups-preview-control">Preview length
       <input id="previewSlider" type="range" min="0" max="200" step="10" value="${this.previewLength}">
       <span id="previewValue">${this.previewLength}</span></label>
-      <div class="iteration-meta">${this.model.shared.length} shared groups; ${this.model.singletons.length} singleton questions; final snapshot</div>
+      <div class="iteration-meta">${this.model.shared.length} shared groups; ${this.model.singletons.length} singleton passages; final snapshot</div>
       <div class="papers-legend">${this.model.papers
         .map(
           (paper, index) => `<span class="papers-legend-item">
@@ -50,7 +51,7 @@ export class GroupsView {
       const card = document.createElement("section");
       card.className = "group-card" + (group === singleton ? " singleton-container" : "");
       card.dataset.groupId = group.group_id;
-      card.innerHTML = `<button class="group-question" type="button">${html(group.overarching_question)}</button>
+      card.innerHTML = `<button class="group-question" type="button">${html(groupLabel(group))}</button>
         <button class="expand-all-btn" type="button">Expand all</button>
         <div class="group-unit-vis">${group.members
           .map((member) => {

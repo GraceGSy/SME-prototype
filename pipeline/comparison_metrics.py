@@ -27,7 +27,11 @@ def project_groups(run: dict, level: str, common: set[str]) -> list[dict]:
                 "members": members,
                 "full_members": node["source_members"],
                 "scope": parents[parent] if parent is not None else [],
-                "question": node["overarching_question"],
+                "label": (
+                    node["role_statement"]
+                    if "role_statement" in node
+                    else node["overarching_question"]
+                ),
             }
         )
     return sorted(groups, key=lambda group: group["members"])
@@ -38,8 +42,8 @@ def _words(text: str) -> list[str]:
     return re.findall(r"[^\W_]+(?:'[^\W_]+)?", text)
 
 
-def question_similarity(rows: list[dict]) -> dict:
-    """Fit lexical TF-IDF on these question pairs; no embeddings or model calls."""
+def label_similarity(rows: list[dict]) -> dict:
+    """Fit lexical TF-IDF on these label pairs; no embeddings or model calls."""
     documents = [_words(row[side]) for row in rows for side in ("left", "right")]
     nonempty = [words for words in documents if words]
     frequency = Counter(word for words in nonempty for word in set(words))
@@ -163,21 +167,21 @@ def _align_groups(left: list[dict], right: list[dict], sources: dict) -> dict:
                     "right_overlap_count": graph.degree[offset + j],
                 }
             )
-    questions = question_similarity(
+    labels = label_similarity(
         [
             {
                 "members_left": row["left"]["members"],
                 "members_right": row["right"]["members"],
                 "same_membership": row["left"]["members"] == row["right"]["members"],
-                "left": row["left"]["question"],
-                "right": row["right"]["question"],
+                "left": row["left"]["label"],
+                "right": row["right"]["label"],
             }
             for row in rows
             if row["left"] and row["right"]
         ]
     )
     return {
-        "method": "NetworkX max_weight_matching; maximize shared-member count, not question wording",
+        "method": "NetworkX max_weight_matching; maximize shared-member count, not label wording",
         "aligned_groups": len(mapping),
         "unmatched_left": len(a) - len(mapping),
         "unmatched_right": len(b) - len(mapping),
@@ -190,7 +194,7 @@ def _align_groups(left: list[dict], right: list[dict], sources: dict) -> dict:
         if rows
         else None,
         "rows": rows,
-        "questions": questions,
+        "labels": labels,
     }
 
 

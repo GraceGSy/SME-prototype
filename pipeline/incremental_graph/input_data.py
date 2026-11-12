@@ -8,7 +8,7 @@ from typing import Any
 import yaml
 
 from ..document import (
-    QUESTION_FIELD,
+    ROLE_FIELD,
     iter_structural_units,
     paragraph_unit_id,
     relabel_extraction,
@@ -91,7 +91,7 @@ def _from_canonical_document(
                     id=paragraph_unit_id(unit.unit_id, paragraph_index),
                     label=str(paragraph_index + 1),
                     text=raw_paragraph["text"],
-                    question=_question(raw_paragraph),
+                    role_statement=_role_statement(raw_paragraph),
                     ordinal=paragraph_ordinals[family_id],
                 )
             )
@@ -104,7 +104,7 @@ def _from_canonical_document(
                 label=unit.name,
                 text="\n\n".join(paragraph["text"] for paragraph in unit.evidence),
                 paragraphs=paragraphs,
-                question=_question(unit.source),
+                role_statement=_role_statement(unit.source),
                 ordinal=structural_ordinal,
                 kind=unit.unit_type,
                 parent_id=unit.parent_unit_id,
@@ -139,7 +139,7 @@ def _from_section_documents(
                         id=paragraph_unit_id(unit.unit_id, paragraph_index),
                         label=str(len(paragraphs) + 1),
                         text=raw_paragraph["text"],
-                        question=_question(raw_paragraph),
+                        role_statement=_role_statement(raw_paragraph),
                         ordinal=len(paragraphs) + 1,
                     )
                 )
@@ -150,7 +150,7 @@ def _from_section_documents(
                 label=section_unit.name,
                 text="\n\n".join(paragraph["text"] for paragraph in section_unit.evidence),
                 paragraphs=paragraphs,
-                question=_question(section_unit.source),
+                role_statement=_role_statement(section_unit.source),
                 ordinal=len(sections) + 1,
                 kind="section",
                 family_id=section_unit.unit_id,
@@ -159,6 +159,6 @@ def _from_section_documents(
     return Paper(paper_id=paper_id, title=title, sections=sections)
 
 
-def _question(value: dict[str, Any]) -> str:
-    question = value.get(QUESTION_FIELD)
-    return question.strip() if isinstance(question, str) else ""
+def _role_statement(value: dict[str, Any]) -> str:
+    role_statement = value.get(ROLE_FIELD)
+    return role_statement.strip() if isinstance(role_statement, str) else ""

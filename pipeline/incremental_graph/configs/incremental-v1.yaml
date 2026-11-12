@@ -1,5 +1,5 @@
 schema_version: 1
-pipeline_id: incremental-question-graph-v1
+pipeline_id: incremental-role-graph-v1
 prompt_root: ../../../prompts/graph
 context_root: ../../../prompts/contexts
 skill_root: ../../../prompts/skills
@@ -19,12 +19,12 @@ stages:
     handler: ingest_paper
     phase: structural
 
-  - id: section_questions
-    handler: generate_section_questions
+  - id: section_role_statements
+    handler: generate_section_role_statements
     phase: structural
-    skill: generate-question
-    prompt: section-question/v1
-    context: section-question
+    skill: generate-role-statement
+    prompt: section-role-statement/v1
+    context: section-role-statement
     max_tokens: 2048
 
   - id: section_matching
@@ -42,12 +42,12 @@ stages:
     handler: reconcile_sections
     phase: structural
 
-  - id: section_group_questions
-    handler: generate_section_group_questions
+  - id: section_group_role_statements
+    handler: generate_section_group_role_statements
     phase: structural
-    skill: generate-question
-    prompt: group-question/v1
-    context: group-question
+    skill: generate-role-statement
+    prompt: group-role-statement/v1
+    context: group-role-statement
     max_tokens: 2048
 
   - id: section_rerepresentation
@@ -61,20 +61,20 @@ stages:
       singleton_to_group: matching
       group_to_singleton: matching
 
-  - id: section_rerepresentation_questions
-    handler: regenerate_rerepresented_section_questions
+  - id: section_rerepresentation_role_statements
+    handler: regenerate_rerepresented_section_role_statements
     phase: structural
-    skill: generate-question
-    prompt: group-question/v1
-    context: group-question
+    skill: generate-role-statement
+    prompt: group-role-statement/v1
+    context: group-role-statement
     max_tokens: 2048
 
-  - id: paragraph_questions
-    handler: generate_paragraph_questions
+  - id: paragraph_role_statements
+    handler: generate_paragraph_role_statements
     phase: paragraph
-    skill: generate-question
-    prompt: paragraph-question/v1
-    context: paragraph-question
+    skill: generate-role-statement
+    prompt: paragraph-role-statement/v1
+    context: paragraph-role-statement
     max_tokens: 2048
 
   - id: paragraph_matching
@@ -92,12 +92,12 @@ stages:
     handler: reconcile_paragraphs
     phase: paragraph
 
-  - id: paragraph_group_questions
-    handler: generate_paragraph_group_questions
+  - id: paragraph_group_role_statements
+    handler: generate_paragraph_group_role_statements
     phase: paragraph
-    skill: generate-question
-    prompt: group-question/v1
-    context: group-question
+    skill: generate-role-statement
+    prompt: group-role-statement/v1
+    context: group-role-statement
     max_tokens: 2048
 
   - id: paragraph_rerepresentation
@@ -111,10 +111,10 @@ stages:
       singleton_to_group: matching
       group_to_singleton: matching
 
-  - id: paragraph_rerepresentation_questions
-    handler: regenerate_rerepresented_paragraph_questions
+  - id: paragraph_rerepresentation_role_statements
+    handler: regenerate_rerepresented_paragraph_role_statements
     phase: paragraph
-    skill: generate-question
-    prompt: group-question/v1
-    context: group-question
+    skill: generate-role-statement
+    prompt: group-role-statement/v1
+    context: group-role-statement
     max_tokens: 2048

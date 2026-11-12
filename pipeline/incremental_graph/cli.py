@@ -24,14 +24,14 @@ def validate_manifest(manifest_path: Path) -> dict[str, Any]:
                 "top_level_sections": sum(section.kind == "section" for section in paper.sections),
                 "subsections": sum(section.kind == "subsection" for section in paper.sections),
                 "paragraphs": sum(len(section.paragraphs) for section in paper.sections),
-                "section_questions_required": manifest.max_granularity != "paragraph",
-                "missing_section_questions": (
-                    sum(not section.question for section in paper.sections)
+                "section_role_statements_required": manifest.max_granularity != "paragraph",
+                "missing_section_role_statements": (
+                    sum(not section.role_statement for section in paper.sections)
                     if manifest.max_granularity != "paragraph"
                     else 0
                 ),
-                "missing_paragraph_questions": sum(
-                    not paragraph.question
+                "missing_paragraph_role_statements": sum(
+                    not paragraph.role_statement
                     for section in paper.sections
                     for paragraph in section.paragraphs
                 ),

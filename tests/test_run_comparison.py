@@ -17,9 +17,7 @@ class RunComparisonTest(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
 
-    def run_fixture(
-        self, name, partitions, *, prefix="node", text_suffix="", question="Shared role"
-    ):
+    def run_fixture(self, name, partitions, *, prefix="node", text_suffix="", label="Shared role"):
         root = self.root / name
         revision = root / "revisions/revision-0001"
         dataset = revision / "dataset"
@@ -76,7 +74,7 @@ class RunComparisonTest(unittest.TestCase):
         def group(index, members, level):
             return {
                 "group_id": f"{prefix}-{level}-{index}",
-                "overarching_question": question,
+                "role_statement": label,
                 "parent_group_id": f"{prefix}-section-{index}" if level == "paragraph" else None,
                 "members": [
                     {"paper": paper, "unit_id": "s0001" if level == "section" else "p0001"}
@@ -132,13 +130,13 @@ class RunComparisonTest(unittest.TestCase):
             self.assertEqual(data["added_pairs"], [(f"b:{suffix}", f"c:{suffix}")])
             self.assertEqual(data["removed_pairs"], [(f"a:{suffix}", f"b:{suffix}")])
 
-    def test_question_changes_are_separate_from_membership_changes(self):
+    def test_label_changes_are_separate_from_membership_changes(self):
         a = self.run_fixture("a", [["a", "b"]])
-        b = self.run_fixture("b", [["a", "b"]], question="New question")
+        b = self.run_fixture("b", [["a", "b"]], label="New label")
         result = compare_revisions(a, b)
         for data in result["levels"].values():
             self.assertEqual(data["changed_units"], 0)
-            self.assertEqual(len(data["question_changes"]), 1)
+            self.assertEqual(len(data["label_changes"]), 1)
 
     def test_extra_documents_do_not_inflate_shared_pair_changes(self):
         a = self.run_fixture("a", [["a", "b"]])
@@ -176,13 +174,13 @@ class RunComparisonTest(unittest.TestCase):
             load_revision(a)["path"], load_revision(a / "revisions/revision-0001")["path"]
         )
 
-    def test_html_escapes_sources_and_questions_and_never_overwrites(self):
+    def test_html_escapes_sources_and_labels_and_never_overwrites(self):
         a = self.run_fixture("a", [["a", "b"], ["c"]], text_suffix="<script>alert(1)</script>")
         b = self.run_fixture(
             "b",
             [["a"], ["b", "c"]],
             text_suffix="<script>alert(1)</script>",
-            question="<img src=x onerror=alert(1)>",
+            label="<img src=x onerror=alert(1)>",
         )
         output = self.root / "report"
         paths = write_comparison(a, b, output)
@@ -192,7 +190,7 @@ class RunComparisonTest(unittest.TestCase):
         self.assertIn("&lt;script&gt;", html)
         self.assertIn("&lt;img", html)
         self.assertIn("NetworkX shared-group alignment", html)
-        self.assertIn("Question token Jaccard:", html)
+        self.assertIn("Label token Jaccard:", html)
         self.assertIn("Cross-paper pairs added:", html)
         self.assertEqual(read_json(Path(paths["data"]))["levels"]["section"]["changed_units"], 3)
         with self.assertRaises(FileExistsError):
@@ -212,14 +210,11 @@ class RunComparisonTest(unittest.TestCase):
             self.assertEqual(set(data["assignments"]["left"]), set(data["sources"]))
             self.assertEqual(data["assignments"]["left"], data["assignments"]["right"])
             self.assertTrue(
-                all(
-                    item["question"] == "Shared role"
-                    for item in data["assignments"]["left"].values()
-                )
+                all(item["label"] == "Shared role" for item in data["assignments"]["left"].values())
             )
 
     def test_public_export_omits_machine_paths_and_embeds_safe_json(self):
-        a = self.run_fixture("a", [["a", "b"]], question="</script><img src=x>@@SCRIPT@@")
+        a = self.run_fixture("a", [["a", "b"]], label="</script><img src=x>@@SCRIPT@@")
         output = self.root / "public"
         paths = write_comparison(a, a, output, public=True)
         result = read_json(Path(paths["data"]))
@@ -258,7 +253,7 @@ class RunComparisonTest(unittest.TestCase):
         snapshot["section_groups"].append(
             {
                 "group_id": "subsections",
-                "overarching_question": "Subsections?",
+                "role_statement": "Organizes related findings.",
                 "parent_group_id": None,
                 "members": [{"paper": paper, "unit_id": "ss0001"} for paper in ("a", "b")],
             }

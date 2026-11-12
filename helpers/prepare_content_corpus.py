@@ -10,7 +10,7 @@ import yaml
 
 from pipeline.document import (
     iter_structural_units,
-    strip_questions,
+    strip_annotations,
     validate_document,
 )
 from pipeline.files import read_json, write_json
@@ -50,7 +50,7 @@ def prepare_content_corpus(
     *,
     whole_section: bool = False,
 ) -> int:
-    """Strip questions and optionally collapse each document to one section."""
+    """Strip generated annotations and optionally collapse each document to one section."""
 
     manifest_path = manifest_path.resolve()
     output_dir = output_dir.resolve()
@@ -63,7 +63,7 @@ def prepare_content_corpus(
     content_papers = []
     for paper in papers:
         filename = Path(paper["file"])
-        document = strip_questions(read_json(manifest_path.parent / filename))
+        document = strip_annotations(read_json(manifest_path.parent / filename))
         validate_document(document)
         if whole_section:
             document = flatten_to_single_section(document, paper["title"])

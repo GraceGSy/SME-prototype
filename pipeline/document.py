@@ -1,7 +1,7 @@
 """Canonical document contract shared by extraction, matching, and graphing.
 
 Documents stay in the nested HCI JSON shape. Stable unit IDs are derived from
-array positions so model-generated labels and questions never become identity.
+array positions so model-generated labels and role statements never become identity.
 """
 
 from __future__ import annotations
@@ -11,10 +11,12 @@ from copy import deepcopy
 from dataclasses import dataclass
 from typing import Any, Iterator, Literal
 
-QUESTION_FIELD = "question_this_text_answers"
+ROLE_FIELD = "role_statement"
+LEGACY_QUESTION_FIELD = "question_this_text_answers"
+ANNOTATION_FIELDS = {ROLE_FIELD, LEGACY_QUESTION_FIELD}
 
-_PARAGRAPH_FIELDS = {"paragraph_number", "text", QUESTION_FIELD}
-_SUBSECTION_FIELDS = {"section_name", "section_number", "paragraphs", QUESTION_FIELD}
+_PARAGRAPH_FIELDS = {"paragraph_number", "text", *ANNOTATION_FIELDS}
+_SUBSECTION_FIELDS = {"section_name", "section_number", "paragraphs", *ANNOTATION_FIELDS}
 _SECTION_FIELDS = {*_SUBSECTION_FIELDS, "subsections"}
 
 
@@ -66,15 +68,17 @@ class StructuralUnit:
     evidence: list[dict[str, str]]
 
 
-def strip_questions(value: Any) -> Any:
-    """Remove question metadata without changing document content or order."""
+def strip_annotations(value: Any) -> Any:
+    """Remove generated labels without changing document content or order."""
 
     if isinstance(value, dict):
         return {
-            key: strip_questions(child) for key, child in value.items() if key != QUESTION_FIELD
+            key: strip_annotations(child)
+            for key, child in value.items()
+            if key not in ANNOTATION_FIELDS
         }
     if isinstance(value, list):
-        return [strip_questions(child) for child in value]
+        return [strip_annotations(child) for child in value]
     return value
 
 
@@ -173,8 +177,8 @@ def iter_structural_units(document: list[dict[str, Any]]) -> Iterator[Structural
 def validate_document(
     document: Any,
     *,
-    require_structural_questions: bool = False,
-    require_paragraph_questions: bool = False,
+    require_structural_role_statements: bool = False,
+    require_paragraph_role_statements: bool = False,
 ) -> None:
     """Validate the sole nested document schema used by the active pipeline."""
 
@@ -196,13 +200,13 @@ def validate_document(
                 allowed_fields=_SUBSECTION_FIELDS,
             )
 
-    if require_structural_questions:
+    if require_structural_role_statements:
         for unit in iter_structural_units(document):
-            _validate_question(unit.source, bool(unit.evidence), unit.unit_id)
-    if require_paragraph_questions:
+            _validate_role_statement(unit.source, bool(unit.evidence), unit.unit_id)
+    if require_paragraph_role_statements:
         for unit in iter_structural_units(document):
             for paragraph_index, paragraph in enumerate(unit.own_paragraphs):
-                _validate_question(
+                _validate_role_statement(
                     paragraph,
                     True,
                     paragraph_unit_id(unit.unit_id, paragraph_index),
@@ -233,10 +237,10 @@ def _validate_unit(
             f"{label} paragraph {paragraph_index}",
             paragraph_index,
         )
-    if QUESTION_FIELD in unit:
-        question = unit[QUESTION_FIELD]
-        if question is not None and (not isinstance(question, str) or not question.strip()):
-            raise ValueError(f"{label} has an invalid {QUESTION_FIELD}")
+    if ROLE_FIELD in unit:
+        role_statement = unit[ROLE_FIELD]
+        if role_statement is not None and not is_role_statement(role_statement):
+            raise ValueError(f"{label} has an invalid {ROLE_FIELD}")
 
 
 def _validate_paragraph(
@@ -256,19 +260,29 @@ def _validate_paragraph(
         raise ValueError(f"{label} number must be zero-indexed and contiguous")
     if not isinstance(paragraph.get("text"), str) or not paragraph["text"].strip():
         raise ValueError(f"{label} needs non-empty text")
-    if QUESTION_FIELD in paragraph:
-        _validate_question(paragraph, True, label)
+    if ROLE_FIELD in paragraph:
+        _validate_role_statement(paragraph, True, label)
 
 
-def _validate_question(
+def is_role_statement(value: Any) -> bool:
+    """Catch empty, multiline, and interrogative outputs without guessing their meaning."""
+    return (
+        isinstance(value, str)
+        and bool(value.strip())
+        and len(value.strip().splitlines()) == 1
+        and not value.rstrip().endswith("?")
+    )
+
+
+def _validate_role_statement(
     value: dict[str, Any],
     has_evidence: bool,
     label: str,
 ) -> None:
-    if QUESTION_FIELD not in value:
-        raise ValueError(f"{label} is missing {QUESTION_FIELD}")
-    question = value[QUESTION_FIELD]
-    if has_evidence and (not isinstance(question, str) or not question.strip()):
-        raise ValueError(f"{label} needs a non-empty {QUESTION_FIELD}")
-    if not has_evidence and question is not None:
-        raise ValueError(f"{label} must use null {QUESTION_FIELD} without evidence")
+    if ROLE_FIELD not in value:
+        raise ValueError(f"{label} is missing {ROLE_FIELD}")
+    role_statement = value[ROLE_FIELD]
+    if has_evidence and not is_role_statement(role_statement):
+        raise ValueError(f"{label} needs a non-empty {ROLE_FIELD}")
+    if not has_evidence and role_statement is not None:
+        raise ValueError(f"{label} must use null {ROLE_FIELD} without evidence")

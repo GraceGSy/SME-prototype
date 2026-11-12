@@ -1,4 +1,4 @@
-// Membership comparisons use source IDs only. Question wording never picks a partner.
+// Membership comparisons use source IDs only. Label wording never picks a partner.
 export function reviewRows(data) {
   return Object.keys(data.sources)
     .sort()
@@ -57,8 +57,8 @@ export function filterRows(rows, { filter, paper, search }, sources) {
       row.source.title,
       row.source.text,
       row.source.tag,
-      row.left.question,
-      row.right.question,
+      row.left.label,
+      row.right.label,
       ...peers.flatMap((key) => [key, sources[key].title, sources[key].text]),
     ]
       .join(" ")
@@ -157,11 +157,11 @@ if (typeof document !== "undefined") {
       `${titles[source.paper] || source.paper} / ${sourceLabel(source, report.levels.section.sources)}`;
     $("passage-id").textContent = key;
     $("passage-text").textContent = source.text;
-    const questions = report.levels[level].unit_questions.rows.find((item) => item.unit === key);
-    $("passage-questions").innerHTML = ["left", "right"]
+    const labels = report.levels[level].unit_labels.rows.find((item) => item.unit === key);
+    $("passage-labels").innerHTML = ["left", "right"]
       .map(
         (side) =>
-          `<div><strong>${esc(names[side])}</strong><p>${esc(questions?.[side] || "No saved source question")}</p></div>`,
+          `<div><strong>${esc(names[side])}</strong><p>${esc(labels?.[side] || "No saved source label")}</p></div>`,
       )
       .join("");
     $("passage-dialog").showModal();
@@ -208,9 +208,7 @@ if (typeof document !== "undefined") {
   }
 
   function card(row, index) {
-    const questions = report.levels[level].unit_questions.rows.find(
-      (item) => item.unit === row.key,
-    );
+    const labels = report.levels[level].unit_labels.rows.find((item) => item.unit === row.key);
     const sharedBadge = row.sharedMatches.length
       ? `<span class="badge same">= ${row.sharedMatches.length} shared ${row.sharedMatches.length === 1 ? "match" : "matches"}</span>`
       : "";
@@ -218,7 +216,7 @@ if (typeof document !== "undefined") {
       row.status === "same" && sharedBadge
         ? ""
         : `<span class="badge ${row.status}">${signs[row.status]} ${statusLabels[row.status]}</span>`;
-    return `<article class="diff-card" id="unit-${esc(row.key)}" data-unit="${esc(row.key)}" data-status="${row.status}"><header class="row-heading"><span class="row-number">${String(index + 1).padStart(2, "0")}</span><h3>${esc(sourceLabel(row.source, report.levels.section.sources))}</h3>${sharedBadge}${changeBadge}</header><div class="match-layout"><svg class="match-links" aria-hidden="true"></svg>${column(row, "left")}<span class="link-gap" aria-hidden="true"></span><section class="source-column" aria-label="Source passage"><h4 class="column-label"><span>The same source</span><small>Identical text in both runs</small></h4>${passageBox(row.key, "source")}</section><span class="link-gap" aria-hidden="true"></span>${column(row, "right")}</div><details class="card-details"><summary>Compare questions &amp; parent scope${row.scopeChanged ? " (scope changed)" : ""}</summary><div class="context-columns">${["left", "right"].map((side) => `<div><strong>${esc(names[side])}</strong><p class="context-label">Group question</p><p>${esc(row[side].question || "No saved group question")}</p><p class="context-label">Source question</p><p>${esc(questions?.[side] || "No saved source question")}</p><p class="context-label">Parent scope</p>${row[side].scope.length ? row[side].scope.map((key) => `<code>${esc(scopeLabel(key))}</code>`).join("") : "<p>No parent scope</p>"}</div>`).join("")}</div></details></article>`;
+    return `<article class="diff-card" id="unit-${esc(row.key)}" data-unit="${esc(row.key)}" data-status="${row.status}"><header class="row-heading"><span class="row-number">${String(index + 1).padStart(2, "0")}</span><h3>${esc(sourceLabel(row.source, report.levels.section.sources))}</h3>${sharedBadge}${changeBadge}</header><div class="match-layout"><svg class="match-links" aria-hidden="true"></svg>${column(row, "left")}<span class="link-gap" aria-hidden="true"></span><section class="source-column" aria-label="Source passage"><h4 class="column-label"><span>The same source</span><small>Identical text in both runs</small></h4>${passageBox(row.key, "source")}</section><span class="link-gap" aria-hidden="true"></span>${column(row, "right")}</div><details class="card-details"><summary>Compare labels &amp; parent scope${row.scopeChanged ? " (scope changed)" : ""}</summary><div class="context-columns">${["left", "right"].map((side) => `<div><strong>${esc(names[side])}</strong><p class="context-label">Group label</p><p>${esc(row[side].label || "No saved group label")}</p><p class="context-label">Source label</p><p>${esc(labels?.[side] || "No saved source label")}</p><p class="context-label">Parent scope</p>${row[side].scope.length ? row[side].scope.map((key) => `<code>${esc(scopeLabel(key))}</code>`).join("") : "<p>No parent scope</p>"}</div>`).join("")}</div></details></article>`;
   }
 
   function overview() {
