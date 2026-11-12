@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "SMELTER: live HCI matching (paid APIs)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pipeline.incremental_graph.cli",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "windows": {
+        "python": "${env:LOCALAPPDATA}/Programs/Python/Python311/python.exe"
+      },
+      "args": [
+        "start",
+        "runs/hci-first-three-jev-singletons-20261105-verified/inputs/revision-0001/manifest.yaml",
+        "runs/debug-${input:runName}",
+        "--jev"
+      ]
+    }
+  ],
+  "inputs": [
+    {
+      "id": "runName",
+      "type": "promptString",
+      "description": "New debug run name (existing runs will not be overwritten)",
+      "default": "hci-01"
+    }
+  ]
+}
