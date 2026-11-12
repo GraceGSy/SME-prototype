@@ -25,3 +25,16 @@ prepared corpus. Neither historic run inputs nor in-text citations were renumber
 An older question-annotated variant was removed from the active checkout. It
 remains in Git history and is not a gold standard. See the
 [main README](../../README.md) to run the content-only example.
+
+To generate Claude role statements for the first two papers without matching:
+
+```powershell
+py -3.11 -m pipeline.prepare_roles datasets/hci-five-paper/content/first-two.manifest.yaml output/prepared-runs/hci-two-paper-roles-20261112
+```
+
+The preparer sends the complete cleaned paper once per request as a cacheable
+prefix, followed by one focus address and the role prompt. It never puts previous
+annotations in that prefix. The output manifest references the two annotated
+papers. The response log stores each prefix once plus per-unit responses and
+provider-reported cache usage. Rerun the same command to reuse completed answers;
+do not launch two writers for the same output directory.
