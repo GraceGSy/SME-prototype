@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="en">
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Run trace | Question Atlas</title>
+  <link rel="icon" href="data:," />
+  <style>
+    :root {
+      --ink: #192e32;
+      --muted: #516869;
+      --line: #c4d0c9;
+      --paper: #fbfbf5;
+      --teal: #005d55;
+      --wash: #e4efe8;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: linear-gradient(105deg, #edf1e9, var(--paper) 60%);
+      font:
+        16px/1.45 "Segoe UI",
+        sans-serif;
+    }
+    header,
+    main,
+    footer {
+      max-width: 1550px;
+      margin: auto;
+      padding: 18px clamp(14px, 3vw, 48px);
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 24px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+    }
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0 0 8px;
+    }
+    h1,
+    h2 {
+      font-family: Georgia, serif;
+      font-weight: normal;
+    }
+    h1 {
+      font-size: 40px;
+      line-height: 1.1;
+    }
+    h2 {
+      font-size: 28px;
+    }
+    .eyebrow,
+    small {
+      font:
+        12px/1.5 Consolas,
+        monospace;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+    }
+    .eyebrow {
+      text-transform: uppercase;
+    }
+    label {
+      display: grid;
+      gap: 4px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .bar {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    button,
+    select,
+    input {
+      font: inherit;
+      color: inherit;
+      border: 1px solid var(--line);
+      padding: 7px 10px;
+      border-radius: 4px;
+      background: var(--paper);
+      max-width: 100%;
+    }
+    button,
+    select,
+    summary {
+      cursor: pointer;
+    }
+    button:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+    button:hover:not(:disabled),
+    .row:hover {
+      background: var(--wash);
+    }
+    button[aria-pressed="true"],
+    .row[aria-current="true"] {
+      color: #fff;
+      background: var(--teal);
+    }
+    button[aria-current="true"] small {
+      color: #e7f2ec;
+    }
+    a {
+      color: var(--teal);
+    }
+    #summary {
+      color: var(--muted);
+      margin: 4px 0 12px;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(285px, 31%) minmax(0, 1fr);
+      gap: 22px;
+      margin-top: 14px;
+    }
+    aside,
+    article {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 15px;
+      min-width: 0;
+    }
+    aside {
+      align-self: start;
+    }
+    #search {
+      width: 100%;
+    }
+    #list {
+      margin: 10px -15px;
+      max-height: 56vh;
+      overflow: auto;
+    }
+    .row {
+      display: block;
+      width: 100%;
+      text-align: left;
+      border: 0;
+      border-top: 1px solid var(--line);
+      border-radius: 0;
+      padding: 8px 14px;
+      overflow-wrap: anywhere;
+    }
+    .row small {
+      display: block;
+    }
+    .heading {
+      overflow-wrap: anywhere;
+    }
+    .tag {
+      font:
+        13px Consolas,
+        monospace;
+      color: var(--teal);
+      margin-bottom: 6px;
+    }
+    .hint {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .result {
+      border-left: 3px solid var(--teal);
+      background: var(--wash);
+      padding: 11px 14px;
+      margin: 12px 0;
+      overflow-wrap: anywhere;
+    }
+    details {
+      border-top: 1px solid var(--line);
+      padding: 8px 0;
+    }
+    summary {
+      font-weight: 600;
+    }
+    pre,
+    .prose {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      max-height: 440px;
+      overflow: auto;
+      background: #f0f3ec;
+      padding: 12px;
+      border-radius: 4px;
+    }
+    pre {
+      font:
+        13px/1.5 Consolas,
+        monospace;
+    }
+    .prose {
+      font:
+        15px/1.5 Georgia,
+        serif;
+    }
+    h3 {
+      font-size: 17px;
+      margin-top: 18px;
+    }
+    #scrub {
+      flex: 1;
+      min-width: 110px;
+      accent-color: var(--teal);
+    }
+    #player {
+      padding: 12px 0;
+    }
+    #problem {
+      color: #823d12;
+    }
+    footer {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    [hidden] {
+      display: none !important;
+    }
+    @media (max-width: 780px) {
+      .layout {
+        display: block;
+      }
+      article {
+        margin-top: 12px;
+      }
+      #list {
+        max-height: 26vh;
+      }
+      header {
+        gap: 10px;
+      }
+      header .bar {
+        min-width: 0;
+        max-width: 100%;
+      }
+      select {
+        max-width: 87vw;
+      }
+      h1 {
+        font-size: 32px;
+      }
+    }
+  </style>
+  <header>
+    <div>
+      <div class="eyebrow">Question Atlas / Local inspector</div>
+      <h1>Run trace</h1>
+    </div>
+    <div class="bar">
+      <label>Run<select id="run"></select></label><label>Revision<select id="rev"></select></label
+      ><button id="refresh">Refresh</button>
+    </div>
+  </header>
+  <main>
+    <p id="summary" role="status">Reading saved runs...</p>
+    <p id="problem" role="alert"></p>
+    <nav class="bar" aria-label="Trace views">
+      <button data-mode="decisions">Decisions</button
+      ><button data-mode="events">Graph replay</button
+      ><button data-mode="receipts">API archive</button>
+    </nav>
+    <div class="layout">
+      <aside>
+        <label
+          >Find a record<input type="search" id="search" placeholder="Paper, stage, outcome, ID..."
+        /></label>
+        <div id="list" aria-label="Records"></div>
+        <div class="bar">
+          <button id="prevPage" aria-label="Previous page">&lt;</button><small id="range"></small
+          ><button id="nextPage" aria-label="Next page">&gt;</button>
+        </div>
+      </aside>
+      <article>
+        <div class="bar" id="player" hidden>
+          <button id="prev">Previous</button><button id="play">Play</button
+          ><button id="next">Next</button><label for="scrub" id="stepLabel">Step</label
+          ><input id="scrub" type="range" min="0" value="0" /><small id="position"></small>
+        </div>
+        <div id="detail" aria-label="Selected record">Select a run to inspect.</div>
+      </article>
+    </div>
+  </main>
+  <footer>
+    Read-only. Replay steps through recorded decisions or graph events. It does not call a model or
+    change the run.
+  </footer>
+  <script type="module">
+    const $ = (id) => document.getElementById(id),
+      el = (tag, text, cls) => {
+        const n = document.createElement(tag);
+        if (text != null) n.textContent = text;
+        if (cls) n.className = cls;
+        return n;
+      };
+    const pretty = (x) =>
+      typeof x === "string" ? x : (JSON.stringify(x, null, 2) ?? "Not recorded");
+    const words = (x) => String(x ?? "").replaceAll("_", " ");
+    const link = (label, fn) => {
+      const b = el("button", label);
+      b.onclick = fn;
+      return b;
+    };
+    const fold = (label, body, open = false) => {
+      const d = el("details");
+      d.open = open;
+      d.append(el("summary", label), body);
+      return d;
+    };
+    const json = (label, value, open = false) => fold(label, el("pre", pretty(value)), open);
+    const hint = (t) => el("p", t, "hint");
+    const modes = {
+      decisions:
+        "Recorded judgments in journal order. A directional choice is not necessarily an accepted match.",
+      events: "Graph events in recorded order. Inspect the group as it stood after each event.",
+      receipts:
+        "All saved provider records in the run cache, including errors and inherited records. These are not a count of calls billed to this revision.",
+    };
+    let runs = [],
+      data,
+      mode = "decisions",
+      selection = "",
+      page = 0,
+      visible = [],
+      timer = null,
+      runToken = 0,
+      detailToken = 0;
+    const size = 50,
+      params = new URLSearchParams(location.search);
+    const base = () =>
+      "/trace/" + encodeURIComponent($("run").value) + "/" + encodeURIComponent($("rev").value);
+    async function get(url) {
+      const r = await fetch(url, { cache: "no-store" });
+      if (!r.ok) throw Error("Could not read saved data (HTTP " + r.status + ").");
+      return r.json();
+    }
+    function stop() {
+      clearInterval(timer);
+      timer = null;
+      $("play").textContent = "Play";
+    }
+    function revOptions(preferred) {
+      const rows = runs.filter((r) => r.run === $("run").value);
+      $("rev").replaceChildren(...rows.map((r) => new Option(r.rev + " / " + r.status, r.rev)));
+      if (rows.some((r) => r.rev === preferred)) $("rev").value = preferred;
+    }
+    async function load(start = params.get("record")) {
+      stop();
+      const t = ++runToken;
+      ++detailToken;
+      data = null;
+      $("list").replaceChildren();
+      $("detail").textContent = "Reading journals and saved requests...";
+      $("problem").textContent = "";
+      $("summary").textContent = "Loading revision...";
+      $("player").hidden = true;
+      try {
+        const result = await get(base());
+        if (t !== runToken) return;
+        data = result;
+        $("summary").textContent =
+          data.decisions.length +
+          " decisions  /  " +
+          data.events.length +
+          " graph events  /  " +
+          data.receipts.length +
+          " run-wide provider records";
+        if (data.sample_note) $("summary").append(document.createElement("br"), data.sample_note);
+        if (data.failure)
+          $("problem").textContent =
+            "This revision failed: " +
+            (data.failure.message || data.failure.error || pretty(data.failure));
+        showMode(mode, start);
+      } catch (e) {
+        if (t === runToken) {
+          $("problem").textContent = e.message;
+          $("detail").textContent = "Trace unavailable.";
+        }
+      }
+    }
+    function showMode(next, key) {
+      if (!data) return;
+      stop();
+      mode = next;
+      page = 0;
+      selection = "";
+      $("search").value = "";
+      document
+        .querySelectorAll("[data-mode]")
+        .forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.mode === mode)));
+      $("search").placeholder =
+        mode === "receipts" ? "Provider, response ID, unlinked..." : "Paper, stage, outcome, ID...";
+      filter(key);
+    }
+    function filter(key) {
+      if (!data) return;
+      stop();
+      const q = $("search").value.trim().toLowerCase();
+      visible = data[mode].filter(
+        (r) =>
+          Object.values(r)
+            .join(" ")
+            .replaceAll("_", " ")
+            .toLowerCase()
+            .includes(q.replaceAll("_", " ")) ||
+          (mode === "receipts" && (r.linked ? "linked" : "unlinked").startsWith(q)),
+      );
+      const idx = visible.findIndex((r) => r.id === key);
+      page = idx < 0 ? 0 : Math.floor(idx / size);
+      select(idx < 0 ? visible[0]?.id : key);
+    }
+    function paint() {
+      const count = visible.length,
+        offset = page * size;
+      $("range").textContent = count
+        ? offset + 1 + "-" + Math.min(offset + size, count) + " of " + count
+        : "No results";
+      $("prevPage").disabled = !page;
+      $("nextPage").disabled = offset + size >= count;
+      $("list").replaceChildren(
+        ...visible.slice(offset, offset + size).map((r) => {
+          const b = link("", () => {
+            stop();
+            select(r.id);
+          });
+          b.className = "row";
+          b.setAttribute("aria-current", String(r.id === selection));
+          const main =
+            mode === "decisions"
+              ? words(r.stage) + " / " + r.status
+              : mode === "events"
+                ? words(r.status)
+                : r.provider + " / " + r.title;
+          b.append(
+            el("span", main),
+            el(
+              "small",
+              (r.paper ? "Paper " + r.paper + "  |  " : "") +
+                r.id +
+                (mode === "receipts" ? "  |  " + (r.linked ? "linked" : "unlinked") : ""),
+            ),
+            el("small", mode !== "receipts" ? r.title : r.status),
+          );
+          return b;
+        }),
+      );
+      const i = visible.findIndex((r) => r.id === selection);
+      $("player").hidden = mode === "receipts" || i < 0;
+      $("stepLabel").textContent = mode === "events" ? "Event" : "Decision";
+      $("prev").disabled = i <= 0;
+      $("next").disabled = i >= count - 1;
+      $("scrub").max = Math.max(0, count - 1);
+      $("scrub").value = i;
+      $("position").textContent = i + 1 + " / " + count;
+    }
+    function jump(id) {
+      const m = id.startsWith("event-")
+        ? "events"
+        : id.startsWith("receipt-")
+          ? "receipts"
+          : "decisions";
+      showMode(m, id);
+    }
+    function references(ids) {
+      const wrap = el("div", null, "bar");
+      for (const id of new Set(ids)) wrap.append(link(id, () => jump(id)));
+      return wrap;
+    }
+    function readable(sent) {
+      if (!sent) return "";
+      if (typeof sent.state === "string") return sent.state;
+      const messages = sent.messages || sent.input;
+      if (Array.isArray(messages))
+        return messages
+          .flatMap((m) =>
+            typeof m.content === "string"
+              ? [m.content]
+              : (m.content || []).map((b) => b.text).filter(Boolean),
+          )
+          .join("\n\n");
+      return sent.rendered_user || "";
+    }
+    function renderCall(c, open) {
+      const box = el("div");
+      box.append(hint(c.capture));
+      const t = readable(c.sent);
+      if (c.sent?.questions) box.append(json("Question sent to Jev", c.sent.questions, true));
+      if (t) box.append(fold("Prompt text", el("div", t, "prose"), true));
+      box.append(
+        json("Request fields", c.sent, !t && !c.sent?.questions),
+        json("Returned", c.returned, true),
+      );
+      if (c.options) box.append(json("Candidate labels and graph IDs", c.options));
+      if (c.receipts?.length) box.append(hint("Matching provider records"), references(c.receipts));
+      return fold(c.provider + " / " + words(c.phase) + (c.cached ? " / cached" : ""), box, open);
+    }
+    function explanation(e) {
+      if (e.action === "match_recorded")
+        return words(e.direction) + ": " + e.source_id + " selected " + (e.target_id || "no match");
+      if (e.action === "question_generated") return e.question;
+      if (e.action === "accepted_match_explained") return "Accepted group: " + e.node_id;
+      return [e.node_id, e.target_node_id, e.member?.unit_id, e.title].filter(Boolean).join(" / ");
+    }
+    async function select(key) {
+      const token = ++detailToken;
+      selection = key || "";
+      const i = visible.findIndex((r) => r.id === key);
+      if (i >= 0) page = Math.floor(i / size);
+      paint();
+      const query = new URLSearchParams({
+        run: $("run").value,
+        revision: $("rev").value,
+        view: mode,
+      });
+      if (key) query.set("record", key);
+      history.replaceState(null, "", "?" + query);
+      const panel = $("detail");
+      if (i < 0) {
+        panel.textContent = "No records match this view or search.";
+        return;
+      }
+      const row = visible[i];
+      panel.textContent = "Loading record...";
+      try {
+        const d = await get(base() + "/" + key);
+        if (token !== detailToken) return;
+        panel.replaceChildren(
+          el("div", key + (row.paper ? "  /  Paper " + row.paper : ""), "tag"),
+          el(
+            "h2",
+            mode === "decisions"
+              ? words(row.stage)
+              : mode === "events"
+                ? words(row.status)
+                : row.provider + " request",
+            "heading",
+          ),
+          hint(modes[mode]),
+        );
+        if (mode === "decisions") {
+          panel.append(
+            el("small", row.title, "heading"),
+            el(
+              "div",
+              row.status +
+                "  /  " +
+                (d.result?.question_this_text_answers ||
+                  d.result?.target_id ||
+                  d.result?.basis ||
+                  row.provider),
+              "result",
+            ),
+            json("Normalized result", d.result),
+          );
+          panel.append(el("h3", "What this decision affected"));
+          const stage = d.stage_result || {};
+          if (stage.written) {
+            const w = stage.written;
+            panel.append(
+              el(
+                "p",
+                "Saved the question on " +
+                  (w.paragraph_id || w.section_id || w.group_id || "the stage record") +
+                  ".",
+              ),
+              json("Saved stage output", w),
+            );
+          }
+          if (stage.group)
+            panel.append(
+              el("p", "After reconciliation, " + stage.unit + " belonged to " + stage.group + "."),
+            );
+          if (stage.opposite) {
+            panel.append(
+              hint(
+                "The chosen candidate voted for " +
+                  (stage.opposite.target_id || "no match") +
+                  " in the opposite direction.",
+              ),
+              references([stage.opposite.attempt_id]),
+            );
+          }
+          if (stage.incoming?.length)
+            panel.append(
+              hint("Other candidates that voted for this source"),
+              references(stage.incoming.map((v) => v.attempt_id)),
+            );
+          if (!d.effects.length && !stage.written)
+            panel.append(
+              hint(
+                "No graph event cites this decision. See the request key above for the unit it addressed.",
+              ),
+            );
+          for (const e of d.effects) {
+            panel.append(
+              link(words(e.action) + " / " + e.event_id, () => jump(e.event_id)),
+              hint(explanation(e)),
+            );
+          }
+          panel.append(
+            el(
+              "h3",
+              row.provider === "deterministic"
+                ? "Python rule (no API call)"
+                : row.provider === "manual_recovery"
+                  ? "Saved manual recovery"
+                  : "Requests and responses",
+            ),
+          );
+          d.calls.forEach((c, i) => panel.append(renderCall(c, i === 0)));
+          panel.append(
+            json("Model and settings", d.model),
+            json("Eligible candidates", d.candidates),
+          );
+        } else if (mode === "events") {
+          panel.append(
+            el("div", explanation(d.event) || row.title, "result"),
+            hint("After this event: " + d.groups + " groups, " + d.edges + " edges."),
+            el("h3", "Linked decisions"),
+          );
+          panel.append(
+            d.attempts.length
+              ? references(d.attempts)
+              : hint("The journal records no decision ID for this event."),
+          );
+          if (Object.keys(d.affected).length)
+            panel.append(json("Group membership at this step", d.affected, true));
+          panel.append(json("Recorded event", d.event));
+        } else {
+          if (d.error) panel.append(el("div", "Provider error: " + d.error, "result"));
+          if (d.rejection)
+            panel.append(el("div", "Output rejected: " + d.rejection.reason, "result"));
+          panel.append(
+            el("h3", "Linked decisions in this revision"),
+            d.attempts.length
+              ? references(d.attempts)
+              : hint("No saved decision links to this record in this revision."),
+          );
+          panel.append(renderCall({ ...d, phase: "saved provider record" }, true));
+        }
+      } catch (e) {
+        if (token === detailToken) {
+          stop();
+          panel.textContent = e.message;
+        }
+      }
+    }
+    function shift(n) {
+      const i = visible.findIndex((r) => r.id === selection) + n;
+      if (i < 0 || i >= visible.length) {
+        stop();
+        return;
+      }
+      select(visible[i].id);
+    }
+    $("play").onclick = () => {
+      if (timer) {
+        stop();
+        return;
+      }
+      if (selection === visible.at(-1)?.id) select(visible[0].id);
+      $("play").textContent = "Pause";
+      timer = setInterval(() => shift(1), 1400);
+    };
+    $("prev").onclick = () => {
+      stop();
+      shift(-1);
+    };
+    $("next").onclick = () => {
+      stop();
+      shift(1);
+    };
+    $("scrub").oninput = () => {
+      stop();
+      select(visible[+$("scrub").value].id);
+    };
+    $("nextPage").onclick = () => {
+      stop();
+      select(visible[(page + 1) * size].id);
+    };
+    $("prevPage").onclick = () => {
+      stop();
+      select(visible[(page - 1) * size].id);
+    };
+    document
+      .querySelectorAll("[data-mode]")
+      .forEach((b) => (b.onclick = () => showMode(b.dataset.mode)));
+    $("search").oninput = () => filter();
+    $("run").onchange = () => {
+      revOptions();
+      load(null);
+    };
+    $("rev").onchange = () => load(null);
+    async function init(refresh = false) {
+      try {
+        runs = await get("/trace/runs");
+        if (!runs.length) throw Error("No local run journals found.");
+        const initial = refresh ? $("run").value : params.get("run"),
+          rev = refresh ? $("rev").value : params.get("revision");
+        const names = [...new Set(runs.map((r) => r.run))];
+        $("run").replaceChildren(
+          ...names.map((n) => new Option(runs.find((r) => r.run === n).label, n)),
+        );
+        if (names.includes(initial)) $("run").value = initial;
+        revOptions(rev);
+        if (!refresh && Object.hasOwn(modes, params.get("view"))) mode = params.get("view");
+        await load(refresh ? selection : params.get("record"));
+      } catch (e) {
+        $("problem").textContent = e.message;
+      }
+    }
+    $("refresh").onclick = () => init(true);
+    init();
+  </script>
+</html>

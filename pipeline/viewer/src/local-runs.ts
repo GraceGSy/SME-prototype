@@ -78,6 +78,12 @@ export async function localDatasetBase(): Promise<URL | null> {
     return label;
   }
   form.append(labeled("Run", runSelect));
+  if (!document.documentElement.hasAttribute("data-public-catalog")) {
+    const trace = document.createElement("a");
+    trace.href = "/trace?" + new URLSearchParams({ run: run.id, revision });
+    trace.textContent = "Trace this run";
+    form.append(trace);
+  }
   if (run.revisions.length > 1) form.append(labeled("Snapshot", revisionSelect));
   document.querySelector("header")!.after(form);
   // Resolve latest once so every file in this load belongs to the same snapshot.

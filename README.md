@@ -60,6 +60,14 @@ For the local viewer with source text, open `http://127.0.0.1:8073/`, select the
 use Question Groups, Paper Map, or Graphical Explorer. Serving the viewer makes
 no model calls. The server exposes viewer data, not keys or judgment caches.
 Graphical Explorer arranges roles as a compact top-to-bottom pattern board.
+
+For a run breakdown, open [Run trace](http://127.0.0.1:8073/trace) on the same server.
+Choose a run and revision (including unfinished runs). **Decisions** links prompts,
+replies and cache hits to the events that actually cite them. **Graph replay** lets you
+step through membership changes without calling a model. **API archive** includes
+run-wide provider records, even rejected replies and records inherited from an earlier run.
+For older Claude calls, the archive shows the saved messages and settings, not a reconstructed
+SDK request. The trace and its source text are never copied into the public viewer package.
 Nearby blocks show options at the same reading stage; frequent options sit
 nearer the center of each row. Coverage badges count distinct documents.
 Select a paper to reveal its route, including skipped rows and reordered roles.

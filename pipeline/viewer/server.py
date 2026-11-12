@@ -86,6 +86,8 @@ def handler_for(catalog):
         def do_GET(self):
             try:
                 path = urlsplit(self.path).path
+                if path == "/trace" or path.startswith("/trace/"):
+                    return self.serve_trace(path)
                 if path == "/local.json":
                     return self.send_json(catalog.entries())
                 assets = {"/": VIEWER / "index.html", "/index.html": VIEWER / "index.html"}
@@ -111,6 +113,32 @@ def handler_for(catalog):
                 self.send_file(file)
             except (ValueError, OSError, DatasetValidationError) as error:
                 self.send_error(400, str(error))
+
+        def serve_trace(self, path):
+            from . import trace
+
+            if self.headers.get("Host", "").split(":")[0] not in {"localhost", "127.0.0.1"}:
+                return self.send_error(403)
+            if path in {"/trace", "/trace/"}:
+                return self.send_file(VIEWER / "trace.html")
+            if path == "/trace/runs":
+                return self.send_json(trace.revisions(catalog.root))
+            match = re.fullmatch(
+                r"/trace/([A-Za-z0-9_-]+)/(revision-[0-9]{4,})"
+                r"(?:/((?:attempt|event)-[0-9]+|receipt-[a-f0-9]{20}))?",
+                path,
+            )
+            if not match:
+                return self.send_error(404)
+            run, rev, key = match.groups()
+            try:
+                data = trace.load(catalog.root, run, rev)
+                if not key:
+                    return self.send_json(data.index())
+                detail = {"attempt": data.decision, "event": data.event, "receipt": data.receipt}
+                return self.send_json(detail[key.split("-")[0]](key))
+            except KeyError:
+                return self.send_error(404, "Unknown trace record")
 
         def send_json(self, value):
             self.send_bytes(json.dumps(value).encode("utf-8"), "application/json")
