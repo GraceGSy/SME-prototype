@@ -322,6 +322,18 @@ header h1 {
   background: #fff;
   color: #343a40;
 }
+.local-runs label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 600;
+}
+html[data-public-catalog] #tutorialWelcome,
+html[data-public-catalog] #restartTutorial {
+  display: none;
+}
 #legend {
   font-size: 10.5px;
   color: #868e96;

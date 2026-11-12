@@ -50,7 +50,13 @@ npm run build:viewer
 python -m pipeline.viewer.server runs --port 8073
 ```
 
-Open `http://127.0.0.1:8073/`, select the run and a completed revision, then
+For the public view, use the [combined run viewer](https://question-atlas-runs.vercel.app/).
+Choose a run by corpus, method, and date; runs with several completed revisions also offer a snapshot selector.
+To rebuild that site after building the viewer, use
+`python -m pipeline.viewer.package_catalog runs site/run-library` with a new, empty output directory.
+Both Reuters runs include the five articles' paragraph text. All other public runs omit source text.
+
+For the local viewer with source text, open `http://127.0.0.1:8073/`, select the run and a completed revision, then
 use Question Groups, Paper Map, or Graphical Explorer. Serving the viewer makes
 no model calls. The server exposes viewer data, not keys or judgment caches.
 Graphical Explorer arranges roles as a compact top-to-bottom pattern board.

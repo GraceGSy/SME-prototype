@@ -9,10 +9,61 @@ from urllib.request import urlopen
 
 from test_viewer_dataset import make_snapshot_dataset, write_json
 
+from pipeline.viewer.package_catalog import package_catalog
 from pipeline.viewer.server import RunCatalog, handler_for
 
 
 class ViewerServerTest(unittest.TestCase):
+    def test_public_reuters_text_is_limited_to_approved_revisions(self):
+        run = "reuters-technology-jev-singletons-20261105"
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "runs"
+            for rev in ("revision-0001", "revision-0002"):
+                revision = root / run / "revisions" / rev
+                make_snapshot_dataset(revision / "dataset")
+                write_json(revision / "summary.json", {"paper_count": 2})
+            site = Path(directory) / "site"
+            [entry] = package_catalog(root, site)
+            self.assertEqual(entry["sourceTextRevisions"], ["revision-0001"])
+            published = site / "public/runs" / run
+            original = root / run / "revisions/revision-0001/dataset/paper_a.json"
+            self.assertEqual(
+                json.loads((published / "revision-0001/paper_a.json").read_text()),
+                json.loads(original.read_text()),
+            )
+            self.assertNotIn("Shared A", (published / "revision-0002/paper_a.json").read_text())
+
+    def test_public_catalog_publishes_only_chosen_completed_snapshots_without_prose(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "runs"
+            summary = {"paper_count": 2}
+            for name, rev in (("example", 1), ("example", 2), ("example", 3), ("private", 1)):
+                revision = root / name / "revisions" / f"revision-{rev:04d}"
+                make_snapshot_dataset(revision / "dataset")
+                write_json(revision / "summary.json", summary)
+            write_json(root / "example/revisions/revision-0002/failure.json", {})
+            site = Path(directory) / "site"
+            catalog = package_catalog(root, site, {"example": "HCI | Test run"})
+            self.assertEqual([e["id"] for e in catalog], ["example"])
+            self.assertEqual(catalog[0]["revisions"], ["revision-0001", "revision-0003"])
+            self.assertIn("2 documents", catalog[0]["revisionLabels"]["revision-0003"])
+            self.assertFalse((site / "public/runs/private").exists())
+            for rev in catalog[0]["revisions"]:
+                dest = site / "public/runs/example" / rev
+                src = root / "example/revisions" / rev / "dataset"
+                self.assertEqual(
+                    json.loads((dest / "final_snapshot.json").read_text()),
+                    json.loads((src / "final_snapshot.json").read_text()),
+                )
+                paper = json.loads((dest / "paper_a.json").read_text())
+                self.assertTrue(
+                    all(
+                        u["text"] == "Source text is not included in this results viewer."
+                        for u in paper["sections"] + paper["paragraphs"]
+                    )
+                )
+                self.assertNotIn("Shared A", (dest / "paper_a.json").read_text())
+
     def test_http_serves_validated_export_but_not_private_files(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
