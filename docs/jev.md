@@ -640,6 +640,21 @@ their calls carry `long_context: true`; a long-context size rejection is cached 
 existing fallback apply (member-sections-only yes/no, or half-pool ranking). The
 setting is in the policy hash only when enabled, so earlier runs keep their hashes.
 
+### Close calls (opt-in, Nov 18, 2026)
+
+`start --close-call-margin 0.10` (config `close_call_margin`) treats a Jev ranking as
+close when another option's probability is within 0.10 of the top one. Jev's
+`confidence` is not used: it depends on the number of options and ignores the
+runner-up. A close ranking is asked again with only the close options, in their
+original order (call key suffix `:close`). If the re-ask is decisive, its pick stands;
+if it is still close, or every option was already close (so the repeat would be the
+identical, cached request), the source gets no pick. A held new section starts on its
+own, and singleton recovery tries it again after each later paper. Only the final
+ranking of a split pool can be held; a close half still sends its winner on. Every
+close ranking is a `close_call` event, and `reports/close-calls.json` lists them
+with both probability sets, the outcome, and whether each held unit is still alone
+at the end of the run. The setting is in the policy hash only when set.
+
 Too many candidates or a real size limit triggers recursive half-pool selection,
 up to five retained candidate IDs from each half, then a fresh gate and, if needed, ranking on the shortlist. A negative half contributes nothing.
 Probabilities are only ranked within their own response distribution. A single

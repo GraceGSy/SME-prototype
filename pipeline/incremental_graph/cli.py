@@ -67,6 +67,12 @@ def main() -> None:
         action="store_true",
         help="Experimental: admit one-way sections beside a reciprocal same-paper core",
     )
+    start.add_argument(
+        "--close-call-margin",
+        type=float,
+        help="Jev: if a ranking's top options are within this probability (e.g. 0.10), "
+        "re-ask among them; if still close, leave the source unassigned",
+    )
     add = commands.add_parser("add", help="Append prepared papers in manifest order")
     add.add_argument("manifest", type=Path)
     add.add_argument("run_dir", type=Path)
@@ -103,6 +109,7 @@ def main() -> None:
             sections_only=args.sections_only,
             section_fan_in=args.section_fan_in,
             jev_long_context_retry=args.jev_long_context,
+            close_call_margin=args.close_call_margin,
         )
     elif args.command == "add":
         result = add_papers(args.manifest, args.run_dir)

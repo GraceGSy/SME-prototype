@@ -33,6 +33,7 @@ from .models import (
     PipelineConfig,
     StageConfig,
 )
+from .close_calls import close_options, write_close_call_report
 from .singleton_report import write_singleton_report
 
 PAIRWISE_FROM_PAPER = 3
@@ -101,6 +102,10 @@ class IncrementalGraphRunner:
             self._recurse_reparented_sections(insertion)
             self._run_phase("paragraph", insertion)
         self.journal.finalize()
+        if self.config.close_call_margin:
+            write_close_call_report(
+                self.journal.events, self.role_graph, self.revision_dir / "reports"
+            )
         if sections_only:
             checkpoint = {
                 "completed_phase": "structural",
@@ -760,7 +765,7 @@ class IncrementalGraphRunner:
         context: dict[str, Any],
         inherit_structural_match: bool = False,
     ) -> MatchDecision:
-        attempt_id, result = self._vote(
+        attempt_id, result = self._ranked_vote(
             stage,
             insertion,
             direction=direction,
@@ -823,6 +828,87 @@ class IncrementalGraphRunner:
             else self.judge.judge(request)
         )
         attempt_id = self.journal.attempt(request, result)
+        return attempt_id, result
+
+    def _ranked_vote(
+        self,
+        stage: StageConfig,
+        insertion: InsertionState,
+        *,
+        resolve_close_calls: bool = True,
+        **vote: Any,
+    ) -> tuple[str, JudgmentResult]:
+        """Vote; if the ranking is close, re-ask among the close options, then hold."""
+        attempt_id, result = self._vote(stage, insertion, **vote)
+        margin = self.config.close_call_margin
+        jev = result.raw_response.get("jev") if margin and resolve_close_calls else None
+        ranking = jev.get("choice") if isinstance(jev, dict) else None
+        if not ranking:
+            return attempt_id, result
+        close = close_options(ranking["probabilities"], margin)
+        if len(close) < 2:
+            return attempt_id, result
+        allowed = vote["allowed_ids"]
+        record: dict[str, Any] = {
+            "margin": margin,
+            "options": len(ranking["probabilities"]),
+            "first": {
+                "attempt_id": attempt_id,
+                "probabilities": ranking["probabilities"],
+                "close_ids": close,
+            },
+        }
+        if len(close) < len(ranking["probabilities"]):
+            # Keep the original candidate order; only the far options are dropped.
+            keep = [i for i in allowed if i in close]
+            candidates = [
+                c for i, c in zip(allowed, vote["context"]["candidates"], strict=True) if i in close
+            ]
+            attempt_id, result = self._vote(
+                stage,
+                insertion,
+                **{
+                    **vote,
+                    "allowed_ids": keep,
+                    "context": {**vote["context"], "candidates": candidates},
+                    "rank_only": True,
+                    "key_suffix": vote.get("key_suffix", "") + ":close",
+                },
+            )
+            ranking = result.raw_response["jev"]["choice"]
+            still_close = close_options(ranking["probabilities"], margin)
+            record["reask"] = {
+                "attempt_id": attempt_id,
+                "probabilities": ranking["probabilities"],
+                "close_ids": still_close,
+            }
+            if len(still_close) < 2:
+                record["outcome"] = "resolved"
+        record.setdefault("outcome", "held")
+        if record["outcome"] == "held":
+            result = result.model_copy(
+                update={"normalized": {**result.normalized, "target_id": None}}
+            )
+        direction = vote["direction"]
+        source_id = vote["source_id"]
+        unit: dict[str, Any] = {}
+        if direction == "new_to_group":
+            unit = {"paper_id": insertion.paper.paper_id, "unit_id": source_id}
+        elif direction == "singleton_to_group":
+            member = self.role_graph.members(source_id)[0]
+            unit = {"paper_id": member["paper_id"], "unit_id": member["unit_id"]}
+        scope = vote["context"]["scope"]
+        self.journal.event(
+            "close_call",
+            paper_index=insertion.paper_index,
+            level=scope["level"],
+            parent_id=scope.get("parent_group_id"),
+            direction=direction,
+            source_id=source_id,
+            target_id=result.normalized.get("target_id"),
+            **unit,
+            **record,
+        )
         return attempt_id, result
 
     def _record_decision(
@@ -1029,17 +1115,20 @@ class IncrementalGraphRunner:
         focus: dict[str, Any],
         option_context: Callable[[str], dict[str, Any]],
         suffix: str = ":choice",
-    ) -> tuple[str, str]:
+        resolve_close_calls: bool = True,
+    ) -> tuple[str | None, str]:
         """Rank every passed option at once; halve the pool only if Jev rejects its size.
 
-        Each half's winner goes to a final ranking. No source text is truncated.
+        Each half's winner goes to a final ranking. No source text is truncated. Only the
+        final ranking can be held as a close call; a close half still sends its winner on.
         """
         if len(passed) == 1:
             return passed[0], ""  # A half with one option needs no question.
         try:
-            attempt_id, result = self._vote(
+            attempt_id, result = self._ranked_vote(
                 stage,
                 insertion,
+                resolve_close_calls=resolve_close_calls,
                 direction=direction,
                 source_id=source_id,
                 allowed_ids=passed,
@@ -1068,6 +1157,7 @@ class IncrementalGraphRunner:
                 focus=focus,
                 option_context=option_context,
                 suffix=f"{suffix}:{index}",
+                resolve_close_calls=False,
             )[0]
             for index, half in enumerate((passed[:middle], passed[middle:]))
         )
@@ -1081,6 +1171,7 @@ class IncrementalGraphRunner:
             focus=focus,
             option_context=option_context,
             suffix=f"{suffix}:final",
+            resolve_close_calls=resolve_close_calls,
         )
 
     def _reconcile(

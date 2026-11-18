@@ -133,11 +133,16 @@ class PipelineConfig(StrictModel):
     jev: JevSettings | None = None
     # Experimental: let one-way sections join beside a reciprocal same-paper core.
     section_fan_in: bool = False
+    # Jev only: when another option is within this probability of the top one, re-ask
+    # among just those options; if still close, leave the source without a pick.
+    close_call_margin: float | None = Field(default=None, gt=0, lt=1)
     stages: list[StageConfig]
 
     def result_settings(self) -> dict:
         """Scientific configuration shared by policy checks and retry validation."""
         settings = self.model_dump(mode="json")
+        if settings["close_call_margin"] is None:
+            settings.pop("close_call_margin")  # Keep saved runs' settings unchanged.
         settings["model"] = self.model.result_settings()
         settings["jev"] = self.jev.result_settings() if self.jev else None
         for stage in settings["stages"]:

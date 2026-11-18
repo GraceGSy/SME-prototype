@@ -142,6 +142,7 @@ def start_graph(
     sections_only: bool = False,
     section_fan_in: bool = False,
     jev_long_context_retry: bool = False,
+    close_call_margin: float | None = None,
 ) -> dict[str, Any]:
     if (provider is None) != (model is None):
         raise ValueError("Pass provider and model together, or use the saved configuration")
@@ -172,6 +173,12 @@ def start_graph(
     _set_execution_limits(config, jev_max_calls, max_api_responses)
     if section_fan_in:
         config.section_fan_in = True
+    if close_call_margin is not None:
+        if not config.jev:
+            raise ValueError("--close-call-margin needs Jev rankings; pass --jev")
+        if not 0 < close_call_margin < 1:
+            raise ValueError("--close-call-margin must be between 0 and 1")
+        config.close_call_margin = close_call_margin
     if config.jev:
         # Fail before buying role statement generation or creating a run with missing credentials.
         load_api_key(REPO_ROOT, "TYPESAFE_API_KEY")

@@ -13,6 +13,7 @@ from test_jev_pipeline import ScriptedSkills
 
 from pipeline.document import ROLE_FIELD
 from pipeline.files import read_json, write_json
+from pipeline.incremental_graph.close_calls import close_options
 from pipeline.incremental_graph.runs import start_graph
 from pipeline.viewer.package_catalog import package_catalog
 
@@ -79,6 +80,32 @@ class ScriptedJev:
         )
 
 
+class CloseJev(ScriptedJev):
+    """Give third-paper rankings fixed shares by option count, in criteria order."""
+
+    def __init__(self, shares, reject_over=None):
+        super().__init__(reject_over=reject_over)
+        self.shares = shares
+        self.first_ranking = None
+
+    def __call__(self, request, **kwargs):
+        body = json.loads(request.data)
+        options = list(body["questions"].get("match", {}).get("criteria", []))
+        fits = not self.reject_over or len(options) <= self.reject_over
+        if "Gamma paper" not in body["state"] or not options or not fits:
+            return super().__call__(request, **kwargs)
+        self.bodies.append(body)
+        self.first_ranking = self.first_ranking or options
+        probabilities = dict(zip(options, self.shares[len(options)], strict=True))
+        n = len(options)
+        top = max(probabilities.values())
+        response = answer(body, options[0])
+        response["answers"]["match"].update(
+            probabilities=probabilities, confidence=round((top - 1 / n) / (1 - 1 / n), 4)
+        )
+        return io.BytesIO(json.dumps(response).encode())
+
+
 class RecordingSkills(ScriptedSkills):
     def __init__(self):
         super().__init__()
@@ -97,6 +124,7 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
         alpha_sections=STANDARD,
         jev=None,
         section_fan_in=False,
+        close_call_margin=None,
     ):
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)
@@ -132,9 +160,105 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
                 jev=True,
                 sections_only=True,
                 section_fan_in=section_fan_in,
+                close_call_margin=close_call_margin,
             )
         revision = Path(result["revision_dir"])
         return jev, skills, revision
+
+    THREE = [*STANDARD, ("Cost", "warns that a high price slows adoption.")]
+    ALL = [("All", "ties the water supply, a small sample, and a high price together.")]
+
+    @staticmethod
+    def rankings(jev):
+        return [
+            len(b["questions"]["match"]["criteria"])
+            for b in jev.bodies
+            if "Gamma paper" in b["state"] and "match" in b["questions"]
+        ]
+
+    @staticmethod
+    def gamma_group_size(revision):
+        groups = read_json(revision / "section-checkpoint.json")["section_groups"].values()
+        return next(
+            len(g["members"]) for g in groups if any(m["paper_id"] == "gamma" for m in g["members"])
+        )
+
+    def test_close_ranking_is_reasked_among_the_close_options(self):
+        # 0.40 vs 0.35 is close; 0.25 is not. The two-way re-ask is decisive.
+        jev = CloseJev({3: [0.40, 0.35, 0.25], 2: [0.80, 0.20]})
+        _, _, revision = self.run_three(
+            self.ALL, self.THREE, self.THREE, jev=jev, close_call_margin=0.10
+        )
+        self.assertEqual(self.rankings(jev), [3, 2])
+        reask = jev.bodies[-1]["questions"]["match"]["criteria"]
+        self.assertEqual(list(reask), list(jev.first_ranking)[:2])  # The far option is dropped.
+        [call] = [e for e in read_json(revision / "events.json") if e["action"] == "close_call"]
+        self.assertEqual(call["outcome"], "resolved")
+        self.assertEqual(len(call["first"]["close_ids"]), 2)
+        self.assertEqual(len(call["reask"]["close_ids"]), 1)
+        self.assertEqual(call["target_id"], call["reask"]["close_ids"][0])
+        self.assertEqual(self.gamma_group_size(revision), 3)
+        report = read_json(revision / "reports/close-calls.json")
+        self.assertEqual((report["reasked"], report["resolved_by_reask"], report["held"]), (1, 1, 0))
+
+    def test_still_close_after_reask_leaves_the_section_alone_and_reports_it(self):
+        jev = CloseJev({3: [0.40, 0.35, 0.25], 2: [0.52, 0.48]})
+        _, _, revision = self.run_three(
+            self.ALL, self.THREE, self.THREE, jev=jev, close_call_margin=0.10
+        )
+        calls = [e for e in read_json(revision / "events.json") if e["action"] == "close_call"]
+        # Insertion holds it; singleton recovery asks again and holds it again.
+        self.assertEqual(
+            [(c["direction"], c["outcome"]) for c in calls],
+            [("new_to_group", "held"), ("singleton_to_group", "held")],
+        )
+        self.assertIsNone(calls[0]["target_id"])
+        self.assertEqual((calls[0]["paper_id"], calls[0]["unit_id"]), ("gamma", "s0001"))
+        self.assertEqual(self.gamma_group_size(revision), 1)
+        report = read_json(revision / "reports/close-calls.json")
+        self.assertEqual((report["held"], report["held_still_alone"]), (2, 2))
+        self.assertTrue(report["calls"][0]["final"]["still_alone"])
+
+    def test_two_way_close_ranking_is_held_without_a_repeat_question(self):
+        jev = CloseJev({2: [0.52, 0.48]})
+        _, _, revision = self.run_three(
+            [("Both", "covers the water supply and a small sample in one section.")],
+            jev=jev,
+            close_call_margin=0.10,
+        )
+        # Singleton recovery repeats the identical ranking, answered from the cache.
+        self.assertEqual(self.rankings(jev), [2])
+        calls = [e for e in read_json(revision / "events.json") if e["action"] == "close_call"]
+        self.assertEqual(len(calls), 2)
+        self.assertTrue(all("reask" not in c and c["outcome"] == "held" for c in calls))
+        self.assertEqual(self.gamma_group_size(revision), 1)
+
+    def test_close_options_use_a_strict_margin(self):
+        self.assertEqual(close_options({"a": 0.55, "b": 0.45}, 0.10), ["a"])
+        self.assertEqual(close_options({"a": 0.5, "b": 0.41, "c": 0.09}, 0.10), ["a", "b"])
+        self.assertEqual(close_options({"a": 0.34, "b": 0.33, "c": 0.33}, 0.10), ["a", "b", "c"])
+
+    def test_close_rankings_are_ignored_without_a_margin(self):
+        jev = CloseJev({2: [0.52, 0.48]})
+        _, _, revision = self.run_three(
+            [("Both", "covers the water supply and a small sample in one section.")], jev=jev
+        )
+        self.assertEqual(self.rankings(jev), [2])
+        events = read_json(revision / "events.json")
+        self.assertFalse(any(e["action"] == "close_call" for e in events))
+        self.assertFalse((revision / "reports/close-calls.json").exists())
+        self.assertEqual(self.gamma_group_size(revision), 3)
+
+    def test_a_close_half_of_a_split_ranking_still_sends_its_winner_on(self):
+        jev = CloseJev({2: [0.52, 0.48]}, reject_over=2)
+        _, _, revision = self.run_three(
+            self.ALL, self.THREE, self.THREE, jev=jev, close_call_margin=0.10
+        )
+        # Rejected three-way, the two-option half (close but not held), then the final
+        # (held). Singleton recovery repeats them from the cache.
+        self.assertEqual(self.rankings(jev), [3, 2, 2])
+        calls = [e for e in read_json(revision / "events.json") if e["action"] == "close_call"]
+        self.assertEqual([c["outcome"] for c in calls], ["held", "held"])
 
     def test_third_paper_scores_each_node_with_two_complete_papers(self):
         jev, skills, revision = self.run_three(
