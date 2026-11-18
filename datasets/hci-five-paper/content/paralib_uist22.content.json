@@ -1,7 +1,7 @@
 [
   {
     "section_name": "Abstract",
-    "section_number": "1",
+    "section_number": null,
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -12,7 +12,7 @@
   },
   {
     "section_name": "Introduction",
-    "section_number": "2",
+    "section_number": "1",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -47,7 +47,7 @@
   },
   {
     "section_name": "Background",
-    "section_number": "3",
+    "section_number": "2",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -58,12 +58,12 @@
   },
   {
     "section_name": "Related Work",
-    "section_number": "4",
+    "section_number": "3",
     "paragraphs": [],
     "subsections": [
       {
         "section_name": "Empirical Studies on Library Selection",
-        "section_number": "4.1",
+        "section_number": "3.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -77,7 +77,7 @@
       },
       {
         "section_name": "Tool Support for Library Comparison",
-        "section_number": "4.2",
+        "section_number": "3.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -103,7 +103,7 @@
       },
       {
         "section_name": "Visualizing and Comparing Code Examples",
-        "section_number": "4.3",
+        "section_number": "3.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -119,12 +119,12 @@
   },
   {
     "section_name": "Interface Design and Overview",
-    "section_number": "5",
+    "section_number": "4",
     "paragraphs": [],
     "subsections": [
       {
         "section_name": "Design Goals",
-        "section_number": "5.1",
+        "section_number": "4.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -138,7 +138,7 @@
       },
       {
         "section_name": "Interface Overview",
-        "section_number": "5.2",
+        "section_number": "4.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -192,7 +192,7 @@
       },
       {
         "section_name": "Technical Probe Caveats",
-        "section_number": "5.3",
+        "section_number": "4.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -208,7 +208,7 @@
   },
   {
     "section_name": "Usage Scenario",
-    "section_number": "6",
+    "section_number": "5",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -239,7 +239,7 @@
   },
   {
     "section_name": "User Study",
-    "section_number": "7",
+    "section_number": "6",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -249,7 +249,7 @@
     "subsections": [
       {
         "section_name": "Procedure",
-        "section_number": "7.1",
+        "section_number": "6.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -275,7 +275,7 @@
       },
       {
         "section_name": "Scenario Design",
-        "section_number": "7.2",
+        "section_number": "6.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -289,7 +289,7 @@
       },
       {
         "section_name": "Participants",
-        "section_number": "7.3",
+        "section_number": "6.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -313,12 +313,12 @@
   },
   {
     "section_name": "User Study Results",
-    "section_number": "8",
+    "section_number": "7",
     "paragraphs": [],
     "subsections": [
       {
         "section_name": "User Performance",
-        "section_number": "8.1",
+        "section_number": "7.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -358,13 +358,13 @@
           },
           {
             "paragraph_number": 9,
-            "text": "Table 2 shows the distribution of different kinds of insights shared by participants when using ParaLib vs. online search. When using ParaLib, participants pointed out significantly more specific functionalities supported or unsupported by a certain library in their responses (paired t-test: p<0.05). Participants also shared (paired t-test: p-value < 0.0001 in all categories) more insights about technical factors and fewer insights about human factors when using ParaLib, though the differences were mostly not significant. Participants shared fewer general or vague insights and made slightly fewer incorrect comments when using ParaLib, though these differences were not significant either. These results suggest that rendering concept-annotated examples in parallel did help programmers obtain a more comprehensive understanding of supported functionalities in similar libraries."
+            "text": "Table 2 shows the distribution of different kinds of insights shared by participants when using ParaLib vs. online search. When using ParaLib, participants pointed out significantly more specific functionalities supported or unsupported by a certain library in their responses (paired t-test: p<0.05). Participants also shared more insights about technical factors and fewer insights about human factors when using ParaLib, though the differences were mostly not significant. Participants shared fewer general or vague insights and made slightly fewer incorrect comments when using ParaLib, though these differences were not significant either. These results suggest that rendering concept-annotated examples in parallel did help programmers obtain a more comprehensive understanding of supported functionalities in similar libraries."
           }
         ]
       },
       {
         "section_name": "User Confidence and Cognitive Load",
-        "section_number": "8.2",
+        "section_number": "7.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -390,15 +390,23 @@
       },
       {
         "section_name": "Qualitative Feedback",
-        "section_number": "8.3",
+        "section_number": "7.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
-            "text": "The post-task survey of ParaLib asked participants to rate the usefulness of each feature in a 7-point Likert scale. Most participants (19/20) rated the concept hierarchy useful or very useful. Participants mentioned that the concept hierarchy is easy-to-use, good for summarization, detailed, and systematic for comparing multiple libraries in a single view. P19 said, \"I really liked the left panel of the concept hierarchy. It was very detailed. The sub-types [second-level concepts] under each category [first-level concepts] covered a lot of features of each library in one organized table, which makes it easy to find features.\" Seventeen participants also rated the feature of displaying code examples from multiple libraries side by side as more helpful than overwhelming (6 or 7 on a 7-point Likert scale). Other components, such as code examples annotated with concepts (15/20) and highlighting common substrings across multiple code examples (9/20), also received positive reviews. P16 commented, \"Highlights help me quickly find the position of the function and learn how to use the function.\""
+            "text": "The post-task survey of ParaLib asked participants to rate the usefulness of each feature in a 7-point Likert scale. Most participants (19/20) rated the concept hierarchy useful or very useful. Participants mentioned that the concept hierarchy is easy-to-use, good for summarization, detailed, and systematic for comparing multiple libraries in a single view. P19 said, \"I really liked the left panel of the concept hierarchy. It was very detailed. The sub-types [second-level concepts] under each category [first-level concepts] covered a lot of visualization aspects.\" P17 mentioned, \"It shows all the available features of each library in one organized table, which makes it easy to find features.\" Seventeen participants also rated the feature of displaying code examples from multiple libraries side by side as more helpful than overwhelming (6 or 7 on a 7-point Likert scale). Other components, such as code examples annotated with concepts (15/20) and highlighting common substrings across multiple code examples (9/20), also received positive reviews. P16 commented, \"Highlights help me quickly find the position of the function and learn how to use the function.\""
           },
           {
             "paragraph_number": 1,
             "text": "Participants also commented on the challenges they faced when comparing libraries with online search. Fifteen out of 20 participants complained about the massive amount of information available online, which made the comparison process difficult and overwhelming. P17 said, \"So many resources pop up in the online search results and it's hard to find the one that I really want.\" P20 mentioned, \"A lot of information cannot be read at one time. Too much information will leave me unsure of how to judge.\" Five out of 20 participants pointed out that online search was time-consuming. Four participants said that the large amount of potentially misleading or not quite comparable information that exists online was distracting. P6 said, \"It was time-consuming (when using online search). I didn't know if I had found the best info for comparison, because I didn't feel like an apples-to-apples comparison.\" P4 added, \"I feel that I might have overlooked significant differences in the setup/context needed to use the libraries.\""
+          },
+          {
+            "paragraph_number": 2,
+            "text": "In both the post-task and post-study surveys, participants made some suggestions to improve ParaLib. Six participants suggested ParaLib include previous programmers' comments, opinions, and reviews. Four participants wanted to have more documentation or tutorials about each library in ParaLib to help them better understand the functionalities and the API usages. Ten participants wanted ParaLib to add more information and measurements to code examples, such as the output of the examples (3/20), the meaning of function calls (2/20), runtime (1/20), library history (1/20), and installation (1/20). Five participants suggested making the mapping from concepts to colors more visually distinguishable."
+          },
+          {
+            "paragraph_number": 3,
+            "text": "In the post-study survey, we also asked how their library comparison process would change if they had access to ParaLib in the future. Thirteen participants firmly expressed their willingness to use ParaLib in their future library comparison and selection processes. Among them, 5 people said they plan to use ParaLib in conjunction with an online search to compare libraries. P9 said, \"I'd be able to access code samples and compare them objectively through this site if [ParaLib] had a greater number of samples ... I'd still use it as a supplement to internet searching.\" P3 said, \"I will probably first do an online search, and then look at ParaLib to confirm my impression from online search.\""
           }
         ]
       }
@@ -406,7 +414,7 @@
   },
   {
     "section_name": "Discussion",
-    "section_number": "9",
+    "section_number": "8",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -429,7 +437,7 @@
   },
   {
     "section_name": "Limitations and Future Work",
-    "section_number": "10",
+    "section_number": "9",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -448,7 +456,7 @@
   },
   {
     "section_name": "Acknowledgments",
-    "section_number": "11",
+    "section_number": null,
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -459,7 +467,7 @@
   },
   {
     "section_name": "References",
-    "section_number": "12",
+    "section_number": null,
     "paragraphs": [],
     "subsections": []
   }

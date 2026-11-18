@@ -21,8 +21,6 @@ def validate_manifest(manifest_path: Path) -> dict[str, Any]:
             {
                 "paper_id": paper.paper_id,
                 "sections": len(paper.sections),
-                "top_level_sections": sum(section.kind == "section" for section in paper.sections),
-                "subsections": sum(section.kind == "subsection" for section in paper.sections),
                 "paragraphs": sum(len(section.paragraphs) for section in paper.sections),
                 "section_role_statements_required": manifest.max_granularity != "paragraph",
                 "missing_section_role_statements": (
@@ -53,11 +51,21 @@ def main() -> None:
     start.add_argument("--jev", action="store_true", help="Use Jev for all match selection")
     start.add_argument("--jev-model", help="Pinned Jev version, for example jev-1.14.0")
     start.add_argument("--jev-max-calls", type=int, help="Maximum Jev HTTP calls per process")
+    start.add_argument(
+        "--jev-long-context",
+        action="store_true",
+        help="Resend size-rejected Jev requests with TypeSafe's long-context header (262k)",
+    )
     start.add_argument("--max-api-responses", type=int, help="Generative provider response guard")
     start.add_argument(
         "--cache-from",
         type=Path,
         help="Copy an existing run's cache; reuse only exact matching request fingerprints",
+    )
+    start.add_argument(
+        "--section-fan-in",
+        action="store_true",
+        help="Experimental: admit one-way sections beside a reciprocal same-paper core",
     )
     add = commands.add_parser("add", help="Append prepared papers in manifest order")
     add.add_argument("manifest", type=Path)
@@ -71,6 +79,12 @@ def main() -> None:
     )
     retry.add_argument("--jev-max-calls", type=int, help="Maximum Jev HTTP calls for this attempt")
     retry.add_argument("--max-api-responses", type=int, help="Generative provider response guard")
+    for command in (start, retry):
+        command.add_argument(
+            "--sections-only",
+            action="store_true",
+            help="Finish section matching for every paper without starting paragraph stages",
+        )
     validate = commands.add_parser("validate", help="Validate prepared inputs without model calls")
     validate.add_argument("manifest", type=Path)
     args = parser.parse_args()
@@ -86,6 +100,9 @@ def main() -> None:
             jev_max_calls=args.jev_max_calls,
             max_api_responses=args.max_api_responses,
             cache_from=args.cache_from,
+            sections_only=args.sections_only,
+            section_fan_in=args.section_fan_in,
+            jev_long_context_retry=args.jev_long_context,
         )
     elif args.command == "add":
         result = add_papers(args.manifest, args.run_dir)
@@ -94,6 +111,7 @@ def main() -> None:
             args.run_dir,
             paper_index=args.paper_index,
             stage_id=args.stage,
+            sections_only=args.sections_only,
             config_path=args.config,
             jev_max_calls=args.jev_max_calls,
             max_api_responses=args.max_api_responses,

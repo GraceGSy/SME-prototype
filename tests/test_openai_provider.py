@@ -122,7 +122,9 @@ class OpenAIProviderTest(unittest.TestCase):
             self.assertEqual(result.usage["session"]["input_tokens"], 100)
             self.assertEqual(result.usage["input_tokens_details"]["cached_tokens"], 60)
             self.assertEqual(result.usage["input_tokens_details"]["cache_write_tokens"], 20)
-            saved = json.loads(next((root / "responses").glob("*.json")).read_text())
+            saved = json.loads(
+                next((root / "responses").glob("*.json")).read_text(encoding="utf-8")
+            )
             self.assertEqual(saved["provider"], "openai")
             self.assertEqual(saved["schema"], SCHEMA)
 
@@ -168,7 +170,7 @@ class OpenAIProviderTest(unittest.TestCase):
             with self.subTest(valid=valid), tempfile.TemporaryDirectory() as temp:
                 root = Path(temp)
                 source = root / "source.txt"
-                source.write_text("source evidence")
+                source.write_text("source evidence", encoding="utf-8")
                 adapter, requests = self.adapter(
                     root,
                     [
@@ -208,7 +210,9 @@ class OpenAIProviderTest(unittest.TestCase):
             folder = root / "skills" / "match-role"
             folder.mkdir(parents=True)
             manifest = folder / "SKILL.md"
-            manifest.write_text("---\nname: match-role\ndescription: Match roles\n---\nUse roles.")
+            manifest.write_text(
+                "---\nname: match-role\ndescription: Match roles\n---\nUse roles.", encoding="utf-8"
+            )
             adapter, requests = self.adapter(
                 root,
                 [
@@ -237,7 +241,9 @@ class OpenAIProviderTest(unittest.TestCase):
             self.assertEqual(len(requests), 1)
             self.assertIn(b"match-role/SKILL.md", requests[0].content)
             self.assertIn(manifest.read_bytes(), requests[0].content)
-            manifest.write_text(manifest.read_text() + "\nDo not match by topic alone.")
+            manifest.write_text(
+                manifest.read_text(encoding="utf-8") + "\nDo not match by topic alone."
+            )
             second = adapter.register(folder)
             self.assertEqual(second.version, "2")
             self.assertNotEqual(first.source_sha256, second.source_sha256)
@@ -255,7 +261,7 @@ class OpenAIProviderTest(unittest.TestCase):
                     policy=SkillCallPolicy(max_tokens=512, max_prompt_characters=2),
                 )
             source = root / "source.txt"
-            source.write_text("too large")
+            source.write_text("too large", encoding="utf-8")
             with self.assertRaises(SkillBudgetExceeded):
                 adapter.run_json_file(
                     SKILL,

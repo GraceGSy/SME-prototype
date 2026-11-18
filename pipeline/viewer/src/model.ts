@@ -35,6 +35,37 @@ export function buildModel(papers: Paper[], snapshot: Snapshot): Model {
       paragraphs.set(key, paragraph);
     }
   }
+  return {
+    papers,
+    sections: snapshot.section_groups,
+    paragraphs,
+    ...indexGroups(paragraphs, snapshot.groups, snapshot.singletons),
+  };
+}
+
+export function buildSectionMap(papers: Paper[], sectionGroups: Group[]) {
+  const sections = new Set(papers.flatMap((p) => p.sections.map((s) => unitKey(p.paper_id, s.id))));
+  if (
+    new Set(papers.map((p) => p.paper_id)).size !== papers.length ||
+    sections.size !== papers.reduce((total, p) => total + p.sections.length, 0)
+  )
+    throw new Error("Duplicate paper or section ID");
+  const shared = sectionGroups.filter((group) => group.members.length > 1);
+  return {
+    papers,
+    ...indexGroups(
+      sections,
+      shared,
+      sectionGroups.filter((group) => group.members.length === 1),
+    ),
+  };
+}
+
+function indexGroups(
+  units: { has(key: string): boolean; size: number },
+  sharedGroups: Group[],
+  singletonGroups: Group[],
+) {
   const groups = new Map<string, GroupEntry>();
   const membership = new Map<string, GroupEntry>();
   const entries = (items: Group[], singleton: boolean): GroupEntry[] =>
@@ -53,23 +84,15 @@ export function buildModel(papers: Paper[], snapshot: Snapshot): Model {
       groups.set(group.group_id, entry);
       for (const member of group.members) {
         const key = unitKey(member.paper, member.unit_id);
-        if (!paragraphs.has(key)) throw new Error("Unknown group member");
-        if (membership.has(key)) throw new Error("Paragraph appears in multiple groups");
+        if (!units.has(key)) throw new Error("Unknown group member");
+        if (membership.has(key)) throw new Error("Source unit appears in multiple groups");
         membership.set(key, entry);
       }
       return entry;
     });
-  const shared = entries(snapshot.groups, false);
-  const singletons = entries(snapshot.singletons, true);
-  if (membership.size !== paragraphs.size)
-    throw new Error("Snapshot does not account for every paragraph");
-  return {
-    papers,
-    sections: snapshot.section_groups,
-    shared,
-    singletons,
-    groups,
-    paragraphs,
-    membership,
-  };
+  const shared = entries(sharedGroups, false);
+  const singletons = entries(singletonGroups, true);
+  if (membership.size !== units.size)
+    throw new Error("Snapshot does not account for every source unit");
+  return { shared, singletons, groups, membership };
 }

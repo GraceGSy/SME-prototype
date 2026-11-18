@@ -176,8 +176,8 @@ class ViewerDatasetTest(unittest.TestCase):
                 root = Path(directory)
                 source = root / "source"
                 make_snapshot_dataset(source)
-                paper = json.loads((source / "paper_a.json").read_text())
-                snapshot = json.loads((source / "final_snapshot.json").read_text())
+                paper = json.loads((source / "paper_a.json").read_text(encoding="utf-8"))
+                snapshot = json.loads((source / "final_snapshot.json").read_text(encoding="utf-8"))
                 if corruption == "extra":
                     paper["legacy_field"] = True
                 elif corruption == "text_type":

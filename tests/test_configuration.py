@@ -31,7 +31,7 @@ class ConfigurationTest(unittest.TestCase):
                 else:
                     config["stages"][1]["skill"] = "absent"
                 path = root / "config.yaml"
-                path.write_text(yaml.safe_dump(config))
+                path.write_text(yaml.safe_dump(config), encoding="utf-8")
                 documents = manifest(root, ["a", "b"], "docs")
                 with patch("pipeline.incremental_graph.runs.CachedJudgments") as provider:
                     with self.assertRaises(ValueError):
@@ -58,7 +58,7 @@ class ConfigurationTest(unittest.TestCase):
         ):
             with self.subTest(content=content), TemporaryDirectory() as directory:
                 root = Path(directory)
-                (root / "test.yaml").write_text(content)
+                (root / "test.yaml").write_text(content, encoding="utf-8")
                 with self.assertRaises(ValueError):
                     PromptRepository(config.prompt_root, root).render(
                         "section-role-statement/v1", "test", {"paper": {}, "section": {}}

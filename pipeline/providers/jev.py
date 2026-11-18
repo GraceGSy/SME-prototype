@@ -19,6 +19,23 @@ ENDPOINT = "https://api.typesafe.ai/v1/systemone"
 NO_MATCH = "NO_MATCH"
 # TypeSafe's transport limit, not an estimate of its token context window.
 MAX_REQUEST_BYTES = 32 * 1024 * 1024
+# https://docs.typesafe.ai/models#long-context
+LONG_CONTEXT_HEADER = "TypeSafe-Danger-Zone-Long-Context"
+# Default Jev 1.14 window per question (state plus one question).
+DEFAULT_QUESTION_TOKENS = 32_768
+# Fitted Nov 18, 2026 on 521 HCI requests: reported tokens = 0.2005 * JSON characters + 95,
+# residuals within -517..+647. The margin keeps a request near the limit on long context.
+TOKENS_PER_CHAR = 0.2005
+ESTIMATE_MARGIN_TOKENS = 700
+
+
+def estimated_tokens(body: dict) -> int:
+    """Approximate Jev's input-token count from the request's JSON length."""
+    return round(TOKENS_PER_CHAR * len(encode_request(body).decode("utf-8")) + 95)
+
+
+def needs_long_context(body: dict) -> bool:
+    return estimated_tokens(body) + ESTIMATE_MARGIN_TOKENS > DEFAULT_QUESTION_TOKENS
 
 
 class JevRequestTooLarge(ValueError):
@@ -33,10 +50,17 @@ class JevSettings(BaseModel):
     max_calls: int | None = Field(default=None, gt=0)
     max_input_tokens: int | None = Field(default=None, gt=0)
     timeout_seconds: int = Field(default=120, gt=0)
+    # Resend a size-rejected request once with TypeSafe's long-context header (262k tokens
+    # per question instead of 32k). The docs call it slower and less accurate, so requests
+    # that fit the default window never use it.
+    long_context_retry: bool = False
 
     def result_settings(self) -> dict:
         """Budgets and timeouts do not change a successful judgment."""
-        return self.model_dump(exclude={"max_calls", "max_input_tokens", "timeout_seconds"})
+        settings = self.model_dump(exclude={"max_calls", "max_input_tokens", "timeout_seconds"})
+        if not settings["long_context_retry"]:
+            settings.pop("long_context_retry")  # Keep saved runs' policy hashes unchanged.
+        return settings
 
 
 class ChoiceAnswer(BaseModel):
@@ -114,7 +138,7 @@ class JevClient:
         self.calls = 0
         self.input_tokens = 0
 
-    def choose(self, body: dict) -> dict:
+    def choose(self, body: dict, *, long_context: bool = False) -> dict:
         encoded = encode_request(body)
         for question in body["questions"].values():
             if question.get("type", "choice") == "choice":
@@ -132,14 +156,14 @@ class JevClient:
         ):
             raise ValueError("Jev input-token limit reached; inspect usage before retrying")
         key = load_api_key(self.repo_root, "TYPESAFE_API_KEY")
-        request = Request(
-            ENDPOINT,
-            data=encoded,
-            headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
-            method="POST",
-        )
+        headers = {"Authorization": f"Bearer {key}", "Content-Type": "application/json"}
+        if long_context:
+            headers[LONG_CONTEXT_HEADER] = "true"
+        request = Request(ENDPOINT, data=encoded, headers=headers, method="POST")
         self.calls += 1
         record = {"provider": "jev", "request": body, "call_index": self.calls}
+        if long_context:
+            record["long_context"] = True
         path = self.responses / f"{uuid4().hex}.json"
         try:
             with urlopen(request, timeout=self.settings.timeout_seconds) as response:

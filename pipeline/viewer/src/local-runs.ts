@@ -5,13 +5,14 @@ const catalogSchema = z.array(
     id: z.string().regex(/^[A-Za-z0-9_-]+$/),
     label: z.string().min(1),
     revisions: z.array(z.string().regex(/^revision-[0-9]{4,}$/)).min(1),
+    sectionRevisions: z.array(z.string()).optional(),
     collection: z.string().min(1).optional(),
     revisionLabels: z.record(z.string(), z.string()).optional(),
     sourceTextRevisions: z.array(z.string()).optional(),
   }),
 );
 
-export async function localDatasetBase(): Promise<URL | null> {
+export async function localDatasetBase() {
   const response = await fetch("./local.json", { cache: "no-store" });
   if (response.status === 404) return null;
   if (!response.ok) throw new Error(`Could not load runs (${response.status})`);
@@ -59,7 +60,9 @@ export async function localDatasetBase(): Promise<URL | null> {
   revisionSelect.setAttribute("aria-label", "Revision");
   revisionSelect.name = "revision";
   for (const id of [...run.revisions].reverse()) {
-    const label = run.revisionLabels?.[id] ?? `Revision ${Number(id.split("-")[1])}`;
+    const label =
+      run.revisionLabels?.[id] ??
+      `Revision ${Number(id.split("-")[1])}${run.sectionRevisions?.includes(id) ? " (sections only)" : ""}`;
     revisionSelect.add(new Option(label, id));
   }
   revisionSelect.value = revision;
@@ -87,5 +90,8 @@ export async function localDatasetBase(): Promise<URL | null> {
   if (run.revisions.length > 1) form.append(labeled("Snapshot", revisionSelect));
   document.querySelector("header")!.after(form);
   // Resolve latest once so every file in this load belongs to the same snapshot.
-  return new URL(`/runs/${run.id}/${revision}/`, location.href);
+  return {
+    base: new URL(`/runs/${run.id}/${revision}/`, location.href),
+    sectionsOnly: run.sectionRevisions?.includes(revision),
+  };
 }

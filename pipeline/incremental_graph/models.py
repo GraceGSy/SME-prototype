@@ -12,8 +12,8 @@ from ..providers.jev import JevSettings
 from ..providers.settings import ModelSettings
 
 Level = Literal["section", "paragraph"]
-StructuralKind = Literal["section", "subsection"]
-Granularity = Literal["section", "subsection", "paragraph"]
+StructuralKind = Literal["section"]
+Granularity = Literal["section", "paragraph"]
 Phase = Literal["structural", "paragraph"]
 MatchDirection = Literal["new_to_group", "group_to_new", "singleton_to_group", "group_to_singleton"]
 
@@ -86,8 +86,6 @@ class Paper(StrictModel):
                 )
             if section.kind == "section" and section.parent_id:
                 raise ValueError(f"Top-level section {section.id} cannot have a parent")
-            if section.kind == "subsection" and not section.parent_id:
-                raise ValueError(f"Subsection {section.id} must have a parent")
         return self
 
 
@@ -133,6 +131,8 @@ class PipelineConfig(StrictModel):
     skill_root: WirePath = Path("prompts/skills")
     model: ModelSettings = Field(default_factory=ModelSettings)
     jev: JevSettings | None = None
+    # Experimental: let one-way sections join beside a reciprocal same-paper core.
+    section_fan_in: bool = False
     stages: list[StageConfig]
 
     def result_settings(self) -> dict:

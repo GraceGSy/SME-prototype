@@ -327,6 +327,8 @@ def revisions(root):
         status = (
             "Failed"
             if (p / "failure.json").exists()
+            else "Sections complete"
+            if (p / "section-checkpoint.json").is_file()
             else "Complete"
             if (p / "summary.json").exists()
             else "Unfinished"

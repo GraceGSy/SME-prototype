@@ -74,13 +74,15 @@ def scripted_http(request, **kwargs):
     body = json.loads(request.data)
     # This fixture has two disjoint sections per paper, one paragraph per section.
     centers = {}
-    side = None
+    side = block = None
     for line in body["state"].splitlines():
-        if "[focus]" in line or "[candidate]" in line:
-            side = "focus" if "[focus]" in line else line.split()[0]
+        if line in {"Focus", "Context", "Candidates"}:
+            block, side = line, None
+        elif line.startswith("Section: ") and block != "Context":
+            side = "focus" if block == "Focus" else line.split()[1]
             centers[side] = []
-        elif side and line.startswith("    "):
-            centers[side].append(line.strip())
+        elif side and line.startswith("Content: "):
+            centers[side].append(line.removeprefix("Content: "))
 
     def role(value):
         text = " ".join(value)
@@ -100,6 +102,30 @@ def scripted_http(request, **kwargs):
 
 
 class JevPipelineTest(unittest.TestCase):
+    def test_section_checkpoint_stops_before_all_paragraph_stages(self):
+        with tempfile.TemporaryDirectory() as directory:
+            run = Path(directory) / "sections"
+            with (
+                patch("pipeline.incremental_graph.runs.load_api_key", return_value="offline-key"),
+                patch("pipeline.providers.jev.load_api_key", return_value="offline-key"),
+                patch("pipeline.providers.jev.urlopen", side_effect=scripted_http) as network,
+                patch(
+                    "pipeline.incremental_graph.judgments.create_skill_client",
+                    return_value=ScriptedSkills(),
+                ),
+            ):
+                result = start_graph(MANIFEST, run, jev=True, sections_only=True)
+                rev = Path(result["revision_dir"])
+                groups = read_json(rev / "section-checkpoint.json")["section_groups"].values()
+                self.assertEqual(sorted(len(group["members"]) for group in groups), [1, 1, 2])
+                self.assertFalse(any((rev / "stages").glob("*paragraph*")))
+                self.assertFalse((rev / "summary.json").exists())
+                self.assertIsNone(read_json(run / "run.json")["current_revision"])
+                calls = network.call_count
+                resumed = retry_graph(run)
+                self.assertEqual(network.call_count, calls)
+                self.assertTrue(Path(resumed["dataset_dir"]).exists())
+
     def test_new_uncapped_run_reuses_exact_cached_requests(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -184,7 +210,7 @@ class JevPipelineTest(unittest.TestCase):
                 first = start_graph(MANIFEST, run, jev=True, jev_max_calls=12, max_api_responses=80)
                 self.assertTrue(check_smoke(run)["passed"])
                 self.assertEqual(network.call_count, 6)
-                self.assertEqual(skills.calls, 3)
+                self.assertEqual(skills.calls, 2)  # Group roles only; no explanations.
                 revision = run / "revisions/revision-0001"
                 snapshot = read_json(revision / "dataset/final_snapshot.json")
                 self.assertEqual(snapshot["schema_version"], 2)
@@ -193,27 +219,21 @@ class JevPipelineTest(unittest.TestCase):
                 ):
                     self.assertIn("role_statement", group)
                     self.assertNotIn("overarching_question", group)
-                explanations = [
-                    e
-                    for e in read_json(revision / "events.json")
-                    if e["action"] == "accepted_match_explained"
+                events = read_json(revision / "events.json")
+                self.assertFalse(any(e["action"] == "accepted_match_explained" for e in events))
+                attempts = [
+                    json.loads(line)
+                    for line in (revision / "provenance/attempts.jsonl")
+                    .read_text(encoding="utf-8")
+                    .splitlines()
                 ]
-                self.assertEqual(len(explanations), 1)
-                by_id = {
-                    a["attempt_id"]: a
-                    for a in map(
-                        json.loads,
-                        (revision / "provenance/attempts.jsonl").read_text().splitlines(),
-                    )
-                }
-                accepted = explanations[0]
-                for direction in ("vote_attempt_id", "reverse_attempt_id"):
-                    vote = by_id[accepted[direction]]
+                # Inherited single-paragraph matches keep their deterministic note.
+                votes = [a for a in attempts if "jev" in (a.get("raw_response") or {})]
+                self.assertTrue(votes)
+                for vote in votes:
+                    # Jev's selection is the whole record; no generative basis follows it.
                     self.assertNotIn("basis", vote["normalized"])
                     self.assertTrue(vote["raw_response"]["jev"]["calls"])
-                self.assertTrue(
-                    by_id[accepted["explanation_attempt_id"]]["normalized"]["evidence"]["target"]
-                )
                 data = validate_dataset(
                     Path(first["dataset_dir"]), "offline-smoke", "Offline smoke"
                 )
@@ -221,7 +241,7 @@ class JevPipelineTest(unittest.TestCase):
                 original_state = read_json(run / "run.json")
                 retry_graph(run, jev_max_calls=24, max_api_responses=160)
                 self.assertEqual(network.call_count, 6)
-                self.assertEqual(skills.calls, 3)
+                self.assertEqual(skills.calls, 2)  # Group roles only; no explanations.
                 retry_config = read_json(run / "run.json")["config"]
                 retry_config["jev"].update(max_input_tokens=4_000_000, timeout_seconds=240)
                 retry_config["model"].update(
@@ -235,7 +255,7 @@ class JevPipelineTest(unittest.TestCase):
                 write_json(run / "retry-config.json", retry_config)
                 retry_graph(run, config_path=run / "retry-config.json")
                 self.assertEqual(network.call_count, 6)
-                self.assertEqual(skills.calls, 3)
+                self.assertEqual(skills.calls, 2)  # Group roles only; no explanations.
                 self.assertEqual(
                     read_json(run / "run.json")["policy_sha256"], original_state["policy_sha256"]
                 )
@@ -274,7 +294,7 @@ class JevPipelineTest(unittest.TestCase):
                 original_failure = failure.read_bytes()
                 retry_graph(run, jev_max_calls=12)
                 self.assertEqual(network.call_count, 6)
-                self.assertEqual(skills.calls, 3)
+                self.assertEqual(skills.calls, 2)  # Group roles only; no explanations.
                 self.assertEqual(failure.read_bytes(), original_failure)
                 self.assertTrue(check_smoke(run)["passed"])
 
@@ -293,12 +313,12 @@ class JevPipelineTest(unittest.TestCase):
                 original = skills.run_json
 
                 def broken(*args, **kwargs):
-                    if "target_id" in args[2]["properties"]:
-                        raise RuntimeError("scripted evidence outage")
+                    if ROLE_FIELD in args[2]["properties"]:
+                        raise RuntimeError("scripted group role outage")
                     return original(*args, **kwargs)
 
                 with patch.object(skills, "run_json", side_effect=broken):
-                    with self.assertRaisesRegex(RuntimeError, "evidence outage"):
+                    with self.assertRaisesRegex(RuntimeError, "group role outage"):
                         start_graph(MANIFEST, run, jev=True)
                 self.assertEqual(network.call_count, 6)
                 self.assertIsNone(read_json(run / "run.json")["current_revision"])

@@ -5,8 +5,13 @@ from typing import Any
 from .models import MatchBatch
 
 
-def recovery_admission(source: dict[str, Any], target: dict[str, Any]) -> str | None:
-    """Same-paper recovery is reserved for paragraph neighbors of accepted cores."""
+def recovery_admission(
+    source: dict[str, Any], target: dict[str, Any], *, section_fan_in: bool = False
+) -> str | None:
+    """Same-paper recovery is reserved for neighbors of accepted cores.
+
+    Sections qualify only when the experimental section fan-in setting is on.
+    """
     if (
         source["level"] != target["level"]
         or source.get("parent_id") != target.get("parent_id")
@@ -17,7 +22,8 @@ def recovery_admission(source: dict[str, Any], target: dict[str, Any]) -> str | 
     paper_id = source["members"][0]["paper_id"]
     if not any(m["paper_id"] == paper_id for m in target["members"]):
         return "core"
-    if source["level"] == "paragraph" and adjacent_core_anchors(
+    fan_in_level = source["level"] == "paragraph" or section_fan_in
+    if fan_in_level and adjacent_core_anchors(
         source["members"], target["members"]
     ):
         return "fan_in"
@@ -40,7 +46,7 @@ def adjacent_paragraph_fan_in(
     reciprocal: dict[str, str],
     ordinals: dict[str, int],
 ) -> dict[str, str]:
-    """Attach only one-way paragraphs immediately beside a reciprocal anchor."""
+    """Attach only one-way units immediately beside a reciprocal anchor."""
 
     anchor_by_group = {group_id: unit_id for unit_id, group_id in reciprocal.items()}
     accepted: dict[str, str] = {}

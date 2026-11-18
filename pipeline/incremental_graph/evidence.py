@@ -16,17 +16,20 @@ class Evidence:
         self.paragraph_lookup: dict[tuple[str, str], tuple[Section, Paragraph]] = {}
         self.paragraph_positions: dict[tuple[str, str], int] = {}
         self.paper_keys: dict[str, str] = {}
+        self.paper_titles: dict[str, str] = {}
         self.section_positions: dict[tuple[str, str], int] = {}
         self.section_spans: dict[tuple[str, str], list[tuple[int, int, int]]] = {}
         self.source_ordinals: dict[str, int] = {}
-        self.section_numbers: dict[str, str] = {}
+        self.section_numbers: dict[str, str] = {}  # Positional IDs, not printed numbers.
 
     def register(self, paper: Paper) -> None:
         self.paper_keys[paper.paper_id] = f"paper-{len(self.paper_keys) + 1}"
         key = self.paper_keys[paper.paper_id]
+        self.paper_titles[key] = paper.title
         for index, section in enumerate(paper.sections, 1):
-            if section.number:
-                self.section_numbers[f"{key}:{index}"] = section.number
+            # Printed numbers can be missing (Abstract) or absent from a whole paper, so
+            # IDs use document position; the printed number appears in the heading.
+            self.section_numbers[f"{key}:{index}"] = str(index)
             self.section_positions[paper.paper_id, section.id] = index
             self.section_lookup[(paper.paper_id, section.id)] = section
             self.source_ordinals[self.address(key, index)] = len(self.section_lookup)
@@ -37,18 +40,13 @@ class Evidence:
                 )
                 self.paragraph_positions[(paper.paper_id, paragraph.id)] = position
 
-        # A parent section and its subsections may include the same source paragraphs.
         for section in paper.sections:
-            parts = [
-                (self.section_positions[paper.paper_id, unit.id], n, p.text)
-                for unit in paper.sections
-                if unit.id == section.id or unit.parent_id == section.id
-                for n, p in enumerate(unit.paragraphs, 1)
-            ]
+            index = self.section_positions[paper.paper_id, section.id]
+            texts = [p.text for p in section.paragraphs]
             self.section_spans[paper.paper_id, section.id] = (
-                [(i, n, len(text)) for i, n, text in parts]
-                if parts and "\n\n".join(text for _, _, text in parts) == section.text
-                else [(self.section_positions[paper.paper_id, section.id], 0, len(section.text))]
+                [(index, n, len(text)) for n, text in enumerate(texts, 1)]
+                if texts and "\n\n".join(texts) == section.text
+                else [(index, 0, len(section.text))]
             )
 
     def address(self, paper, sec, pos=0):
@@ -238,28 +236,52 @@ class Evidence:
             )
         return self.structural_match_group(group_id)
 
-    def jev_annotations(self, context: dict, shared_root_id: str | None) -> dict:
-        """Snapshot headings, role_statements and accepted memberships at the time of the vote."""
-        visible = set()
-        for node in [context["focus"], *context["candidates"]]:
-            for unit in node.get("members", [node]):
-                paper = unit["paper_key"]
-                if "source_position" in unit:
-                    visible.add((paper, unit["source_position"][0]))
-                else:
-                    visible.add((paper, unit["source_section"]))
-                    visible.update((paper, sec) for sec, _, _ in unit["source_spans"])
-        metadata = {}
+    def jev_annotations(
+        self, context: dict, shared_root_id: str | None, *, candidate_papers: bool = True
+    ) -> dict:
+        """Show each node's latest paper in full and its earlier members' own units.
+
+        A request therefore carries one complete paper per participating node, not
+        every paper that has ever joined a node. Without ``candidate_papers`` only
+        the focus's paper is complete; candidates keep their own member units.
+        """
+        nodes = [context["focus"], *context["candidates"]]
+        node_units = [node.get("members", [node]) for node in nodes]
+        full_papers = {
+            max((u["paper_key"] for u in units), key=_paper_number)
+            for units in (node_units if candidate_papers else node_units[:1])
+        }
+        locations = [[_unit_location(u) for u in units] for units in node_units]
+        member_sections = {loc[:2] for node in locations for loc in node}
+        node_members = {
+            frozenset(self.address(*loc) for loc in node) for node in locations if len(node) > 1
+        }
+        sections, paragraphs, metadata = {}, [], {}
+        section_level = context["scope"]["level"] == "section"
         for (paper_id, sid), section in self.section_lookup.items():
             paper, sec = self.paper_keys[paper_id], self.section_positions[paper_id, sid]
-            if (paper, sec) not in visible:
+            full = paper in full_papers
+            if not full and (paper, sec) not in member_sections:
                 continue
-            metadata[self.address(paper, sec)] = (section.label, section.role_statement)
-            for i, para in enumerate(section.paragraphs, 1):
-                metadata[self.address(paper, sec, i)] = ("", para.role_statement)
+            addr = self.address(paper, sec)
+            if section_level:
+                sections[addr] = (
+                    self.paper_titles[paper],
+                    f"{section.number} {section.label}".strip(),
+                    section.role_statement,
+                    section.text,
+                )
+                continue
+            metadata[addr] = (f"{section.number} {section.label}".strip(), section.role_statement)
+            if full:
+                for i, para in enumerate(section.paragraphs, 1):
+                    metadata[self.address(paper, sec, i)] = ("", para.role_statement)
+                    paragraphs.append((paper, sec, i, para.text))
 
+        # Only the decision's own nodes, plus the structural scope for paragraph work.
+        scope_parent = context["scope"].get("parent_group_id")
         groups = {}
-        for level in ("section", "paragraph"):
+        for level in ("section",) if section_level else ("section", "paragraph"):
             for gid, node in self.graph.nodes(level):
                 if gid == shared_root_id or len(node["members"]) < 2:
                     continue
@@ -275,6 +297,8 @@ class Evidence:
                     members[self.address(self.paper_keys[key[0]], sec, pos)] = m.get(
                         "membership_role"
                     )
+                if gid != scope_parent and frozenset(members) not in node_members:
+                    continue
                 # The label and off-screen roster depend on source order, not on
                 # whether members were appended, merged or restored from events.
                 ordered = sorted(members, key=self.source_ordinals.__getitem__)
@@ -283,7 +307,41 @@ class Evidence:
                     "members": {addr: members[addr] for addr in ordered},
                     "role_statement": node.get("role_statement", ""),
                 }
-        return {"units": metadata, "groups": groups, "numbers": dict(self.section_numbers)}
+        annotations = {"groups": groups, "numbers": dict(self.section_numbers)}
+        if section_level:
+            return {**annotations, "sections": sections}
+        return {**annotations, "units": metadata, "paragraphs": paragraphs}
+
+    def latest_paper_context(self, group_id: str) -> dict[str, Any]:
+        """The full paper of a node's latest member; member passages appear only once."""
+        data = self.graph.node(group_id)
+        members = data["members"]
+        paper_id = max(
+            (m["paper_id"] for m in members), key=lambda p: _paper_number(self.paper_keys[p])
+        )
+        own = {m["unit_id"] for m in members if m["paper_id"] == paper_id}
+        sections = []
+        for (pid, _), section in self.section_lookup.items():
+            if pid != paper_id:
+                continue
+            if data["level"] == "section" and section.id in own:
+                sections.append({"section_label": section.label, "group_member": True})
+                continue
+            sections.append(
+                {
+                    "section_label": section.label,
+                    "paragraphs": [
+                        {"group_member": True} if p.id in own else p.text
+                        for p in section.paragraphs
+                    ]
+                    or [section.text],
+                }
+            )
+        return {
+            "paper_key": self.paper_keys[paper_id],
+            "title": self.paper_titles[self.paper_keys[paper_id]],
+            "sections": sections,
+        }
 
     def scope_context(self, level: str, parent_id: str | None) -> dict[str, Any]:
         scope = {"level": level, "parent_group_id": parent_id}
@@ -292,3 +350,13 @@ class Evidence:
                 "role_statement", ""
             )
         return scope
+
+
+def _paper_number(paper_key: str) -> int:
+    return int(paper_key.removeprefix("paper-"))
+
+
+def _unit_location(unit: dict[str, Any]) -> tuple[str, int, int]:
+    if "source_position" in unit:
+        return unit["paper_key"], *unit["source_position"]
+    return unit["paper_key"], unit["source_section"], 0

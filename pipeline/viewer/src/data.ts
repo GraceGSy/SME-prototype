@@ -1,10 +1,12 @@
 import {
   descriptorSchema,
+  groupSchema,
   manifestSchema,
   paperSchema,
   snapshotSchema,
   studySchema,
 } from "./contracts";
+import { z } from "zod";
 import type { Routes } from "./contracts";
 import { element } from "./dom";
 import { buildModel } from "./model";
@@ -55,8 +57,14 @@ async function datasetBase(root: URL): Promise<URL> {
 }
 
 export async function loadDataset() {
-  const base =
-    (await localDatasetBase()) ?? (await datasetBase(new URL("./data/", window.location.href)));
+  const local = await localDatasetBase();
+  const base = local?.base ?? (await datasetBase(new URL("./data/", window.location.href)));
+  if (local?.sectionsOnly) {
+    const data = z
+      .object({ papers: z.array(paperSchema), groups: z.array(groupSchema) })
+      .parse(await readJson("section-map.json", base));
+    return { sectionsOnly: true as const, papers: data.papers, groups: data.groups };
+  }
   const descriptor = descriptorSchema.parse(await readJson("dataset.json", base));
   const manifest = manifestSchema.parse(await readJson("manifest.json", base));
   const papers = [];
@@ -74,5 +82,5 @@ export async function loadDataset() {
   ) {
     throw new Error("Dataset counts disagree with contents");
   }
-  return { descriptor, model };
+  return { sectionsOnly: false as const, descriptor, model };
 }

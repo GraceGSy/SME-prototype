@@ -1,7 +1,7 @@
 [
   {
     "section_name": "Abstract",
-    "section_number": "1",
+    "section_number": null,
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -12,7 +12,7 @@
   },
   {
     "section_name": "Introduction",
-    "section_number": "2",
+    "section_number": "1",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -20,7 +20,7 @@
       },
       {
         "paragraph_number": 1,
-        "text": "Many existing approaches to augmenting humans’ reasoning about document corpora are lossy, and therefore risk omitting important context. Non-linguistic lossy representations of documents are typically designed to preserve what the system creators believe is most useful for the intended user task(s), e.g., a network of document-representing dots that preserve citation relationships across documents while omitting most other content. Zooming into the otherwise hidden details often means narrowing one’s view to a small subset of the corpus at a time, replacing a focus on crossdocument relationships with a focus on individual documents."
+        "text": "Many existing approaches to augmenting humans’ reasoning about document corpora are lossy, and therefore risk omitting important context. Non-linguistic lossy representations of documents are typically designed to preserve what the system creators believe is most useful for the intended user task(s), e.g., a network of document-representing dots that preserve citation relationships across documents while omitting most other content. Zooming into the otherwise hidden details often means narrowing one’s view to a small subset of the corpus at a time, replacing a focus on cross-document relationships with a focus on individual documents."
       },
       {
         "paragraph_number": 2,
@@ -28,7 +28,7 @@
       },
       {
         "paragraph_number": 3,
-        "text": "Recent prior work has shown that it is possible to help people read and reason about a corpus of short documents without employing lossy document representations. For example, for collections of code examples written with similar purposes but using different libraries, ParaLib [69] used color-coordinated role highlights to reveal cross-example commonalities and distinctions. The Positional Diction Clustering (PDC) algorithm identified analogous sentences across many LLM responses, which were reified both as color-coordinated cross-document analogous text highlighting (like ParaLib) and in a novel ‘interleaved’ view where analogous sentences across documents were rendered in adjacent rows to enable more easy comparison [18]. These examples of text-centric lossless techniques do not abstract away or summarize; they strategically re-organize and re-render the existing text to help enhance readers’ own perceptual cognition, informed by Structural Mapping Theory (SMT) [17]. 1 The human perceptual, comparative mental machinery that SMT describes is part of what enables humans to form more abstract structured mental models from concrete examples, among other critical knowledge tasks."
+        "text": "Recent prior work has shown that it is possible to help people read and reason about a corpus of short documents without employing lossy document representations. For example, for collections of code examples written with similar purposes but using different libraries, ParaLib [69] used color-coordinated role highlights to reveal cross-example commonalities and distinctions. The Positional Diction Clustering (PDC) algorithm identified analogous sentences across many LLM responses, which were reified both as color-coordinated cross-document analogous text highlighting (like ParaLib) and in a novel ‘interleaved’ view where analogous sentences across documents were rendered in adjacent rows to enable more easy comparison [18]. These examples of text-centric lossless techniques do not abstract away or summarize; they strategically re-organize and re-render the existing text to help enhance readers’ own perceptual cognition, informed by Structural Mapping Theory (SMT) [17]. The human perceptual, comparative mental machinery that SMT describes is part of what enables humans to form more abstract structured mental models from concrete examples, among other critical knowledge tasks."
       },
       {
         "paragraph_number": 4,
@@ -40,18 +40,18 @@
       },
       {
         "paragraph_number": 6,
-        "text": "AbstractExplorer instantiates new minimally lossy 2 SMTinformed techniques for skimming, reading, and reasoning about a corpus of similarly structured short documents: phrase-level role classification that drives sentence ordering, highlighting, and spatial alignment. We demonstrate these features’ utility in the context of helping researchers’ skim and read closely and laterally [67] across a corpus of scientific abstracts."
+        "text": "AbstractExplorer instantiates new minimally lossy SMT-informed techniques for skimming, reading, and reasoning about a corpus of similarly structured short documents: phrase-level role classification that drives sentence ordering, highlighting, and spatial alignment. We demonstrate these features’ utility in the context of helping researchers’ skim and read closely and laterally [67] across a corpus of scientific abstracts."
       },
       {
         "paragraph_number": 7,
-        "text": "Three studies inform and validate AbstractExplorer’s design: First, a formative study (Section 3) suggested unmet needs and interest in our approach to supporting cross-document reasoning. Second, an ablation study with eye-tracking (Section 5) revealed that the three key features of AbstractExplorer’s central crosssentence relationships pane—sentence order, role-coordinated highlighting, and alignment—work best in concert, not alone. Finally, a summative study (Section 6) describes how researchers used AbstractExplorer to familiarize themselves with a corpus of ∼1000 CHI paper abstracts—reading across a larger and more diverse collection of abstracts and more easily discerning relationships and distributions across prior work. In summary, we contribute: • Novel SMT theory-informed text analysis and rendering techniques for enabling cross-document skimming and comparative close reading at scale • AbstractExplorer, which instantiates these techniques for familiarizing oneself with a corpus of ∼1000 CHI paper abstracts. • Three studies informing and evalutaing the benefits, challenges, and interactions between these techniques."
+        "text": "Three studies inform and validate AbstractExplorer’s design: First, a formative study (Section 3) suggested unmet needs and interest in our approach to supporting cross-document reasoning. Second, an ablation study with eye-tracking (Section 5) revealed that the three key features of AbstractExplorer’s central cross-sentence relationships pane—sentence order, role-coordinated highlighting, and alignment—work best in concert, not alone. Finally, a summative study (Section 6) describes how researchers used AbstractExplorer to familiarize themselves with a corpus of ∼1000 CHI paper abstracts—reading across a larger and more diverse collection of abstracts and more easily discerning relationships and distributions across prior work. In summary, we contribute: • Novel SMT theory-informed text analysis and rendering techniques for enabling cross-document skimming and comparative close reading at scale • AbstractExplorer, which instantiates these techniques for familiarizing oneself with a corpus of ∼1000 CHI paper abstracts. • Three studies informing and evalutaing the benefits, challenges, and interactions between these techniques."
       }
     ],
     "subsections": []
   },
   {
     "section_name": "Related Work",
-    "section_number": "3",
+    "section_number": "2",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -61,7 +61,7 @@
     "subsections": [
       {
         "section_name": "Tools for Close Reading",
-        "section_number": "3.1",
+        "section_number": "2.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -69,17 +69,17 @@
           },
           {
             "paragraph_number": 1,
-            "text": "Close reading is an important yet cognitively demanding task in scholarly activities [60] and beyond [55]. Close reading requires reasoning about context; for example, ClioQuery [26] assists historians with investigating queries in context through linked views and text highlighting. While not specifically designed for close reading, many tools have been designed to support reading activities within or anchored by a single document, e.g., supporting comprehension, information foraging, and reading efficiency. For example, GP-TSM [24] helps readers read more efficiently by modulating text saliency while preserving grammar. Varifocal- Reader [36] supports skimming by presenting abstract summaries alongside the source document, with machine-learned annotations highlighting key sentence segments in different colors. Scim [15] helps readers skim academic papers by using colored highlights to guide attention to predefined content types, such as “Objective” and “Method.” Qlarify [14] allows scholars to specify additional information needs while reading an abstract, dynamically expanding it with relevant content from the full paper. While still anchored on a single document, the Semantic Reader project [43] supports features that bring information from related papers into the focal paper’s reading environment. For example, Relatedly [54], part of the Semantic Reader project, highlights unexplored dissimilar information in related work sections of unread papers while lowlighting previously seen information. As such, while the Semantic Reader can reason over document collections, we still consider it a document-centric [23] reading tool."
+            "text": "Close reading is an important yet cognitively demanding task in scholarly activities [60] and beyond [55]. Close reading requires reasoning about context; for example, ClioQuery [26] assists historians with investigating queries in context through linked views and text highlighting. While not specifically designed for close reading, many tools have been designed to support reading activities within or anchored by a single document, e.g., supporting comprehension, information foraging, and reading efficiency. For example, GP-TSM [24] helps readers read more efficiently by modulating text saliency while preserving grammar. VarifocalReader [36] supports skimming by presenting abstract summaries alongside the source document, with machine-learned annotations highlighting key sentence segments in different colors. Scim [15] helps readers skim academic papers by using colored highlights to guide attention to predefined content types, such as “Objective” and “Method.” Qlarify [14] allows scholars to specify additional information needs while reading an abstract, dynamically expanding it with relevant content from the full paper. While still anchored on a single document, the Semantic Reader project [43] supports features that bring information from related papers into the focal paper’s reading environment. For example, Relatedly [54], part of the Semantic Reader project, highlights unexplored dissimilar information in related work sections of unread papers while lowlighting previously seen information. As such, while the Semantic Reader can reason over document collections, we still consider it a document-centric [23] reading tool."
           },
           {
             "paragraph_number": 2,
-            "text": "When working with document corpora, these prior reading systems leave users to manually organize documents using their limited working memory; AbstractExplorer instead lays out the contents of the corpus in a way that, given its cognitive-theoryinformed design, may work with humans’ limited working memory while reading."
+            "text": "When working with document corpora, these prior reading systems leave users to manually organize documents using their limited working memory; AbstractExplorer instead lays out the contents of the corpus in a way that, given its cognitive-theory-informed design, may work with humans’ limited working memory while reading."
           }
         ]
       },
       {
         "section_name": "Text Alignment",
-        "section_number": "3.2",
+        "section_number": "2.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -101,7 +101,7 @@
       },
       {
         "section_name": "Text-Centric Tools for Sensemaking over Document Corpora via Shared Structure",
-        "section_number": "3.3",
+        "section_number": "2.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -109,7 +109,7 @@
           },
           {
             "paragraph_number": 1,
-            "text": "Like many of these prior systems, AbstractExplorer is a textcentric system that exploits shared structure to support lateral reading across short document corpora at scale. Unlike prior systems, it leverages common structures in purpose, not lexical or grammatical features, at both the sentence and phrasal level in natural language documents. AbstractExplorer specifically leverages the shared structure in scientific abstracts to facilitate abstract corpus skimming and comparative reading at scale."
+            "text": "Like many of these prior systems, AbstractExplorer is a text-centric system that exploits shared structure to support lateral reading across short document corpora at scale. Unlike prior systems, it leverages common structures in purpose, not lexical or grammatical features, at both the sentence and phrasal level in natural language documents. AbstractExplorer specifically leverages the shared structure in scientific abstracts to facilitate abstract corpus skimming and comparative reading at scale."
           },
           {
             "paragraph_number": 2,
@@ -119,7 +119,7 @@
       },
       {
         "section_name": "Theories Operationalized for Supporting Inductive Sensemaking",
-        "section_number": "3.4",
+        "section_number": "2.4",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -127,7 +127,7 @@
           },
           {
             "paragraph_number": 1,
-            "text": "But many of the systems in Section 2.3 explicitly reference, as design inspiration or justification, two theories of human cognition, i.e., Variation Theory [45] and/or Structural Mapping Theory (SMT) [17]. 3 SMT provides a framework for understanding how humans compare two or more objects by finding common structural alignments between objects. SMT posits that visual alignment helps people perceive relational similarities and differences more clearly, thereby improving their ability to make meaningful comparisons and understand underlying patterns [28, 38, 47]. The prior SMTinformed tools in Section 2.3 for both code and natural language corpora suggest that the cognitive process of comparing texts may be no exception to the cognitive processes SMT predicts."
+            "text": "But many of the systems in Section 2.3 explicitly reference, as design inspiration or justification, two theories of human cognition, i.e., Variation Theory [45] and/or Structural Mapping Theory (SMT) [17]. SMT provides a framework for understanding how humans compare two or more objects by finding common structural alignments between objects. SMT posits that visual alignment helps people perceive relational similarities and differences more clearly, thereby improving their ability to make meaningful comparisons and understand underlying patterns [28, 38, 47]. The prior SMT-informed tools in Section 2.3 for both code and natural language corpora suggest that the cognitive process of comparing texts may be no exception to the cognitive processes SMT predicts."
           }
         ]
       }
@@ -135,7 +135,7 @@
   },
   {
     "section_name": "Formative Interview Study",
-    "section_number": "4",
+    "section_number": "3",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -145,7 +145,7 @@
     "subsections": [
       {
         "section_name": "Procedure",
-        "section_number": "4.1",
+        "section_number": "3.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -163,7 +163,7 @@
       },
       {
         "section_name": "Key Findings",
-        "section_number": "4.2",
+        "section_number": "3.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -183,7 +183,7 @@
   },
   {
     "section_name": "AbstractExplorer",
-    "section_number": "5",
+    "section_number": "4",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -193,11 +193,11 @@
     "subsections": [
       {
         "section_name": "System Components",
-        "section_number": "5.1",
+        "section_number": "4.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
-            "text": "Slicing abstracts for sentence-level aspect reading and comparison (same-role sentences). To keep details at the forefront of the interface, we designed a mechanism to slice abstracts for viewing them from specific angles, allowing for comparative close reading at scale at the sentence level. We chose the sentence as our unit for cross-document alignment because: (1) it preserves complete propositional content (unlike phrases or words), (2) maintains grammatical coherence when isolated (unlike arbitrary text spans), and (3) serves as the minimal self-contained unit where aspects can be meaningfully compared. “Aspects” are either pre-defined or userdefined on the fly; they are collections of sentences across abstracts that serve the same or similar purposes within their abstract."
+            "text": "Slicing abstracts for sentence-level aspect reading and comparison (same-role sentences). To keep details at the forefront of the interface, we designed a mechanism to slice abstracts for viewing them from specific angles, allowing for comparative close reading at scale at the sentence level. We chose the sentence as our unit for cross-document alignment because: (1) it preserves complete propositional content (unlike phrases or words), (2) maintains grammatical coherence when isolated (unlike arbitrary text spans), and (3) serves as the minimal self-contained unit where aspects can be meaningfully compared. “Aspects” are either pre-defined or user-defined on the fly; they are collections of sentences across abstracts that serve the same or similar purposes within their abstract."
           },
           {
             "paragraph_number": 1,
@@ -217,7 +217,7 @@
           },
           {
             "paragraph_number": 5,
-            "text": "To define these roles, we used a human-LLM collaboration approach. An LLM produced initial annotations, which we iteratively refined via comparison with the authors’ manual annotations on our sample of ∼100 CHI 2024 abstracts. Formative study feedback supported the use of role-related color highlights, so we planned to visually indicate the role of each chunk with a unique color. We balanced role specificity with the possible visual indistinguishability of too many roles if each is assigned a unique color, ultimately defining nine roles: Context/Status Quo , Challenge/Problem , Contribution , Goal/Focus , Methodology , Participants , System Characteristics , Finding , and Enumeration for the CHI 2024 corpus. An LLM was used to classify sentence chunks into each of these roles. We adopt the color palette of Tableau 10, which was carefully designed to be clearly distinguishable. 4"
+            "text": "To define these roles, we used a human-LLM collaboration approach. An LLM produced initial annotations, which we iteratively refined via comparison with the authors’ manual annotations on our sample of ∼100 CHI 2024 abstracts. Formative study feedback supported the use of role-related color highlights, so we planned to visually indicate the role of each chunk with a unique color. We balanced role specificity with the possible visual indistinguishability of too many roles if each is assigned a unique color, ultimately defining nine roles: Context/Status Quo, Challenge/Problem, Contribution, Goal/Focus, Methodology, Participants, System Characteristics, Finding, and Enumeration for the CHI 2024 corpus. An LLM was used to classify sentence chunks into each of these roles. We adopt the color palette of Tableau 10, which was carefully designed to be clearly distinguishable."
           },
           {
             "paragraph_number": 6,
@@ -229,7 +229,7 @@
           },
           {
             "paragraph_number": 8,
-            "text": "In AbstractExplorer, sentences are grouped by this definition of sentence structure. For example, Figure 5 displays sentences that all start with a description of the paper’s Contribution , followed by System Characteristics . Likewise, Figure 28 in Appendix F shows all the sentences that contain a description of a study Methodology , followed by information about the Participants who are involved in the study. To navigate to a group of sentences within the same aspect that share a different structure, users can either use the left and right buttons at the top of the Cross-Sentence Relationships pane to step to the next most or next least common structure, or through the “global view” described next."
+            "text": "In AbstractExplorer, sentences are grouped by this definition of sentence structure. For example, Figure 5 displays sentences that all start with a description of the paper’s Contribution, followed by System Characteristics. Likewise, Figure 28 in Appendix F shows all the sentences that contain a description of a study Methodology, followed by information about the Participants who are involved in the study. To navigate to a group of sentences within the same aspect that share a different structure, users can either use the left and right buttons at the top of the Cross-Sentence Relationships pane to step to the next most or next least common structure, or through the “global view” described next."
           },
           {
             "paragraph_number": 9,
@@ -241,11 +241,11 @@
           },
           {
             "paragraph_number": 11,
-            "text": "Within-structure ordering. The structure groups are defined by tuples of chunk roles, e.g., ( Contribution , Participants ), but within the group they may have longer common sequences of chunk roles. AbstractExplorer orders sentences within each structure group based on the sequential pattern of chunk roles (vertical juxtapositions). Sentences are recursively grouped by sequences of three chunk roles, with groups ordered by decreasing size. Within each of those groups, sentences are arranged by increasing length. This ordering prioritizes dominant structural patterns (largest groups first) while exposing fine-grained variations (via length-sorted triplets), mirroring how humans compare sentences, if SMT is an accurate description in this domain of comparative close reading."
+            "text": "Within-structure ordering. The structure groups are defined by tuples of chunk roles, e.g., (Contribution, Participants ), but within the group they may have longer common sequences of chunk roles. AbstractExplorer orders sentences within each structure group based on the sequential pattern of chunk roles (vertical juxtapositions). Sentences are recursively grouped by sequences of three chunk roles, with groups ordered by decreasing size. Within each of those groups, sentences are arranged by increasing length. This ordering prioritizes dominant structural patterns (largest groups first) while exposing fine-grained variations (via length-sorted triplets), mirroring how humans compare sentences, if SMT is an accurate description in this domain of comparative close reading."
           },
           {
             "paragraph_number": 12,
-            "text": "Within-structure alignment. AbstractExplorer also aligns the sentences in three different ways, as illustrated in Figure 5: vertical alignment by the middle of the structure tuple (second element), vertical alignment by the left of the structure tuple (first element), and left-justified alignment (horizontal juxtapositions). By default, sentences are vertically aligned by the middle of their shared structure tuple, but users can freely switch between the three alignment options using the button group atop the Cross-Sentence Relationship pane (Figure 1B). 5 For instance, when examining sentences with the Contribution + System Characteristics structure, users may choose to align by middle of the structure, starting with System Characteristics , to easily focus on the systems being built as they form a contiguous visual block (Figure 5a). Within the same aspect, when switching to examine sentences with another structure, e.g., the Methodology + Participants structure, they may choose to align by the left of the shared structure, starting with Methodology , to focus on the methodology being used (Figure 28 in Appendix F). These alignment options are intended to enable users to more easily read analogous chunks across sentences from different abstracts, ignoring details serving other roles within the sentence. This may effectively decrease context switching and lead to more robust mental models without requiring more cognitive load. If users prefer, sentences can be toggled to a left-justified view to facilitate conventional reading and skimming. Together, the vertical and horizontal juxtapositions are designed to help users identify both high-level commonalities and nuanced variations across structurally similar sentences."
+            "text": "Within-structure alignment. AbstractExplorer also aligns the sentences in three different ways, as illustrated in Figure 5: vertical alignment by the middle of the structure tuple (second element), vertical alignment by the left of the structure tuple (first element), and left-justified alignment (horizontal juxtapositions). By default, sentences are vertically aligned by the middle of their shared structure tuple, but users can freely switch between the three alignment options using the button group atop the Cross-Sentence Relationship pane (Figure 1B). For instance, when examining sentences with the Contribution + System Characteristics structure, users may choose to align by middle of the structure, starting with System Characteristics, to easily focus on the systems being built as they form a contiguous visual block (Figure 5a). Within the same aspect, when switching to examine sentences with another structure, e.g., the Methodology + Participants structure, they may choose to align by the left of the shared structure, starting with Methodology, to focus on the methodology being used (Figure 28 in Appendix F). These alignment options are intended to enable users to more easily read analogous chunks across sentences from different abstracts, ignoring details serving other roles within the sentence. This may effectively decrease context switching and lead to more robust mental models without requiring more cognitive load. If users prefer, sentences can be toggled to a left-justified view to facilitate conventional reading and skimming. Together, the vertical and horizontal juxtapositions are designed to help users identify both high-level commonalities and nuanced variations across structurally similar sentences."
           },
           {
             "paragraph_number": 13,
@@ -263,11 +263,11 @@
       },
       {
         "section_name": "User Scenario",
-        "section_number": "5.2",
+        "section_number": "4.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
-            "text": "Alice wants to learn more about the papers published in CHI 2024 and decides to use AbstractExplorer to explore them. Upon opening AbstractExplorer, Alice sees the Methodology/Contribution aspect selected by default and a list of Contribution + System Characteristics sentences—the most common sentence pattern of that aspect. After scanning a few sentences, Alice realizes that Contribution mostly consists of system names, while the variation lies in System Characteristics . She shifts her focus to System Characteristics , quickly skimming the vertically aligned list to discover a wide variety of systems. Intrigued by a system involving 3D-printable ceramic materials, Alice clicks on the sentence to view more details about the paper in the Abstract panel, gaining insight into a previously unfamiliar area."
+            "text": "Alice wants to learn more about the papers published in CHI 2024 and decides to use AbstractExplorer to explore them. Upon opening AbstractExplorer, Alice sees the Methodology/Contribution aspect selected by default and a list of Contribution + System Characteristics sentences—the most common sentence pattern of that aspect. After scanning a few sentences, Alice realizes that Contribution mostly consists of system names, while the variation lies in System Characteristics. She shifts her focus to System Characteristics, quickly skimming the vertically aligned list to discover a wide variety of systems. Intrigued by a system involving 3D-printable ceramic materials, Alice clicks on the sentence to view more details about the paper in the Abstract panel, gaining insight into a previously unfamiliar area."
           },
           {
             "paragraph_number": 1,
@@ -279,17 +279,17 @@
           },
           {
             "paragraph_number": 3,
-            "text": "Finally, Alice explores research involving large language models (LLMs). She types “LLM” into the search bar and selects “Gaps in Prior Work” from the predefined aspects panel. The largest structure group is Challenge/Problem + Contribution , and Alice skims these sentences with a focus on Challenge/Problem , quickly identifying recurring themes such as addressing hallucination risks, improving prompting, and examining the impact of LLMs on marginalized groups. This exploration gives her a clearer view of the key challenges and research directions related to LLMs discussed at CHI 2024."
+            "text": "Finally, Alice explores research involving large language models (LLMs). She types “LLM” into the search bar and selects “Gaps in Prior Work” from the predefined aspects panel. The largest structure group is Challenge/Problem + Contribution, and Alice skims these sentences with a focus on Challenge/Problem, quickly identifying recurring themes such as addressing hallucination risks, improving prompting, and examining the impact of LLMs on marginalized groups. This exploration gives her a clearer view of the key challenges and research directions related to LLMs discussed at CHI 2024."
           }
         ]
       },
       {
         "section_name": "Implementation Details",
-        "section_number": "5.3",
+        "section_number": "4.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
-            "text": "The AbstractExplorer interface is a React app loaded with CHI 2024 abstract data from the CHI 2024 Papers Explorer’s open-source repository. 6 The dataset consists of paper abstracts and metadata including title, author names, and session. We select only full papers from the dataset, which results in 1057 paper abstracts."
+            "text": "The AbstractExplorer interface is a React app loaded with CHI 2024 abstract data from the CHI 2024 Papers Explorer’s open-source repository. The dataset consists of paper abstracts and metadata including title, author names, and session. We select only full papers from the dataset, which results in 1057 paper abstracts."
           },
           {
             "paragraph_number": 1,
@@ -297,7 +297,7 @@
           },
           {
             "paragraph_number": 2,
-            "text": "Then, we segment sentences within each aspect into grammarpreserving chunks (see prompt used in Appendix D.2). This results in grammatically coherent chunks that are the basis of structure patterns. After identifying chunk boundaries, we again prompt an LLM to generate labels for chunks in a human-in-the-loop approach: starting from an initial set of labels for chunk roles, when a new label is generated, a researcher from the research team examines the new label and merges it with existing labels if appropriate, controlling for the total number of labels."
+            "text": "Then, we segment sentences within each aspect into grammar-preserving chunks (see prompt used in Appendix D.2). This results in grammatically coherent chunks that are the basis of structure patterns. After identifying chunk boundaries, we again prompt an LLM to generate labels for chunks in a human-in-the-loop approach: starting from an initial set of labels for chunk roles, when a new label is generated, a researcher from the research team examines the new label and merges it with existing labels if appropriate, controlling for the total number of labels."
           },
           {
             "paragraph_number": 3,
@@ -317,15 +317,15 @@
   },
   {
     "section_name": "Ablation Study",
-    "section_number": "6",
+    "section_number": "5",
     "paragraphs": [
       {
         "paragraph_number": 0,
-        "text": "In this study, we allowed participants to experience views of sameaspect sentences (Section 4.1.1) with different combinations of highlighting, ordering, and alignment (as described in Section 4.1.2 and Section 4.1.4) enabled or not, in order to understand which and/or what combinations most effectively supported users’ ability to skim and read laterally across documents."
+        "text": "In this study, we allowed participants to experience views of same-aspect sentences (Section 4.1.1) with different combinations of highlighting, ordering, and alignment (as described in Section 4.1.2 and Section 4.1.4) enabled or not, in order to understand which and/or what combinations most effectively supported users’ ability to skim and read laterally across documents."
       },
       {
         "paragraph_number": 1,
-        "text": "Since reading is cognitively effortful, we consider how a reader’s Need for Cognition (NFC) [4, 5]—defined as a personality trait that reflects one’s tendency to rely on quick heuristics or engage in effortful cognition—affects their appreciation for the novel lateral reading/skimming that these features are intended to support. 7"
+        "text": "Since reading is cognitively effortful, we consider how a reader’s Need for Cognition (NFC) [4, 5]—defined as a personality trait that reflects one’s tendency to rely on quick heuristics or engage in effortful cognition—affects their appreciation for the novel lateral reading/skimming that these features are intended to support."
       },
       {
         "paragraph_number": 2,
@@ -335,7 +335,7 @@
     "subsections": [
       {
         "section_name": "Participants",
-        "section_number": "6.1",
+        "section_number": "5.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -345,7 +345,7 @@
       },
       {
         "section_name": "Procedure",
-        "section_number": "6.2",
+        "section_number": "5.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -375,7 +375,7 @@
       },
       {
         "section_name": "Results",
-        "section_number": "6.3",
+        "section_number": "5.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -383,11 +383,11 @@
           },
           {
             "paragraph_number": 1,
-            "text": "The most preferred condition (all three features enabled) was tied with the baseline no-features-enabled condition for lowest reported cognitive load. Specifically, 11 participants reported their lowest raw NASA-TLX scores 8 in the all-three-features condition, and a different 11 participants reported their lowest raw NASA-TLX scores in the baseline condition. (See Table 1’s “Least Cognitive Effort” columns for statistical details.) Only one participant each reported their lowest raw NASA-TLX score when working with the without-highlighting and without-ordering ablation conditions, respectively. No participant reported their lowest Raw NASA-TLX score when using the without-alignment condition. These results suggest that these three features lose their effectiveness when not used together."
+            "text": "The most preferred condition (all three features enabled) was tied with the baseline no-features-enabled condition for lowest reported cognitive load. Specifically, 11 participants reported their lowest raw NASA-TLX scores in the all-three-features condition, and a different 11 participants reported their lowest raw NASA-TLX scores in the baseline condition. (See Table 1’s “Least Cognitive Effort” columns for statistical details.) Only one participant each reported their lowest raw NASA-TLX score when working with the without-highlighting and without-ordering ablation conditions, respectively. No participant reported their lowest Raw NASA-TLX score when using the without-alignment condition. These results suggest that these three features lose their effectiveness when not used together."
           },
           {
             "paragraph_number": 2,
-            "text": "Participants’ Need for Cognition (NFC) explained some of participants’ perceived cognitive load and preferences. For simplicity of analysis, we denote participants with NFC scores above the overall participants’ median NFC of 5.42 (IQR = 0.583) as higher NFC, and lower NFC otherwise. 9 Figures in Appendix G show the distribution of participants’ NFC scores as a function of the conditions in which they reported the least cognitive load (Figure 29) and which they preferred most (Figure 30). Participants with lower NFC more frequently preferred and experienced less cognitive load when skimming with all the features enabled. 10 Likewise, Figure 8 shows that most lower-NFC participants reported their lowest cognitive load when all features were enabled, while most higher-NFC participants reported their lowest cognitive load when no features were enabled (baseline)."
+            "text": "Participants’ Need for Cognition (NFC) explained some of participants’ perceived cognitive load and preferences. For simplicity of analysis, we denote participants with NFC scores above the overall participants’ median NFC of 5.42 (IQR = 0.583) as higher NFC, and lower NFC otherwise. Figures in Appendix G show the distribution of participants’ NFC scores as a function of the conditions in which they reported the least cognitive load (Figure 29) and which they preferred most (Figure 30). Participants with lower NFC more frequently preferred and experienced less cognitive load when skimming with all the features enabled. Likewise, Figure 8 shows that most lower-NFC participants reported their lowest cognitive load when all features were enabled, while most higher-NFC participants reported their lowest cognitive load when no features were enabled (baseline)."
           },
           {
             "paragraph_number": 3,
@@ -419,7 +419,7 @@
   },
   {
     "section_name": "Summative User Study",
-    "section_number": "7",
+    "section_number": "6",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -429,7 +429,7 @@
     "subsections": [
       {
         "section_name": "Participants",
-        "section_number": "7.1",
+        "section_number": "6.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -439,7 +439,7 @@
       },
       {
         "section_name": "Study Procedure",
-        "section_number": "7.2",
+        "section_number": "6.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -467,7 +467,7 @@
   },
   {
     "section_name": "Results",
-    "section_number": "8",
+    "section_number": "7",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -481,7 +481,7 @@
     "subsections": [
       {
         "section_name": "SMT-Inspired Chunk Ordering, Highlighting and Alignment",
-        "section_number": "8.1",
+        "section_number": "7.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -497,11 +497,11 @@
           },
           {
             "paragraph_number": 3,
-            "text": "Reading Sentences at Scale. As reflected in Figure 11, participants highlighted how the interface scaled up the number of papers they could review (P2, P4, P9, P11, P16), finding the interface to be highly helpful for exploring a greater number (M=6.19, STD=0.91) and broader range (M=5.94, STD=1.18) of paper abstracts along a given aspect than they typically would. For example, P2 said, “It’s very helpful in getting familiar with large numbers of articles/topics in a short time, esp. most papers have the similar structure.” Similarly, P16 wrote, “The way it groups and renders sentences make it very easy to skim through many papers in this conference, something hard to do with traditional interfaces.” P9 also noted reading a greater number and diversity of abstracts in the same timeframe with Abstract- Explorer. Participants also rated the interface as very helpful for discovering otherwise-missed papers (M=5.81, STD=1.22). Many mentioned serendipitous discoveries of new papers (P4, P8, P11) and a more comprehensive grasp of the collection (P7, P11, P15). As P4 remarked, “I ran into many interesting papers that I will probably miss if using a traditional reader.”"
+            "text": "Reading Sentences at Scale. As reflected in Figure 11, participants highlighted how the interface scaled up the number of papers they could review (P2, P4, P9, P11, P16), finding the interface to be highly helpful for exploring a greater number (M=6.19, STD=0.91) and broader range (M=5.94, STD=1.18) of paper abstracts along a given aspect than they typically would. For example, P2 said, “It’s very helpful in getting familiar with large numbers of articles/topics in a short time, esp. most papers have the similar structure.” Similarly, P16 wrote, “The way it groups and renders sentences make it very easy to skim through many papers in this conference, something hard to do with traditional interfaces.” P9 also noted reading a greater number and diversity of abstracts in the same timeframe with AbstractExplorer. Participants also rated the interface as very helpful for discovering otherwise-missed papers (M=5.81, STD=1.22). Many mentioned serendipitous discoveries of new papers (P4, P8, P11) and a more comprehensive grasp of the collection (P7, P11, P15). As P4 remarked, “I ran into many interesting papers that I will probably miss if using a traditional reader.”"
           },
           {
             "paragraph_number": 4,
-            "text": "Comparing sentences to find common patterns and outliers. Participants leveraged chunk highlighting and alignment for crosspaper comparison as well. For instance, P5 valued how the interface enabled them to “compare a well-defined aspect across selected papers, such as methodology and study size.” Beyond identifying differences, participants rated the interface as very helpful for recognizing common patterns in CHI abstracts (M=5.81, STD=1.17) (Figure 11) and discovered interesting patterns in both content and writing style (P2, P4, P8, P14). For example, P2 noted a recurring sentence structure “we developed xxx, using xxx, showing xxx” when authors introduced novel systems, while P4 investigated typical participant counts for different study types. Two participants (P4, P14) reported that recognizing these common patterns helped them write their own abstracts for HCI venues."
+            "text": "Comparing sentences to find common patterns and outliers. Participants leveraged chunk highlighting and alignment for cross-paper comparison as well. For instance, P5 valued how the interface enabled them to “compare a well-defined aspect across selected papers, such as methodology and study size.” Beyond identifying differences, participants rated the interface as very helpful for recognizing common patterns in CHI abstracts (M=5.81, STD=1.17) (Figure 11) and discovered interesting patterns in both content and writing style (P2, P4, P8, P14). For example, P2 noted a recurring sentence structure “we developed xxx, using xxx, showing xxx” when authors introduced novel systems, while P4 investigated typical participant counts for different study types. Two participants (P4, P14) reported that recognizing these common patterns helped them write their own abstracts for HCI venues."
           },
           {
             "paragraph_number": 5,
@@ -515,7 +515,7 @@
       },
       {
         "section_name": "User-Defined Aspects",
-        "section_number": "8.2",
+        "section_number": "7.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -529,7 +529,7 @@
       },
       {
         "section_name": "Real-World Usages",
-        "section_number": "8.3",
+        "section_number": "7.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -541,17 +541,17 @@
   },
   {
     "section_name": "Discussion",
-    "section_number": "9",
+    "section_number": "8",
     "paragraphs": [
       {
         "paragraph_number": 0,
-        "text": "Our ablation and summative studies verified the value of Abstract- Explorer, specifically showing that all three components of the Structural Mapping Engine—color coding, sentence ordering, and vertical alignment—are crucial for facilitating comparative close reading at scale. Building on our findings, we now reflect on both the conceptual framework and empirical results of our design."
+        "text": "Our ablation and summative studies verified the value of AbstractExplorer, specifically showing that all three components of the Structural Mapping Engine—color coding, sentence ordering, and vertical alignment—are crucial for facilitating comparative close reading at scale. Building on our findings, we now reflect on both the conceptual framework and empirical results of our design."
       }
     ],
     "subsections": [
       {
         "section_name": "Rethinking Sensemaking and Information Seeking Paradigms",
-        "section_number": "9.1",
+        "section_number": "8.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -563,13 +563,13 @@
           },
           {
             "paragraph_number": 2,
-            "text": "In this work, we introduce a new paradigm for exploring a large corpus of small documents by identifying roles at the phrasal and sentence levels, then slice on, reify, group, and/or align the text itself on those roles, with sentences left intact. We demonstrate how slicing sentences according to roles and visually aligning them can help readers perceive cross-document relationships in a coherent manner. We extend existing approaches through automated role annotation, establishing alignments using grammatical chunk boundaries, and preserving sentences in their entirety, instead of relying on abstract meta-data. In the context of close reading of research paper abstracts at scale, our findings suggest Abstract- Explorer enabled participants to scale up the number of papers they could review through efficient skimming and find common patterns and outliers through sentence comparison, resulting in a rich synthesis of ideas and connections to foster deeper engagement with scholarly articles. We posit that our approach can generalize to other domains such as journalism [21], code synthesis [20, 22], and social media analytics [34] where visual alignment of text can enable meaningful comparisons of underlying patterns to identify relational clarity."
+            "text": "In this work, we introduce a new paradigm for exploring a large corpus of small documents by identifying roles at the phrasal and sentence levels, then slice on, reify, group, and/or align the text itself on those roles, with sentences left intact. We demonstrate how slicing sentences according to roles and visually aligning them can help readers perceive cross-document relationships in a coherent manner. We extend existing approaches through automated role annotation, establishing alignments using grammatical chunk boundaries, and preserving sentences in their entirety, instead of relying on abstract meta-data. In the context of close reading of research paper abstracts at scale, our findings suggest AbstractExplorer enabled participants to scale up the number of papers they could review through efficient skimming and find common patterns and outliers through sentence comparison, resulting in a rich synthesis of ideas and connections to foster deeper engagement with scholarly articles. We posit that our approach can generalize to other domains such as journalism [21], code synthesis [20, 22], and social media analytics [34] where visual alignment of text can enable meaningful comparisons of underlying patterns to identify relational clarity."
           }
         ]
       },
       {
         "section_name": "Facilitating Structured Variation Seeking to Invite Cognitive Engagement",
-        "section_number": "9.2",
+        "section_number": "8.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -583,7 +583,7 @@
       },
       {
         "section_name": "Limitations and Future Work",
-        "section_number": "9.3",
+        "section_number": "8.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -591,7 +591,7 @@
           },
           {
             "paragraph_number": 1,
-            "text": "Reading abstracts along one aspect at a time offers both advantages and limitations. On one hand, it enables users to quickly skim similar sentences across papers at scale. However, such sentencelevel analysis may oversimplify the more complex arguments that span across several sentences. Abstracts, while concise, often contain intricate reasoning that may be split across several lines, and focusing on sentence-level patterns may lead to a loss of context. While our system includes linkages that allow users to quickly access the full abstract by clicking on any selected sentence, the resulting context-switching can be cognitively demanding and disruptive. Future work could explore more seamless ways of preserving context, such as allowing users to navigate through every sentence of an abstract directly within the Cross-Sentence Relationship pane, fostering a more cohesive understanding of the content."
+            "text": "Reading abstracts along one aspect at a time offers both advantages and limitations. On one hand, it enables users to quickly skim similar sentences across papers at scale. However, such sentence-level analysis may oversimplify the more complex arguments that span across several sentences. Abstracts, while concise, often contain intricate reasoning that may be split across several lines, and focusing on sentence-level patterns may lead to a loss of context. While our system includes linkages that allow users to quickly access the full abstract by clicking on any selected sentence, the resulting context-switching can be cognitively demanding and disruptive. Future work could explore more seamless ways of preserving context, such as allowing users to navigate through every sentence of an abstract directly within the Cross-Sentence Relationship pane, fostering a more cohesive understanding of the content."
           }
         ]
       }
@@ -599,7 +599,7 @@
   },
   {
     "section_name": "Acknowledgments",
-    "section_number": "10",
+    "section_number": null,
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -610,7 +610,7 @@
   },
   {
     "section_name": "References",
-    "section_number": "11",
+    "section_number": null,
     "paragraphs": [],
     "subsections": []
   }

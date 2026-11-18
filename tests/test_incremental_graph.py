@@ -157,63 +157,6 @@ class IncrementalGraphTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "canonical document"):
                 load_paper(path, "paper-a", "Paper A")
 
-    def test_normalizes_nested_paragraphs_and_existing_role_statements(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / "paper.json"
-            path.write_text(
-                json.dumps(
-                    [
-                        {
-                            "section_name": "Method",
-                            "section_number": "3",
-                            "role_statement": "Describes how the method works.",
-                            "paragraphs": [
-                                {
-                                    "paragraph_number": 0,
-                                    "text": "Method overview.",
-                                    "role_statement": "Introduces the method.",
-                                }
-                            ],
-                            "subsections": [
-                                {
-                                    "section_name": "Implementation",
-                                    "paragraphs": [
-                                        {
-                                            "paragraph_number": 0,
-                                            "text": "Implementation details.",
-                                            "role_statement": "Explains the implementation.",
-                                        }
-                                    ],
-                                }
-                            ],
-                        }
-                    ]
-                ),
-                encoding="utf-8",
-            )
-
-            normalized = load_paper(
-                path,
-                "paper-a",
-                "Paper A",
-                max_granularity="subsection",
-            )
-
-            section = normalized.sections[0]
-            subsection = normalized.sections[1]
-            self.assertEqual(section.role_statement, "Describes how the method works.")
-            self.assertEqual(section.ordinal, 1)
-            self.assertEqual(section.text, "Method overview.\n\nImplementation details.")
-            self.assertEqual([paragraph.id for paragraph in section.paragraphs], ["s0001.p0001"])
-            self.assertEqual(subsection.kind, "subsection")
-            self.assertEqual(subsection.id, "s0001.ss0001")
-            self.assertEqual(subsection.parent_id, "s0001")
-            self.assertEqual(subsection.family_id, "s0001")
-            self.assertEqual(subsection.ordinal, 2)
-            self.assertEqual(
-                subsection.paragraphs[0].role_statement, "Explains the implementation."
-            )
-
     def test_section_granularity_collapses_subsection_paragraphs(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "paper.json"
@@ -614,9 +557,6 @@ class IncrementalGraphTest(unittest.TestCase):
                     id="sub1",
                     label="Detail",
                     text="Detail",
-                    kind="subsection",
-                    parent_id="s1",
-                    family_id="s1",
                     ordinal=2,
                 ),
             ],
@@ -649,7 +589,7 @@ class IncrementalGraphTest(unittest.TestCase):
 
         self.assertEqual(report["stats"]["section_fan_in_groups"], 0)
         self.assertTrue(all(not row["fan_in"] for row in report["levels"]["section"]))
-        self.assertIn("**Method (whole)**", markdown)
+        self.assertIn("**Method**", markdown)
         self.assertNotIn("Method > Detail", markdown)
 
     def test_rejects_two_members_from_one_paper(self) -> None:
@@ -668,7 +608,7 @@ class IncrementalGraphTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "already contains a member from p1"):
                 graph.add_member(node_id, "s2", "p1", 1, 2)
 
-    def test_canonical_five_paper_dataset_has_only_hierarchy_edges(self) -> None:
+    def test_canonical_five_paper_dataset_loads_without_matches(self) -> None:
         _, papers = load_manifest(CANONICAL_MANIFEST)
         with tempfile.TemporaryDirectory() as directory:
             revision = Path(directory) / "revision"
@@ -680,13 +620,11 @@ class IncrementalGraphTest(unittest.TestCase):
             summary = runner.run(papers)
 
             self.assertEqual(summary["paper_count"], 5)
-            edges = list(runner.role_graph.graph.edges(data=True))
-            self.assertEqual(len(edges), 87)
-            self.assertTrue(all(data["kind"] == "contains" for _, _, data in edges))
+            self.assertEqual(list(runner.role_graph.graph.edges()), [])
             self.assertTrue(all(len(data["members"]) == 1 for _, data in runner.role_graph.nodes()))
             descriptor = validate_dataset(revision / "dataset", "hci-five", "HCI Five")
             self.assertEqual(descriptor["paper_count"], 5)
-            self.assertEqual(descriptor["paragraph_count"], 464)
+            self.assertEqual(descriptor["paragraph_count"], 466)  # Two Paralib paragraphs restored on Nov 18.
             self.assertFalse((revision / "dataset" / "graph_categories.json").exists())
             snapshot = json.loads(
                 (revision / "dataset" / "final_snapshot.json").read_text(encoding="utf-8")
@@ -710,9 +648,6 @@ class IncrementalGraphTest(unittest.TestCase):
                 Section(
                     id="sub1",
                     text="Subsection evidence.",
-                    kind="subsection",
-                    parent_id="s1",
-                    family_id="s1",
                     ordinal=2,
                     paragraphs=[Paragraph(id="detail1", text="Detail paragraph", ordinal=2)],
                 ),
@@ -731,9 +666,6 @@ class IncrementalGraphTest(unittest.TestCase):
                 Section(
                     id="sub2",
                     text="Second subsection.",
-                    kind="subsection",
-                    parent_id="s2",
-                    family_id="s2",
                     ordinal=2,
                     paragraphs=[Paragraph(id="detail2", text="Second detail", ordinal=2)],
                 ),
@@ -786,12 +718,6 @@ class IncrementalGraphTest(unittest.TestCase):
             for member in candidate["members"]
         }
         self.assertEqual(detail_candidates, {"Detail paragraph"})
-        contains = [
-            event
-            for event in runner.journal.events
-            if event["action"] == "edge_created" and event["kind"] == "contains"
-        ]
-        self.assertEqual(len(contains), 2)
 
     def test_structural_rerepresentation_merges_singleton_before_paragraph_pass(self) -> None:
         first = Paper(
@@ -833,9 +759,6 @@ class IncrementalGraphTest(unittest.TestCase):
                     id="sub3",
                     label="Detail",
                     text="Third detail with the shared structural role.",
-                    kind="subsection",
-                    parent_id="root3",
-                    family_id="root3",
                     ordinal=2,
                     paragraphs=[Paragraph(id="c2", text="Third detail paragraph.")],
                 ),
@@ -912,10 +835,7 @@ class IncrementalGraphTest(unittest.TestCase):
             judge.requests.index(paragraph_request),
         )
         self.assertIn(root_id, runner.role_graph.graph)
-        self.assertEqual(
-            {(source, target) for source, target in runner.role_graph.graph.edges()},
-            {(root_id, target_id)},
-        )
+        self.assertEqual(list(runner.role_graph.graph.edges()), [])
         merge_event = next(
             event
             for event in runner.journal.events

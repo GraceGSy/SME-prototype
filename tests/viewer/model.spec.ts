@@ -55,7 +55,7 @@ test("membership cannot invent a paragraph or silently drop one", () => {
     section_groups: [],
     stats: { section_nodes: 0, paragraph_nodes: 0 },
   });
-  expect(() => buildModel(papers, snapshot)).toThrow("every paragraph");
+  expect(() => buildModel(papers, snapshot)).toThrow("every source unit");
   const member = {
     paper: "a",
     unit_id: "p",

@@ -145,7 +145,7 @@ class SkillApiTest(unittest.TestCase):
                 )
             records = list(Path(directory).glob("*.json"))
             self.assertEqual(len(records), 1)
-            record = json.loads(records[0].read_text())
+            record = json.loads(records[0].read_text(encoding="utf-8"))
             self.assertEqual(record["response"]["id"], "paid-response")
             self.assertEqual(record["usage"]["input_tokens"], 201)
             self.assertGreater(record["request_text_characters"], 0)
@@ -162,7 +162,9 @@ class SkillApiTest(unittest.TestCase):
             skill = root / "skills" / "test"
             skill.mkdir(parents=True)
             instructions = skill / "SKILL.md"
-            instructions.write_text("---\nname: test\ndescription: Test\n---\nInstructions")
+            instructions.write_text(
+                "---\nname: test\ndescription: Test\n---\nInstructions", encoding="utf-8"
+            )
             registry = root / "_cache" / "skill-registry.json"
             remote = api.return_value.beta.skills
             remote.create.return_value = SimpleNamespace(id="skill-1", latest_version_id="v1")
@@ -175,7 +177,9 @@ class SkillApiTest(unittest.TestCase):
             self.assertNotIn("betas", remote.create.call_args.kwargs)
             remote.versions.create.assert_not_called()
 
-            instructions.write_text("---\nname: test\ndescription: Test\n---\nChanged instructions")
+            instructions.write_text(
+                "---\nname: test\ndescription: Test\n---\nChanged instructions", encoding="utf-8"
+            )
             updated = ClaudeSkills(root, registry, "model").register(skill)
             self.assertEqual(updated.version, "v2")
             self.assertNotEqual(first.source_sha256, updated.source_sha256)

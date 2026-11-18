@@ -12,21 +12,22 @@ export class PaperMapView {
 
   constructor(
     private host: HTMLElement,
-    private model: Model,
+    private model: Pick<Model, "papers" | "groups" | "shared" | "singletons" | "membership">,
+    private sectionsOnly = false,
   ) {}
 
   render(): void {
     this.host.innerHTML = `<div class="paper-map-shell"><div class="paper-map-overview">
       <div class="paper-map-control-row">
-        <span class="paper-map-summary">${this.model.shared.length} shared groups; ${this.model.singletons.length} singleton passages</span>
+        <span class="paper-map-summary">${this.model.shared.length} ${this.sectionsOnly ? "matched section groups" : "shared groups"}; ${this.model.singletons.length} ${this.sectionsOnly ? "unmatched sections" : "singleton passages"}</span>
         <label class="paper-map-sync-toggle"><input id="paperMapSyncScroll" type="checkbox"${this.syncScroll ? " checked" : ""}> Sync paper scrolling</label>
         <label class="paper-map-hide-unselected-toggle"><input id="paperMapHideUnselected" type="checkbox"> Hide unselected</label>
-        <button class="paper-map-action-button" id="paperMapSingletonToggle" type="button" aria-pressed="${this.showSingletons}">${this.showSingletons ? "Hide" : "Show"} singleton passages</button>
+        <button class="paper-map-action-button" id="paperMapSingletonToggle" type="button" aria-pressed="${this.showSingletons}">${this.showSingletons ? "Hide" : "Show"} ${this.sectionsOnly ? "unmatched sections" : "singleton passages"}</button>
         <button class="paper-map-action-button" id="paperMapClear" type="button">Clear selection</button>
       </div>
       <div class="paper-map-legend paper-map-shared-legend" aria-label="Shared groups">${this.legend(this.model.shared)}</div>
       <div class="paper-map-singleton-tray"${this.showSingletons ? "" : " hidden"}>
-        <div class="paper-map-singleton-label">Singleton passages</div>
+        <div class="paper-map-singleton-label">${this.sectionsOnly ? "Unmatched sections" : "Singleton passages"}</div>
         <div class="paper-map-legend paper-map-singleton-legend">${this.legend(this.model.singletons)}</div>
       </div>
       </div><div class="paper-map-columns" style="--paper-count:${this.model.papers.length}">
@@ -37,17 +38,21 @@ export class PaperMapView {
         <div class="paper-map-column-indicator paper-map-column-indicator-top"></div>
         ${paper.sections
           .map(
-            (section) => `<h2 class="paper-map-section-head">${html(section.title)}</h2>
-          ${paper.paragraphs
-            .filter((unit) => unit.section_id === section.id)
+            (
+              section,
+            ) => `${this.sectionsOnly ? "" : `<h2 class="paper-map-section-head">${html(section.title)}</h2>`}
+          ${(this.sectionsOnly
+            ? [section]
+            : paper.paragraphs.filter((unit) => unit.section_id === section.id)
+          )
             .map((unit) => {
               const entry = this.model.membership.get(unitKey(paper.paper_id, unit.id))!;
               return `<article class="paper-map-paragraph${entry.singleton ? " singleton" : ""}" tabindex="0" role="button"
-              aria-label="${html(unit.tag)}" data-group="${html(entry.group.group_id)}"
+              aria-label="${html(this.sectionsOnly ? unit.title : unit.tag)}" data-group="${html(entry.group.group_id)}"
               style="--group-color:${entry.color};--group-fill:${entry.fill}">
-              <div class="paper-map-paragraph-meta">${html(unit.id)}</div>
+              ${this.sectionsOnly ? `<h2 class="paper-map-section-head">${html(unit.title)}</h2>` : `<div class="paper-map-paragraph-meta">${html(unit.id)}</div>`}
               <div class="paper-map-paragraph-question">${html(unit.tag)}</div>
-              <div class="paper-map-paragraph-text">${html(unit.text)}</div>
+              ${this.sectionsOnly ? `<details><summary>Read section text</summary><div class="paper-map-paragraph-text">${html(unit.text)}</div></details>` : `<div class="paper-map-paragraph-text">${html(unit.text)}</div>`}
             </article>`;
             })
             .join("")}`,
@@ -79,14 +84,15 @@ export class PaperMapView {
     element("#paperMapClear", this.host).addEventListener("click", () => this.select(null));
     this.host.querySelectorAll<HTMLElement>("[data-group]").forEach((item) => {
       const id = item.dataset.group!;
-      item.addEventListener("click", () =>
+      item.addEventListener("click", (event) => {
+        if ((event.target as Element).closest("details")) return;
         this.select(
           item.classList.contains("paper-map-legend-item") && this.selected === id ? null : id,
-        ),
-      );
+        );
+      });
       if (item.tagName !== "BUTTON")
         item.addEventListener("keydown", (event) => {
-          if (event.key === "Enter" || event.key === " ") {
+          if (event.target === item && (event.key === "Enter" || event.key === " ")) {
             event.preventDefault();
             item.click();
           }
@@ -233,7 +239,7 @@ export class PaperMapView {
       ] as const) {
         const indicator = element(`.paper-map-column-indicator-${side}`, column);
         indicator.classList.toggle("visible", count > 0);
-        indicator.textContent = `${count} selected paragraphs ${side === "top" ? "above" : "below"}`;
+        indicator.textContent = `${count} selected ${this.sectionsOnly ? "sections" : "paragraphs"} ${side === "top" ? "above" : "below"}`;
       }
     }
   }
@@ -243,7 +249,7 @@ export class PaperMapView {
     const tip = element("#paperMapQuestionPreview");
     element("#paperMapQuestionPreviewText").textContent = groupLabel(entry.group);
     element("#paperMapQuestionPreviewMeta").textContent =
-      `${entry.group.members.length} paragraphs; ${new Set(entry.group.members.map((member) => member.paper)).size} papers`;
+      `${entry.group.members.length} ${this.sectionsOnly ? "sections" : "paragraphs"}; ${new Set(entry.group.members.map((member) => member.paper)).size} papers`;
     tip.style.setProperty("--group-color", entry.color);
     tip.classList.add("visible");
     tip.setAttribute("aria-hidden", "false");

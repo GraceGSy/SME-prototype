@@ -1,0 +1,77 @@
+// Section-only Jev pipeline with section fan-in, as run on Nov 18, 2026.
+// Render: dot -Tpng -Gdpi=216 docs/diagrams/section-fan-in-flow.dot -o docs/diagrams/section-fan-in-flow.png
+digraph section_fan_in_flow {
+  graph [rankdir=TB, fontname="Times New Roman,", fontsize=12, nodesep=0.35, ranksep=0.42,
+         newrank=true, labelloc=t, label=<<b>Section matching with Jev and section fan-in</b><br/><font point-size="10">start --jev --sections-only --section-fan-in --jev-long-context</font><br/><font point-size="10" color="#30637d">■ data</font>  <font point-size="10" color="#bc6c13">■ Claude</font>  <font point-size="10" color="#7054a0">■ Jev</font>  <font point-size="10" color="#327144">■ Python rule</font>>];
+  node  [shape=box, style="rounded,filled", fontname="Times New Roman,", fontsize=12, margin="0.14,0.07", penwidth=1.2];
+  edge  [fontname="Times New Roman,", fontsize=11, color="#555555", arrowsize=0.7];
+
+  // Legend colors: data (blue), Claude (orange), Jev (purple), Python rule (green).
+  node [fillcolor="#edf4f8", color="#30637d", fontcolor="#173747"];
+  pdf     [label="Source PDF"];
+  clean   [label=<Cleaned content JSON<br/><font point-size="10">printed section numbers, headings,<br/>extraction fixes audited against the PDF</font>>];
+
+  node [fillcolor="#fff0d8", color="#bc6c13", fontcolor="#603704"];
+  roles   [label=<<b>Section roles</b> (Claude, once per section)<br/><font point-size="10">whole paper as cached prefix + focus heading;<br/>&quot;What role does this section play…? single concise sentence&quot;</font>>];
+
+  node [fillcolor="#edf4f8", color="#30637d", fontcolor="#173747"];
+  next    [label=<Next paper in manifest order<br/><font point-size="10">papers are inserted one at a time</font>>];
+
+  node [fillcolor="#e7f4e8", color="#327144", fontcolor="#173e23"];
+  which   [shape=diamond, style="filled", label="Paper\nnumber?", margin="0.04,0.04"];
+  seed    [label=<Paper 1: every section<br/>becomes a one-member node>];
+
+  subgraph cluster_match {
+    label=<<b>Match new sections ↔ existing nodes</b>>; style="rounded,dashed"; color="#7054a0"; fontname="Times New Roman,"; fontsize=12;
+    node [fillcolor="#efe7fb", color="#7054a0", fontcolor="#382459"];
+    choice2 [label=<<b>Paper 2: Jev Choice, both directions</b><br/><font point-size="10">each new section picks one node or NO_MATCH;<br/>each node picks one new section or NO_MATCH</font>>];
+    gate    [label=<<b>Paper 3+: Jev yes/no per (section, node)</b><br/><font point-size="10">focus paper complete; node role, its latest<br/>paper complete, older members' sections only.<br/>Over 32k → resend with long context (262k);<br/>still too large → node's member sections only</font>>];
+    count   [shape=diamond, style="filled", fillcolor="#e7f4e8", color="#327144", fontcolor="#173e23", label="Yeses?", margin="0.04,0.04"];
+    rank    [label=<<b>Jev ranking over the yeses</b><br/><font point-size="10">focus paper complete; options show member<br/>sections and roles only. Over 32k → long<br/>context; still too large → rank each half,<br/>then rank the two winners</font>>];
+    pick    [shape=box, style="rounded,filled", fillcolor="#e7f4e8", color="#327144", fontcolor="#173e23", label=<One directional pick per section<br/>and per node (or none)<br/><font point-size="10">reverse picks use the same yes table</font>>];
+  }
+
+  subgraph cluster_reconcile {
+    label=<<b>Reconcile (Python only)</b>>; style="rounded,dashed"; color="#327144"; fontname="Times New Roman,"; fontsize=12;
+    node [fillcolor="#e7f4e8", color="#327144", fontcolor="#173e23"];
+    recip   [label=<<b>Reciprocal picks → core member</b><br/><font point-size="10">section picked the node and the node picked it back</font>>];
+    fanin   [label=<<b>Section fan-in → fan-in member</b><br/><font point-size="10">one-way pick, immediately next (±1) to a core<br/>from the same paper in that node; no chains.<br/>Also: an old one-member node whose pick became<br/>a core elsewhere and sits next to that core</font>>];
+    single  [label=<Otherwise → new one-member node>];
+  }
+
+  subgraph cluster_recovery {
+    label=<<b>Singleton recovery (one frozen snapshot)</b>>; style="rounded,dashed"; color="#7054a0"; fontname="Times New Roman,"; fontsize=12;
+    node [fillcolor="#efe7fb", color="#7054a0", fontcolor="#382459"];
+    recover [label=<<b>One-member nodes ↔ nodes with 2+ members</b><br/><font point-size="10">eligible: no section from its paper yet (core),<br/>or next to a same-paper core (fan-in).<br/>Same method as matching: Choice at paper 2,<br/>yes/no then ranking at paper 3+</font>>];
+    node [fillcolor="#e7f4e8", color="#327144", fontcolor="#173e23"];
+    merge   [label=<Reciprocal → merge as core<br/>One-way and adjacent → merge as fan-in>];
+  }
+
+  node [fillcolor="#fff0d8", color="#bc6c13", fontcolor="#603704"];
+  grole   [label=<<b>Group roles</b> (Claude, changed nodes only)<br/><font point-size="10">&quot;What role do these passages share…?&quot;<br/>latest paper complete, other members' sections</font>>];
+
+  node [fillcolor="#e7f4e8", color="#327144", fontcolor="#173e23"];
+  more    [shape=diamond, style="filled", label="More\npapers?", margin="0.04,0.04"];
+
+  node [fillcolor="#f1eafb", color="#7054a0", fontcolor="#382459"];
+  ckpt    [label=<section-checkpoint.json<br/><font point-size="10">nodes, members (core / fan_in), roles;<br/>every Jev and Claude answer cached for --cache-from</font>>];
+  viewer  [label=<Viewer section map → Vercel<br/><font point-size="10">question-atlas-runs; section text redacted</font>>];
+
+  pdf -> clean -> roles -> next -> which;
+  which -> seed    [label=" 1"];
+  which -> choice2 [label=" 2"];
+  which -> gate    [label=" 3+"];
+  gate -> count;
+  count -> pick [label=" 0 or 1"];
+  count -> rank [label=" 2+"];
+  rank -> pick;
+  choice2 -> pick;
+  pick -> recip; pick -> fanin; pick -> single;
+  recip -> recover; fanin -> recover; single -> recover;
+  recover -> merge -> grole;
+  seed -> more [style=dashed];
+  grole -> more;
+  more -> next [label=" yes", constraint=false];
+  more -> ckpt [label=" no"];
+  ckpt -> viewer;
+}

@@ -77,10 +77,7 @@ def _policy_hash(config: PipelineConfig) -> str:
         "contexts": directory_hash(config.context_root),
         "skills": {
             name: directory_hash(config.skill_root / name)
-            for name in sorted(
-                {stage.skill for stage in config.stages if stage.skill}
-                | ({"explain-match"} if config.jev else set())
-            )
+            for name in sorted({stage.skill for stage in config.stages if stage.skill})
         },
     }
     return hashlib.sha256(json.dumps(assets, sort_keys=True).encode()).hexdigest()
@@ -142,6 +139,9 @@ def start_graph(
     jev_max_calls: int | None = None,
     max_api_responses: int | None = None,
     cache_from: Path | None = None,
+    sections_only: bool = False,
+    section_fan_in: bool = False,
+    jev_long_context_retry: bool = False,
 ) -> dict[str, Any]:
     if (provider is None) != (model is None):
         raise ValueError("Pass provider and model together, or use the saved configuration")
@@ -149,13 +149,17 @@ def start_graph(
     if len(manifest.papers) < 2:
         raise ValueError("A new graph requires at least two prepared papers")
     config = load_pipeline_config(config_path)
-    if any(value is not None for value in (jev_model, jev_max_calls)) and not (jev or config.jev):
+    if (
+        any(value is not None for value in (jev_model, jev_max_calls)) or jev_long_context_retry
+    ) and not (jev or config.jev):
         raise ValueError("Jev overrides require --jev or a Jev configuration")
     if jev or config.jev:
         settings = config.jev or JevSettings()
         overrides = {}
         if jev_model is not None:
             overrides["model"] = jev_model
+        if jev_long_context_retry:
+            overrides["long_context_retry"] = True
         config.jev = JevSettings.model_validate({**settings.model_dump(), **overrides})
     if provider is not None:
         config.model = ModelSettings.model_validate(
@@ -166,17 +170,24 @@ def start_graph(
             }
         )
     _set_execution_limits(config, jev_max_calls, max_api_responses)
+    if section_fan_in:
+        config.section_fan_in = True
     if config.jev:
         # Fail before buying role statement generation or creating a run with missing credentials.
         load_api_key(REPO_ROOT, "TYPESAFE_API_KEY")
         load_api_key(REPO_ROOT, f"{config.model.provider.upper()}_API_KEY")
+    if sections_only and manifest.max_granularity == "paragraph":
+        raise ValueError("A paragraph-only corpus has no section matching phase")
     state = RunState(
         config=config, max_granularity=manifest.max_granularity, policy_sha256=_policy_hash(config)
     )
     run_dir = run_dir.resolve()
     if cache_from is not None:
         cache_from = cache_from.resolve()
-        if not (cache_from / "run.json").is_file() or not (cache_from / "cache").is_dir():
+        if not (cache_from / "cache").is_dir() or not (
+            (cache_from / "run.json").is_file()
+            or any((cache_from / "revisions").glob("revision-*/sample.json"))
+        ):
             raise ValueError("Cache source must be an existing run with saved judgments")
         if run_dir.is_relative_to(cache_from):
             raise ValueError("A new run must be outside its cache source run")
@@ -188,10 +199,12 @@ def start_graph(
             run_dir / "cache-source.json",
             {
                 "run_dir": str(cache_from),
-                "policy_sha256": read_json(cache_from / "run.json")["policy_sha256"],
+                "policy_sha256": read_json(cache_from / "run.json")["policy_sha256"]
+                if (cache_from / "run.json").is_file()
+                else None,
             },
         )
-    return _execute(run_dir, state, manifest, documents, reviews)
+    return _execute(run_dir, state, manifest, documents, reviews, sections_only=sections_only)
 
 
 def add_papers(manifest_path: Path, run_dir: Path) -> dict[str, Any]:
@@ -222,6 +235,7 @@ def retry_graph(
     config_path: Path | None = None,
     jev_max_calls: int | None = None,
     max_api_responses: int | None = None,
+    sections_only: bool = False,
 ) -> dict[str, Any]:
     run_dir = run_dir.resolve()
     state = _state(run_dir)
@@ -243,7 +257,16 @@ def retry_graph(
             )
         state.config = config
     _set_execution_limits(state.config, jev_max_calls, max_api_responses)
-    return _execute(run_dir, state, manifest, documents, reviews, paper_index, stage_id)
+    return _execute(
+        run_dir,
+        state,
+        manifest,
+        documents,
+        reviews,
+        paper_index,
+        stage_id,
+        sections_only=sections_only,
+    )
 
 
 def _execute(
@@ -254,6 +277,8 @@ def _execute(
     reviews: list[dict | None],
     force_paper_index: int | None = None,
     force_stage_id: str | None = None,
+    *,
+    sections_only: bool = False,
 ) -> dict[str, Any]:
     state.revision_count += 1
     revision = f"revision-{state.revision_count:04d}"
@@ -304,12 +329,13 @@ def _execute(
     try:
         # Preserve the actual limits for each attempt, even after a retry changes them.
         write_json(revision_dir / "config.json", config.model_dump(mode="json"))
-        summary = runner.run(papers)
+        summary = runner.run(papers, sections_only=True) if sections_only else runner.run(papers)
     except Exception as error:
         write_json(
             revision_dir / "failure.json", {"type": type(error).__name__, "message": str(error)}
         )
         raise
-    state.current_revision = revision
+    if not sections_only:
+        state.current_revision = revision
     write_json(run_dir / "run.json", state.model_dump(mode="json"))
     return summary

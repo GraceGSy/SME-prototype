@@ -66,9 +66,9 @@ class MatchingExamplesTest(unittest.TestCase):
                     stage.prompt, stage.context, {k: None for k in spec.include}
                 )
                 self.assertNotIn("Constructed matching examples", rendered.system)
-                self.assertIn(
-                    "Answer with a single concise statement, focusing on role not content.",
-                    rendered.system,
+                # Role prompts render their own wording, not matching examples.
+                self.assertRegex(
+                    rendered.system, r"Answer (with|in) a single concise (statement|sentence)"
                 )
 
     def test_one_question_schema_controls_all_question_stages_and_their_cache_keys(self):
@@ -87,9 +87,9 @@ class MatchingExamplesTest(unittest.TestCase):
             before = [render(stage) for stage in stages]
             self.assertEqual(len({result.schema_hash for result in before}), 1)
             path = root / "shared/role-statement-output.schema.json"
-            schema = json.loads(path.read_text())
+            schema = json.loads(path.read_text(encoding="utf-8"))
             schema["properties"]["role_statement"]["minLength"] = 2
-            path.write_text(json.dumps(schema))
+            path.write_text(json.dumps(schema), encoding="utf-8")
             after = [render(stage) for stage in stages]
             self.assertEqual(len({result.schema_hash for result in after}), 1)
             for first, second in zip(before, after):
@@ -98,7 +98,9 @@ class MatchingExamplesTest(unittest.TestCase):
 
     def test_live_sanity_cases_are_held_out_of_the_prompt(self):
         cases = json.loads(
-            (Path(__file__).parent / "fixtures/role_matching_holdout.json").read_text()
+            (Path(__file__).parent / "fixtures/role_matching_holdout.json").read_text(
+                encoding="utf-8"
+            )
         )
         examples = self.example_path.read_text(encoding="utf-8")
         self.assertEqual(len(cases), 4)

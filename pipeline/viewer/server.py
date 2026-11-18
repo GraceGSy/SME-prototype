@@ -8,6 +8,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlsplit
 
+from ..incremental_graph.export import _viewer_group, _viewer_paper
+from ..incremental_graph.input_data import load_manifest
 from .package import VIEWER_ASSETS, DatasetValidationError, validate_dataset
 
 VIEWER = Path(__file__).parent
@@ -38,7 +40,7 @@ class RunCatalog:
             raise ValueError("viewer.json requires exactly one nonempty, unpadded label")
         return value["label"]
 
-    def entries(self):
+    def entries(self, *, include_checkpoints=False):
         entries = []
         for run in self.root.iterdir():
             if not run.is_dir() or not re.fullmatch(r"[A-Za-z0-9_-]+", run.name):
@@ -47,30 +49,72 @@ class RunCatalog:
                 continue
             state = read_json(run / "run.json") if (run / "run.json").is_file() else None
             current = state.get("current_revision") if state is not None else None
-            if state is not None and current is None:
-                continue
             revisions = []
+            checkpoints = []
             modified = 0
-            for summary in sorted((run / "revisions").glob("revision-*/summary.json")):
-                revision = summary.parent
+            for revision in (run / "revisions").glob("revision-*"):
                 if not re.fullmatch(r"revision-[0-9]{4,}", revision.name):
                     continue
-                if current and int(revision.name.split("-")[1]) > int(current.split("-")[1]):
+                if (
+                    not revision.resolve().is_relative_to(run.resolve())
+                    or (revision / "failure.json").exists()
+                ):
                     continue
-                if (revision / "failure.json").exists() or not (revision / "dataset").is_dir():
-                    continue
-                if not revision.resolve().is_relative_to(self.root):
+                summary = revision / "summary.json"
+                if include_checkpoints and (revision / "section-checkpoint.json").is_file():
+                    checkpoints.append(revision.name)
+                    summary = revision / "section-checkpoint.json"
+                elif (
+                    not summary.is_file()
+                    or not (revision / "dataset").is_dir()
+                    or (
+                        state is not None
+                        and (
+                            not current
+                            or int(revision.name.split("-")[1]) > int(current.split("-")[1])
+                        )
+                    )
+                ):
                     continue
                 revisions.append(revision.name)
                 modified = max(modified, summary.stat().st_mtime_ns)
             if revisions:
                 revisions.sort(key=lambda name: int(name.split("-")[1]))
-                entries.append({"id": run.name, "revisions": revisions, "modified": modified})
+                entry = {
+                    "id": run.name,
+                    "label": self.label(run.name),
+                    "revisions": revisions,
+                    "modified": modified,
+                }
+                if checkpoints:
+                    entry["sectionRevisions"] = sorted(checkpoints)
+                entries.append(entry)
         entries.sort(key=lambda entry: entry["modified"], reverse=True)
-        return [
-            {"id": entry["id"], "label": self.label(entry["id"]), "revisions": entry["revisions"]}
-            for entry in entries
-        ]
+        for entry in entries:
+            del entry["modified"]
+        return entries
+
+    def section_map(self, run, revision):
+        if not any(
+            e["id"] == run and revision in e.get("sectionRevisions", [])
+            for e in self.entries(include_checkpoints=True)
+        ):
+            raise ValueError("No saved section checkpoint for this revision")
+        root = self.root / run
+        checkpoint = read_json(root / "revisions" / revision / "section-checkpoint.json")
+        _, papers = load_manifest(root / "inputs" / revision / "manifest.yaml")
+        if checkpoint["completed_phase"] != "structural" or checkpoint["paper_order"] != [
+            p.paper_id for p in papers
+        ]:
+            raise ValueError("Section checkpoint disagrees with frozen inputs")
+        sections = {(p.paper_id, s.id): s for p in papers for s in p.sections}
+        return {
+            "papers": [_viewer_paper(p, include_paragraphs=False) for p in papers],
+            "groups": [
+                _viewer_group(gid, node, sections, {})
+                for gid, node in checkpoint["section_groups"].items()
+            ],
+        }
 
     def dataset(self, run, revision):
         if not any(e["id"] == run and revision in e["revisions"] for e in self.entries()):
@@ -89,7 +133,7 @@ def handler_for(catalog):
                 if path == "/trace" or path.startswith("/trace/"):
                     return self.serve_trace(path)
                 if path == "/local.json":
-                    return self.send_json(catalog.entries())
+                    return self.send_json(catalog.entries(include_checkpoints=True))
                 assets = {"/": VIEWER / "index.html", "/index.html": VIEWER / "index.html"}
                 assets.update(
                     {"/" + target: VIEWER / source for source, target in VIEWER_ASSETS.items()}
@@ -102,6 +146,8 @@ def handler_for(catalog):
                 if not match:
                     return self.send_error(404)
                 run, revision, filename = match.groups()
+                if filename == "section-map.json":
+                    return self.send_json(catalog.section_map(run, revision))
                 dataset = catalog.dataset(run, revision)
                 if filename == "dataset.json":
                     return self.send_json(validate_dataset(dataset, run, catalog.label(run)))

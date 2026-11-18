@@ -1,7 +1,7 @@
 [
   {
     "section_name": "Abstract",
-    "section_number": "1",
+    "section_number": null,
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -12,7 +12,7 @@
   },
   {
     "section_name": "Introduction",
-    "section_number": "2",
+    "section_number": "1",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -55,7 +55,7 @@
   },
   {
     "section_name": "Related Work",
-    "section_number": "3",
+    "section_number": "2",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -65,7 +65,7 @@
     "subsections": [
       {
         "section_name": "Skimming and Skimming Support Tools",
-        "section_number": "3.1",
+        "section_number": "2.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -79,7 +79,7 @@
       },
       {
         "section_name": "Cross-Document Text Visualization",
-        "section_number": "3.2",
+        "section_number": "2.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -105,7 +105,7 @@
       },
       {
         "section_name": "Sensemaking Interfaces for Generative AI",
-        "section_number": "3.3",
+        "section_number": "2.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -121,7 +121,7 @@
   },
   {
     "section_name": "Formative Interviews",
-    "section_number": "4",
+    "section_number": "3",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -131,7 +131,7 @@
     "subsections": [
       {
         "section_name": "Participants",
-        "section_number": "4.1",
+        "section_number": "3.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -141,7 +141,7 @@
       },
       {
         "section_name": "Findings",
-        "section_number": "4.2",
+        "section_number": "3.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -165,7 +165,7 @@
   },
   {
     "section_name": "Feature Design: Existing and Novel Sensemaking Support Features",
-    "section_number": "5",
+    "section_number": "4",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -175,7 +175,7 @@
     "subsections": [
       {
         "section_name": "Design Goals",
-        "section_number": "5.1",
+        "section_number": "4.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -201,7 +201,7 @@
       },
       {
         "section_name": "Relevant Theory",
-        "section_number": "5.2",
+        "section_number": "4.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -215,7 +215,7 @@
       },
       {
         "section_name": "Feature Descriptions",
-        "section_number": "5.3",
+        "section_number": "4.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -271,7 +271,7 @@
   },
   {
     "section_name": "User Study",
-    "section_number": "6",
+    "section_number": "5",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -289,7 +289,7 @@
     "subsections": [
       {
         "section_name": "Participants",
-        "section_number": "6.1",
+        "section_number": "5.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -299,7 +299,7 @@
       },
       {
         "section_name": "Study Procedure",
-        "section_number": "6.2",
+        "section_number": "5.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -309,7 +309,7 @@
       },
       {
         "section_name": "Task 1: Email (Re)writing",
-        "section_number": "6.3",
+        "section_number": "5.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -323,7 +323,7 @@
       },
       {
         "section_name": "Task 2: Model Comparison",
-        "section_number": "6.4",
+        "section_number": "5.4",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -333,7 +333,7 @@
       },
       {
         "section_name": "Analysis",
-        "section_number": "6.5",
+        "section_number": "5.5",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -351,7 +351,7 @@
       },
       {
         "section_name": "Email (Re)writing Results",
-        "section_number": "6.6",
+        "section_number": "5.6",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -377,7 +377,7 @@
       },
       {
         "section_name": "Results for Model Comparison Task",
-        "section_number": "6.7",
+        "section_number": "5.7",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -417,7 +417,7 @@
   },
   {
     "section_name": "Case Studies",
-    "section_number": "7",
+    "section_number": "6",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -435,7 +435,7 @@
     "subsections": [
       {
         "section_name": "Utility of Different Features",
-        "section_number": "7.1",
+        "section_number": "6.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -477,7 +477,7 @@
       },
       {
         "section_name": "Differences Across User Attitudes, Tasks, and Number and Length of Responses",
-        "section_number": "7.2",
+        "section_number": "6.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -509,7 +509,7 @@
   },
   {
     "section_name": "Discussion",
-    "section_number": "8",
+    "section_number": "7",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -519,7 +519,7 @@
     "subsections": [
       {
         "section_name": "Design Implications and Future Work",
-        "section_number": "8.1",
+        "section_number": "7.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -553,7 +553,7 @@
       },
       {
         "section_name": "Limitations",
-        "section_number": "8.2",
+        "section_number": "7.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -573,7 +573,7 @@
   },
   {
     "section_name": "Acknowledgments",
-    "section_number": "9",
+    "section_number": null,
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -584,7 +584,7 @@
   },
   {
     "section_name": "References",
-    "section_number": "10",
+    "section_number": null,
     "paragraphs": [],
     "subsections": []
   }

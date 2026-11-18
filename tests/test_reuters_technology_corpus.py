@@ -47,8 +47,8 @@ class ReutersTechnologyCorpusTest(unittest.TestCase):
                     self.assertNotIn(unwanted, text)
 
     def test_cross_page_paragraph_remains_whole(self):
-        article = json.loads((ROOT / "sources.json").read_text())["articles"][4]
-        document = json.loads((ROOT / article["file"]).read_text())
+        article = json.loads((ROOT / "sources.json").read_text(encoding="utf-8"))["articles"][4]
+        document = json.loads((ROOT / article["file"]).read_text(encoding="utf-8"))
         paragraph = document[0]["paragraphs"][7]["text"]
         self.assertEqual(article["paragraph_pages"][7], [2, 3])
         self.assertTrue(paragraph.startswith('"It is running in the background'))

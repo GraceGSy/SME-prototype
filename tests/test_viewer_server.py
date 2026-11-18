@@ -28,10 +28,12 @@ class ViewerServerTest(unittest.TestCase):
             published = site / "public/runs" / run
             original = root / run / "revisions/revision-0001/dataset/paper_a.json"
             self.assertEqual(
-                json.loads((published / "revision-0001/paper_a.json").read_text()),
-                json.loads(original.read_text()),
+                json.loads((published / "revision-0001/paper_a.json").read_text(encoding="utf-8")),
+                json.loads(original.read_text(encoding="utf-8")),
             )
-            self.assertNotIn("Shared A", (published / "revision-0002/paper_a.json").read_text())
+            self.assertNotIn(
+                "Shared A", (published / "revision-0002/paper_a.json").read_text(encoding="utf-8")
+            )
 
     def test_public_catalog_publishes_only_chosen_completed_snapshots_without_prose(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -52,17 +54,17 @@ class ViewerServerTest(unittest.TestCase):
                 dest = site / "public/runs/example" / rev
                 src = root / "example/revisions" / rev / "dataset"
                 self.assertEqual(
-                    json.loads((dest / "final_snapshot.json").read_text()),
-                    json.loads((src / "final_snapshot.json").read_text()),
+                    json.loads((dest / "final_snapshot.json").read_text(encoding="utf-8")),
+                    json.loads((src / "final_snapshot.json").read_text(encoding="utf-8")),
                 )
-                paper = json.loads((dest / "paper_a.json").read_text())
+                paper = json.loads((dest / "paper_a.json").read_text(encoding="utf-8"))
                 self.assertTrue(
                     all(
                         u["text"] == "Source text is not included in this results viewer."
                         for u in paper["sections"] + paper["paragraphs"]
                     )
                 )
-                self.assertNotIn("Shared A", (dest / "paper_a.json").read_text())
+                self.assertNotIn("Shared A", (dest / "paper_a.json").read_text(encoding="utf-8"))
 
     def test_http_serves_validated_export_but_not_private_files(self):
         with tempfile.TemporaryDirectory() as directory:

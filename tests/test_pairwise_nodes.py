@@ -1,0 +1,332 @@
+"""From the third paper on, each new unit asks Jev a yes/no question per node."""
+
+import io
+import json
+import tempfile
+import unittest
+from pathlib import Path
+from unittest.mock import patch
+from urllib.error import HTTPError
+
+from test_jev import answer
+from test_jev_pipeline import ScriptedSkills
+
+from pipeline.document import ROLE_FIELD
+from pipeline.files import read_json, write_json
+from pipeline.incremental_graph.runs import start_graph
+from pipeline.viewer.package_catalog import package_catalog
+
+ROLES = {"water supply": "mechanism", "small sample": "limitation", "high price": "cost"}
+
+
+def section(name, text, role):
+    return {
+        "section_name": name,
+        "section_number": None,
+        ROLE_FIELD: role,
+        "paragraphs": [{"paragraph_number": 0, "text": text, ROLE_FIELD: role}],
+        "subsections": [],
+    }
+
+
+def paper(word, sections):
+    return [
+        section(name, f"{word} {text}", f"Role of the {name.lower()} section.")
+        for name, text in sections
+    ]
+
+
+STANDARD = [
+    ("Method", "explains how closing a valve cuts the water supply."),
+    ("Limits", "notes that a small sample limits generalization."),
+]
+
+
+def roles(text):
+    return {role for phrase, role in ROLES.items() if phrase in text}
+
+
+class ScriptedJev:
+    """Score by shared keyword role; record every request body."""
+
+    def __init__(self, reject_over=None):
+        self.bodies = []
+        self.reject_over = reject_over  # Reject larger rankings as over Jev's context.
+
+    def __call__(self, request, **kwargs):
+        body = json.loads(request.data)
+        self.bodies.append(body)
+        options = body["questions"].get("match", {}).get("criteria", [])
+        if self.reject_over and "Gamma paper" in body["state"] and len(options) > self.reject_over:
+            error = b'{"detail":{"error_type":"max_tokens_exceeded"}}'
+            raise HTTPError(request.full_url, 400, "Bad Request", {}, io.BytesIO(error))
+        texts, block, key = {}, None, None
+        for line in body["state"].splitlines():
+            if line in {"Focus", "Context", "Candidates"}:
+                block, key = line, None
+            elif line.startswith("Section: ") and block != "Context":
+                key = "focus" if block == "Focus" else line.split()[1]
+                if "(member of " in line:
+                    key = line.split("(member of ", 1)[1].rstrip(")")
+                texts.setdefault(key, "")
+            elif key and line.startswith("Content: "):
+                texts[key] += " " + line
+        focus = roles(texts.pop("focus"))
+        matching = [k for k, text in texts.items() if roles(text) & focus]
+        noul = 0.9 if matching else 0.1
+        return io.BytesIO(
+            json.dumps(answer(body, matching[0] if matching else None, noul)).encode()
+        )
+
+
+class RecordingSkills(ScriptedSkills):
+    def __init__(self):
+        super().__init__()
+        self.users = []
+
+    def run_json(self, skills, user, schema, **kwargs):
+        self.users.append(user)
+        return super().run_json(skills, user, schema, **kwargs)
+
+
+class PairwiseNodeMatchingTest(unittest.TestCase):
+    def run_three(
+        self,
+        third_sections,
+        beta_sections=STANDARD,
+        alpha_sections=STANDARD,
+        jev=None,
+        section_fan_in=False,
+    ):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        root = Path(directory.name)
+        docs = {
+            "alpha": paper("Alpha", alpha_sections),
+            "beta": paper("Beta", beta_sections),
+            "gamma": paper("Gamma", third_sections),
+        }
+        for name, doc in docs.items():
+            write_json(root / f"{name}.json", doc)
+        write_json(
+            root / "manifest.yaml",
+            {
+                "schema_version": 1,
+                "max_granularity": "section",
+                "papers": [
+                    {"paper_id": n, "title": n.title() + " paper", "file": n + ".json"}
+                    for n in docs
+                ],
+            },
+        )
+        jev, skills = jev or ScriptedJev(), RecordingSkills()
+        with (
+            patch("pipeline.incremental_graph.runs.load_api_key", return_value="offline-key"),
+            patch("pipeline.providers.jev.load_api_key", return_value="offline-key"),
+            patch("pipeline.providers.jev.urlopen", side_effect=jev),
+            patch("pipeline.incremental_graph.judgments.create_skill_client", return_value=skills),
+        ):
+            result = start_graph(
+                root / "manifest.yaml",
+                root / "run",
+                jev=True,
+                sections_only=True,
+                section_fan_in=section_fan_in,
+            )
+        revision = Path(result["revision_dir"])
+        return jev, skills, revision
+
+    def test_third_paper_scores_each_node_with_two_complete_papers(self):
+        jev, skills, revision = self.run_three(
+            [
+                ("Method", "describes how a blocked water supply stops the pump."),
+                ("Limits", "reports that its small sample prevents broad claims."),
+            ]
+        )
+        third = [b for b in jev.bodies if "Gamma paper" in b["state"]]
+        # Two new sections times two nodes; no node competes with another node.
+        self.assertEqual(len(third), 4)
+        self.assertTrue(all(list(b["questions"]) == ["has_match"] for b in third))
+        for body in third:
+            state = body["state"]
+            candidates = state.split("\nCandidates\n", 1)[1]
+            self.assertEqual(candidates.count("Group "), 3)  # Role line plus two members.
+            self.assertIn("Role: ", candidates.splitlines()[0])
+            # Latest member paper (Beta) is complete; Alpha keeps only its member section.
+            self.assertEqual(state.count("Beta paper"), 2)
+            self.assertEqual(state.count("Alpha paper"), 1)
+            self.assertEqual(state.count("Gamma paper"), 2)
+
+        events = read_json(revision / "events.json")
+        self.assertEqual(sum(e["action"] == "pair_scored" for e in events), 4)
+        groups = read_json(revision / "section-checkpoint.json")["section_groups"].values()
+        self.assertEqual(sorted(len(g["members"]) for g in groups), [3, 3])
+
+        group_roles = [json.loads(u) for u in skills.users if '"latest_paper"' in u]
+        latest = [c["latest_paper"] for c in group_roles if len(c["group"]["members"]) == 3]
+        self.assertEqual(len(latest), 2)
+        for paper_context in latest:
+            self.assertEqual(paper_context["title"], "Gamma paper")
+            member = [s for s in paper_context["sections"] if s.get("group_member")]
+            self.assertEqual(len(member), 1)
+            self.assertNotIn("Alpha", json.dumps(paper_context))
+
+    def test_two_passing_nodes_go_to_one_ranking_question(self):
+        jev, _, revision = self.run_three(
+            [("Both", "covers the water supply and a small sample in one section.")]
+        )
+        third = [b for b in jev.bodies if "Gamma paper" in b["state"]]
+        self.assertEqual([list(b["questions"]) for b in third], [["has_match"]] * 2 + [["match"]])
+        ranking = third[-1]["state"].split("\nCandidates\n", 1)[1]
+        self.assertEqual(ranking.count(" Role: "), 2)  # Both passing nodes with their roles.
+        self.assertEqual(ranking.count("Beta paper"), 2)
+        recorded = [
+            e
+            for e in read_json(revision / "events.json")
+            if e["action"] == "match_recorded" and e["paper_index"] == 3
+        ]
+        forward = next(e for e in recorded if e["direction"] == "new_to_group")
+        self.assertEqual(len(forward["choice_ids"]), 2)
+        groups = read_json(revision / "section-checkpoint.json")["section_groups"].values()
+        self.assertEqual(sorted(len(g["members"]) for g in groups), [2, 3])
+
+    def test_ranking_shows_only_the_focus_paper_in_full(self):
+        jev, _, _ = self.run_three(
+            [
+                ("Both", "covers the water supply and a small sample in one section."),
+                ("Intro", "opens the paper."),
+            ],
+            beta_sections=[*STANDARD, ("Notes", "thanks the funders.")],
+        )
+        third = [b for b in jev.bodies if "Gamma paper" in b["state"]]
+        gates = [b["state"] for b in third if list(b["questions"]) == ["has_match"]]
+        [ranking] = [b["state"] for b in third if list(b["questions"]) == ["match"]]
+        # Yes/no questions carry the node's latest paper; the ranking does not.
+        self.assertTrue(any("Beta thanks the funders." in state for state in gates))
+        self.assertNotIn("Beta thanks the funders.", ranking)
+        before, candidates = ranking.split("\nCandidates\n")
+        self.assertIn("Gamma opens the paper.", before)  # The focus paper stays complete.
+        self.assertEqual(candidates.count("(member of Group "), 4)
+
+    def test_oversized_ranking_is_split_in_half_then_ranked_again(self):
+        sections = [*STANDARD, ("Cost", "warns that a high price slows adoption.")]
+        jev = ScriptedJev(reject_over=2)
+        _, _, revision = self.run_three(
+            [("All", "ties the water supply, a small sample, and a high price together.")],
+            beta_sections=sections,
+            alpha_sections=sections,
+            jev=jev,
+        )
+        third = [b for b in jev.bodies if "Gamma paper" in b["state"]]
+        rankings = [
+            len(b["questions"]["match"]["criteria"]) for b in third if "match" in b["questions"]
+        ]
+        # The rejected three-way ranking, one half of two, then the final of two.
+        self.assertEqual(rankings, [3, 2, 2])
+        forward = next(
+            e
+            for e in read_json(revision / "events.json")
+            if e["action"] == "match_recorded"
+            and e["paper_index"] == 3
+            and e["direction"] == "new_to_group"
+        )
+        self.assertEqual(len(forward["choice_ids"]), 3)
+        self.assertIsNotNone(forward["target_id"])
+        # A new run from this cache replays the size rejection without another call.
+        run = revision.parents[1]
+        replay = ScriptedJev(reject_over=2)
+        with (
+            patch("pipeline.incremental_graph.runs.load_api_key", return_value="offline-key"),
+            patch("pipeline.providers.jev.load_api_key", return_value="offline-key"),
+            patch("pipeline.providers.jev.urlopen", side_effect=replay),
+            patch(
+                "pipeline.incremental_graph.judgments.create_skill_client",
+                return_value=RecordingSkills(),
+            ),
+        ):
+            again = start_graph(
+                run.parent / "manifest.yaml",
+                run.parent / "again",
+                jev=True,
+                sections_only=True,
+                cache_from=run,
+            )
+        self.assertEqual(replay.bodies, [])
+        self.assertEqual(
+            read_json(Path(again["revision_dir"]) / "section-checkpoint.json")["section_groups"],
+            read_json(revision / "section-checkpoint.json")["section_groups"],
+        )
+
+    def test_yes_no_too_large_retries_with_member_sections_only(self):
+        class TightJev(ScriptedJev):
+            def __call__(self, request, **kwargs):
+                body = json.loads(request.data)
+                # Beta's Notes and Method appear together only when Beta is shown complete.
+                gate = list(body["questions"]) == ["has_match"]
+                full_beta = "Beta thanks" in body["state"] and "Beta explains" in body["state"]
+                if gate and "Gamma paper" in body["state"] and full_beta:
+                    self.bodies.append(body)
+                    error = b'{"detail":{"error_type":"max_tokens_exceeded"}}'
+                    raise HTTPError(request.full_url, 400, "Bad Request", {}, io.BytesIO(error))
+                return super().__call__(request, **kwargs)
+
+        jev = TightJev()
+        _, _, revision = self.run_three(
+            STANDARD, beta_sections=[*STANDARD, ("Notes", "thanks the funders.")], jev=jev
+        )
+        events = read_json(revision / "events.json")
+        reduced = [e for e in events if e["action"] == "pair_context_reduced"]
+        # Two Gamma sections times three nodes (two shared, Beta's Notes singleton).
+        self.assertEqual(len(reduced), 6)
+        groups = read_json(revision / "section-checkpoint.json")["section_groups"].values()
+        self.assertEqual(sorted(len(g["members"]) for g in groups if len(g["members"]) > 1), [3, 3])
+
+    def test_section_fan_in_admits_a_one_way_neighbor_only_when_enabled(self):
+        beta = [
+            ("Method", "explains how closing a valve cuts the water supply."),
+            ("Pump", "adds that a dry pump also cuts the water supply."),
+            ("Limits", "notes that a small sample limits generalization."),
+        ]
+        for enabled in (False, True):
+            with self.subTest(section_fan_in=enabled):
+                _, _, revision = self.run_three(STANDARD, beta_sections=beta, section_fan_in=enabled)
+                groups = read_json(revision / "section-checkpoint.json")["section_groups"]
+                method = next(
+                    g for g in groups.values() if {"beta", "alpha"} <= {m["paper_id"] for m in g["members"]}
+                    and any(m["unit_id"] == "s0001" and m["paper_id"] == "beta" for m in g["members"])
+                )
+                beta_members = {
+                    m["unit_id"]: m.get("membership_role")
+                    for m in method["members"]
+                    if m["paper_id"] == "beta"
+                }
+                fan_in_events = [
+                    e
+                    for e in read_json(revision / "events.json")
+                    if e["action"] == "section_fan_in_added"
+                ]
+                if enabled:
+                    # The second water-supply section sits beside the reciprocal core.
+                    self.assertEqual(beta_members, {"s0001": "core", "s0002": "fan_in"})
+                    self.assertEqual(len(fan_in_events), 1)
+                    self.assertEqual(fan_in_events[0]["reciprocal_unit_id"], "s0001")
+                else:
+                    self.assertEqual(beta_members, {"s0001": None})
+                    self.assertEqual(fan_in_events, [])
+
+    def test_public_catalog_publishes_a_section_checkpoint_without_source_text(self):
+        _, _, revision = self.run_three(STANDARD)
+        run = revision.parents[1]
+        site = run.parent / "site"
+        [entry] = package_catalog(run.parent, site, {run.name: "HCI | Section test"})
+        self.assertEqual(entry["sectionRevisions"], [revision.name])
+        self.assertIn("sections only", entry["revisionLabels"][revision.name])
+        published = site / "public/runs" / run.name / revision.name / "section-map.json"
+        section_map = read_json(published)
+        self.assertEqual(len(section_map["papers"]), 3)
+        self.assertNotIn("water supply", published.read_text(encoding="utf-8"))
+        self.assertEqual(sorted(len(g["members"]) for g in section_map["groups"]), [3, 3])
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -57,7 +57,7 @@ class CanonicalDocumentTest(unittest.TestCase):
             with self.subTest(invalid=invalid), self.assertRaises(ValueError):
                 validate_document([{**doc[0], ROLE_FIELD: invalid}])
 
-    def test_relabel_extraction_preserves_hierarchy_and_authored_numbers(self):
+    def test_relabel_extraction_keeps_printed_section_numbers(self):
         original = _document()
         original[0]["section_name"] = "4 Results"
         original[0]["paragraphs"][0].update(paragraph_number=8, text="See Section 4.1 and [8].")
@@ -72,7 +72,7 @@ class CanonicalDocumentTest(unittest.TestCase):
         )
         result = relabel_extraction(original)
         self.assertEqual(
-            [u.source["section_number"] for u in iter_structural_units(result)], ["1", "2", "2.1"]
+            [u.source["section_number"] for u in iter_structural_units(result)], [None, "4", "4.1"]
         )
         self.assertEqual(result[1]["section_name"], "Results")
         self.assertEqual(

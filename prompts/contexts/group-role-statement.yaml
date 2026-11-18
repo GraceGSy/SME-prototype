@@ -1,5 +1,6 @@
 include:
   - scope
   - group
+  - latest_paper
 max_characters: 500000
 overflow: fail

@@ -1,5 +1,9 @@
 # SMELTER: comparative reading with role statements
 
+**Contributor handoff:** [Project context and current status](PROJECT_CONTEXT.md)
+records the latest experiments, local-only work, known failures, user decisions,
+and verification results. Read it before continuing an existing run.
+
 SMELTER (Structural Mapping Engine for Long TExtual Reading) compares long
 documents by the roles their sections and paragraphs play. An LLM
 describes those roles and proposes local matches; Python applies fixed graph
@@ -91,7 +95,7 @@ See [the matcher guide](pipeline/manual_matcher/README.md) for local build and t
    cannot enter the graph until approved; extraction never runs inside graph
    construction.
 3. Create an ordered YAML manifest. Paths are relative to the manifest. Use
-   `section`, `subsection`, or `paragraph` for `max_granularity`; paragraph
+   `section` or `paragraph` for `max_granularity`; paragraph
    mode requires one stored top-level section per document.
 4. Validate the manifest, then start a new run. Use `add` with a manifest
    containing only new documents to extend it. `retry` uses frozen inputs
@@ -142,7 +146,7 @@ Example `datasets/my-corpus/manifest.yaml`:
 
 ```yaml
 schema_version: 1
-max_granularity: subsection
+max_granularity: section
 papers:
   - paper_id: paper-a
     title: Paper A

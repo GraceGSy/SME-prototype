@@ -7,6 +7,7 @@ from typing import Any, Callable
 
 from ..document import ROLE_FIELD
 from ..files import write_json
+from ..providers.jev import JevRequestTooLarge
 from .configuration import validate_pipeline_config
 from .evidence import Evidence
 from .export import export_revision
@@ -23,6 +24,7 @@ from .models import (
     Granularity,
     InsertionState,
     JudgmentRequest,
+    JudgmentResult,
     MatchBatch,
     MatchDecision,
     MatchDirection,
@@ -32,6 +34,8 @@ from .models import (
     StageConfig,
 )
 from .singleton_report import write_singleton_report
+
+PAIRWISE_FROM_PAPER = 3
 
 
 class PipelineError(RuntimeError):
@@ -55,7 +59,6 @@ class IncrementalGraphRunner:
         self.config = config
         self.judge = judge
         self.jev_judge = judge if isinstance(judge, CachedJudgments) and judge.jev else None
-        self.pending_votes = {}
         self.revision_dir = revision_dir
         self.revision_dir.mkdir(parents=True, exist_ok=False)
         self.max_granularity = max_granularity
@@ -85,16 +88,27 @@ class IncrementalGraphRunner:
             "regenerate_rerepresented_paragraph_role_statements": self._regenerate_rerepresented_paragraph_role_statements,
         }
 
-    def run(self, papers: list[Paper]) -> dict[str, Any]:
+    def run(self, papers: list[Paper], *, sections_only: bool = False) -> dict[str, Any]:
+        if sections_only and self.max_granularity == "paragraph":
+            raise ValueError("A paragraph-only corpus has no section matching phase")
         for paper_index, paper in enumerate(papers, start=1):
-            self.pending_votes.clear()
             self._register_paper(paper)
             insertion = InsertionState(paper=paper, paper_index=paper_index)
             self.insertions_by_paper[paper.paper_id] = insertion
             self._run_phase("structural", insertion)
+            if sections_only:
+                continue  # Recursive reparenting also makes paragraph decisions.
             self._recurse_reparented_sections(insertion)
             self._run_phase("paragraph", insertion)
         self.journal.finalize()
+        if sections_only:
+            checkpoint = {
+                "completed_phase": "structural",
+                "paper_order": list(self.role_graph.paper_order),
+                "section_groups": {gid: data for gid, data in self.role_graph.nodes("section")},
+            }
+            write_json(self.revision_dir / "section-checkpoint.json", checkpoint)
+            return {"completed_phase": "structural", "revision_dir": str(self.revision_dir)}
         export_revision(self.revision_dir / "dataset", self.role_graph, self.papers)
         write_singleton_report(self.journal.events, self.revision_dir / "reports")
         summary = {
@@ -131,6 +145,9 @@ class IncrementalGraphRunner:
             result = handler(stage, insertion)
             insertion.stage_results[stage.id] = result
             self.journal.stage(insertion.paper_index, stage.id, result)
+
+    def _fan_in(self, level: str) -> bool:
+        return level == "paragraph" or self.config.section_fan_in
 
     def _register_paper(self, paper: Paper) -> None:
         self.papers.append(paper)
@@ -227,14 +244,6 @@ class IncrementalGraphRunner:
             parent_id=None,
             batch=insertion.section_matches,
         )
-        for unit in insertion.paper.sections:
-            if unit.parent_id:
-                self.role_graph.add_hierarchy_edge(
-                    insertion.section_assignments[unit.parent_id],
-                    insertion.section_assignments[unit.id],
-                    paper_id=insertion.paper.paper_id,
-                    paper_index=insertion.paper_index,
-                )
         return insertion.section_assignments
 
     def _generate_section_group_role_statements(
@@ -257,21 +266,59 @@ class IncrementalGraphRunner:
     ) -> dict[str, Any]:
         """Apply reciprocal top-1 decisions from one frozen per-insertion snapshot."""
         nodes = dict(self.role_graph.nodes(level))
+        fan_in = self._fan_in(level)
         singletons = [node_id for node_id, data in nodes.items() if len(data["members"]) == 1]
         established = [node_id for node_id, data in nodes.items() if len(data["members"]) > 1]
         eligible = {
             source_id: [
                 target_id
                 for target_id in established
-                if recovery_admission(nodes[source_id], nodes[target_id]) is not None
+                if recovery_admission(nodes[source_id], nodes[target_id], section_fan_in=fan_in)
+                is not None
             ]
             for source_id in singletons
         }
         batch = MatchBatch(existing_group_ids=established, new_unit_ids=singletons)
-        for direction, sources, decisions in (
-            ("singleton_to_group", singletons, batch.forward),
-            ("group_to_singleton", established, batch.reverse),
-        ):
+
+        def recovery_unit(node_id, selectable=False):
+            unit = self.evidence.node_match_context(node_id, selectable=selectable)
+            if level == "paragraph" and len(unit["members"]) == 1:
+                return {
+                    **unit["members"][0],
+                    **({"selection_id": node_id} if selectable else {}),
+                }
+            return unit
+
+        if self._uses_pairwise(insertion):
+            # Admission requires a shared parent, so each parent scope is independent.
+            for parent_id in sorted({nodes[s].get("parent_id") for s in singletons}, key=str):
+                part = self._pairwise_batch(
+                    stage,
+                    insertion,
+                    scope={
+                        **self.evidence.scope_context(level, parent_id),
+                        "match_mode": "rerepresentation",
+                    },
+                    directions=("singleton_to_group", "group_to_singleton"),
+                    sources=[s for s in singletons if nodes[s].get("parent_id") == parent_id],
+                    targets=[g for g in established if nodes[g].get("parent_id") == parent_id],
+                    eligible=eligible,
+                    reverse_eligible=lambda s, g: recovery_admission(nodes[s], nodes[g]) == "core",
+                    source_context=recovery_unit,
+                    target_context=recovery_unit,
+                )
+                batch.forward.update(part.forward)
+                batch.reverse.update(part.reverse)
+        # Before pairwise matching, each direction chooses among all its options at once.
+        directional = (
+            ()
+            if self._uses_pairwise(insertion)
+            else (
+                ("singleton_to_group", singletons, batch.forward),
+                ("group_to_singleton", established, batch.reverse),
+            )
+        )
+        for direction, sources, decisions in directional:
             for source_id in sources:
                 allowed = (
                     eligible[source_id]
@@ -285,16 +332,6 @@ class IncrementalGraphRunner:
                 )
                 if not allowed:
                     continue
-
-                def recovery_unit(node_id, selectable=False):
-                    unit = self.evidence.node_match_context(node_id, selectable=selectable)
-                    if level == "paragraph" and len(unit["members"]) == 1:
-                        return {
-                            **unit["members"][0],
-                            **({"selection_id": node_id} if selectable else {}),
-                        }
-                    return unit
-
                 decisions[source_id] = self._match(
                     stage,
                     insertion,
@@ -341,7 +378,7 @@ class IncrementalGraphRunner:
                     "reverse_attempt_id": reverse.attempt_id,
                 }
             )
-        if level == "paragraph":
+        if fan_in:
             accepted_cores = {m["source_group_id"] for m in merged}
             for source_id, decision in batch.forward.items():
                 target_id = decision.target_id
@@ -357,11 +394,12 @@ class IncrementalGraphRunner:
                 self.role_graph.merge_paragraph_group(
                     source_id, target_id, paper_index=insertion.paper_index
                 )
-                self.insertions_by_paper[member["paper_id"]].paragraph_assignments[
-                    member["unit_id"]
-                ] = target_id
+                owner = self.insertions_by_paper[member["paper_id"]]
+                (
+                    owner.section_assignments if level == "section" else owner.paragraph_assignments
+                )[member["unit_id"]] = target_id
                 self.journal.event(
-                    "paragraph_fan_in_added",
+                    f"{level}_fan_in_added",
                     paper_index=insertion.paper_index,
                     inserted_paper_id=insertion.paper.paper_id,
                     paper_id=member["paper_id"],
@@ -383,10 +421,6 @@ class IncrementalGraphRunner:
                         "membership_role": "fan_in",
                     }
                 )
-        for entry in merged:
-            self._explain_accepted(
-                entry["attempt_id"], entry["target_group_id"], entry.get("reverse_attempt_id")
-            )
         return {
             "singleton_ids": singletons,
             "established_group_ids": established,
@@ -614,6 +648,23 @@ class IncrementalGraphRunner:
             insertion, parent_id, new_unit_ids, existing_group_ids
         )
         scope = self.evidence.scope_context(level, parent_id)
+        if self._uses_pairwise(insertion) and not inherit:
+            return self._pairwise_batch(
+                stage,
+                insertion,
+                scope=scope,
+                directions=("new_to_group", "group_to_new"),
+                sources=new_unit_ids,
+                targets=existing_group_ids,
+                eligible={unit_id: existing_group_ids for unit_id in new_unit_ids},
+                reverse_eligible=lambda unit_id, group_id: True,
+                source_context=lambda unit_id, selectable: self.evidence.match_unit_context(
+                    insertion.paper.paper_id, unit_id, level, selectable=selectable
+                ),
+                target_context=lambda group_id, selectable: self.evidence.match_group_context(
+                    group_id, selectable=selectable
+                ),
+            )
         group_candidates = [
             self.evidence.match_group_context(group_id, selectable=True)
             for group_id in existing_group_ids
@@ -709,8 +760,41 @@ class IncrementalGraphRunner:
         context: dict[str, Any],
         inherit_structural_match: bool = False,
     ) -> MatchDecision:
+        attempt_id, result = self._vote(
+            stage,
+            insertion,
+            direction=direction,
+            source_id=source_id,
+            allowed_ids=allowed_ids,
+            context=context,
+            inherit_structural_match=inherit_structural_match,
+        )
+        return self._record_decision(
+            insertion,
+            context["scope"],
+            direction=direction,
+            source_id=source_id,
+            target_id=result.normalized.get("target_id"),
+            candidate_ids=allowed_ids,
+            attempt_id=attempt_id,
+        )
+
+    def _vote(
+        self,
+        stage: StageConfig,
+        insertion: InsertionState,
+        *,
+        direction: MatchDirection,
+        source_id: str,
+        allowed_ids: list[str],
+        context: dict[str, Any],
+        inherit_structural_match: bool = False,
+        rank_only: bool = False,
+        key_suffix: str = "",
+        candidate_papers: bool = True,
+    ) -> tuple[str, JudgmentResult]:
         request = JudgmentRequest(
-            key=f"{insertion.paper.paper_id}:{stage.id}:{direction}:{source_id}",
+            key=f"{insertion.paper.paper_id}:{stage.id}:{direction}:{source_id}{key_suffix}",
             paper_index=insertion.paper_index,
             stage_id=stage.id,
             output_kind="match",
@@ -725,36 +809,50 @@ class IncrementalGraphRunner:
         )
         vote_request = request
         if self.jev_judge and not inherit_structural_match:
-            annotations = self.evidence.jev_annotations(context, self.shared_root_id)
+            annotations = self.evidence.jev_annotations(
+                context, self.shared_root_id, candidate_papers=candidate_papers
+            )
             vote_request = request.model_copy(
                 update={"context": {**context, "outline": annotations}}
             )
         result = (
             inherited_structural_match(request)
             if inherit_structural_match
-            else self.jev_judge.vote(vote_request)
+            else self.jev_judge.vote(vote_request, rank_only=rank_only)
             if self.jev_judge
             else self.judge.judge(request)
         )
         attempt_id = self.journal.attempt(request, result)
-        target_id = result.normalized.get("target_id")
-        if self.jev_judge and not inherit_structural_match and target_id is not None:
-            self.pending_votes[attempt_id] = (request, target_id)
+        return attempt_id, result
+
+    def _record_decision(
+        self,
+        insertion: InsertionState,
+        scope: dict[str, Any],
+        *,
+        direction: MatchDirection,
+        source_id: str,
+        target_id: str | None,
+        candidate_ids: list[str],
+        attempt_id: str,
+        **payload: Any,
+    ) -> MatchDecision:
         self.journal.event(
             "match_recorded",
             paper_index=insertion.paper_index,
-            level=context["scope"]["level"],
-            parent_id=context["scope"].get("parent_group_id"),
+            level=scope["level"],
+            parent_id=scope.get("parent_group_id"),
             direction=direction,
             source_id=source_id,
             target_id=target_id,
-            candidate_ids=allowed_ids,
+            candidate_ids=candidate_ids,
             attempt_id=attempt_id,
             **(
                 {"unit_paper_id": insertion.paper.paper_id}
                 if direction in {"new_to_group", "group_to_new"}
                 else {}
             ),
+            **payload,
         )
         return MatchDecision(
             source_id=source_id,
@@ -763,19 +861,226 @@ class IncrementalGraphRunner:
             attempt_id=attempt_id,
         )
 
-    def _explain_accepted(self, vote_id: str, group_id: str, reverse_id: str | None = None) -> None:
-        if vote_id not in self.pending_votes:
-            return  # Non-Jev and inherited matches already carry their own evidence.
-        request, target = self.pending_votes.pop(vote_id)
-        result = self.jev_judge.judge(request, accepted={"target_id": target, "vote_id": vote_id})
-        explanation_id = self.journal.attempt(request, result)
-        self.journal.event(
-            "accepted_match_explained",
-            paper_index=request.paper_index,
-            node_id=group_id,
-            vote_attempt_id=vote_id,
-            reverse_attempt_id=reverse_id,
-            explanation_attempt_id=explanation_id,
+    def _uses_pairwise(self, insertion: InsertionState) -> bool:
+        # Until the third paper, one request already holds at most two complete papers.
+        return self.jev_judge is not None and insertion.paper_index >= PAIRWISE_FROM_PAPER
+
+    def _pairwise_batch(
+        self,
+        stage: StageConfig,
+        insertion: InsertionState,
+        *,
+        scope: dict[str, Any],
+        directions: tuple[MatchDirection, MatchDirection],
+        sources: list[str],
+        targets: list[str],
+        eligible: dict[str, list[str]],
+        reverse_eligible: Callable[[str, str], bool],
+        source_context: Callable[[str, bool], dict[str, Any]],
+        target_context: Callable[[str, bool], dict[str, Any]],
+    ) -> MatchBatch:
+        """Ask one yes/no question per eligible pair, then choose among the passes.
+
+        Each yes/no request holds the focus's paper and the one candidate node's latest
+        paper. Both directions read the same pass table; when two or more options pass,
+        one ranking question goes over exactly those options.
+        """
+        forward_direction, reverse_direction = directions
+        batch = MatchBatch(existing_group_ids=targets, new_unit_ids=sources)
+        scores: dict[tuple[str, str], tuple[float, str]] = {}
+        for source_id in sources:
+            for target_id in eligible[source_id]:
+                vote = dict(
+                    direction=forward_direction,
+                    source_id=source_id,
+                    allowed_ids=[target_id],
+                    context={
+                        "scope": scope,
+                        "focus": source_context(source_id, False),
+                        "candidates": [target_context(target_id, True)],
+                    },
+                )
+                try:
+                    attempt_id, result = self._vote(
+                        stage, insertion, key_suffix=f":pair:{target_id}", **vote
+                    )
+                except JevRequestTooLarge:
+                    # Like the ranking question: keep the focus paper complete and show
+                    # the node's own member sections and roles, not its latest paper.
+                    attempt_id, result = self._vote(
+                        stage,
+                        insertion,
+                        key_suffix=f":pair:{target_id}:members",
+                        candidate_papers=False,
+                        **vote,
+                    )
+                    self.journal.event(
+                        "pair_context_reduced",
+                        paper_index=insertion.paper_index,
+                        level=scope["level"],
+                        source_id=source_id,
+                        target_id=target_id,
+                        attempt_id=attempt_id,
+                    )
+                score = result.raw_response["jev"]["has_match"]["noul"]
+                self.journal.event(
+                    "pair_scored",
+                    paper_index=insertion.paper_index,
+                    level=scope["level"],
+                    parent_id=scope.get("parent_group_id"),
+                    source_id=source_id,
+                    target_id=target_id,
+                    score=score,
+                    attempt_id=attempt_id,
+                )
+                if result.normalized.get("target_id") == target_id:
+                    scores[source_id, target_id] = (score, attempt_id)
+
+        for source_id in sources:
+            options = {
+                t: scores[source_id, t] for t in eligible[source_id] if (source_id, t) in scores
+            }
+            decision = self._choose_passed(
+                stage,
+                insertion,
+                scope,
+                direction=forward_direction,
+                source_id=source_id,
+                options=options,
+                focus=source_context(source_id, False),
+                option_context=lambda t: target_context(t, True),
+            )
+            if decision:
+                batch.forward[source_id] = decision
+        for target_id in targets:
+            options = {
+                s: scores[s, target_id]
+                for s in sources
+                if (s, target_id) in scores and reverse_eligible(s, target_id)
+            }
+            decision = self._choose_passed(
+                stage,
+                insertion,
+                scope,
+                direction=reverse_direction,
+                source_id=target_id,
+                options=options,
+                focus=target_context(target_id, False),
+                option_context=lambda s: source_context(s, True),
+            )
+            if decision:
+                batch.reverse[target_id] = decision
+        return batch
+
+    def _choose_passed(
+        self,
+        stage: StageConfig,
+        insertion: InsertionState,
+        scope: dict[str, Any],
+        *,
+        direction: MatchDirection,
+        source_id: str,
+        options: dict[str, tuple[float, str]],
+        focus: dict[str, Any],
+        option_context: Callable[[str], dict[str, Any]],
+    ) -> MatchDecision | None:
+        # Gate scores come from separate requests, so they are not compared with each
+        # other; a comparative ranking question decides among every option that passed.
+        # Passing options can come from many papers and Jev's context holds about two,
+        # so the ranking shows the focus's complete paper and each option's own
+        # members and roles only.
+        if not options:
+            return None
+        passed = sorted(options)
+        if len(passed) == 1:
+            target_id, attempt_id = passed[0], options[passed[0]][1]
+        else:
+            target_id, attempt_id = self._rank_passed(
+                stage,
+                insertion,
+                scope,
+                direction=direction,
+                source_id=source_id,
+                passed=passed,
+                focus=focus,
+                option_context=option_context,
+            )
+        return self._record_decision(
+            insertion,
+            scope,
+            direction=direction,
+            source_id=source_id,
+            target_id=target_id,
+            candidate_ids=sorted(options),
+            attempt_id=attempt_id,
+            pair_scores={option: score for option, (score, _) in sorted(options.items())},
+            choice_ids=passed if len(passed) > 1 else [],
+        )
+
+    def _rank_passed(
+        self,
+        stage: StageConfig,
+        insertion: InsertionState,
+        scope: dict[str, Any],
+        *,
+        direction: MatchDirection,
+        source_id: str,
+        passed: list[str],
+        focus: dict[str, Any],
+        option_context: Callable[[str], dict[str, Any]],
+        suffix: str = ":choice",
+    ) -> tuple[str, str]:
+        """Rank every passed option at once; halve the pool only if Jev rejects its size.
+
+        Each half's winner goes to a final ranking. No source text is truncated.
+        """
+        if len(passed) == 1:
+            return passed[0], ""  # A half with one option needs no question.
+        try:
+            attempt_id, result = self._vote(
+                stage,
+                insertion,
+                direction=direction,
+                source_id=source_id,
+                allowed_ids=passed,
+                context={
+                    "scope": scope,
+                    "focus": focus,
+                    "candidates": [option_context(option) for option in passed],
+                },
+                rank_only=True,
+                key_suffix=suffix,
+                candidate_papers=False,
+            )
+            return result.normalized["target_id"], attempt_id
+        except JevRequestTooLarge:
+            if len(passed) <= 2:
+                raise
+        middle = len(passed) // 2
+        finalists = sorted(
+            self._rank_passed(
+                stage,
+                insertion,
+                scope,
+                direction=direction,
+                source_id=source_id,
+                passed=half,
+                focus=focus,
+                option_context=option_context,
+                suffix=f"{suffix}:{index}",
+            )[0]
+            for index, half in enumerate((passed[:middle], passed[middle:]))
+        )
+        return self._rank_passed(
+            stage,
+            insertion,
+            scope,
+            direction=direction,
+            source_id=source_id,
+            passed=finalists,
+            focus=focus,
+            option_context=option_context,
+            suffix=f"{suffix}:final",
         )
 
     def _reconcile(
@@ -788,22 +1093,21 @@ class IncrementalGraphRunner:
     ) -> dict[str, str]:
         assignments: dict[str, str] = {}
         reciprocal = reciprocal_matches(batch)
+        fan_in = self._fan_in(level)
         forward_fan_in = (
             adjacent_paragraph_fan_in(
                 batch,
                 reciprocal,
                 {
-                    unit_id: self.evidence.unit_ordinal(
-                        insertion.paper.paper_id, unit_id, "paragraph"
-                    )
+                    unit_id: self.evidence.unit_ordinal(insertion.paper.paper_id, unit_id, level)
                     for unit_id in batch.new_unit_ids
                 },
             )
-            if level == "paragraph"
+            if fan_in
             else {}
         )
         reverse_fan_in = {}
-        if level == "paragraph":
+        if fan_in:
             reverse_fan_in = self._adjacent_existing_group_fan_in(batch, reciprocal)
             for source_id in sorted(reverse_fan_in):
                 target_id, selected_unit_id, anchors = reverse_fan_in[source_id]
@@ -813,12 +1117,15 @@ class IncrementalGraphRunner:
                     paper_index=insertion.paper_index,
                 )
                 for member in moved:
-                    self.insertions_by_paper[member["paper_id"]].paragraph_assignments[
-                        member["unit_id"]
-                    ] = target_id
+                    owner = self.insertions_by_paper[member["paper_id"]]
+                    (
+                        owner.section_assignments
+                        if level == "section"
+                        else owner.paragraph_assignments
+                    )[member["unit_id"]] = target_id
                     anchor = anchors[(member["paper_id"], member["unit_id"])]
                     self.journal.event(
-                        "paragraph_fan_in_added",
+                        f"{level}_fan_in_added",
                         paper_index=insertion.paper_index,
                         inserted_paper_id=insertion.paper.paper_id,
                         paper_id=member["paper_id"],
@@ -840,7 +1147,7 @@ class IncrementalGraphRunner:
             if selected_group:
                 assignments[unit_id] = selected_group
                 metadata = self.evidence.member_metadata(insertion, unit_id, level)
-                if level == "paragraph":
+                if fan_in:
                     metadata["membership_role"] = "fan_in" if unit_id in forward_fan_in else "core"
                 if previous_group:
                     if unit_id in forward_fan_in:
@@ -872,7 +1179,7 @@ class IncrementalGraphRunner:
                         if group_id == selected_group
                     )
                     self.journal.event(
-                        "paragraph_fan_in_added",
+                        f"{level}_fan_in_added",
                         paper_index=insertion.paper_index,
                         inserted_paper_id=insertion.paper.paper_id,
                         paper_id=insertion.paper.paper_id,
@@ -917,14 +1224,6 @@ class IncrementalGraphRunner:
                     absorbed_group_id=absorbed_group,
                     attempt_id=decision.attempt_id,
                 )
-        for unit_id, group_id in reciprocal.items():
-            self._explain_accepted(
-                batch.forward[unit_id].attempt_id, group_id, batch.reverse[group_id].attempt_id
-            )
-        for unit_id, group_id in forward_fan_in.items():
-            self._explain_accepted(batch.forward[unit_id].attempt_id, group_id)
-        for source_id, (group_id, _, _) in reverse_fan_in.items():
-            self._explain_accepted(batch.reverse[source_id].attempt_id, group_id)
         return assignments
 
     def _adjacent_existing_group_fan_in(
@@ -990,6 +1289,7 @@ class IncrementalGraphRunner:
                     level, self.role_graph.node(group_id).get("parent_id")
                 ),
                 "group": group,
+                "latest_paper": self.evidence.latest_paper_context(group_id),
             }
             role_statement, attempt_id = self._role_statement(stage, insertion, group_id, context)
             self.role_graph.set_role_statement(

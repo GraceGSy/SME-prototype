@@ -68,7 +68,7 @@ def export_revision(dataset_dir: Path, graph: RoleGraph, papers: list[Paper]) ->
     )
 
 
-def _viewer_paper(paper: Paper) -> dict[str, Any]:
+def _viewer_paper(paper: Paper, *, include_paragraphs: bool = True) -> dict[str, Any]:
     return {
         "paper_id": paper.paper_id,
         "title": paper.title,
@@ -94,7 +94,7 @@ def _viewer_paper(paper: Paper) -> dict[str, Any]:
                 "family_id": section.family_id,
                 "ordinal": paragraph.ordinal,
             }
-            for section in paper.sections
+            for section in (paper.sections if include_paragraphs else [])
             for paragraph in section.paragraphs
         ],
     }

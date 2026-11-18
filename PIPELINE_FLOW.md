@@ -6,6 +6,40 @@ extracts it. Language models make bounded role statement and match judgments. Py
 validates those judgments, applies graph rules, and writes inspectable outputs.
 This is an SME-inspired comparison system, not the canonical symbolic SME.
 
+## Current section flow (Nov 18, 2026)
+
+The runs on the public catalog since November 17 use section matching only, with
+Jev for every match decision and Claude for role statements. The November 18
+runs also enable section fan-in (`start --section-fan-in`).
+
+![Section matching with Jev and section fan-in](docs/diagrams/section-fan-in-flow.png)
+
+- **Paper 2** asks Jev one Choice question per new section (over all nodes) and
+  one per node (over all new sections), each with `NO_MATCH`.
+- **Paper 3 and later** ask one yes/no question per (section, node) pair. A
+  section with one yes picks that node; two or more yeses go to one ranking
+  question over just those nodes. Nodes pick among the sections that said yes
+  to them the same way. A yes/no question shows the focus paper and the node's
+  latest paper in full. Jev's default limit is 32k tokens per question (about two
+  papers); with `--jev-long-context` a request over that is resent unchanged with
+  TypeSafe's long-context header (262k). Only if it is still too large is a yes/no
+  asked again with the node's member sections only (logged as
+  `pair_context_reduced`). A ranking shows member sections only; if still too large
+  it is split in half and the two winners are ranked again.
+- **Reconcile** is Python only: reciprocal picks become core members; a one-way
+  pick immediately next to a same-paper core in the chosen node becomes a fan-in
+  member; fan-in never chains through another fan-in member.
+- **Singleton recovery** runs once per paper on a frozen snapshot, with the same
+  question method and the same core/fan-in rules.
+- **Group roles** are rewritten by Claude for nodes whose membership changed.
+
+Source: [`section-fan-in-flow.dot`](docs/diagrams/section-fan-in-flow.dot)
+(also [SVG](docs/diagrams/section-fan-in-flow.svg)). Regenerate with:
+
+```powershell
+dot -Tpng -Gdpi=150 docs/diagrams/section-fan-in-flow.dot -o docs/diagrams/section-fan-in-flow.png
+```
+
 ## Implemented Jev flow
 
 Jev selection is available with `start --jev`. The
@@ -209,8 +243,8 @@ Reverse questions see all eligible candidates, not only forward proposers, and
 do not receive the forward votes. Empty pools make no choice calls.
 
 Python proposes reciprocal cores and the existing immediate-core paragraph
-fan-in. A generative LLM still supplies missing role statements and the explanations
-and quotations required to document admissible proposals. The Decisions API
+fan-in. A generative LLM still supplies missing role statements and group roles.
+Since November 16, accepted Jev matches get no generative explanation or quotations. The Decisions API
 does not generate that evidence. Python checks each quotation against its own
 source passage before committing a proposal. It retries/stops on invalid
 evidence rather than storing it. These checks establish attribution and graph

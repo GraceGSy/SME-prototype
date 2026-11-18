@@ -9,6 +9,10 @@ from .server import VIEWER, RunCatalog
 
 # The publication list is explicit: discovering a new local run does not authorize publishing it.
 LABELS = {
+    "hci-five-paper-fan-in-v2-20261118": "HCI | 5 papers | Jev: section fan-in | Nov 18",
+    "hci-three-paper-fan-in-20261118": "HCI | 3 papers | Jev: section fan-in experiment | Nov 18",
+    "hci-three-paper-roles-v2-20261117": "HCI | 3 papers | Jev: yes/no filter then ranking, new roles | Nov 17",
+    "hci-three-paper-section-nodes-20261115": "HCI | 3 papers | Jev: section nodes, pairwise from paper 3 | Nov 15",
     "hci-first-three-jev-singletons-20261105-verified": "HCI | 3 papers | Jev: revised paragraph matching | Nov 5",
     "reuters-technology-jev-singletons-20261105": "Reuters | 5 articles | Run 2: revised paragraph matching | Nov 5",
     "reuters-technology-jev-20261105": "Reuters | 5 articles | Run 1: original matching | Nov 5",
@@ -38,13 +42,29 @@ def package_catalog(runs: Path, output: Path, labels: dict[str, str] = LABELS) -
     _copy_viewer(VIEWER / "index.html", public)
     catalog = RunCatalog(runs)
     entries = []
-    for entry in catalog.entries():
+    redacted = "Source text is not included in this results viewer."
+    for entry in catalog.entries(include_checkpoints=True):
         key = entry["id"]
         if key not in labels:
             continue
         label = labels[key]
         entry.update(label=label, collection=label.split(" | ")[0], revisionLabels={})
+        for rev in entry.get("sectionRevisions", []):
+            # A section checkpoint has no paragraph dataset; publish its section map.
+            if (key, rev) in SOURCE_TEXT_SNAPSHOTS:
+                raise ValueError("Source-text approval covers completed snapshots only")
+            section_map = catalog.section_map(key, rev)
+            for paper in section_map["papers"]:
+                for unit in paper["sections"] + paper["paragraphs"]:
+                    unit["text"] = redacted
+            write_json(public / "runs" / key / rev / "section-map.json", section_map)
+            entry["revisionLabels"][rev] = (
+                f"Revision {int(rev.split('-')[1])} | {len(section_map['papers'])} documents | "
+                "sections only"
+            )
         for rev in entry["revisions"]:
+            if rev in entry.get("sectionRevisions", []):
+                continue
             src = catalog.dataset(key, rev)
             validate_dataset(src)
             dst = public / "runs" / key / rev
@@ -59,7 +79,7 @@ def package_catalog(runs: Path, output: Path, labels: dict[str, str] = LABELS) -
                 doc = read_json(src / paper["file"])
                 if not include_source:
                     for unit in doc["sections"] + doc["paragraphs"]:
-                        unit["text"] = "Source text is not included in this results viewer."
+                        unit["text"] = redacted
                 write_json(dst / paper["file"], doc)
             descriptor = validate_dataset(dst, key, label)
             write_json(dst / "dataset.json", descriptor)

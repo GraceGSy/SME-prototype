@@ -85,7 +85,9 @@ class RealignmentTest(unittest.TestCase):
                 self.assertTrue(all(e["paper_index"] == 3 for e in recursive_events))
                 if reverse is None:
                     diagnostics = json.loads(
-                        (runner.revision_dir / "reports/singletons.json").read_text()
+                        (runner.revision_dir / "reports/singletons.json").read_text(
+                            encoding="utf-8"
+                        )
                     )
                     row = next(
                         r

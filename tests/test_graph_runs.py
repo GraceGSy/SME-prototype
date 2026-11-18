@@ -142,6 +142,7 @@ class GraphRunTest(unittest.TestCase):
                 config_path=Path("retry.yaml"),
                 jev_max_calls=20,
                 max_api_responses=50,
+                sections_only=False,
             )
 
     def test_start_cli_enables_jev_without_a_mode(self):
@@ -192,7 +193,9 @@ class GraphRunTest(unittest.TestCase):
                 single = add_papers(fourth, root / "single")
             self.assertEqual(whole["graph_hash"], batch["graph_hash"])
             self.assertEqual(whole["graph_hash"], single["graph_hash"])
-            report = json.loads((Path(single["dataset_dir"]) / "correspondences.json").read_text())
+            report = json.loads(
+                (Path(single["dataset_dir"]) / "correspondences.json").read_text(encoding="utf-8")
+            )
             self.assertEqual(report["stats"]["paragraph_rerepresented_members"], 1)
 
     def test_start_add_and_retry_preserve_order_and_frozen_sources(self):
@@ -217,7 +220,9 @@ class GraphRunTest(unittest.TestCase):
             ):
                 initial = start_graph(first, run, CONFIG_PATH)
                 original = (Path(initial["dataset_dir"]) / "a.json").read_bytes()
-                (root / "a.json").write_text("malformed external source after initial run")
+                (root / "a.json").write_text(
+                    "malformed external source after initial run", encoding="utf-8"
+                )
                 added = add_papers(third, run)
                 retried = retry_graph(run)
             self.assertEqual(added["paper_order"], ["a", "b", "c"])
@@ -225,8 +230,16 @@ class GraphRunTest(unittest.TestCase):
             self.assertEqual((Path(initial["dataset_dir"]) / "a.json").read_bytes(), original)
             self.assertEqual((Path(added["dataset_dir"]) / "a.json").read_bytes(), original)
             self.assertEqual(
-                json.loads((run / "inputs/revision-0001/paper-0001.review.json").read_text()),
-                json.loads((run / "inputs/revision-0003/paper-0001.review.json").read_text()),
+                json.loads(
+                    (run / "inputs/revision-0001/paper-0001.review.json").read_text(
+                        encoding="utf-8"
+                    )
+                ),
+                json.loads(
+                    (run / "inputs/revision-0003/paper-0001.review.json").read_text(
+                        encoding="utf-8"
+                    )
+                ),
             )
 
     def test_rejects_one_paper_start_and_duplicate_append_before_judgments(self):
@@ -263,7 +276,7 @@ class GraphRunTest(unittest.TestCase):
             ):
                 with self.assertRaisesRegex(RuntimeError, "intentional break"):
                     start_graph(source, root / "run", CONFIG_PATH)
-            state = json.loads((root / "run/run.json").read_text())
+            state = json.loads((root / "run/run.json").read_text(encoding="utf-8"))
             self.assertIsNone(state["current_revision"])
             with patch(
                 "pipeline.incremental_graph.runs.CachedJudgments",
@@ -283,7 +296,7 @@ class GraphRunTest(unittest.TestCase):
             ) as provider:
                 start_graph(source, root / "run", CONFIG_PATH)
                 frozen = root / "run/inputs/revision-0001/paper-0001.json"
-                document = json.loads(frozen.read_text())
+                document = json.loads(frozen.read_text(encoding="utf-8"))
                 document[0]["paragraphs"][0]["text"] = "Changed but still valid."
                 write_json(frozen, document)
                 provider.reset_mock()

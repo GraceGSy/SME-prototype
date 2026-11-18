@@ -40,7 +40,7 @@ class WholePaperRolesTest(unittest.TestCase):
                 manifest,
                 {
                     "schema_version": 1,
-                    "max_granularity": "subsection",
+                    "max_granularity": "section",
                     "papers": [{"paper_id": "test", "title": "Test", "file": "clean.json"}],
                 },
             )
@@ -75,11 +75,15 @@ class WholePaperRolesTest(unittest.TestCase):
                 patch("pipeline.prepare_roles.load_api_key", return_value="offline"),
             ):
                 prepare(manifest, out)
-            self.assertEqual(len(calls), 3)
+            self.assertEqual(len(calls), 2)
             self.assertEqual(
                 [b[1]["text"].splitlines()[0] for b in calls],
-                ["Focus: section 1", "Focus: subsection 1.1", "Focus: paragraph 1.1:p1"],
+                ["Focus: section: 1 Methods", "Focus: paragraph 1 of 1 Methods / 1.1 Recruitment"],
             )
+            # The paper prefix names each unit by its printed heading, once.
+            prefix = calls[0][0]["text"]
+            self.assertEqual(prefix.count("[section: 1 Methods]"), 1)
+            self.assertIn("[paragraph 1 of 1 Methods / 1.1 Recruitment] We recruited", prefix)
             self.assertTrue(
                 all(
                     b[0] == calls[0][0] and b[0]["cache_control"] == {"type": "ephemeral"}
@@ -98,5 +102,24 @@ class WholePaperRolesTest(unittest.TestCase):
                 side_effect=AssertionError("Contacted Claude on replay"),
             ):
                 prepare(manifest, out)
-            self.assertEqual(len((out / "responses.jsonl").read_text().splitlines()), 7)
+            self.assertEqual(
+                len((out / "responses.jsonl").read_text(encoding="utf-8").splitlines()), 5
+            )
             self.assertEqual(read_json(root / "clean.json"), src)
+            # A new paper can reuse the earlier preparation's exact request wording.
+            log = out / "responses.jsonl"
+            saved = json.loads(log.read_text(encoding="utf-8").splitlines()[0])
+            saved["prompts"]["section"] = "EARLIER SECTION WORDING."
+            log.write_text(
+                "\n".join([json.dumps(saved), *log.read_text(encoding="utf-8").splitlines()[1:]]),
+                encoding="utf-8",
+            )
+            calls.clear()
+            with (
+                patch("pipeline.prepare_roles.Anthropic", return_value=sdk),
+                patch("pipeline.prepare_roles.load_api_key", return_value="offline"),
+            ):
+                prepare(manifest, root / "again", policy_from=log)
+            self.assertEqual(
+                calls[0][1]["text"], "Focus: section: 1 Methods\nEARLIER SECTION WORDING."
+            )

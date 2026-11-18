@@ -105,12 +105,13 @@ test("source IDs, exact ownership, and paragraph order agree with pipeline loadi
   );
 });
 
-test("browser loading agrees exactly with Python on both real HCI papers and granularities", () => {
+// Python no longer loads subsection granularity; the matcher's subsection mode is UI-only.
+test("browser section loading agrees exactly with Python on both real HCI papers", () => {
   const cases = ["abstractexplorer", "corpusstudio"].flatMap((id) => {
     const content = documentSchema.parse(
       JSON.parse(readFileSync(`datasets/hci-five-paper/content/${id}.content.json`, "utf8")),
     );
-    return (["section", "subsection"] as const).map((mode) => ({
+    return (["section"] as const).map((mode) => ({
       source: { paper_id: id, title: id, filename: `${id}.json`, content },
       mode,
     }));

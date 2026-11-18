@@ -3,23 +3,28 @@
 import hashlib
 import io
 import json
+import shutil
 import tempfile
 import unittest
 from pathlib import Path
-from types import SimpleNamespace
 from unittest.mock import patch
 from urllib.error import HTTPError, URLError
 
 import test_judgment_cache
 from test_graph_runs import manifest
 from test_incremental_graph import CONFIG_PATH
+from test_paragraph_only_inputs import document
 
+from pipeline.files import write_json
 from pipeline.incremental_graph.configuration import PromptRepository, load_pipeline_config
+from pipeline.incremental_graph.evidence import Evidence
 from pipeline.incremental_graph.evidence_encoding import encode_evidence
+from pipeline.incremental_graph.graph import RoleGraph
+from pipeline.incremental_graph.input_data import load_paper
 from pipeline.incremental_graph.jev_selection import JevSelector
 from pipeline.incremental_graph.judgments import CachedJudgments, JudgmentError
+from pipeline.incremental_graph.models import PaperManifest
 from pipeline.incremental_graph.runs import start_graph
-from pipeline.providers.contracts import SkillRef
 from pipeline.providers.jev import (
     NO_MATCH,
     JevClient,
@@ -194,46 +199,6 @@ class JevTest(unittest.TestCase):
             self.assertIn("B1.1 [focus]", body["state"])
             self.assertIn("A1.2 [candidate]", body["state"])
 
-    def test_explanation_keeps_original_option_label_and_python_restores_graph_id(self):
-        request = self.request(2)
-        request.context["focus"]["source_position"] = [1, 1]
-        for i, candidate in enumerate(request.context["candidates"], 1):
-            candidate["source_position"] = [1, i]
-            candidate["paragraph_under_consideration"] = {"full_text": f"Member {i}."}
-        request.context["candidates"] = [
-            {"selection_id": key, "members": [member]}
-            for key, member in zip(request.allowed_match_ids, request.context["candidates"])
-        ]
-        provider = self.provider()
-
-        def explain(skills, user, schema, **kwargs):
-            wire = (kwargs["cacheable_context"] or "") + user + json.dumps(schema)
-            for hidden in [*request.allowed_match_ids, "Paragraph A", "Member 1."]:
-                self.assertNotIn(hidden, wire)
-            self.assertIn('"fixed_target_id": "Paragraph B"', user)
-            self.assertEqual(schema["properties"]["target_id"]["enum"], ["Paragraph B"])
-            return SimpleNamespace(
-                value={
-                    "target_id": "Paragraph B",
-                    "basis": "Shared role.",
-                    "evidence": {"focus": ["First focus"], "target": ["Member 2."]},
-                },
-                raw_response={"id": "offline"},
-            )
-
-        provider.skills = SimpleNamespace(
-            register=lambda path: SkillRef(str(path), "id", "1", "hash"), run_json=explain
-        )
-        with patch.object(
-            provider.jev.client, "choose", side_effect=lambda body: answer(body, "A1.2")
-        ):
-            result = provider.judge(request)
-        self.assertEqual(result.normalized["target_id"], request.allowed_match_ids[1])
-        self.assertEqual(
-            result.raw_response["jev"]["calls"][-1]["option_ids"]["A1.2"],
-            request.allowed_match_ids[1],
-        )
-
     def test_overlapping_sections_share_only_the_same_source_occurrence(self):
         def section(handle, spans, text):
             return {
@@ -252,6 +217,58 @@ class JevTest(unittest.TestCase):
         self.assertEqual(state.count("    Same"), 2)
         self.assertIn("A2 [candidate; part of A1]", state)
         self.assertLess(state.index("New"), state.index("Same"))
+
+    def test_full_papers_by_scope_in_both_directions(self):
+        ev = Evidence(RoleGraph(None))
+        entries = [{"paper_id": k, "title": k, "file": k + ".json"} for k in ("a", "b", "c")]
+        manifest = PaperManifest(schema_version=1, max_granularity="section", papers=entries)
+        granularity = manifest.max_granularity
+        for entry in manifest.papers:
+            doc = document()
+            for section in doc:
+                section["role_statement"] = "Section role."
+                for unit in [section, *section["subsections"]]:
+                    for paragraph in unit["paragraphs"]:
+                        paragraph["text"] = entry.paper_id + " " + paragraph["text"].strip()
+                        paragraph["role_statement"] = "Paragraph role."
+            doc[0]["subsections"][0]["role_statement"] = "Hidden subsection role."
+            path = self.root / entry.file
+            write_json(path, doc)
+            ev.register(load_paper(path, entry.paper_id, entry.title, granularity))
+        for level in ("section", "paragraph"):
+            unit = (
+                "s0001" if level == "section" else ev.section_lookup["a", "s0001"].paragraphs[0].id
+            )
+            for src, dst in (("a", "b"), ("b", "a")):
+                context = {
+                    "scope": {"level": level},
+                    "focus": ev.match_unit_context(src, unit, level),
+                    "candidates": [ev.match_unit_context(dst, unit, level, selectable=True)],
+                }
+                context["outline"] = ev.jev_annotations(context, None)
+                state = self.selector().build_request(context)["state"]
+                focus, remainder = state.removeprefix("Focus\n").split("\n\nContext\n")
+                background, options = remainder.split("\n\nCandidates\n")
+                self.assertIn(src + " First background paragraph.", focus)
+                self.assertIn(dst + " First background paragraph.", options)
+                for paper in ("a", "b"):
+                    self.assertIn(paper + " First analysis paragraph.", background)
+                    for passage in (
+                        "First background paragraph.",
+                        "First analysis paragraph.",
+                        "Subsection evidence.",
+                    ):
+                        self.assertEqual(state.count(paper + " " + passage), 1)
+                self.assertNotIn("c First", state)
+                self.assertNotIn("Hidden subsection role.", state)
+                if level == "section":
+                    self.assertEqual(state.count("Section: "), 4)
+                    self.assertNotIn("Detail", state)
+                    self.assertNotIn("Paragraph role.", state)
+                    self.assertIn("background paragraph. " + src + " Subsection evidence.", focus)
+                else:
+                    self.assertIn("Paragraph role.", focus)
+                    self.assertIn(src + " Subsection evidence.", background)
 
     def test_focus_first_collocates_role_statements_and_only_lists_offscreen_members_at_end(self):
         req = self.request()
@@ -459,10 +476,10 @@ class JevTest(unittest.TestCase):
             "pipeline.providers.jev.JevClient.choose",
             side_effect=lambda body: answer(body, NO_MATCH),
         ) as client:
-            provider.judge(request)
-            self.assertTrue(self.provider(max_calls=1000).judge(request).cache_hit)
+            provider.vote(request)
+            self.assertTrue(self.provider(max_calls=1000).vote(request).cache_hit)
             provider.jev.instructions += " Changed policy."
-            self.assertFalse(provider.judge(request).cache_hit)
+            self.assertFalse(provider.vote(request).cache_hit)
             self.assertEqual(client.call_count, 2)
 
     def test_transport_uses_documented_body_and_never_records_credentials(self):
@@ -487,7 +504,7 @@ class JevTest(unittest.TestCase):
             self.assertTrue(second["calls"][0]["cache_hit"])
             self.assertEqual(network.call_count, 1)
         for path in self.root.rglob("*.json"):
-            self.assertNotIn("hidden-key", path.read_text())
+            self.assertNotIn("hidden-key", path.read_text(encoding="utf-8"))
 
     def test_empty_pool_and_abstention(self):
         selector = self.selector()
@@ -570,11 +587,69 @@ class JevTest(unittest.TestCase):
             self.assertEqual(len(result["calls"]), 6)
             self.assertEqual(result["target_id"], "candidate-0")
         records = [
-            json.loads(path.read_text()) for path in (self.root / "jev/responses").glob("*.json")
+            json.loads(path.read_text(encoding="utf-8"))
+            for path in (self.root / "jev/responses").glob("*.json")
         ]
         rejected = [record for record in records if record.get("http_status") == 400]
         self.assertEqual(len(rejected), 1)
         self.assertIn("max_tokens_exceeded", rejected[0]["response_text"])
+
+    def test_long_context_retry_resends_a_size_rejection_with_the_header(self):
+        selector = self.selector(long_context_retry=True)
+        headers = []
+
+        def http(req, **kwargs):
+            long_context = req.headers.get("Typesafe-danger-zone-long-context")
+            headers.append(long_context)
+            body = json.loads(req.data)
+            if body["state"].count("\nOption ") > 11 and long_context != "true":
+                raise HTTPError(
+                    "url", 400, "Bad Request", {},
+                    io.BytesIO(b'{"detail":{"error_type":"max_tokens_exceeded"}}'),
+                )
+            return io.BytesIO(json.dumps(answer(body)).encode())
+
+        with (
+            patch("pipeline.providers.jev.load_api_key", return_value="key"),
+            patch("pipeline.providers.jev.urlopen", side_effect=http) as network,
+        ):
+            result = selector.select(self.request(20))
+            # Default gate rejected, long-context gate, long-context ranking: no split.
+            self.assertEqual(headers, [None, "true", None, "true"])
+            self.assertEqual(network.call_count, 4)
+            self.assertEqual([c.get("long_context") for c in result["calls"]], [True, True])
+            self.assertEqual(result["target_id"], "candidate-0")
+            again = selector.select(self.request(20))
+            self.assertEqual(network.call_count, 4)
+            self.assertTrue(all(c["cache_hit"] and c["long_context"] for c in again["calls"]))
+            # Without the setting, the cached rejection still stops before any call.
+            plain = self.selector()
+            with self.assertRaises(ValueError):
+                plain.select(self.request(20), allow_splitting=False)
+            self.assertEqual(network.call_count, 4)
+        self.assertEqual(selector.settings.result_settings()["long_context_retry"], True)
+        self.assertNotIn("long_context_retry", JevSettings().result_settings())
+
+    def test_predicted_overflow_goes_straight_to_long_context(self):
+        request = self.request()
+        source = "Full source evidence. " * 8000  # About 35k estimated tokens.
+        request.context["focus"]["paragraph_under_consideration"]["full_text"] = source
+        headers = []
+
+        def http(req, **kwargs):
+            headers.append(req.headers.get("Typesafe-danger-zone-long-context"))
+            return io.BytesIO(json.dumps(answer(json.loads(req.data))).encode())
+
+        with (
+            patch("pipeline.providers.jev.load_api_key", return_value="key"),
+            patch("pipeline.providers.jev.urlopen", side_effect=http),
+        ):
+            result = self.selector(long_context_retry=True).select(request)
+            self.assertEqual(headers, ["true"])
+            self.assertTrue(result["calls"][0]["long_context"])
+            # Without the setting the same request goes out with the default window.
+            self.selector().select(request, force=True)
+            self.assertEqual(headers, ["true", None])
 
     def test_provider_rejects_single_candidate_without_truncation(self):
         selector = self.selector()
@@ -762,6 +837,12 @@ class JevTest(unittest.TestCase):
                     side_effect=HTTPError("url", status, "rejected", {}, io.BytesIO(body)),
                 ) as network,
             ):
+                # Each status starts without the previous subtest's cached rejection.
+                shutil.rmtree(self.root / "jev" / "too-large", ignore_errors=True)
+                with self.assertRaisesRegex(ValueError, "no source text was truncated"):
+                    self.selector().select(self.request())
+                self.assertEqual(network.call_count, 1)
+                # The same request is then known to be too large: no second call.
                 with self.assertRaisesRegex(ValueError, "no source text was truncated"):
                     self.selector().select(self.request())
                 self.assertEqual(network.call_count, 1)
@@ -775,120 +856,15 @@ class JevTest(unittest.TestCase):
                 start_graph(docs, self.root / "run", jev=True)
         self.assertFalse((self.root / "run").exists())
 
-    def test_evidence_is_fixed_and_cached_independently_of_selection(self):
-        provider = self.provider()
-        request = self.request(2)
-        raw = {"id": "evidence-response", "usage": {"input_tokens": 10}}
-        value = {
-            "target_id": "candidate-0",
-            "basis": "A shared role",
-            "evidence": {"focus": ["focus"], "target": ["Repeated corpus"]},
-        }
-        client = SimpleNamespace(
-            register=lambda path: SkillRef(str(path), "skill", "1", "hash"),
-            run_json=lambda *args, **kwargs: SimpleNamespace(value=value, raw_response=raw),
-        )
-        with (
-            patch.object(provider.jev.client, "choose", side_effect=answer) as choose,
-            patch("pipeline.incremental_graph.judgments.create_skill_client", return_value=client),
-        ):
-            first = provider.judge(request)
-            self.assertEqual(first.raw_response["jev"]["target_id"], "candidate-0")
-            self.assertIn('"fixed_target_id": "candidate-0"', first.rendered_user)
-            self.assertTrue(first.model["skill"]["path"].endswith("explain-match"))
-            self.assertNotIn("candidate-1", first.rendered_user)
-            self.assertNotIn("Constructed matching examples", first.rendered_system)
-            self.assertTrue(self.provider().judge(request).cache_hit)
-            self.assertEqual(choose.call_count, 2)
-
-    def test_quotation_retries_do_not_reselect_and_cannot_override_jev(self):
-        provider = self.provider()
-        request = self.request()
-        values = [
-            {
-                "target_id": "candidate-0",
-                "basis": "Role",
-                "evidence": {"focus": ["fabricated"], "target": ["Repeated corpus"]},
-            },
-            {
-                "target_id": "candidate-0",
-                "basis": "Role",
-                "evidence": {"focus": ["focus"], "target": ["Repeated corpus"]},
-            },
-        ]
-        with (
-            patch.object(provider.jev.client, "choose", side_effect=answer) as choose,
-            patch("pipeline.incremental_graph.judgments.create_skill_client") as client,
-        ):
-            client.return_value.register.return_value = SkillRef("match-role", "s", "1", "hash")
-            client.return_value.run_json.side_effect = [
-                SimpleNamespace(value=v, raw_response={"id": str(i)}) for i, v in enumerate(values)
-            ]
-            provider.judge(request)
-            self.assertEqual(choose.call_count, 1)
-            self.assertEqual(client.return_value.run_json.call_count, 2)
-            schema = client.return_value.run_json.call_args.args[2]
-            self.assertEqual(
-                schema["properties"]["target_id"], {"type": "string", "enum": ["candidate-0"]}
-            )
-            request.force = True
-            client.return_value.run_json.side_effect = [
-                SimpleNamespace(
-                    value={**values[1], "target_id": None}, raw_response={"id": "wrong"}
-                )
-            ]
-            with self.assertRaisesRegex(JudgmentError, "must not change"):
-                provider.judge(request)
-
-    def test_final_accepted_repair_picks_one_verbatim_quote_from_each_required_member(self):
-        provider = self.provider()
-        request = self.request()
-        target = request.allowed_match_ids[0]
-        member = request.context["candidates"][0]
-        request.context["candidates"] = [
-            {
-                "selection_id": target,
-                "members": [
-                    member,
-                    {**member, "paragraph_under_consideration": {"full_text": "Second target."}},
-                ],
-            }
-        ]
-        bad = {
-            "target_id": "Group A",
-            "basis": "Comparable role",
-            "evidence": {"focus": [], "target": []},
-        }
-
-        def respond(_skill, prompt, schema, **_):
-            if "Quotation repair:" not in prompt:
-                return SimpleNamespace(value=bad, raw_response={"id": "rejected"})
-            slots = schema["properties"]["evidence"]["required"]
-            self.assertEqual(slots, ["focus_1", "target_1", "target_2"])
-            return SimpleNamespace(
-                value={**bad, "evidence": {slot: "1" for slot in slots}}, raw_response={"id": "ok"}
-            )
-
-        provider.skills = SimpleNamespace(
-            register=lambda path: SkillRef(str(path), "id", "1", "hash"), run_json=respond
-        )
-        with patch.object(provider.jev.client, "choose") as jev:
-            result = provider.judge(request, accepted={"target_id": target, "vote_id": "v1"})
-            jev.assert_not_called()
-        self.assertEqual(result.normalized["target_id"], target)
-        self.assertEqual(result.normalized["evidence"]["target"][-1], "Second target.")
-        self.assertEqual(len(result.normalized["evidence"]["focus"]), 1)
-
-    def test_no_match_does_not_buy_a_generative_explanation(self):
+    def test_jev_match_has_no_generative_explanation(self):
         provider = self.provider()
         with (
-            patch.object(
-                provider.jev.client, "choose", side_effect=lambda body: answer(body, NO_MATCH)
-            ),
+            patch.object(provider.jev.client, "choose") as jev,
             patch("pipeline.incremental_graph.judgments.create_skill_client") as generative,
         ):
-            result = provider.judge(self.request())
-            self.assertIsNone(result.normalized["target_id"])
+            with self.assertRaisesRegex(JudgmentError, "vote"):
+                provider.judge(self.request())
+            jev.assert_not_called()
             generative.assert_not_called()
 
 

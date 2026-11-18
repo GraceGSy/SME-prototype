@@ -151,10 +151,12 @@ class SourceReviewTest(unittest.TestCase):
                     adapter.assert_not_called()
                 self.assertEqual(client.run_json_file.call_count, 1)
                 self.assertEqual(
-                    json.loads(output.read_text()), json.loads(other_output.read_text())
+                    json.loads(output.read_text(encoding="utf-8")),
+                    json.loads(other_output.read_text(encoding="utf-8")),
                 )
                 self.assertEqual(
-                    json.loads(review_path(other_output).read_text())["status"], "approved"
+                    json.loads(review_path(other_output).read_text(encoding="utf-8"))["status"],
+                    "approved",
                 )
                 load_paper(other_output, "copy", "Copy")
 

@@ -59,10 +59,13 @@ class NewDocumentTest(unittest.TestCase):
                         adapter.call_args.args[1], ROOT / "_cache" / "skill-registry.json"
                     )
                     self.assertEqual(adapter.call_args.kwargs["provider"], provider)
-                provenance = json.loads(output.with_suffix(".provenance.json").read_text())
+                provenance = json.loads(
+                    output.with_suffix(".provenance.json").read_text(encoding="utf-8")
+                )
                 self.assertEqual(provenance["provider"], provider)
                 self.assertEqual(
-                    json.loads(output.read_text())[0]["paragraphs"][0]["text"], "Source evidence."
+                    json.loads(output.read_text(encoding="utf-8"))[0]["paragraphs"][0]["text"],
+                    "Source evidence.",
                 )
                 args, kwargs = client.run_json_file.call_args
                 wire_schema = json.dumps(args[3])
@@ -89,7 +92,7 @@ class NewDocumentTest(unittest.TestCase):
             patch("pipeline.source_review.SOURCE_CACHE", Path(directory) / "cache"),
         ):
             source = Path(directory) / "source.json"
-            source.write_text("[]")
+            source.write_text("[]", encoding="utf-8")
             for domain in ("academic", "fiction"):
                 client = Mock()
                 with self.assertRaises(ValueError):
@@ -108,7 +111,7 @@ class NewDocumentTest(unittest.TestCase):
             patch("pipeline.source_review.SOURCE_CACHE", Path(directory) / "cache"),
         ):
             source, output = Path(directory) / "source.txt", Path(directory) / "content.json"
-            source.write_text("Source evidence.")
+            source.write_text("Source evidence.", encoding="utf-8")
             client = Mock()
             client.run_json_file.return_value = SimpleNamespace(
                 value={"sections": []}, response_id="rejected", usage={"input_tokens": 10}
@@ -126,7 +129,9 @@ class NewDocumentTest(unittest.TestCase):
                 )
             self.assertEqual(client.run_json_file.call_count, 1)
             saved = next((Path(directory) / "cache").glob("*/extraction.json"))
-            self.assertEqual(json.loads(saved.read_text())["content"], {"sections": []})
+            self.assertEqual(
+                json.loads(saved.read_text(encoding="utf-8"))["content"], {"sections": []}
+            )
 
     def test_retains_local_constraints_unsupported_by_provider(self):
         for number, text in [(-1, "Source evidence."), (0, ""), (0, "   ")]:
@@ -136,7 +141,7 @@ class NewDocumentTest(unittest.TestCase):
                 patch("pipeline.source_review.SOURCE_CACHE", Path(directory) / "cache"),
             ):
                 source, output = Path(directory) / "source.txt", Path(directory) / "out.json"
-                source.write_text("Source evidence.")
+                source.write_text("Source evidence.", encoding="utf-8")
                 client = Mock()
                 client.run_json_file.return_value = SimpleNamespace(
                     value=[

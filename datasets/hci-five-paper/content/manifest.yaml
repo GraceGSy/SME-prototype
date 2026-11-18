@@ -1,5 +1,5 @@
 schema_version: 1
-max_granularity: subsection
+max_granularity: section
 papers:
 - paper_id: abstractexplorer
   title: AbstractExplorer

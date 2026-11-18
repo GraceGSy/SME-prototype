@@ -14,7 +14,7 @@ class SkillRegistryTest(unittest.TestCase):
             root = Path(temp)
             old = root / "skills" / "test"
             old.mkdir(parents=True)
-            (old / "SKILL.md").write_text("Original instructions")
+            (old / "SKILL.md").write_text("Original instructions", encoding="utf-8")
             path = root / "registry.json"
             upload = Mock(return_value=("skill-1", "v1"))
             first = SkillRegistry(root, path, "account").register(old, upload)
@@ -26,7 +26,7 @@ class SkillRegistryTest(unittest.TestCase):
             self.assertEqual(reused.path, "prompts/skills/test")
             self.assertEqual(reused.skill_id, first.skill_id)
             self.assertEqual(reused.version, first.version)
-            (moved / "SKILL.md").write_text("Changed instructions")
+            (moved / "SKILL.md").write_text("Changed instructions", encoding="utf-8")
             upload.return_value = ("skill-1", "v2")
             updated = SkillRegistry(root, path, "account").register(moved, upload)
             self.assertEqual(upload.call_count, 2)
@@ -39,14 +39,14 @@ class SkillRegistryTest(unittest.TestCase):
             skill = root / "skills" / "test"
             skill.mkdir(parents=True)
             source = skill / "SKILL.md"
-            source.write_text("Original instructions")
+            source.write_text("Original instructions", encoding="utf-8")
             path = root / "registry.json"
             upload = Mock(return_value=("skill-1", "v1"))
             first = SkillRegistry(root, path, "account").register(skill, upload)
             saved = path.read_bytes()
             self.assertEqual(SkillRegistry(root, path, "account").register(skill, upload), first)
             self.assertEqual(upload.call_count, 1)
-            source.write_text("Changed instructions")
+            source.write_text("Changed instructions", encoding="utf-8")
             upload.side_effect = RuntimeError("Upload failed")
             with self.assertRaisesRegex(RuntimeError, "Upload failed"):
                 SkillRegistry(root, path, "account").register(skill, upload)

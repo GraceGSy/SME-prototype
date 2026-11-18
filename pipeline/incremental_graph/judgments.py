@@ -36,7 +36,6 @@ from .match_evidence import (
     JudgmentError,
     candidate_handle,
     center_texts,
-    quote_catalogue,
     quote_length_feedback,
     validate_evidence,
 )
@@ -112,8 +111,6 @@ class CachedJudgments:
             else None
         )
         instructions = None
-        if self.jev and request.output_kind == "match":
-            instructions = "Document the supplied selection using the explain-match Skill."
         if comparison:
             wording = request_prompts("jev")[comparison.direction]
             instructions = (
@@ -212,9 +209,9 @@ class CachedJudgments:
             )
         return rendered
 
-    def vote(self, request: JudgmentRequest) -> JudgmentResult:
+    def vote(self, request: JudgmentRequest, *, rank_only: bool = False) -> JudgmentResult:
         """Record a directional Jev result without commissioning an explanation."""
-        selection = self.jev.select(request, force=request.force)
+        selection = self.jev.select(request, force=request.force, rank_only=rank_only)
         calls = selection["calls"]
         return JudgmentResult(
             fingerprint=hashlib.sha256(
@@ -231,15 +228,16 @@ class CachedJudgments:
             cache_hit=bool(calls) and all(c["cache_hit"] for c in calls),
         )
 
-    def judge(self, request: JudgmentRequest, *, accepted: dict | None = None) -> JudgmentResult:
+    def judge(self, request: JudgmentRequest) -> JudgmentResult:
         # Retry attribution and quote-length failures, never unrelated contract errors.
         # Each attempt uses the same source pool and native Skill; only feedback changes.
+        if self.jev and request.output_kind == "match":
+            # Jev's selection is the match decision; no generative explanation follows it.
+            raise JudgmentError("Jev match decisions use vote(), not a generative judgment")
         feedback = ""
         for attempt in range(3):
             try:
-                return self._judge_once(
-                    request, feedback, accepted, use_catalogue=attempt == 2 and accepted is not None
-                )
+                return self._judge_once(request, feedback)
             except StructuredOutputValidationError as error:
                 if (
                     request.output_kind != "match"
@@ -270,18 +268,9 @@ class CachedJudgments:
             feedback = REPAIR_PROMPTS["retry"].format(error=failure)
         raise AssertionError("Unreachable retry state")
 
-    def _judge_once(
-        self,
-        request: JudgmentRequest,
-        feedback: str,
-        accepted: dict | None = None,
-        *,
-        use_catalogue: bool = False,
-    ) -> JudgmentResult:
+    def _judge_once(self, request: JudgmentRequest, feedback: str) -> JudgmentResult:
         rendered = self.render_request(request)
-        skill_ref = (
-            "explain-match" if self.jev and request.output_kind == "match" else request.skill_ref
-        )
+        skill_ref = request.skill_ref
         skill_path = self.skill_root / skill_ref if skill_ref else None
         if not skill_path:
             raise JudgmentError(f"Every LLM judgment requires a configured Skill: {request.key}")
@@ -289,103 +278,17 @@ class CachedJudgments:
             raise JudgmentError(f"Skill directory does not exist: {skill_path}")
         skill_hash = directory_hash(skill_path)
         fingerprint = self._fingerprint(request, rendered, skill_hash)
-        if accepted is not None:
-            fingerprint = hashlib.sha256(
-                (fingerprint + ":accepted:" + accepted["target_id"]).encode()
-            ).hexdigest()
         cache_path = self.cache_dir / f"{fingerprint}.json"
         if cache_path.is_file() and not request.force and not feedback:
             payload = json.loads(cache_path.read_text(encoding="utf-8"))
             result = JudgmentResult.model_validate(payload)
             result.cache_hit = True
             self._validate(request, result.normalized)
-            if self.jev and request.output_kind == "match":
-                if result.normalized["target_id"] != result.raw_response["jev"]["target_id"]:
-                    raise JudgmentError("Cached evidence changed Jev's selection")
             return result
 
-        selection = None
         validation_request = request
         options = paragraph_options(request.context) if request.output_kind == "match" else None
         labels = options[1] if options else {}
-        if self.jev and request.output_kind == "match":
-            selection = (
-                accepted
-                if accepted is not None
-                else self.jev.select(request, force=request.force and not feedback)
-            )
-            target = selection["target_id"]
-            if target is None:
-                result = JudgmentResult(
-                    fingerprint=fingerprint,
-                    normalized={
-                        "target_id": None,
-                        "basis": "Jev found no supported match; no generative explanation was requested.",
-                        "evidence": {"focus": [], "target": []},
-                    },
-                    raw_response={"jev": selection},
-                    # No generative prompt was sent. Each actual Jev body is in its call cache.
-                    rendered_system="",
-                    rendered_user="",
-                    prompt_hash=rendered.prompt_hash,
-                    context_hash=rendered.context_hash,
-                    schema_hash=rendered.schema_hash,
-                    model={"jev": self.jev.settings.model_dump()},
-                )
-                self._validate(request, result.normalized)
-                write_json(cache_path, result.model_dump(mode="json"))
-                return result
-            evidence_request = request.model_copy(
-                update={
-                    "context": {
-                        **request.context,
-                        "candidates": [
-                            candidate
-                            for candidate in request.context["candidates"]
-                            if candidate_handle(candidate) == target
-                        ],
-                    },
-                    "allowed_match_ids": [target],
-                }
-            )
-            rendered = self.render_request(evidence_request, labels)
-            validation_request = evidence_request
-            wire_target = labels.get(target, target)
-            rendered.schema["properties"]["target_id"] = {"type": "string", "enum": [wire_target]}
-            rendered = replace(
-                rendered,
-                user=rendered.user + "\n\n" + json.dumps({"fixed_target_id": wire_target}),
-                schema_hash=hashlib.sha256(
-                    json.dumps(rendered.schema, sort_keys=True).encode()
-                ).hexdigest(),
-            )
-
-        catalogue = {}
-        if use_catalogue:
-            catalogue = quote_catalogue(
-                validation_request.context["focus"], validation_request.context["candidates"][0]
-            )
-            rendered.schema["properties"]["evidence"] = {
-                "type": "object",
-                "required": list(catalogue),
-                "additionalProperties": False,
-                "properties": {
-                    slot: {"type": "string", "enum": list(choices)}
-                    for slot, choices in catalogue.items()
-                },
-            }
-            feedback = (
-                "\n\nQuotation repair: for each required evidence slot, select the number of one "
-                "verbatim excerpt from that slot's list. Choose the excerpt that supports your comparison "
-                "or shows its limitation. Do not change the selected target. Return the basis and all required slots.\n"
-                + json.dumps(catalogue, ensure_ascii=False)
-            )
-            rendered = replace(
-                rendered,
-                schema_hash=hashlib.sha256(
-                    json.dumps(rendered.schema, sort_keys=True).encode()
-                ).hexdigest(),
-            )
 
         if self.skills is None:
             self.skills = create_skill_client(
@@ -418,16 +321,6 @@ class CachedJudgments:
             cacheable_context=rendered.cacheable_context,
         )
         api_normalized = dict(response.value)
-        if catalogue:
-            slots = api_normalized["evidence"]
-            api_normalized["evidence"] = {
-                side: [
-                    choices[slots[key]]
-                    for key, choices in catalogue.items()
-                    if key.startswith(side + "_")
-                ]
-                for side in ("focus", "target")
-            }
         model = {
             **self.model.model_dump(mode="json"),
             "effective_max_tokens": request.max_tokens or self.model.max_tokens,
@@ -444,9 +337,6 @@ class CachedJudgments:
             "stop_reason": response.stop_reason,
             "usage": response.usage,
         }
-        if selection is not None:
-            raw_response = {**raw_response, "jev": selection}
-            model["jev"] = self.jev.settings.model_dump()
 
         normalized = api_normalized
         if labels and api_normalized.get("target_id") is not None:
@@ -470,8 +360,6 @@ class CachedJudgments:
             cache_hit=False,
         )
         try:
-            if selection is not None and normalized.get("target_id") != selection["target_id"]:
-                raise JudgmentError("Generative evidence must not change Jev's selection")
             if labels:
                 # Repair messages must describe only the visible options, by their wire labels.
                 candidates = [
@@ -517,6 +405,9 @@ class CachedJudgments:
             "skill_hash": skill_hash,
             "jev": self.jev.settings.result_settings() if self.jev else None,
         }
+        if payload["jev"] and request.output_kind != "match":
+            # Long context changes only Jev answers; Claude's roles keep their cache entries.
+            payload["jev"].pop("long_context_retry", None)
         if self.jev and request.output_kind == "match":
             phases = (
                 ("has_match", "match") if len(request.allowed_match_ids) > 1 else ("has_match",)

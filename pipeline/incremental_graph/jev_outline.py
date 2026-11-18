@@ -65,13 +65,59 @@ def _unpositioned(nodes, level):
     return "\n\n".join([blocks[0], "Candidates", *blocks[1:]]), labels
 
 
+def _section_outline(context, outline):
+    sections = outline["sections"]
+    groups = outline["groups"]
+    group_names = {frozenset(g["members"]): name for name, g in groups.items()}
+    owners, labels = {}, {}
+    for index, node in enumerate([context["focus"], *context["candidates"]]):
+        members = [
+            source_address(*_location(unit), numbers=outline["numbers"])
+            for unit in node.get("members", [node])
+        ]
+        label = members[0] if len(members) == 1 else "Group " + group_names[frozenset(members)]
+        if index:
+            labels[candidate_handle(node)] = label
+        for member in members:
+            if member not in sections or member in owners:
+                raise ValueError(f"Expected one decision role for top-level section {member}")
+            owners[member] = ("Candidates" if index else "Focus", label)
+
+    blocks = {"Focus": [], "Context": [], "Candidates": []}
+    node_blocks = {label: block for block, label in owners.values()}
+    for name, group in groups.items():
+        # A participating node states its shared role beside its own members.
+        if block := node_blocks.get("Group " + name):
+            blocks[block].append(f"Group {name} Role: {group['role_statement']}")
+    for addr, (paper, title, role, content) in sections.items():
+        block, label = owners.get(addr, ("Context", addr))
+        member = f" (member of {label})" if label != addr else ""
+        # Remove extraction line breaks, not words or punctuation.
+        content = " ".join(line.strip() for line in content.splitlines() if line.strip())
+        blocks[block].append(
+            f"Section: {addr} {paper} / {title}{member}\nRole: {role}\nContent: {content}"
+        )
+    for name, group in groups.items():
+        if "Group " + name in node_blocks:
+            continue
+        members = ", ".join(
+            addr + (" (fan-in)" if role == "fan_in" else "")
+            for addr, role in group["members"].items()
+        )
+        blocks["Context"].append(
+            f"Prior match: Group {name}: {members} | {group['role_statement']}"
+        )
+    return "\n\n".join("\n".join([name, *rows]) for name, rows in blocks.items()), labels
+
+
 def focus_outline(context):
     level = context["scope"]["level"]
     nodes = [context["focus"], *context["candidates"]]
+    annotations = context.get("outline", {})
+    if level == "section" and "sections" in annotations:
+        return _section_outline(context, annotations)
     if any(not _location(u) for n in nodes for u in n.get("members", [n])):
         return _unpositioned(nodes, level)
-
-    annotations = context.get("outline", {})
 
     def address(*location):
         return source_address(*location, numbers=annotations.get("numbers"))
@@ -167,11 +213,23 @@ def focus_outline(context):
         shown.add(addr)
         return [line, *notes]
 
-    lines = []
-    for candidates in (False, True):
-        lines.append(f"Focus {level}: {first_label}" if not candidates else "\nCandidates")
+    complete = "paragraphs" in annotations
+    for paper, sec, pos, text in annotations.get("paragraphs", ()):
+        key = (paper, sec, pos)
+        if rows.setdefault(key, text) != text:
+            raise ValueError(f"Inconsistent source text at {key}")
+        owners.setdefault(key, (True, False))
+    blocks = {"Focus": [], "Context": [], "Candidates": []}
+
+    def block_for(key):
+        neighbor, candidate = owners[key]
+        if complete and neighbor:
+            return "Context"
+        return "Candidates" if candidate else "Focus"
+
+    for block, lines in blocks.items():
         keys = sorted(
-            (k for k in rows if owners[k][1] == candidates),
+            (k for k in rows if block_for(k) == block),
             key=lambda k: (int(k[0].removeprefix("paper-")), k[1], k[2]),
         )
         for (paper, sec), parts in groupby(keys, lambda k: k[:2]):
@@ -198,5 +256,11 @@ def focus_outline(context):
                 "Group " + group + more + ", ".join(missing) + (f" | Role: {q}" if q else "")
             )
     if history:
-        lines.extend(["\nPrior matches (context only)", *history])
-    return "\n".join(lines), labels
+        blocks["Context" if complete else "Candidates"].extend(
+            ["\nPrior matches (context only)", *history]
+        )
+    if complete:
+        return "\n\n".join("\n".join([name, *lines]) for name, lines in blocks.items()), labels
+    return "\n".join(
+        [f"Focus {level}: {first_label}", *blocks["Focus"], "\nCandidates", *blocks["Candidates"]]
+    ), labels

@@ -4,11 +4,77 @@ Jev selects model-judged matches in initial and singleton-recovery passes, inclu
 paragraphs moved into a new structural scope. Single-paragraph structural matches
 inherit their paragraph match without a model call, as described below. Python controls candidate
 eligibility, reciprocity, paragraph fan-in, evidence validation, and graph updates.
-The existing generative provider still writes missing role statements, group role statements,
-and explanations with source quotations. **A TypeSafe key alone is not enough:
+The existing generative provider still writes missing role statements and group role
+statements. Accepted matches get no generative explanation: Jev's recorded votes are
+the decision record. **A TypeSafe key alone is not enough:
 the default Jev run needs both `TYPESAFE_API_KEY` and `ANTHROPIC_API_KEY`.**
 
 Jev now asks whether any candidate matches before ranking. Historical runs used a different policy; use their original code revision to resume them. The [October 25 comparison](reports/jev-prompt-comparison-20261025.html) does not evaluate the sequential implementation.
+
+New Jev decisions use **Focus**, **Context**, and **Candidates**, in that order.
+Only Candidates are selectable. Granularity is `section` or `paragraph`;
+subsections are source structure only. Each section record has only Section,
+Role, and Content. Content includes all descendant paragraphs in source order,
+without subsection headings, paragraph labels, or their roles. Paragraph
+matching still selects individual paragraphs.
+
+### Node representation
+
+A node with N members carries N member passages, one complete paper, and N+1
+role statements:
+
+- every member's own section or paragraph text and role statement;
+- the complete paper of the most recently added member, whose other passages
+  appear under Context;
+- the group role statement, shown beside the members (a one-member node's
+  group role is its member's role and is not repeated).
+
+Earlier members' papers are dropped except for their member passages. A focus
+unit is shown with its whole paper. A request therefore holds one complete
+paper per participating node. Other nodes and their prior matches are omitted;
+paragraph decisions also list their structural scope's group.
+
+When a node gains a member, its group role is regenerated from the new member's
+complete paper (`latest_paper`, with member passages marked rather than
+repeated) and every member's passage and role. The previous group role is not
+an input.
+
+### Pairwise matching from the third paper
+
+Papers 1 and 2 use one forward choice over all nodes and one reverse choice per
+node; each request then holds at most two complete papers. From paper 3
+(`PAIRWISE_FROM_PAPER` in `runner.py`), matching has two steps:
+
+1. **Yes/no filter.** Each new unit asks one yes/no question per eligible node.
+   Each request holds two complete papers: the unit's and the node's latest
+   member's. An option passes when its score is above 0.5.
+2. **Choice among the passes.** Scores from separate requests are not compared.
+   When two or more options pass, one ranking question goes over exactly those
+   options. It holds the focus's complete paper; each option appears with its
+   own member passages, their roles, and its group role, but not its latest
+   paper. Jev's default context holds about two complete papers (32k tokens per
+question; see Long context below), and
+   passing nodes can come from several papers. One passing option is accepted
+   without a ranking question.
+
+Both directions read the same pass table: a unit chooses among the nodes it
+passed, and a node chooses among the new units that passed for it. The usual
+reciprocity, fan-in, and recovery rules apply unchanged; singleton recovery uses
+the same route. If Jev rejects a ranking for size, the pool is split in half,
+each half is ranked, and the two winners are ranked again; no text is truncated.
+Journals record each pair as `pair_scored` and each directional result as
+`match_recorded` with `pair_scores` and `choice_ids` (the options that passed).
+Expect about units times nodes yes/no calls per paper, plus one ranking per
+unit and per node with two or more passes.
+
+Jev IDs such as `A4` are document positions. Headings show the paper's printed
+section number, when it has one, before the section title.
+
+To stop after all papers' section decisions, pass `--sections-only` to `start`
+or `retry`. This includes section reconciliation, singleton recovery,
+and group roles, but makes no paragraph calls. Inspect the trace or the revision's
+`section-checkpoint.json`; it is not a completed paragraph dataset. When ready,
+`retry RUN_DIR` starts a full revision and reuses exact cached decisions.
 
 ## Single-paragraph inheritance
 
@@ -68,7 +134,8 @@ deterministic Python steps. No striped or mixed-responsibility boxes remain.
 ![A. Run lifecycle, document insertion, and comparison](diagrams/jev-pipeline.png)
 
 Read A's numbered columns in order. They separate role statement generation, Jev
-selection, fixed-target explanations, validation, reconciliation, and recovery.
+selection, validation, reconciliation, and recovery. (The diagrams predate the
+November 16 removal of fixed-target explanations.)
 Named connectors continue execution in another column. Each matching sequence
 runs once per directional request before Python reconciles the complete set.
 
@@ -195,16 +262,15 @@ An empty pool makes no call. Otherwise Jev first answers Noul: does any candidat
 match? A probability at or below 0.5 stops selection. After yes, a sole candidate
 is selected directly; otherwise a separate Choice request ranks real candidates
 only. Jev's choice is a directional vote, not an accepted match. Python applies
-the reciprocal and adjacent-paragraph rules before commissioning one explanation
-per accepted relationship. Rejected and reverse votes do not trigger duplicate
-explanations. Inherited paragraph matches still require no model explanation.
+the reciprocal and adjacent-paragraph rules; no explanation is generated for an
+accepted relationship.
 
 For alternatives, inspect the vote's candidate IDs and exact Jev call caches:
 they retain gate probabilities, all returned ranking probabilities, and the
 local-label-to-ID map when applicable. A negative gate produces no ranking.
-An `accepted_match_explained` event links the vote, reciprocal vote (when
-applicable), and explanation attempt. Paragraph singleton recovery uses the
-same two directional prompts; group role statements are generated after recovery.
+Runs before November 16 also contain `accepted_match_explained` events linking
+a vote to a Claude explanation; current runs do not. Paragraph singleton recovery
+uses the same two directional prompts; group role statements are generated after recovery.
 
 Each phase caches its validated response by the hash of its exact request.
 A retry after a ranking failure reuses the gate. A new positive multi-candidate
@@ -507,7 +573,7 @@ old policy hashes to bypass that distinction.
 
 The transport calls [TypeSafe System One](https://docs.typesafe.ai/api/system-one)
 with one named question per request. The gate and ranking prompts are in
-`prompts/requests/jev.json`, separate from the explanation Skill. Both scopes put
+`prompts/requests/jev.json`. Both scopes put
 the **focus first**, then the candidates. For the forward vote the focus is the
 incoming unit; for the reverse vote it is the existing unit or group. The gate
 and ranking use the same outline. Within each block, passages follow source order.
@@ -555,21 +621,38 @@ The service enforces its [token context limits](https://docs.typesafe.ai/models)
 Only an explicit HTTP 400 `max_tokens_exceeded` or HTTP 413 size rejection triggers
 size-based splitting; unrelated errors stop rather than causing more calls.
 
+### Long context (opt-in, Nov 18, 2026)
+
+Jev 1.14 allows 64k tokens per request but only 32k per question (state plus one
+question), which is about two complete papers. `start --jev-long-context` (setting
+`jev.long_context_retry: true`) resends a size-rejected request once, unchanged, with
+the `TypeSafe-Danger-Zone-Long-Context: true` header, which raises both limits to
+262k tokens at the same per-token price. A request predicted to overflow skips the
+default attempt and goes straight to long context: reported input tokens are
+0.2005 × JSON characters + 95 (fitted on 521 HCI requests, residuals within ±650), and
+a request within 700 tokens of 32,768 is predicted to overflow. On the five-paper cache this flags all
+35 rejected requests and 9 of 521 accepted ones; the rejection retry remains for misses.
+[TypeSafe's docs](https://docs.typesafe.ai/models#long-context)
+call long context slower and less accurate, so requests that fit the default window
+never use it. Long-context answers are cached under `cache/jev/long-context/` and
+their calls carry `long_context: true`; a long-context size rejection is cached under
+`cache/jev/too-large/long-context/`. Only when long context also rejects does the
+existing fallback apply (member-sections-only yes/no, or half-pool ranking). The
+setting is in the policy hash only when enabled, so earlier runs keep their hashes.
+
 Too many candidates or a real size limit triggers recursive half-pool selection,
 up to five retained candidate IDs from each half, then a fresh gate and, if needed, ranking on the shortlist. A negative half contributes nothing.
 Probabilities are only ranked within their own response distribution. A single
 oversized candidate or an unshrinkable reranking pool stops the run. The
-implementation never truncates source text or opts into long context. Shortlisting
+implementation never truncates source text. Shortlisting
 can discard a candidate that a full-pool comparison would prefer. Rejected HTTP
 requests count toward the call guard, and their response bodies are retained.
 
-For every non-null directional choice, the existing generative Skill receives
-only the chosen target and must return that same target with a basis and source
-quotations. This happens before reciprocal reconciliation, preserving evidence
-for rejected one-way choices too. Quote errors allow two repair attempts without
-changing Jev's selection. Abstention uses a deterministic basis and empty evidence,
-with no generative call. Attribution checks do not independently establish the
-semantic correctness of a match; the explanation model cannot veto the choice.
+No generative explanation follows a Jev choice (removed November 16): it could
+not change or veto the decision, so it added cost and a failure point without
+affecting the graph. `CachedJudgments.judge` refuses Jev match requests. A size
+rejection is cached under `cache/jev/too-large/` by exact request fingerprint, so
+a replay splits the pool without resending the rejected request.
 
 Within `runs/<name>/`:
 

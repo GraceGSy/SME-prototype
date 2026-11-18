@@ -87,22 +87,25 @@ def section_unit_id(section_index: int) -> str:
 
 
 def relabel_extraction(document: Any) -> list[dict[str, Any]]:
-    """Assign local numbers from the ordered hierarchy, never from citations or prose."""
+    """Normalize paragraph numbering and heading prefixes; keep printed section numbers.
+
+    A section number is the paper's own printed number, or null when the paper leaves
+    the heading unnumbered. Unit identity comes from document order, never from it.
+    """
     result = deepcopy(document)
     if not isinstance(result, list):
         raise ValueError("A document must be a JSON array")
 
-    def label(unit, number):
+    def label(unit):
         if not isinstance(unit, dict) or not isinstance(unit.get("paragraphs"), list):
             raise ValueError("Expected an ordered structural unit and its paragraphs")
-        old = unit.get("section_number")
+        old = unit.setdefault("section_number", None)
         if old is not None and not isinstance(old, str):
             raise ValueError("Invalid source section number")
         if old and isinstance(unit.get("section_name"), str):
             unit["section_name"] = re.sub(
                 r"^" + re.escape(old) + r"[.):]?\s+", "", unit["section_name"]
             )
-        unit["section_number"] = number
         for i, paragraph in enumerate(unit["paragraphs"]):
             if (
                 not isinstance(paragraph, dict)
@@ -112,12 +115,12 @@ def relabel_extraction(document: Any) -> list[dict[str, Any]]:
                 raise ValueError("Paragraph number must be a non-negative integer")
             paragraph["paragraph_number"] = i
 
-    for i, section in enumerate(result, 1):
-        label(section, str(i))
+    for section in result:
+        label(section)
         if not isinstance(section.get("subsections"), list):
             raise ValueError("Expected an ordered list of subsections")
-        for j, subsection in enumerate(section["subsections"], 1):
-            label(subsection, f"{i}.{j}")
+        for subsection in section["subsections"]:
+            label(subsection)
     validate_document(result)
     return result
 
@@ -202,7 +205,9 @@ def validate_document(
 
     if require_structural_role_statements:
         for unit in iter_structural_units(document):
-            _validate_role_statement(unit.source, bool(unit.evidence), unit.unit_id)
+            # Subsections are source structure only; roles belong to top-level sections.
+            if unit.unit_type == "section":
+                _validate_role_statement(unit.source, bool(unit.evidence), unit.unit_id)
     if require_paragraph_role_statements:
         for unit in iter_structural_units(document):
             for paragraph_index, paragraph in enumerate(unit.own_paragraphs):

@@ -15,6 +15,7 @@ from ..providers.jev import (
     JevSettings,
     choice_from_probabilities,
     encode_request,
+    needs_long_context,
     validate_response,
 )
 from .evidence_encoding import paragraph_options
@@ -71,8 +72,14 @@ class JevSelector:
         }, labels
 
     def select(
-        self, request: JudgmentRequest, *, force: bool = False, allow_splitting: bool = True
+        self,
+        request: JudgmentRequest,
+        *,
+        force: bool = False,
+        allow_splitting: bool = True,
+        rank_only: bool = False,
     ) -> dict:
+        """Gate, then rank. ``rank_only`` chooses among options that each passed a gate."""
         candidates = request.context["candidates"]
         ids = request.allowed_match_ids
         if (
@@ -121,18 +128,65 @@ class JevSelector:
             if len(encoded) > MAX_REQUEST_BYTES:
                 raise JevRequestTooLarge("Local request size limit exceeded")
             fingerprint = hashlib.sha256(encoded).hexdigest()
-            path = self.cache / f"{fingerprint}.json"
-            hit = path.is_file() and not force
-            if hit:
-                saved = read_json(path)
-                if saved["request"] != body:
+
+            def rejected(marker: Path) -> bool:
+                # A size rejection is deterministic for an exact body; replay it without a call.
+                if not marker.is_file() or force:
+                    return False
+                if read_json(marker)["request"] != body:
                     raise ValueError("Jev cached request changed")
-                response = validate_response(saved["response"], body)
-            else:
-                response = self.client.choose(body)
+                return True
+
+            def answer(path: Path, too_large: Path, long_context: bool) -> tuple[dict, bool]:
+                if path.is_file() and not force:
+                    saved = read_json(path)
+                    if saved["request"] != body:
+                        raise ValueError("Jev cached request changed")
+                    return validate_response(saved["response"], body), True
+                try:
+                    response = (
+                        self.client.choose(body, long_context=True)
+                        if long_context
+                        else self.client.choose(body)
+                    )
+                except JevRequestTooLarge:
+                    write_json(too_large, {"request": body})
+                    raise
                 write_json(path, {"request": body, "response": response})
                 self.client.check_reported_usage()
+                return response, False
+
+            # Long-context answers live apart: the same body can answer differently with it.
+            default = (self.cache / f"{fingerprint}.json", self.cache / "too-large" / f"{fingerprint}.json")
+            long = (
+                self.cache / "long-context" / f"{fingerprint}.json",
+                self.cache / "too-large" / "long-context" / f"{fingerprint}.json",
+            )
+            long_context = rejected(default[1])
+            if self.settings.long_context_retry and not long_context:
+                # Requests predicted to overflow skip the default attempt, unless one was
+                # already answered without the header.
+                long_context = needs_long_context(body) and not (
+                    default[0].is_file() and not force
+                )
+            if long_context and not self.settings.long_context_retry:
+                raise JevRequestTooLarge("Jev rejected this exact request for size earlier")
+            if not long_context:
+                try:
+                    response, hit = answer(*default, long_context=False)
+                except JevRequestTooLarge:
+                    if not self.settings.long_context_retry:
+                        raise
+                    long_context = True
+            if long_context:
+                if rejected(long[1]):
+                    raise JevRequestTooLarge(
+                        "Jev rejected this exact request for size earlier, even with long context"
+                    )
+                response, hit = answer(*long, long_context=True)
             call = {"fingerprint": fingerprint, "cache_hit": hit, "response": response}
+            if long_context:
+                call["long_context"] = True
             call["option_ids"] = {label: key for key, label in labels.items()}
             answer = response["answers"].get("match")
             if answer is not None:
@@ -167,9 +221,25 @@ class JevSelector:
                     ranked = ask(context, "match")
                     return choice_from_probabilities(ranked), ranked, gate
             except JevRequestTooLarge:
-                pass
+                if "sections" in context.get("outline", {}) or "paragraphs" in context.get(
+                    "outline", {}
+                ):
+                    raise JevRequestTooLarge(
+                        "Jev could not fit the complete participating papers. No source text "
+                        "was truncated and no smaller pool was retried."
+                    )
             return split(indices)
 
+        if rank_only:
+            if len(ids) < 2:
+                raise ValueError("Ranking requires multiple candidates")
+            ranked = ask(request.context, "match")
+            return {
+                "target_id": choice_from_probabilities(ranked),
+                "choice": ranked,
+                "has_match": None,
+                "calls": calls,
+            }
         target, answer, has_match = choose(list(range(len(ids))))
         return {
             "target_id": target,

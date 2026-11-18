@@ -109,19 +109,8 @@ def _find_member(
 def _unit_labels(papers: list[Paper]) -> dict[tuple[str, str, str], str]:
     labels: dict[tuple[str, str, str], str] = {}
     for paper in papers:
-        sections = {section.id: section for section in paper.sections}
-        family_sizes: dict[str, int] = defaultdict(int)
         for section in paper.sections:
-            family_sizes[section.family_id] += 1
-        for section in paper.sections:
-            if section.kind == "subsection":
-                parent = sections[section.parent_id]
-                label = f"{parent.label or parent.id} > {section.label or section.id}"
-            else:
-                label = section.label or section.id
-                if family_sizes[section.family_id] > 1:
-                    label += " (whole)"
-            labels[("section", paper.paper_id, section.id)] = label
+            labels[("section", paper.paper_id, section.id)] = section.label or section.id
             for paragraph in section.paragraphs:
                 number = paragraph.label or str(paragraph.ordinal)
                 labels[("paragraph", paper.paper_id, paragraph.id)] = f"¶{number}"

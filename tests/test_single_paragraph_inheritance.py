@@ -16,7 +16,7 @@ from pipeline.incremental_graph.runner import IncrementalGraphRunner
 from pipeline.viewer.package import validate_dataset
 
 
-def single_unit_paper(paper_id, count=1, subsection=False):
+def single_unit_paper(paper_id, count=1):
     paragraphs = [
         Paragraph(
             id=f"p{i}",
@@ -31,22 +31,8 @@ def single_unit_paper(paper_id, count=1, subsection=False):
         text="\n\n".join(p.text for p in paragraphs),
         paragraphs=paragraphs,
         role_statement="Who funded it?",
-        kind="subsection" if subsection else "section",
-        parent_id="root" if subsection else None,
     )
-    sections = (
-        [
-            Section(
-                id="root",
-                text="Parent framing. " + unit.text,
-                role_statement="What is the context?",
-            ),
-            unit,
-        ]
-        if subsection
-        else [unit]
-    )
-    return Paper(paper_id=paper_id, title=paper_id, sections=sections)
+    return Paper(paper_id=paper_id, title=paper_id, sections=[unit])
 
 
 class SingleParagraphInheritanceTest(unittest.TestCase):
@@ -80,50 +66,36 @@ class SingleParagraphInheritanceTest(unittest.TestCase):
             if r.output_kind == "match" and r.context["scope"]["level"] == "paragraph"
         ]
 
-    def test_inherits_sections_and_subsections_with_auditable_evidence_and_export(self):
-        for subsection in (False, True):
-            with self.subTest(subsection=subsection):
-                runner, judge = self.run_papers(
-                    [
-                        single_unit_paper("a", subsection=subsection),
-                        single_unit_paper("b", subsection=subsection),
-                    ],
-                    granularity="subsection" if subsection else "section",
-                )
-                self.assertEqual(self.paragraph_requests(judge), [])
-                groups = list(runner.role_graph.nodes("paragraph"))
-                self.assertEqual(len(groups), 1)
-                self.assertEqual(len(groups[0][1]["members"]), 2)
-                attempts = [
-                    json.loads(line)
-                    for line in runner.journal.attempt_path.read_text(encoding="utf-8").splitlines()
-                ]
-                inherited = [a for a in attempts if a["model"].get("provider") == "deterministic"]
-                self.assertEqual(len(inherited), 2)
-                for attempt in inherited:
-                    value = attempt["normalized"]
-                    validate_evidence(
-                        json.loads(attempt["rendered_user"]), value["target_id"], value["evidence"]
-                    )
-                    self.assertEqual(
-                        attempt["raw_response"]["rule"], "single_paragraph_structural_match"
-                    )
-                    self.assertTrue(
-                        all(len(q) == 240 for quotes in value["evidence"].values() for q in quotes)
-                    )
-                self.assertTrue(
-                    validate_dataset(runner.revision_dir / "dataset", "inherited", "Inherited")
-                )
-                replayed = graph_from_events(runner.journal.events)
-                self.assertEqual(set(replayed.nodes), set(runner.role_graph.graph.nodes))
-                for node_id in replayed.nodes:
-                    self.assertEqual(
-                        replayed.nodes[node_id]["members"], runner.role_graph.members(node_id)
-                    )
-                self.assertEqual(
-                    set(replayed.edges(keys=True)),
-                    set(runner.role_graph.graph.edges(keys=True)),
-                )
+    def test_inherits_sections_with_auditable_evidence_and_export(self):
+        runner, judge = self.run_papers([single_unit_paper("a"), single_unit_paper("b")])
+        self.assertEqual(self.paragraph_requests(judge), [])
+        groups = list(runner.role_graph.nodes("paragraph"))
+        self.assertEqual(len(groups), 1)
+        self.assertEqual(len(groups[0][1]["members"]), 2)
+        attempts = [
+            json.loads(line)
+            for line in runner.journal.attempt_path.read_text(encoding="utf-8").splitlines()
+        ]
+        inherited = [a for a in attempts if a["model"].get("provider") == "deterministic"]
+        self.assertEqual(len(inherited), 2)
+        for attempt in inherited:
+            value = attempt["normalized"]
+            validate_evidence(
+                json.loads(attempt["rendered_user"]), value["target_id"], value["evidence"]
+            )
+            self.assertEqual(attempt["raw_response"]["rule"], "single_paragraph_structural_match")
+            self.assertTrue(
+                all(len(q) == 240 for quotes in value["evidence"].values() for q in quotes)
+            )
+        self.assertTrue(validate_dataset(runner.revision_dir / "dataset", "inherited", "Inherited"))
+        replayed = graph_from_events(runner.journal.events)
+        self.assertEqual(set(replayed.nodes), set(runner.role_graph.graph.nodes))
+        for node_id in replayed.nodes:
+            self.assertEqual(replayed.nodes[node_id]["members"], runner.role_graph.members(node_id))
+        self.assertEqual(
+            set(replayed.edges(keys=True)),
+            set(runner.role_graph.graph.edges(keys=True)),
+        )
 
     def test_extends_an_existing_multi_paper_single_paragraph_group(self):
         runner, judge = self.run_papers([single_unit_paper(p) for p in ("a", "b", "c")])
@@ -186,7 +158,7 @@ class SingleParagraphInheritanceTest(unittest.TestCase):
             f"{second.paper_id}:section_matching:new_to_group:{unit_id}": parent,
             f"{second.paper_id}:section_matching:group_to_new:{parent}": unit_id,
         }
-        runner, judge = self.run_papers(papers, matches, granularity="subsection")
+        runner, judge = self.run_papers(papers, matches)
         self.assertEqual(self.paragraph_requests(judge), [])
         groups = list(runner.role_graph.nodes("paragraph"))
         self.assertEqual(len(groups), 1)

@@ -98,8 +98,11 @@ class RoleGraph:
         membership_role: str | None = None,
     ) -> None:
         members = self.graph.nodes[node_id]["members"]
-        if self.graph.nodes[node_id]["level"] == "section" and any(
-            existing["paper_id"] == paper_id for existing in members
+        # A section fan-in member is the one permitted second section from a paper.
+        if (
+            self.graph.nodes[node_id]["level"] == "section"
+            and membership_role != "fan_in"
+            and any(existing["paper_id"] == paper_id for existing in members)
         ):
             raise ValueError(f"Node {node_id} already contains a member from {paper_id}")
         member = _member(
@@ -136,14 +139,14 @@ class RoleGraph:
         *,
         paper_index: int,
     ) -> list[dict[str, Any]]:
-        """Atomically absorb one adjacent paragraph node into a reciprocal node."""
+        """Atomically absorb one adjacent node into a reciprocal node at the same level."""
 
         source = self.graph.nodes[source_id]
         target = self.graph.nodes[target_id]
-        if source["level"] != "paragraph" or target["level"] != "paragraph":
-            raise ValueError("Only paragraph groups can be merged")
+        if source["level"] != target["level"]:
+            raise ValueError("Only groups at one level can be merged")
         if source.get("parent_id") != target.get("parent_id"):
-            raise ValueError("Paragraph groups must share one structural parent")
+            raise ValueError("Groups must share one structural parent")
         moved = [{**member, "membership_role": "fan_in"} for member in source["members"]]
         target["members"].extend(moved)
         target["members"].sort(
@@ -160,7 +163,7 @@ class RoleGraph:
             source_node_id=source_id,
             target_node_id=target_id,
             members=moved,
-            reason="adjacent_paragraph_fan_in",
+            reason=f"adjacent_{source['level']}_fan_in",
         )
         return moved
 

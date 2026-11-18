@@ -1,1 +1,1 @@
-What role do these passages share in their respective papers? Answer with a single concise statement, focusing on role not content.
+What role do these passages share in their respective papers? Answer with a single concise statement, focusing on role not content. The group lists every member passage with its role statement; latest_paper is the complete paper of the most recently added member, with member passages marked rather than repeated.

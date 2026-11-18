@@ -2,6 +2,7 @@ import { loadDataset } from "./data";
 import { element } from "./dom";
 import { GroupsView } from "./groups";
 import { PaperMapView } from "./paper-map";
+import { buildSectionMap } from "./model";
 import { GraphicalExplorer } from "./explorer";
 import { mountTutorial, type View } from "./tutorial";
 
@@ -10,7 +11,21 @@ element("#useToolButton").addEventListener("click", () => {
 });
 
 async function main(): Promise<void> {
-  const { descriptor, model } = await loadDataset();
+  const dataset = await loadDataset();
+  if (dataset.sectionsOnly) {
+    const host = element("#stage");
+    const map = new PaperMapView(host, buildSectionMap(dataset.papers, dataset.groups), true);
+    document.title = "Paper Map | Section matches";
+    element("#viewerTitle").textContent = "Paper Map: section matches";
+    element("#legend").textContent =
+      "Select a section to highlight its match across papers. Gray sections have no accepted match. Paragraph matching has not run for this revision.";
+    element("#tutorialWelcome").hidden = true;
+    element("#restartTutorial").hidden = true;
+    map.render();
+    window.addEventListener("resize", () => map.resize());
+    return;
+  }
+  const { descriptor, model } = dataset;
   document.title = descriptor.label;
   element("#viewerTitle").textContent = descriptor.label;
   document.documentElement.dataset.datasetId = descriptor.dataset_id;

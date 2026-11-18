@@ -1,7 +1,7 @@
 [
   {
     "section_name": "Abstract",
-    "section_number": "1",
+    "section_number": null,
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -12,7 +12,7 @@
   },
   {
     "section_name": "Introduction",
-    "section_number": "2",
+    "section_number": "1",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -51,7 +51,7 @@
   },
   {
     "section_name": "Background and Related Work",
-    "section_number": "3",
+    "section_number": "2",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -61,7 +61,7 @@
     "subsections": [
       {
         "section_name": "Community Writing Norms",
-        "section_number": "3.1",
+        "section_number": "2.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -79,7 +79,7 @@
       },
       {
         "section_name": "Writing with External Text",
-        "section_number": "3.2",
+        "section_number": "2.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -97,7 +97,7 @@
       },
       {
         "section_name": "Finding Relevant Examples",
-        "section_number": "3.3",
+        "section_number": "2.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -113,7 +113,7 @@
   },
   {
     "section_name": "Corpus Studio",
-    "section_number": "4",
+    "section_number": "3",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -123,7 +123,7 @@
     "subsections": [
       {
         "section_name": "Design Goals",
-        "section_number": "4.1",
+        "section_number": "3.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -133,7 +133,7 @@
       },
       {
         "section_name": "Usage Scenario",
-        "section_number": "4.2",
+        "section_number": "3.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -159,7 +159,7 @@
       },
       {
         "section_name": "System Characteristics",
-        "section_number": "4.3",
+        "section_number": "3.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -241,7 +241,7 @@
       },
       {
         "section_name": "Implementation Details",
-        "section_number": "4.4",
+        "section_number": "3.4",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -257,7 +257,7 @@
   },
   {
     "section_name": "Data & Processing",
-    "section_number": "5",
+    "section_number": "4",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -267,7 +267,7 @@
     "subsections": [
       {
         "section_name": "Pre-processing Documents",
-        "section_number": "5.1",
+        "section_number": "4.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -277,7 +277,7 @@
       },
       {
         "section_name": "Embedding Process",
-        "section_number": "5.2",
+        "section_number": "4.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -287,7 +287,7 @@
       },
       {
         "section_name": "Extracting an Ordered Distribution over Section Titles",
-        "section_number": "5.3",
+        "section_number": "4.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -303,7 +303,7 @@
   },
   {
     "section_name": "User Study",
-    "section_number": "6",
+    "section_number": "5",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -313,7 +313,7 @@
     "subsections": [
       {
         "section_name": "Participants",
-        "section_number": "6.1",
+        "section_number": "5.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -331,7 +331,7 @@
       },
       {
         "section_name": "Study Procedure",
-        "section_number": "6.2",
+        "section_number": "5.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -379,7 +379,7 @@
   },
   {
     "section_name": "Qualitative Results",
-    "section_number": "7",
+    "section_number": "6",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -401,7 +401,7 @@
     "subsections": [
       {
         "section_name": "Document-level Writing Support",
-        "section_number": "7.1",
+        "section_number": "6.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -431,7 +431,7 @@
       },
       {
         "section_name": "Sentence-level Writing Support",
-        "section_number": "7.2",
+        "section_number": "6.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -473,7 +473,7 @@
       },
       {
         "section_name": "Bookmark and User Notes",
-        "section_number": "7.3",
+        "section_number": "6.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -487,7 +487,7 @@
       },
       {
         "section_name": "Tooltips",
-        "section_number": "7.4",
+        "section_number": "6.4",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -513,7 +513,7 @@
       },
       {
         "section_name": "Use of Features, Especially Across Writing Stages",
-        "section_number": "7.5",
+        "section_number": "6.5",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -531,7 +531,7 @@
       },
       {
         "section_name": "Efficacy of Anti-plagiarism Features",
-        "section_number": "7.6",
+        "section_number": "6.6",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -543,7 +543,7 @@
   },
   {
     "section_name": "Quantitative Results",
-    "section_number": "8",
+    "section_number": "7",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -553,7 +553,7 @@
     "subsections": [
       {
         "section_name": "Task 1: Outline Writing",
-        "section_number": "8.1",
+        "section_number": "7.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -587,7 +587,7 @@
       },
       {
         "section_name": "Task 2: Writing a Section of a Manuscript",
-        "section_number": "8.2",
+        "section_number": "7.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -611,7 +611,7 @@
   },
   {
     "section_name": "Discussion",
-    "section_number": "9",
+    "section_number": "8",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -621,7 +621,7 @@
     "subsections": [
       {
         "section_name": "Relevance of Retrieved Sentences",
-        "section_number": "9.1",
+        "section_number": "8.1",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -643,7 +643,7 @@
       },
       {
         "section_name": "Designing a System with Many Retrieved Examples",
-        "section_number": "9.2",
+        "section_number": "8.2",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -661,7 +661,7 @@
       },
       {
         "section_name": "Designing Writing Support for and with Community Integration, not AI Integration",
-        "section_number": "9.3",
+        "section_number": "8.3",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -679,7 +679,7 @@
       },
       {
         "section_name": "Putting Metacognitive Strategies “Ready to Hand”",
-        "section_number": "9.4",
+        "section_number": "8.4",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -693,7 +693,7 @@
       },
       {
         "section_name": "Limitations and Future Work",
-        "section_number": "9.5",
+        "section_number": "8.5",
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -705,7 +705,7 @@
   },
   {
     "section_name": "Conclusion",
-    "section_number": "10",
+    "section_number": "9",
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -716,7 +716,7 @@
   },
   {
     "section_name": "Acknowledgments",
-    "section_number": "11",
+    "section_number": null,
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -727,7 +727,7 @@
   },
   {
     "section_name": "References",
-    "section_number": "12",
+    "section_number": null,
     "paragraphs": [],
     "subsections": []
   }

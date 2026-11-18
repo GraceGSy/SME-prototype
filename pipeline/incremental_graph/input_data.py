@@ -72,46 +72,7 @@ def _from_canonical_document(
             raise ValueError(
                 "paragraph granularity requires exactly one top-level section and no subsections"
             )
-    if max_granularity != "subsection":
-        return _from_section_documents(document, paper_id, title)
-
-    sections: list[Section] = []
-    paragraph_ordinals: dict[str, int] = {}
-    structural_ordinal = 0
-
-    for unit in iter_structural_units(document):
-        if not unit.evidence:
-            continue
-        family_id = unit.parent_unit_id or unit.unit_id
-        paragraphs: list[Paragraph] = []
-        for paragraph_index, raw_paragraph in enumerate(unit.own_paragraphs):
-            paragraph_ordinals[family_id] = paragraph_ordinals.get(family_id, 0) + 1
-            paragraphs.append(
-                Paragraph(
-                    id=paragraph_unit_id(unit.unit_id, paragraph_index),
-                    label=str(paragraph_index + 1),
-                    text=raw_paragraph["text"],
-                    role_statement=_role_statement(raw_paragraph),
-                    ordinal=paragraph_ordinals[family_id],
-                )
-            )
-
-        structural_ordinal += 1
-        sections.append(
-            Section(
-                id=unit.unit_id,
-                number=unit.source["section_number"] or "",
-                label=unit.name,
-                text="\n\n".join(paragraph["text"] for paragraph in unit.evidence),
-                paragraphs=paragraphs,
-                role_statement=_role_statement(unit.source),
-                ordinal=structural_ordinal,
-                kind=unit.unit_type,
-                parent_id=unit.parent_unit_id,
-                family_id=family_id,
-            )
-        )
-    return Paper(paper_id=paper_id, title=title, sections=sections)
+    return _from_section_documents(document, paper_id, title)
 
 
 def _from_section_documents(

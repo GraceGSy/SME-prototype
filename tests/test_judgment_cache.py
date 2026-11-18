@@ -47,7 +47,7 @@ class JudgmentCacheTest(unittest.TestCase):
             self.assertEqual(list(Path(directory).glob("*.json")), [])
             records = list((Path(directory) / "rejected").glob("*.json"))
             self.assertEqual(len(records), 2)
-            record = json.loads(records[0].read_text())
+            record = json.loads(records[0].read_text(encoding="utf-8"))
             self.assertEqual(record["result"]["raw_response"], raw)
             self.assertEqual(record["result"]["normalized"]["target_id"], "paper-group")
             self.assertEqual(record["result"]["normalized"]["basis"], "Original explanation")

@@ -1,7 +1,7 @@
 [
   {
-    "section_name": "ABSTRACT",
-    "section_number": "1",
+    "section_name": "Abstract",
+    "section_number": null,
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -11,8 +11,8 @@
     "subsections": []
   },
   {
-    "section_name": "INTRODUCTION",
-    "section_number": "2",
+    "section_name": "Introduction",
+    "section_number": null,
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -50,13 +50,13 @@
     "subsections": []
   },
   {
-    "section_name": "RELATED WORK",
-    "section_number": "3",
+    "section_name": "Related Work",
+    "section_number": null,
     "paragraphs": [],
     "subsections": [
       {
         "section_name": "Interfaces for Exploring Collections of Complex Objects",
-        "section_number": "3.1",
+        "section_number": null,
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -78,7 +78,7 @@
       },
       {
         "section_name": "Learning APIs with Code Examples",
-        "section_number": "3.2",
+        "section_number": null,
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -96,7 +96,7 @@
       },
       {
         "section_name": "Mining and Visualization of API Usage",
-        "section_number": "3.3",
+        "section_number": null,
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -115,8 +115,8 @@
     ]
   },
   {
-    "section_name": "SYNTHETIC CODE SKELETON",
-    "section_number": "4",
+    "section_name": "Synthetic Code Skeleton",
+    "section_number": null,
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -138,8 +138,8 @@
     "subsections": []
   },
   {
-    "section_name": "SCENARIO: INTERACTING WITH CODE DISTRIBUTIONS",
-    "section_number": "5",
+    "section_name": "Scenario: Interacting with Code Distributions",
+    "section_number": null,
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -147,15 +147,15 @@
       },
       {
         "paragraph_number": 1,
-        "text": "The right half of the screen shows all mined examples, sorted from shortest to longest. Victor can quickly pick out the FileInputStream constructor in each example because they are each highlighted with the same blue color as the header of the focal API section of the code skeleton ((cid:177) in Figure 2). Each section of the skeleton has a distinct heading color, which is used to highlight the corresponding concrete code segments in each code example, e.g., initializing declarations in red, guards in light orange. This is designed to reduce the cognitive load of parsing lots of code, and allows Victor to more easily identify the purpose of different portions of code within each example."
+        "text": "The right half of the screen shows all mined examples, sorted from shortest to longest. Victor can quickly pick out the FileInputStream constructor in each example because they are each highlighted with the same blue color as the header of the focal API section of the code skeleton (⑥ in Figure 2). Each section of the skeleton has a distinct heading color, which is used to highlight the corresponding concrete code segments in each code example, e.g., initializing declarations in red, guards in light orange. This is designed to reduce the cognitive load of parsing lots of code, and allows Victor to more easily identify the purpose of different portions of code within each example."
       },
       {
         "paragraph_number": 2,
-        "text": "EXAMPLORE reveals, by default, the top three most common options for each section of the skeleton ((cid:198) in Figure 2). Victor notices that, based on the relative lengths of the blue bars aligned with each option for calling FileInputStream, passing a File object as the argument is twice as likely as passing fileName, a String. By looking at the guard condition options within the if section in Figure 3, Victor can see how other programmers typically protect FileInputStream from receiving an invalid argument. He can also tell, by the small size of the blue bars aligned with these expressions, that these most popular guards are still not used frequently, overall. If he wants to see more or fewer options per skeleton section, he can click the \"Show More\" or \"Show Less\" buttons, or explore the long tail of the corpus by clicking \"Show All\" ((cid:175) in Figure 2)."
+        "text": "EXAMPLORE reveals, by default, the top three most common options for each section of the skeleton (⑦ in Figure 2). Victor notices that, based on the relative lengths of the blue bars aligned with each option for calling FileInputStream, passing a File object as the argument is twice as likely as passing fileName, a String. By looking at the guard condition options within the if section in Figure 3, Victor can see how other programmers typically protect FileInputStream from receiving an invalid argument. He can also tell, by the small size of the blue bars aligned with these expressions, that these most popular guards are still not used frequently, overall. If he wants to see more or fewer options per skeleton section, he can click the \"Show More\" or \"Show Less\" buttons, or explore the long tail of the corpus by clicking \"Show All\" (④ in Figure 2)."
       },
       {
         "paragraph_number": 3,
-        "text": "Victor is interested in exploring and better understanding the less common FileInputStream constructor, which takes a String argument representing a file name. Victor clicks on the radio button next to stream = new FileInputStream(fileName). The active filters ((cid:176) in Figure 2) are updated and the right-hand side of the screen now only lists code examples that construct a FileInputStream with a String."
+        "text": "Victor is interested in exploring and better understanding the less common FileInputStream constructor, which takes a String argument representing a file name. Victor clicks on the radio button next to stream = new FileInputStream(fileName). The active filters (⑤ in Figure 2) are updated and the right-hand side of the screen now only lists code examples that construct a FileInputStream with a String."
       },
       {
         "paragraph_number": 4,
@@ -169,8 +169,8 @@
     "subsections": []
   },
   {
-    "section_name": "SYSTEM ARCHITECTURE AND IMPLEMENTATION",
-    "section_number": "6",
+    "section_name": "System Architecture and Implementation",
+    "section_number": null,
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -180,7 +180,7 @@
     "subsections": [
       {
         "section_name": "Data Collection",
-        "section_number": "6.1",
+        "section_number": null,
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -190,7 +190,7 @@
       },
       {
         "section_name": "Post-processing",
-        "section_number": "6.2",
+        "section_number": null,
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -212,7 +212,7 @@
       },
       {
         "section_name": "Visualization",
-        "section_number": "6.3",
+        "section_number": null,
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -223,8 +223,8 @@
     ]
   },
   {
-    "section_name": "USER STUDY",
-    "section_number": "7",
+    "section_name": "User Study",
+    "section_number": null,
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -234,7 +234,7 @@
     "subsections": [
       {
         "section_name": "API Methods",
-        "section_number": "7.1",
+        "section_number": null,
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -248,7 +248,7 @@
       },
       {
         "section_name": "Participants",
-        "section_number": "7.2",
+        "section_number": null,
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -258,7 +258,7 @@
       },
       {
         "section_name": "Methodology",
-        "section_number": "7.3",
+        "section_number": null,
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -281,13 +281,13 @@
     ]
   },
   {
-    "section_name": "RESULTS",
-    "section_number": "8",
+    "section_name": "Results",
+    "section_number": null,
     "paragraphs": [],
     "subsections": [
       {
         "section_name": "Quantitative Analysis",
-        "section_number": "8.1",
+        "section_number": null,
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -321,7 +321,7 @@
       },
       {
         "section_name": "Qualitative Analysis",
-        "section_number": "8.2",
+        "section_number": null,
         "paragraphs": [
           {
             "paragraph_number": 0,
@@ -344,8 +344,8 @@
     ]
   },
   {
-    "section_name": "DISCUSSION AND LIMITATIONS",
-    "section_number": "9",
+    "section_name": "Discussion and Limitations",
+    "section_number": null,
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -367,8 +367,8 @@
     "subsections": []
   },
   {
-    "section_name": "CONCLUSION",
-    "section_number": "10",
+    "section_name": "Conclusion",
+    "section_number": null,
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -378,8 +378,8 @@
     "subsections": []
   },
   {
-    "section_name": "ACKNOWLEDGMENTS",
-    "section_number": "11",
+    "section_name": "Acknowledgments",
+    "section_number": null,
     "paragraphs": [
       {
         "paragraph_number": 0,
@@ -389,8 +389,8 @@
     "subsections": []
   },
   {
-    "section_name": "REFERENCES",
-    "section_number": "12",
+    "section_name": "References",
+    "section_number": null,
     "paragraphs": [],
     "subsections": []
   }
