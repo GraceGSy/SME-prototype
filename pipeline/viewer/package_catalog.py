@@ -37,6 +37,9 @@ SOURCE_TEXT_SNAPSHOTS = {
     ("reuters-technology-jev-singletons-20261105", "revision-0001"),
     ("reuters-technology-jev-20261105", "revision-0001"),
 }
+# The HCI papers are open-access and their authors permit reuse (owner approval, Nov 18,
+# 2026), so every published HCI revision, section checkpoints included, keeps its text.
+SOURCE_TEXT_COLLECTIONS = {"HCI"}
 
 
 def package_catalog(runs: Path, output: Path, labels: dict[str, str] = LABELS) -> list[dict]:
@@ -51,15 +54,19 @@ def package_catalog(runs: Path, output: Path, labels: dict[str, str] = LABELS) -
         if key not in labels:
             continue
         label = labels[key]
-        entry.update(label=label, collection=label.split(" | ")[0], revisionLabels={})
+        collection = label.split(" | ")[0]
+        entry.update(label=label, collection=collection, revisionLabels={})
         for rev in entry.get("sectionRevisions", []):
             # A section checkpoint has no paragraph dataset; publish its section map.
             if (key, rev) in SOURCE_TEXT_SNAPSHOTS:
                 raise ValueError("Source-text approval covers completed snapshots only")
             section_map = catalog.section_map(key, rev)
-            for paper in section_map["papers"]:
-                for unit in paper["sections"] + paper["paragraphs"]:
-                    unit["text"] = redacted
+            if collection in SOURCE_TEXT_COLLECTIONS:
+                entry.setdefault("sourceTextRevisions", []).append(rev)
+            else:
+                for paper in section_map["papers"]:
+                    for unit in paper["sections"] + paper["paragraphs"]:
+                        unit["text"] = redacted
             write_json(public / "runs" / key / rev / "section-map.json", section_map)
             entry["revisionLabels"][rev] = (
                 f"Revision {int(rev.split('-')[1])} | {len(section_map['papers'])} documents | "
@@ -73,7 +80,9 @@ def package_catalog(runs: Path, output: Path, labels: dict[str, str] = LABELS) -
             dst = public / "runs" / key / rev
             manifest = read_json(src / "manifest.json")
             snapshot = read_json(src / "final_snapshot.json")
-            include_source = (key, rev) in SOURCE_TEXT_SNAPSHOTS
+            include_source = (
+                key, rev
+            ) in SOURCE_TEXT_SNAPSHOTS or collection in SOURCE_TEXT_COLLECTIONS
             if include_source:
                 entry.setdefault("sourceTextRevisions", []).append(rev)
             write_json(dst / "manifest.json", manifest)

@@ -2,7 +2,7 @@ import { loadDataset } from "./data";
 import { element } from "./dom";
 import { GroupsView } from "./groups";
 import { PaperMapView } from "./paper-map";
-import { buildSectionMap } from "./model";
+import { buildSectionBoardModel, buildSectionMap } from "./model";
 import { GraphicalExplorer } from "./explorer";
 import { mountTutorial, type View } from "./tutorial";
 
@@ -15,14 +15,47 @@ async function main(): Promise<void> {
   if (dataset.sectionsOnly) {
     const host = element("#stage");
     const map = new PaperMapView(host, buildSectionMap(dataset.papers, dataset.groups), true);
-    document.title = "Paper Map | Section matches";
-    element("#viewerTitle").textContent = "Paper Map: section matches";
-    element("#legend").textContent =
-      "Select a section to highlight its match across papers. Gray sections have no accepted match. Paragraph matching has not run for this revision.";
+    const board = new GraphicalExplorer(
+      host,
+      buildSectionBoardModel(dataset.papers, dataset.groups),
+      true,
+    );
+    document.title = "Section matches";
+    element("#viewerTitle").textContent = "Section matches";
     element("#tutorialWelcome").hidden = true;
     element("#restartTutorial").hidden = true;
-    map.render();
-    window.addEventListener("resize", () => map.resize());
+    const legends = {
+      board:
+        "Each row is a step in the shared structure, read top to bottom. Blocks nearer the center appear in more papers. Select a paper to trace its path; click a block to read its sections. Paragraph matching has not run for this revision.",
+      map: "Select a section to highlight its match across papers. Gray sections have no accepted match. Paragraph matching has not run for this revision.",
+    };
+    let view: "board" | "map" = "board";
+    const show = (next: "board" | "map"): void => {
+      board.destroy();
+      map.hideTooltip();
+      view = next;
+      element("#legend").textContent = legends[view];
+      const tabs = element("#granularityTabs");
+      tabs.replaceChildren();
+      for (const [key, label] of [
+        ["board", "Graphical Explorer"],
+        ["map", "Paper Map"],
+      ] as const) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "granularity-btn" + (view === key ? " active" : "");
+        button.textContent = label;
+        button.setAttribute("aria-pressed", String(view === key));
+        button.addEventListener("click", () => show(key));
+        tabs.append(button);
+      }
+      if (view === "board") board.render();
+      else map.render();
+    };
+    show(view);
+    window.addEventListener("resize", () => {
+      if (view === "map") map.resize();
+    });
     return;
   }
   const { descriptor, model } = dataset;

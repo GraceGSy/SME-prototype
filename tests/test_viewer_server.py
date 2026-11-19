@@ -45,7 +45,8 @@ class ViewerServerTest(unittest.TestCase):
                 write_json(revision / "summary.json", summary)
             write_json(root / "example/revisions/revision-0002/failure.json", {})
             site = Path(directory) / "site"
-            catalog = package_catalog(root, site, {"example": "HCI | Test run"})
+            # HCI keeps its source text; any other collection is redacted.
+            catalog = package_catalog(root, site, {"example": "Synthetic | Test run"})
             self.assertEqual([e["id"] for e in catalog], ["example"])
             self.assertEqual(catalog[0]["revisions"], ["revision-0001", "revision-0003"])
             self.assertIn("2 documents", catalog[0]["revisionLabels"]["revision-0003"])

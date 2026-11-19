@@ -54,6 +54,8 @@ export class GraphicalExplorer {
   constructor(
     private host: HTMLElement,
     private model: Model,
+    // A section checkpoint has nothing inside a block yet: clicking shows its sections.
+    private sectionsOnly = false,
   ) {}
 
   destroy(): void {
@@ -406,7 +408,7 @@ export class GraphicalExplorer {
         this.focusNode(
           node.group.group_id,
           () => {
-            if (structural) {
+            if (structural && !this.sectionsOnly) {
               this.history.push(node);
               this.navigate(node.group.group_id);
             } else {
@@ -417,7 +419,7 @@ export class GraphicalExplorer {
                 ?.focus({ preventScroll: true });
             }
           },
-          structural,
+          structural && !this.sectionsOnly,
         );
       };
       group.addEventListener("click", select);

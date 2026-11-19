@@ -61,6 +61,21 @@ export function buildSectionMap(papers: Paper[], sectionGroups: Group[]) {
   };
 }
 
+// The pattern board for a section checkpoint: every section group is a structural
+// block, matched or not. No paragraph groups exist before paragraph matching runs.
+export function buildSectionBoardModel(papers: Paper[], sectionGroups: Group[]): Model {
+  buildSectionMap(papers, sectionGroups); // Same partition checks as the paper map.
+  return {
+    papers,
+    sections: sectionGroups,
+    shared: [],
+    singletons: [],
+    groups: new Map(),
+    paragraphs: new Map(),
+    membership: new Map(),
+  };
+}
+
 function indexGroups(
   units: { has(key: string): boolean; size: number },
   sharedGroups: Group[],

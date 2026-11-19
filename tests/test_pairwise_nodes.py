@@ -438,18 +438,27 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
                     self.assertEqual(beta_members, {"s0001": None})
                     self.assertEqual(fan_in_events, [])
 
-    def test_public_catalog_publishes_a_section_checkpoint_without_source_text(self):
+    def test_public_catalog_keeps_source_text_only_for_approved_collections(self):
         _, _, revision = self.run_three(STANDARD)
         run = revision.parents[1]
-        site = run.parent / "site"
-        [entry] = package_catalog(run.parent, site, {run.name: "HCI | Section test"})
-        self.assertEqual(entry["sectionRevisions"], [revision.name])
-        self.assertIn("sections only", entry["revisionLabels"][revision.name])
-        published = site / "public/runs" / run.name / revision.name / "section-map.json"
-        section_map = read_json(published)
-        self.assertEqual(len(section_map["papers"]), 3)
-        self.assertNotIn("water supply", published.read_text(encoding="utf-8"))
-        self.assertEqual(sorted(len(g["members"]) for g in section_map["groups"]), [3, 3])
+        for label, keeps_text in (("HCI | Section test", True), ("Legal | Section test", False)):
+            with self.subTest(label=label):
+                site = run.parent / ("site-" + label.split()[0])
+                [entry] = package_catalog(run.parent, site, {run.name: label})
+                self.assertEqual(entry["sectionRevisions"], [revision.name])
+                self.assertIn("sections only", entry["revisionLabels"][revision.name])
+                self.assertEqual(
+                    entry.get("sourceTextRevisions", []), [revision.name] if keeps_text else []
+                )
+                published = site / "public/runs" / run.name / revision.name / "section-map.json"
+                section_map = read_json(published)
+                self.assertEqual(len(section_map["papers"]), 3)
+                text = published.read_text(encoding="utf-8")
+                self.assertEqual("water supply" in text, keeps_text)
+                self.assertEqual(
+                    "Source text is not included in this results viewer." in text, not keeps_text
+                )
+                self.assertEqual(sorted(len(g["members"]) for g in section_map["groups"]), [3, 3])
 
 
 if __name__ == "__main__":
