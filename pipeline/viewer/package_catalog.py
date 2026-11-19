@@ -9,6 +9,9 @@ from .server import VIEWER, RunCatalog
 
 # The publication list is explicit: discovering a new local run does not authorize publishing it.
 LABELS = {
+    "hci-five-paper-close-calls-v2-20261118": (
+        "HCI | 5 papers | Jev: close rankings re-asked | Nov 18"
+    ),
     "hci-five-paper-fan-in-v2-20261118": "HCI | 5 papers | Jev: section fan-in | Nov 18",
     "hci-three-paper-fan-in-20261118": "HCI | 3 papers | Jev: section fan-in experiment | Nov 18",
     "hci-three-paper-roles-v2-20261117": "HCI | 3 papers | Jev: yes/no filter then ranking, new roles | Nov 17",
