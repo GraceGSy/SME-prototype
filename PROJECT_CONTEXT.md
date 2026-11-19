@@ -1,6 +1,6 @@
 # SMELTER project context and handoff
 
-Last checked: November 15, 2026, America/New_York.
+Last checked: November 18, 2026 (late evening), America/New_York.
 
 This is a dated handoff for Claude or another contributor. It combines the current
 checkout, saved experiment artifacts, relevant user decisions, and prior work.
@@ -9,6 +9,58 @@ specific run before acting. Follow the user's current request and applicable
 `AGENTS.md` instructions if they differ from this historical account.
 
 ## 1. Current status
+
+**November 18, late evening (start here; supersedes older notes where they differ).**
+
+- **Published (question-atlas-runs.vercel.app, HCI source text included):**
+  [runs/hci-three-paper-paragraphs-v3-20261118/](runs/hci-three-paper-paragraphs-v3-20261118/),
+  the first paragraph-level run of the current pipeline (papers 1–3), and
+  [runs/hci-five-paper-close-calls-v2-20261118/](runs/hci-five-paper-close-calls-v2-20261118/),
+  the five-paper section run. Section-only runs open on the pattern board
+  (Graphical Explorer) with the Paper Map as a second tab.
+- **Paragraph results, papers 1–3** (`--section-fan-in --close-call-margin 0.10`,
+  long context on): 287 paragraphs; 37 shared paragraph groups (20 span all three
+  papers, 17 span two) holding 152 paragraphs; 135 paragraphs alone. 58 paragraph
+  fan-in members. 50 close rankings: 41 re-asked, 27 settled by the re-ask, 23 held
+  (7 still alone at the end). No yes/no question dropped paper text.
+- **Timing (paid attempt that finished matching):** papers 1–2 replayed from cache
+  in seconds; paper 3 (Examplore, 61 paragraphs) took 22.8 min for 2,184 new Jev
+  calls (0.6 s/call) and 37 Claude group roles. Paper 2's paragraph phase, measured
+  in the first attempt, took 3.6 min for 355 Jev calls. Paper 3 needed 2,184 calls
+  against an upper bound of 2,249, so merging barely reduces the count; expect close
+  to the bounds for papers 4 (4,456) and 5 (5,365): roughly 10,000 calls, about
+  100 min plus Claude time.
+- **Long context is on by default** (commit 9150280d): a yes/no question over 32k
+  is resent with the 262k header; the member-sections-only fallback is removed, and a
+  question too large even for long context stops the run. Most paragraph-level
+  attempts used long context, which TypeSafe calls slower and less accurate.
+- **Close calls** (commit f886aac8, opt-in `--close-call-margin`): a ranking whose
+  top options are within the margin is re-asked among those options, then held.
+  Five-paper section run: 3 close calls, all settled by the re-ask, 2 changed the
+  pick, one section moved (Mesotext "Sensemaking Interfaces for Generative AI").
+- **Paragraph-recursion bugs fixed tonight**, all from section fan-in meeting
+  paragraph matching (each has a regression test that fails on the old code):
+  1. Paragraphs were batched per section, not per section group; a group holding
+     two sections of one paper was matched twice before either batch was applied,
+     so a node merged away by the first was targeted by the second (KeyError, paper 2
+     of `runs/hci-five-paper-paragraphs-20261118/`, 355 Jev calls). Fixed in 9a7fe20c;
+     paragraph adjacency also now requires the same section (ordinals restart).
+  2. A section merged in as fan-in left its paragraph nodes under the removed
+     section node, so recursion failed ("Realignment requires the same exact parent
+     scope", paper 3 of `runs/hci-three-paper-paragraphs-20261118/`, 155 Jev calls,
+     18 Claude). Fixed in 0f433ab8, which also re-matches paragraphs of sections
+     absorbed by reverse fan-in at insertion and batches recursion per (paper,
+     section group).
+  3. A full run with `--close-call-margin` failed at its last step: the close-call
+     report created `reports/` before the singleton report, which requires a new
+     folder (`runs/hci-three-paper-paragraphs-v2-20261118/`, matching complete,
+     2,184 Jev calls). Fixed in 4caa93cd; v3 replayed v2's cache with zero new calls
+     and identical groups.
+- **Open decisions:** extend paragraph matching to papers 4–5 (about 10,000 Jev
+  calls); legal corpus next (recommended: the five existing majority opinions,
+  sections only; alternative: a circuit-split set). The user declined showing full
+  papers in rankings (member sections stay). Unused failed runs above can serve as
+  `--cache-from` sources.
 
 **November 16 (supersedes the November 15 summary below where they differ).**
 
