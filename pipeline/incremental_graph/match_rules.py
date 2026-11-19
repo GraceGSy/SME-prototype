@@ -76,6 +76,11 @@ def adjacent_core_anchors(
             for target in target_members
             if target["paper_id"] == member["paper_id"]
             and target.get("owner_group_id") == member.get("owner_group_id")
+            # Paragraph ordinals restart per section; two sections can share a group.
+            and (
+                member.get("unit_kind") != "paragraph"
+                or target.get("parent_unit_id") == member.get("parent_unit_id")
+            )
             and abs(target["ordinal"] - member["ordinal"]) == 1
         ]
         if not candidates:

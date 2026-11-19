@@ -506,10 +506,15 @@ class IncrementalGraphRunner:
     def _match_paragraphs(self, stage: StageConfig, insertion: InsertionState) -> dict[str, Any]:
         if not insertion.section_assignments:
             raise PipelineError("match_paragraphs requires reconcile_sections to run first")
-        results = {}
+        # Paragraphs match only inside their section group. Section fan-in can put two
+        # sections of one paper in the same group, so batch by group, not by section:
+        # one batch must see every new paragraph before any of the group's nodes change.
+        by_group: dict[str, list] = {}
         for unit in insertion.paper.sections:
-            structural_group_id = insertion.section_assignments[unit.id]
-            unit_ids = [paragraph.id for paragraph in unit.paragraphs]
+            by_group.setdefault(insertion.section_assignments[unit.id], []).append(unit)
+        results = {}
+        for structural_group_id, units in by_group.items():
+            unit_ids = [paragraph.id for unit in units for paragraph in unit.paragraphs]
             existing = self.role_graph.paragraph_groups_for_section(
                 structural_group_id, insertion.paper.paper_id
             )
@@ -521,8 +526,12 @@ class IncrementalGraphRunner:
                 unit_ids,
                 existing,
             )
-            insertion.paragraph_matches[unit.id] = batch
-            results[unit.id] = self._match_batch_dump(batch)
+            # Keyed by the group's first section; reconciliation reads its section group.
+            insertion.paragraph_matches[units[0].id] = batch
+            results[units[0].id] = {
+                "section_ids": [unit.id for unit in units],
+                **self._match_batch_dump(batch),
+            }
         return results
 
     def _recurse_reparented_sections(self, insertion: InsertionState) -> None:
@@ -1174,7 +1183,7 @@ class IncrementalGraphRunner:
                 batch,
                 reciprocal,
                 {
-                    unit_id: self.evidence.unit_ordinal(insertion.paper.paper_id, unit_id, level)
+                    unit_id: self._adjacency_position(insertion.paper.paper_id, unit_id, level)
                     for unit_id in batch.new_unit_ids
                 },
             )
@@ -1300,6 +1309,17 @@ class IncrementalGraphRunner:
                     attempt_id=decision.attempt_id,
                 )
         return assignments
+
+    def _adjacency_position(self, paper_id: str, unit_id: str, level: str) -> int:
+        """Position where ±1 means next-door in the same section.
+
+        Paragraph ordinals restart in every section, and one batch can hold two sections
+        of a paper, so a gap keeps paragraphs of different sections from looking adjacent.
+        """
+        if level == "section":
+            return self.evidence.unit_ordinal(paper_id, unit_id, level)
+        section, paragraph = self.evidence.paragraph_lookup[(paper_id, unit_id)]
+        return section.ordinal * 1_000_000 + paragraph.ordinal
 
     def _adjacent_existing_group_fan_in(
         self,

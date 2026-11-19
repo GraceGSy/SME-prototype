@@ -125,6 +125,7 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
         jev=None,
         section_fan_in=False,
         close_call_margin=None,
+        sections_only=True,
     ):
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)
@@ -158,11 +159,12 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
                 root / "manifest.yaml",
                 root / "run",
                 jev=True,
-                sections_only=True,
+                sections_only=sections_only,
                 section_fan_in=section_fan_in,
                 close_call_margin=close_call_margin,
             )
-        revision = Path(result["revision_dir"])
+        # A section checkpoint reports its revision; a full run reports its dataset.
+        revision = Path(result.get("revision_dir") or Path(result["dataset_dir"]).parent)
         return jev, skills, revision
 
     THREE = [*STANDARD, ("Cost", "warns that a high price slows adoption.")]
@@ -466,6 +468,53 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
                 else:
                     self.assertEqual(beta_members, {"s0001": None})
                     self.assertEqual(fan_in_events, [])
+
+    def test_paragraphs_match_once_per_section_group_when_fan_in_shares_it(self):
+        # Beta's Method and Pump share one section group (core plus fan-in). Their
+        # paragraphs must be matched as one batch: two batches over the same paragraph
+        # nodes let one node be merged away by the first and then targeted by the second.
+        beta = [
+            ("Method", "explains how closing a valve cuts the water supply."),
+            ("Pump", "adds that a dry pump also cuts the water supply."),
+            ("Limits", "notes that a small sample limits generalization."),
+        ]
+        class AgreeableJev(ScriptedJev):
+            """Sections by shared keyword; every paragraph question: yes, first option."""
+
+            def __call__(self, request, **kwargs):
+                body = json.loads(request.data)
+                if "[focus]" not in body["state"]:
+                    return super().__call__(request, **kwargs)
+                self.bodies.append(body)
+                return io.BytesIO(json.dumps(answer(body, None, 0.9)).encode())
+
+        _, _, revision = self.run_three(
+            STANDARD,
+            beta_sections=beta,
+            section_fan_in=True,
+            sections_only=False,
+            jev=AgreeableJev(),
+        )
+        groups = read_json(revision / "dataset/final_snapshot.json")
+        placed = [
+            (m["paper"], m["unit_id"])
+            for g in groups["groups"] + groups["singletons"]
+            for m in g["members"]
+        ]
+        beta_paragraphs = [u for p, u in placed if p == "beta"]
+        self.assertEqual(sorted(beta_paragraphs), ["s0001.p0001", "s0002.p0001", "s0003.p0001"])
+        self.assertEqual(len(placed), len(set(placed)))
+        # Alpha's Method paragraph node takes one Beta paragraph back, not one per section.
+        alpha_method = next(
+            g
+            for g in groups["groups"]
+            if any(m["paper"] == "alpha" and m["unit_id"] == "s0001.p0001" for m in g["members"])
+        )
+        self.assertEqual(sum(m["paper"] == "beta" for m in alpha_method["members"]), 1)
+        stage = read_json(revision / "stages/0002-paragraph_matching.json")
+        self.assertEqual(
+            sorted(entry["section_ids"] for entry in stage.values()), [["s0001", "s0002"], ["s0003"]]
+        )
 
     def test_public_catalog_keeps_source_text_only_for_approved_collections(self):
         _, _, revision = self.run_three(STANDARD)
