@@ -6,12 +6,9 @@ from .models import MatchBatch
 
 
 def recovery_admission(
-    source: dict[str, Any], target: dict[str, Any], *, section_fan_in: bool = False
+    source: dict[str, Any], target: dict[str, Any], *, fan_in: bool = True
 ) -> str | None:
-    """Same-paper recovery is reserved for neighbors of accepted cores.
-
-    Sections qualify only when the experimental section fan-in setting is on.
-    """
+    """Same-paper recovery is reserved for neighbors of accepted cores (fan-in)."""
     if (
         source["level"] != target["level"]
         or source.get("parent_id") != target.get("parent_id")
@@ -22,10 +19,7 @@ def recovery_admission(
     paper_id = source["members"][0]["paper_id"]
     if not any(m["paper_id"] == paper_id for m in target["members"]):
         return "core"
-    fan_in_level = source["level"] == "paragraph" or section_fan_in
-    if fan_in_level and adjacent_core_anchors(
-        source["members"], target["members"]
-    ):
+    if fan_in and adjacent_core_anchors(source["members"], target["members"]):
         return "fan_in"
     return None
 

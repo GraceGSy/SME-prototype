@@ -9,6 +9,9 @@ from .server import VIEWER, RunCatalog
 
 # The publication list is explicit: discovering a new local run does not authorize publishing it.
 LABELS = {
+    "legal-opinions-paragraphs-20261119": (
+        "Legal | 5 opinions | Jev: paragraphs only, headings removed | Nov 19"
+    ),
     "hci-three-paper-paragraphs-v3-20261118": (
         "HCI | 3 papers | Jev: paragraphs within matched sections | Nov 18"
     ),
@@ -84,7 +87,8 @@ def package_catalog(runs: Path, output: Path, labels: dict[str, str] = LABELS) -
             manifest = read_json(src / "manifest.json")
             snapshot = read_json(src / "final_snapshot.json")
             include_source = (
-                key, rev
+                key,
+                rev,
             ) in SOURCE_TEXT_SNAPSHOTS or collection in SOURCE_TEXT_COLLECTIONS
             if include_source:
                 entry.setdefault("sourceTextRevisions", []).append(rev)

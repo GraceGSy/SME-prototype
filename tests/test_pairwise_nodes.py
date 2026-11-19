@@ -131,10 +131,10 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
         beta_sections=STANDARD,
         alpha_sections=STANDARD,
         jev=None,
-        section_fan_in=False,
+        fan_in=False,
         close_call_margin=None,
         sections_only=True,
-        paragraph_shortlist=None,
+        shortlist=0,
     ):
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)
@@ -169,9 +169,9 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
                 root / "run",
                 jev=True,
                 sections_only=sections_only,
-                section_fan_in=section_fan_in,
+                fan_in=fan_in,
                 close_call_margin=close_call_margin,
-                paragraph_shortlist=paragraph_shortlist,
+                shortlist=shortlist,
             )
         # A section checkpoint reports its revision; a full run reports its dataset.
         revision = Path(result.get("revision_dir") or Path(result["dataset_dir"]).parent)
@@ -211,7 +211,9 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
         self.assertEqual(call["target_id"], call["reask"]["close_ids"][0])
         self.assertEqual(self.gamma_group_size(revision), 3)
         report = read_json(revision / "reports/close-calls.json")
-        self.assertEqual((report["reasked"], report["resolved_by_reask"], report["held"]), (1, 1, 0))
+        self.assertEqual(
+            (report["reasked"], report["resolved_by_reask"], report["held"]), (1, 1, 0)
+        )
 
     def test_still_close_after_reask_leaves_the_section_alone_and_reports_it(self):
         jev = CloseJev({3: [0.40, 0.35, 0.25], 2: [0.52, 0.48]})
@@ -387,6 +389,8 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
                 jev=True,
                 sections_only=True,
                 cache_from=run,
+                fan_in=False,
+                shortlist=0,
             )
         self.assertEqual(replay.bodies, [])
         self.assertEqual(
@@ -453,12 +457,16 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
             ("Limits", "notes that a small sample limits generalization."),
         ]
         for enabled in (False, True):
-            with self.subTest(section_fan_in=enabled):
-                _, _, revision = self.run_three(STANDARD, beta_sections=beta, section_fan_in=enabled)
+            with self.subTest(fan_in=enabled):
+                _, _, revision = self.run_three(STANDARD, beta_sections=beta, fan_in=enabled)
                 groups = read_json(revision / "section-checkpoint.json")["section_groups"]
                 method = next(
-                    g for g in groups.values() if {"beta", "alpha"} <= {m["paper_id"] for m in g["members"]}
-                    and any(m["unit_id"] == "s0001" and m["paper_id"] == "beta" for m in g["members"])
+                    g
+                    for g in groups.values()
+                    if {"beta", "alpha"} <= {m["paper_id"] for m in g["members"]}
+                    and any(
+                        m["unit_id"] == "s0001" and m["paper_id"] == "beta" for m in g["members"]
+                    )
                 )
                 beta_members = {
                     m["unit_id"]: m.get("membership_role")
@@ -488,6 +496,7 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
             ("Pump", "adds that a dry pump also cuts the water supply."),
             ("Limits", "notes that a small sample limits generalization."),
         ]
+
         class AgreeableJev(ScriptedJev):
             """Sections by shared keyword; every paragraph question: yes, first option."""
 
@@ -501,7 +510,7 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
         _, _, revision = self.run_three(
             STANDARD,
             beta_sections=beta,
-            section_fan_in=True,
+            fan_in=True,
             sections_only=False,
             jev=AgreeableJev(),
         )
@@ -523,7 +532,8 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
         self.assertEqual(sum(m["paper"] == "beta" for m in alpha_method["members"]), 1)
         stage = read_json(revision / "stages/0002-paragraph_matching.json")
         self.assertEqual(
-            sorted(entry["section_ids"] for entry in stage.values()), [["s0001", "s0002"], ["s0003"]]
+            sorted(entry["section_ids"] for entry in stage.values()),
+            [["s0001", "s0002"], ["s0003"]],
         )
 
     def test_section_absorbed_by_reverse_fan_in_brings_its_paragraphs(self):
@@ -547,7 +557,7 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
         _, _, revision = self.run_three(
             STANDARD,
             alpha_sections=alpha,
-            section_fan_in=True,
+            fan_in=True,
             sections_only=False,
             jev=AgreeableJev(),
             close_call_margin=0.10,
@@ -568,7 +578,9 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
             [("alpha", ["s0002"], absorbed["node_id"])],
         )
         reparented = [
-            e for e in events if e["action"] == "node_reparented" and e["parent_id"] == absorbed["node_id"]
+            e
+            for e in events
+            if e["action"] == "node_reparented" and e["parent_id"] == absorbed["node_id"]
         ]
         self.assertEqual(len(reparented), 1)  # Alpha's Pump paragraph node.
         snapshot = read_json(revision / "dataset/final_snapshot.json")
@@ -579,8 +591,8 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
         )
         self.assertEqual(pump["parent_group_id"], absorbed["node_id"])
 
-    def test_paragraph_shortlist_asks_yes_no_only_for_the_top_options(self):
-        # Each paper's Method has three paragraphs. At paper 3 every Gamma Method
+    def test_shortlist_asks_yes_no_only_for_the_top_options_at_both_levels(self):
+        # Each paper has two sections and its Method three paragraphs. At paper 3 every Gamma Method
         # paragraph is eligible for three paragraph nodes; a shortlist of one asks one
         # ranking over all three, then a single yes/no, instead of three yes/no questions.
         method = (
@@ -607,33 +619,27 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
                 )
 
         results = {}
-        for limit in (None, 1):
+        for limit in (0, 1):
             jev = AgreeableJev()
             _, _, revision = self.run_three(
-                docs, docs, docs, jev=jev, sections_only=False, paragraph_shortlist=limit
+                docs, docs, docs, jev=jev, sections_only=False, shortlist=limit
             )
             events = read_json(revision / "events.json")
-            third = [
-                b
-                for b in jev.bodies
-                if "Gamma " in b["state"] and "[focus" in b["state"]
-            ]
+            third = [b for b in jev.bodies if "Gamma " in b["state"] and "[focus" in b["state"]]
             results[limit] = (third, events)
-        full_yes_no = [b for b in results[None][0] if list(b["questions"]) == ["has_match"]]
+        full_yes_no = [b for b in results[0][0] if list(b["questions"]) == ["has_match"]]
         third, events = results[1]
-        shortlisted = [
-            e for e in events if e["action"] == "shortlisted" and e["paper_index"] == 3
-        ]
-        self.assertTrue(shortlisted)
-        self.assertTrue(all(e["level"] == "paragraph" for e in shortlisted))
+        shortlisted = [e for e in events if e["action"] == "shortlisted" and e["paper_index"] == 3]
         for event in shortlisted:
             self.assertEqual(len(event["kept"]), 1)
             top = max(event["probabilities"], key=event["probabilities"].get)
             self.assertEqual(event["kept"], [top])
         yes_no = [b for b in third if list(b["questions"]) == ["has_match"]]
         self.assertLess(len(yes_no), len(full_yes_no))
-        # Section matching is unchanged: no shortlist outside the paragraph level.
-        self.assertFalse(any(e["level"] == "section" for e in shortlisted))
+        # Both levels use the same shortlist: Gamma's sections have two section groups
+        # to choose from, its Method paragraphs three paragraph groups.
+        self.assertEqual({e["level"] for e in shortlisted}, {"section", "paragraph"})
+        self.assertFalse(any(e["action"] == "shortlisted" for e in results[0][1]))
 
     def test_public_catalog_keeps_source_text_only_for_approved_collections(self):
         _, _, revision = self.run_three(STANDARD)

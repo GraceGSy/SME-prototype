@@ -23,6 +23,10 @@ standalone comparisons of completed runs. Jev selects matches; the existing
 generative provider still writes role statements and quoted evidence. Both keys are
 required. See the [detailed pipeline diagram](docs/diagrams/jev-pipeline.svg).
 
+**How matching works:** [docs/matching/README.md](docs/matching/README.md) has one
+diagram and a short walkthrough of the steps every new document goes through. The
+steps are the same for sections and for paragraphs.
+
 **Prompts and exact requests:** [prompts/](prompts/) contains the live prompt
 templates, Jev instructions, and Skills, with Python wiring and saved-request guidance.
 

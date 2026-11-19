@@ -73,7 +73,7 @@ def _decision_history(events: list[dict[str, Any]]) -> dict:
     return history
 
 
-def build_singleton_report(events: list[dict[str, Any]]) -> dict[str, Any]:
+def build_singleton_report(events: list[dict[str, Any]], *, fan_in: bool = True) -> dict[str, Any]:
     """Classify recorded outcomes; do not infer semantic uniqueness or missed matches."""
     graph = graph_from_events(events)
     history = _decision_history(events)
@@ -101,7 +101,9 @@ def build_singleton_report(events: list[dict[str, Any]]) -> dict[str, Any]:
                 reason = "candidate_only"
             scope = by_scope[data.get("parent_id")]
             established = [(key, value) for key, value in scope if len(value["members"]) > 1]
-            eligible = [key for key, value in established if recovery_admission(data, value)]
+            eligible = [
+                key for key, value in established if recovery_admission(data, value, fan_in=fan_in)
+            ]
             if len(data["members"]) != 1:
                 recovery_status = "source_is_not_single_member"
                 eligible = []
@@ -152,8 +154,10 @@ def build_singleton_report(events: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def write_singleton_report(events: list[dict[str, Any]], output_dir: Path) -> dict[str, Any]:
-    report = build_singleton_report(events)
+def write_singleton_report(
+    events: list[dict[str, Any]], output_dir: Path, *, fan_in: bool = True
+) -> dict[str, Any]:
+    report = build_singleton_report(events, fan_in=fan_in)
     output_dir.mkdir(parents=True, exist_ok=False)
     write_json(output_dir / "singletons.json", report)
     return report

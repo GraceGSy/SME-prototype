@@ -8,6 +8,7 @@ from typing import Any, Callable
 from ..document import ROLE_FIELD
 from ..files import write_json
 from ..providers.jev import JevRequestTooLarge
+from .close_calls import close_options, write_close_call_report
 from .configuration import validate_pipeline_config
 from .evidence import Evidence
 from .export import export_revision
@@ -33,7 +34,6 @@ from .models import (
     PipelineConfig,
     StageConfig,
 )
-from .close_calls import close_options, write_close_call_report
 from .singleton_report import write_singleton_report
 
 PAIRWISE_FROM_PAPER = 3
@@ -116,7 +116,9 @@ class IncrementalGraphRunner:
             return {"completed_phase": "structural", "revision_dir": str(self.revision_dir)}
         export_revision(self.revision_dir / "dataset", self.role_graph, self.papers)
         # The singleton report creates reports/; the close-call report joins it there.
-        write_singleton_report(self.journal.events, self.revision_dir / "reports")
+        write_singleton_report(
+            self.journal.events, self.revision_dir / "reports", fan_in=self.config.fan_in
+        )
         if self.config.close_call_margin:
             write_close_call_report(
                 self.journal.events, self.role_graph, self.revision_dir / "reports"
@@ -157,7 +159,7 @@ class IncrementalGraphRunner:
             self.journal.stage(insertion.paper_index, stage.id, result)
 
     def _fan_in(self, level: str) -> bool:
-        return level == "paragraph" or self.config.section_fan_in
+        return self.config.fan_in
 
     def _register_paper(self, paper: Paper) -> None:
         self.papers.append(paper)
@@ -283,8 +285,7 @@ class IncrementalGraphRunner:
             source_id: [
                 target_id
                 for target_id in established
-                if recovery_admission(nodes[source_id], nodes[target_id], section_fan_in=fan_in)
-                is not None
+                if recovery_admission(nodes[source_id], nodes[target_id], fan_in=fan_in) is not None
             ]
             for source_id in singletons
         }
@@ -405,9 +406,9 @@ class IncrementalGraphRunner:
                     source_id, target_id, paper_index=insertion.paper_index
                 )
                 owner = self.insertions_by_paper[member["paper_id"]]
-                (
-                    owner.section_assignments if level == "section" else owner.paragraph_assignments
-                )[member["unit_id"]] = target_id
+                (owner.section_assignments if level == "section" else owner.paragraph_assignments)[
+                    member["unit_id"]
+                ] = target_id
                 self.journal.event(
                     f"{level}_fan_in_added",
                     paper_index=insertion.paper_index,
@@ -1010,7 +1011,7 @@ class IncrementalGraphRunner:
         forward_direction, reverse_direction = directions
         batch = MatchBatch(existing_group_ids=targets, new_unit_ids=sources)
         scores: dict[tuple[str, str], tuple[float, str]] = {}
-        limit = self.config.paragraph_shortlist if scope["level"] == "paragraph" else None
+        limit = self.config.shortlist
         for source_id in sources:
             candidates = eligible[source_id]
             if limit and len(candidates) > limit:

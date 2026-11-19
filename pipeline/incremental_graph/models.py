@@ -131,20 +131,22 @@ class PipelineConfig(StrictModel):
     skill_root: WirePath = Path("prompts/skills")
     model: ModelSettings = Field(default_factory=ModelSettings)
     jev: JevSettings | None = None
-    # Experimental: let one-way sections join beside a reciprocal same-paper core.
-    section_fan_in: bool = False
+    # Fan-in, at every level: a one-way pick may join a group beside its reciprocal
+    # same-paper neighbor (the "core"). False keeps only reciprocal matches.
+    fan_in: bool = True
     # Jev only: when another option is within this probability of the top one, re-ask
     # among just those options; if still close, leave the source without a pick.
     close_call_margin: float | None = Field(default=None, gt=0, lt=1)
-    # Jev only, paragraph level, paper 3+: one ranking over every eligible node keeps
-    # this many; yes/no questions are asked only for those.
-    paragraph_shortlist: int | None = Field(default=None, gt=0)
+    # Jev only, every level, paper 3+: when a unit has more options than this, one
+    # ranking over all of them keeps this many; yes/no questions go only to those.
+    # None asks every pair.
+    shortlist: int | None = Field(default=10, gt=0)
     stages: list[StageConfig]
 
     def result_settings(self) -> dict:
         """Scientific configuration shared by policy checks and retry validation."""
         settings = self.model_dump(mode="json")
-        for optional in ("close_call_margin", "paragraph_shortlist"):
+        for optional in ("close_call_margin", "shortlist"):
             if settings[optional] is None:
                 settings.pop(optional)  # Keep saved runs' settings unchanged.
         settings["model"] = self.model.result_settings()
@@ -152,6 +154,17 @@ class PipelineConfig(StrictModel):
         for stage in settings["stages"]:
             stage.pop("max_input_tokens")
         return settings
+
+    @model_validator(mode="before")
+    @classmethod
+    def read_older_names(cls, data: Any) -> Any:
+        """Saved runs before Nov 19 used level-specific names and had no shortlist."""
+        if isinstance(data, dict) and ("section_fan_in" in data or "paragraph_shortlist" in data):
+            data = dict(data)
+            if "section_fan_in" in data:
+                data.setdefault("fan_in", data.pop("section_fan_in"))
+            data.setdefault("shortlist", data.pop("paragraph_shortlist", None))
+        return data
 
     @model_validator(mode="after")
     def validate_stages(self) -> "PipelineConfig":

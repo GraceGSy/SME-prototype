@@ -6,7 +6,17 @@ extracts it. Language models make bounded role statement and match judgments. Py
 validates those judgments, applies graph rules, and writes inspectable outputs.
 This is an SME-inspired comparison system, not the canonical symbolic SME.
 
-## Current section flow (Nov 18, 2026)
+## The matching process, at any level (Nov 19, 2026)
+
+**Start with [docs/matching/README.md](docs/matching/README.md):** one diagram and a
+short walkthrough of how each new document joins the graph. Sections and paragraphs
+follow the same steps. Since November 19, both levels use a Jev shortlist of 10
+(`--shortlist`, default 10) and fan-in (`--no-fan-in` turns it off), so the older
+`--section-fan-in` and `--paragraph-shortlist` flags are no longer needed.
+
+![How a new document joins the graph](docs/diagrams/matching-process.png)
+
+## Section flow as of Nov 18, 2026 (before the shortlist)
 
 The runs on the public catalog since November 17 use section matching only, with
 Jev for every match decision and Claude for role statements. The November 18

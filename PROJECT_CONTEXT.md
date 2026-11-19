@@ -1,6 +1,6 @@
 # SMELTER project context and handoff
 
-Last checked: November 18, 2026 (late evening), America/New_York.
+Last checked: November 19, 2026, America/New_York.
 
 This is a dated handoff for Claude or another contributor. It combines the current
 checkout, saved experiment artifacts, relevant user decisions, and prior work.
@@ -9,6 +9,33 @@ specific run before acting. Follow the user's current request and applicable
 `AGENTS.md` instructions if they differ from this historical account.
 
 ## 1. Current status
+
+**November 19 (start here; supersedes the notes below where they differ).**
+
+- **Both levels now match the same way** (user decision, Nov 19):
+  - **Shortlist:** `PipelineConfig.shortlist` defaults to 10 (`--shortlist N`; `0` asks
+    every pair). It applies to sections and paragraphs from paper 3 on.
+  - **Fan-in:** `PipelineConfig.fan_in` defaults to on at both levels; `--no-fan-in`
+    turns it off.
+  - **Single-paragraph inheritance stays:** it is the recursion's base case.
+  - **Renamed settings:** `section_fan_in` and `paragraph_shortlist` became `fan_in` and
+    `shortlist`. Saved configs with the old names still load, but saved runs cannot
+    resume under the new code anyway, because the policy hash changed.
+  - **Walkthrough:** [docs/matching/README.md](docs/matching/README.md) and
+    [docs/diagrams/matching-process.svg](docs/diagrams/matching-process.svg).
+  - **Unrun:** no paid run has used these defaults yet.
+- **Legal paragraph-only run published** (redacted: the opinions' text is not on the
+  site):
+  - **Run:** [runs/legal-opinions-paragraphs-20261119/](runs/legal-opinions-paragraphs-20261119/),
+    deployed from `site/run-library-20261119/`.
+  - **Size and timing:** five opinions, 173 paragraphs, headings removed. 50 min,
+    8,521 Jev calls, made before the shortlist existed.
+  - **Results:** 17 shared groups, 5 spanning all five opinions; 91 paragraphs shared.
+  - **Catalog:** the other 20 published runs are byte-identical to the
+    `site/run-library-20261118e` package.
+- **HCI papers 4–5 paragraph run is stopped**
+  ([runs/hci-five-paper-paragraphs-v2-20261119/](runs/hci-five-paper-paragraphs-v2-20261119/)).
+  Its Jev answers are cached for `--cache-from`.
 
 **November 18, late evening (start here; supersedes older notes where they differ).**
 

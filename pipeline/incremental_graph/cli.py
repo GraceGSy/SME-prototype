@@ -64,9 +64,17 @@ def main() -> None:
         help="Copy an existing run's cache; reuse only exact matching request fingerprints",
     )
     start.add_argument(
+        "--no-fan-in",
+        dest="fan_in",
+        action="store_false",
+        default=None,
+        help="Keep only reciprocal matches at every level (fan-in is on by default)",
+    )
+    start.add_argument(
         "--section-fan-in",
+        dest="fan_in",
         action="store_true",
-        help="Experimental: admit one-way sections beside a reciprocal same-paper core",
+        help="Always on now at every level. Accepted for older commands.",
     )
     start.add_argument(
         "--close-call-margin",
@@ -75,10 +83,12 @@ def main() -> None:
         "re-ask among them; if still close, leave the source unassigned",
     )
     start.add_argument(
+        "--shortlist",
         "--paragraph-shortlist",
+        dest="shortlist",
         type=int,
-        help="Jev, paper 3+: one ranking over every paragraph node keeps this many (e.g. 5) "
-        "before yes/no questions, instead of asking every pair",
+        help="Jev, paper 3+, every level: one ranking over a unit's options keeps this many "
+        "before yes/no questions (default 10; 0 asks every pair)",
     )
     add = commands.add_parser("add", help="Append prepared papers in manifest order")
     add.add_argument("manifest", type=Path)
@@ -114,10 +124,10 @@ def main() -> None:
             max_api_responses=args.max_api_responses,
             cache_from=args.cache_from,
             sections_only=args.sections_only,
-            section_fan_in=args.section_fan_in,
+            fan_in=args.fan_in,
             jev_long_context_retry=args.jev_long_context,
             close_call_margin=args.close_call_margin,
-            paragraph_shortlist=args.paragraph_shortlist,
+            shortlist=args.shortlist,
         )
     elif args.command == "add":
         result = add_papers(args.manifest, args.run_dir)
