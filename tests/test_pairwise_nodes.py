@@ -516,6 +516,55 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
             sorted(entry["section_ids"] for entry in stage.values()), [["s0001", "s0002"], ["s0003"]]
         )
 
+    def test_section_absorbed_by_reverse_fan_in_brings_its_paragraphs(self):
+        # Alpha's Pump group picks Beta's Method, which is reciprocal with Alpha's Method;
+        # Pump sits next to that core, so it is absorbed while Beta is reconciled. Its
+        # paragraph node must move under the destination and be matched there again.
+        alpha = [
+            ("Method", "explains how closing a valve cuts the water supply."),
+            ("Pump", "adds that a dry pump also cuts the water supply."),
+            ("Limits", "notes that a small sample limits generalization."),
+        ]
+
+        class AgreeableJev(ScriptedJev):
+            def __call__(self, request, **kwargs):
+                body = json.loads(request.data)
+                if "[focus]" not in body["state"]:
+                    return super().__call__(request, **kwargs)
+                self.bodies.append(body)
+                return io.BytesIO(json.dumps(answer(body, None, 0.9)).encode())
+
+        _, _, revision = self.run_three(
+            STANDARD,
+            alpha_sections=alpha,
+            section_fan_in=True,
+            sections_only=False,
+            jev=AgreeableJev(),
+        )
+        events = read_json(revision / "events.json")
+        [absorbed] = [
+            e
+            for e in events
+            if e["action"] == "section_fan_in_added" and e["direction"] == "group_to_new"
+        ]
+        self.assertEqual((absorbed["paper_id"], absorbed["unit_id"]), ("alpha", "s0002"))
+        recursion = read_json(revision / "stages/0002-recursive_paragraph_matching.json")
+        self.assertEqual(
+            [(r["paper_id"], r["section_ids"], r["parent_id"]) for r in recursion],
+            [("alpha", ["s0002"], absorbed["node_id"])],
+        )
+        reparented = [
+            e for e in events if e["action"] == "node_reparented" and e["parent_id"] == absorbed["node_id"]
+        ]
+        self.assertEqual(len(reparented), 1)  # Alpha's Pump paragraph node.
+        snapshot = read_json(revision / "dataset/final_snapshot.json")
+        pump = next(
+            g
+            for g in snapshot["groups"] + snapshot["singletons"]
+            if any(m["paper"] == "alpha" and m["unit_id"] == "s0002.p0001" for m in g["members"])
+        )
+        self.assertEqual(pump["parent_group_id"], absorbed["node_id"])
+
     def test_public_catalog_keeps_source_text_only_for_approved_collections(self):
         _, _, revision = self.run_three(STANDARD)
         run = revision.parents[1]

@@ -147,6 +147,12 @@ class RoleGraph:
             raise ValueError("Only groups at one level can be merged")
         if source.get("parent_id") != target.get("parent_id"):
             raise ValueError("Groups must share one structural parent")
+        # A section fan-in member keeps its paragraph groups: they move under the target,
+        # as for a reciprocal merge. (Paragraph nodes have no children; their edges are
+        # left as before.)
+        structural = source["level"] == "section"
+        if structural:
+            children, incident_edges = self._children_and_edges(source_id)
         moved = [{**member, "membership_role": "fan_in"} for member in source["members"]]
         target["members"].extend(moved)
         target["members"].sort(
@@ -165,6 +171,8 @@ class RoleGraph:
             members=moved,
             reason=f"adjacent_{source['level']}_fan_in",
         )
+        if structural:
+            self._move_children(source_id, target_id, children, incident_edges, paper_index)
         return moved
 
     def merge_singleton(
@@ -199,21 +207,7 @@ class RoleGraph:
             raise ValueError(
                 f"Node {target_id} already contains a member from {member['paper_id']}"
             )
-        incident_edges = [
-            (edge_source, edge_target, data)
-            for edge_source, edge_target, _, data in self.graph.edges(keys=True, data=True)
-            if edge_source == source_id or edge_target == source_id
-        ]
-        unsupported = [
-            data.get("kind") for _, _, data in incident_edges if data.get("kind") != "contains"
-        ]
-        if unsupported:
-            raise ValueError(f"Cannot rewire unsupported edge kinds {unsupported}")
-        children = [
-            (node_id, data)
-            for node_id, data in self.nodes("paragraph")
-            if data.get("parent_id") == source_id
-        ]
+        children, incident_edges = self._children_and_edges(source_id)
         target["members"].append(member)
         target["members"].sort(
             key=lambda item: (
@@ -237,6 +231,37 @@ class RoleGraph:
             attempt_id=attempt_id,
             reverse_attempt_id=reverse_attempt_id,
         )
+        self._move_children(source_id, target_id, children, incident_edges, paper_index)
+        return member
+
+    def _children_and_edges(self, source_id: str) -> tuple[list, list]:
+        """Snapshot a node's paragraph children and hierarchy edges before it is removed."""
+        incident_edges = [
+            (edge_source, edge_target, data)
+            for edge_source, edge_target, _, data in self.graph.edges(keys=True, data=True)
+            if edge_source == source_id or edge_target == source_id
+        ]
+        unsupported = [
+            data.get("kind") for _, _, data in incident_edges if data.get("kind") != "contains"
+        ]
+        if unsupported:
+            raise ValueError(f"Cannot rewire unsupported edge kinds {unsupported}")
+        children = [
+            (node_id, data)
+            for node_id, data in self.nodes("paragraph")
+            if data.get("parent_id") == source_id
+        ]
+        return children, incident_edges
+
+    def _move_children(
+        self,
+        source_id: str,
+        target_id: str,
+        children: list,
+        incident_edges: list,
+        paper_index: int,
+    ) -> None:
+        """Give a removed node's paragraph children and hierarchy edges to its target."""
         for node_id, data in children:
             data["parent_id"] = target_id
             for child_member in data["members"]:
@@ -258,7 +283,6 @@ class RoleGraph:
                     paper_id=data["paper_id"],
                     paper_index=paper_index,
                 )
-        return member
 
     def add_hierarchy_edge(
         self,

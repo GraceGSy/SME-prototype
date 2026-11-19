@@ -209,3 +209,6 @@ class InsertionState:
     section_assignments: dict[str, str] = field(default_factory=dict)
     paragraph_matches: dict[str, MatchBatch] = field(default_factory=dict)
     paragraph_assignments: dict[str, str] = field(default_factory=dict)
+    # Older papers' sections moved into another section group while this paper was
+    # reconciled (reverse section fan-in); their paragraphs are re-matched there.
+    absorbed_sections: list[dict[str, str]] = field(default_factory=list)

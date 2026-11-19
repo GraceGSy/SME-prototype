@@ -608,6 +608,39 @@ class IncrementalGraphTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "already contains a member from p1"):
                 graph.add_member(node_id, "s2", "p1", 1, 2)
 
+    def test_section_fan_in_merge_moves_paragraph_children_to_the_target(self) -> None:
+        # A section that joins as fan-in keeps its paragraphs: their nodes and hierarchy
+        # edges move under the target, as for a reciprocal merge. Otherwise they point at
+        # a removed node and later paragraph matching in the new scope cannot place them.
+        with tempfile.TemporaryDirectory() as directory:
+            graph = RoleGraph(RevisionJournal(Path(directory) / "revision"))
+            graph.add_paper("p1", "P1", 1)
+            graph.add_paper("p2", "P2", 2)
+            target = graph.create_group(
+                level="section", parent_id=None, member_id="s1", paper_id="p1",
+                paper_index=1, ordinal=1,
+            )
+            graph.add_member(target, "s1", "p2", 2, 1)
+            source = graph.create_group(
+                level="section", parent_id=None, member_id="s2", paper_id="p2",
+                paper_index=2, ordinal=2,
+            )
+            child = graph.create_group(
+                level="paragraph", parent_id=source, member_id="s2.p1", paper_id="p2",
+                paper_index=2, ordinal=1, unit_kind="paragraph", parent_unit_id="s2",
+                owner_group_id=source,
+            )
+            graph.add_hierarchy_edge(source, child, paper_id="p2", paper_index=2)
+
+            graph.merge_paragraph_group(source, target, paper_index=3)
+
+            self.assertNotIn(source, graph.graph)
+            node = graph.node(child)
+            self.assertEqual(node["parent_id"], target)
+            self.assertEqual(node["members"][0]["owner_group_id"], target)
+            self.assertTrue(graph.graph.has_edge(target, child))
+            self.assertEqual(graph.paragraph_groups_for_section(target, "p1"), [child])
+
     def test_canonical_five_paper_dataset_loads_without_matches(self) -> None:
         _, papers = load_manifest(CANONICAL_MANIFEST)
         with tempfile.TemporaryDirectory() as directory:

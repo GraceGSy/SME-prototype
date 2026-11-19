@@ -538,19 +538,32 @@ class IncrementalGraphRunner:
         """An absorbed older section is a new contribution to its destination's child scope."""
         merges = insertion.stage_results.get("section_rerepresentation", {}).get("merged", [])
         pending = [m for m in merges if m["paper_id"] != insertion.paper.paper_id]
+        # Sections absorbed by reverse fan-in while this paper was reconciled move the
+        # same way, so their paragraphs are matched again inside the new section group.
+        pending += [{**m, "absorbed": True} for m in insertion.absorbed_sections]
         if not pending:
             return
         matching = next(s for s in self.config.stages if s.handler == "match_paragraphs")
         role_statements = next(
             s for s in self.config.stages if s.handler == "generate_paragraph_group_role_statements"
         )
-        results = []
+        # As in paragraph matching, one batch per (paper, section group): two sections of
+        # one paper moved into the same group are matched together, in reading order.
+        batches: dict[tuple[str, str], list] = {}
         for merge in pending:
             owner = self.insertions_by_paper[merge["paper_id"]]
             section = next(s for s in owner.paper.sections if s.id == merge["unit_id"])
             unit_ids = [p.id for p in section.paragraphs]
-            if not unit_ids:
-                continue
+            if merge.get("absorbed"):
+                # An absorbed group may already have matched some of these paragraphs
+                # across papers; those groups moved with it. Match the paragraphs that
+                # are still alone.
+                unit_ids = [
+                    unit_id
+                    for unit_id in unit_ids
+                    if len(self.role_graph.node(owner.paragraph_assignments[unit_id])["members"])
+                    == 1
+                ]
             # A singleton section cannot already own cross-paper paragraph groups.
             for unit_id in unit_ids:
                 node = self.role_graph.node(owner.paragraph_assignments[unit_id])
@@ -558,7 +571,15 @@ class IncrementalGraphRunner:
                     raise PipelineError(
                         "A reparented singleton section must own singleton paragraphs"
                     )
-            parent_id = merge["target_group_id"]
+            if unit_ids:
+                key = (merge["paper_id"], merge["target_group_id"])
+                batches.setdefault(key, []).append((section, unit_ids))
+        results = []
+        for (paper_id, parent_id), sections in batches.items():
+            owner = self.insertions_by_paper[paper_id]
+            sections.sort(key=lambda item: item[0].ordinal)
+            unit_ids = [unit_id for _, ids in sections for unit_id in ids]
+            section = sections[0][0]
             contribution = InsertionState(
                 paper=owner.paper,
                 paper_index=insertion.paper_index,
@@ -592,6 +613,7 @@ class IncrementalGraphRunner:
                 {
                     "paper_id": owner.paper.paper_id,
                     "section_id": section.id,
+                    "section_ids": [s.id for s, _ in sections],
                     "parent_id": parent_id,
                     **self._match_batch_dump(batch),
                 }
@@ -1200,6 +1222,16 @@ class IncrementalGraphRunner:
                     target_id,
                     paper_index=insertion.paper_index,
                 )
+                if level == "section":
+                    insertion.absorbed_sections.extend(
+                        {
+                            "paper_id": member["paper_id"],
+                            "unit_id": member["unit_id"],
+                            "target_group_id": target_id,
+                        }
+                        for member in moved
+                        if member["paper_id"] != insertion.paper.paper_id
+                    )
                 for member in moved:
                     owner = self.insertions_by_paper[member["paper_id"]]
                     (
