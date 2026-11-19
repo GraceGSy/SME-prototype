@@ -102,11 +102,11 @@ class IncrementalGraphRunner:
             self._recurse_reparented_sections(insertion)
             self._run_phase("paragraph", insertion)
         self.journal.finalize()
-        if self.config.close_call_margin:
-            write_close_call_report(
-                self.journal.events, self.role_graph, self.revision_dir / "reports"
-            )
         if sections_only:
+            if self.config.close_call_margin:
+                write_close_call_report(
+                    self.journal.events, self.role_graph, self.revision_dir / "reports"
+                )
             checkpoint = {
                 "completed_phase": "structural",
                 "paper_order": list(self.role_graph.paper_order),
@@ -115,7 +115,12 @@ class IncrementalGraphRunner:
             write_json(self.revision_dir / "section-checkpoint.json", checkpoint)
             return {"completed_phase": "structural", "revision_dir": str(self.revision_dir)}
         export_revision(self.revision_dir / "dataset", self.role_graph, self.papers)
+        # The singleton report creates reports/; the close-call report joins it there.
         write_singleton_report(self.journal.events, self.revision_dir / "reports")
+        if self.config.close_call_margin:
+            write_close_call_report(
+                self.journal.events, self.role_graph, self.revision_dir / "reports"
+            )
         summary = {
             "schema_version": 1,
             "pipeline_id": self.config.pipeline_id,

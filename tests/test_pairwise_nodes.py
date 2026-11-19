@@ -540,7 +540,11 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
             section_fan_in=True,
             sections_only=False,
             jev=AgreeableJev(),
+            close_call_margin=0.10,
         )
+        # A full run writes both reports into one folder.
+        self.assertTrue((revision / "reports/close-calls.json").is_file())
+        self.assertTrue(any(p.name != "close-calls.json" for p in (revision / "reports").iterdir()))
         events = read_json(revision / "events.json")
         [absorbed] = [
             e
