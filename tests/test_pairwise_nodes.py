@@ -21,18 +21,26 @@ ROLES = {"water supply": "mechanism", "small sample": "limitation", "high price"
 
 
 def section(name, text, role):
+    texts = [text] if isinstance(text, str) else text
     return {
         "section_name": name,
         "section_number": None,
         ROLE_FIELD: role,
-        "paragraphs": [{"paragraph_number": 0, "text": text, ROLE_FIELD: role}],
+        "paragraphs": [
+            {"paragraph_number": i, "text": t, ROLE_FIELD: role} for i, t in enumerate(texts)
+        ],
         "subsections": [],
     }
 
 
 def paper(word, sections):
+    # A section's text may be a list: one paragraph per item.
     return [
-        section(name, f"{word} {text}", f"Role of the {name.lower()} section.")
+        section(
+            name,
+            f"{word} {text}" if isinstance(text, str) else [f"{word} {t}" for t in text],
+            f"Role of the {name.lower()} section.",
+        )
         for name, text in sections
     ]
 
@@ -126,6 +134,7 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
         section_fan_in=False,
         close_call_margin=None,
         sections_only=True,
+        paragraph_shortlist=None,
     ):
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)
@@ -162,6 +171,7 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
                 sections_only=sections_only,
                 section_fan_in=section_fan_in,
                 close_call_margin=close_call_margin,
+                paragraph_shortlist=paragraph_shortlist,
             )
         # A section checkpoint reports its revision; a full run reports its dataset.
         revision = Path(result.get("revision_dir") or Path(result["dataset_dir"]).parent)
@@ -568,6 +578,62 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
             if any(m["paper"] == "alpha" and m["unit_id"] == "s0002.p0001" for m in g["members"])
         )
         self.assertEqual(pump["parent_group_id"], absorbed["node_id"])
+
+    def test_paragraph_shortlist_asks_yes_no_only_for_the_top_options(self):
+        # Each paper's Method has three paragraphs. At paper 3 every Gamma Method
+        # paragraph is eligible for three paragraph nodes; a shortlist of one asks one
+        # ranking over all three, then a single yes/no, instead of three yes/no questions.
+        method = (
+            "Method",
+            [
+                "explains how closing a valve cuts the water supply.",
+                "adds that a dry pump also cuts the water supply.",
+                "notes that a small sample limits generalization.",
+            ],
+        )
+        docs = [method, ("Cost", "warns that a high price slows adoption.")]
+
+        class AgreeableJev(ScriptedJev):
+            def __call__(self, request, **kwargs):
+                body = json.loads(request.data)
+                if "[focus" not in body["state"]:
+                    return super().__call__(request, **kwargs)
+                self.bodies.append(body)
+                # Paper 3 has no paragraph matches yet, so rank the last option first:
+                # the shortlist must keep Jev's top option, not the first listed.
+                options = list(body["questions"].get("match", {}).get("criteria", []))
+                return io.BytesIO(
+                    json.dumps(answer(body, options[-1] if options else None, 0.9)).encode()
+                )
+
+        results = {}
+        for limit in (None, 1):
+            jev = AgreeableJev()
+            _, _, revision = self.run_three(
+                docs, docs, docs, jev=jev, sections_only=False, paragraph_shortlist=limit
+            )
+            events = read_json(revision / "events.json")
+            third = [
+                b
+                for b in jev.bodies
+                if "Gamma " in b["state"] and "[focus" in b["state"]
+            ]
+            results[limit] = (third, events)
+        full_yes_no = [b for b in results[None][0] if list(b["questions"]) == ["has_match"]]
+        third, events = results[1]
+        shortlisted = [
+            e for e in events if e["action"] == "shortlisted" and e["paper_index"] == 3
+        ]
+        self.assertTrue(shortlisted)
+        self.assertTrue(all(e["level"] == "paragraph" for e in shortlisted))
+        for event in shortlisted:
+            self.assertEqual(len(event["kept"]), 1)
+            top = max(event["probabilities"], key=event["probabilities"].get)
+            self.assertEqual(event["kept"], [top])
+        yes_no = [b for b in third if list(b["questions"]) == ["has_match"]]
+        self.assertLess(len(yes_no), len(full_yes_no))
+        # Section matching is unchanged: no shortlist outside the paragraph level.
+        self.assertFalse(any(e["level"] == "section" for e in shortlisted))
 
     def test_public_catalog_keeps_source_text_only_for_approved_collections(self):
         _, _, revision = self.run_three(STANDARD)

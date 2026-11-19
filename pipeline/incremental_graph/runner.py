@@ -1010,8 +1010,24 @@ class IncrementalGraphRunner:
         forward_direction, reverse_direction = directions
         batch = MatchBatch(existing_group_ids=targets, new_unit_ids=sources)
         scores: dict[tuple[str, str], tuple[float, str]] = {}
+        limit = self.config.paragraph_shortlist if scope["level"] == "paragraph" else None
         for source_id in sources:
-            for target_id in eligible[source_id]:
+            candidates = eligible[source_id]
+            if limit and len(candidates) > limit:
+                # One ranking over every option narrows the yes/no questions to the top
+                # few; the reverse direction reads the same (narrower) yes table.
+                candidates = self._shortlist(
+                    stage,
+                    insertion,
+                    scope,
+                    direction=forward_direction,
+                    source_id=source_id,
+                    options=candidates,
+                    limit=limit,
+                    focus=source_context(source_id, False),
+                    option_context=lambda t: target_context(t, True),
+                )
+            for target_id in candidates:
                 vote = dict(
                     direction=forward_direction,
                     source_id=source_id,
@@ -1077,6 +1093,99 @@ class IncrementalGraphRunner:
             if decision:
                 batch.reverse[target_id] = decision
         return batch
+
+    def _shortlist(
+        self,
+        stage: StageConfig,
+        insertion: InsertionState,
+        scope: dict[str, Any],
+        *,
+        direction: MatchDirection,
+        source_id: str,
+        options: list[str],
+        limit: int,
+        focus: dict[str, Any],
+        option_context: Callable[[str], dict[str, Any]],
+        suffix: str = ":shortlist",
+    ) -> list[str]:
+        """Keep the ``limit`` options a single Jev ranking finds most likely.
+
+        The ranking shows the focus's complete paper and each option's members and role,
+        like the ranking among yeses; it needs recall, not a decision, so no close-call
+        rule applies. A pool over Jev's option or size limit is shortlisted in halves.
+        """
+        if len(options) <= limit:
+            return list(options)
+        if len(options) > 255:
+            middle = len(options) // 2
+            halves = [options[:middle], options[middle:]]
+        else:
+            try:
+                attempt_id, result = self._vote(
+                    stage,
+                    insertion,
+                    direction=direction,
+                    source_id=source_id,
+                    allowed_ids=options,
+                    context={
+                        "scope": scope,
+                        "focus": focus,
+                        "candidates": [option_context(option) for option in options],
+                    },
+                    rank_only=True,
+                    key_suffix=suffix,
+                    candidate_papers=False,
+                )
+            except JevRequestTooLarge:
+                if len(options) <= 2 * limit:
+                    raise
+                middle = len(options) // 2
+                halves = [options[:middle], options[middle:]]
+            else:
+                probabilities = result.raw_response["jev"]["choice"]["probabilities"]
+                order = {option: index for index, option in enumerate(options)}
+                kept = sorted(options, key=lambda o: (-probabilities[o], order[o]))[:limit]
+                self.journal.event(
+                    "shortlisted",
+                    paper_index=insertion.paper_index,
+                    level=scope["level"],
+                    parent_id=scope.get("parent_group_id"),
+                    direction=direction,
+                    source_id=source_id,
+                    candidate_count=len(options),
+                    kept=kept,
+                    probabilities=probabilities,
+                    attempt_id=attempt_id,
+                )
+                return [option for option in options if option in kept]
+        merged = [
+            option
+            for index, half in enumerate(halves)
+            for option in self._shortlist(
+                stage,
+                insertion,
+                scope,
+                direction=direction,
+                source_id=source_id,
+                options=half,
+                limit=limit,
+                focus=focus,
+                option_context=option_context,
+                suffix=f"{suffix}:{index}",
+            )
+        ]
+        return self._shortlist(
+            stage,
+            insertion,
+            scope,
+            direction=direction,
+            source_id=source_id,
+            options=merged,
+            limit=limit,
+            focus=focus,
+            option_context=option_context,
+            suffix=f"{suffix}:final",
+        )
 
     def _choose_passed(
         self,

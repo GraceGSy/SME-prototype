@@ -143,6 +143,7 @@ def start_graph(
     section_fan_in: bool = False,
     jev_long_context_retry: bool = False,
     close_call_margin: float | None = None,
+    paragraph_shortlist: int | None = None,
 ) -> dict[str, Any]:
     if (provider is None) != (model is None):
         raise ValueError("Pass provider and model together, or use the saved configuration")
@@ -179,6 +180,12 @@ def start_graph(
         if not 0 < close_call_margin < 1:
             raise ValueError("--close-call-margin must be between 0 and 1")
         config.close_call_margin = close_call_margin
+    if paragraph_shortlist is not None:
+        if not config.jev:
+            raise ValueError("--paragraph-shortlist needs Jev rankings; pass --jev")
+        if paragraph_shortlist < 1:
+            raise ValueError("--paragraph-shortlist must be at least 1")
+        config.paragraph_shortlist = paragraph_shortlist
     if config.jev:
         # Fail before buying role statement generation or creating a run with missing credentials.
         load_api_key(REPO_ROOT, "TYPESAFE_API_KEY")

@@ -74,6 +74,12 @@ def main() -> None:
         help="Jev: if a ranking's top options are within this probability (e.g. 0.10), "
         "re-ask among them; if still close, leave the source unassigned",
     )
+    start.add_argument(
+        "--paragraph-shortlist",
+        type=int,
+        help="Jev, paper 3+: one ranking over every paragraph node keeps this many (e.g. 5) "
+        "before yes/no questions, instead of asking every pair",
+    )
     add = commands.add_parser("add", help="Append prepared papers in manifest order")
     add.add_argument("manifest", type=Path)
     add.add_argument("run_dir", type=Path)
@@ -111,6 +117,7 @@ def main() -> None:
             section_fan_in=args.section_fan_in,
             jev_long_context_retry=args.jev_long_context,
             close_call_margin=args.close_call_margin,
+            paragraph_shortlist=args.paragraph_shortlist,
         )
     elif args.command == "add":
         result = add_papers(args.manifest, args.run_dir)
