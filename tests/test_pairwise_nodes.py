@@ -132,7 +132,7 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
         alpha_sections=STANDARD,
         jev=None,
         fan_in=False,
-        close_call_margin=None,
+        close_call_margin=0,
         sections_only=True,
         shortlist=0,
     ):

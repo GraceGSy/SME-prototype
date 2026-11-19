@@ -11,7 +11,8 @@ This is an SME-inspired comparison system, not the canonical symbolic SME.
 **Start with [docs/matching/README.md](docs/matching/README.md):** one diagram and a
 short walkthrough of how each new document joins the graph. Sections and paragraphs
 follow the same steps. Since November 19, both levels use a Jev shortlist of 10
-(`--shortlist`, default 10) and fan-in (`--no-fan-in` turns it off), so the older
+(`--shortlist`, default 10), fan-in (`--no-fan-in` turns it off) and a 0.10 close-call
+margin (`--close-call-margin 0` turns it off), so the older
 `--section-fan-in` and `--paragraph-shortlist` flags are no longer needed.
 
 ![How a new document joins the graph](docs/diagrams/matching-process.png)

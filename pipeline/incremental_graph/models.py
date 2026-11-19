@@ -136,7 +136,8 @@ class PipelineConfig(StrictModel):
     fan_in: bool = True
     # Jev only: when another option is within this probability of the top one, re-ask
     # among just those options; if still close, leave the source without a pick.
-    close_call_margin: float | None = Field(default=None, gt=0, lt=1)
+    # None always takes the top option.
+    close_call_margin: float | None = Field(default=0.10, gt=0, lt=1)
     # Jev only, every level, paper 3+: when a unit has more options than this, one
     # ranking over all of them keeps this many; yes/no questions go only to those.
     # None asks every pair.
@@ -158,12 +159,13 @@ class PipelineConfig(StrictModel):
     @model_validator(mode="before")
     @classmethod
     def read_older_names(cls, data: Any) -> Any:
-        """Saved runs before Nov 19 used level-specific names and had no shortlist."""
+        """Saved runs before Nov 19 used level-specific names; a missing setting was off."""
         if isinstance(data, dict) and ("section_fan_in" in data or "paragraph_shortlist" in data):
             data = dict(data)
             if "section_fan_in" in data:
                 data.setdefault("fan_in", data.pop("section_fan_in"))
             data.setdefault("shortlist", data.pop("paragraph_shortlist", None))
+            data.setdefault("close_call_margin", None)
         return data
 
     @model_validator(mode="after")

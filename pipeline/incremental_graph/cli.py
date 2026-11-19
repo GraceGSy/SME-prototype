@@ -79,8 +79,8 @@ def main() -> None:
     start.add_argument(
         "--close-call-margin",
         type=float,
-        help="Jev: if a ranking's top options are within this probability (e.g. 0.10), "
-        "re-ask among them; if still close, leave the source unassigned",
+        help="Jev: if a ranking's top options are within this probability (default 0.10), "
+        "re-ask among them; if still close, leave the source unassigned. 0 turns it off",
     )
     start.add_argument(
         "--shortlist",

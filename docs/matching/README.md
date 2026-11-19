@@ -56,7 +56,7 @@ again for paragraphs inside each section group.
 |---|---|---|
 | `--shortlist N` | 10 | Yes/no questions go only to a unit's top N candidates. `0` asks every pair. |
 | `--no-fan-in` | fan-in on | Keep only mutual matches, at both levels. |
-| `--close-call-margin M` | off | Re-ask, then hold, when the top two are within M. Current runs use 0.10. |
+| `--close-call-margin M` | 0.10 | Re-ask, then hold, when the top two are within M. `0` always takes the top option. |
 
 Long context (262k tokens) is always on, so Jev always sees each paper whole.
 
@@ -75,7 +75,7 @@ final pick 53 times out of 54 and used 996 Jev calls instead of 2,341. A shortli
 ## Run it
 
 ```bash
-python -m pipeline.incremental_graph.cli start <manifest.yaml> runs/<name> --jev --close-call-margin 0.10
+python -m pipeline.incremental_graph.cli start <manifest.yaml> runs/<name> --jev
 ```
 
 Add `--sections-only` to stop after section matching. The detailed flow, including

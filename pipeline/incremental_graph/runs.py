@@ -175,11 +175,12 @@ def start_graph(
     if fan_in is not None:
         config.fan_in = fan_in
     if close_call_margin is not None:
-        if not config.jev:
+        # 0 turns close-call handling off: the top option is always taken.
+        if not 0 <= close_call_margin < 1:
+            raise ValueError("--close-call-margin must be 0 (off) or between 0 and 1")
+        if close_call_margin and not config.jev:
             raise ValueError("--close-call-margin needs Jev rankings; pass --jev")
-        if not 0 < close_call_margin < 1:
-            raise ValueError("--close-call-margin must be between 0 and 1")
-        config.close_call_margin = close_call_margin
+        config.close_call_margin = close_call_margin or None
     if shortlist is not None:
         # 0 turns the shortlist off: every eligible pair gets a yes/no question.
         if shortlist < 0:

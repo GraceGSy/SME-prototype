@@ -17,6 +17,8 @@ specific run before acting. Follow the user's current request and applicable
     every pair). It applies to sections and paragraphs from paper 3 on.
   - **Fan-in:** `PipelineConfig.fan_in` defaults to on at both levels; `--no-fan-in`
     turns it off.
+  - **Close calls:** `close_call_margin` defaults to 0.10 (`--close-call-margin 0`
+    turns it off).
   - **Single-paragraph inheritance stays:** it is the recursion's base case.
   - **Renamed settings:** `section_fan_in` and `paragraph_shortlist` became `fan_in` and
     `shortlist`. Saved configs with the old names still load, but saved runs cannot
