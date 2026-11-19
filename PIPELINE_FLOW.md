@@ -21,11 +21,14 @@ runs also enable section fan-in (`start --section-fan-in`).
   question over just those nodes. Nodes pick among the sections that said yes
   to them the same way. A yes/no question shows the focus paper and the node's
   latest paper in full. Jev's default limit is 32k tokens per question (about two
-  papers); with `--jev-long-context` a request over that is resent unchanged with
-  TypeSafe's long-context header (262k). Only if it is still too large is a yes/no
-  asked again with the node's member sections only (logged as
-  `pair_context_reduced`). A ranking shows member sections only; if still too large
-  it is split in half and the two winners are ranked again.
+  papers); a request over that is resent unchanged with TypeSafe's long-context
+  header (262k), always on since Nov 18. Paper text is never dropped to make a
+  yes/no fit: if long context also rejects it, the run stops. (Before Nov 18 a
+  too-large yes/no was asked again with the node's member sections only, logged
+  as `pair_context_reduced`; the five-paper fan-in v2 run did this for 33 pairs.)
+  A ranking shows the focus paper in full and each option's member sections and
+  role; if that is too large even for long context, it is split in half and the
+  two winners are ranked again.
 - **Reconcile** is Python only: reciprocal picks become core members; a one-way
   pick immediately next to a same-paper core in the chosen node becomes a fan-in
   member; fan-in never chains through another fan-in member.

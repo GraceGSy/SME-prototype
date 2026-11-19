@@ -986,28 +986,12 @@ class IncrementalGraphRunner:
                         "candidates": [target_context(target_id, True)],
                     },
                 )
-                try:
-                    attempt_id, result = self._vote(
-                        stage, insertion, key_suffix=f":pair:{target_id}", **vote
-                    )
-                except JevRequestTooLarge:
-                    # Like the ranking question: keep the focus paper complete and show
-                    # the node's own member sections and roles, not its latest paper.
-                    attempt_id, result = self._vote(
-                        stage,
-                        insertion,
-                        key_suffix=f":pair:{target_id}:members",
-                        candidate_papers=False,
-                        **vote,
-                    )
-                    self.journal.event(
-                        "pair_context_reduced",
-                        paper_index=insertion.paper_index,
-                        level=scope["level"],
-                        source_id=source_id,
-                        target_id=target_id,
-                        attempt_id=attempt_id,
-                    )
+                # Both complete papers, always: an oversized question goes to Jev's long
+                # context window, and if even that is too large the run stops. The node is
+                # never shrunk to its member sections.
+                attempt_id, result = self._vote(
+                    stage, insertion, key_suffix=f":pair:{target_id}", **vote
+                )
                 score = result.raw_response["jev"]["has_match"]["noul"]
                 self.journal.event(
                     "pair_scored",

@@ -254,9 +254,9 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
         _, _, revision = self.run_three(
             self.ALL, self.THREE, self.THREE, jev=jev, close_call_margin=0.10
         )
-        # Rejected three-way, the two-option half (close but not held), then the final
-        # (held). Singleton recovery repeats them from the cache.
-        self.assertEqual(self.rankings(jev), [3, 2, 2])
+        # Three-way rejected in both windows, the two-option half (close but not held),
+        # then the final (held). Singleton recovery repeats them from the cache.
+        self.assertEqual(self.rankings(jev), [3, 3, 2, 2])
         calls = [e for e in read_json(revision / "events.json") if e["action"] == "close_call"]
         self.assertEqual([c["outcome"] for c in calls], ["held", "held"])
 
@@ -345,8 +345,9 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
         rankings = [
             len(b["questions"]["match"]["criteria"]) for b in third if "match" in b["questions"]
         ]
-        # The rejected three-way ranking, one half of two, then the final of two.
-        self.assertEqual(rankings, [3, 2, 2])
+        # The three-way ranking rejected in the default and long-context windows, one half
+        # of two, then the final of two.
+        self.assertEqual(rankings, [3, 3, 2, 2])
         forward = next(
             e
             for e in read_json(revision / "events.json")
@@ -381,29 +382,57 @@ class PairwiseNodeMatchingTest(unittest.TestCase):
             read_json(revision / "section-checkpoint.json")["section_groups"],
         )
 
-    def test_yes_no_too_large_retries_with_member_sections_only(self):
-        class TightJev(ScriptedJev):
-            def __call__(self, request, **kwargs):
-                body = json.loads(request.data)
-                # Beta's Notes and Method appear together only when Beta is shown complete.
-                gate = list(body["questions"]) == ["has_match"]
-                full_beta = "Beta thanks" in body["state"] and "Beta explains" in body["state"]
-                if gate and "Gamma paper" in body["state"] and full_beta:
+    class TightJev(ScriptedJev):
+        """Reject third-paper yes/no questions that show Beta complete, as over 32k."""
+
+        def __init__(self, long_context_fits):
+            super().__init__()
+            self.long_context_fits = long_context_fits
+            self.long_context = []
+
+        def __call__(self, request, **kwargs):
+            body = json.loads(request.data)
+            # Beta's Notes and Method appear together only when Beta is shown complete.
+            gate = list(body["questions"]) == ["has_match"]
+            full_beta = "Beta thanks" in body["state"] and "Beta explains" in body["state"]
+            long = request.get_header("Typesafe-danger-zone-long-context") == "true"
+            if gate and "Gamma paper" in body["state"] and full_beta:
+                self.long_context.append(long)
+                if not (long and self.long_context_fits):
                     self.bodies.append(body)
                     error = b'{"detail":{"error_type":"max_tokens_exceeded"}}'
                     raise HTTPError(request.full_url, 400, "Bad Request", {}, io.BytesIO(error))
-                return super().__call__(request, **kwargs)
+            return super().__call__(request, **kwargs)
 
-        jev = TightJev()
-        _, _, revision = self.run_three(
-            STANDARD, beta_sections=[*STANDARD, ("Notes", "thanks the funders.")], jev=jev
-        )
+    BETA_WITH_NOTES = [*STANDARD, ("Notes", "thanks the funders.")]
+
+    def test_oversized_yes_no_is_resent_with_long_context_and_keeps_both_papers(self):
+        jev = self.TightJev(long_context_fits=True)
+        _, _, revision = self.run_three(STANDARD, beta_sections=self.BETA_WITH_NOTES, jev=jev)
+        # Two Gamma sections times three nodes (two shared, Beta's Notes singleton):
+        # each is rejected once, then answered in the long-context window.
+        self.assertEqual(jev.long_context.count(False), 6)
+        self.assertEqual(jev.long_context.count(True), 6)
+        gates = [
+            b["state"]
+            for b in jev.bodies
+            if "Gamma paper" in b["state"] and list(b["questions"]) == ["has_match"]
+        ]
+        # Every third-paper yes/no question that reached Jev showed Beta complete.
+        self.assertTrue(gates and all("Beta thanks" in s and "Beta explains" in s for s in gates))
         events = read_json(revision / "events.json")
-        reduced = [e for e in events if e["action"] == "pair_context_reduced"]
-        # Two Gamma sections times three nodes (two shared, Beta's Notes singleton).
-        self.assertEqual(len(reduced), 6)
+        self.assertFalse(any(e["action"] == "pair_context_reduced" for e in events))
         groups = read_json(revision / "section-checkpoint.json")["section_groups"].values()
         self.assertEqual(sorted(len(g["members"]) for g in groups if len(g["members"]) > 1), [3, 3])
+
+    def test_yes_no_too_large_even_for_long_context_stops_instead_of_dropping_text(self):
+        jev = self.TightJev(long_context_fits=False)
+        with self.assertRaisesRegex(Exception, "complete participating papers"):
+            self.run_three(STANDARD, beta_sections=self.BETA_WITH_NOTES, jev=jev)
+        self.assertEqual(jev.long_context, [False, True])  # One question, then stop.
+        # No smaller version of the question was ever sent.
+        gates = [b for b in jev.bodies if "Gamma paper" in b["state"]]
+        self.assertTrue(all("Beta thanks" in b["state"] for b in gates))
 
     def test_section_fan_in_admits_a_one_way_neighbor_only_when_enabled(self):
         beta = [

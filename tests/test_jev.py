@@ -67,8 +67,10 @@ class JevTest(unittest.TestCase):
         self.root = Path(self.temp.name)
 
     def selector(self, **settings):
+        # Long context is on by default; these unit tests turn it off unless they test it,
+        # so size rejections exercise the split and stop rules directly.
         return JevSelector(
-            JevSettings(**settings),
+            JevSettings(**{"long_context_retry": False, **settings}),
             self.root / "jev",
         )
 
@@ -628,7 +630,10 @@ class JevTest(unittest.TestCase):
                 plain.select(self.request(20), allow_splitting=False)
             self.assertEqual(network.call_count, 4)
         self.assertEqual(selector.settings.result_settings()["long_context_retry"], True)
-        self.assertNotIn("long_context_retry", JevSettings().result_settings())
+        self.assertTrue(JevSettings().long_context_retry)  # On by default.
+        self.assertNotIn(
+            "long_context_retry", JevSettings(long_context_retry=False).result_settings()
+        )
 
     def test_predicted_overflow_goes_straight_to_long_context(self):
         request = self.request()

@@ -2,7 +2,7 @@
 // Render: dot -Tpng -Gdpi=216 docs/diagrams/section-fan-in-flow.dot -o docs/diagrams/section-fan-in-flow.png
 digraph section_fan_in_flow {
   graph [rankdir=TB, fontname="Times New Roman,", fontsize=12, nodesep=0.35, ranksep=0.42,
-         newrank=true, labelloc=t, label=<<b>Section matching with Jev and section fan-in</b><br/><font point-size="10">start --jev --sections-only --section-fan-in --jev-long-context</font><br/><font point-size="10" color="#30637d">■ data</font>  <font point-size="10" color="#bc6c13">■ Claude</font>  <font point-size="10" color="#7054a0">■ Jev</font>  <font point-size="10" color="#327144">■ Python rule</font>>];
+         newrank=true, labelloc=t, label=<<b>Section matching with Jev and section fan-in</b><br/><font point-size="10">start --jev --sections-only --section-fan-in (long context always on)</font><br/><font point-size="10" color="#30637d">■ data</font>  <font point-size="10" color="#bc6c13">■ Claude</font>  <font point-size="10" color="#7054a0">■ Jev</font>  <font point-size="10" color="#327144">■ Python rule</font>>];
   node  [shape=box, style="rounded,filled", fontname="Times New Roman,", fontsize=12, margin="0.14,0.07", penwidth=1.2];
   edge  [fontname="Times New Roman,", fontsize=11, color="#555555", arrowsize=0.7];
 
@@ -25,7 +25,7 @@ digraph section_fan_in_flow {
     label=<<b>Match new sections ↔ existing nodes</b>>; style="rounded,dashed"; color="#7054a0"; fontname="Times New Roman,"; fontsize=12;
     node [fillcolor="#efe7fb", color="#7054a0", fontcolor="#382459"];
     choice2 [label=<<b>Paper 2: Jev Choice, both directions</b><br/><font point-size="10">each new section picks one node or NO_MATCH;<br/>each node picks one new section or NO_MATCH</font>>];
-    gate    [label=<<b>Paper 3+: Jev yes/no per (section, node)</b><br/><font point-size="10">focus paper complete; node role, its latest<br/>paper complete, older members' sections only.<br/>Over 32k → resend with long context (262k);<br/>still too large → node's member sections only</font>>];
+    gate    [label=<<b>Paper 3+: Jev yes/no per (section, node)</b><br/><font point-size="10">focus paper complete; node role, its latest<br/>paper complete, older members' sections only.<br/>Over 32k → resend with long context (262k);<br/>still too large → run stops (no text dropped)</font>>];
     count   [shape=diamond, style="filled", fillcolor="#e7f4e8", color="#327144", fontcolor="#173e23", label="Yeses?", margin="0.04,0.04"];
     rank    [label=<<b>Jev ranking over the yeses</b><br/><font point-size="10">focus paper complete; options show member<br/>sections and roles only. Over 32k → long<br/>context; still too large → rank each half,<br/>then rank the two winners</font>>];
     pick    [shape=box, style="rounded,filled", fillcolor="#e7f4e8", color="#327144", fontcolor="#173e23", label=<One directional pick per section<br/>and per node (or none)<br/><font point-size="10">reverse picks use the same yes table</font>>];
@@ -55,7 +55,7 @@ digraph section_fan_in_flow {
 
   node [fillcolor="#f1eafb", color="#7054a0", fontcolor="#382459"];
   ckpt    [label=<section-checkpoint.json<br/><font point-size="10">nodes, members (core / fan_in), roles;<br/>every Jev and Claude answer cached for --cache-from</font>>];
-  viewer  [label=<Viewer section map → Vercel<br/><font point-size="10">question-atlas-runs; section text redacted</font>>];
+  viewer  [label=<Viewer: pattern board + section map → Vercel<br/><font point-size="10">question-atlas-runs; HCI source text included</font>>];
 
   pdf -> clean -> roles -> next -> which;
   which -> seed    [label=" 1"];

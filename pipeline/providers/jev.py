@@ -51,9 +51,10 @@ class JevSettings(BaseModel):
     max_input_tokens: int | None = Field(default=None, gt=0)
     timeout_seconds: int = Field(default=120, gt=0)
     # Resend a size-rejected request once with TypeSafe's long-context header (262k tokens
-    # per question instead of 32k). The docs call it slower and less accurate, so requests
-    # that fit the default window never use it.
-    long_context_retry: bool = False
+    # per question instead of 32k), so questions keep complete papers instead of shrinking.
+    # The docs call it slower and less accurate, so requests that fit the default window
+    # never use it. Off means an oversized question stops the run.
+    long_context_retry: bool = True
 
     def result_settings(self) -> dict:
         """Budgets and timeouts do not change a successful judgment."""

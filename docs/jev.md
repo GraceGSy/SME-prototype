@@ -621,11 +621,12 @@ The service enforces its [token context limits](https://docs.typesafe.ai/models)
 Only an explicit HTTP 400 `max_tokens_exceeded` or HTTP 413 size rejection triggers
 size-based splitting; unrelated errors stop rather than causing more calls.
 
-### Long context (opt-in, Nov 18, 2026)
+### Long context (on by default since Nov 18, 2026)
 
 Jev 1.14 allows 64k tokens per request but only 32k per question (state plus one
-question), which is about two complete papers. `start --jev-long-context` (setting
-`jev.long_context_retry: true`) resends a size-rejected request once, unchanged, with
+question), which is about two complete papers. The setting `jev.long_context_retry`
+(default `true`; `start --jev-long-context` is accepted but no longer needed)
+resends a size-rejected request once, unchanged, with
 the `TypeSafe-Danger-Zone-Long-Context: true` header, which raises both limits to
 262k tokens at the same per-token price. A request predicted to overflow skips the
 default attempt and goes straight to long context: reported input tokens are
@@ -636,9 +637,12 @@ a request within 700 tokens of 32,768 is predicted to overflow. On the five-pape
 call long context slower and less accurate, so requests that fit the default window
 never use it. Long-context answers are cached under `cache/jev/long-context/` and
 their calls carry `long_context: true`; a long-context size rejection is cached under
-`cache/jev/too-large/long-context/`. Only when long context also rejects does the
-existing fallback apply (member-sections-only yes/no, or half-pool ranking). The
-setting is in the policy hash only when enabled, so earlier runs keep their hashes.
+`cache/jev/too-large/long-context/`. A yes/no question always shows both complete
+papers: if long context also rejects it, the run stops (the earlier fallback that
+re-asked with the node's member sections only, `pair_context_reduced`, is removed).
+A ranking that long context also rejects is split in half, which drops options from
+each question but never source text. Setting `long_context_retry: false` restores
+the 32k limit, and an oversized yes/no then stops the run.
 
 ### Close calls (opt-in, Nov 18, 2026)
 

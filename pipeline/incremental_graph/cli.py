@@ -54,7 +54,8 @@ def main() -> None:
     start.add_argument(
         "--jev-long-context",
         action="store_true",
-        help="Resend size-rejected Jev requests with TypeSafe's long-context header (262k)",
+        help="Always on now: oversized Jev requests are resent with TypeSafe's long-context "
+        "header (262k) instead of dropping paper text. Accepted for older commands.",
     )
     start.add_argument("--max-api-responses", type=int, help="Generative provider response guard")
     start.add_argument(
