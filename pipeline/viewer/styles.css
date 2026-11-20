@@ -438,6 +438,24 @@ html[data-public-catalog] #restartTutorial {
   color: #868e96;
   font-size: 13px;
 }
+.level-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-right: 14px;
+  border-right: 1px solid #dee2e6;
+}
+.level-control[hidden] {
+  display: none;
+}
+.level-control-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #495057;
+}
+.level-tabs {
+  display: flex;
+}
 .granularity-btn {
   font-size: 11px;
   padding: 3px 10px;

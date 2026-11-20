@@ -10,6 +10,10 @@
   <body class="tutorial-welcome-open">
     <header>
       <h1 id="viewerTitle">SME Viewer</h1>
+      <div class="level-control" id="levelControl" hidden>
+        <span class="level-control-label" id="levelLabel">Matching level</span>
+        <div id="levelTabs" class="level-tabs" role="group" aria-labelledby="levelLabel"></div>
+      </div>
       <div id="granularityTabs" style="display: flex; gap: 2px"></div>
       <button type="button" class="tutorial-launch-button" id="restartTutorial">Tutorial</button>
     </header>

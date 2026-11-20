@@ -50,13 +50,14 @@ export function buildSectionMap(papers: Paper[], sectionGroups: Group[]) {
     sections.size !== papers.reduce((total, p) => total + p.sections.length, 0)
   )
     throw new Error("Duplicate paper or section ID");
-  const shared = sectionGroups.filter((group) => group.members.length > 1);
+  // Shared means more than one paper: fan-in can put two sections of one paper together.
+  const papersIn = (group: Group) => new Set(group.members.map((m) => m.paper)).size;
   return {
     papers,
     ...indexGroups(
       sections,
-      shared,
-      sectionGroups.filter((group) => group.members.length === 1),
+      sectionGroups.filter((group) => papersIn(group) > 1),
+      sectionGroups.filter((group) => papersIn(group) === 1),
     ),
   };
 }

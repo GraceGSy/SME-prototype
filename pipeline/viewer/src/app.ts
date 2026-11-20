@@ -40,15 +40,8 @@ async function main(): Promise<void> {
       for (const [key, label] of [
         ["board", "Graphical Explorer"],
         ["map", "Paper Map"],
-      ] as const) {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "granularity-btn" + (view === key ? " active" : "");
-        button.textContent = label;
-        button.setAttribute("aria-pressed", String(view === key));
-        button.addEventListener("click", () => show(key));
-        tabs.append(button);
-      }
+      ] as const)
+        tabs.append(tabButton(label, view === key, () => show(key)));
       if (view === "board") board.render();
       else map.render();
     };
@@ -66,36 +59,112 @@ async function main(): Promise<void> {
   const groups = new GroupsView(host, model);
   const paperMap = new PaperMapView(host, model);
   const explorer = new GraphicalExplorer(host, model);
+  // Paragraphs are matched inside section groups, so a full run also has a section level.
+  // A paragraph-only run has one section group per run, which leaves nothing to compare.
+  const sections =
+    model.sections.length > 1
+      ? {
+          map: new PaperMapView(host, buildSectionMap(model.papers, model.sections), true),
+          board: new GraphicalExplorer(
+            host,
+            buildSectionBoardModel(model.papers, model.sections),
+            true,
+          ),
+        }
+      : null;
+  const paragraphLegend = element("#legend").textContent ?? "";
+  const sectionLegends = {
+    board:
+      "Section matching: each row is a section role shared across papers, read top to bottom. Click a block to read its sections. Switch to Paragraphs to see the paragraph matches inside each section group.",
+    map: "Section matching: select a section group to highlight its sections in every paper. Gray sections have no match. Switch to Paragraphs to see the paragraph matches inside each section group.",
+  };
+  let level: Level =
+    sections && new URLSearchParams(location.search).get("level") === "sections"
+      ? "sections"
+      : "paragraphs";
   let view: View = "groups";
+  let sectionView: "board" | "map" = "board";
   const labels: Record<View, string> = {
     groups: "Passage Groups",
     "paper-map": "Paper Map",
     "graphical-explorer": "Graphical Explorer",
   };
-  const switchView = (next: View): void => {
+  const render = (): void => {
     explorer.destroy();
     paperMap.hideTooltip();
-    view = next;
-    const tabs = element("#granularityTabs");
-    tabs.replaceChildren();
-    for (const key of Object.keys(labels) as View[]) {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "granularity-btn" + (view === key ? " active" : "");
-      button.textContent = labels[key];
-      button.setAttribute("aria-pressed", String(view === key));
-      button.addEventListener("click", () => switchView(key));
-      tabs.append(button);
+    sections?.board.destroy();
+    sections?.map.hideTooltip();
+    if (sections) {
+      const url = new URL(location.href);
+      if (level === "sections") url.searchParams.set("level", level);
+      else url.searchParams.delete("level");
+      history.replaceState(history.state, "", url);
+      element("#levelTabs").replaceChildren(
+        tabButton("Sections", level === "sections", () => {
+          level = "sections";
+          render();
+        }),
+        tabButton("Paragraphs", level === "paragraphs", () => {
+          level = "paragraphs";
+          render();
+        }),
+      );
+      element("#levelControl").hidden = false;
     }
+    const tabs = element("#granularityTabs");
+    if (sections && level === "sections") {
+      tabs.replaceChildren(
+        ...(
+          [
+            ["board", "Graphical Explorer"],
+            ["map", "Paper Map"],
+          ] as const
+        ).map(([key, label]) =>
+          tabButton(label, sectionView === key, () => {
+            sectionView = key;
+            render();
+          }),
+        ),
+      );
+      element("#legend").textContent = sectionLegends[sectionView];
+      if (sectionView === "board") sections.board.render();
+      else sections.map.render();
+      return;
+    }
+    tabs.replaceChildren(
+      ...(Object.keys(labels) as View[]).map((key) =>
+        tabButton(labels[key], view === key, () => switchView(key)),
+      ),
+    );
+    element("#legend").textContent = paragraphLegend;
     if (view === "groups") groups.render();
     else if (view === "paper-map") paperMap.render();
     else explorer.render();
   };
-  switchView(view);
+  // The tutorial walks through the paragraph views.
+  const switchView = (next: View): void => {
+    level = "paragraphs";
+    view = next;
+    render();
+  };
+  render();
   mountTutorial(switchView, () => view);
   window.addEventListener("resize", () => {
-    if (view === "paper-map") paperMap.resize();
+    if (level === "sections" && sectionView === "map") sections?.map.resize();
+    else if (level === "paragraphs" && view === "paper-map") paperMap.resize();
   });
+}
+
+type Level = "sections" | "paragraphs";
+
+function tabButton(label: string, active: boolean, onClick: () => void): HTMLButtonElement {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "granularity-btn" + (active ? " active" : "");
+  button.textContent = label;
+  button.setAttribute("aria-pressed", String(active));
+  button.addEventListener("click", onClick);
+  return button;
 }
 
 main().catch((error: unknown) => {
