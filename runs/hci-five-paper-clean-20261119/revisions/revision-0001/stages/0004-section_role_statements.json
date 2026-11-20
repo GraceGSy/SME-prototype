@@ -1,0 +1,47 @@
+[
+  {
+    "section_id": "s0001",
+    "role_statement": "This section provides a condensed overview of the entire paper, previewing the problem motivating the work, the design and evaluation methods used, the general nature of the findings, and the practical guidance offered as a result, so that a reader can quickly grasp the paper's scope and contributions before engaging with the full text.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0002",
+    "role_statement": "This section motivates the problem by identifying a gap in current practice, defines key terminology and scope for the scale of interest, states the guiding research question, previews the methodological approach (formative grounding, feature design informed by theory, and empirical evaluation via a controlled study and case studies), and enumerates the paper's contributions to orient the reader to what follows.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0003",
+    "role_statement": "This section situates the paper's approach within prior literature by reviewing related strands of work along several relevant axes, identifying what existing approaches have and have not addressed, and thereby establishing the gap that the paper's contribution is designed to fill.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0004",
+    "role_statement": "This section presents a formative study—conducted with domain practitioners and system builders—that establishes the real-world needs and current practices motivating the paper's design choices, grounding subsequent feature development in observed user behavior rather than assumption.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0005",
+    "role_statement": "This section translates the needs identified by prior formative investigation into a concrete design: it articulates the guiding design goals and theoretical rationale, then specifies and justifies the set of analytic techniques and visual presentations implemented to address those goals, providing the technical and conceptual foundation that is subsequently evaluated in later sections.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0006",
+    "role_statement": "This section presents a controlled empirical evaluation that compares the proposed approach against a representative baseline across varied task conditions, detailing participant recruitment, procedure, and analysis methods, in order to generate quantitative and qualitative evidence addressing the paper's central research question.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0007",
+    "role_statement": "This section presents a set of open-ended qualitative case studies conducted with participants applying the system to their own real-world tasks, used to complement the controlled experiment by illustrating feature utility across diverse contexts and surfacing contextual factors—such as user attitudes, task stage, and data characteristics—that shape how well the proposed approach generalizes beyond the fixed conditions of the earlier study.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0008",
+    "role_statement": "This section synthesizes the findings from the preceding studies into broader claims about the value of the designed approach, translates observed user behaviors and feedback into actionable design implications and future research directions, and candidly acknowledges the boundaries and shortcomings of both the implementation and the evaluation methodology.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0009",
+    "role_statement": "This section fulfills a conventional scholarly obligation separate from the paper's main argument, formally recognizing the contributions of study participants and disclosing the funding sources that supported the research.",
+    "source": "input"
+  }
+]

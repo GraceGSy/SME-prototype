@@ -1,0 +1,67 @@
+[
+  {
+    "group_id": "section-group-264d31b73b39",
+    "role_statement": "Each passage serves as an early grounding section that establishes the conceptual or scholarly foundation for the paper's contribution—either by surveying and critiquing relevant prior work to situate the approach and expose the gap it fills, or by defining the underlying structural model the system builds on—thereby preparing the reader for the design, method, and evaluation that follow.",
+    "source": "model",
+    "attempt_id": "attempt-001733"
+  },
+  {
+    "group_id": "section-group-31dae278f99b",
+    "role_statement": "This section serves as the paper's closing discussion, interpreting the study results through the lens of the paper's motivating framework, deriving broader design or conceptual implications, and transparently acknowledging the work's limitations and directions for future research.",
+    "source": "model",
+    "attempt_id": "attempt-001734"
+  },
+  {
+    "group_id": "section-group-3b857ae1dbaf",
+    "role_statement": "This section serves as the paper's abstract, providing a compact standalone preview that frames the motivating problem, outlines the proposed approach, and summarizes the evaluation and findings so readers can grasp the paper's contribution before reading further.",
+    "source": "model",
+    "attempt_id": "attempt-001735"
+  },
+  {
+    "group_id": "section-group-856119f080c8",
+    "role_statement": "This section describes the methodology of a user study conducted to evaluate the paper's proposed system or approach, detailing participant recruitment, procedures, and tasks, thereby grounding the subsequent presentation of empirical findings.",
+    "source": "model",
+    "attempt_id": "attempt-001736"
+  },
+  {
+    "group_id": "section-group-95569492e9e8",
+    "role_statement": "This section performs the standard closing courtesy of acknowledging funders, institutions, and/or contributing individuals and participants, situating the paper within its support context rather than contributing to its substantive argument.",
+    "source": "model",
+    "attempt_id": "attempt-001737"
+  },
+  {
+    "group_id": "section-group-b475b9d6107e",
+    "role_statement": "This section reports the study's results section, presenting quantitative and/or qualitative findings from the evaluation to demonstrate the benefits, usage patterns, and limitations of the proposed system as experienced by study participants.",
+    "source": "model",
+    "attempt_id": "attempt-001738"
+  },
+  {
+    "group_id": "section-group-cb1db7901cee",
+    "role_statement": "This section reports a formative interview study conducted with target users/practitioners to surface current practices, challenges, and needs, establishing the empirical motivation and justification for the paper's subsequent design decisions.",
+    "source": "model",
+    "attempt_id": "attempt-001739"
+  },
+  {
+    "group_id": "section-group-d4084248c7a6",
+    "role_statement": "This section presents a set of open-ended qualitative case studies conducted with participants applying the system to their own real-world tasks, used to complement the controlled experiment by illustrating feature utility across diverse contexts and surfacing contextual factors—such as user attitudes, task stage, and data characteristics—that shape how well the proposed approach generalizes beyond the fixed conditions of the earlier study.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "section-group-e6a0a0b75d91",
+    "role_statement": "This section serves as the paper's Introduction, opening by framing the motivating problem and its significance, situating the proposed approach relative to prior work, previewing the system/techniques and the studies used to evaluate them, and closing with an enumerated list of the paper's contributions.",
+    "source": "model",
+    "attempt_id": "attempt-001740"
+  },
+  {
+    "group_id": "section-group-ed52a960f4ab",
+    "role_statement": "This section closes the paper by briefly recapping the system's purpose and approach and reaffirming its contribution, without presenting new evidence, serving as the paper's final summarizing takeaway.",
+    "source": "model",
+    "attempt_id": "attempt-001741"
+  },
+  {
+    "group_id": "section-group-f494dac7115f",
+    "role_statement": "This section presents the proposed system's design, detailing its core interactive mechanisms and the conceptual/theoretical rationale behind them, illustrating their intended use through a representative scenario, and describing the technical implementation that realizes them—bridging the paper's motivating rationale with its subsequent evaluation.",
+    "source": "model",
+    "attempt_id": "attempt-001742"
+  }
+]

@@ -1,0 +1,55 @@
+{
+  "singleton_ids": [
+    "section-group-46a034443149",
+    "section-group-cb1db7901cee",
+    "section-group-e74536c6c44a"
+  ],
+  "established_group_ids": [
+    "section-group-264d31b73b39",
+    "section-group-31dae278f99b",
+    "section-group-3b857ae1dbaf",
+    "section-group-856119f080c8",
+    "section-group-95569492e9e8",
+    "section-group-b475b9d6107e",
+    "section-group-e6a0a0b75d91",
+    "section-group-ed52a960f4ab",
+    "section-group-f494dac7115f"
+  ],
+  "candidates_by_singleton": {
+    "section-group-46a034443149": [
+      "section-group-264d31b73b39",
+      "section-group-f494dac7115f"
+    ],
+    "section-group-cb1db7901cee": [
+      "section-group-264d31b73b39",
+      "section-group-ed52a960f4ab",
+      "section-group-f494dac7115f"
+    ],
+    "section-group-e74536c6c44a": [
+      "section-group-856119f080c8",
+      "section-group-f494dac7115f"
+    ]
+  },
+  "forward": {
+    "section-group-e74536c6c44a": {
+      "source_id": "section-group-e74536c6c44a",
+      "target_id": "section-group-f494dac7115f",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-000441"
+    }
+  },
+  "reverse": {},
+  "merged": [
+    {
+      "source_group_id": "section-group-e74536c6c44a",
+      "target_group_id": "section-group-f494dac7115f",
+      "paper_id": "corpusstudio",
+      "unit_id": "s0005",
+      "attempt_id": "attempt-000441",
+      "membership_role": "fan_in"
+    }
+  ],
+  "changed_group_ids": [
+    "section-group-f494dac7115f"
+  ]
+}

@@ -1,0 +1,57 @@
+[
+  {
+    "section_id": "s0001",
+    "role_statement": "This section provides a condensed overview of the problem motivating the work, the approach taken to address it, and the empirical evaluation conducted, previewing the paper's contribution and key outcomes to orient the reader before the full argument unfolds.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0002",
+    "role_statement": "This section establishes the problem and its significance by situating the core challenge within prior findings, identifies a gap in existing solutions, poses a guiding research question, previews the proposed approach and its design rationale, summarizes the evaluation conducted and its high-level outcome, and concludes by enumerating the paper's main contributions.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0003",
+    "role_statement": "This section situates the proposed approach within existing bodies of work by surveying prior systems and studies across related problem spaces, identifying what each contributes and where their designs or assumptions fall short, thereby establishing the gap that the paper's approach is positioned to fill and justifying the novelty of its contribution relative to that landscape.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0004",
+    "role_statement": "This section establishes the conceptual abstraction underlying the proposed visualization by defining the generalized structural model used to represent and organize the variable elements of the data being summarized, grounding this model in prior domain knowledge and explaining its scope and limits of generalizability, thereby providing the reader with the foundational schema that later sections build upon and instantiate in the interface and implementation.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0005",
+    "role_statement": "This section provides a worked walkthrough that illustrates, through a representative user persona and a step-by-step narrative, how the system's interface and interaction mechanisms are used in practice to accomplish a realistic task, grounding the preceding abstract design description in a concrete usage scenario before the paper moves on to formal implementation and evaluation.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0006",
+    "role_statement": "This section provides the technical implementation account of the proposed tool, explaining the end-to-end pipeline—from data collection through processing to visualization rendering—that transforms the raw underlying data into the interactive interface previously illustrated through the usage scenario, thereby grounding the system's feasibility and enabling readers to understand how the design was realized in practice before the subsequent evaluation.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0007",
+    "role_statement": "This section specifies the design of a controlled, within-subjects evaluation—detailing the chosen task domains, participant recruitment and background, and the experimental procedure and conditions—so that the reader understands how the subsequent empirical comparison was set up before its outcomes are reported.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0008",
+    "role_statement": "This section presents the empirical findings from the controlled comparison, reporting both quantitative outcomes (performance differences and statistical significance) and qualitative feedback (participant perceptions and suggestions) to substantiate the claim that the proposed approach improves user outcomes relative to the baseline.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0009",
+    "role_statement": "This section interprets the study's results in light of the paper's goals, identifying the conditions under which the approach is most and least beneficial, acknowledging trade-offs and boundary cases, and candidly surfacing unresolved limitations and open design challenges that temper the claims and point toward future refinements.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0010",
+    "role_statement": "This section closes the paper by restating the problem motivation and the proposed approach at a high level, briefly reaffirming the empirical evidence supporting its effectiveness, and pointing toward future extensions of the work, thereby giving the reader a final, condensed takeaway of the contribution's value and trajectory.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0011",
+    "role_statement": "This section fulfills a conventional scholarly courtesy function by crediting individuals who contributed intellectually or technically to the work without being listed as authors, acknowledging related but distinct efforts by others, and disclosing the funding sources that supported the research, thereby situating the work within its institutional and financial context rather than advancing the paper's core argument.",
+    "source": "input"
+  }
+]

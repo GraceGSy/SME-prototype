@@ -1,0 +1,31 @@
+{
+  "singleton_ids": [
+    "section-group-11be0cec7f77",
+    "section-group-264d31b73b39",
+    "section-group-31dae278f99b",
+    "section-group-3b857ae1dbaf",
+    "section-group-856119f080c8",
+    "section-group-95569492e9e8",
+    "section-group-b475b9d6107e",
+    "section-group-cb1db7901cee",
+    "section-group-e6a0a0b75d91",
+    "section-group-f494dac7115f"
+  ],
+  "established_group_ids": [],
+  "candidates_by_singleton": {
+    "section-group-11be0cec7f77": [],
+    "section-group-264d31b73b39": [],
+    "section-group-31dae278f99b": [],
+    "section-group-3b857ae1dbaf": [],
+    "section-group-856119f080c8": [],
+    "section-group-95569492e9e8": [],
+    "section-group-b475b9d6107e": [],
+    "section-group-cb1db7901cee": [],
+    "section-group-e6a0a0b75d91": [],
+    "section-group-f494dac7115f": []
+  },
+  "forward": {},
+  "reverse": {},
+  "merged": [],
+  "changed_group_ids": []
+}

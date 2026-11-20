@@ -1,0 +1,66 @@
+[
+  {
+    "group_id": "section-group-264d31b73b39",
+    "role_statement": "This section fulfills the standard Related Work role, surveying prior systems, methods, and theoretical frameworks from adjacent problem areas to position the paper's contribution, highlight gaps or limitations in existing approaches, and justify the novelty of the proposed design relative to that landscape.",
+    "source": "model",
+    "attempt_id": "attempt-000442"
+  },
+  {
+    "group_id": "section-group-31dae278f99b",
+    "role_statement": "This section functions as the paper's discussion, interpreting the study's findings against the work's framing and design goals, drawing out conceptual or theoretical implications, and transparently acknowledging limitations and boundary conditions that qualify the contribution and motivate future work.",
+    "source": "model",
+    "attempt_id": "attempt-000443"
+  },
+  {
+    "group_id": "section-group-3b857ae1dbaf",
+    "role_statement": "This section serves as the paper's abstract, delivering a brief, standalone overview that frames the problem, introduces the proposed approach, and summarizes the evaluation and findings to orient readers before they engage with the full paper.",
+    "source": "model",
+    "attempt_id": "attempt-000444"
+  },
+  {
+    "group_id": "section-group-46a034443149",
+    "role_statement": "This section establishes the conceptual abstraction underlying the proposed visualization by defining the generalized structural model used to represent and organize the variable elements of the data being summarized, grounding this model in prior domain knowledge and explaining its scope and limits of generalizability, thereby providing the reader with the foundational schema that later sections build upon and instantiate in the interface and implementation.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "section-group-856119f080c8",
+    "role_statement": "This section details the methodology of a user study conducted to evaluate the paper's proposed system or design features, covering participant recruitment, study design, tasks, and procedure, thereby establishing the empirical basis on which subsequent results and findings are reported.",
+    "source": "model",
+    "attempt_id": "attempt-000445"
+  },
+  {
+    "group_id": "section-group-95569492e9e8",
+    "role_statement": "This section performs the standard acknowledgments function of crediting funders, sponsors, and non-author contributors who supported the research, situating the work within its institutional and financial context rather than contributing to its substantive argument.",
+    "source": "model",
+    "attempt_id": "attempt-000446"
+  },
+  {
+    "group_id": "section-group-b475b9d6107e",
+    "role_statement": "This section reports the study's results section, presenting quantitative and/or qualitative findings from the evaluation to demonstrate the benefits, usage patterns, and limitations of the proposed system as experienced by study participants.",
+    "source": "model",
+    "attempt_id": "attempt-000447"
+  },
+  {
+    "group_id": "section-group-cb1db7901cee",
+    "role_statement": "This section presents a formative study that establishes the user needs, existing practices, and gaps motivating the proposed design approach, while also using early design probes to elicit reactions that inform and justify subsequent design decisions.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "section-group-e6a0a0b75d91",
+    "role_statement": "This section is the paper's Introduction, which motivates the problem, situates the proposed approach relative to prior work, previews the system/approach and the studies used to validate it, and closes by enumerating the paper's contributions.",
+    "source": "model",
+    "attempt_id": "attempt-000448"
+  },
+  {
+    "group_id": "section-group-ed52a960f4ab",
+    "role_statement": "This section closes the paper by briefly recapping the system's purpose and approach and reaffirming its contribution, without presenting new evidence, serving as the paper's final summarizing takeaway.",
+    "source": "model",
+    "attempt_id": "attempt-000449"
+  },
+  {
+    "group_id": "section-group-f494dac7115f",
+    "role_statement": "Each passage is part of the paper's system-presentation portion, collectively conveying the proposed tool through its design rationale, a concrete usage scenario, and its technical implementation, thereby bridging the preceding motivating/formative material with the evaluation that follows.",
+    "source": "model",
+    "attempt_id": "attempt-000450"
+  }
+]

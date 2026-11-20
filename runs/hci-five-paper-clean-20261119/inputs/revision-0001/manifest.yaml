@@ -1,0 +1,18 @@
+schema_version: 1
+max_granularity: section
+papers:
+- paper_id: abstractexplorer
+  title: AbstractExplorer
+  file: paper-0001.json
+- paper_id: corpusstudio
+  title: CorpusStudio
+  file: paper-0002.json
+- paper_id: examplore_chi18
+  title: Examplore (CHI 2018)
+  file: paper-0003.json
+- paper_id: mesotext
+  title: Mesotext
+  file: paper-0004.json
+- paper_id: paralib_uist22
+  title: Paralib (UIST 2022)
+  file: paper-0005.json

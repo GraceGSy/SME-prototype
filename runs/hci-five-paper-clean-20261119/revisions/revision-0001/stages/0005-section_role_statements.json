@@ -1,0 +1,57 @@
+[
+  {
+    "section_id": "s0001",
+    "role_statement": "This section introduces the problem motivating the work, states the theoretical hypothesis guiding the proposed approach, describes the artifact built to test that hypothesis, and summarizes the evaluation method and high-level outcomes, orienting the reader to the paper's purpose and findings before the detailed argument unfolds.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0002",
+    "role_statement": "This section establishes the practical problem and its stakes, surveys the shortcomings of existing informal and tool-based approaches, previews the theoretical rationale and design approach taken to address the gap, summarizes the evaluation performed to test it, and enumerates the paper's main contributions, thereby orienting the reader to the motivation, approach, and claims that the rest of the paper will develop.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0003",
+    "role_statement": "This section establishes the theoretical foundation underlying the paper's design approach, explaining the general principles from prior cognitive theory that justify why the proposed design strategy should be effective, setting up the rationale that subsequent sections will draw on when describing and motivating specific design decisions.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0004",
+    "role_statement": "This section situates the proposed approach within existing research by surveying empirical findings on the problem domain and reviewing prior tools and techniques addressing related tasks, highlighting their limitations and distinguishing the current work's approach to identify a clear gap that justifies the paper's contribution.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0005",
+    "role_statement": "This section translates the motivating theoretical and empirical rationale into concrete design goals and then presents the system's architecture and interactive features as a direct realization of those goals, while also acknowledging the scope limitations of the implementation as a technical probe, thereby bridging the paper's conceptual framing and its subsequent empirical evaluation.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0006",
+    "role_statement": "This section provides a narrative walkthrough of a hypothetical user's interaction with the system, illustrating concretely how its design features would be used in sequence to accomplish a realistic task, thereby grounding the preceding abstract design rationale in a tangible, relatable example before the formal evaluation is presented.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0007",
+    "role_statement": "This section establishes the empirical evaluation methodology by specifying the controlled comparison design, tasks, conditions, and participant characteristics, providing the reader with the procedural foundation needed to interpret and trust the results reported afterward.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0008",
+    "role_statement": "This section reports the empirical findings from the controlled user study, presenting quantitative performance comparisons and qualitative feedback between the two conditions to substantiate the paper's central claims about the proposed approach's effectiveness and to provide evidence-based support for the discussion that follows.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0009",
+    "role_statement": "This section interprets the study's findings in light of the paper's stated design goals, assessing the extent to which each was met, considering alternative explanations for ambiguous results, acknowledging what the approach does not address, and situating the implications within a broader vision for how such tools could fit into users' future workflows alongside existing practices.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0010",
+    "role_statement": "This section situates the study's conclusions within appropriate bounds by acknowledging methodological constraints (such as the use of a single evaluation condition and the manual nature of the preparatory work underlying the probe), explains how these constraints limit what can be inferred, and proposes directions for future work that would address them, thereby tempering the paper's claims and pointing toward follow-on research.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0011",
+    "role_statement": "This section fulfills a conventional scholarly courtesy function, crediting participants and feedback providers who contributed to the work and disclosing the funding sources that supported the research, without advancing the paper's substantive argument.",
+    "source": "input"
+  }
+]

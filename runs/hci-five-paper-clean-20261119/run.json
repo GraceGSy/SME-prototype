@@ -1,0 +1,224 @@
+{
+  "schema_version": 1,
+  "mode": "ordered_graph",
+  "config": {
+    "schema_version": 1,
+    "pipeline_id": "incremental-role-graph-v1",
+    "prompt_root": "C:\\HBS\\Glassman Lab Research\\hypothesis\\SME-prototype-elena-clean\\prompts\\graph",
+    "context_root": "C:\\HBS\\Glassman Lab Research\\hypothesis\\SME-prototype-elena-clean\\prompts\\contexts",
+    "skill_root": "C:\\HBS\\Glassman Lab Research\\hypothesis\\SME-prototype-elena-clean\\prompts\\skills",
+    "model": {
+      "provider": "anthropic",
+      "name": "claude-sonnet-5",
+      "max_tokens": 8192,
+      "effort": "medium",
+      "thinking": "adaptive",
+      "max_input_tokens": null,
+      "max_prompt_characters": null,
+      "context_management_trigger_tokens": 50000,
+      "max_api_responses_per_process": 800,
+      "max_session_input_tokens": null,
+      "max_session_output_tokens": null
+    },
+    "jev": {
+      "model": "jev-1.14.0",
+      "max_calls": 20000,
+      "max_input_tokens": null,
+      "timeout_seconds": 120,
+      "long_context_retry": true
+    },
+    "fan_in": true,
+    "close_call_margin": 0.1,
+    "shortlist": 10,
+    "stages": [
+      {
+        "id": "ingest",
+        "handler": "ingest_paper",
+        "phase": "structural",
+        "prompt": null,
+        "context": null,
+        "prompts": {},
+        "contexts": {},
+        "skill": null,
+        "max_tokens": null,
+        "max_input_tokens": null
+      },
+      {
+        "id": "section_role_statements",
+        "handler": "generate_section_role_statements",
+        "phase": "structural",
+        "prompt": "section-role-statement/v1",
+        "context": "section-role-statement",
+        "prompts": {},
+        "contexts": {},
+        "skill": "generate-role-statement",
+        "max_tokens": 2048,
+        "max_input_tokens": null
+      },
+      {
+        "id": "section_matching",
+        "handler": "match_sections",
+        "phase": "structural",
+        "prompt": null,
+        "context": null,
+        "prompts": {
+          "new_to_group": "section-to-group-match/v1",
+          "group_to_new": "group-to-section-match/v1"
+        },
+        "contexts": {
+          "new_to_group": "matching",
+          "group_to_new": "matching"
+        },
+        "skill": "match-role",
+        "max_tokens": null,
+        "max_input_tokens": null
+      },
+      {
+        "id": "section_reconciliation",
+        "handler": "reconcile_sections",
+        "phase": "structural",
+        "prompt": null,
+        "context": null,
+        "prompts": {},
+        "contexts": {},
+        "skill": null,
+        "max_tokens": null,
+        "max_input_tokens": null
+      },
+      {
+        "id": "section_group_role_statements",
+        "handler": "generate_section_group_role_statements",
+        "phase": "structural",
+        "prompt": "group-role-statement/v1",
+        "context": "group-role-statement",
+        "prompts": {},
+        "contexts": {},
+        "skill": "generate-role-statement",
+        "max_tokens": 2048,
+        "max_input_tokens": null
+      },
+      {
+        "id": "section_rerepresentation",
+        "handler": "rerepresent_section_singletons",
+        "phase": "structural",
+        "prompt": null,
+        "context": null,
+        "prompts": {
+          "singleton_to_group": "singleton-to-group-match/v1",
+          "group_to_singleton": "group-to-singleton-match/v1"
+        },
+        "contexts": {
+          "singleton_to_group": "matching",
+          "group_to_singleton": "matching"
+        },
+        "skill": "match-role",
+        "max_tokens": null,
+        "max_input_tokens": null
+      },
+      {
+        "id": "section_rerepresentation_role_statements",
+        "handler": "regenerate_rerepresented_section_role_statements",
+        "phase": "structural",
+        "prompt": "group-role-statement/v1",
+        "context": "group-role-statement",
+        "prompts": {},
+        "contexts": {},
+        "skill": "generate-role-statement",
+        "max_tokens": 2048,
+        "max_input_tokens": null
+      },
+      {
+        "id": "paragraph_role_statements",
+        "handler": "generate_paragraph_role_statements",
+        "phase": "paragraph",
+        "prompt": "paragraph-role-statement/v1",
+        "context": "paragraph-role-statement",
+        "prompts": {},
+        "contexts": {},
+        "skill": "generate-role-statement",
+        "max_tokens": 2048,
+        "max_input_tokens": null
+      },
+      {
+        "id": "paragraph_matching",
+        "handler": "match_paragraphs",
+        "phase": "paragraph",
+        "prompt": null,
+        "context": null,
+        "prompts": {
+          "new_to_group": "paragraph-to-group-match/v1",
+          "group_to_new": "group-to-paragraph-match/v1"
+        },
+        "contexts": {
+          "new_to_group": "matching",
+          "group_to_new": "matching"
+        },
+        "skill": "match-role",
+        "max_tokens": null,
+        "max_input_tokens": null
+      },
+      {
+        "id": "paragraph_reconciliation",
+        "handler": "reconcile_paragraphs",
+        "phase": "paragraph",
+        "prompt": null,
+        "context": null,
+        "prompts": {},
+        "contexts": {},
+        "skill": null,
+        "max_tokens": null,
+        "max_input_tokens": null
+      },
+      {
+        "id": "paragraph_group_role_statements",
+        "handler": "generate_paragraph_group_role_statements",
+        "phase": "paragraph",
+        "prompt": "group-role-statement/v1",
+        "context": "group-role-statement",
+        "prompts": {},
+        "contexts": {},
+        "skill": "generate-role-statement",
+        "max_tokens": 2048,
+        "max_input_tokens": null
+      },
+      {
+        "id": "paragraph_rerepresentation",
+        "handler": "rerepresent_paragraph_singletons",
+        "phase": "paragraph",
+        "prompt": null,
+        "context": null,
+        "prompts": {
+          "singleton_to_group": "singleton-to-group-match/v1",
+          "group_to_singleton": "group-to-singleton-match/v1"
+        },
+        "contexts": {
+          "singleton_to_group": "matching",
+          "group_to_singleton": "matching"
+        },
+        "skill": "match-role",
+        "max_tokens": null,
+        "max_input_tokens": null
+      },
+      {
+        "id": "paragraph_rerepresentation_role_statements",
+        "handler": "regenerate_rerepresented_paragraph_role_statements",
+        "phase": "paragraph",
+        "prompt": "group-role-statement/v1",
+        "context": "group-role-statement",
+        "prompts": {},
+        "contexts": {},
+        "skill": "generate-role-statement",
+        "max_tokens": 2048,
+        "max_input_tokens": null
+      }
+    ]
+  },
+  "max_granularity": "section",
+  "policy_sha256": "b8d7104cd8b90710cf1b10b94ac1a6a4e785a48400fd9d6e6e118d2477bd3b8d",
+  "revision_count": 1,
+  "current_revision": "revision-0001",
+  "latest_revision": "revision-0001",
+  "input_sha256": {
+    "revision-0001": "55262b49407c3cd6e9e2852172b8b3bf6814da8ba82d37690487f811155323fe"
+  }
+}

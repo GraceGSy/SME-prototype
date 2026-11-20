@@ -1,0 +1,914 @@
+[
+  {
+    "group_id": "paragraph-group-01a92a6c0c0c",
+    "role_statement": "This paragraph reports quantitative usage/frequency metrics for the evaluated feature(s) alongside illustrative participant quotes, substantiating a claim of positive engagement or perceived value before the discussion pivots to more critical or qualifying feedback.",
+    "source": "model",
+    "attempt_id": "attempt-001584"
+  },
+  {
+    "group_id": "paragraph-group-021a3323f1ec",
+    "role_statement": "This paragraph reconciles a preceding statistical analysis that found no significant effect with qualitative evidence suggesting a real but subtler benefit, tempering the null quantitative result with corroborating observational insight.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-027b422bd1c2",
+    "role_statement": "This paragraph states the specific research questions the study aims to answer, framing the investigation that follows by articulating the guiding inquiries about feature effects, individual differences, and feature interdependence.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-02b79f5574b9",
+    "role_statement": "This paragraph extends the section's opening claim by articulating a broader implication of the proposed approach, arguing for an additional benefit beyond the immediate design rationale and pointing to how a supporting feature could serve that broader, community-oriented purpose.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-02cc1b1af7c7",
+    "role_statement": "Each paragraph documents an early, discrete pre-task administrative step (consent, pre-study survey, and participant briefing) within the study procedure's opening sequence, situating readers at the starting point of the chronological walkthrough before task-specific activities are described.",
+    "source": "model",
+    "attempt_id": "attempt-001585"
+  },
+  {
+    "group_id": "paragraph-group-03b06ba6937b",
+    "role_statement": "This paragraph extends the preceding evidence by presenting participant ratings and illustrative quotations on a related but distinct benefit of the approach, showing how it supports engaging with a larger and more varied set of items than usual and surfacing instances that might otherwise go unnoticed.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-03ea19c4472b",
+    "role_statement": "This paragraph builds on the preceding setup by interpreting the study findings as justification for the design trade-off introduced earlier, arguing that the benefits observed outweigh the acknowledged cognitive costs and framing this balance as a broader consideration for similar future design efforts.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-04cc37247dd7",
+    "role_statement": "These paragraphs report the user study's participant sample—recruitment, demographics, relevant experience, and a standardized disposition measure—establishing the study population's credibility and context before the study procedure and findings are presented.",
+    "source": "model",
+    "attempt_id": "attempt-001586"
+  },
+  {
+    "group_id": "paragraph-group-0552e72cc7f7",
+    "role_statement": "This paragraph justifies a specific design parameter by connecting it to the theoretical rationale established earlier in the section, then reports an informal exploratory comparison of alternative settings that led to the chosen value, bridging conceptual motivation and concrete implementation choice.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-0626487b3eab",
+    "role_statement": "This paragraph extends the findings subsection by presenting an additional, distinct piece of participant feedback on a specific probed idea, reporting positive reactions alongside caveats and concerns raised by participants, thereby broadening the evidentiary basis for the study's design implications beyond what was covered in the preceding paragraph.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-0654c32fc245",
+    "role_statement": "This paragraph identifies the specific cognitive theories invoked by related prior systems as design justification, explaining their core claims, and uses this grounding to frame the present work as consistent with and extending that established theoretical lineage.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-084672dae852",
+    "role_statement": "These paragraphs specify the concrete design of a study task (or condition) used in the evaluation—its scenario, structure, tool/condition assignments, and time or data-collection constraints—operationalizing how the procedure tests the paper's system against a comparison baseline.",
+    "source": "model",
+    "attempt_id": "attempt-001587"
+  },
+  {
+    "group_id": "paragraph-group-089eda401d43",
+    "role_statement": "This paragraph introduces another specific interface feature within the broader feature inventory, explaining its mechanism and purpose, and noting a supplementary capability for exporting the resulting user-generated content to support external sharing.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-0981369c9911",
+    "role_statement": "This paragraph closes out the subsection's statistical reporting by addressing a specific pair of related hypotheses (identifying norms and identifying norm-breaking), presenting the quantitative null result for both, and then tempering that null result by pointing to qualitative evidence that suggests a more nuanced interpretation than the statistics alone would imply.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-0a5d2df0d9aa",
+    "role_statement": "This paragraph closes the subgroup analysis by presenting qualitative interview evidence for the contrasting user segment, mirroring the structure of the preceding paragraph but illustrating the opposite reaction pattern, thereby completing the comparative picture needed to support the section's overall claim that individual differences shape responses to the studied conditions.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-0b7987a840a6",
+    "role_statement": "This paragraph explains the theoretical mechanism underlying a previously introduced algorithmic technique, describing how it operationalizes a cited conceptual framework and then grounding that explanation with a concrete illustrative example drawn from the system's output to show readers how the technique's results should be interpreted.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-0bbde7bceb3c",
+    "role_statement": "This paragraph opens the results subsection by presenting the primary quantitative outcome of the study—participant preference rankings across experimental conditions—establishing the headline finding that anchors the subsequent, more detailed analyses.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-0fdf95e56cba",
+    "role_statement": "This paragraph briefly introduces an additional supporting feature by explaining its purpose and basic interaction mechanics, continuing the pattern established by preceding paragraphs of cataloguing discrete system capabilities one at a time.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-12fbd84b8bce",
+    "role_statement": "These paragraphs open the results section by establishing the framing or analytical overview before detailed findings are presented—either stating the methodology used to derive the findings or summarizing high-level/aggregate outcomes and use cases—thereby orienting readers to how the subsequent, more granular thematic or quantitative findings should be interpreted.",
+    "source": "model",
+    "attempt_id": "attempt-001588"
+  },
+  {
+    "group_id": "paragraph-group-1a6c0a33229f",
+    "role_statement": "This paragraph introduces a supplementary interface feature that addresses a potential gap left by the preceding core feature description, explaining how it supplies additional contextual detail and provenance information on demand to prevent misinterpretation of the surfaced material.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-1ba77e130fb0",
+    "role_statement": "Each passage surveys a cluster of closely related prior tools/techniques within the Related Work section and uses that survey to expose a specific limitation or unaddressed gap in them, thereby motivating and differentiating the paper's own approach from the most comparable existing work.",
+    "source": "model",
+    "attempt_id": "attempt-001589"
+  },
+  {
+    "group_id": "paragraph-group-1cf2abf642b9",
+    "role_statement": "This paragraph specifies one of the two predefined category options introduced in the prior paragraph, naming the concrete set of fixed classification labels and grounding their origin in a manual annotation process applied to a sample of the corpus.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-1e82f9287443",
+    "role_statement": "This paragraph closes out the procedure description by explaining the analytic purpose behind the design probes just introduced—clarifying how participants were prompted to engage with them—and points the reader to supplementary material where the subsequent analysis method is detailed, thereby transitioning the section toward the findings that follow.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-1eb617bb97a9",
+    "role_statement": "This paragraph shifts from describing how users applied the feature to examining what cognitive or perceptual effect the feature had on users, presenting illustrative participant testimony to substantiate the claimed benefit before the following paragraph addresses a related but distinct nuance.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-1fd65e295856",
+    "role_statement": "It situates the work's contribution relative to established conceptual paradigms in the field by naming them and clarifying that the paper builds on, rather than refutes, them, citing other prior work that similarly justifies departing from these paradigms under specific conditions.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-20e0c70a3f87",
+    "role_statement": "This paragraph introduces supporting prior work as evidence that the identified problem is solvable, citing specific precedent examples to establish a theoretical and methodological foundation that the current approach will build upon, while naming and briefly explaining the guiding theoretical framework that distinguishes this prior work's underlying mechanism.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-22651654f335",
+    "role_statement": "This paragraph opens the section by stating the dual purpose of the study, introducing its participants and session structure, and previewing the two-part procedure, thereby orienting the reader to the design and scope of the formative investigation before its details are elaborated in the following subsections.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-2274819d56c4",
+    "role_statement": "This paragraph serves as a transitional framing statement that introduces the next major feature category being described, explaining its intended purpose and the general kind of insight it is meant to provide before the subsequent paragraphs detail the specific mechanism that implements it.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-232d8e3317e5",
+    "role_statement": "This paragraph reports the participant sample for the study—recruitment source, number and demographic/background makeup, and eligibility criteria—establishing the characteristics of the study population before the experimental design and results are presented.",
+    "source": "model",
+    "attempt_id": "attempt-001590"
+  },
+  {
+    "group_id": "paragraph-group-234126d69c36",
+    "role_statement": "This paragraph builds the problem motivation by citing prior empirical findings that document the risks and shortcomings of relying on individual examples, then reinforces the need for the proposed approach by noting explicit user demand (from prior surveys) for tools that reveal multiple examples and alternative usage patterns, thereby justifying why the section's broader topic matters.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-24052c65334c",
+    "role_statement": "This paragraph specifies the logistical/administrative details of the study sessions—mode of delivery, facilitation, duration, and compensation—situating the practical conditions under which the study was run before the surrounding procedural steps are described.",
+    "source": "model",
+    "attempt_id": "attempt-001591"
+  },
+  {
+    "group_id": "paragraph-group-25bcbfa7a326",
+    "role_statement": "This paragraph situates the work's design choices within a cited theoretical framework from prior literature, drawing an analogy to a related example of embedding cognitive strategies into interface design before asserting that the current work follows a similar pattern, thereby grounding the discussion's claims in an established conceptual lineage.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-27b4ec3fa4d3",
+    "role_statement": "This paragraph extends the section's examination of a feature's benefits by addressing a finer-grained level of analysis, illustrating with a specific participant example how the feature resolved ambiguity encountered at that level.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-2bb32c9c27f0",
+    "role_statement": "This paragraph grounds the preceding normalization rules in a concrete worked example, walking through the running figure to show how each abstract processing step maps to specific extracted segments of that example, thereby making the previously described procedure tangible and verifiable.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-2d4532350d4d",
+    "role_statement": "This paragraph addresses the practical performance implications of the preceding processing pipeline by clarifying which outputs are precomputed versus computed on the fly, reassuring the reader about system responsiveness before moving on to a more complex dynamic feature in the next paragraph.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-2d999d5a3c1d",
+    "role_statement": "This paragraph motivates and grounds the section's central construct by explaining why it is needed, tracing its design rationale back to prior findings on user challenges, and pointing ahead to a figure that illustrates its layout within the interface.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-2f94b7c53ca7",
+    "role_statement": "This paragraph adds a qualifying note to the section's overview by presenting a case where the studied tool did not shift users' core understanding yet still delivered secondary benefits, illustrated with a brief anecdotal example, thereby tempering the preceding claims with a more nuanced, partial counterpoint before the discussion moves into detailed subthemes.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-315498db4772",
+    "role_statement": "This paragraph extends the preceding discussion by detailing the varied purposes behind the annotation behavior introduced earlier, citing specific participant examples to illustrate each purpose, and closing with a brief caveat from a dissenting participant before summarizing the overall functional significance of the combined behaviors for both personal use and sharing with others.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-31f4d2bc55bd",
+    "role_statement": "This paragraph closes the results section by reporting participants' forward-looking reflections on how the evaluated feature or tool could be applied to their own future work, providing evidence of anticipated practical value and adoption beyond the study's immediate tasks.",
+    "source": "model",
+    "attempt_id": "attempt-001592"
+  },
+  {
+    "group_id": "paragraph-group-33a9c6164c1b",
+    "role_statement": "This paragraph extends a previously introduced mechanism by describing an additional interaction technique that builds on it, explaining how a secondary user action modifies the mechanism's behavior to serve a related but more advanced purpose.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-359394885990",
+    "role_statement": "This paragraph extends the preceding discussion of early-stage feature use by presenting a complementary set of participant accounts that shows how the same tool was repurposed for revision and iteration once drafting had progressed, thereby rounding out the section's argument that utility shifts across stages of the writing process.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-378cbfac00e4",
+    "role_statement": "This paragraph advances the walkthrough by having the persona perform a concrete interaction with the tool, demonstrating how a user's selection triggers an update in the displayed results, thereby illustrating the mechanics of filtering in practice before the next paragraph explores its downstream effects.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-3a8497b42d5f",
+    "role_statement": "This paragraph reconciles a null quantitative result with the paper's qualitative findings, suggesting that the absence of statistically significant differences does not contradict the richer evidence of subjective benefit reported elsewhere, thereby tempering the preceding statistical analysis with interpretive context before the discussion moves to related survey-based observations.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-3b23a41266e1",
+    "role_statement": "This paragraph opens the limitations and future work discussion by addressing the generalizability of the approach beyond the specific context studied, explaining the underlying theoretical condition that would need to hold for such generalization to succeed and what adaptation would be required for new contexts while noting that most of the approach would transfer unchanged.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-3c58a4240b7c",
+    "role_statement": "It introduces the subsection's overall purpose and process by stating the high-level goal of transforming raw inputs into a standardized form and how the resulting structured data is stored for downstream use, setting up the specific techniques detailed in the paragraphs that follow.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-3d2ff41ff553",
+    "role_statement": "This paragraph opens the section by stating the study's purpose, framing the overall experimental manipulation as systematically varying several interacting design elements to determine their individual and combined contribution to a target user capability, thereby setting up the rationale for the methodology and research questions that follow.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-3d8531cf83d6",
+    "role_statement": "This paragraph extends the preceding observation by elaborating on how users' goals shaped their interaction with the tool across different levels, connecting this behavior to analogous findings in related literature, and using this pattern to challenge a standard assumption in the broader field, thereby reframing the section's central claim as a more general conceptual point.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-3db64517ef4e",
+    "role_statement": "This paragraph inserts a brief, isolated participant observation as a transitional data point before the discussion shifts to the next thematic topic, offering a minimal illustrative anecdote rather than developing a fully elaborated point.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-3f48b195241c",
+    "role_statement": "This paragraph opens the section by establishing the broad significance and ubiquity of the general problem being addressed, framing it as a universal challenge before narrowing toward the specific difficulties that motivate the work.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-41fdfb02ef02",
+    "role_statement": "This paragraph reports participant feedback on one of two alternative interface rendering options introduced earlier, explaining the perceived benefits users attributed to it and citing specific user quotes to illustrate how it supported their task performance.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-4313c8277e26",
+    "role_statement": "This paragraph presents a statistical comparison across the two task sub-conditions (rather than across interface conditions) for the same set of survey items, reporting one significant result and interpreting it as a possible learning or strategy-transfer effect, while noting that the remaining items showed no such difference.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-440d3f612fc1",
+    "role_statement": "This paragraph presents observed behavioral patterns of how participants engaged with and leveraged the feature under discussion, illustrating the range of distinct approaches users adopted drawn from study observations and participant quotations.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-451d8bf281b3",
+    "role_statement": "This paragraph opens the key findings subsection by establishing the baseline problem context, presenting participants' reported difficulties and shortcomings with current tools, which sets up a contrast for the subsequent paragraphs that report reactions to the proposed design probes.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-474d73101d08",
+    "role_statement": "This paragraph advances the section's argument by positioning the newly proposed paradigm relative to the previously discussed existing paradigms, articulating its distinguishing principles, summarizing how the empirical findings support its value, and closing with a speculative extension suggesting the approach's applicability to other domains beyond the one studied.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-47f75e5c1ff7",
+    "role_statement": "This paragraph extends the walkthrough by illustrating a default summarized view of the data and showing how the user can adjust the level of detail displayed, demonstrating the tool's flexibility in balancing overview against depth.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-4842db800238",
+    "role_statement": "Each passage opens the system-presentation section by articulating the paper's foundational design rationale—stating the overarching goals or core organizing concept that motivate the system—thereby framing and justifying the more detailed design and feature discussion that follows.",
+    "source": "model",
+    "attempt_id": "attempt-001593"
+  },
+  {
+    "group_id": "paragraph-group-4a85b91ab780",
+    "role_statement": "This paragraph opens the subsection by situating the forthcoming findings in context, summarizing participants' prior practices and baseline approaches before the intervention was introduced, thereby establishing a point of comparison for the observations that follow.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-4b4d1879f068",
+    "role_statement": "This paragraph introduces illustrative examples drawn from system logs to ground the preceding observation in concrete instances, then qualifies the generalizability of those instances by noting that their relevance was contingent on each participant's individual goals and context, citing varied participant preferences as supporting evidence.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-4b923b9ef4e8",
+    "role_statement": "This paragraph serves as the closing beat of a walkthrough-style user scenario, presenting a final illustrative task that shows the persona applying another combination of the tool's capabilities to a new exploratory goal, thereby rounding out the demonstration of the system's range of supported use cases before the narrative concludes.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-4c1206db2acc",
+    "role_statement": "This paragraph describes a procedural safeguard applied before each task begins, explaining how participants were briefed on the relevant concept being tested and clarifying the evaluative framing (that the tool, not the participant, was under evaluation) so as to reduce performance anxiety and ensure consistent task understanding across participants.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-4d080c92bfeb",
+    "role_statement": "It opens the subsection by defining and contrasting two broad categories of reading support through their core distinguishing mechanisms, then critiques the limitations of one category to motivate why the alternative approach deserves deeper examination, while also preemptively countering an assumed advantage of the critiqued category by citing evidence of its own drawbacks.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-4e00020c095c",
+    "role_statement": "This paragraph opens the subsection by establishing a contrast between the paper's design philosophy and a prevailing alternative approach in the field, explaining the rationale behind that choice and noting a quality-assurance property that follows from it.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-4fa0edac2ef7",
+    "role_statement": "This paragraph cites empirical observations about how users actually behave when confronted with large result sets, using these findings to motivate the design choice described at the end of the paragraph, thereby transitioning from a problem framing to a justification for the proposed approach.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-51e6acb2510a",
+    "role_statement": "This paragraph builds on the preceding theoretical grounding by articulating the underlying rationale and mechanism for why the proposed approach should work, framing it as augmenting rather than replacing human cognitive processes and linking it to a broader established concept from another field to justify the method's expected value.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-528e112d9d90",
+    "role_statement": "This paragraph introduces a secondary explanatory factor beyond the primary comparison, operationalizing a participant trait into a categorical variable and pointing to supplementary figures that visualize how this trait correlates with the preference and workload outcomes already reported, thereby extending the section's argument from a simple aggregate result toward an individual-differences explanation that sets up the more detailed subgroup analyses that follow.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-5692f8aaa99b",
+    "role_statement": "This paragraph closes out the section by connecting a specific prior theoretical recommendation back to the study's observed outcomes, showing how the empirical results corroborate that external framework and thereby reinforcing the section's overall argument with a concluding, validating link between theory and evidence.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-56b811f807f5",
+    "role_statement": "This paragraph presents a thematic finding from the qualitative analysis, illustrating with participant quotes and examples how the tool's outputs affected users' emotional and evaluative stance toward their own work, including a secondary, more nuanced effect that participants drew on cross-referenced contextual information to temper their interpretation of these findings.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-5b099ce8f25c",
+    "role_statement": "This paragraph articulates the underlying rationale for a preceding cluster of design decisions, explaining how the combination of features is collectively intended to achieve a stated non-functional goal rather than introducing a new feature itself.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-5c235c793ec5",
+    "role_statement": "This paragraph extends the preceding subgroup's results by presenting qualitative evidence for the contrasting subgroup, illustrating through participant quotes how the same condition that benefited one group instead provoked frustration and distraction in the other, thereby reinforcing the section's overall argument about divergent responses to the tested design.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-5cf0ad22aad0",
+    "role_statement": "This paragraph opens the subsection by introducing a standardized workload measure used to assess participants' experience during the writing task, reporting general perceptions of difficulty and effort alongside a sense of successful task completion, thereby setting a baseline context before more granular quantitative findings are presented in subsequent paragraphs.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-5d4077d0c259",
+    "role_statement": "This paragraph provides the theoretical justification for a system design choice just introduced, framing it in terms of an established cognitive theory and defining key terms from that theory so the reader understands the conceptual basis for the grouping mechanism before its implementation details are elaborated in the following paragraphs.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-5d8f6dcd23c0",
+    "role_statement": "This paragraph provides a visual pointer to supplementary material, directing the reader to a figure that illustrates the concrete outputs discussed in the preceding content, thereby bridging the descriptive text with corresponding visual evidence.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-61f566c7a1ad",
+    "role_statement": "This paragraph closes the introduction by enumerating, in a bulleted list, the paper's claimed contributions, giving readers a concise preview of what the work delivers and what the remaining sections will substantiate.",
+    "source": "model",
+    "attempt_id": "attempt-001594"
+  },
+  {
+    "group_id": "paragraph-group-64d350f6a0b6",
+    "role_statement": "This paragraph explains the practical benefit of a previously introduced feature by describing the cognitive rationale for its design and then walking through how a user interacts with it in the interface, connecting the mechanism to the concrete UI elements that realize it.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-650300459e43",
+    "role_statement": "This paragraph offers an interpretive explanation for the quantitative results just presented by drawing on participant quotes, while also acknowledging a limitation or countervailing perspective raised by other participants, thereby adding qualitative nuance and balance to the preceding statistical findings.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-675e5bdd0466",
+    "role_statement": "This paragraph introduces an additional individual-difference factor as a motivating rationale for the study, framing why the evaluation will examine not just the isolated effects of the tested features but also how a relevant personality trait might moderate participants' responses to them, thereby setting up a secondary analytical lens that complements the primary ablation comparisons.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-67706c9ad734",
+    "role_statement": "Each paragraph identifies a specific limitation or scope caveat of the study's approach, explains its trade-off or cause, and points to a concrete direction for future work to address it.",
+    "source": "model",
+    "attempt_id": "attempt-001595"
+  },
+  {
+    "group_id": "paragraph-group-683083f9fc78",
+    "role_statement": "This paragraph previews the empirical evaluation's design and/or results, offering an early, concrete payoff that substantiates the paper's claims before the introduction transitions into summarizing its overall contributions.",
+    "source": "model",
+    "attempt_id": "attempt-001596"
+  },
+  {
+    "group_id": "paragraph-group-6a0ae446a863",
+    "role_statement": "This paragraph deepens the preceding observation by presenting specific participant examples illustrating how users engaged with outlier or less common items in the distribution, showing both adoption and deliberate divergence, and closing by noting that users retained independent judgment rather than simply deferring to the displayed frequencies.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-6af4632db7df",
+    "role_statement": "This paragraph motivates the problem further by introducing a proposed solution direction while immediately complicating it with a tension or tradeoff that the paper will need to address, setting up the design challenge the work must solve.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-6bbff5c76533",
+    "role_statement": "This paragraph extends the preceding description of a pipeline stage by explaining how its output is subsequently used in a following processing step, linking two stages of the described procedure together.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-6c4949753b37",
+    "role_statement": "This paragraph justifies a methodological choice in the data preparation pipeline by recounting an initial approach that proved inadequate, explaining the alternative technique adopted instead, and noting what accompanying information was preserved during this processing step.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-6e1a9e7546f8",
+    "role_statement": "This paragraph closes out the procedural description by detailing the final data-collection steps immediately following the hands-on tasks, specifying the structured reflection activity and closing questionnaire used to capture participants' subjective impressions, as well as noting the behind-the-scenes instrumentation used to passively record usage patterns throughout the session, thereby rounding out the methodological account with both qualitative and quantitative measurement mechanisms before the paper transitions to reporting results.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-6ecf5fa5d475",
+    "role_statement": "This paragraph introduces an additional, secondary use pattern that emerged from the study data, illustrating with participant-sourced examples how the tool was repurposed for a purpose beyond its primary intended function, and closes by synthesizing this observation into a broader claim about the system's dual-purpose value before transitioning to the next identified use pattern.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-71316b5c67a5",
+    "role_statement": "These paragraphs specify concrete elements of the study's experimental setup—such as stimulus materials, apparatus, or task items—detailing what was used and how, to ground the methodological procedure described before the study's execution and results are presented.",
+    "source": "model",
+    "attempt_id": "attempt-001597"
+  },
+  {
+    "group_id": "paragraph-group-71ed0e4f65f7",
+    "role_statement": "This paragraph deepens the motivation established in the prior paragraph by citing specific evidence that existing learning resources fall short, narrowing the problem space before the section pivots to alternative information sources in the following paragraph.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-72c3ac244a1e",
+    "role_statement": "This paragraph opens the subsection by stating the overall finding—that the feature was generally useful with one noted drawback—before the subsequent paragraphs break down that finding in detail, thereby framing the structure of the evidence to follow.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-743376ff3e57",
+    "role_statement": "This paragraph transitions from the preceding theoretical grounding to a concrete description of the system by introducing the core interface component where users interact, establishing a baseline element before subsequent paragraphs elaborate on its specific capabilities.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-76a34b5fe50b",
+    "role_statement": "This paragraph extends the section's argument by introducing a new recurring use pattern observed among participants, illustrating it with specific anecdotal evidence from multiple participants to show how the tool's content prompted users to notice and correct a particular type of oversight in their own work.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-790eb7d0235e",
+    "role_statement": "This paragraph presents triangulating observational evidence (eye-tracking patterns) for a subgroup identified earlier, reinforcing the preceding quantitative claim by showing a behavioral correlate that distinguishes this subgroup's experience from the other, before the following paragraphs unpack each subgroup's qualitative rationale in more depth.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-7b16725528e1",
+    "role_statement": "This paragraph presents supplementary survey or usage-log based quantitative evidence that corroborates and reinforces the section's primary findings (established via statistical tests or qualitative feedback) by showing a converging, measurable pattern of participant preference or perceived usefulness.",
+    "source": "model",
+    "attempt_id": "attempt-001598"
+  },
+  {
+    "group_id": "paragraph-group-7d3a33f97ae1",
+    "role_statement": "This group's paragraphs justify a specific design/implementation choice by recounting a brief empirical or collaborative testing process used to compare alternatives and select the final parameter or scheme adopted in the system.",
+    "source": "model",
+    "attempt_id": "attempt-001599"
+  },
+  {
+    "group_id": "paragraph-group-805ad82376e6",
+    "role_statement": "This paragraph situates the preceding detailed design within a broader justificatory frame, asserting that its components are not arbitrary but reflect established expert consensus, thereby grounding the design's validity in external domain knowledge rather than novel invention.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-81653c3028df",
+    "role_statement": "This paragraph situates the preceding claim within a broader theoretical framing, drawing a conceptual link to an established notion from the literature to explain why the observed effect matters and what it implies about the division of labor between the automated system and the human user.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-81ef9bd0e62c",
+    "role_statement": "This paragraph opens the procedure description by detailing the content and goals of the first study phase, establishing the baseline topics and context-gathering questions before the section moves on to describe the subsequent design-probe phase of the session.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-83a695da8f64",
+    "role_statement": "This paragraph elaborates on a feature introduced in the preceding paragraphs by explaining the specific cognitive-support mechanisms layered on top of it, detailing how visual and ordering cues are designed to help users perceive shared structure versus variation within grouped items.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-840807fc10d2",
+    "role_statement": "This paragraph deepens the preceding subgroup finding by weaving together interview testimony with the earlier quantitative and gaze-based evidence, offering interpretive reasoning for why one subgroup favored the combined condition and illustrating that pattern with representative participant quotations.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-843d8b644e8d",
+    "role_statement": "This paragraph opens the subsection by introducing and naming a new conceptual category that frames the work's contribution, situating it in relation to analogous mechanisms from prior literature to establish both continuity with existing approaches and the novelty of what is being added.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-845e290aaf8c",
+    "role_statement": "This paragraph opens the subsection by presenting initial observational findings on how participants engaged with the content, introducing variation in engagement styles and pointing to a supporting figure before the subsequent paragraphs elaborate on specific themes in greater depth.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-8680d18aa409",
+    "role_statement": "This paragraph opens the subsection by describing the general usage pattern observed for the feature under discussion, establishing an initial behavioral baseline before the subsequent paragraph details more specific or varied applications of that behavior.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-87577e0b3981",
+    "role_statement": "This paragraph reinforces the preceding statistical results by offering a qualitative contrast between conditions, using concrete illustrative examples of how answers differed in specificity and completeness to support the quantitative claims already presented.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-88c3c1c21825",
+    "role_statement": "This paragraph introduces and defines a core technical mechanism underlying one of the features described in the section, explaining at a conceptual level how it combines multiple inputs to produce its output and pointing the reader to later sections for implementation specifics.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-8ca3db799e7e",
+    "role_statement": "This paragraph serves as a transitional framing statement that restates the section's overarching purpose and introduces the theoretical lens that will guide the detailed feature descriptions to follow, setting up the reader's expectations for how subsequent subsections should be interpreted.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-8da7a5028cff",
+    "role_statement": "This paragraph extends the preceding discussion of a related visual-support feature by presenting contrasting and divided user reactions to a second, complementary feature, illustrating that reception of design elements can vary even among the same participant pool.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-8f06689f6d0f",
+    "role_statement": "This paragraph supplies implementation-level detail about how a previously introduced visual element is displayed and manipulated, specifying the quantitative indicators used to represent frequency and the interactive mechanism for revealing or concealing additional detail, thereby grounding the preceding conceptual description in concrete interface behavior.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-902c950cd1be",
+    "role_statement": "This paragraph introduces a second theoretical framework, complementing the one presented in the prior paragraph, to justify a specific design choice made in rendering the retrieved examples, linking that design decision to established cognitive theory about pattern perception.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-9139847c6691",
+    "role_statement": "Each passage describes one stage of the system's technical data-processing pipeline, detailing the methods and procedures used to collect, transform, or derive the underlying data, so readers understand how the implementation realizes the previously introduced design before the paper proceeds to subsequent pipeline stages or evaluation.",
+    "source": "model",
+    "attempt_id": "attempt-001600"
+  },
+  {
+    "group_id": "paragraph-group-91a83a0f8eb1",
+    "role_statement": "This paragraph complements the preceding positive-feature analysis by examining the comparison condition, using participants' reactions to its shortcomings as indirect evidence that reinforces the value of the capabilities the new approach provides.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-936204d9c400",
+    "role_statement": "This paragraph supports an earlier claim about a particular subgroup's preferences by presenting corroborating qualitative evidence drawn from interview excerpts, illustrating the underlying reasons and subjective experience behind the quantitative pattern already reported.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-93b14d929c2e",
+    "role_statement": "This paragraph grounds the preceding conceptual description in concrete engineering terms by specifying the technology stack, infrastructure, and deployment setup used to realize the system, establishing the practical feasibility of the approach before the section moves on to discuss specific implementation choices in greater depth.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-95c04981f47d",
+    "role_statement": "This paragraph introduces a prior theoretical framing used to motivate example-based writing support tools, then identifies a key practical limitation of that approach that the current work will need to address.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-96e50dd0e3b6",
+    "role_statement": "This paragraph opens the subsection by situating the design choice against common alternative practice in the field, then explains the rationale behind the chosen approach and the compensatory mechanism introduced to address its anticipated drawback, while acknowledging that this mitigation was only partially successful.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-97fa4fd3ce94",
+    "role_statement": "This paragraph qualifies the overall result by identifying the conditions under which the observed benefit is strongest versus weakest, using a breakdown by subgroup familiarity to nuance the claim and address a potential limitation where the effect might not hold uniformly.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-9ea7ec0abea5",
+    "role_statement": "This paragraph develops the section's broader claim by zooming into one specific level of the feature being discussed, illustrating with a participant quotation how that particular aspect provided a concrete benefit.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-a0c55c109d3d",
+    "role_statement": "This paragraph extends the preceding description of a built-in categorization scheme by introducing a complementary, user-configurable mechanism, explaining how users create it, what inputs it requires, and how its output is integrated into the same visual display introduced earlier, while deferring technical implementation specifics to a later section.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-a1932e236e21",
+    "role_statement": "These acknowledgments paragraphs perform the conventional function of crediting funding sources, sponsoring institutions, and non-author contributors (participants, collaborators, or related-effort researchers) whose support enabled the work, situating the paper within its institutional and financial context without contributing to its substantive argument.",
+    "source": "model",
+    "attempt_id": "attempt-001601"
+  },
+  {
+    "group_id": "paragraph-group-a51d527698d7",
+    "role_statement": "This paragraph closes the subsection by shifting from individual strategies to a broader coping mechanism users adopted when faced with the full set of tool features, using a representative participant quote to illustrate how selective engagement helped manage cognitive load, thereby offering an interpretive takeaway that synthesizes the preceding examples into a general observation about usability trade-offs.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-a601659510a8",
+    "role_statement": "This paragraph begins the problem-framing by introducing a category of existing solutions and explaining a general drawback of that category, setting up a contrast that motivates the need for an alternative approach.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-aa25e3dc6e65",
+    "role_statement": "This paragraph serves as the opening of the user study section, establishing the evaluation's framing by stating its purpose, design rationale, and the comparison baseline or scope against which the proposed system is tested, thereby orienting the reader before the detailed study procedures are presented.",
+    "source": "model",
+    "attempt_id": "attempt-001602"
+  },
+  {
+    "group_id": "paragraph-group-aa89d7d8564d",
+    "role_statement": "This paragraph applies the structural grouping concept introduced just before it, illustrating with concrete examples how items are clustered under shared patterns and pointing the reader to further illustrative material, while also previewing the navigation mechanisms (sequential stepping and a broader overview mode) that will be elaborated in the subsequent paragraph, thereby bridging the conceptual definition of the grouping method to its practical interface controls.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-ad6983bef766",
+    "role_statement": "This paragraph justifies a specific technical design decision by acknowledging the underlying complexity of the general problem, citing established precedent for the chosen approach, noting an alternative that was explored, and explaining why empirical testing led to favoring the simpler method over the alternative.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-adefb4d2e785",
+    "role_statement": "Within the Introduction, this cluster of paragraphs collectively transitions from motivating/related-work discussion to presenting the paper's own system, first introducing it at a high level (naming it and stating its core capabilities/purpose) and then elaborating with a more detailed technical or conceptual overview of how it works, thereby bridging the problem motivation with the detailed system description that follows later in the paper.",
+    "source": "model",
+    "attempt_id": "attempt-001603"
+  },
+  {
+    "group_id": "paragraph-group-ae3dea08ab03",
+    "role_statement": "This paragraph extends the section's discussion of a specific feature by presenting a concrete example of how one level of contextual detail concretely shaped a participant's reconsideration of their own structural choices, illustrating the practical impact introduced in the preceding general claims.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-ae758ca40a31",
+    "role_statement": "This paragraph introduces and describes the second of two sequential study tasks, specifying its purpose and how participants used the system's features, along with the time allotted and the think-aloud/screen-recording protocol used to capture their behavior during the activity.",
+    "source": "model",
+    "attempt_id": "attempt-001604"
+  },
+  {
+    "group_id": "paragraph-group-b178b7a06e80",
+    "role_statement": "Each passage opens its implementation/data section by establishing the provenance, scope, and scale of the dataset underlying the system, grounding the subsequent technical description in concrete data facts.",
+    "source": "model",
+    "attempt_id": "attempt-001605"
+  },
+  {
+    "group_id": "paragraph-group-b23de011475a",
+    "role_statement": "These paragraphs open or build the related-work survey by introducing a category of prior systems that leverage shared structure across document collections, describing representative examples and their design approaches, in order to set up the contrast with the paper's own approach.",
+    "source": "model",
+    "attempt_id": "attempt-001606"
+  },
+  {
+    "group_id": "paragraph-group-b2a720142c7c",
+    "role_statement": "Each paragraph performs a comparative related-work function: it introduces one or more specific prior systems or techniques closely related to the paper's approach, summarizes their mechanisms, and then draws a direct contrast highlighting a limitation, difference in scale, or inapplicability that positions and justifies the current work's distinct contribution.",
+    "source": "model",
+    "attempt_id": "attempt-001607"
+  },
+  {
+    "group_id": "paragraph-group-b3d609da135d",
+    "role_statement": "This paragraph presents participant reactions to specific design probes shown during the study, reporting both the perceived benefits and the concerns or tensions participants raised about those prototype elements, thereby grounding the section's claims about design opportunities in direct evidence from user feedback.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-b5b58191ccd1",
+    "role_statement": "It sets up a contrast with the theoretical thrust of the section by noting that a competing category of related systems targets a different goal (serial exploration support rather than scaled-up close reading and comparison), thereby narrowing the scope of what the section will subsequently examine in depth.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-b5ea45869fc6",
+    "role_statement": "This paragraph introduces one of the two main feature categories promised earlier in the section, explaining the underlying rationale (helping users understand common and uncommon patterns at this level) and identifying the computational method used to generate the visualized output, thereby transitioning from the general theoretical framing to a concrete description of a specific design element.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-b64d7dac0700",
+    "role_statement": "Each passage serves as the closing step of the system's implementation account, describing how previously processed/back-end data or logic is delivered to and rendered in the live front-end interface, thereby linking the technical build-out to the interactive experience users encounter.",
+    "source": "model",
+    "attempt_id": "attempt-001608"
+  },
+  {
+    "group_id": "paragraph-group-b7480a0fa96e",
+    "role_statement": "Each passage serves as the opening or early step of an illustrative usage-scenario walkthrough, introducing a persona (or orienting the reader within that persona's experience) to demonstrate concretely how the system's features are interacted with in practice, thereby grounding the preceding abstract system description before the paper proceeds to implementation and evaluation.",
+    "source": "model",
+    "attempt_id": "attempt-001609"
+  },
+  {
+    "group_id": "paragraph-group-b7b27746e49f",
+    "role_statement": "This paragraph substantiates the feasibility claim made in the preceding paragraph by citing external evidence from the literature that the target document type exhibits the kind of recurring structural pattern the approach depends on, grounding the methodological choice in established domain knowledge.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-bec2ef7a6e9f",
+    "role_statement": "This paragraph supplements the preceding statistical comparison by reporting descriptive, self-reported participant perceptions (framed as proportions of the sample) about which condition felt more difficult or overwhelming and why, adding interpretive nuance to the quantitative results without introducing new statistical tests.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-c0e599be8cb2",
+    "role_statement": "This paragraph extends the quantitative analysis by presenting findings from a separate evaluative task, comparing the qualitative content of participants' critiques across the two experimental conditions to show a differing pattern in the type of feedback produced under each condition.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-c1f8be3dc5d4",
+    "role_statement": "This paragraph follows up on a previously introduced interface element by explaining the default state and user-controllable interaction options for that element, clarifying how the earlier-described capability translates into practical, toggleable user behavior and what functional benefit that interaction affords.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-c28d3f04f47c",
+    "role_statement": "This paragraph extends the section's argument by presenting a secondary observation about unanticipated user behaviors and interpretive pitfalls arising from the study, then draws out a design implication that recommends how future systems should proactively address these interpretive risks.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-c4d908897f75",
+    "role_statement": "This paragraph introduces a widely available alternative source of material noted earlier, then problematizes it by identifying practical constraints on how much of it people can realistically engage with and citing prior findings on the risks of relying on only a small, potentially flawed sample, thereby motivating the need for the approach the section will go on to propose.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-c7a49bf8c6da",
+    "role_statement": "This paragraph serves as a transitional bridge that grounds the upcoming subset of design decisions in the paper's theoretical framework, briefly restating the relevant theoretical principle and then announcing, via a forward-pointing list, the two specific design mechanisms that will be detailed in the subsequent paragraphs.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-cab857cb6db3",
+    "role_statement": "This paragraph qualifies the preceding usage and satisfaction findings by introducing a moderating factor (user experience level), presenting contrasting illustrative quotes from participants at different experience levels to explain variation in the feature's effectiveness, and concluding with a design implication drawn from these observations.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-cbffcb62085d",
+    "role_statement": "This paragraph closes out the illustrative walkthrough by briefly indicating how the user continues to engage with the tool's capabilities repeatedly over the course of the broader task, signaling the ongoing, iterative nature of the interaction rather than introducing any new capability.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-cc4425ba5acd",
+    "role_statement": "This paragraph marks the conclusion of the study procedure by describing the final data-collection activity—an exit interview conducted after all conditions/tasks were completed—that gathers participants' retrospective comparisons and reflections.",
+    "source": "model",
+    "attempt_id": "attempt-001610"
+  },
+  {
+    "group_id": "paragraph-group-d0ea5e61e949",
+    "role_statement": "These paragraphs collectively voice participants' critical feedback and reported shortcomings from the evaluation, tempering the otherwise positive results by surfacing specific usability concerns, limitations, and unmet needs before the discussion moves on.",
+    "source": "model",
+    "attempt_id": "attempt-001611"
+  },
+  {
+    "group_id": "paragraph-group-d11bc667dbe6",
+    "role_statement": "Each passage provides implementation-level elaboration of a specific design mechanism just introduced, detailing its concrete operational logic (algorithms, configurable variants, or processing steps) and illustrating it with representative examples, thereby substantiating the preceding design or scenario description with technical specificity before the section moves on.",
+    "source": "model",
+    "attempt_id": "attempt-001612"
+  },
+  {
+    "group_id": "paragraph-group-d13eb5877318",
+    "role_statement": "This paragraph closes the subsection by reporting the overall outcome of the design measures described earlier, confirming through observed participant behavior whether the intended safeguard against the targeted risk actually held in practice.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-d2951640d266",
+    "role_statement": "This paragraph distinguishes the current contribution from the authors' own prior related work, clarifying that the underlying technical mechanism was previously established and is reused here, while asserting that the present paper's novelty lies instead in a new presentation layer built atop that foundation.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-d492529cce10",
+    "role_statement": "This paragraph closes out the section by drawing a general design implication from the preceding discussion, offering a forward-looking recommendation for practitioners facing a similar design tension rather than introducing new evidence or findings.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-d50414cd1274",
+    "role_statement": "This paragraph introduces a specific interface view as a navigational aid, explaining how it aggregates and ranks the previously defined groupings to give the reader a high-level map of pattern frequency before they commit to drilling into any one grouping for detailed inspection.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-d5552b313466",
+    "role_statement": "This paragraph opens the section by introducing its organizing theme—how feature usage shifted across different phases of the task—and supports that claim with specific participant examples contrasting early-stage versus late-stage preferences.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-d5d8d30e0c7d",
+    "role_statement": "This paragraph opens the subsection by surveying a category of prior approaches, noting a common limitation associated with that category, and briefly pointing to an adjacent line of related work, thereby setting up the contrast that the subsection will develop in subsequent paragraphs.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-d75b83b83ce5",
+    "role_statement": "This group of paragraphs opens the quantitative/results reporting by presenting the primary statistical comparison(s) between the proposed tool and a baseline condition, stating the significance test outcome to substantiate the paper's central empirical claim before subsequent paragraphs add finer-grained or qualifying detail.",
+    "source": "model",
+    "attempt_id": "attempt-001613"
+  },
+  {
+    "group_id": "paragraph-group-d8d0ac20401a",
+    "role_statement": "This paragraph opens the discussion section by briefly recapping the study's key empirical outcome and framing the subsequent, more detailed interpretive discussion that follows.",
+    "source": "model",
+    "attempt_id": "attempt-001614"
+  },
+  {
+    "group_id": "paragraph-group-d9af077f3290",
+    "role_statement": "This paragraph extends the section's thematic analysis by introducing an additional use case uncovered in the qualitative data, supporting it with illustrative participant quotations to show how the tool's benefits manifested in a specific, previously undiscussed way.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-d9fcb6879b12",
+    "role_statement": "This paragraph extends the preceding critique by identifying a related drawback of a different category within the same general approach, reinforcing the motivation for seeking an alternative by pointing to consequences that undermine user trust and the system's flexibility in addressing diverse needs.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-da0b3b936770",
+    "role_statement": "Each passage extends a usage-scenario walkthrough by depicting the persona/user performing a further, related step with the tool's features, thereby showing through a second concrete example how the system supports an additional facet of the task beyond the initial demonstration.",
+    "source": "model",
+    "attempt_id": "attempt-001615"
+  },
+  {
+    "group_id": "paragraph-group-db1fad02b74b",
+    "role_statement": "This paragraph extends the scope of the preceding design description by addressing its applicability beyond the primary context, noting how it could transfer to related settings and what additional considerations might be needed to support substantially different cases.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-db7249a5d646",
+    "role_statement": "This paragraph shifts from the preceding theoretical framing to a concrete technical description of a core interface component, introducing it as a foundational structural element before subsequent paragraphs detail its specific behaviors and supported input types.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-dd67557a1a89",
+    "role_statement": "Each passage describes the procedural steps and sequencing undertaken by participants during the study session, detailing the structure of the tasks and conditions participants moved through, thereby grounding the reader in how the evaluation unfolded before results are presented.",
+    "source": "model",
+    "attempt_id": "attempt-001616"
+  },
+  {
+    "group_id": "paragraph-group-dd809d23957c",
+    "role_statement": "This paragraph opens the introduction by establishing a baseline reference point against which the paper's motivating problem will be framed, describing the most basic, unaided approach to the task at hand before any augmentation or tooling is introduced.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-e038157de37d",
+    "role_statement": "This paragraph extends the section's opening claim by presenting specific observed behaviors and connecting them to an established theoretical framework from the literature, using this contrast to problematize a standard assumption in the field and arrive at a more nuanced general claim that reframes the preceding point.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-e03ef436cd75",
+    "role_statement": "This paragraph documents a procedural clarification or safeguard communicated to participants before or during the task—addressing a specific concern about how to perform it correctly (e.g., avoiding plagiarism, prioritizing thoroughness)—to preempt ambiguity and support valid interpretation of the study's methodology.",
+    "source": "model",
+    "attempt_id": "attempt-001617"
+  },
+  {
+    "group_id": "paragraph-group-e3f5d64c7756",
+    "role_statement": "This paragraph extends the preceding argument by identifying a further potential benefit of the approach, then proposes a concrete direction for future investigation that would test this claim.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-e8ca289e6963",
+    "role_statement": "This opening paragraph establishes the motivating problem by identifying a gap between novice practitioners' lack of tacit knowledge and the insufficiency of existing general guidance, setting up the need for the solution that follows.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-e8ed5fdd5919",
+    "role_statement": "Each passage functions as an orienting opening for a segment of the Related Work section—either previewing the topics and order of the review to come or establishing the motivating importance of the topic—before the detailed survey of prior work proceeds.",
+    "source": "model",
+    "attempt_id": "attempt-001618"
+  },
+  {
+    "group_id": "paragraph-group-e9d7a4bb8fd7",
+    "role_statement": "This paragraph elaborates on the second part of the study procedure by detailing the design probes presented to participants, explaining their provenance from prior literature and what variations they were meant to illustrate, thereby grounding the later reported feedback in concrete stimuli rather than simply restating the procedure's purpose.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-eb4c3c4cad3e",
+    "role_statement": "This paragraph transitions the section from describing one core mechanism to introducing the next, explaining the technical process by which textual units are broken into smaller pieces and tagged according to a classification scheme, thereby laying groundwork for subsequent paragraphs that build on this classification to explain higher-level organizational features.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-ecd43ea1d975",
+    "role_statement": "As the sole paragraph of the conclusion section, it closes the paper by restating the core contribution and its mechanism and briefly recapping supporting evidence or contrasts, then ending on a forward-looking note of broader significance or future direction, giving the reader a final condensed takeaway of the work's value.",
+    "source": "model",
+    "attempt_id": "attempt-001619"
+  },
+  {
+    "group_id": "paragraph-group-f5007379e41d",
+    "role_statement": "This paragraph enumerates and defines the complete set of components that make up the proposed structural model, explaining the rationale and giving a concrete illustrative example for each component in turn.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-f5ee81c80d21",
+    "role_statement": "This paragraph presents a secondary quantitative outcome measure (a self-reported workload metric) to corroborate the preceding preference-based finding, comparing results across conditions and explicitly interpreting the pattern as reinforcing the paragraph's opening claim about the features' combined necessity.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-f709e4640315",
+    "role_statement": "This paragraph closes out the catalog of system components by introducing a final supplementary feature, rounding out the enumeration of interface capabilities before the section transitions to a walkthrough scenario.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-f7998674605a",
+    "role_statement": "This paragraph constitutes the entirety of the paper's abstract, compressing the full narrative arc—motivating problem, gap in existing approaches, proposed system or concept, evaluation method, and key outcomes—into a single standalone passage that orients readers before they engage with the detailed sections.",
+    "source": "model",
+    "attempt_id": "attempt-001620"
+  },
+  {
+    "group_id": "paragraph-group-f7c19cbe638f",
+    "role_statement": "This paragraph narrows the section's opening claim by unpacking the components that make up the concept being discussed, then grounds the resulting complexity with a concrete illustrative example that exposes an open question left unanswered by existing high-level guidance, thereby motivating the need for the more detailed treatment that follows.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-f7c7548e0664",
+    "role_statement": "This paragraph deepens the preceding behavioral/quantitative claim by presenting corroborating qualitative evidence—direct participant quotes from interviews—that illustrate the mechanism behind the pattern, thereby reinforcing and explaining why one subgroup responded favorably to the condition described, before the section pivots to contrast this with the other subgroup's experience.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-f9803ce3a562",
+    "role_statement": "This paragraph extends the preceding discussion by introducing supplementary design decisions that reinforce the stated goal, clarifying how they work together with the previously described mechanism to achieve the intended outcome.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "paragraph-group-ff1860ea456d",
+    "role_statement": "This paragraph transitions from characterizing the problem (implicit norms and the difficulty of learning them) to situating the paper's approach within a specific theoretical tradition, citing prior research that offers a pedagogical framework and signaling which strategies from that framework the current work will adopt going forward.",
+    "source": "member_role_statement"
+  }
+]

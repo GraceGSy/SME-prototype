@@ -1,0 +1,1496 @@
+{
+  "singleton_ids": [
+    "paragraph-group-021a3323f1ec",
+    "paragraph-group-027b422bd1c2",
+    "paragraph-group-02b79f5574b9",
+    "paragraph-group-03b06ba6937b",
+    "paragraph-group-03ea19c4472b",
+    "paragraph-group-0552e72cc7f7",
+    "paragraph-group-0626487b3eab",
+    "paragraph-group-0654c32fc245",
+    "paragraph-group-089eda401d43",
+    "paragraph-group-0981369c9911",
+    "paragraph-group-0a5d2df0d9aa",
+    "paragraph-group-0b7987a840a6",
+    "paragraph-group-0bbde7bceb3c",
+    "paragraph-group-0fdf95e56cba",
+    "paragraph-group-1a6c0a33229f",
+    "paragraph-group-1cf2abf642b9",
+    "paragraph-group-1e82f9287443",
+    "paragraph-group-1eb617bb97a9",
+    "paragraph-group-1fd65e295856",
+    "paragraph-group-20e0c70a3f87",
+    "paragraph-group-22651654f335",
+    "paragraph-group-2274819d56c4",
+    "paragraph-group-22d4e4053f6c",
+    "paragraph-group-234126d69c36",
+    "paragraph-group-25bcbfa7a326",
+    "paragraph-group-27b4ec3fa4d3",
+    "paragraph-group-2bb32c9c27f0",
+    "paragraph-group-2d4532350d4d",
+    "paragraph-group-2d999d5a3c1d",
+    "paragraph-group-2f94b7c53ca7",
+    "paragraph-group-315498db4772",
+    "paragraph-group-33a9c6164c1b",
+    "paragraph-group-359394885990",
+    "paragraph-group-378cbfac00e4",
+    "paragraph-group-3a8497b42d5f",
+    "paragraph-group-3a890c4b9fb9",
+    "paragraph-group-3b23a41266e1",
+    "paragraph-group-3c58a4240b7c",
+    "paragraph-group-3d2ff41ff553",
+    "paragraph-group-3d8531cf83d6",
+    "paragraph-group-3db64517ef4e",
+    "paragraph-group-3e30c9c380c4",
+    "paragraph-group-3f48b195241c",
+    "paragraph-group-41813e94ae1b",
+    "paragraph-group-41fdfb02ef02",
+    "paragraph-group-420ec0fc62b9",
+    "paragraph-group-4313c8277e26",
+    "paragraph-group-440d3f612fc1",
+    "paragraph-group-451d8bf281b3",
+    "paragraph-group-474d73101d08",
+    "paragraph-group-47f75e5c1ff7",
+    "paragraph-group-4a85b91ab780",
+    "paragraph-group-4b4d1879f068",
+    "paragraph-group-4b923b9ef4e8",
+    "paragraph-group-4c1206db2acc",
+    "paragraph-group-4d080c92bfeb",
+    "paragraph-group-4e00020c095c",
+    "paragraph-group-4fa0edac2ef7",
+    "paragraph-group-51e6acb2510a",
+    "paragraph-group-521e61c52613",
+    "paragraph-group-528e112d9d90",
+    "paragraph-group-54401d74e595",
+    "paragraph-group-5692f8aaa99b",
+    "paragraph-group-56b811f807f5",
+    "paragraph-group-5b099ce8f25c",
+    "paragraph-group-5c235c793ec5",
+    "paragraph-group-5cf0ad22aad0",
+    "paragraph-group-5d4077d0c259",
+    "paragraph-group-5d8f6dcd23c0",
+    "paragraph-group-64d350f6a0b6",
+    "paragraph-group-650300459e43",
+    "paragraph-group-675e5bdd0466",
+    "paragraph-group-6a0ae446a863",
+    "paragraph-group-6af4632db7df",
+    "paragraph-group-6bbff5c76533",
+    "paragraph-group-6c4949753b37",
+    "paragraph-group-6cd38a0f67ae",
+    "paragraph-group-6e1a9e7546f8",
+    "paragraph-group-6ecf5fa5d475",
+    "paragraph-group-70cb97c0e8ac",
+    "paragraph-group-71ed0e4f65f7",
+    "paragraph-group-7246dab738ec",
+    "paragraph-group-72c3ac244a1e",
+    "paragraph-group-743376ff3e57",
+    "paragraph-group-76a34b5fe50b",
+    "paragraph-group-76e73bae1aba",
+    "paragraph-group-790eb7d0235e",
+    "paragraph-group-805ad82376e6",
+    "paragraph-group-81653c3028df",
+    "paragraph-group-81ef9bd0e62c",
+    "paragraph-group-82e9be2636a5",
+    "paragraph-group-83a695da8f64",
+    "paragraph-group-840807fc10d2",
+    "paragraph-group-843d8b644e8d",
+    "paragraph-group-845e290aaf8c",
+    "paragraph-group-8680d18aa409",
+    "paragraph-group-87577e0b3981",
+    "paragraph-group-8758563dec83",
+    "paragraph-group-88c3c1c21825",
+    "paragraph-group-8ca3db799e7e",
+    "paragraph-group-8da7a5028cff",
+    "paragraph-group-8f06689f6d0f",
+    "paragraph-group-902c950cd1be",
+    "paragraph-group-91a83a0f8eb1",
+    "paragraph-group-936204d9c400",
+    "paragraph-group-93b14d929c2e",
+    "paragraph-group-93e6455da98a",
+    "paragraph-group-95a3bfd07a57",
+    "paragraph-group-95c04981f47d",
+    "paragraph-group-96e50dd0e3b6",
+    "paragraph-group-97a4f17a3491",
+    "paragraph-group-97fa4fd3ce94",
+    "paragraph-group-9ea7ec0abea5",
+    "paragraph-group-a036f8ce586b",
+    "paragraph-group-a0b8ad11aebc",
+    "paragraph-group-a0c55c109d3d",
+    "paragraph-group-a51d527698d7",
+    "paragraph-group-a601659510a8",
+    "paragraph-group-aa89d7d8564d",
+    "paragraph-group-aad6d47225f9",
+    "paragraph-group-ad6983bef766",
+    "paragraph-group-ae3dea08ab03",
+    "paragraph-group-b38502184956",
+    "paragraph-group-b3d609da135d",
+    "paragraph-group-b5b58191ccd1",
+    "paragraph-group-b5ea45869fc6",
+    "paragraph-group-b6b9e9b32937",
+    "paragraph-group-b7b27746e49f",
+    "paragraph-group-baec5a752cae",
+    "paragraph-group-bec2ef7a6e9f",
+    "paragraph-group-c0e599be8cb2",
+    "paragraph-group-c1f8be3dc5d4",
+    "paragraph-group-c28d3f04f47c",
+    "paragraph-group-c4d908897f75",
+    "paragraph-group-c4e975697691",
+    "paragraph-group-c7a49bf8c6da",
+    "paragraph-group-cab857cb6db3",
+    "paragraph-group-cbffcb62085d",
+    "paragraph-group-d13eb5877318",
+    "paragraph-group-d2951640d266",
+    "paragraph-group-d492529cce10",
+    "paragraph-group-d50414cd1274",
+    "paragraph-group-d5552b313466",
+    "paragraph-group-d5d8d30e0c7d",
+    "paragraph-group-d8919c62364d",
+    "paragraph-group-d9af077f3290",
+    "paragraph-group-d9fcb6879b12",
+    "paragraph-group-db1fad02b74b",
+    "paragraph-group-db7249a5d646",
+    "paragraph-group-dd809d23957c",
+    "paragraph-group-df3678fc94fc",
+    "paragraph-group-e038157de37d",
+    "paragraph-group-e2397f6661ca",
+    "paragraph-group-e3f5d64c7756",
+    "paragraph-group-e8ca289e6963",
+    "paragraph-group-e9d7a4bb8fd7",
+    "paragraph-group-eb4c3c4cad3e",
+    "paragraph-group-ecfcfcd552ae",
+    "paragraph-group-f0a0c8197ac7",
+    "paragraph-group-f1f038d8cb7c",
+    "paragraph-group-f5007379e41d",
+    "paragraph-group-f5ee81c80d21",
+    "paragraph-group-f709e4640315",
+    "paragraph-group-f7c19cbe638f",
+    "paragraph-group-f7c7548e0664",
+    "paragraph-group-f885cf8aa67e",
+    "paragraph-group-f96f4de45440",
+    "paragraph-group-f9803ce3a562",
+    "paragraph-group-fbaae25ab8d0",
+    "paragraph-group-ff1860ea456d"
+  ],
+  "established_group_ids": [
+    "paragraph-group-01a92a6c0c0c",
+    "paragraph-group-02cc1b1af7c7",
+    "paragraph-group-04cc37247dd7",
+    "paragraph-group-084672dae852",
+    "paragraph-group-12fbd84b8bce",
+    "paragraph-group-1ba77e130fb0",
+    "paragraph-group-232d8e3317e5",
+    "paragraph-group-24052c65334c",
+    "paragraph-group-31f4d2bc55bd",
+    "paragraph-group-4842db800238",
+    "paragraph-group-61f566c7a1ad",
+    "paragraph-group-67706c9ad734",
+    "paragraph-group-683083f9fc78",
+    "paragraph-group-71316b5c67a5",
+    "paragraph-group-7b16725528e1",
+    "paragraph-group-7d3a33f97ae1",
+    "paragraph-group-9139847c6691",
+    "paragraph-group-a1932e236e21",
+    "paragraph-group-aa25e3dc6e65",
+    "paragraph-group-adefb4d2e785",
+    "paragraph-group-ae758ca40a31",
+    "paragraph-group-b178b7a06e80",
+    "paragraph-group-b23de011475a",
+    "paragraph-group-b2a720142c7c",
+    "paragraph-group-b64d7dac0700",
+    "paragraph-group-b7480a0fa96e",
+    "paragraph-group-cc4425ba5acd",
+    "paragraph-group-d0ea5e61e949",
+    "paragraph-group-d11bc667dbe6",
+    "paragraph-group-d75b83b83ce5",
+    "paragraph-group-d8d0ac20401a",
+    "paragraph-group-da0b3b936770",
+    "paragraph-group-dd67557a1a89",
+    "paragraph-group-e03ef436cd75",
+    "paragraph-group-e8ed5fdd5919",
+    "paragraph-group-ecd43ea1d975",
+    "paragraph-group-f7998674605a"
+  ],
+  "candidates_by_singleton": {
+    "paragraph-group-021a3323f1ec": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-027b422bd1c2": [
+      "paragraph-group-232d8e3317e5",
+      "paragraph-group-e03ef436cd75"
+    ],
+    "paragraph-group-02b79f5574b9": [
+      "paragraph-group-67706c9ad734"
+    ],
+    "paragraph-group-03b06ba6937b": [
+      "paragraph-group-01a92a6c0c0c",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d75b83b83ce5"
+    ],
+    "paragraph-group-03ea19c4472b": [
+      "paragraph-group-67706c9ad734"
+    ],
+    "paragraph-group-0552e72cc7f7": [
+      "paragraph-group-b64d7dac0700",
+      "paragraph-group-d11bc667dbe6"
+    ],
+    "paragraph-group-0626487b3eab": [],
+    "paragraph-group-0654c32fc245": [
+      "paragraph-group-b2a720142c7c"
+    ],
+    "paragraph-group-089eda401d43": [
+      "paragraph-group-b64d7dac0700"
+    ],
+    "paragraph-group-0981369c9911": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-0a5d2df0d9aa": [
+      "paragraph-group-e03ef436cd75"
+    ],
+    "paragraph-group-0b7987a840a6": [
+      "paragraph-group-b64d7dac0700"
+    ],
+    "paragraph-group-0bbde7bceb3c": [
+      "paragraph-group-cc4425ba5acd",
+      "paragraph-group-e03ef436cd75"
+    ],
+    "paragraph-group-0fdf95e56cba": [],
+    "paragraph-group-1a6c0a33229f": [
+      "paragraph-group-b64d7dac0700"
+    ],
+    "paragraph-group-1cf2abf642b9": [],
+    "paragraph-group-1e82f9287443": [],
+    "paragraph-group-1eb617bb97a9": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-1fd65e295856": [],
+    "paragraph-group-20e0c70a3f87": [
+      "paragraph-group-683083f9fc78"
+    ],
+    "paragraph-group-22651654f335": [],
+    "paragraph-group-2274819d56c4": [
+      "paragraph-group-b64d7dac0700"
+    ],
+    "paragraph-group-22d4e4053f6c": [
+      "paragraph-group-b2a720142c7c",
+      "paragraph-group-e8ed5fdd5919"
+    ],
+    "paragraph-group-234126d69c36": [
+      "paragraph-group-e8ed5fdd5919"
+    ],
+    "paragraph-group-25bcbfa7a326": [
+      "paragraph-group-67706c9ad734"
+    ],
+    "paragraph-group-27b4ec3fa4d3": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-2bb32c9c27f0": [
+      "paragraph-group-4842db800238",
+      "paragraph-group-7d3a33f97ae1",
+      "paragraph-group-b178b7a06e80",
+      "paragraph-group-b64d7dac0700",
+      "paragraph-group-d11bc667dbe6"
+    ],
+    "paragraph-group-2d4532350d4d": [
+      "paragraph-group-b64d7dac0700"
+    ],
+    "paragraph-group-2d999d5a3c1d": [],
+    "paragraph-group-2f94b7c53ca7": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-315498db4772": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-33a9c6164c1b": [
+      "paragraph-group-b64d7dac0700"
+    ],
+    "paragraph-group-359394885990": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-378cbfac00e4": [
+      "paragraph-group-4842db800238",
+      "paragraph-group-7d3a33f97ae1",
+      "paragraph-group-b178b7a06e80",
+      "paragraph-group-d11bc667dbe6"
+    ],
+    "paragraph-group-3a8497b42d5f": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-3a890c4b9fb9": [
+      "paragraph-group-dd67557a1a89",
+      "paragraph-group-e03ef436cd75"
+    ],
+    "paragraph-group-3b23a41266e1": [
+      "paragraph-group-67706c9ad734"
+    ],
+    "paragraph-group-3c58a4240b7c": [
+      "paragraph-group-4842db800238",
+      "paragraph-group-7d3a33f97ae1",
+      "paragraph-group-b178b7a06e80",
+      "paragraph-group-d11bc667dbe6"
+    ],
+    "paragraph-group-3d2ff41ff553": [
+      "paragraph-group-e03ef436cd75"
+    ],
+    "paragraph-group-3d8531cf83d6": [
+      "paragraph-group-67706c9ad734"
+    ],
+    "paragraph-group-3db64517ef4e": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-3e30c9c380c4": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-3f48b195241c": [],
+    "paragraph-group-41813e94ae1b": [
+      "paragraph-group-b23de011475a",
+      "paragraph-group-b2a720142c7c"
+    ],
+    "paragraph-group-41fdfb02ef02": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-420ec0fc62b9": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-4313c8277e26": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-440d3f612fc1": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-451d8bf281b3": [],
+    "paragraph-group-474d73101d08": [],
+    "paragraph-group-47f75e5c1ff7": [
+      "paragraph-group-4842db800238",
+      "paragraph-group-7d3a33f97ae1",
+      "paragraph-group-b178b7a06e80",
+      "paragraph-group-d11bc667dbe6"
+    ],
+    "paragraph-group-4a85b91ab780": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-4b4d1879f068": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-4b923b9ef4e8": [
+      "paragraph-group-b178b7a06e80"
+    ],
+    "paragraph-group-4c1206db2acc": [
+      "paragraph-group-232d8e3317e5",
+      "paragraph-group-71316b5c67a5",
+      "paragraph-group-dd67557a1a89"
+    ],
+    "paragraph-group-4d080c92bfeb": [
+      "paragraph-group-b2a720142c7c",
+      "paragraph-group-e8ed5fdd5919"
+    ],
+    "paragraph-group-4e00020c095c": [
+      "paragraph-group-67706c9ad734"
+    ],
+    "paragraph-group-4fa0edac2ef7": [
+      "paragraph-group-e8ed5fdd5919"
+    ],
+    "paragraph-group-51e6acb2510a": [
+      "paragraph-group-683083f9fc78"
+    ],
+    "paragraph-group-521e61c52613": [
+      "paragraph-group-b2a720142c7c",
+      "paragraph-group-e8ed5fdd5919"
+    ],
+    "paragraph-group-528e112d9d90": [
+      "paragraph-group-e03ef436cd75"
+    ],
+    "paragraph-group-54401d74e595": [
+      "paragraph-group-b2a720142c7c"
+    ],
+    "paragraph-group-5692f8aaa99b": [
+      "paragraph-group-67706c9ad734"
+    ],
+    "paragraph-group-56b811f807f5": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-5b099ce8f25c": [
+      "paragraph-group-b64d7dac0700"
+    ],
+    "paragraph-group-5c235c793ec5": [
+      "paragraph-group-e03ef436cd75"
+    ],
+    "paragraph-group-5cf0ad22aad0": [
+      "paragraph-group-01a92a6c0c0c",
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-5d4077d0c259": [],
+    "paragraph-group-5d8f6dcd23c0": [
+      "paragraph-group-02cc1b1af7c7",
+      "paragraph-group-04cc37247dd7",
+      "paragraph-group-232d8e3317e5",
+      "paragraph-group-24052c65334c",
+      "paragraph-group-71316b5c67a5",
+      "paragraph-group-ae758ca40a31",
+      "paragraph-group-cc4425ba5acd"
+    ],
+    "paragraph-group-64d350f6a0b6": [],
+    "paragraph-group-650300459e43": [
+      "paragraph-group-01a92a6c0c0c",
+      "paragraph-group-12fbd84b8bce",
+      "paragraph-group-7b16725528e1"
+    ],
+    "paragraph-group-675e5bdd0466": [
+      "paragraph-group-e03ef436cd75"
+    ],
+    "paragraph-group-6a0ae446a863": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-6af4632db7df": [],
+    "paragraph-group-6bbff5c76533": [],
+    "paragraph-group-6c4949753b37": [
+      "paragraph-group-b178b7a06e80",
+      "paragraph-group-b64d7dac0700"
+    ],
+    "paragraph-group-6cd38a0f67ae": [
+      "paragraph-group-b64d7dac0700",
+      "paragraph-group-d11bc667dbe6"
+    ],
+    "paragraph-group-6e1a9e7546f8": [
+      "paragraph-group-ae758ca40a31",
+      "paragraph-group-e03ef436cd75"
+    ],
+    "paragraph-group-6ecf5fa5d475": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-70cb97c0e8ac": [
+      "paragraph-group-b23de011475a",
+      "paragraph-group-b2a720142c7c"
+    ],
+    "paragraph-group-71ed0e4f65f7": [],
+    "paragraph-group-7246dab738ec": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-72c3ac244a1e": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-743376ff3e57": [
+      "paragraph-group-b64d7dac0700"
+    ],
+    "paragraph-group-76a34b5fe50b": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-76e73bae1aba": [
+      "paragraph-group-b23de011475a",
+      "paragraph-group-e8ed5fdd5919"
+    ],
+    "paragraph-group-790eb7d0235e": [
+      "paragraph-group-e03ef436cd75"
+    ],
+    "paragraph-group-805ad82376e6": [],
+    "paragraph-group-81653c3028df": [],
+    "paragraph-group-81ef9bd0e62c": [],
+    "paragraph-group-82e9be2636a5": [
+      "paragraph-group-4842db800238",
+      "paragraph-group-7d3a33f97ae1",
+      "paragraph-group-b178b7a06e80",
+      "paragraph-group-d11bc667dbe6"
+    ],
+    "paragraph-group-83a695da8f64": [
+      "paragraph-group-b64d7dac0700"
+    ],
+    "paragraph-group-840807fc10d2": [
+      "paragraph-group-e03ef436cd75"
+    ],
+    "paragraph-group-843d8b644e8d": [],
+    "paragraph-group-845e290aaf8c": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-8680d18aa409": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-87577e0b3981": [
+      "paragraph-group-12fbd84b8bce"
+    ],
+    "paragraph-group-8758563dec83": [
+      "paragraph-group-12fbd84b8bce",
+      "paragraph-group-d75b83b83ce5"
+    ],
+    "paragraph-group-88c3c1c21825": [
+      "paragraph-group-b64d7dac0700"
+    ],
+    "paragraph-group-8ca3db799e7e": [
+      "paragraph-group-b64d7dac0700"
+    ],
+    "paragraph-group-8da7a5028cff": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-8f06689f6d0f": [
+      "paragraph-group-b64d7dac0700"
+    ],
+    "paragraph-group-902c950cd1be": [
+      "paragraph-group-b64d7dac0700"
+    ],
+    "paragraph-group-91a83a0f8eb1": [
+      "paragraph-group-01a92a6c0c0c",
+      "paragraph-group-12fbd84b8bce",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-936204d9c400": [
+      "paragraph-group-e03ef436cd75"
+    ],
+    "paragraph-group-93b14d929c2e": [
+      "paragraph-group-b64d7dac0700"
+    ],
+    "paragraph-group-93e6455da98a": [
+      "paragraph-group-d8d0ac20401a"
+    ],
+    "paragraph-group-95a3bfd07a57": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-95c04981f47d": [],
+    "paragraph-group-96e50dd0e3b6": [
+      "paragraph-group-67706c9ad734"
+    ],
+    "paragraph-group-97a4f17a3491": [
+      "paragraph-group-02cc1b1af7c7",
+      "paragraph-group-04cc37247dd7",
+      "paragraph-group-084672dae852",
+      "paragraph-group-24052c65334c",
+      "paragraph-group-ae758ca40a31",
+      "paragraph-group-cc4425ba5acd",
+      "paragraph-group-e03ef436cd75"
+    ],
+    "paragraph-group-97fa4fd3ce94": [
+      "paragraph-group-d8d0ac20401a"
+    ],
+    "paragraph-group-9ea7ec0abea5": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-a036f8ce586b": [
+      "paragraph-group-01a92a6c0c0c",
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-a0b8ad11aebc": [
+      "paragraph-group-4842db800238",
+      "paragraph-group-7d3a33f97ae1",
+      "paragraph-group-b178b7a06e80",
+      "paragraph-group-d11bc667dbe6"
+    ],
+    "paragraph-group-a0c55c109d3d": [],
+    "paragraph-group-a51d527698d7": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-a601659510a8": [
+      "paragraph-group-683083f9fc78"
+    ],
+    "paragraph-group-aa89d7d8564d": [],
+    "paragraph-group-aad6d47225f9": [
+      "paragraph-group-01a92a6c0c0c",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d75b83b83ce5"
+    ],
+    "paragraph-group-ad6983bef766": [
+      "paragraph-group-b64d7dac0700"
+    ],
+    "paragraph-group-ae3dea08ab03": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-b38502184956": [
+      "paragraph-group-67706c9ad734"
+    ],
+    "paragraph-group-b3d609da135d": [],
+    "paragraph-group-b5b58191ccd1": [
+      "paragraph-group-b2a720142c7c"
+    ],
+    "paragraph-group-b5ea45869fc6": [
+      "paragraph-group-b64d7dac0700"
+    ],
+    "paragraph-group-b6b9e9b32937": [
+      "paragraph-group-71316b5c67a5",
+      "paragraph-group-dd67557a1a89",
+      "paragraph-group-e03ef436cd75"
+    ],
+    "paragraph-group-b7b27746e49f": [
+      "paragraph-group-b2a720142c7c"
+    ],
+    "paragraph-group-baec5a752cae": [
+      "paragraph-group-b2a720142c7c"
+    ],
+    "paragraph-group-bec2ef7a6e9f": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-c0e599be8cb2": [
+      "paragraph-group-12fbd84b8bce",
+      "paragraph-group-7b16725528e1"
+    ],
+    "paragraph-group-c1f8be3dc5d4": [
+      "paragraph-group-7d3a33f97ae1"
+    ],
+    "paragraph-group-c28d3f04f47c": [
+      "paragraph-group-67706c9ad734"
+    ],
+    "paragraph-group-c4d908897f75": [],
+    "paragraph-group-c4e975697691": [
+      "paragraph-group-adefb4d2e785"
+    ],
+    "paragraph-group-c7a49bf8c6da": [],
+    "paragraph-group-cab857cb6db3": [
+      "paragraph-group-01a92a6c0c0c",
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-d75b83b83ce5"
+    ],
+    "paragraph-group-cbffcb62085d": [
+      "paragraph-group-b64d7dac0700"
+    ],
+    "paragraph-group-d13eb5877318": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-d2951640d266": [
+      "paragraph-group-1ba77e130fb0",
+      "paragraph-group-e8ed5fdd5919"
+    ],
+    "paragraph-group-d492529cce10": [
+      "paragraph-group-67706c9ad734"
+    ],
+    "paragraph-group-d50414cd1274": [],
+    "paragraph-group-d5552b313466": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-d5d8d30e0c7d": [
+      "paragraph-group-b23de011475a",
+      "paragraph-group-b2a720142c7c"
+    ],
+    "paragraph-group-d8919c62364d": [
+      "paragraph-group-9139847c6691"
+    ],
+    "paragraph-group-d9af077f3290": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949"
+    ],
+    "paragraph-group-d9fcb6879b12": [
+      "paragraph-group-683083f9fc78"
+    ],
+    "paragraph-group-db1fad02b74b": [],
+    "paragraph-group-db7249a5d646": [
+      "paragraph-group-b64d7dac0700"
+    ],
+    "paragraph-group-dd809d23957c": [
+      "paragraph-group-683083f9fc78"
+    ],
+    "paragraph-group-df3678fc94fc": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949",
+      "paragraph-group-d75b83b83ce5"
+    ],
+    "paragraph-group-e038157de37d": [
+      "paragraph-group-67706c9ad734"
+    ],
+    "paragraph-group-e2397f6661ca": [
+      "paragraph-group-31f4d2bc55bd",
+      "paragraph-group-7b16725528e1",
+      "paragraph-group-d0ea5e61e949",
+      "paragraph-group-d75b83b83ce5"
+    ],
+    "paragraph-group-e3f5d64c7756": [
+      "paragraph-group-67706c9ad734"
+    ],
+    "paragraph-group-e8ca289e6963": [],
+    "paragraph-group-e9d7a4bb8fd7": [],
+    "paragraph-group-eb4c3c4cad3e": [
+      "paragraph-group-7d3a33f97ae1"
+    ],
+    "paragraph-group-ecfcfcd552ae": [
+      "paragraph-group-02cc1b1af7c7",
+      "paragraph-group-232d8e3317e5",
+      "paragraph-group-71316b5c67a5",
+      "paragraph-group-dd67557a1a89"
+    ],
+    "paragraph-group-f0a0c8197ac7": [
+      "paragraph-group-01a92a6c0c0c",
+      "paragraph-group-d75b83b83ce5"
+    ],
+    "paragraph-group-f1f038d8cb7c": [
+      "paragraph-group-9139847c6691",
+      "paragraph-group-b64d7dac0700"
+    ],
+    "paragraph-group-f5007379e41d": [],
+    "paragraph-group-f5ee81c80d21": [
+      "paragraph-group-e03ef436cd75"
+    ],
+    "paragraph-group-f709e4640315": [
+      "paragraph-group-b7480a0fa96e"
+    ],
+    "paragraph-group-f7c19cbe638f": [
+      "paragraph-group-b23de011475a"
+    ],
+    "paragraph-group-f7c7548e0664": [
+      "paragraph-group-e03ef436cd75"
+    ],
+    "paragraph-group-f885cf8aa67e": [
+      "paragraph-group-b23de011475a",
+      "paragraph-group-b2a720142c7c"
+    ],
+    "paragraph-group-f96f4de45440": [
+      "paragraph-group-b64d7dac0700"
+    ],
+    "paragraph-group-f9803ce3a562": [
+      "paragraph-group-b64d7dac0700"
+    ],
+    "paragraph-group-fbaae25ab8d0": [
+      "paragraph-group-01a92a6c0c0c",
+      "paragraph-group-d0ea5e61e949",
+      "paragraph-group-d75b83b83ce5"
+    ],
+    "paragraph-group-ff1860ea456d": [
+      "paragraph-group-b23de011475a"
+    ]
+  },
+  "forward": {
+    "paragraph-group-0654c32fc245": {
+      "source_id": "paragraph-group-0654c32fc245",
+      "target_id": "paragraph-group-b2a720142c7c",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001279"
+    },
+    "paragraph-group-22d4e4053f6c": {
+      "source_id": "paragraph-group-22d4e4053f6c",
+      "target_id": "paragraph-group-b2a720142c7c",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001280"
+    },
+    "paragraph-group-41813e94ae1b": {
+      "source_id": "paragraph-group-41813e94ae1b",
+      "target_id": "paragraph-group-b2a720142c7c",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001306"
+    },
+    "paragraph-group-4d080c92bfeb": {
+      "source_id": "paragraph-group-4d080c92bfeb",
+      "target_id": "paragraph-group-b2a720142c7c",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001285"
+    },
+    "paragraph-group-521e61c52613": {
+      "source_id": "paragraph-group-521e61c52613",
+      "target_id": "paragraph-group-b2a720142c7c",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001288"
+    },
+    "paragraph-group-54401d74e595": {
+      "source_id": "paragraph-group-54401d74e595",
+      "target_id": "paragraph-group-b2a720142c7c",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001290"
+    },
+    "paragraph-group-70cb97c0e8ac": {
+      "source_id": "paragraph-group-70cb97c0e8ac",
+      "target_id": "paragraph-group-b23de011475a",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001307"
+    },
+    "paragraph-group-76e73bae1aba": {
+      "source_id": "paragraph-group-76e73bae1aba",
+      "target_id": "paragraph-group-b23de011475a",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001293"
+    },
+    "paragraph-group-b5b58191ccd1": {
+      "source_id": "paragraph-group-b5b58191ccd1",
+      "target_id": "paragraph-group-b2a720142c7c",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001295"
+    },
+    "paragraph-group-b7b27746e49f": {
+      "source_id": "paragraph-group-b7b27746e49f",
+      "target_id": "paragraph-group-b2a720142c7c",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001296"
+    },
+    "paragraph-group-baec5a752cae": {
+      "source_id": "paragraph-group-baec5a752cae",
+      "target_id": "paragraph-group-b2a720142c7c",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001297"
+    },
+    "paragraph-group-d5d8d30e0c7d": {
+      "source_id": "paragraph-group-d5d8d30e0c7d",
+      "target_id": null,
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001308"
+    },
+    "paragraph-group-f7c19cbe638f": {
+      "source_id": "paragraph-group-f7c19cbe638f",
+      "target_id": "paragraph-group-b23de011475a",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001302"
+    },
+    "paragraph-group-f885cf8aa67e": {
+      "source_id": "paragraph-group-f885cf8aa67e",
+      "target_id": "paragraph-group-b23de011475a",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001309"
+    },
+    "paragraph-group-ff1860ea456d": {
+      "source_id": "paragraph-group-ff1860ea456d",
+      "target_id": "paragraph-group-b23de011475a",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001305"
+    },
+    "paragraph-group-03ea19c4472b": {
+      "source_id": "paragraph-group-03ea19c4472b",
+      "target_id": "paragraph-group-67706c9ad734",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001313"
+    },
+    "paragraph-group-25bcbfa7a326": {
+      "source_id": "paragraph-group-25bcbfa7a326",
+      "target_id": "paragraph-group-67706c9ad734",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001314"
+    },
+    "paragraph-group-3d8531cf83d6": {
+      "source_id": "paragraph-group-3d8531cf83d6",
+      "target_id": "paragraph-group-67706c9ad734",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001316"
+    },
+    "paragraph-group-93e6455da98a": {
+      "source_id": "paragraph-group-93e6455da98a",
+      "target_id": "paragraph-group-d8d0ac20401a",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001319"
+    },
+    "paragraph-group-96e50dd0e3b6": {
+      "source_id": "paragraph-group-96e50dd0e3b6",
+      "target_id": "paragraph-group-67706c9ad734",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001320"
+    },
+    "paragraph-group-b38502184956": {
+      "source_id": "paragraph-group-b38502184956",
+      "target_id": "paragraph-group-67706c9ad734",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001322"
+    },
+    "paragraph-group-c28d3f04f47c": {
+      "source_id": "paragraph-group-c28d3f04f47c",
+      "target_id": "paragraph-group-67706c9ad734",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001323"
+    },
+    "paragraph-group-e038157de37d": {
+      "source_id": "paragraph-group-e038157de37d",
+      "target_id": "paragraph-group-67706c9ad734",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001325"
+    },
+    "paragraph-group-e3f5d64c7756": {
+      "source_id": "paragraph-group-e3f5d64c7756",
+      "target_id": "paragraph-group-67706c9ad734",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001326"
+    },
+    "paragraph-group-3a890c4b9fb9": {
+      "source_id": "paragraph-group-3a890c4b9fb9",
+      "target_id": "paragraph-group-dd67557a1a89",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001333"
+    },
+    "paragraph-group-97a4f17a3491": {
+      "source_id": "paragraph-group-97a4f17a3491",
+      "target_id": "paragraph-group-084672dae852",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001356"
+    },
+    "paragraph-group-b6b9e9b32937": {
+      "source_id": "paragraph-group-b6b9e9b32937",
+      "target_id": "paragraph-group-71316b5c67a5",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001370"
+    },
+    "paragraph-group-ecfcfcd552ae": {
+      "source_id": "paragraph-group-ecfcfcd552ae",
+      "target_id": "paragraph-group-02cc1b1af7c7",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001364"
+    },
+    "paragraph-group-3e30c9c380c4": {
+      "source_id": "paragraph-group-3e30c9c380c4",
+      "target_id": "paragraph-group-d0ea5e61e949",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001403"
+    },
+    "paragraph-group-41fdfb02ef02": {
+      "source_id": "paragraph-group-41fdfb02ef02",
+      "target_id": "paragraph-group-7b16725528e1",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001511"
+    },
+    "paragraph-group-420ec0fc62b9": {
+      "source_id": "paragraph-group-420ec0fc62b9",
+      "target_id": "paragraph-group-31f4d2bc55bd",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001407"
+    },
+    "paragraph-group-4a85b91ab780": {
+      "source_id": "paragraph-group-4a85b91ab780",
+      "target_id": "paragraph-group-31f4d2bc55bd",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001416"
+    },
+    "paragraph-group-56b811f807f5": {
+      "source_id": "paragraph-group-56b811f807f5",
+      "target_id": "paragraph-group-31f4d2bc55bd",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001422"
+    },
+    "paragraph-group-6a0ae446a863": {
+      "source_id": "paragraph-group-6a0ae446a863",
+      "target_id": "paragraph-group-31f4d2bc55bd",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001432"
+    },
+    "paragraph-group-7246dab738ec": {
+      "source_id": "paragraph-group-7246dab738ec",
+      "target_id": "paragraph-group-7b16725528e1",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001439"
+    },
+    "paragraph-group-8758563dec83": {
+      "source_id": "paragraph-group-8758563dec83",
+      "target_id": "paragraph-group-d75b83b83ce5",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001455"
+    },
+    "paragraph-group-95a3bfd07a57": {
+      "source_id": "paragraph-group-95a3bfd07a57",
+      "target_id": "paragraph-group-31f4d2bc55bd",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001462"
+    },
+    "paragraph-group-a036f8ce586b": {
+      "source_id": "paragraph-group-a036f8ce586b",
+      "target_id": "paragraph-group-7b16725528e1",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001470"
+    },
+    "paragraph-group-aad6d47225f9": {
+      "source_id": "paragraph-group-aad6d47225f9",
+      "target_id": "paragraph-group-7b16725528e1",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001512"
+    },
+    "paragraph-group-d5552b313466": {
+      "source_id": "paragraph-group-d5552b313466",
+      "target_id": "paragraph-group-31f4d2bc55bd",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001492"
+    },
+    "paragraph-group-df3678fc94fc": {
+      "source_id": "paragraph-group-df3678fc94fc",
+      "target_id": "paragraph-group-d75b83b83ce5",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001501"
+    },
+    "paragraph-group-e2397f6661ca": {
+      "source_id": "paragraph-group-e2397f6661ca",
+      "target_id": "paragraph-group-d75b83b83ce5",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001513"
+    },
+    "paragraph-group-f0a0c8197ac7": {
+      "source_id": "paragraph-group-f0a0c8197ac7",
+      "target_id": "paragraph-group-01a92a6c0c0c",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001506"
+    },
+    "paragraph-group-fbaae25ab8d0": {
+      "source_id": "paragraph-group-fbaae25ab8d0",
+      "target_id": "paragraph-group-d0ea5e61e949",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001509"
+    },
+    "paragraph-group-20e0c70a3f87": {
+      "source_id": "paragraph-group-20e0c70a3f87",
+      "target_id": "paragraph-group-683083f9fc78",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001517"
+    },
+    "paragraph-group-51e6acb2510a": {
+      "source_id": "paragraph-group-51e6acb2510a",
+      "target_id": "paragraph-group-683083f9fc78",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001518"
+    },
+    "paragraph-group-a601659510a8": {
+      "source_id": "paragraph-group-a601659510a8",
+      "target_id": "paragraph-group-683083f9fc78",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001519"
+    },
+    "paragraph-group-c4e975697691": {
+      "source_id": "paragraph-group-c4e975697691",
+      "target_id": "paragraph-group-adefb4d2e785",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001520"
+    },
+    "paragraph-group-dd809d23957c": {
+      "source_id": "paragraph-group-dd809d23957c",
+      "target_id": "paragraph-group-683083f9fc78",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001522"
+    },
+    "paragraph-group-6cd38a0f67ae": {
+      "source_id": "paragraph-group-6cd38a0f67ae",
+      "target_id": "paragraph-group-d11bc667dbe6",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001555"
+    },
+    "paragraph-group-82e9be2636a5": {
+      "source_id": "paragraph-group-82e9be2636a5",
+      "target_id": "paragraph-group-d11bc667dbe6",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001560"
+    },
+    "paragraph-group-a0b8ad11aebc": {
+      "source_id": "paragraph-group-a0b8ad11aebc",
+      "target_id": "paragraph-group-d11bc667dbe6",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001570"
+    },
+    "paragraph-group-d8919c62364d": {
+      "source_id": "paragraph-group-d8919c62364d",
+      "target_id": "paragraph-group-9139847c6691",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001575"
+    },
+    "paragraph-group-f1f038d8cb7c": {
+      "source_id": "paragraph-group-f1f038d8cb7c",
+      "target_id": "paragraph-group-9139847c6691",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001578"
+    },
+    "paragraph-group-f96f4de45440": {
+      "source_id": "paragraph-group-f96f4de45440",
+      "target_id": "paragraph-group-b64d7dac0700",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-001581"
+    }
+  },
+  "reverse": {
+    "paragraph-group-b23de011475a": {
+      "source_id": "paragraph-group-b23de011475a",
+      "target_id": "paragraph-group-d5d8d30e0c7d",
+      "direction": "group_to_singleton",
+      "attempt_id": "attempt-001310"
+    },
+    "paragraph-group-b2a720142c7c": {
+      "source_id": "paragraph-group-b2a720142c7c",
+      "target_id": "paragraph-group-54401d74e595",
+      "direction": "group_to_singleton",
+      "attempt_id": "attempt-001311"
+    },
+    "paragraph-group-67706c9ad734": {
+      "source_id": "paragraph-group-67706c9ad734",
+      "target_id": "paragraph-group-b38502184956",
+      "direction": "group_to_singleton",
+      "attempt_id": "attempt-001327"
+    },
+    "paragraph-group-d8d0ac20401a": {
+      "source_id": "paragraph-group-d8d0ac20401a",
+      "target_id": "paragraph-group-93e6455da98a",
+      "direction": "group_to_singleton",
+      "attempt_id": "attempt-001319"
+    },
+    "paragraph-group-01a92a6c0c0c": {
+      "source_id": "paragraph-group-01a92a6c0c0c",
+      "target_id": "paragraph-group-f0a0c8197ac7",
+      "direction": "group_to_singleton",
+      "attempt_id": "attempt-001506"
+    },
+    "paragraph-group-31f4d2bc55bd": {
+      "source_id": "paragraph-group-31f4d2bc55bd",
+      "target_id": "paragraph-group-420ec0fc62b9",
+      "direction": "group_to_singleton",
+      "attempt_id": "attempt-001514"
+    },
+    "paragraph-group-7b16725528e1": {
+      "source_id": "paragraph-group-7b16725528e1",
+      "target_id": "paragraph-group-7246dab738ec",
+      "direction": "group_to_singleton",
+      "attempt_id": "attempt-001516"
+    },
+    "paragraph-group-d0ea5e61e949": {
+      "source_id": "paragraph-group-d0ea5e61e949",
+      "target_id": "paragraph-group-3e30c9c380c4",
+      "direction": "group_to_singleton",
+      "attempt_id": "attempt-001403"
+    },
+    "paragraph-group-d75b83b83ce5": {
+      "source_id": "paragraph-group-d75b83b83ce5",
+      "target_id": "paragraph-group-aad6d47225f9",
+      "direction": "group_to_singleton",
+      "attempt_id": "attempt-001477"
+    },
+    "paragraph-group-683083f9fc78": {
+      "source_id": "paragraph-group-683083f9fc78",
+      "target_id": null,
+      "direction": "group_to_singleton",
+      "attempt_id": "attempt-001524"
+    },
+    "paragraph-group-b64d7dac0700": {
+      "source_id": "paragraph-group-b64d7dac0700",
+      "target_id": "paragraph-group-f96f4de45440",
+      "direction": "group_to_singleton",
+      "attempt_id": "attempt-001581"
+    },
+    "paragraph-group-d11bc667dbe6": {
+      "source_id": "paragraph-group-d11bc667dbe6",
+      "target_id": "paragraph-group-82e9be2636a5",
+      "direction": "group_to_singleton",
+      "attempt_id": "attempt-001583"
+    }
+  },
+  "merged": [
+    {
+      "source_group_id": "paragraph-group-54401d74e595",
+      "target_group_id": "paragraph-group-b2a720142c7c",
+      "paper_id": "abstractexplorer",
+      "unit_id": "s0003.ss0002.p0003",
+      "attempt_id": "attempt-001290",
+      "reverse_attempt_id": "attempt-001311"
+    },
+    {
+      "source_group_id": "paragraph-group-93e6455da98a",
+      "target_group_id": "paragraph-group-d8d0ac20401a",
+      "paper_id": "examplore_chi18",
+      "unit_id": "s0009.p0001",
+      "attempt_id": "attempt-001319",
+      "reverse_attempt_id": "attempt-001319"
+    },
+    {
+      "source_group_id": "paragraph-group-b38502184956",
+      "target_group_id": "paragraph-group-67706c9ad734",
+      "paper_id": "corpusstudio",
+      "unit_id": "s0009.ss0005.p0001",
+      "attempt_id": "attempt-001322",
+      "reverse_attempt_id": "attempt-001327"
+    },
+    {
+      "source_group_id": "paragraph-group-3e30c9c380c4",
+      "target_group_id": "paragraph-group-d0ea5e61e949",
+      "paper_id": "corpusstudio",
+      "unit_id": "s0007.ss0004.p0005",
+      "attempt_id": "attempt-001403",
+      "reverse_attempt_id": "attempt-001403"
+    },
+    {
+      "source_group_id": "paragraph-group-420ec0fc62b9",
+      "target_group_id": "paragraph-group-31f4d2bc55bd",
+      "paper_id": "corpusstudio",
+      "unit_id": "s0007.ss0001.p0004",
+      "attempt_id": "attempt-001407",
+      "reverse_attempt_id": "attempt-001514"
+    },
+    {
+      "source_group_id": "paragraph-group-7246dab738ec",
+      "target_group_id": "paragraph-group-7b16725528e1",
+      "paper_id": "corpusstudio",
+      "unit_id": "s0008.ss0002.p0004",
+      "attempt_id": "attempt-001439",
+      "reverse_attempt_id": "attempt-001516"
+    },
+    {
+      "source_group_id": "paragraph-group-f0a0c8197ac7",
+      "target_group_id": "paragraph-group-01a92a6c0c0c",
+      "paper_id": "abstractexplorer",
+      "unit_id": "s0008.ss0002.p0001",
+      "attempt_id": "attempt-001506",
+      "reverse_attempt_id": "attempt-001506"
+    },
+    {
+      "source_group_id": "paragraph-group-82e9be2636a5",
+      "target_group_id": "paragraph-group-d11bc667dbe6",
+      "paper_id": "examplore_chi18",
+      "unit_id": "s0006.ss0002.p0002",
+      "attempt_id": "attempt-001560",
+      "reverse_attempt_id": "attempt-001583"
+    },
+    {
+      "source_group_id": "paragraph-group-f96f4de45440",
+      "target_group_id": "paragraph-group-b64d7dac0700",
+      "paper_id": "corpusstudio",
+      "unit_id": "s0004.ss0003.p0002",
+      "attempt_id": "attempt-001581",
+      "reverse_attempt_id": "attempt-001581"
+    },
+    {
+      "source_group_id": "paragraph-group-22d4e4053f6c",
+      "target_group_id": "paragraph-group-b2a720142c7c",
+      "paper_id": "examplore_chi18",
+      "unit_id": "s0003.ss0002.p0001",
+      "attempt_id": "attempt-001280",
+      "membership_role": "fan_in"
+    },
+    {
+      "source_group_id": "paragraph-group-41813e94ae1b",
+      "target_group_id": "paragraph-group-b2a720142c7c",
+      "paper_id": "corpusstudio",
+      "unit_id": "s0003.ss0002.p0003",
+      "attempt_id": "attempt-001306",
+      "membership_role": "fan_in"
+    },
+    {
+      "source_group_id": "paragraph-group-521e61c52613",
+      "target_group_id": "paragraph-group-b2a720142c7c",
+      "paper_id": "examplore_chi18",
+      "unit_id": "s0003.ss0001.p0003",
+      "attempt_id": "attempt-001288",
+      "membership_role": "fan_in"
+    },
+    {
+      "source_group_id": "paragraph-group-70cb97c0e8ac",
+      "target_group_id": "paragraph-group-b23de011475a",
+      "paper_id": "abstractexplorer",
+      "unit_id": "s0003.ss0003.p0002",
+      "attempt_id": "attempt-001307",
+      "membership_role": "fan_in"
+    },
+    {
+      "source_group_id": "paragraph-group-76e73bae1aba",
+      "target_group_id": "paragraph-group-b23de011475a",
+      "paper_id": "examplore_chi18",
+      "unit_id": "s0003.ss0001.p0002",
+      "attempt_id": "attempt-001293",
+      "membership_role": "fan_in"
+    },
+    {
+      "source_group_id": "paragraph-group-baec5a752cae",
+      "target_group_id": "paragraph-group-b2a720142c7c",
+      "paper_id": "abstractexplorer",
+      "unit_id": "s0003.ss0002.p0002",
+      "attempt_id": "attempt-001297",
+      "membership_role": "fan_in"
+    },
+    {
+      "source_group_id": "paragraph-group-f885cf8aa67e",
+      "target_group_id": "paragraph-group-b23de011475a",
+      "paper_id": "abstractexplorer",
+      "unit_id": "s0003.ss0002.p0004",
+      "attempt_id": "attempt-001309",
+      "membership_role": "fan_in"
+    },
+    {
+      "source_group_id": "paragraph-group-3a890c4b9fb9",
+      "target_group_id": "paragraph-group-dd67557a1a89",
+      "paper_id": "abstractexplorer",
+      "unit_id": "s0006.ss0002.p0004",
+      "attempt_id": "attempt-001333",
+      "membership_role": "fan_in"
+    },
+    {
+      "source_group_id": "paragraph-group-97a4f17a3491",
+      "target_group_id": "paragraph-group-084672dae852",
+      "paper_id": "examplore_chi18",
+      "unit_id": "s0007.ss0003.p0003",
+      "attempt_id": "attempt-001356",
+      "membership_role": "fan_in"
+    },
+    {
+      "source_group_id": "paragraph-group-b6b9e9b32937",
+      "target_group_id": "paragraph-group-71316b5c67a5",
+      "paper_id": "abstractexplorer",
+      "unit_id": "s0006.ss0002.p0002",
+      "attempt_id": "attempt-001370",
+      "membership_role": "fan_in"
+    },
+    {
+      "source_group_id": "paragraph-group-ecfcfcd552ae",
+      "target_group_id": "paragraph-group-02cc1b1af7c7",
+      "paper_id": "corpusstudio",
+      "unit_id": "s0006.ss0002.p0003",
+      "attempt_id": "attempt-001364",
+      "membership_role": "fan_in"
+    },
+    {
+      "source_group_id": "paragraph-group-8758563dec83",
+      "target_group_id": "paragraph-group-d75b83b83ce5",
+      "paper_id": "examplore_chi18",
+      "unit_id": "s0008.ss0001.p0003",
+      "attempt_id": "attempt-001455",
+      "membership_role": "fan_in"
+    },
+    {
+      "source_group_id": "paragraph-group-95a3bfd07a57",
+      "target_group_id": "paragraph-group-31f4d2bc55bd",
+      "paper_id": "corpusstudio",
+      "unit_id": "s0007.ss0001.p0003",
+      "attempt_id": "attempt-001462",
+      "membership_role": "fan_in"
+    },
+    {
+      "source_group_id": "paragraph-group-a036f8ce586b",
+      "target_group_id": "paragraph-group-7b16725528e1",
+      "paper_id": "corpusstudio",
+      "unit_id": "s0008.ss0002.p0003",
+      "attempt_id": "attempt-001470",
+      "membership_role": "fan_in"
+    },
+    {
+      "source_group_id": "paragraph-group-aad6d47225f9",
+      "target_group_id": "paragraph-group-7b16725528e1",
+      "paper_id": "abstractexplorer",
+      "unit_id": "s0008.ss0001.p0002",
+      "attempt_id": "attempt-001512",
+      "membership_role": "fan_in"
+    },
+    {
+      "source_group_id": "paragraph-group-df3678fc94fc",
+      "target_group_id": "paragraph-group-d75b83b83ce5",
+      "paper_id": "corpusstudio",
+      "unit_id": "s0008.ss0001.p0002",
+      "attempt_id": "attempt-001501",
+      "membership_role": "fan_in"
+    },
+    {
+      "source_group_id": "paragraph-group-e2397f6661ca",
+      "target_group_id": "paragraph-group-d75b83b83ce5",
+      "paper_id": "corpusstudio",
+      "unit_id": "s0008.p0001",
+      "attempt_id": "attempt-001513",
+      "membership_role": "fan_in"
+    },
+    {
+      "source_group_id": "paragraph-group-fbaae25ab8d0",
+      "target_group_id": "paragraph-group-d0ea5e61e949",
+      "paper_id": "abstractexplorer",
+      "unit_id": "s0008.ss0001.p0005",
+      "attempt_id": "attempt-001509",
+      "membership_role": "fan_in"
+    },
+    {
+      "source_group_id": "paragraph-group-c4e975697691",
+      "target_group_id": "paragraph-group-adefb4d2e785",
+      "paper_id": "examplore_chi18",
+      "unit_id": "s0002.p0004",
+      "attempt_id": "attempt-001520",
+      "membership_role": "fan_in"
+    },
+    {
+      "source_group_id": "paragraph-group-6cd38a0f67ae",
+      "target_group_id": "paragraph-group-d11bc667dbe6",
+      "paper_id": "corpusstudio",
+      "unit_id": "s0004.ss0003.p0015",
+      "attempt_id": "attempt-001555",
+      "membership_role": "fan_in"
+    },
+    {
+      "source_group_id": "paragraph-group-a0b8ad11aebc",
+      "target_group_id": "paragraph-group-d11bc667dbe6",
+      "paper_id": "examplore_chi18",
+      "unit_id": "s0006.ss0002.p0003",
+      "attempt_id": "attempt-001570",
+      "membership_role": "fan_in"
+    },
+    {
+      "source_group_id": "paragraph-group-d8919c62364d",
+      "target_group_id": "paragraph-group-9139847c6691",
+      "paper_id": "abstractexplorer",
+      "unit_id": "s0005.ss0003.p0003",
+      "attempt_id": "attempt-001575",
+      "membership_role": "fan_in"
+    },
+    {
+      "source_group_id": "paragraph-group-f1f038d8cb7c",
+      "target_group_id": "paragraph-group-9139847c6691",
+      "paper_id": "corpusstudio",
+      "unit_id": "s0005.ss0002.p0001",
+      "attempt_id": "attempt-001578",
+      "membership_role": "fan_in"
+    }
+  ],
+  "changed_group_ids": [
+    "paragraph-group-01a92a6c0c0c",
+    "paragraph-group-02cc1b1af7c7",
+    "paragraph-group-084672dae852",
+    "paragraph-group-31f4d2bc55bd",
+    "paragraph-group-67706c9ad734",
+    "paragraph-group-71316b5c67a5",
+    "paragraph-group-7b16725528e1",
+    "paragraph-group-9139847c6691",
+    "paragraph-group-adefb4d2e785",
+    "paragraph-group-b23de011475a",
+    "paragraph-group-b2a720142c7c",
+    "paragraph-group-b64d7dac0700",
+    "paragraph-group-d0ea5e61e949",
+    "paragraph-group-d11bc667dbe6",
+    "paragraph-group-d75b83b83ce5",
+    "paragraph-group-d8d0ac20401a",
+    "paragraph-group-dd67557a1a89"
+  ]
+}

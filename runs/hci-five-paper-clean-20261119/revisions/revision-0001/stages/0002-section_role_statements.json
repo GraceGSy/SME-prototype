@@ -1,0 +1,57 @@
+[
+  {
+    "section_id": "s0001",
+    "role_statement": "This section orients the reader by framing the problem the work addresses, introducing the proposed approach at a conceptual level, and previewing the evaluation method and key outcomes, thereby setting expectations for the detailed argument that follows.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0002",
+    "role_statement": "This section motivates the problem by identifying a gap between abstract guidance and practical application, situates the proposed approach relative to prior example-based learning and writing-support techniques, previews the system and study designed to address the gap, and closes with a summary of the paper's contributions and key findings.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0003",
+    "role_statement": "This section situates the work within prior literature by reviewing relevant theoretical and empirical research across adjacent subfields, thereby establishing the conceptual foundations, identifying gaps, and clarifying how the proposed approach differs from or builds upon existing tools and methods.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0004",
+    "role_statement": "This section presents the system itself, articulating the underlying design goals, illustrating intended use through a walkthrough scenario, detailing the system's core interactive mechanisms and the theoretical rationale behind their design, and describing the technical implementation choices that realize these mechanisms.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0005",
+    "role_statement": "This section establishes the empirical foundation for the system by describing how the underlying corpus was assembled and processed, detailing the data collection scope, preprocessing steps, embedding methodology, and feature-extraction procedures that later sections and evaluations depend upon.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0006",
+    "role_statement": "This section establishes the empirical evaluation methodology by describing the study design, participant sample, and procedural steps used to test the proposed concepts, providing the reader with the methodological grounding needed to interpret the qualitative and quantitative findings presented afterward.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0007",
+    "role_statement": "This section presents the thematic analysis of qualitative data gathered during the user study, organizing participants' behaviors, strategies, and reflections into categories that illustrate how users engaged with the system's various components, thereby providing interpretive evidence that grounds and contextualizes the quantitative findings presented elsewhere in the paper.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0008",
+    "role_statement": "This section presents statistical analyses of controlled task data and survey responses, providing quantitative evidence that complements the qualitative findings by testing whether observed interface effects reach statistical significance and by summarizing usage patterns and perceived usefulness across experimental conditions.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0009",
+    "role_statement": "This section situates the empirical findings within broader conceptual and design implications, interpreting what the results reveal about user behavior and system design trade-offs, connecting the work to relevant theoretical frameworks, articulating the design philosophy underlying the approach relative to alternative paradigms, and acknowledging the scope constraints that bound how the findings should be generalized.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0010",
+    "role_statement": "This section closes the paper by synthesizing the system's design philosophy and core contribution into a concise statement, situating the work within a broader vision for how writing support tools should relate to existing scholarship and author agency, without introducing new evidence or findings.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0011",
+    "role_statement": "This section discloses the funding sources and institutional support that made the research possible, while clarifying that the funders had no influence over the study's design, execution, or conclusions, thereby addressing transparency and conflict-of-interest considerations rather than contributing to the paper's substantive argument.",
+    "source": "input"
+  }
+]

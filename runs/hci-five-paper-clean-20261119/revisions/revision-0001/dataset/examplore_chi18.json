@@ -1,0 +1,656 @@
+{
+  "paper_id": "examplore_chi18",
+  "title": "Examplore (CHI 2018)",
+  "sections": [
+    {
+      "id": "s0001",
+      "title": "Abstract",
+      "tag": "This section provides a condensed overview of the problem motivating the work, the approach taken to address it, and the empirical evaluation conducted, previewing the paper's contribution and key outcomes to orient the reader before the full argument unfolds.",
+      "text": "Using existing APIs properly is a key challenge in programming, given that libraries and APIs are increasing in number and complexity. Programmers often search for online code examples in Q&A forums and read tutorials and blog posts to learn how to use a given API. However, there are often a massive number of related code examples and it is difficult for a user to understand the commonalities and variances among them, while being able to drill down to concrete details. We introduce an interactive visualization for exploring a large collection of code examples mined from open-source repositories at scale. This visualization summarizes hundreds of code examples in one synthetic code skeleton with statistical distributions for canonicalized statements and structures enclosing an API call. We implemented this interactive visualization for a set of Java APIs and found that, in a lab study, it helped users (1) answer significantly more API usage questions correctly and comprehensively and (2) explore how other programmers have used an unfamiliar API.",
+      "unit_type": "section",
+      "parent_id": null,
+      "ordinal": 1
+    },
+    {
+      "id": "s0002",
+      "title": "Introduction",
+      "tag": "This section establishes the problem and its significance by situating the core challenge within prior findings, identifies a gap in existing solutions, poses a guiding research question, previews the proposed approach and its design rationale, summarizes the evaluation conducted and its high-level outcome, and concludes by enumerating the paper's main contributions.",
+      "text": "Learning how to correctly and effectively use existing APIs is a common task — and a core challenge — in software development. It spans all expertise levels from novices to professional software engineers, and all project types from prototypes to production code. The landscape of publicly available APIs is massive and constantly changing, as new APIs are created in response to shifting programmer needs. Within companies, the same is true, perhaps even more so: joining a company can require learning a whole new set of proprietary APIs before a developer becomes an effective contributor to the company codebase. Developers often are stymied by various learning barriers, including overly specific or overly general explanations of API usage, lack of understanding about the interaction between multiple APIs, lack of alternative uses, and difficulty identifying program statements and structures related to an API [11, 19, 5].\n\nOne study found that the greatest obstacle to learning an API is \"insufficient or inadequate examples.\" [19] Official documentation is typically dominated by textual descriptions and explanations, often lacking concrete code examples that illustrate API usage. Tutorials and blog posts walk developers through simplified code examples but often without demonstrating alternative uses of an API, which programmers frequently desire when learning unfamiliar APIs [5, 19, 4].\n\nCode-sharing sites like GitHub hold the promise of documenting all the common and uncommon ways of using an API in practice, including many alternative usage scenarios that are not typically shown in curated examples. However, given the large amount of code available online, it is challenging for developers to efficiently browse the enormous volume of search results. It is certainly infeasible for developers to examine more than a few code examples simultaneously. In practice, programmers often investigate a handful of search results and return to their own code due to limited time and attention [3, 23, 5]. Prior work has shown that individual code examples may suffer from API usage violations [29], insecure coding practices [7], unchecked obsolete usage [31], and comprehension difficulties [25]. Therefore, inspecting a few examples may leave out critical safety checks or desirable usage scenarios.\n\nIn the software engineering community, there is a growing interest in leveraging a large collection of open source repositories—so-called Big Code—to automatically infer API usage patterns from massive corpora [4, 16, 26, 30]. However, these API usage mining techniques provide limited support to help programmers explore concrete code examples from which API usage patterns are inferred, and understand the commonalities and variances across different uses. To bridge the gap, we aim to visualize hundreds of concrete code examples mined from massive code corpora in a way that reveals their commonalities and variances, and design a navigation model to guide the exploration of these examples. We draw motivation from prior work on visualizing large corpora of related documents, e.g., student coding assignments [8], text [27, 21], and image manipulation tutorials [17], to pose the following research question: How might we extract, align, canonicalize, and display large numbers of usage examples for a given API?\n\nIn this paper, we introduce a novel interactive visualization and navigation technique called EXAMPLORE that (1) gives a bird's-eye view of common and uncommon ways in which a community of developers uses an API and (2) allows developers to quickly filter a corpus for concrete code examples that exhibit these various uses. It operates on hundreds of code examples of a given API method, which can be automatically mined from open-source projects or proprietary codebases. It is designed to supplement existing resources: for example, while Stack Overflow can provide explanations and discussions, EXAMPLORE provides quantitative information about how an API call is used in the wild.\n\nEXAMPLORE instantiates a synthetic code skeleton that captures a variety of API usage features, including initializations, enclosing control structures, guard conditions, and other method calls before and after invoking the given API method, etc. This skeleton is designed to be general: it is grounded in how API design is taught in software engineering curricula and how API mining researchers conceptualize their tasks [11, 19, 5]. EXAMPLORE visualizes the statistical distribution of each API usage feature in the skeleton to provide quantitative evidence of each feature in the corpus. The user can select one or more features in the skeleton and, by dynamically filtering mined code examples from the corpus, drill down to concrete, supporting code examples. Color-coordinated highlighting makes it easier for users to recognize the correspondence between features in the skeleton and code segments within each example.\n\nWe conducted a within-subjects lab study where we asked sixteen Java programmers of various levels of expertise to answer questions about the usage of particular Java APIs based on either (1) searching online for relevant code examples, blogs, and forum posts or (2) using EXAMPLORE to explore one hundred API usage examples mined from GitHub. On average, participants answered significantly more API usage questions correctly, with more concrete details, using EXAMPLORE. This suggests that EXAMPLORE helps users grasp a more comprehensive view of API usage than online search. In a post survey, the majority of participants (13/16) found EXAMPLORE to be more helpful for answering API usage questions than online search, and when using EXAMPLORE, their median level of confidence in their answers was higher.\n\nOur contributions are: • a method for generating an interactive visualization of a distribution of code examples for a given API call • an implementation of this interactive visualization for a set of Java and Android API calls • a within-subjects lab study that shows how this interactive visualization may fill an important role in developers' programming workflows as they use unfamiliar APIs.",
+      "unit_type": "section",
+      "parent_id": null,
+      "ordinal": 2
+    },
+    {
+      "id": "s0003",
+      "title": "Related Work",
+      "tag": "This section situates the proposed approach within existing bodies of work by surveying prior systems and studies across related problem spaces, identifying what each contributes and where their designs or assumptions fall short, thereby establishing the gap that the paper's approach is positioned to fill and justifying the novelty of its contribution relative to that landscape.",
+      "text": "Prior work on visualizing large collections of related documents spans a variety of complex data types, from Photoshop image manipulation tutorials [17] to Antebellum slave narratives [21]. Each interface designs around the constraints—and leverages the opportunities—afforded by the data source.\n\nSifter [17] and Delta [12] operate on sequences of image manipulation operations. Pavel et al. create an interface for browsing the variation and consistency across large collections of Photoshop tutorials, focusing in particular on sequences of invoked Photoshop commands [17]. Kong et al. address a similar problem by presenting different linked views, including lists, side-by-side comparisons between a few sequences, and clusters [12]. Unlike code or text, images can be easily consumed at a glance, so these systems use thumbnails to make a long reading comparison task easy.\n\nBoth WordTree [27] and WordSeer [21] operate on text, while EXAMPLORE attempts to translate similar insights to code. WordTree uses alignment, counts, deduplication, and dependence to visualize the N+1-word sequences containing the N-word long sequences simultaneously for a user-chosen root word. Similar to WordTree, EXAMPLORE captures dependencies across the multi-dimensional space of code examples. For example, when a user selects a particular feature option in the code skeleton, EXAMPLORE dynamically updates the counts of remaining feature options so that they are conditioned on the selected option, revealing the statistical distribution of co-occurring feature options. WordSeer infers the grammatical structure of natural language documents in a given corpus. It leverages the inferred grammatical structure to power grammatical search, where users can query for, e.g., who (or what) is described as \"cruel\" in North American Antebellum slave narratives? The result is a ranked list, with counts, of the different extracted entities described in one or more narratives as \"cruel\"; we adapt this display in EXAMPLORE to show the distribution of options for an API usage feature such as the guard condition of an API call.\n\nOverCode [8] helps users explore collections of code. OverCode represents how hundreds or thousands of students independently implement the same function in massive programming classes. OverCode uses its own form of human-readable variable name canonicalization, deduplication, and formatting so that the student programming solutions are rendered as readable and executable function definitions with counts representing the number of corresponding raw functions in the corpus. OverCode does not directly carry over to functions collected outside a massive classroom, where developers are not all implementing the exact same function, where developers are using statically typed languages like Java, and where developers must understand a variety of API usage features such as data dependences, guard conditions, and control structures.\n\nProgrammers often search for code examples to complete programming tasks and learn new APIs [20, 10, 22, 15]. A recent study at Google shows that developers search code frequently, issuing an average of 12 code search queries per weekday [20]. Montandon et al. instrumented the Android API documentation platform and found that programmers often searched for concrete code examples within the documentations [15].\n\nIndividual code examples may suffer from insecure or unreliable code, unchecked obsolete or outdated usage, and comprehension difficulty. Fischer et al. investigated security-related code on Stack Overflow and found that 29% is insecure [7]. Another study on Stack Overflow found that 76% of detected API misuse in Stack Overflow could lead to program crashes due to omitted safety checks and unhandled runtime exceptions when reused verbatim to a client program [29]. Zhou et al. observed that 86 of 200 accepted posts on Stack Overflow used deprecated APIs but only 3 of them were reported by other programmers [31]. Treude and Robillard conducted a survey to investigate comprehension difficulty of Stack Overflow code examples and found that over half of code examples were considered hard to understand [25]. These studies motivate our goal of exploring and visualizing a large number of code examples simultaneously to help developers better understand common API usage. The desire for visualizing multiple code examples for API learning has been confirmed by previous studies. Buse and Weimer conducted a survey with 150 programmers and found that \"the best documentation must show all different ways to use something, so it's helpful in all cases\" [28]. The respondents in another survey also expressed a desire to examine multiple examples to investigate alternative uses [19].\n\nIn practice, however, developers often examine only a few search results due to limited time and attention. Brandt et al. observed that programmers typically clicked several search results and then judged their quality by rapidly skimming [3]. Duala-Ekoko and Robillard observed that participants often backtracked when browsing search results, due to irrelevant or uninteresting information in search results [5]. More specifically, Starke et al. showed that programmers rarely looked beyond five examples when searching for code examples to complete a programming task [23]. These results indicate that the code exploration process is often limited to a few search results, leaving a large portion of foraged information unexplored. To guide users to explore a large number of code examples simultaneously, EXAMPLORE constructs a code skeleton with statistical distributions of individual API usage features as a navigation model.\n\nIn the software engineering community, there is an increasing interest in mining Big Code, a massive collection of open source repositories to detect potential bugs or to help programmers understand implicit programming rules. Several techniques infer API usage patterns in terms of pairwise programming rules [13, 14, 24, 15], method call sequences [30, 26], and graph-based models [16, 4]. For example, PR-Miner models programs as sets of method calls and uses frequent itemset mining to infer pairwise programming rules such as {file.lock()}⇒{file.lock(),file.unlock()} [13], indicating that file.unlock() must be called after file.lock(). These techniques are often used to detect potential bugs caused by API usage violations [2, 13, 18, 14, 9, 24].\n\nSome techniques provide support for visualizing the results of mined API usage patterns but they do not focus on how to effectively visualize concrete supporting examples together. For example, Buse et al. synthesize human-readable API usage code based on the mined graph patterns [4]. GrouMiner applies a similar graph-based mining algorithm and un-parses mined graph patterns to generate corresponding source code [16]. Wang et al. mine frequent method call sequences and visualize the mined call sequences in a probability graph [26]. While all these techniques visualize the mined patterns directly with respect to underlying API usage patterns, they do not provide traceability to concrete examples that illustrates these patterns. Instead, EXAMPLORE instantiates a general code skeleton that demonstrates a variety of API usage features, visualizes the statistical distribution of each feature in a large collection of open-source projects, and provides a navigation model to allow users to understand the correspondence between abstract API usage features and concrete examples.\n\nIn our ICSE 2018 paper [29], we develop an API usage mining framework that extracts API usage patterns automatically from 380K GitHub repositories and subsequently report potential API usage violations in 217,818 Stack Overflow posts to demonstrate the prevalence and severity of API misuse on Stack Overflow. In this CHI paper, we leverage the resulting data set and design new interactive visualization support for exploring and comprehending massive code examples at scale. Therefore, we are not arguing for the novelty and contribution of the API usage mining technique. Instead, the main contribution of EXAMPLORE is a novel UI prototype that summarizes hundreds of code examples in one synthetic code skeleton with statistical distributions for important pieces that a developer must understand to figure out how to use a given API correctly.",
+      "unit_type": "section",
+      "parent_id": null,
+      "ordinal": 3
+    },
+    {
+      "id": "s0004",
+      "title": "Synthetic Code Skeleton",
+      "tag": "This section establishes the conceptual abstraction underlying the proposed visualization by defining the generalized structural model used to represent and organize the variable elements of the data being summarized, grounding this model in prior domain knowledge and explaining its scope and limits of generalizability, thereby providing the reader with the foundational schema that later sections build upon and instantiate in the interface and implementation.",
+      "text": "To visualize and navigate a collection of code examples in the order of hundreds or thousands, we introduce the concept of a synthetic code skeleton, which summarizes a variety of API usage features in one view for ease of exploration. Its design is inspired by previous studies on the challenges and obstacles of learning unfamiliar APIs. Duala-Ekoko and Robillard argue that a user must understand dependent code segments—object construction, error handling, and interaction with other API methods—related to an API method of interest [5]. Ko et al. found that programmers must be aware of how to use several low-level APIs together (i.e., a coordination barrier); how to invoke a specific API method with valid arguments; and how to handle the effects of the method (i.e., a use barrier) [11]. Figure 2(a) shows the layout of the code skeleton in the EXAMPLORE interface.\n\nThe skeleton is composed of the following seven API usage features that can co-occur with a common focal API method call that is of interest to the user: 1. Declarations Prior to calling the focal API method, programmers may construct a receiver object and initialize method arguments. 2. Pre-focal method calls Developers may need to configure the program state of the receiver object or arguments by calling other methods before the focal API method call. For example, before calling Cipher.doFinal to encrypt or decrypt a message, programmers must call Cipher.init to set the operation mode and key. Otherwise, doFinal will throw IllegalStateException, indicating that the cipher has not been configured. 3. Guard Developers often need to check an appropriate guard condition before the focal API call. For example, before calling Iterator.next, programmers can check that Iterator.hasNext returns true to make sure another element exists, before calling Iterator.next to retrieve it. 4. Return value check Developers often need to read the return value of the focal API method call. For example, Activity.findViewById(id) returns null if the id argument is not valid. For API methods that may return invalid objects or error codes, programmers must check the return value before using it to avoid exceptions. 5. Post-focal method calls Developers may make follow-up method calls on the receiver object or the return value after calling the focal API method. For example, after calling Activity.findViewById to retrieve a view from an Android application, programmers may commonly call additional methods on the returned view, like setVisibility or setBackground, to update its rendering. 6. Exception handling For API methods that may throw exceptions, programmers may consider which exception types to handle and how these exceptions are handled in a try-catch block. 7. Resource management Many Java API methods manipulate different types of resources, e.g., files, streams, sockets, and database connections. Such resources must be freed to avoid resource leaks. A common practice in Java is to clean up these resources in a finally block to ensure these resources are freed, even in case of errors.\n\nThis skeleton design targets API usage in Java. All the components of the skeleton are standard aspects of Java API design and usage known to the software engineering community [11, 19, 5]. In other words, the skeleton is the reification of domain knowledge among those who design, teach about, and do research on Java APIs.\n\nThis skeleton can be generalized to similar languages like C++ and C. Some components captured by the skeleton, e.g., conditional predicates guarding the execution of an API call, are expected to generalize to many other languages. Additional components may be necessary to capture API usage features in other programming paradigms, e.g., functional programming.",
+      "unit_type": "section",
+      "parent_id": null,
+      "ordinal": 4
+    },
+    {
+      "id": "s0005",
+      "title": "Scenario: Interacting with Code Distributions",
+      "tag": "This section provides a worked walkthrough that illustrates, through a representative user persona and a step-by-step narrative, how the system's interface and interaction mechanisms are used in practice to accomplish a realistic task, grounding the preceding abstract design description in a concrete usage scenario before the paper moves on to formal implementation and evaluation.",
+      "text": "EXAMPLORE is designed to help programmers understand the common and uncommon usage patterns of a given API call. Let's consider Victor, a developer who wants to learn how to use FileInputStream objects in Java. EXAMPLORE shows one hundred code examples mined from GitHub that include at least one call to construct a FileInputStream object.\n\nThe right half of the screen shows all mined examples, sorted from shortest to longest. Victor can quickly pick out the FileInputStream constructor in each example because they are each highlighted with the same blue color as the header of the focal API section of the code skeleton (⑥ in Figure 2). Each section of the skeleton has a distinct heading color, which is used to highlight the corresponding concrete code segments in each code example, e.g., initializing declarations in red, guards in light orange. This is designed to reduce the cognitive load of parsing lots of code, and allows Victor to more easily identify the purpose of different portions of code within each example.\n\nEXAMPLORE reveals, by default, the top three most common options for each section of the skeleton (⑦ in Figure 2). Victor notices that, based on the relative lengths of the blue bars aligned with each option for calling FileInputStream, passing a File object as the argument is twice as likely as passing fileName, a String. By looking at the guard condition options within the if section in Figure 3, Victor can see how other programmers typically protect FileInputStream from receiving an invalid argument. He can also tell, by the small size of the blue bars aligned with these expressions, that these most popular guards are still not used frequently, overall. If he wants to see more or fewer options per skeleton section, he can click the \"Show More\" or \"Show Less\" buttons, or explore the long tail of the corpus by clicking \"Show All\" (④ in Figure 2).\n\nVictor is interested in exploring and better understanding the less common FileInputStream constructor, which takes a String argument representing a file name. Victor clicks on the radio button next to stream = new FileInputStream(fileName). The active filters (⑤ in Figure 2) are updated and the right-hand side of the screen now only lists code examples that construct a FileInputStream with a String.\n\nFeature options in the skeleton view are pruned and updated based on Victor's selection (Figure 4). Since the selected FileInputStream constructor takes a String argument instead of a File object, the options that declare and initialize the File object disappear. The counts of the remaining co-occurring options are affected: the total, unfiltered counts shown in pastel bars are unchanged, but darker bars are super-imposed, showing the new counts for the subset of examples in the corpus that construct FileInputStream with a String.\n\nVictor realizes that there is one place in his project where it will be a hassle to get a file name. He will need to use the other version of FileInputStream constructor that takes a File object instead. He wonders what guards other programmers use to prevent problems when constructing a FileInputStream this way. As shown in Figure 5, by clicking on the radio button next to stream = new FileInputStream(file) and the check box for the enclosing if block, he filters the skeleton options and concrete code examples down to just those with the guards he is interested in. He clicks \"Show All\" to see all the guard options in the corpus, from the most common guards like file.exists() to more unusual guards like file.isFile(). He was not aware that the File object has an isFile() method. He scrolls through a few of the concrete code examples on the right-hand side of the screen to confirm that he understands how these guard conditions are expressed in other programmers' code, and then continues his task of creating well-guarded FileInputStream objects in his own code.",
+      "unit_type": "section",
+      "parent_id": null,
+      "ordinal": 5
+    },
+    {
+      "id": "s0006",
+      "title": "System Architecture and Implementation",
+      "tag": "This section provides the technical implementation account of the proposed tool, explaining the end-to-end pipeline—from data collection through processing to visualization rendering—that transforms the raw underlying data into the interactive interface previously illustrated through the usage scenario, thereby grounding the system's feasibility and enabling readers to understand how the design was realized in practice before the subsequent evaluation.",
+      "text": "EXAMPLORE retrieves and visualizes hundreds of usage examples for a given API call of interest in three phases, shown in Figure 6. In the Data Collection phase, EXAMPLORE leverages an existing API usage mining framework [29] to crawl 380K GitHub repositories and retrieve a large number of code examples that include at least one call to the API method call of interest. In the Post-processing phase, EXAMPLORE analyzes the code examples, labels the segments of code that correspond to each API usage feature in the skeleton, and then extracts and canonicalizes those segments of code to populate the options for each feature in a MongoDB database. In the Visualization phase, EXAMPLORE renders the code skeleton, including the canonicalized options for each feature and their distribution in the corpus, and highlights the code segments within each mined code example from which the canonicalized options were extracted. The user interacts with the visualization by selecting features and specific options to filter by.\n\nHere, we briefly summarize the mining process in [29] to describe the format of resulting code example data used in EXAMPLORE. Given an API method of interest, the mining process first traverses the abstract syntax trees of Java files and locates all methods invoking the given API method by leveraging ultra-large-scale software repository analysis infrastructure [6]. For each scanned method, the mining technique uses program slicing to remove code statements irrelevant to the API method of interest. For example, when the API method of interest is the constructor of FileInputStream on line 12 in Figure 7, only underlined statements and expressions in lines 10, 16, and 24 are retained, as these have direct data dependences on the focal API call at line 12. In addition to filtering relevant statements based on direct data dependences, EXAMPLORE also identifies enclosing control structures such as try-catch blocks and if statements relevant to the focal API call. A control structure is related to a given API call if there exists a path between the two and the API call is not post-dominated by the control structure [1]. In Figure 7, the API call to new FileInputStream (line 12) is related to the enclosing try-catch-finally block at lines 11 and 19-27 and the preceding if statement at line 3. Such control structure information is used to extract API usage features about guard conditions, return value checks, and exception handling. In each scanned code example, each variable or object name is annotated with its static type information, which EXAMPLORE uses when canonicalizing variable names within the code skeleton.\n\nEXAMPLORE normalizes the retrieved set of code examples into a canonical form so that the user can easily view relevant API usage features without the need to handle different syntactic structures and different concrete variable names. Concrete options for each API usage feature are stored in a MongoDB database so that the front end can construct a database query and update the interface based on user selections.\n\nNormalization of Chained Calls. To help developers easily recognize a sequence of method calls, EXAMPLORE rewrites chained method calls for readability. Specifically, it separates chained method calls to different method calls by introducing temporary variables that store the intermediate results. For example, new FileInputStream(new File(path)).read(...) is rewritten to file = new File(path); fileInputStream = new FileInputStream(file); fileInputStream.read(...);.\n\nCanonicalizing Variable Names. To reduce the cognitive effort of recognizing semantically similar variables that are named differently in different examples, EXAMPLORE renames the arguments of the focal API call based on the corresponding parameter names declared in the official Javadoc documentation so that all variable names follow the same naming convention. The rest of the variables are renamed based on their static types. For example, if the type of the receiver object is File, we rename its object name to be file, the lower CamelCase of the receiver type.\n\nConsider the example in Figure 7 where the constructor FileInputStream(File) is the focal API call. The following list describes the concrete code segments corresponding to different API usage features: • Declarations: File file = new File(path) at line 10. • Pre-focal method calls: none. • Guard: the negation of fName == null at line 3. • Return value check: none. • Post-focal method calls: in.read(outputByte,0,4096)!=-1 at line 16. • Exception handling: e.printStackTrace() for handling FileNotFoundException at lines 19-20 and IOException at lines 21-22. • Resource management: in.close() at line 24.\n\nFor each API usage feature, EXAMPLORE records the start and end character indices of the corresponding code for color highlighting. EXAMPLORE queries the MongoDB database and instantiates the synthetic code skeleton with canonicalized options extracted from GitHub code examples and distributions of counts accumulated across the corpus. When a user selects particular options in the skeleton, the front end queries MongoDB and updates the interface accordingly.",
+      "unit_type": "section",
+      "parent_id": null,
+      "ordinal": 6
+    },
+    {
+      "id": "s0007",
+      "title": "User Study",
+      "tag": "This section specifies the design of a controlled, within-subjects evaluation—detailing the chosen task domains, participant recruitment and background, and the experimental procedure and conditions—so that the reader understands how the subsequent empirical comparison was set up before its outcomes are reported.",
+      "text": "We conducted a within-subjects study with sixteen Java programmers to evaluate whether participants could grasp a more comprehensive view of API usage using EXAMPLORE, in comparison to a realistic baseline of searching online for code examples, which is commonly used in real-world programming workflows [3, 20]. We designed a set of API usage questions, shown in Table 1, to assess how much knowledge about API usage participants could extract from EXAMPLORE or online search for a given API method. Questions Q1-7 were derived from the commonly asked API usage questions identified in prior work [5]. Q8 asked participants to inspect and critique a curated code example from Stack Overflow. This question was designed to evaluate whether users were capable of making comprehensive judgments about the quality of a given code example after exploring a large number of examples using EXAMPLORE, inspired by Brandt et al.'s observation that programmers typically opened several programming tutorials in different browser tabs and judged their quality by rapidly skimming [3].\n\nProgrammers often behave differently when searching online to learn a new concept compared to when they are reminding themselves about the details in a familiar concept [3]. Similarly, we anticipated that programmers might apply different exploration strategies when answering API usage questions about familiar and unfamiliar APIs. To capture a spectrum of behaviors, we chose three API methods with which programmers might have varying levels of familiarity: 1. Map.get is a commonly used Java method that retrieves the value of a given key from a data structure that stores data as key and value pairs. 2. Activity.findViewById is an Android method that gets a specific view (e.g., button, text area) from an Android application. 3. SQLiteDatabase.query is a database query method that constructs a SQL command from the given parameters and queries a database.\n\nFigure 8 shows cropped screenshots of how EXAMPLORE rendered each of these APIs.\n\nWe recruited sixteen Computer Science students from UC Berkeley through the EECS department mailing list. Eleven participants (69%) were undergraduate students and the other five (31%) were graduate students. Since our study task required participants to read code examples in Java and answer questions about Java APIs, we only included students who had taken at least one Java class. Participants had a diverse background in Java programming, including one participant with one semester of Java programming, four with one year, ten with two to five years, and one with over five years. Two students were teaching assistants for an object-oriented programming language course. Prior to the study, twelve participants (75%) had used Map or similar data structures, six (38%) had used SQLiteDatabase.query or similar database query methods, and only three (19%) had used Activity.findViewById.\n\nWe conducted a 50-min user study with each participant. Note that our study follows a within-subjects design and both the order of the assigned conditions (using online search or EXAMPLORE to answer API usage questions) and which of the three API methods were assigned in each condition (Map.get, Activity.findViewById, or SQLiteDatabase.query) were counterbalanced across participants through random assignment.\n\n1. Training session (15 min) We first walked the participant through a short list of relevant Java concepts and terminology, such as receiver objects and guards. Then we walked participants through each user interface feature and answered participants' questions about both the concepts and the interface. 2. Code exploration task 1 (15 min) The participant was given basic information about one of the three API methods and asked to answer API usage questions Q1-8 by exploring code examples using the assigned tool, either online search or EXAMPLORE. 3. Code exploration task 2 (15 min) The participant was given basic information about another one of the three API methods and asked to answer API usage questions Q1-8 by exploring code examples using the tool (EXAMPLORE or online search) that they did not use in the previous task. 4. Post survey (5 min) At the end of the session, participants answered questions about their experience using each tool and the usability of individual user interface features in EXAMPLORE.\n\nIn the control condition, participants were allowed to search for code examples in any online learning resources, e.g., documentations, tutorial blogs, Q&A forums, and GitHub repositories, using any search engines in a web browser. In the experimental condition, participants used EXAMPLORE to explore one hundred code examples that were pre-loaded into the system.\n\nSome of the API usage questions have multiple possible correct answers. Before each code exploration task, we reminded participants that they had 15 minutes to complete the API usage questions and that they should aim for thoroughness (i.e., list multiple correct answers if they exist) instead of speed when answering these questions.",
+      "unit_type": "section",
+      "parent_id": null,
+      "ordinal": 7
+    },
+    {
+      "id": "s0008",
+      "title": "Results",
+      "tag": "This section presents the empirical findings from the controlled comparison, reporting both quantitative outcomes (performance differences and statistical significance) and qualitative feedback (participant perceptions and suggestions) to substantiate the claim that the proposed approach improves user outcomes relative to the baseline.",
+      "text": "Answering Commonly Asked API Usage Questions. We manually assessed the participants' answers to Q1-8. An answer was considered concrete if it contained a code segment, e.g., map.containsKey(key), or it was specific, e.g., \"check whether the key exists.\" As a counter example, a vague answer to the question about how programmers handle the return value of Map.get (Q6) was, \"[other programmers] do something with the return value [of Map.get].\" We considered a concrete solution to be correct if it could be confirmed by the official documentation, blogs, or concrete code examples.\n\nTable 2 shows statistics about participants' correct answers to Q1-7 when using online search or the EXAMPLORE tool. We find that the effects of using EXAMPLORE are both meaningful in size and statistically significant: Users gave, on average, correct answers to 6 out of 7 API usage questions using EXAMPLORE vs. 4.6 questions using the baseline of online search. This mean difference of 1.3 questions out of 7 is statistically significant (paired t-test: t=3.02, df=15, p-value=0.0086).\n\nScreencasts of the user study sessions reveal that participants in the control condition often answered API usage questions just based on one example they found or by guessing. In contrast, EXAMPLORE users interacted with the code skeleton and investigated many individual examples that were relevant to the question. This may explain why, in Table 2, EXAMPLORE users gave, on average, twice as many correct answers to Q1-7 as baseline users (11.8 vs. 5.7, paired t-test: t=3.84, df=15, p-value=0.0016).\n\nParticipants using online search provided almost twice as many vague answers as participants using EXAMPLORE. When answering Q6 (How do programmers handle the return value of this API method?), two participants using online search were unable to find any examples that check the return value of Activity.findViewById, while all participants gave the correct answer using EXAMPLORE.\n\nCritiquing Stack Overflow Answers. Q8 asked participants to critique a code example from Stack Overflow based on other relevant code examples they explored in the study. Regardless of whether participants had just used EXAMPLORE or online search, fourteen participants (88%) gave valid suggestions to improve the Stack Overflow posts. The majority of critiques (80%) written by participants using EXAMPLORE were about safety checks, e.g., how to handle potential exceptions in a try-catch block. When using online search, the majority of participants (57%) suggested how to customize and style the code example for better readability, e.g., adapting types and parameters when reused to a new client program, renaming variables, and indenting code.\n\nPost Survey Responses. In the post survey, 13 participants (81%) found EXAMPLORE to be more helpful for answering API usage questions than online search. The distribution of their responses on a 7-point scale is shown in Figure 9. The median level of confidence that participants had in their answers was higher when using EXAMPLORE (5 vs. 4 on a 7-point scale, shown in Figure 10). Figure 11 suggests that EXAMPLORE's representation of the commonalities and differences across 100 code examples is more helpful than overwhelming (5 vs. 3.5 on a 7-point scale).\n\nOne source of participants' accuracy, thoroughness, and confidence when using EXAMPLORE appears to be the data itself, presented in structured form: P16 wrote, \"[EXAMPLORE] provided structure to learning about API. This structure guides functionality while still showing variety of use. The frequency of [each option] shows me if I am looking at a random corner case or something commonly used.\" However, explanations in natural language are still valued. For example, two participants requested textual explanations alongside concrete code examples. P7 stated that, \"although I definitely took longer with the online search, I felt more confident in knowing what I was doing because I had access to Stack Overflow explanations.\"\n\nWe coded participants' free responses in the post survey for common recurring patterns. By far the most popular interface feature named in their free responses (13/16) was the ability to filter for specific API usage aspects of code examples, e.g., declarations, guards, and co-occurring API calls. The second most popular feature (4/16) was the ability to explore many examples simultaneously in a summarized form. The long tail of responses included appreciation for the ease of finding relevant examples (3/16), the use of color to label different parts of each code example (2/16), being able to perceive and retrieve a variety of examples within a skeleton (2/16), which also gave structure to learning (2/16) and counts to indicate common practices (1/16).\n\nSeveral critical aspects of EXAMPLORE were highlighted by their absence in the control condition, i.e., online search. Nearly half (7/16) wrote that they wished traditional search had better filtering mechanisms, like EXAMPLORE provided, so that participants could retrieve more consistently relevant results and/or filter on a more fine-grained basis. A quarter of participants (4/16) complained that they had to mentally parse code examples from the on-line search results. Three participants complained that they cannot easily assess how common and uncommon the code examples found through Google or GitHub searches are: P3 wrote, \"One thing that is important is 'best practice' which you might not get from reading random code online, so if I had a way to know what is common and uncommon, that would be useful.\" One participant pointed out that Google and GitHub searches did not make it easy to view multiple examples at once: while it was relatively easy to spot the use of the API call of interest in each code example, \"it was hard to find the specific instances of API usage categories other than the Focus because the examples would use different names for different variables.\"\n\nParticipants did point out several areas where the interface could be improved. Half of the participants stated that the interface was confusing and hard to learn. Three of the sixteen participants felt confused or distracted by the many colors used to highlight different parts of the code examples that corresponded with the skeleton. Participants wished for not just filtering but search capabilities in the interface, and for textual explanation to be paired with the code, like the curated and explained examples in many online search results. Two participants asked for a more explicit indicator of code example quality, beyond frequency counts.\n\nThe final question of the post survey asked participants to write about how EXAMPLORE could fit into their programming workflows. Without any prior questions or prompting about API learning, nearly half the participants (7/16) wrote that they would use EXAMPLORE to explore and learn how to use an unfamiliar API. For example, P4 wrote \"[U]sing [EXAMPLORE] to search for usage of unfamiliar methods could be very helpful.\" One quarter of the participants mentioned EXAMPLORE would be helpful to augment the code browsing mechanism in Q&A sites like Stack Overflow. Two participants wrote specifically about using EXAMPLORE to learn about design alternatives for an API, regardless of their prior familiarity with it. Two participants mentioned that they could consult it for certain specific questions, e.g., what exceptions are commonly caught. Finally, one participant pointed out that they could use EXAMPLORE to remind them of uncommon usage cases. Several participants asked the experimenter, after submitting their post survey answers, whether EXAMPLORE would be made publicly available, expressing a sincere desire to use it in the future.",
+      "unit_type": "section",
+      "parent_id": null,
+      "ordinal": 8
+    },
+    {
+      "id": "s0009",
+      "title": "Discussion and Limitations",
+      "tag": "This section interprets the study's results in light of the paper's goals, identifying the conditions under which the approach is most and least beneficial, acknowledging trade-offs and boundary cases, and candidly surfacing unresolved limitations and open design challenges that temper the claims and point toward future refinements.",
+      "text": "Our study explored if EXAMPLORE can help users explore and understand how an API method is used. The results show that, when using EXAMPLORE instead of online search engines, users can answer more API usage questions correctly, with more confidence, concrete details, and alternative correct answers.\n\nThe EXAMPLORE interface appears to be most beneficial when learning and exploring unfamiliar APIs. Participants expressed, in free-response survey answers, the desire to use EXAMPLORE to explore unfamiliar APIs in the future. Also, the benefits of using EXAMPLORE described in Table 2 are most pronounced for the APIs that participants were, in aggregate, least familiar with: Activity.findViewById and SQLiteDatabase.query. In contrast, for the API that most participants were already familiar with, Map.get, participants answered one less question correctly on average, compared to online search. Existing online search provided a familiar and flexible search interface as well as the ability to access learning resources with textual explanations such as Stack Overflow posts, documentation, and blog posts. Even so, participants still provided two more concrete solutions on average, when using EXAMPLORE for Map.get, indicating that EXAMPLORE can still be helpful to provide a more comprehensive view of API usage even for familiar APIs.\n\nThe study results suggest that programmers can develop a more comprehensive understanding of API usage by exploring a large collection of code examples visualized using EXAMPLORE than by searching for relevant examples online. However, there is a trade-off between the EXAMPLORE interface's expressive power and its visual complexity. We have a lot of information about how APIs are used, but showing all of it at once can be overwhelming. More research is needed in making sure the most common use cases are answered in a visually simple and easy-to-interpret manner, while still supporting more complex investigations. This could, for example, be achieved through progressive disclosure or other UI design patterns.\n\nEXAMPLORE does not require all mined code examples to be bug-free. We expect that inadequate examples occur less frequently in the majority of mined code, i.e., the \"wisdom of the crowd,\" but we do not currently guard against stale examples or low-quality examples. Possible ways of detecting stale examples in the future include analyzing metadata and scanning for outdated method signatures. Even if all examples in the corpus are of equally high quality, sorting the concrete code examples by length, as the interface currently does, is not necessarily what programmers want. Alternative sorting criteria could include metrics like GitHub stars, number of contributors, and build status. We will surface these signals in the future user interface so users have additional information scent when judging quality.",
+      "unit_type": "section",
+      "parent_id": null,
+      "ordinal": 9
+    },
+    {
+      "id": "s0010",
+      "title": "Conclusion",
+      "tag": "This section closes the paper by restating the problem motivation and the proposed approach at a high level, briefly reaffirming the empirical evidence supporting its effectiveness, and pointing toward future extensions of the work, thereby giving the reader a final, condensed takeaway of the contribution's value and trajectory.",
+      "text": "Code examples are a key learning resource when learning unfamiliar APIs. Current tools for searching and browsing code examples often produce large collections of code examples that developers only have limited time and attention to review. In this paper, we introduce the concept of a synthetic code skeleton, which summarizes a variety of API usage features from a collection of code examples simultaneously in a single view. EXAMPLORE instantiates the synthetic code skeleton with statistical distributions and allows a user to drill down to individual concrete code examples mined from 380K GitHub repositories. We conducted a within-subjects study with sixteen Java programmers and found that participants could answer more API usage questions correctly, with more detail and confidence, when using EXAMPLORE compared to searching for usage examples online. Many of these developers could envision EXAMPLORE fitting into their development workflows, helping them explore unfamiliar APIs. In future work, we hope to extend the code skeleton to support different programming languages and allow multiple related API methods to be the focal point of our visualization.",
+      "unit_type": "section",
+      "parent_id": null,
+      "ordinal": 10
+    },
+    {
+      "id": "s0011",
+      "title": "Acknowledgments",
+      "tag": "This section fulfills a conventional scholarly courtesy function by crediting individuals who contributed intellectually or technically to the work without being listed as authors, acknowledging related but distinct efforts by others, and disclosing the funding sources that supported the research, thereby situating the work within its institutional and financial context rather than advancing the paper's core argument.",
+      "text": "We would like to acknowledge the intellectual and coding contributions of Marti Hearst, Orkun Duman, Julie Deng, Emily Pedersen, Alexander Ku, and John Hughes. We would like to thank Anastasia Reinhart who was the summer intern at UCLA for her design and development of a Chrome extension for visualizing API usage examples, which serves as an alternative to this work. Participants in this project are in part supported through AFRL grant FA8750-15-2-0075, NSF grants CCF-1527923, CCF-1460325, and CCF-1138996, and the Berkeley Institute of Data Science.",
+      "unit_type": "section",
+      "parent_id": null,
+      "ordinal": 11
+    }
+  ],
+  "paragraphs": [
+    {
+      "id": "s0001.p0001",
+      "title": "1",
+      "tag": "This paragraph establishes the practical problem motivating the work, identifies a gap in existing solutions, introduces the proposed approach at a high level, and previews the evaluation and its outcomes, serving as the complete capsule summary that orients the reader to the paper's motivation, contribution, and validation before the detailed sections unfold.",
+      "text": "Using existing APIs properly is a key challenge in programming, given that libraries and APIs are increasing in number and complexity. Programmers often search for online code examples in Q&A forums and read tutorials and blog posts to learn how to use a given API. However, there are often a massive number of related code examples and it is difficult for a user to understand the commonalities and variances among them, while being able to drill down to concrete details. We introduce an interactive visualization for exploring a large collection of code examples mined from open-source repositories at scale. This visualization summarizes hundreds of code examples in one synthetic code skeleton with statistical distributions for canonicalized statements and structures enclosing an API call. We implemented this interactive visualization for a set of Java APIs and found that, in a lab study, it helped users (1) answer significantly more API usage questions correctly and comprehensively and (2) explore how other programmers have used an unfamiliar API.",
+      "section_id": "s0001",
+      "family_id": "s0001",
+      "ordinal": 1
+    },
+    {
+      "id": "s0002.p0001",
+      "title": "1",
+      "tag": "This paragraph opens the section by establishing the broad significance and ubiquity of the general problem being addressed, framing it as a universal challenge before narrowing toward the specific difficulties that motivate the work.",
+      "text": "Learning how to correctly and effectively use existing APIs is a common task — and a core challenge — in software development. It spans all expertise levels from novices to professional software engineers, and all project types from prototypes to production code. The landscape of publicly available APIs is massive and constantly changing, as new APIs are created in response to shifting programmer needs. Within companies, the same is true, perhaps even more so: joining a company can require learning a whole new set of proprietary APIs before a developer becomes an effective contributor to the company codebase. Developers often are stymied by various learning barriers, including overly specific or overly general explanations of API usage, lack of understanding about the interaction between multiple APIs, lack of alternative uses, and difficulty identifying program statements and structures related to an API [11, 19, 5].",
+      "section_id": "s0002",
+      "family_id": "s0002",
+      "ordinal": 1
+    },
+    {
+      "id": "s0002.p0002",
+      "title": "2",
+      "tag": "This paragraph deepens the motivation established in the prior paragraph by citing specific evidence that existing learning resources fall short, narrowing the problem space before the section pivots to alternative information sources in the following paragraph.",
+      "text": "One study found that the greatest obstacle to learning an API is \"insufficient or inadequate examples.\" [19] Official documentation is typically dominated by textual descriptions and explanations, often lacking concrete code examples that illustrate API usage. Tutorials and blog posts walk developers through simplified code examples but often without demonstrating alternative uses of an API, which programmers frequently desire when learning unfamiliar APIs [5, 19, 4].",
+      "section_id": "s0002",
+      "family_id": "s0002",
+      "ordinal": 2
+    },
+    {
+      "id": "s0002.p0003",
+      "title": "3",
+      "tag": "This paragraph introduces a widely available alternative source of material noted earlier, then problematizes it by identifying practical constraints on how much of it people can realistically engage with and citing prior findings on the risks of relying on only a small, potentially flawed sample, thereby motivating the need for the approach the section will go on to propose.",
+      "text": "Code-sharing sites like GitHub hold the promise of documenting all the common and uncommon ways of using an API in practice, including many alternative usage scenarios that are not typically shown in curated examples. However, given the large amount of code available online, it is challenging for developers to efficiently browse the enormous volume of search results. It is certainly infeasible for developers to examine more than a few code examples simultaneously. In practice, programmers often investigate a handful of search results and return to their own code due to limited time and attention [3, 23, 5]. Prior work has shown that individual code examples may suffer from API usage violations [29], insecure coding practices [7], unchecked obsolete usage [31], and comprehension difficulties [25]. Therefore, inspecting a few examples may leave out critical safety checks or desirable usage scenarios.",
+      "section_id": "s0002",
+      "family_id": "s0002",
+      "ordinal": 3
+    },
+    {
+      "id": "s0002.p0004",
+      "title": "4",
+      "tag": "This paragraph identifies a gap in an adjacent body of research, explains the motivation for bridging that gap by drawing on analogous prior work from related domains, and distills the overarching problem into a concrete research question that frames the contribution described in the following paragraphs.",
+      "text": "In the software engineering community, there is a growing interest in leveraging a large collection of open source repositories—so-called Big Code—to automatically infer API usage patterns from massive corpora [4, 16, 26, 30]. However, these API usage mining techniques provide limited support to help programmers explore concrete code examples from which API usage patterns are inferred, and understand the commonalities and variances across different uses. To bridge the gap, we aim to visualize hundreds of concrete code examples mined from massive code corpora in a way that reveals their commonalities and variances, and design a navigation model to guide the exploration of these examples. We draw motivation from prior work on visualizing large corpora of related documents, e.g., student coding assignments [8], text [27, 21], and image manipulation tutorials [17], to pose the following research question: How might we extract, align, canonicalize, and display large numbers of usage examples for a given API?",
+      "section_id": "s0002",
+      "family_id": "s0002",
+      "ordinal": 4
+    },
+    {
+      "id": "s0002.p0005",
+      "title": "5",
+      "tag": "This paragraph introduces the paper's proposed solution at a high level, naming it, stating its core capabilities, specifying the scale and source of input it operates on, and positioning it relative to existing resources to clarify how it complements rather than replaces them.",
+      "text": "In this paper, we introduce a novel interactive visualization and navigation technique called EXAMPLORE that (1) gives a bird's-eye view of common and uncommon ways in which a community of developers uses an API and (2) allows developers to quickly filter a corpus for concrete code examples that exhibit these various uses. It operates on hundreds of code examples of a given API method, which can be automatically mined from open-source projects or proprietary codebases. It is designed to supplement existing resources: for example, while Stack Overflow can provide explanations and discussions, EXAMPLORE provides quantitative information about how an API call is used in the wild.",
+      "section_id": "s0002",
+      "family_id": "s0002",
+      "ordinal": 5
+    },
+    {
+      "id": "s0002.p0006",
+      "title": "6",
+      "tag": "This paragraph provides a technical overview of how the proposed system works, explaining its underlying representation, the information it presents to the user, and how user interaction with that representation drives the exploration process, thereby elaborating on the high-level introduction given just before it.",
+      "text": "EXAMPLORE instantiates a synthetic code skeleton that captures a variety of API usage features, including initializations, enclosing control structures, guard conditions, and other method calls before and after invoking the given API method, etc. This skeleton is designed to be general: it is grounded in how API design is taught in software engineering curricula and how API mining researchers conceptualize their tasks [11, 19, 5]. EXAMPLORE visualizes the statistical distribution of each API usage feature in the skeleton to provide quantitative evidence of each feature in the corpus. The user can select one or more features in the skeleton and, by dynamically filtering mined code examples from the corpus, drill down to concrete, supporting code examples. Color-coordinated highlighting makes it easier for users to recognize the correspondence between features in the skeleton and code segments within each example.",
+      "section_id": "s0002",
+      "family_id": "s0002",
+      "ordinal": 6
+    },
+    {
+      "id": "s0002.p0007",
+      "title": "7",
+      "tag": "This paragraph reports the design and outcomes of an empirical evaluation comparing the proposed approach against a baseline, previewing the study's method and headline results to substantiate the paper's claims before they are detailed later in the paper.",
+      "text": "We conducted a within-subjects lab study where we asked sixteen Java programmers of various levels of expertise to answer questions about the usage of particular Java APIs based on either (1) searching online for relevant code examples, blogs, and forum posts or (2) using EXAMPLORE to explore one hundred API usage examples mined from GitHub. On average, participants answered significantly more API usage questions correctly, with more concrete details, using EXAMPLORE. This suggests that EXAMPLORE helps users grasp a more comprehensive view of API usage than online search. In a post survey, the majority of participants (13/16) found EXAMPLORE to be more helpful for answering API usage questions than online search, and when using EXAMPLORE, their median level of confidence in their answers was higher.",
+      "section_id": "s0002",
+      "family_id": "s0002",
+      "ordinal": 7
+    },
+    {
+      "id": "s0002.p0008",
+      "title": "8",
+      "tag": "It closes the section by explicitly enumerating the paper's claimed contributions as a bulleted list, giving the reader a concise preview of what the rest of the paper will substantiate.",
+      "text": "Our contributions are: • a method for generating an interactive visualization of a distribution of code examples for a given API call • an implementation of this interactive visualization for a set of Java and Android API calls • a within-subjects lab study that shows how this interactive visualization may fill an important role in developers' programming workflows as they use unfamiliar APIs.",
+      "section_id": "s0002",
+      "family_id": "s0002",
+      "ordinal": 8
+    },
+    {
+      "id": "s0003.ss0001.p0001",
+      "title": "1",
+      "tag": "This paragraph opens the subsection by framing the breadth of prior work being surveyed, noting that such work spans diverse data types and that each prior interface's design is shaped by the particular constraints and opportunities of its data source, thereby setting up the subsequent discussion of specific examples.",
+      "text": "Prior work on visualizing large collections of related documents spans a variety of complex data types, from Photoshop image manipulation tutorials [17] to Antebellum slave narratives [21]. Each interface designs around the constraints—and leverages the opportunities—afforded by the data source.",
+      "section_id": "s0003",
+      "family_id": "s0003",
+      "ordinal": 1
+    },
+    {
+      "id": "s0003.ss0001.p0002",
+      "title": "2",
+      "tag": "This paragraph surveys a pair of closely related prior systems that operate on the same non-textual data modality, explaining their shared approach and how they differ from each other, in order to establish a point of comparison before the following paragraphs turn to systems operating on more directly analogous data types.",
+      "text": "Sifter [17] and Delta [12] operate on sequences of image manipulation operations. Pavel et al. create an interface for browsing the variation and consistency across large collections of Photoshop tutorials, focusing in particular on sequences of invoked Photoshop commands [17]. Kong et al. address a similar problem by presenting different linked views, including lists, side-by-side comparisons between a few sequences, and clusters [12]. Unlike code or text, images can be easily consumed at a glance, so these systems use thumbnails to make a long reading comparison task easy.",
+      "section_id": "s0003",
+      "family_id": "s0003",
+      "ordinal": 2
+    },
+    {
+      "id": "s0003.ss0001.p0003",
+      "title": "3",
+      "tag": "This paragraph draws a closer analogy to two specific prior systems operating on the same general data modality as the current work, explaining how each one's mechanisms are conceptually adapted or repurposed to inform the design choices being presented, thereby positioning the new contribution as an extension of established techniques into a new domain.",
+      "text": "Both WordTree [27] and WordSeer [21] operate on text, while EXAMPLORE attempts to translate similar insights to code. WordTree uses alignment, counts, deduplication, and dependence to visualize the N+1-word sequences containing the N-word long sequences simultaneously for a user-chosen root word. Similar to WordTree, EXAMPLORE captures dependencies across the multi-dimensional space of code examples. For example, when a user selects a particular feature option in the code skeleton, EXAMPLORE dynamically updates the counts of remaining feature options so that they are conditioned on the selected option, revealing the statistical distribution of co-occurring feature options. WordSeer infers the grammatical structure of natural language documents in a given corpus. It leverages the inferred grammatical structure to power grammatical search, where users can query for, e.g., who (or what) is described as \"cruel\" in North American Antebellum slave narratives? The result is a ranked list, with counts, of the different extracted entities described in one or more narratives as \"cruel\"; we adapt this display in EXAMPLORE to show the distribution of options for an API usage feature such as the guard condition of an API call.",
+      "section_id": "s0003",
+      "family_id": "s0003",
+      "ordinal": 3
+    },
+    {
+      "id": "s0003.ss0001.p0004",
+      "title": "4",
+      "tag": "This paragraph identifies a closely related prior system within the same category of surveyed work and explains why its approach, while similar in spirit, does not transfer directly to the problem setting addressed here, thereby sharpening the boundary between existing solutions and the gap the current work aims to fill.",
+      "text": "OverCode [8] helps users explore collections of code. OverCode represents how hundreds or thousands of students independently implement the same function in massive programming classes. OverCode uses its own form of human-readable variable name canonicalization, deduplication, and formatting so that the student programming solutions are rendered as readable and executable function definitions with counts representing the number of corresponding raw functions in the corpus. OverCode does not directly carry over to functions collected outside a massive classroom, where developers are not all implementing the exact same function, where developers are using statically typed languages like Java, and where developers must understand a variety of API usage features such as data dependences, guard conditions, and control structures.",
+      "section_id": "s0003",
+      "family_id": "s0003",
+      "ordinal": 4
+    },
+    {
+      "id": "s0003.ss0002.p0001",
+      "title": "5",
+      "tag": "It opens the subsection by establishing, via citations to prior empirical findings, the baseline motivation and context for why this behavior matters before the paragraph that follows delves into specific problems.",
+      "text": "Programmers often search for code examples to complete programming tasks and learn new APIs [20, 10, 22, 15]. A recent study at Google shows that developers search code frequently, issuing an average of 12 code search queries per weekday [20]. Montandon et al. instrumented the Android API documentation platform and found that programmers often searched for concrete code examples within the documentations [15].",
+      "section_id": "s0003",
+      "family_id": "s0003",
+      "ordinal": 5
+    },
+    {
+      "id": "s0003.ss0002.p0002",
+      "title": "6",
+      "tag": "This paragraph builds the problem motivation by citing prior empirical findings that document the risks and shortcomings of relying on individual examples, then reinforces the need for the proposed approach by noting explicit user demand (from prior surveys) for tools that reveal multiple examples and alternative usage patterns, thereby justifying why the section's broader topic matters.",
+      "text": "Individual code examples may suffer from insecure or unreliable code, unchecked obsolete or outdated usage, and comprehension difficulty. Fischer et al. investigated security-related code on Stack Overflow and found that 29% is insecure [7]. Another study on Stack Overflow found that 76% of detected API misuse in Stack Overflow could lead to program crashes due to omitted safety checks and unhandled runtime exceptions when reused verbatim to a client program [29]. Zhou et al. observed that 86 of 200 accepted posts on Stack Overflow used deprecated APIs but only 3 of them were reported by other programmers [31]. Treude and Robillard conducted a survey to investigate comprehension difficulty of Stack Overflow code examples and found that over half of code examples were considered hard to understand [25]. These studies motivate our goal of exploring and visualizing a large number of code examples simultaneously to help developers better understand common API usage. The desire for visualizing multiple code examples for API learning has been confirmed by previous studies. Buse and Weimer conducted a survey with 150 programmers and found that \"the best documentation must show all different ways to use something, so it's helpful in all cases\" [28]. The respondents in another survey also expressed a desire to examine multiple examples to investigate alternative uses [19].",
+      "section_id": "s0003",
+      "family_id": "s0003",
+      "ordinal": 6
+    },
+    {
+      "id": "s0003.ss0002.p0003",
+      "title": "7",
+      "tag": "This paragraph cites empirical observations about how users actually behave when confronted with large result sets, using these findings to motivate the design choice described at the end of the paragraph, thereby transitioning from a problem framing to a justification for the proposed approach.",
+      "text": "In practice, however, developers often examine only a few search results due to limited time and attention. Brandt et al. observed that programmers typically clicked several search results and then judged their quality by rapidly skimming [3]. Duala-Ekoko and Robillard observed that participants often backtracked when browsing search results, due to irrelevant or uninteresting information in search results [5]. More specifically, Starke et al. showed that programmers rarely looked beyond five examples when searching for code examples to complete a programming task [23]. These results indicate that the code exploration process is often limited to a few search results, leaving a large portion of foraged information unexplored. To guide users to explore a large number of code examples simultaneously, EXAMPLORE constructs a code skeleton with statistical distributions of individual API usage features as a navigation model.",
+      "section_id": "s0003",
+      "family_id": "s0003",
+      "ordinal": 7
+    },
+    {
+      "id": "s0003.ss0003.p0001",
+      "title": "8",
+      "tag": "This paragraph establishes the broader research context by surveying the category of prior techniques most closely related to the paper's approach, outlining what they do and how they are typically categorized, and noting their common downstream application, thereby setting up the gap that the subsequent paragraphs will address.",
+      "text": "In the software engineering community, there is an increasing interest in mining Big Code, a massive collection of open source repositories to detect potential bugs or to help programmers understand implicit programming rules. Several techniques infer API usage patterns in terms of pairwise programming rules [13, 14, 24, 15], method call sequences [30, 26], and graph-based models [16, 4]. For example, PR-Miner models programs as sets of method calls and uses frequent itemset mining to infer pairwise programming rules such as {file.lock()}⇒{file.lock(),file.unlock()} [13], indicating that file.unlock() must be called after file.lock(). These techniques are often used to detect potential bugs caused by API usage violations [2, 13, 18, 14, 9, 24].",
+      "section_id": "s0003",
+      "family_id": "s0003",
+      "ordinal": 8
+    },
+    {
+      "id": "s0003.ss0003.p0002",
+      "title": "9",
+      "tag": "This paragraph surveys closely related prior techniques to identify a specific gap they leave unaddressed, then positions the current work's approach as directly filling that gap, thereby sharpening the paper's claimed contribution relative to the most comparable existing solutions.",
+      "text": "Some techniques provide support for visualizing the results of mined API usage patterns but they do not focus on how to effectively visualize concrete supporting examples together. For example, Buse et al. synthesize human-readable API usage code based on the mined graph patterns [4]. GrouMiner applies a similar graph-based mining algorithm and un-parses mined graph patterns to generate corresponding source code [16]. Wang et al. mine frequent method call sequences and visualize the mined call sequences in a probability graph [26]. While all these techniques visualize the mined patterns directly with respect to underlying API usage patterns, they do not provide traceability to concrete examples that illustrates these patterns. Instead, EXAMPLORE instantiates a general code skeleton that demonstrates a variety of API usage features, visualizes the statistical distribution of each feature in a large collection of open-source projects, and provides a navigation model to allow users to understand the correspondence between abstract API usage features and concrete examples.",
+      "section_id": "s0003",
+      "family_id": "s0003",
+      "ordinal": 9
+    },
+    {
+      "id": "s0003.ss0003.p0003",
+      "title": "10",
+      "tag": "This paragraph distinguishes the current contribution from the authors' own prior related work, clarifying that the underlying technical mechanism was previously established and is reused here, while asserting that the present paper's novelty lies instead in a new presentation layer built atop that foundation.",
+      "text": "In our ICSE 2018 paper [29], we develop an API usage mining framework that extracts API usage patterns automatically from 380K GitHub repositories and subsequently report potential API usage violations in 217,818 Stack Overflow posts to demonstrate the prevalence and severity of API misuse on Stack Overflow. In this CHI paper, we leverage the resulting data set and design new interactive visualization support for exploring and comprehending massive code examples at scale. Therefore, we are not arguing for the novelty and contribution of the API usage mining technique. Instead, the main contribution of EXAMPLORE is a novel UI prototype that summarizes hundreds of code examples in one synthetic code skeleton with statistical distributions for important pieces that a developer must understand to figure out how to use a given API correctly.",
+      "section_id": "s0003",
+      "family_id": "s0003",
+      "ordinal": 10
+    },
+    {
+      "id": "s0004.p0001",
+      "title": "1",
+      "tag": "This paragraph motivates and grounds the section's central construct by explaining why it is needed, tracing its design rationale back to prior findings on user challenges, and pointing ahead to a figure that illustrates its layout within the interface.",
+      "text": "To visualize and navigate a collection of code examples in the order of hundreds or thousands, we introduce the concept of a synthetic code skeleton, which summarizes a variety of API usage features in one view for ease of exploration. Its design is inspired by previous studies on the challenges and obstacles of learning unfamiliar APIs. Duala-Ekoko and Robillard argue that a user must understand dependent code segments—object construction, error handling, and interaction with other API methods—related to an API method of interest [5]. Ko et al. found that programmers must be aware of how to use several low-level APIs together (i.e., a coordination barrier); how to invoke a specific API method with valid arguments; and how to handle the effects of the method (i.e., a use barrier) [11]. Figure 2(a) shows the layout of the code skeleton in the EXAMPLORE interface.",
+      "section_id": "s0004",
+      "family_id": "s0004",
+      "ordinal": 1
+    },
+    {
+      "id": "s0004.p0002",
+      "title": "2",
+      "tag": "This paragraph enumerates and defines the complete set of components that make up the proposed structural model, explaining the rationale and giving a concrete illustrative example for each component in turn.",
+      "text": "The skeleton is composed of the following seven API usage features that can co-occur with a common focal API method call that is of interest to the user: 1. Declarations Prior to calling the focal API method, programmers may construct a receiver object and initialize method arguments. 2. Pre-focal method calls Developers may need to configure the program state of the receiver object or arguments by calling other methods before the focal API method call. For example, before calling Cipher.doFinal to encrypt or decrypt a message, programmers must call Cipher.init to set the operation mode and key. Otherwise, doFinal will throw IllegalStateException, indicating that the cipher has not been configured. 3. Guard Developers often need to check an appropriate guard condition before the focal API call. For example, before calling Iterator.next, programmers can check that Iterator.hasNext returns true to make sure another element exists, before calling Iterator.next to retrieve it. 4. Return value check Developers often need to read the return value of the focal API method call. For example, Activity.findViewById(id) returns null if the id argument is not valid. For API methods that may return invalid objects or error codes, programmers must check the return value before using it to avoid exceptions. 5. Post-focal method calls Developers may make follow-up method calls on the receiver object or the return value after calling the focal API method. For example, after calling Activity.findViewById to retrieve a view from an Android application, programmers may commonly call additional methods on the returned view, like setVisibility or setBackground, to update its rendering. 6. Exception handling For API methods that may throw exceptions, programmers may consider which exception types to handle and how these exceptions are handled in a try-catch block. 7. Resource management Many Java API methods manipulate different types of resources, e.g., files, streams, sockets, and database connections. Such resources must be freed to avoid resource leaks. A common practice in Java is to clean up these resources in a finally block to ensure these resources are freed, even in case of errors.",
+      "section_id": "s0004",
+      "family_id": "s0004",
+      "ordinal": 2
+    },
+    {
+      "id": "s0004.p0003",
+      "title": "3",
+      "tag": "This paragraph situates the preceding detailed design within a broader justificatory frame, asserting that its components are not arbitrary but reflect established expert consensus, thereby grounding the design's validity in external domain knowledge rather than novel invention.",
+      "text": "This skeleton design targets API usage in Java. All the components of the skeleton are standard aspects of Java API design and usage known to the software engineering community [11, 19, 5]. In other words, the skeleton is the reification of domain knowledge among those who design, teach about, and do research on Java APIs.",
+      "section_id": "s0004",
+      "family_id": "s0004",
+      "ordinal": 3
+    },
+    {
+      "id": "s0004.p0004",
+      "title": "4",
+      "tag": "This paragraph extends the scope of the preceding design description by addressing its applicability beyond the primary context, noting how it could transfer to related settings and what additional considerations might be needed to support substantially different cases.",
+      "text": "This skeleton can be generalized to similar languages like C++ and C. Some components captured by the skeleton, e.g., conditional predicates guarding the execution of an API call, are expected to generalize to many other languages. Additional components may be necessary to capture API usage features in other programming paradigms, e.g., functional programming.",
+      "section_id": "s0004",
+      "family_id": "s0004",
+      "ordinal": 4
+    },
+    {
+      "id": "s0005.p0001",
+      "title": "1",
+      "tag": "This paragraph opens the section by introducing a concrete, relatable persona and task scenario that establishes the context and motivation for the walkthrough that follows, framing subsequent paragraphs as a step-by-step demonstration grounded in this scenario.",
+      "text": "EXAMPLORE is designed to help programmers understand the common and uncommon usage patterns of a given API call. Let's consider Victor, a developer who wants to learn how to use FileInputStream objects in Java. EXAMPLORE shows one hundred code examples mined from GitHub that include at least one call to construct a FileInputStream object.",
+      "section_id": "s0005",
+      "family_id": "s0005",
+      "ordinal": 1
+    },
+    {
+      "id": "s0005.p0002",
+      "title": "2",
+      "tag": "This paragraph orients the reader within the walkthrough example by describing how the layout's visual encoding (spatial arrangement and color-coding) connects corresponding elements across two linked views, establishing the perceptual mechanism the hypothetical user relies on before more complex interactions are introduced.",
+      "text": "The right half of the screen shows all mined examples, sorted from shortest to longest. Victor can quickly pick out the FileInputStream constructor in each example because they are each highlighted with the same blue color as the header of the focal API section of the code skeleton (⑥ in Figure 2). Each section of the skeleton has a distinct heading color, which is used to highlight the corresponding concrete code segments in each code example, e.g., initializing declarations in red, guards in light orange. This is designed to reduce the cognitive load of parsing lots of code, and allows Victor to more easily identify the purpose of different portions of code within each example.",
+      "section_id": "s0005",
+      "family_id": "s0005",
+      "ordinal": 2
+    },
+    {
+      "id": "s0005.p0003",
+      "title": "3",
+      "tag": "This paragraph extends the walkthrough by illustrating a default summarized view of the data and showing how the user can adjust the level of detail displayed, demonstrating the tool's flexibility in balancing overview against depth.",
+      "text": "EXAMPLORE reveals, by default, the top three most common options for each section of the skeleton (⑦ in Figure 2). Victor notices that, based on the relative lengths of the blue bars aligned with each option for calling FileInputStream, passing a File object as the argument is twice as likely as passing fileName, a String. By looking at the guard condition options within the if section in Figure 3, Victor can see how other programmers typically protect FileInputStream from receiving an invalid argument. He can also tell, by the small size of the blue bars aligned with these expressions, that these most popular guards are still not used frequently, overall. If he wants to see more or fewer options per skeleton section, he can click the \"Show More\" or \"Show Less\" buttons, or explore the long tail of the corpus by clicking \"Show All\" (④ in Figure 2).",
+      "section_id": "s0005",
+      "family_id": "s0005",
+      "ordinal": 3
+    },
+    {
+      "id": "s0005.p0004",
+      "title": "4",
+      "tag": "This paragraph advances the walkthrough by having the persona perform a concrete interaction with the tool, demonstrating how a user's selection triggers an update in the displayed results, thereby illustrating the mechanics of filtering in practice before the next paragraph explores its downstream effects.",
+      "text": "Victor is interested in exploring and better understanding the less common FileInputStream constructor, which takes a String argument representing a file name. Victor clicks on the radio button next to stream = new FileInputStream(fileName). The active filters (⑤ in Figure 2) are updated and the right-hand side of the screen now only lists code examples that construct a FileInputStream with a String.",
+      "section_id": "s0005",
+      "family_id": "s0005",
+      "ordinal": 4
+    },
+    {
+      "id": "s0005.p0005",
+      "title": "5",
+      "tag": "This paragraph extends the walkthrough example by showing how the interactive view dynamically updates in response to the user's prior selection, clarifying the underlying mechanism for how filtered and unfiltered quantitative information are visually distinguished and reconciled.",
+      "text": "Feature options in the skeleton view are pruned and updated based on Victor's selection (Figure 4). Since the selected FileInputStream constructor takes a String argument instead of a File object, the options that declare and initialize the File object disappear. The counts of the remaining co-occurring options are affected: the total, unfiltered counts shown in pastel bars are unchanged, but darker bars are super-imposed, showing the new counts for the subset of examples in the corpus that construct FileInputStream with a String.",
+      "section_id": "s0005",
+      "family_id": "s0005",
+      "ordinal": 5
+    },
+    {
+      "id": "s0005.p0006",
+      "title": "6",
+      "tag": "This paragraph closes the walkthrough by presenting a second, more targeted filtering scenario that shows the persona applying the tool to a related but distinct need, demonstrating how combined selections narrow results to a specific subset, surface an unexpected discovery, and lead the user to cross-check findings against underlying instances before resuming the task, thereby reinforcing the tool's value through a second concrete example rather than introducing new concepts.",
+      "text": "Victor realizes that there is one place in his project where it will be a hassle to get a file name. He will need to use the other version of FileInputStream constructor that takes a File object instead. He wonders what guards other programmers use to prevent problems when constructing a FileInputStream this way. As shown in Figure 5, by clicking on the radio button next to stream = new FileInputStream(file) and the check box for the enclosing if block, he filters the skeleton options and concrete code examples down to just those with the guards he is interested in. He clicks \"Show All\" to see all the guard options in the corpus, from the most common guards like file.exists() to more unusual guards like file.isFile(). He was not aware that the File object has an isFile() method. He scrolls through a few of the concrete code examples on the right-hand side of the screen to confirm that he understands how these guard conditions are expressed in other programmers' code, and then continues his task of creating well-guarded FileInputStream objects in his own code.",
+      "section_id": "s0005",
+      "family_id": "s0005",
+      "ordinal": 6
+    },
+    {
+      "id": "s0006.p0001",
+      "title": "1",
+      "tag": "This paragraph provides an overview of the section by outlining the overall pipeline at a high level, breaking it into sequential phases and briefly stating the purpose of each, thereby orienting the reader to the more detailed subsections that follow.",
+      "text": "EXAMPLORE retrieves and visualizes hundreds of usage examples for a given API call of interest in three phases, shown in Figure 6. In the Data Collection phase, EXAMPLORE leverages an existing API usage mining framework [29] to crawl 380K GitHub repositories and retrieve a large number of code examples that include at least one call to the API method call of interest. In the Post-processing phase, EXAMPLORE analyzes the code examples, labels the segments of code that correspond to each API usage feature in the skeleton, and then extracts and canonicalizes those segments of code to populate the options for each feature in a MongoDB database. In the Visualization phase, EXAMPLORE renders the code skeleton, including the canonicalized options for each feature and their distribution in the corpus, and highlights the code segments within each mined code example from which the canonicalized options were extracted. The user interacts with the visualization by selecting features and specific options to filter by.",
+      "section_id": "s0006",
+      "family_id": "s0006",
+      "ordinal": 1
+    },
+    {
+      "id": "s0006.ss0001.p0001",
+      "title": "2",
+      "tag": "This paragraph grounds the section by summarizing, at a technical level, the underlying prior process that produces the raw data consumed downstream, explaining the key analytic steps and the format/structure of the resulting output so that subsequent processing stages described in the section can be understood in context.",
+      "text": "Here, we briefly summarize the mining process in [29] to describe the format of resulting code example data used in EXAMPLORE. Given an API method of interest, the mining process first traverses the abstract syntax trees of Java files and locates all methods invoking the given API method by leveraging ultra-large-scale software repository analysis infrastructure [6]. For each scanned method, the mining technique uses program slicing to remove code statements irrelevant to the API method of interest. For example, when the API method of interest is the constructor of FileInputStream on line 12 in Figure 7, only underlined statements and expressions in lines 10, 16, and 24 are retained, as these have direct data dependences on the focal API call at line 12. In addition to filtering relevant statements based on direct data dependences, EXAMPLORE also identifies enclosing control structures such as try-catch blocks and if statements relevant to the focal API call. A control structure is related to a given API call if there exists a path between the two and the API call is not post-dominated by the control structure [1]. In Figure 7, the API call to new FileInputStream (line 12) is related to the enclosing try-catch-finally block at lines 11 and 19-27 and the preceding if statement at line 3. Such control structure information is used to extract API usage features about guard conditions, return value checks, and exception handling. In each scanned code example, each variable or object name is annotated with its static type information, which EXAMPLORE uses when canonicalizing variable names within the code skeleton.",
+      "section_id": "s0006",
+      "family_id": "s0006",
+      "ordinal": 2
+    },
+    {
+      "id": "s0006.ss0002.p0001",
+      "title": "3",
+      "tag": "It introduces the subsection's overall purpose and process by stating the high-level goal of transforming raw inputs into a standardized form and how the resulting structured data is stored for downstream use, setting up the specific techniques detailed in the paragraphs that follow.",
+      "text": "EXAMPLORE normalizes the retrieved set of code examples into a canonical form so that the user can easily view relevant API usage features without the need to handle different syntactic structures and different concrete variable names. Concrete options for each API usage feature are stored in a MongoDB database so that the front end can construct a database query and update the interface based on user selections.",
+      "section_id": "s0006",
+      "family_id": "s0006",
+      "ordinal": 3
+    },
+    {
+      "id": "s0006.ss0002.p0002",
+      "title": "4",
+      "tag": "This paragraph illustrates one of the normalization steps introduced in the preceding paragraph by walking through a concrete before-and-after transformation example, making the abstract procedure tangible to the reader.",
+      "text": "Normalization of Chained Calls. To help developers easily recognize a sequence of method calls, EXAMPLORE rewrites chained method calls for readability. Specifically, it separates chained method calls to different method calls by introducing temporary variables that store the intermediate results. For example, new FileInputStream(new File(path)).read(...) is rewritten to file = new File(path); fileInputStream = new FileInputStream(file); fileInputStream.read(...);.",
+      "section_id": "s0006",
+      "family_id": "s0006",
+      "ordinal": 4
+    },
+    {
+      "id": "s0006.ss0002.p0003",
+      "title": "5",
+      "tag": "This paragraph presents a second concrete normalization technique, explaining its purpose and illustrating it with a representative example, paralleling the preceding paragraph's treatment of the first technique.",
+      "text": "Canonicalizing Variable Names. To reduce the cognitive effort of recognizing semantically similar variables that are named differently in different examples, EXAMPLORE renames the arguments of the focal API call based on the corresponding parameter names declared in the official Javadoc documentation so that all variable names follow the same naming convention. The rest of the variables are renamed based on their static types. For example, if the type of the receiver object is File, we rename its object name to be file, the lower CamelCase of the receiver type.",
+      "section_id": "s0006",
+      "family_id": "s0006",
+      "ordinal": 5
+    },
+    {
+      "id": "s0006.ss0002.p0004",
+      "title": "6",
+      "tag": "This paragraph grounds the preceding normalization rules in a concrete worked example, walking through the running figure to show how each abstract processing step maps to specific extracted segments of that example, thereby making the previously described procedure tangible and verifiable.",
+      "text": "Consider the example in Figure 7 where the constructor FileInputStream(File) is the focal API call. The following list describes the concrete code segments corresponding to different API usage features: • Declarations: File file = new File(path) at line 10. • Pre-focal method calls: none. • Guard: the negation of fName == null at line 3. • Return value check: none. • Post-focal method calls: in.read(outputByte,0,4096)!=-1 at line 16. • Exception handling: e.printStackTrace() for handling FileNotFoundException at lines 19-20 and IOException at lines 21-22. • Resource management: in.close() at line 24.",
+      "section_id": "s0006",
+      "family_id": "s0006",
+      "ordinal": 6
+    },
+    {
+      "id": "s0006.ss0003.p0001",
+      "title": "7",
+      "tag": "This paragraph closes out the implementation discussion by explaining how the back-end data and processed structures are rendered into the final interactive front-end, describing how the interface is populated with the computed information and how it responds to subsequent user interactions, thereby connecting the preceding data-processing stages to the live, user-facing output.",
+      "text": "For each API usage feature, EXAMPLORE records the start and end character indices of the corresponding code for color highlighting. EXAMPLORE queries the MongoDB database and instantiates the synthetic code skeleton with canonicalized options extracted from GitHub code examples and distributions of counts accumulated across the corpus. When a user selects particular options in the skeleton, the front end queries MongoDB and updates the interface accordingly.",
+      "section_id": "s0006",
+      "family_id": "s0006",
+      "ordinal": 7
+    },
+    {
+      "id": "s0007.p0001",
+      "title": "1",
+      "tag": "This paragraph opens the section by stating the overall goal and design rationale of the evaluation, naming the comparison condition against which the proposed approach is tested, introducing the set of assessment items used to measure outcomes, and noting the prior work that informed their construction, thereby framing the empirical investigation before the subsequent subsections detail its specifics.",
+      "text": "We conducted a within-subjects study with sixteen Java programmers to evaluate whether participants could grasp a more comprehensive view of API usage using EXAMPLORE, in comparison to a realistic baseline of searching online for code examples, which is commonly used in real-world programming workflows [3, 20]. We designed a set of API usage questions, shown in Table 1, to assess how much knowledge about API usage participants could extract from EXAMPLORE or online search for a given API method. Questions Q1-7 were derived from the commonly asked API usage questions identified in prior work [5]. Q8 asked participants to inspect and critique a curated code example from Stack Overflow. This question was designed to evaluate whether users were capable of making comprehensive judgments about the quality of a given code example after exploring a large number of examples using EXAMPLORE, inspired by Brandt et al.'s observation that programmers typically opened several programming tutorials in different browser tabs and judged their quality by rapidly skimming [3].",
+      "section_id": "s0007",
+      "family_id": "s0007",
+      "ordinal": 1
+    },
+    {
+      "id": "s0007.ss0001.p0001",
+      "title": "2",
+      "tag": "This paragraph justifies and specifies the selection of study materials by explaining the rationale for choosing items that vary along a key dimension relevant to the research question, then enumerates the specific items chosen along with a brief description of each, setting up the conditions under which subsequent comparisons will be made.",
+      "text": "Programmers often behave differently when searching online to learn a new concept compared to when they are reminding themselves about the details in a familiar concept [3]. Similarly, we anticipated that programmers might apply different exploration strategies when answering API usage questions about familiar and unfamiliar APIs. To capture a spectrum of behaviors, we chose three API methods with which programmers might have varying levels of familiarity: 1. Map.get is a commonly used Java method that retrieves the value of a given key from a data structure that stores data as key and value pairs. 2. Activity.findViewById is an Android method that gets a specific view (e.g., button, text area) from an Android application. 3. SQLiteDatabase.query is a database query method that constructs a SQL command from the given parameters and queries a database.",
+      "section_id": "s0007",
+      "family_id": "s0007",
+      "ordinal": 2
+    },
+    {
+      "id": "s0007.ss0001.p0002",
+      "title": "3",
+      "tag": "This paragraph provides a visual pointer to supplementary material, directing the reader to a figure that illustrates the concrete outputs discussed in the preceding content, thereby bridging the descriptive text with corresponding visual evidence.",
+      "text": "Figure 8 shows cropped screenshots of how EXAMPLORE rendered each of these APIs.",
+      "section_id": "s0007",
+      "family_id": "s0007",
+      "ordinal": 3
+    },
+    {
+      "id": "s0007.ss0002.p0001",
+      "title": "4",
+      "tag": "This paragraph establishes the credibility and composition of the study sample by detailing recruitment source, participant counts and academic standing, and relevant prior experience levels, thereby grounding subsequent results in a characterized population.",
+      "text": "We recruited sixteen Computer Science students from UC Berkeley through the EECS department mailing list. Eleven participants (69%) were undergraduate students and the other five (31%) were graduate students. Since our study task required participants to read code examples in Java and answer questions about Java APIs, we only included students who had taken at least one Java class. Participants had a diverse background in Java programming, including one participant with one semester of Java programming, four with one year, ten with two to five years, and one with over five years. Two students were teaching assistants for an object-oriented programming language course. Prior to the study, twelve participants (75%) had used Map or similar data structures, six (38%) had used SQLiteDatabase.query or similar database query methods, and only three (19%) had used Activity.findViewById.",
+      "section_id": "s0007",
+      "family_id": "s0007",
+      "ordinal": 4
+    },
+    {
+      "id": "s0007.ss0003.p0001",
+      "title": "5",
+      "tag": "This paragraph establishes the overall procedural framework for the study session, specifying its structure and duration, and clarifying that the ordering of experimental conditions and task assignments was counterbalanced to control for confounding effects, before the subsequent paragraphs detail the individual steps.",
+      "text": "We conducted a 50-min user study with each participant. Note that our study follows a within-subjects design and both the order of the assigned conditions (using online search or EXAMPLORE to answer API usage questions) and which of the three API methods were assigned in each condition (Map.get, Activity.findViewById, or SQLiteDatabase.query) were counterbalanced across participants through random assignment.",
+      "section_id": "s0007",
+      "family_id": "s0007",
+      "ordinal": 5
+    },
+    {
+      "id": "s0007.ss0003.p0002",
+      "title": "6",
+      "tag": "This paragraph lays out the step-by-step procedure of the experimental session, detailing the sequence of phases participants went through and the time allotted to each, so the reader understands exactly how the comparison between conditions was operationalized in practice.",
+      "text": "1. Training session (15 min) We first walked the participant through a short list of relevant Java concepts and terminology, such as receiver objects and guards. Then we walked participants through each user interface feature and answered participants' questions about both the concepts and the interface. 2. Code exploration task 1 (15 min) The participant was given basic information about one of the three API methods and asked to answer API usage questions Q1-8 by exploring code examples using the assigned tool, either online search or EXAMPLORE. 3. Code exploration task 2 (15 min) The participant was given basic information about another one of the three API methods and asked to answer API usage questions Q1-8 by exploring code examples using the tool (EXAMPLORE or online search) that they did not use in the previous task. 4. Post survey (5 min) At the end of the session, participants answered questions about their experience using each tool and the usability of individual user interface features in EXAMPLORE.",
+      "section_id": "s0007",
+      "family_id": "s0007",
+      "ordinal": 6
+    },
+    {
+      "id": "s0007.ss0003.p0003",
+      "title": "7",
+      "tag": "This paragraph clarifies how the two experimental conditions were operationalized in practice, specifying what resources or tools participants were permitted to use under each condition to ensure the comparison between them is well-defined.",
+      "text": "In the control condition, participants were allowed to search for code examples in any online learning resources, e.g., documentations, tutorial blogs, Q&A forums, and GitHub repositories, using any search engines in a web browser. In the experimental condition, participants used EXAMPLORE to explore one hundred code examples that were pre-loaded into the system.",
+      "section_id": "s0007",
+      "family_id": "s0007",
+      "ordinal": 7
+    },
+    {
+      "id": "s0007.ss0003.p0004",
+      "title": "8",
+      "tag": "This paragraph clarifies a procedural detail of the task instructions given to participants, specifying the expectation that responses prioritize completeness over speed, in order to preempt ambiguity about how the task was framed before the reader proceeds to the outcomes.",
+      "text": "Some of the API usage questions have multiple possible correct answers. Before each code exploration task, we reminded participants that they had 15 minutes to complete the API usage questions and that they should aim for thoroughness (i.e., list multiple correct answers if they exist) instead of speed when answering these questions.",
+      "section_id": "s0007",
+      "family_id": "s0007",
+      "ordinal": 8
+    },
+    {
+      "id": "s0008.ss0001.p0001",
+      "title": "1",
+      "tag": "This paragraph establishes the evaluation criteria and coding methodology used to judge participant responses before presenting any quantitative results, defining what counts as a concrete versus vague answer and how correctness was verified, so that subsequent statistics can be properly interpreted.",
+      "text": "Answering Commonly Asked API Usage Questions. We manually assessed the participants' answers to Q1-8. An answer was considered concrete if it contained a code segment, e.g., map.containsKey(key), or it was specific, e.g., \"check whether the key exists.\" As a counter example, a vague answer to the question about how programmers handle the return value of Map.get (Q6) was, \"[other programmers] do something with the return value [of Map.get].\" We considered a concrete solution to be correct if it could be confirmed by the official documentation, blogs, or concrete code examples.",
+      "section_id": "s0008",
+      "family_id": "s0008",
+      "ordinal": 1
+    },
+    {
+      "id": "s0008.ss0001.p0002",
+      "title": "2",
+      "tag": "This paragraph reports the primary quantitative outcome of the controlled comparison, presenting summary statistics and a formal significance test to substantiate the section's central empirical claim.",
+      "text": "Table 2 shows statistics about participants' correct answers to Q1-7 when using online search or the EXAMPLORE tool. We find that the effects of using EXAMPLORE are both meaningful in size and statistically significant: Users gave, on average, correct answers to 6 out of 7 API usage questions using EXAMPLORE vs. 4.6 questions using the baseline of online search. This mean difference of 1.3 questions out of 7 is statistically significant (paired t-test: t=3.02, df=15, p-value=0.0086).",
+      "section_id": "s0008",
+      "family_id": "s0008",
+      "ordinal": 2
+    },
+    {
+      "id": "s0008.ss0001.p0003",
+      "title": "3",
+      "tag": "This paragraph reinforces the preceding quantitative result by offering a qualitative, observational explanation drawn from recorded session data, contrasting behavioral patterns between the two conditions to account for why the statistical difference emerged, and then cites an additional related metric with its own significance test to further substantiate the overall claim.",
+      "text": "Screencasts of the user study sessions reveal that participants in the control condition often answered API usage questions just based on one example they found or by guessing. In contrast, EXAMPLORE users interacted with the code skeleton and investigated many individual examples that were relevant to the question. This may explain why, in Table 2, EXAMPLORE users gave, on average, twice as many correct answers to Q1-7 as baseline users (11.8 vs. 5.7, paired t-test: t=3.84, df=15, p-value=0.0016).",
+      "section_id": "s0008",
+      "family_id": "s0008",
+      "ordinal": 3
+    },
+    {
+      "id": "s0008.ss0001.p0004",
+      "title": "4",
+      "tag": "This paragraph reinforces the preceding statistical results by offering a qualitative contrast between conditions, using concrete illustrative examples of how answers differed in specificity and completeness to support the quantitative claims already presented.",
+      "text": "Participants using online search provided almost twice as many vague answers as participants using EXAMPLORE. When answering Q6 (How do programmers handle the return value of this API method?), two participants using online search were unable to find any examples that check the return value of Activity.findViewById, while all participants gave the correct answer using EXAMPLORE.",
+      "section_id": "s0008",
+      "family_id": "s0008",
+      "ordinal": 4
+    },
+    {
+      "id": "s0008.ss0001.p0005",
+      "title": "5",
+      "tag": "This paragraph extends the quantitative analysis by presenting findings from a separate evaluative task, comparing the qualitative content of participants' critiques across the two experimental conditions to show a differing pattern in the type of feedback produced under each condition.",
+      "text": "Critiquing Stack Overflow Answers. Q8 asked participants to critique a code example from Stack Overflow based on other relevant code examples they explored in the study. Regardless of whether participants had just used EXAMPLORE or online search, fourteen participants (88%) gave valid suggestions to improve the Stack Overflow posts. The majority of critiques (80%) written by participants using EXAMPLORE were about safety checks, e.g., how to handle potential exceptions in a try-catch block. When using online search, the majority of participants (57%) suggested how to customize and style the code example for better readability, e.g., adapting types and parameters when reused to a new client program, renaming variables, and indenting code.",
+      "section_id": "s0008",
+      "family_id": "s0008",
+      "ordinal": 5
+    },
+    {
+      "id": "s0008.ss0001.p0006",
+      "title": "6",
+      "tag": "This paragraph supplements the preceding statistical task-performance results by reporting subjective survey-based evidence (preference, confidence, and perceived helpfulness ratings) that corroborates the main quantitative findings from an additional, user-perception angle.",
+      "text": "Post Survey Responses. In the post survey, 13 participants (81%) found EXAMPLORE to be more helpful for answering API usage questions than online search. The distribution of their responses on a 7-point scale is shown in Figure 9. The median level of confidence that participants had in their answers was higher when using EXAMPLORE (5 vs. 4 on a 7-point scale, shown in Figure 10). Figure 11 suggests that EXAMPLORE's representation of the commonalities and differences across 100 code examples is more helpful than overwhelming (5 vs. 3.5 on a 7-point scale).",
+      "section_id": "s0008",
+      "family_id": "s0008",
+      "ordinal": 6
+    },
+    {
+      "id": "s0008.ss0001.p0007",
+      "title": "7",
+      "tag": "This paragraph offers an interpretive explanation for the quantitative results just presented by drawing on participant quotes, while also acknowledging a limitation or countervailing perspective raised by other participants, thereby adding qualitative nuance and balance to the preceding statistical findings.",
+      "text": "One source of participants' accuracy, thoroughness, and confidence when using EXAMPLORE appears to be the data itself, presented in structured form: P16 wrote, \"[EXAMPLORE] provided structure to learning about API. This structure guides functionality while still showing variety of use. The frequency of [each option] shows me if I am looking at a random corner case or something commonly used.\" However, explanations in natural language are still valued. For example, two participants requested textual explanations alongside concrete code examples. P7 stated that, \"although I definitely took longer with the online search, I felt more confident in knowing what I was doing because I had access to Stack Overflow explanations.\"",
+      "section_id": "s0008",
+      "family_id": "s0008",
+      "ordinal": 7
+    },
+    {
+      "id": "s0008.ss0002.p0001",
+      "title": "8",
+      "tag": "This paragraph opens the qualitative analysis by presenting a frequency-ranked breakdown of recurring themes coded from open-ended participant feedback, establishing which aspects of the experimental tool were most and least frequently praised to ground the subsequent, more detailed qualitative discussion.",
+      "text": "We coded participants' free responses in the post survey for common recurring patterns. By far the most popular interface feature named in their free responses (13/16) was the ability to filter for specific API usage aspects of code examples, e.g., declarations, guards, and co-occurring API calls. The second most popular feature (4/16) was the ability to explore many examples simultaneously in a summarized form. The long tail of responses included appreciation for the ease of finding relevant examples (3/16), the use of color to label different parts of each code example (2/16), being able to perceive and retrieve a variety of examples within a skeleton (2/16), which also gave structure to learning (2/16) and counts to indicate common practices (1/16).",
+      "section_id": "s0008",
+      "family_id": "s0008",
+      "ordinal": 8
+    },
+    {
+      "id": "s0008.ss0002.p0002",
+      "title": "9",
+      "tag": "This paragraph complements the preceding positive-feature analysis by examining the comparison condition, using participants' reactions to its shortcomings as indirect evidence that reinforces the value of the capabilities the new approach provides.",
+      "text": "Several critical aspects of EXAMPLORE were highlighted by their absence in the control condition, i.e., online search. Nearly half (7/16) wrote that they wished traditional search had better filtering mechanisms, like EXAMPLORE provided, so that participants could retrieve more consistently relevant results and/or filter on a more fine-grained basis. A quarter of participants (4/16) complained that they had to mentally parse code examples from the on-line search results. Three participants complained that they cannot easily assess how common and uncommon the code examples found through Google or GitHub searches are: P3 wrote, \"One thing that is important is 'best practice' which you might not get from reading random code online, so if I had a way to know what is common and uncommon, that would be useful.\" One participant pointed out that Google and GitHub searches did not make it easy to view multiple examples at once: while it was relatively easy to spot the use of the API call of interest in each code example, \"it was hard to find the specific instances of API usage categories other than the Focus because the examples would use different names for different variables.\"",
+      "section_id": "s0008",
+      "family_id": "s0008",
+      "ordinal": 9
+    },
+    {
+      "id": "s0008.ss0002.p0003",
+      "title": "10",
+      "tag": "This paragraph balances the preceding positive qualitative findings by surfacing participants' critical feedback and suggested improvements, acknowledging usability shortcomings and unmet needs identified during the study.",
+      "text": "Participants did point out several areas where the interface could be improved. Half of the participants stated that the interface was confusing and hard to learn. Three of the sixteen participants felt confused or distracted by the many colors used to highlight different parts of the code examples that corresponded with the skeleton. Participants wished for not just filtering but search capabilities in the interface, and for textual explanation to be paired with the code, like the curated and explained examples in many online search results. Two participants asked for a more explicit indicator of code example quality, beyond frequency counts.",
+      "section_id": "s0008",
+      "family_id": "s0008",
+      "ordinal": 10
+    },
+    {
+      "id": "s0008.ss0002.p0004",
+      "title": "11",
+      "tag": "This paragraph closes the section by broadening the lens from immediate usability feedback to forward-looking reflections, reporting how participants envisioned applying the tool within their own future work practices, thereby situating the evaluation findings within a larger context of practical adoption and anticipated value.",
+      "text": "The final question of the post survey asked participants to write about how EXAMPLORE could fit into their programming workflows. Without any prior questions or prompting about API learning, nearly half the participants (7/16) wrote that they would use EXAMPLORE to explore and learn how to use an unfamiliar API. For example, P4 wrote \"[U]sing [EXAMPLORE] to search for usage of unfamiliar methods could be very helpful.\" One quarter of the participants mentioned EXAMPLORE would be helpful to augment the code browsing mechanism in Q&A sites like Stack Overflow. Two participants wrote specifically about using EXAMPLORE to learn about design alternatives for an API, regardless of their prior familiarity with it. Two participants mentioned that they could consult it for certain specific questions, e.g., what exceptions are commonly caught. Finally, one participant pointed out that they could use EXAMPLORE to remind them of uncommon usage cases. Several participants asked the experimenter, after submitting their post survey answers, whether EXAMPLORE would be made publicly available, expressing a sincere desire to use it in the future.",
+      "section_id": "s0008",
+      "family_id": "s0008",
+      "ordinal": 11
+    },
+    {
+      "id": "s0009.p0001",
+      "title": "1",
+      "tag": "This opening paragraph frames the section by restating the study's guiding question and offering a high-level summary verdict of the evaluation's outcome, setting up the more detailed discussion that follows.",
+      "text": "Our study explored if EXAMPLORE can help users explore and understand how an API method is used. The results show that, when using EXAMPLORE instead of online search engines, users can answer more API usage questions correctly, with more confidence, concrete details, and alternative correct answers.",
+      "section_id": "s0009",
+      "family_id": "s0009",
+      "ordinal": 1
+    },
+    {
+      "id": "s0009.p0002",
+      "title": "2",
+      "tag": "This paragraph qualifies the overall result by identifying the conditions under which the observed benefit is strongest versus weakest, using a breakdown by subgroup familiarity to nuance the claim and address a potential limitation where the effect might not hold uniformly.",
+      "text": "The EXAMPLORE interface appears to be most beneficial when learning and exploring unfamiliar APIs. Participants expressed, in free-response survey answers, the desire to use EXAMPLORE to explore unfamiliar APIs in the future. Also, the benefits of using EXAMPLORE described in Table 2 are most pronounced for the APIs that participants were, in aggregate, least familiar with: Activity.findViewById and SQLiteDatabase.query. In contrast, for the API that most participants were already familiar with, Map.get, participants answered one less question correctly on average, compared to online search. Existing online search provided a familiar and flexible search interface as well as the ability to access learning resources with textual explanations such as Stack Overflow posts, documentation, and blog posts. Even so, participants still provided two more concrete solutions on average, when using EXAMPLORE for Map.get, indicating that EXAMPLORE can still be helpful to provide a more comprehensive view of API usage even for familiar APIs.",
+      "section_id": "s0009",
+      "family_id": "s0009",
+      "ordinal": 2
+    },
+    {
+      "id": "s0009.p0003",
+      "title": "3",
+      "tag": "This paragraph pivots from summarizing the positive results to acknowledging a key design tension revealed by the study, framing it as a trade-off that warrants further investigation and suggesting a general direction for future refinement without detailing specific solutions.",
+      "text": "The study results suggest that programmers can develop a more comprehensive understanding of API usage by exploring a large collection of code examples visualized using EXAMPLORE than by searching for relevant examples online. However, there is a trade-off between the EXAMPLORE interface's expressive power and its visual complexity. We have a lot of information about how APIs are used, but showing all of it at once can be overwhelming. More research is needed in making sure the most common use cases are answered in a visually simple and easy-to-interpret manner, while still supporting more complex investigations. This could, for example, be achieved through progressive disclosure or other UI design patterns.",
+      "section_id": "s0009",
+      "family_id": "s0009",
+      "ordinal": 3
+    },
+    {
+      "id": "s0009.p0004",
+      "title": "4",
+      "tag": "This paragraph identifies a further limitation of the approach concerning the reliability and ranking of underlying data, acknowledges why the current design does not fully address it, and proposes possible directions for mitigating this limitation in future iterations.",
+      "text": "EXAMPLORE does not require all mined code examples to be bug-free. We expect that inadequate examples occur less frequently in the majority of mined code, i.e., the \"wisdom of the crowd,\" but we do not currently guard against stale examples or low-quality examples. Possible ways of detecting stale examples in the future include analyzing metadata and scanning for outdated method signatures. Even if all examples in the corpus are of equally high quality, sorting the concrete code examples by length, as the interface currently does, is not necessarily what programmers want. Alternative sorting criteria could include metrics like GitHub stars, number of contributors, and build status. We will surface these signals in the future user interface so users have additional information scent when judging quality.",
+      "section_id": "s0009",
+      "family_id": "s0009",
+      "ordinal": 4
+    },
+    {
+      "id": "s0010.p0001",
+      "title": "1",
+      "tag": "This paragraph serves as the paper's closing synthesis, recapping the motivating problem, restating the core contribution and its implementation, briefly summarizing the evaluation and its outcome, and pointing toward future directions, thereby tying the introduction's framing back together and leaving the reader with a final sense of the work's significance and trajectory.",
+      "text": "Code examples are a key learning resource when learning unfamiliar APIs. Current tools for searching and browsing code examples often produce large collections of code examples that developers only have limited time and attention to review. In this paper, we introduce the concept of a synthetic code skeleton, which summarizes a variety of API usage features from a collection of code examples simultaneously in a single view. EXAMPLORE instantiates the synthetic code skeleton with statistical distributions and allows a user to drill down to individual concrete code examples mined from 380K GitHub repositories. We conducted a within-subjects study with sixteen Java programmers and found that participants could answer more API usage questions correctly, with more detail and confidence, when using EXAMPLORE compared to searching for usage examples online. Many of these developers could envision EXAMPLORE fitting into their development workflows, helping them explore unfamiliar APIs. In future work, we hope to extend the code skeleton to support different programming languages and allow multiple related API methods to be the focal point of our visualization.",
+      "section_id": "s0010",
+      "family_id": "s0010",
+      "ordinal": 1
+    },
+    {
+      "id": "s0011.p0001",
+      "title": "1",
+      "tag": "This paragraph fulfills the conventional acknowledgments function by crediting individuals who contributed intellectually or technically to the work, recognizing related but distinct efforts by other contributors, and disclosing the funding sources that supported the research, without contributing to the paper's substantive argument.",
+      "text": "We would like to acknowledge the intellectual and coding contributions of Marti Hearst, Orkun Duman, Julie Deng, Emily Pedersen, Alexander Ku, and John Hughes. We would like to thank Anastasia Reinhart who was the summer intern at UCLA for her design and development of a Chrome extension for visualizing API usage examples, which serves as an alternative to this work. Participants in this project are in part supported through AFRL grant FA8750-15-2-0075, NSF grants CCF-1527923, CCF-1460325, and CCF-1138996, and the Berkeley Institute of Data Science.",
+      "section_id": "s0011",
+      "family_id": "s0011",
+      "ordinal": 1
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+[
+  {
+    "group_id": "section-group-264d31b73b39",
+    "role_statement": "This section situates the paper's contribution within prior literature by surveying related tools, techniques, and theoretical frameworks across relevant subfields, highlighting their capabilities and limitations in order to establish the conceptual context, identify gaps, and justify the novelty of the approach the paper presents.",
+    "source": "model",
+    "attempt_id": "attempt-003427"
+  },
+  {
+    "group_id": "section-group-31dae278f99b",
+    "role_statement": "This section follows the results/evaluation to interpret what the findings mean for the paper's design goals and conceptual framing, while candidly acknowledging limitations, trade-offs, and boundary conditions that qualify the contribution and motivate future work.",
+    "source": "model",
+    "attempt_id": "attempt-003428"
+  },
+  {
+    "group_id": "section-group-3b857ae1dbaf",
+    "role_statement": "This section serves as the paper's abstract, giving a brief standalone summary that frames the problem, previews the proposed approach or system, and highlights the evaluation methods and outcomes so readers can grasp the paper's contribution before reading further.",
+    "source": "model",
+    "attempt_id": "attempt-003429"
+  },
+  {
+    "group_id": "section-group-856119f080c8",
+    "role_statement": "This section describes the methodology of a controlled user study—participants, tasks, conditions, and procedure—used to empirically evaluate the proposed system or design features, setting up the results presented in the following section.",
+    "source": "model",
+    "attempt_id": "attempt-003430"
+  },
+  {
+    "group_id": "section-group-95569492e9e8",
+    "role_statement": "This section fulfills the conventional closing courtesy function of an acknowledgments section, crediting funders, institutions, and individuals (participants, collaborators, or reviewers) who supported or contributed to the work, without advancing the paper's substantive argument.",
+    "source": "model",
+    "attempt_id": "attempt-003431"
+  },
+  {
+    "group_id": "section-group-b475b9d6107e",
+    "role_statement": "This section reports the results of the system's user study/evaluation, presenting quantitative and qualitative findings that substantiate the paper's core claims about the proposed system's benefits relative to baseline approaches or prior practice.",
+    "source": "model",
+    "attempt_id": "attempt-003432"
+  },
+  {
+    "group_id": "section-group-cb1db7901cee",
+    "role_statement": "This section reports a formative interview study conducted with target users/practitioners to surface current practices, challenges, and needs, establishing the empirical motivation and justification for the paper's subsequent design decisions.",
+    "source": "model",
+    "attempt_id": "attempt-003433"
+  },
+  {
+    "group_id": "section-group-e6a0a0b75d91",
+    "role_statement": "This section serves as the paper's introduction: it establishes the problem and its significance, surveys the limitations of existing approaches to motivate a gap, situates the proposed approach/theoretical framework relative to that prior work, previews the system or technique and the studies used to validate it, and closes with an enumerated list of the paper's contributions.",
+    "source": "model",
+    "attempt_id": "attempt-003434"
+  },
+  {
+    "group_id": "section-group-ed52a960f4ab",
+    "role_statement": "This section closes the paper by briefly recapping the system's purpose and approach and reaffirming its contribution, without presenting new evidence, serving as the paper's final summarizing takeaway.",
+    "source": "model",
+    "attempt_id": "attempt-003435"
+  },
+  {
+    "group_id": "section-group-f494dac7115f",
+    "role_statement": "This section presents the proposed system's design, translating preceding motivating rationale (theory, formative findings, or design goals) into its core interactive mechanisms and/or technical implementation, often illustrated via a representative usage scenario, thereby bridging the paper's conceptual framing with the empirical evaluation that follows.",
+    "source": "model",
+    "attempt_id": "attempt-003436"
+  }
+]

@@ -1,0 +1,77 @@
+{
+  "singleton_ids": [
+    "section-group-5bd20ac5a5dc",
+    "section-group-6ca0ad04b574"
+  ],
+  "established_group_ids": [
+    "section-group-264d31b73b39",
+    "section-group-31dae278f99b",
+    "section-group-3b857ae1dbaf",
+    "section-group-856119f080c8",
+    "section-group-95569492e9e8",
+    "section-group-b475b9d6107e",
+    "section-group-cb1db7901cee",
+    "section-group-e6a0a0b75d91",
+    "section-group-ed52a960f4ab",
+    "section-group-f494dac7115f"
+  ],
+  "candidates_by_singleton": {
+    "section-group-5bd20ac5a5dc": [
+      "section-group-264d31b73b39",
+      "section-group-3b857ae1dbaf",
+      "section-group-cb1db7901cee",
+      "section-group-e6a0a0b75d91",
+      "section-group-ed52a960f4ab"
+    ],
+    "section-group-6ca0ad04b574": [
+      "section-group-3b857ae1dbaf",
+      "section-group-cb1db7901cee",
+      "section-group-e6a0a0b75d91",
+      "section-group-ed52a960f4ab"
+    ]
+  },
+  "forward": {
+    "section-group-5bd20ac5a5dc": {
+      "source_id": "section-group-5bd20ac5a5dc",
+      "target_id": "section-group-264d31b73b39",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-003417"
+    },
+    "section-group-6ca0ad04b574": {
+      "source_id": "section-group-6ca0ad04b574",
+      "target_id": "section-group-3b857ae1dbaf",
+      "direction": "singleton_to_group",
+      "attempt_id": "attempt-003426"
+    }
+  },
+  "reverse": {
+    "section-group-3b857ae1dbaf": {
+      "source_id": "section-group-3b857ae1dbaf",
+      "target_id": "section-group-6ca0ad04b574",
+      "direction": "group_to_singleton",
+      "attempt_id": "attempt-003422"
+    }
+  },
+  "merged": [
+    {
+      "source_group_id": "section-group-6ca0ad04b574",
+      "target_group_id": "section-group-3b857ae1dbaf",
+      "paper_id": "paralib_uist22",
+      "unit_id": "s0001",
+      "attempt_id": "attempt-003426",
+      "reverse_attempt_id": "attempt-003422"
+    },
+    {
+      "source_group_id": "section-group-5bd20ac5a5dc",
+      "target_group_id": "section-group-264d31b73b39",
+      "paper_id": "paralib_uist22",
+      "unit_id": "s0003",
+      "attempt_id": "attempt-003417",
+      "membership_role": "fan_in"
+    }
+  ],
+  "changed_group_ids": [
+    "section-group-264d31b73b39",
+    "section-group-3b857ae1dbaf"
+  ]
+}

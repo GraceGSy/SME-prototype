@@ -1,0 +1,52 @@
+[
+  {
+    "section_id": "s0001",
+    "role_statement": "This section provides a concise, self-contained synopsis of the paper that establishes the motivating problem, situates the work relative to existing design paradigms, names the system and its core theoretical grounding, and previews the evaluation approach and studies used to validate it, orienting the reader to what follows without requiring them to read the full text.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0002",
+    "role_statement": "This section establishes the problem motivating the work by contrasting the limitations of existing lossy and serial approaches with an alternative theoretical framework, positions the proposed approach within that framework, and previews the structure of the paper's validation studies and its list of contributions.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0003",
+    "role_statement": "This section situates the proposed approach within existing bodies of work, surveying and critiquing relevant tool categories and theoretical frameworks in order to identify gaps that the paper's contribution addresses and to establish the conceptual grounding on which the later design and evaluation build.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0004",
+    "role_statement": "This section presents a formative study that establishes the user needs, existing practices, and gaps motivating the proposed design approach, while also using early design probes to elicit reactions that inform and justify subsequent design decisions.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0005",
+    "role_statement": "This section presents the system itself, translating the motivating theory and formative findings into a concrete design: it lays out the system's core components and interaction mechanisms, illustrates their use through a representative user scenario, and details the technical implementation underlying them, thereby bridging the conceptual rationale established earlier with the empirical evaluations that follow.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0006",
+    "role_statement": "This section presents a controlled ablation study that isolates and tests individual design features and their combinations to empirically establish which components are necessary and how they interact, providing causal evidence that justifies the system's integrated design choices before moving on to a holistic evaluation.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0007",
+    "role_statement": "This section presents a larger-scale, ecologically valid user study that evaluates the completed system as a whole in realistic usage conditions, describing the participant sample and procedural design used to assess how well the tool supports its intended tasks once implementation is finished, thereby setting up the subsequent results section's claims about real-world efficacy.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0008",
+    "role_statement": "This section presents the findings of the summative evaluation, synthesizing quantitative usage and survey data with qualitative interview analysis to demonstrate how the system's core design supported users' real-world task performance, while also surfacing secondary feature usage patterns and participants' perspectives on practical adoption.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0009",
+    "role_statement": "This section situates the empirical results within the paper's broader theoretical framing, arguing for a reconceptualized paradigm beyond established conventions in the field, reflecting on how the design principles foster deeper user engagement with the underlying phenomenon, and closing with an honest assessment of the work's boundaries and directions for future extension.",
+    "source": "input"
+  },
+  {
+    "section_id": "s0010",
+    "role_statement": "This section fulfills a conventional institutional obligation by crediting funding sources and participant contributions, situating the work within its support context without advancing the paper's substantive argument.",
+    "source": "input"
+  }
+]

@@ -1,0 +1,397 @@
+[
+  {
+    "paragraph_id": "s0001.p0001",
+    "role_statement": "This paragraph establishes the motivating problem and existing gap, frames a theory-grounded hypothesis for addressing it, and introduces the evaluative approach and high-level outcome that the rest of the section's abstract will substantiate.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0002.p0001",
+    "role_statement": "This paragraph opens the section with a relatable, concrete scenario that motivates the problem space, then broadens it into a general claim about why the underlying task is increasingly common and difficult, setting up the need for the work that follows.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0002.p0002",
+    "role_statement": "This paragraph grounds the opening problem statement by characterizing current common practice for the task and pointing out, with support from prior findings, why that practice falls short, thereby motivating the need for a better solution.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0002.p0003",
+    "role_statement": "This paragraph surveys existing specialized tools that attempt to address the problem just raised, and highlights their shortcomings to establish a gap that the forthcoming contribution will fill.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0002.p0004",
+    "role_statement": "This paragraph introduces the proposed solution at a high level, naming it and explaining the core approach it takes to address the problem established in prior paragraphs, while grounding its design in dimensions identified by earlier research and pointing to a figure that illustrates its main components.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0002.p0005",
+    "role_statement": "This paragraph grounds the previously introduced system's design in theoretical foundations by explaining how two named theoretical frameworks each motivate specific design choices, providing the conceptual rationale that links the problem described earlier to the solution approach being proposed.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0002.p0006",
+    "role_statement": "This paragraph broadens the introduction's description of the system by noting supplementary interactive capabilities beyond the core design choices just discussed, and situates these capabilities within an established framework from prior literature to reinforce that the tool's functionality aligns with recognized categories of user tasks, thereby strengthening the credibility and comprehensiveness of the proposed solution before the paragraph that follows transitions to describing the evaluation methodology.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0002.p0007",
+    "role_statement": "This paragraph closes the introduction by briefly describing the evaluation method used to test the proposed design and previewing its high-level outcomes, then clarifying the scope and nature of the paper's contribution relative to resource-intensive aspects left for future work, before enumerating the main contributions as a summary roadmap for the rest of the paper.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0003.p0001",
+    "role_statement": "This paragraph establishes the theoretical foundation for the section by explaining the core mechanisms of the two learning theories introduced earlier, then explicitly connects their prescriptions to the rationale behind the system's design choices, bridging abstract theory to concrete interface decisions.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0004.ss0001.p0001",
+    "role_statement": "This paragraph grounds the subsection by citing prior empirical research that identifies the key factors involved in the general decision task, then narrows that broader set down to the specific subset of factors that the current work chooses to address, framing a gap that justifies the paper's focus.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0004.ss0001.p0002",
+    "role_statement": "This paragraph shifts the discussion to a complementary strand of prior research, using specific findings from that literature to justify the paper's emphasis on functionality-level, example-driven comparison rather than higher-level selection criteria.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0004.ss0002.p0001",
+    "role_statement": "This paragraph opens the section's survey of prior tools by introducing the most accessible, non-technical category of existing solutions, characterizing their general approach and noting a shared shortcoming that sets up the need for the more specialized tools discussed in subsequent paragraphs.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0004.ss0002.p0002",
+    "role_statement": "This paragraph surveys existing automated tools that address the same general problem, characterizes the basis on which they operate, and then differentiates the present approach by contrasting what kind of information it surfaces instead.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0004.ss0002.p0003",
+    "role_statement": "This paragraph surveys a cluster of closely related prior tools that address a related but distinct problem (user-driven annotation, organization, and reuse of comparative information), then differentiates the current work from them by clarifying that it targets the comparison artifact itself rather than the upstream process of gathering and curating that information.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0004.ss0002.p0004",
+    "role_statement": "This paragraph broadens the discussion by pointing to a related but distinct user group for the problem space, citing prior research that identifies their comparable needs and motivations, thereby suggesting wider applicability beyond the primary focus of the section.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0004.ss0002.p0005",
+    "role_statement": "This paragraph broadens the scope of the related work discussion by surveying analogous comparison tools built for adjacent tasks and domains, positioning the current approach within a wider landscape of comparison-support systems before the section moves on to more technically proximate work.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0004.ss0003.p0001",
+    "role_statement": "This paragraph situates the proposed system within an established category of existing tools by naming a common related utility and then explicitly contrasting it with the paper's approach, clarifying how the present work differs in scale and purpose from this baseline class of solutions.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0004.ss0003.p0002",
+    "role_statement": "This paragraph surveys a cluster of related prior systems that address the same broad capability (large-scale visualization of code examples) but for different purposes, contrasting their goals with the paper's own focus in order to carve out and justify the specific gap the current work fills.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0005.ss0001.p0001",
+    "role_statement": "This paragraph enumerates and briefly justifies, with citations to supporting prior work, a concise set of named design goals that will structure and motivate the interface design choices described in the remainder of the section.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0005.ss0001.p0002",
+    "role_statement": "This paragraph synthesizes the preceding list of discrete goals into a unified, higher-level statement of purpose, restating what the design as a whole is meant to enable for the reader before moving into implementation details.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0005.ss0002.p0001",
+    "role_statement": "This paragraph serves as a transitional, scene-setting statement that connects the previously established design goals to the concrete implementation choices about to be detailed, framing the upcoming content as a structured list of specific design decisions grounded in those goals.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0005.ss0002.p0002",
+    "role_statement": "This paragraph introduces the first specific interface design choice by naming it, briefly describing what it presents to the user, and grounding its rationale in the theoretical framework established earlier in the paper, thereby beginning the detailed, feature-by-feature walkthrough that structures the rest of the section.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0005.ss0002.p0003",
+    "role_statement": "This paragraph supplements the preceding design rationale by adding a practical interaction detail and a secondary interface affordance, noting a minor usability mechanism and how supplementary contextual information is made available without disrupting the primary view.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0005.ss0002.p0004",
+    "role_statement": "This paragraph introduces a second major interface mechanism grounded in a different theoretical principle than the one previously described, explaining its purpose and connecting it back to the broader analytical framework and task taxonomy guiding the section's design rationale.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0005.ss0002.p0005",
+    "role_statement": "This paragraph addresses a potential usability limitation introduced by the preceding design choice by explaining a supplementary interaction mechanism that resolves ambiguity, thereby preempting a reader's concern before the discussion moves forward.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0005.ss0002.p0006",
+    "role_statement": "This paragraph serves as a transitional synthesis point within the section, summarizing how the previously described design choices collectively satisfy the design goals established earlier, before pivoting to introduce the next set of features that extend the interface's support for user sensemaking.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0005.ss0002.p0007",
+    "role_statement": "This paragraph introduces an additional supporting feature by explaining its structural organization and default behavior, illustrating with a concrete example how it groups related elements to provide users with an initial high-level overview before finer detail is revealed.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0005.ss0002.p0008",
+    "role_statement": "This paragraph introduces one specific supplementary feature of the interface, explaining its visual encoding and the comparative insight it affords, continuing the pattern established by preceding paragraphs of walking through each auxiliary component in turn.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0005.ss0002.p0009",
+    "role_statement": "This paragraph introduces another specific interface feature by explaining what it displays and how its visual encoding is kept consistent across comparison groups, then describes the interactive behaviors it supports for navigating and locating items of interest, continuing the pattern established by prior paragraphs of detailing individual design elements in turn.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0005.ss0002.p0010",
+    "role_statement": "This paragraph introduces a specific interactive mechanism, explaining the trigger action a user takes and the resulting change in displayed content, using a brief illustrative example to clarify how the interaction functions in practice.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0005.ss0002.p0011",
+    "role_statement": "This paragraph extends the preceding description of an interactive selection mechanism by detailing the cascading effects that triggering it has on other interface components, showing the reader how multiple views stay synchronized and update together in response to a single user action.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0005.ss0002.p0012",
+    "role_statement": "This paragraph introduces two further interactive controls that extend the preceding feature set, explaining the purpose and effect of each in turn to show how they help users surface additional relationships within and across the compared items beyond what the core annotation scheme reveals.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0005.ss0003.p0001",
+    "role_statement": "This paragraph flags a scope limitation by noting that a key structural component underlying the system was manually constructed by the researchers rather than derived through a validated or automated process, and explicitly defers questions about how to construct it well or how its quality affects outcomes to future work, thereby bounding the claims the section's design argument is entitled to make.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0005.ss0003.p0002",
+    "role_statement": "This paragraph extends the preceding caveat by identifying a second assumption underlying a visualized component, clarifying the conditions on which its interpretive validity depends, and noting the specific scale at which the implementation was constructed for the purposes of the evaluation described later in the paper.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0006.p0001",
+    "role_statement": "This paragraph opens the walkthrough by introducing a hypothetical user with a concrete task and establishing the initial setup—what she wants to accomplish and the set of options she is considering—thereby setting the scene and context that the rest of the narrative will build on.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0006.p0002",
+    "role_statement": "This paragraph initiates the narrative walkthrough by showing the protagonist's first impressions upon encountering the tool, illustrating how an overview-level visual summary enables an early, comparative judgment that narrows the decision space before deeper investigation.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0006.p0003",
+    "role_statement": "This paragraph extends the walkthrough by showing the user engaging with an auxiliary explanatory affordance to resolve unfamiliarity encountered while narrowing down options, illustrating how the tool supports clarification without derailing the user's primary decision-making focus.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0006.p0004",
+    "role_statement": "This paragraph continues the walkthrough by illustrating, through a single user action, how the interface dynamically responds to user input, demonstrating in concrete terms how the system's interactive filtering and visual feedback mechanisms work together to support the user's ongoing task.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0006.p0005",
+    "role_statement": "This paragraph advances the narrative walkthrough by showing the user applying additional interface capabilities to a now-filtered subset of items, illustrating how layered comparative cues (visual distributions and a focus-mode toggle) support a finer-grained judgment task within the broader scenario of evaluating options.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0006.p0006",
+    "role_statement": "This paragraph brings the walkthrough scenario to a close by showing the hypothetical user reaching a final decision and transitioning away from the tool, reinforcing how the preceding steps of exploration culminate in actionable understanding that carries over into the user's subsequent independent work.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0007.p0001",
+    "role_statement": "This paragraph opens the section by stating the overall evaluation approach taken (a within-subjects user study with a specified number of participants) and framing the set of research questions the study is designed to answer, setting up the rationale and goals for the empirical work detailed in the rest of the section.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0007.ss0001.p0001",
+    "role_statement": "This paragraph opens the procedure subsection by specifying the concrete experimental materials used to operationalize the study's comparison task, naming the two task domains and identifying the specific set of options selected for evaluation within each, thereby grounding the subsequent procedural details in a defined experimental design.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0007.ss0001.p0002",
+    "role_statement": "This paragraph operationalizes the preceding task description by specifying the concrete components and measurement instruments used to evaluate participants' performance, detailing the structure of the comparison task so the reader understands exactly what data will be collected before the conditions and procedure are introduced.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0007.ss0001.p0003",
+    "role_statement": "This paragraph specifies the experimental manipulation by detailing the two conditions under which the task was performed, clarifying what participants were permitted to use in each and describing the preparatory training provided before the treatment condition, thereby establishing the controlled comparison structure of the study.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0007.ss0001.p0004",
+    "role_statement": "This paragraph specifies the overall logistical structure of the study session, detailing total duration, per-task time allocations, the within-subjects crossing of conditions and domains, and the counterbalancing scheme used to control for ordering effects.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0007.ss0001.p0005",
+    "role_statement": "This paragraph closes out the procedure description by detailing the post-task and post-study data collection instruments used to capture participants' subjective experience, ensuring the reader understands how evaluative feedback was systematically gathered after each condition and at the study's conclusion.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0007.ss0002.p0001",
+    "role_statement": "It provides a concrete illustration of how the study's scenario design was applied in one of the two domains, detailing the specific requirements used to ensure a single unambiguous correct choice among the compared options.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0007.ss0002.p0002",
+    "role_statement": "This paragraph complements the preceding example by presenting a second domain-specific scenario, detailing its constraints and explaining why they point to a single correct choice among the compared options, thereby reinforcing the section's rationale for designing scenarios with a clear ground-truth answer.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0007.ss0003.p0001",
+    "role_statement": "This paragraph establishes the composition and provenance of the study's participant sample by specifying recruitment sources and basic demographic breakdown, grounding the subsequent results in a concretely described population.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0007.ss0003.p0002",
+    "role_statement": "This paragraph supplies baseline demographic and experience statistics about participants' general programming background, establishing contextual variables that could later be considered when interpreting the study's results.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0007.ss0003.p0003",
+    "role_statement": "This paragraph reports participants' self-assessed prior experience levels in the two task domains, quantifying the sample's background knowledge to help the reader judge whether domain familiarity might confound later results.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0007.ss0003.p0004",
+    "role_statement": "This paragraph extends the participant characterization by reporting prior familiarity with the specific tools being compared, providing quantitative detail on how experienced the sample was with each option and noting how many had no relevant background versus some degree of expertise, thereby allowing readers to judge whether prior exposure could confound the study's results.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0008.ss0001.p0001",
+    "role_statement": "This paragraph orients the reader to the results that follow by introducing the figures and the measure used to assess the primary outcome, defining how the data will be visually represented (including how an inability to decide is depicted) and contrasting that representation across the two conditions being compared, before the detailed findings are presented in subsequent paragraphs.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0008.ss0001.p0002",
+    "role_statement": "This paragraph presents initial quantitative evidence from the controlled comparison, reporting specific result patterns from one condition across both task domains to establish the first half of the central contrast the section is building toward.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0008.ss0001.p0003",
+    "role_statement": "This paragraph extends the preceding results by highlighting how the baseline condition performed comparatively worse, using specific counts and contrasts to reinforce the claim that the alternative approach led to less decisive and more inconsistent outcomes, thereby strengthening the case for the proposed method's advantage.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0008.ss0001.p0004",
+    "role_statement": "This paragraph presents a focused outcome comparison between conditions on a single clear-cut success metric, reinforcing the broader pattern described in the preceding paragraphs by showing a concrete tally of correct versus incorrect decisions under each condition.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0008.ss0001.p0005",
+    "role_statement": "This paragraph preemptively addresses a potential confound in the preceding results by examining whether participants' pre-existing familiarity with specific options could explain their decisions, acknowledging the limitation of insufficient sample size to draw firm conclusions while noting that the main experimental condition appeared to equalize outcomes between more and less experienced participants.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0008.ss0001.p0006",
+    "role_statement": "This paragraph introduces a new, complementary behavioral metric derived from direct observation of participant actions during the task, briefly describing the coding method used to measure it and reporting the comparative outcome between conditions, thereby adding converging evidence beyond the earlier survey-based results to strengthen the overall performance argument.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0008.ss0001.p0007",
+    "role_statement": "This paragraph introduces a new analytical angle by presenting quantitative comparisons of response content between the two conditions, reporting statistical significance tests on the collected measures, and supplementing the numerical findings with a representative qualitative excerpt that illustrates the kind of insight captured by the metric, thereby setting up the subsequent paragraph's deeper qualitative categorization of response content.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0008.ss0001.p0008",
+    "role_statement": "This paragraph interprets a preceding quantitative comparison by proposing an explanation for why one condition elicited richer qualitative responses, then supports that interpretation with a representative illustrative quote from a participant.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0008.ss0001.p0009",
+    "role_statement": "This paragraph introduces an analytical coding scheme the researchers developed to classify participant responses into qualitative categories, setting up the framework needed to interpret the comparative results presented in the following paragraph.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0008.ss0001.p0010",
+    "role_statement": "This paragraph presents the results of a qualitative coding analysis comparing the two study conditions, reporting which category of insight showed a statistically significant difference and noting that other categories showed non-significant trends, then interprets these findings as supporting the broader claim made earlier in the section about the intervention's benefit for a specific aspect of task performance.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0008.ss0002.p0001",
+    "role_statement": "This paragraph opens the subsection by introducing a specific quantitative measure (a survey-based self-report rating) comparing the two study conditions, presenting the overall pattern observed and establishing its statistical significance, thereby setting up the evidentiary basis for the more detailed comparisons that follow in the rest of the subsection.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0008.ss0002.p0002",
+    "role_statement": "This paragraph presents a secondary set of quantitative results, reporting statistically significant differences across several related measures to reinforce the preceding finding and broaden the evidentiary basis for the section's overall claim of improved user experience.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0008.ss0002.p0003",
+    "role_statement": "This paragraph supplements the preceding quantitative results with illustrative participant quotes contrasting their experiences across the two conditions, providing qualitative evidence that reinforces and humanizes the statistical findings on cognitive load and confidence.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0008.ss0002.p0004",
+    "role_statement": "This paragraph supplements the preceding statistical comparison by presenting direct, participant-driven comparative survey results between the two conditions, supported by illustrative participant quotes, to reinforce and add nuance to the claim that the experimental condition was preferred over the baseline.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0008.ss0002.p0005",
+    "role_statement": "This paragraph adds a nuanced qualifying note to the preceding results by highlighting a participant observation that attributes part of the tool's perceived benefit to a secondary, less novel factor rather than solely to the core design contribution, thereby tempering the interpretation of the section's findings.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0008.ss0003.p0001",
+    "role_statement": "This paragraph opens the qualitative feedback subsection by reporting participants' self-rated usefulness scores for the tool's individual features alongside supporting quotes, establishing which specific design elements users valued most before the section moves on to discuss challenges with the baseline approach and suggestions for improvement.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0008.ss0003.p0002",
+    "role_statement": "This paragraph shifts from positive feedback on the proposed tool to presenting participants' criticisms of the baseline approach, using quoted comments to illustrate the specific pain points and frustrations encountered when relying on the comparison condition.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0008.ss0003.p0003",
+    "role_statement": "This paragraph shifts the section's focus from reported strengths to reported shortcomings, synthesizing participant-suggested improvements into categorized feedback to inform future iterations of the system, thereby rounding out the qualitative results with constructive critique rather than validation.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0008.ss0003.p0004",
+    "role_statement": "This paragraph closes out the qualitative feedback section by shifting from critique to constructive input, summarizing participants' suggested improvements and their stated intentions for future adoption, thereby pointing toward the tool's practical reception and directions for further development.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0009.p0001",
+    "role_statement": "This opening paragraph frames the section's argument by mapping empirical results back onto the originally stated design goals, asserting that most of them were substantiated by the study's outcomes and summarizing the overall pattern of benefit before more nuanced caveats are introduced.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0009.p0002",
+    "role_statement": "This paragraph qualifies the preceding positive assessment by examining one design goal where results were ambiguous, offering a plausible explanation grounded in individual differences, reframing the ambiguity as potentially desirable given the system's aims, and then illustrating both the benefits and risks of this phenomenon with contrasting examples drawn from participant behavior.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0009.p0003",
+    "role_statement": "This paragraph tempers the preceding interpretation by acknowledging confounds that limit causal attribution among the combined design elements, then reframes the overall pattern of evidence as support for the broader theoretical inspiration behind the approach, before delineating the boundaries of what the work does and does not address, pointing to complementary existing resources for the unaddressed concerns.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0009.p0004",
+    "role_statement": "This paragraph closes the section by extrapolating from participants' stated intentions toward future workflows, sketching a broader vision of how the approach could complement existing practices and support downstream tasks beyond the immediate scope of the study.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0010.p0001",
+    "role_statement": "This paragraph opens the section by flagging an overarching caveat about the evaluation's generalizability, noting that a key design element was fixed and author-generated rather than varied, which constrains conclusions about how that element's quality influences the observed benefits.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0010.p0002",
+    "role_statement": "This paragraph extends the preceding limitation by justifying the specific methodological choice made in the study (the selected baseline), acknowledging alternative options that could have isolated different variables, and explaining why the chosen comparison condition constrains the causal claims that can be drawn from the results.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0010.p0003",
+    "role_statement": "This paragraph shifts from identifying a limitation to proposing forward-looking solutions, suggesting concrete directions and design features for future tools that could address the manual, labor-intensive process described earlier, thereby closing the section with constructive next steps for the research community.",
+    "source": "input"
+  },
+  {
+    "paragraph_id": "s0011.p0001",
+    "role_statement": "This paragraph fulfills the conventional acknowledgments function by expressing gratitude to study participants and reviewers and disclosing the funding sources that supported the research, without contributing to the paper's substantive argument.",
+    "source": "input"
+  }
+]

@@ -1,0 +1,70 @@
+[
+  {
+    "group_id": "section-group-11be0cec7f77",
+    "role_statement": "This section presents a controlled ablation study that isolates and tests individual design features and their combinations to empirically establish which components are necessary and how they interact, providing causal evidence that justifies the system's integrated design choices before moving on to a holistic evaluation.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "section-group-264d31b73b39",
+    "role_statement": "This section surveys prior literature across relevant subfields to position the paper's approach, establishing conceptual grounding, identifying gaps, and clarifying how the proposed system differs from or builds upon existing tools and theories.",
+    "source": "model",
+    "attempt_id": "attempt-000027"
+  },
+  {
+    "group_id": "section-group-31dae278f99b",
+    "role_statement": "This section serves as the paper's Discussion, interpreting the study's findings in light of the underlying theoretical framework, positioning the proposed approach against alternative paradigms, and acknowledging the work's limitations and scope for future research.",
+    "source": "model",
+    "attempt_id": "attempt-000028"
+  },
+  {
+    "group_id": "section-group-3b857ae1dbaf",
+    "role_statement": "This section serves as the paper's abstract, delivering a compact standalone preview that frames the problem, situates the proposed approach, and summarizes the evaluation and findings to orient readers before the full text.",
+    "source": "model",
+    "attempt_id": "attempt-000029"
+  },
+  {
+    "group_id": "section-group-856119f080c8",
+    "role_statement": "This section reports the end-to-end user study methodology—participant recruitment, procedure, and tasks—used to empirically evaluate the paper's proposed system/concepts, providing the methodological foundation that the subsequent results sections draw on to support their findings.",
+    "source": "model",
+    "attempt_id": "attempt-000030"
+  },
+  {
+    "group_id": "section-group-95569492e9e8",
+    "role_statement": "This section discharges the paper's funding-disclosure obligation by naming the grants and institutions that financially supported the research and affirming the funders' lack of influence over the study, serving a standard administrative/transparency function rather than contributing to the paper's argument.",
+    "source": "model",
+    "attempt_id": "attempt-000031"
+  },
+  {
+    "group_id": "section-group-b475b9d6107e",
+    "role_statement": "This section reports the study's results, combining quantitative measurements (surveys, usage logs, statistical tests) with qualitative thematic findings to demonstrate how the system's features performed and were perceived by participants in practice.",
+    "source": "model",
+    "attempt_id": "attempt-000032"
+  },
+  {
+    "group_id": "section-group-cb1db7901cee",
+    "role_statement": "This section presents a formative study that establishes the user needs, existing practices, and gaps motivating the proposed design approach, while also using early design probes to elicit reactions that inform and justify subsequent design decisions.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "section-group-e6a0a0b75d91",
+    "role_statement": "This section serves as the paper's Introduction, framing the problem and gap the work addresses, situating the proposed approach relative to prior work, previewing the system/studies used to validate it, and summarizing the paper's contributions.",
+    "source": "model",
+    "attempt_id": "attempt-000033"
+  },
+  {
+    "group_id": "section-group-e74536c6c44a",
+    "role_statement": "This section establishes the empirical foundation for the system by describing how the underlying corpus was assembled and processed, detailing the data collection scope, preprocessing steps, embedding methodology, and feature-extraction procedures that later sections and evaluations depend upon.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "section-group-ed52a960f4ab",
+    "role_statement": "This section closes the paper by synthesizing the system's design philosophy and core contribution into a concise statement, situating the work within a broader vision for how writing support tools should relate to existing scholarship and author agency, without introducing new evidence or findings.",
+    "source": "member_role_statement"
+  },
+  {
+    "group_id": "section-group-f494dac7115f",
+    "role_statement": "This section presents the system itself: introducing its design goals/rationale, illustrating usage via a walkthrough scenario, detailing the core interactive mechanisms and the theory behind them, and describing the technical implementation, thereby bridging the paper's motivating/formative material with its evaluation.",
+    "source": "model",
+    "attempt_id": "attempt-000034"
+  }
+]

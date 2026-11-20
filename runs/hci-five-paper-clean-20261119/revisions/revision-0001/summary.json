@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "pipeline_id": "incremental-role-graph-v1",
+  "max_granularity": "section",
+  "paper_count": 5,
+  "paper_order": [
+    "abstractexplorer",
+    "corpusstudio",
+    "examplore_chi18",
+    "mesotext",
+    "paralib_uist22"
+  ],
+  "graph_hash": "3e865ab7d864759d6a5521e0f7cd56deded787d3ed1f6cc2b4e74bf6ce901508",
+  "event_count": 7556,
+  "attempt_count": 5596,
+  "dataset_dir": "C:\\HBS\\Glassman Lab Research\\hypothesis\\SME-prototype-elena-clean\\runs\\hci-five-paper-clean-20261119\\revisions\\revision-0001\\dataset"
+}

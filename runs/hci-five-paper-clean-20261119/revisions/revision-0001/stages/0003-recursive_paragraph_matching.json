@@ -1,0 +1,183 @@
+[
+  {
+    "paper_id": "corpusstudio",
+    "section_id": "s0005",
+    "section_ids": [
+      "s0005"
+    ],
+    "parent_id": "section-group-f494dac7115f",
+    "existing_group_ids": [
+      "paragraph-group-0fdf95e56cba",
+      "paragraph-group-1cf2abf642b9",
+      "paragraph-group-2d4532350d4d",
+      "paragraph-group-4b923b9ef4e8",
+      "paragraph-group-5d4077d0c259",
+      "paragraph-group-64d350f6a0b6",
+      "paragraph-group-6bbff5c76533",
+      "paragraph-group-7d3a33f97ae1",
+      "paragraph-group-9139847c6691",
+      "paragraph-group-a0c55c109d3d",
+      "paragraph-group-aa89d7d8564d",
+      "paragraph-group-b178b7a06e80",
+      "paragraph-group-b64d7dac0700",
+      "paragraph-group-c1f8be3dc5d4",
+      "paragraph-group-c7a49bf8c6da",
+      "paragraph-group-d50414cd1274",
+      "paragraph-group-d8919c62364d",
+      "paragraph-group-eb4c3c4cad3e",
+      "paragraph-group-f709e4640315"
+    ],
+    "new_unit_ids": [
+      "s0005.p0001",
+      "s0005.ss0001.p0001",
+      "s0005.ss0002.p0001",
+      "s0005.ss0003.p0001",
+      "s0005.ss0003.p0002"
+    ],
+    "forward": {
+      "s0005.p0001": {
+        "source_id": "s0005.p0001",
+        "target_id": "paragraph-group-b178b7a06e80",
+        "direction": "new_to_group",
+        "attempt_id": "attempt-000506"
+      },
+      "s0005.ss0003.p0001": {
+        "source_id": "s0005.ss0003.p0001",
+        "target_id": "paragraph-group-9139847c6691",
+        "direction": "new_to_group",
+        "attempt_id": "attempt-000507"
+      },
+      "s0005.ss0003.p0002": {
+        "source_id": "s0005.ss0003.p0002",
+        "target_id": "paragraph-group-7d3a33f97ae1",
+        "direction": "new_to_group",
+        "attempt_id": "attempt-000500"
+      }
+    },
+    "reverse": {
+      "paragraph-group-7d3a33f97ae1": {
+        "source_id": "paragraph-group-7d3a33f97ae1",
+        "target_id": "s0005.ss0003.p0002",
+        "direction": "group_to_new",
+        "attempt_id": "attempt-000500"
+      },
+      "paragraph-group-9139847c6691": {
+        "source_id": "paragraph-group-9139847c6691",
+        "target_id": "s0005.ss0003.p0001",
+        "direction": "group_to_new",
+        "attempt_id": "attempt-000508"
+      },
+      "paragraph-group-b178b7a06e80": {
+        "source_id": "paragraph-group-b178b7a06e80",
+        "target_id": "s0005.p0001",
+        "direction": "group_to_new",
+        "attempt_id": "attempt-000509"
+      },
+      "paragraph-group-eb4c3c4cad3e": {
+        "source_id": "paragraph-group-eb4c3c4cad3e",
+        "target_id": "s0005.ss0003.p0001",
+        "direction": "group_to_new",
+        "attempt_id": "attempt-000494"
+      }
+    }
+  },
+  {
+    "paper_id": "abstractexplorer",
+    "section_id": "s0006",
+    "section_ids": [
+      "s0006"
+    ],
+    "parent_id": "section-group-856119f080c8",
+    "existing_group_ids": [
+      "paragraph-group-4c1206db2acc",
+      "paragraph-group-cc4425ba5acd",
+      "paragraph-group-e03ef436cd75",
+      "paragraph-group-ecfcfcd552ae"
+    ],
+    "new_unit_ids": [
+      "s0006.p0001",
+      "s0006.p0002",
+      "s0006.p0003",
+      "s0006.ss0001.p0001",
+      "s0006.ss0002.p0001",
+      "s0006.ss0002.p0002",
+      "s0006.ss0002.p0003",
+      "s0006.ss0002.p0004",
+      "s0006.ss0002.p0005",
+      "s0006.ss0002.p0006",
+      "s0006.ss0003.p0001",
+      "s0006.ss0003.p0002",
+      "s0006.ss0003.p0003",
+      "s0006.ss0003.p0004",
+      "s0006.ss0003.p0005",
+      "s0006.ss0003.p0006",
+      "s0006.ss0003.p0007",
+      "s0006.ss0003.p0008",
+      "s0006.ss0003.p0009"
+    ],
+    "forward": {
+      "s0006.p0001": {
+        "source_id": "s0006.p0001",
+        "target_id": "paragraph-group-cc4425ba5acd",
+        "direction": "new_to_group",
+        "attempt_id": "attempt-000511"
+      },
+      "s0006.p0002": {
+        "source_id": "s0006.p0002",
+        "target_id": "paragraph-group-cc4425ba5acd",
+        "direction": "new_to_group",
+        "attempt_id": "attempt-000515"
+      },
+      "s0006.p0003": {
+        "source_id": "s0006.p0003",
+        "target_id": "paragraph-group-cc4425ba5acd",
+        "direction": "new_to_group",
+        "attempt_id": "attempt-000519"
+      },
+      "s0006.ss0001.p0001": {
+        "source_id": "s0006.ss0001.p0001",
+        "target_id": "paragraph-group-cc4425ba5acd",
+        "direction": "new_to_group",
+        "attempt_id": "attempt-000523"
+      },
+      "s0006.ss0002.p0001": {
+        "source_id": "s0006.ss0002.p0001",
+        "target_id": "paragraph-group-cc4425ba5acd",
+        "direction": "new_to_group",
+        "attempt_id": "attempt-000527"
+      },
+      "s0006.ss0002.p0002": {
+        "source_id": "s0006.ss0002.p0002",
+        "target_id": "paragraph-group-cc4425ba5acd",
+        "direction": "new_to_group",
+        "attempt_id": "attempt-000531"
+      },
+      "s0006.ss0002.p0004": {
+        "source_id": "s0006.ss0002.p0004",
+        "target_id": "paragraph-group-cc4425ba5acd",
+        "direction": "new_to_group",
+        "attempt_id": "attempt-000539"
+      },
+      "s0006.ss0002.p0005": {
+        "source_id": "s0006.ss0002.p0005",
+        "target_id": "paragraph-group-cc4425ba5acd",
+        "direction": "new_to_group",
+        "attempt_id": "attempt-000543"
+      },
+      "s0006.ss0002.p0006": {
+        "source_id": "s0006.ss0002.p0006",
+        "target_id": "paragraph-group-cc4425ba5acd",
+        "direction": "new_to_group",
+        "attempt_id": "attempt-000547"
+      }
+    },
+    "reverse": {
+      "paragraph-group-cc4425ba5acd": {
+        "source_id": "paragraph-group-cc4425ba5acd",
+        "target_id": "s0006.ss0002.p0006",
+        "direction": "group_to_new",
+        "attempt_id": "attempt-000586"
+      }
+    }
+  }
+]

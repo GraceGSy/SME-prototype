@@ -1,0 +1,5842 @@
+{
+  "schema_version": 1,
+  "paragraph_count": 466,
+  "singleton_paragraph_count": 137,
+  "reason_counts": {
+    "model_abstained": 15,
+    "never_compared": 15,
+    "selected_without_acceptance": 107
+  },
+  "recovery_status_counts": {
+    "eligible_established_group": 109,
+    "source_paper_already_in_groups": 28
+  },
+  "limitations": [
+    "Recorded selection and abstention are not proof of semantic correctness or uniqueness.",
+    "Recovery eligibility describes the final snapshot, not whether every candidate was tested.",
+    "Recovery eligibility uses current code; historical runs may have used different rules.",
+    "Singleton peers share a final scope; this count does not claim they were never compared."
+  ],
+  "paragraphs": [
+    {
+      "paper_id": "abstractexplorer",
+      "paragraph_id": "s0002.p0004",
+      "group_id": "paragraph-group-20e0c70a3f87",
+      "parent_id": "section-group-e6a0a0b75d91",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000037",
+        "attempt-000038",
+        "attempt-000039",
+        "attempt-000041",
+        "attempt-000042",
+        "attempt-000043",
+        "attempt-000044",
+        "attempt-000045",
+        "attempt-000047",
+        "attempt-001517",
+        "attempt-001524",
+        "attempt-001880",
+        "attempt-001823",
+        "attempt-002998",
+        "attempt-003033",
+        "attempt-003734",
+        "attempt-003696",
+        "attempt-005151",
+        "attempt-005171"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000047",
+          "direction": "group_to_new",
+          "target_id": "s0002.p0004"
+        },
+        {
+          "attempt_id": "attempt-001517",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-683083f9fc78"
+        },
+        {
+          "attempt_id": "attempt-001823",
+          "direction": "group_to_new",
+          "target_id": "s0002.p0005"
+        },
+        {
+          "attempt_id": "attempt-002998",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-683083f9fc78"
+        },
+        {
+          "attempt_id": "attempt-003696",
+          "direction": "group_to_new",
+          "target_id": "s0002.p0005"
+        },
+        {
+          "attempt_id": "attempt-005151",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-877381d47601"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-877381d47601"
+        ],
+        "other_paper_singleton_peers": 6
+      }
+    },
+    {
+      "paper_id": "abstractexplorer",
+      "paragraph_id": "s0002.p0005",
+      "group_id": "paragraph-group-51e6acb2510a",
+      "parent_id": "section-group-e6a0a0b75d91",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000037",
+        "attempt-000038",
+        "attempt-000039",
+        "attempt-000041",
+        "attempt-000042",
+        "attempt-000043",
+        "attempt-000044",
+        "attempt-000045",
+        "attempt-000048",
+        "attempt-001518",
+        "attempt-001524",
+        "attempt-001880",
+        "attempt-001825",
+        "attempt-003729",
+        "attempt-003734",
+        "attempt-003738",
+        "attempt-005154",
+        "attempt-005171"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000048",
+          "direction": "group_to_new",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-001518",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-683083f9fc78"
+        },
+        {
+          "attempt_id": "attempt-001825",
+          "direction": "group_to_new",
+          "target_id": "s0002.p0005"
+        },
+        {
+          "attempt_id": "attempt-003738",
+          "direction": "group_to_new",
+          "target_id": "s0002.p0005"
+        },
+        {
+          "attempt_id": "attempt-005154",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-877381d47601"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-877381d47601"
+        ],
+        "other_paper_singleton_peers": 6
+      }
+    },
+    {
+      "paper_id": "abstractexplorer",
+      "paragraph_id": "s0003.ss0001.p0001",
+      "group_id": "paragraph-group-4d080c92bfeb",
+      "parent_id": "section-group-264d31b73b39",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000054",
+        "attempt-000056",
+        "attempt-000057",
+        "attempt-000058",
+        "attempt-000059",
+        "attempt-000060",
+        "attempt-000061",
+        "attempt-000063",
+        "attempt-000064",
+        "attempt-000068",
+        "attempt-000258",
+        "attempt-000799",
+        "attempt-000693",
+        "attempt-001285",
+        "attempt-001311",
+        "attempt-001999",
+        "attempt-002000",
+        "attempt-002002",
+        "attempt-002004",
+        "attempt-002013",
+        "attempt-003859",
+        "attempt-003864",
+        "attempt-003872"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000068",
+          "direction": "group_to_new",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-000258",
+          "direction": "singleton_to_group",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-000693",
+          "direction": "group_to_new",
+          "target_id": "s0003.ss0001.p0001"
+        },
+        {
+          "attempt_id": "attempt-001285",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-b2a720142c7c"
+        },
+        {
+          "attempt_id": "attempt-002013",
+          "direction": "group_to_new",
+          "target_id": "s0003.ss0002.p0001"
+        },
+        {
+          "attempt_id": "attempt-003872",
+          "direction": "group_to_new",
+          "target_id": "s0004.ss0002.p0001"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-000056",
+        "attempt-000059",
+        "attempt-002000"
+      ],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-e8ed5fdd5919"
+        ],
+        "other_paper_singleton_peers": 14
+      }
+    },
+    {
+      "paper_id": "abstractexplorer",
+      "paragraph_id": "s0003.ss0004.p0002",
+      "group_id": "paragraph-group-0654c32fc245",
+      "parent_id": "section-group-264d31b73b39",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000054",
+        "attempt-000056",
+        "attempt-000057",
+        "attempt-000058",
+        "attempt-000059",
+        "attempt-000060",
+        "attempt-000061",
+        "attempt-000063",
+        "attempt-000064",
+        "attempt-000065",
+        "attempt-000799",
+        "attempt-000690",
+        "attempt-001279",
+        "attempt-001311",
+        "attempt-001999",
+        "attempt-002000",
+        "attempt-002004",
+        "attempt-001978",
+        "attempt-002009",
+        "attempt-003855",
+        "attempt-003857",
+        "attempt-003862",
+        "attempt-003867"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000065",
+          "direction": "group_to_new",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-000690",
+          "direction": "group_to_new",
+          "target_id": "s0003.ss0001.p0001"
+        },
+        {
+          "attempt_id": "attempt-001279",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-b2a720142c7c"
+        },
+        {
+          "attempt_id": "attempt-002009",
+          "direction": "group_to_new",
+          "target_id": "s0003.ss0002.p0002"
+        },
+        {
+          "attempt_id": "attempt-003867",
+          "direction": "group_to_new",
+          "target_id": "s0003.p0001"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-001978"
+      ],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 14
+      }
+    },
+    {
+      "paper_id": "abstractexplorer",
+      "paragraph_id": "s0004.ss0001.p0002",
+      "group_id": "paragraph-group-e9d7a4bb8fd7",
+      "parent_id": "section-group-cb1db7901cee",
+      "parent_is_shared": true,
+      "reason": "never_compared",
+      "exposed_attempt_ids": [],
+      "judgments": [],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "abstractexplorer",
+      "paragraph_id": "s0004.ss0001.p0003",
+      "group_id": "paragraph-group-1e82f9287443",
+      "parent_id": "section-group-cb1db7901cee",
+      "parent_is_shared": true,
+      "reason": "never_compared",
+      "exposed_attempt_ids": [],
+      "judgments": [],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "abstractexplorer",
+      "paragraph_id": "s0004.ss0002.p0001",
+      "group_id": "paragraph-group-451d8bf281b3",
+      "parent_id": "section-group-cb1db7901cee",
+      "parent_is_shared": true,
+      "reason": "never_compared",
+      "exposed_attempt_ids": [],
+      "judgments": [],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "abstractexplorer",
+      "paragraph_id": "s0004.ss0002.p0002",
+      "group_id": "paragraph-group-b3d609da135d",
+      "parent_id": "section-group-cb1db7901cee",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-002059",
+        "attempt-002062",
+        "attempt-002066"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-002066",
+          "direction": "group_to_new",
+          "target_id": null
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-002062"
+      ],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "abstractexplorer",
+      "paragraph_id": "s0004.ss0002.p0003",
+      "group_id": "paragraph-group-0626487b3eab",
+      "parent_id": "section-group-cb1db7901cee",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-002059",
+        "attempt-002060",
+        "attempt-002061",
+        "attempt-002045",
+        "attempt-002062",
+        "attempt-002064"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-002064",
+          "direction": "group_to_new",
+          "target_id": "s0004.ss0002.p0001"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-002045"
+      ],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "abstractexplorer",
+      "paragraph_id": "s0005.ss0001.p0002",
+      "group_id": "paragraph-group-1cf2abf642b9",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000079",
+        "attempt-000080",
+        "attempt-000081",
+        "attempt-000082",
+        "attempt-000083",
+        "attempt-000084",
+        "attempt-000085",
+        "attempt-000086",
+        "attempt-000087",
+        "attempt-000088",
+        "attempt-000089",
+        "attempt-000091",
+        "attempt-000093",
+        "attempt-000094",
+        "attempt-000095",
+        "attempt-000096",
+        "attempt-000097",
+        "attempt-000099",
+        "attempt-000100",
+        "attempt-000101",
+        "attempt-000102",
+        "attempt-000103",
+        "attempt-000104",
+        "attempt-000105",
+        "attempt-000106",
+        "attempt-000107",
+        "attempt-000108",
+        "attempt-000109",
+        "attempt-000111",
+        "attempt-004123",
+        "attempt-004129",
+        "attempt-004145"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000111",
+          "direction": "group_to_new",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-004145",
+          "direction": "group_to_new",
+          "target_id": "s0005.ss0002.p0002"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-1a6c0a33229f",
+          "paragraph-group-83a695da8f64",
+          "paragraph-group-902c950cd1be",
+          "paragraph-group-93b14d929c2e",
+          "paragraph-group-b5ea45869fc6"
+        ],
+        "other_paper_singleton_peers": 23
+      }
+    },
+    {
+      "paper_id": "abstractexplorer",
+      "paragraph_id": "s0005.ss0001.p0005",
+      "group_id": "paragraph-group-eb4c3c4cad3e",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000079",
+        "attempt-000080",
+        "attempt-000081",
+        "attempt-000082",
+        "attempt-000083",
+        "attempt-000084",
+        "attempt-000085",
+        "attempt-000086",
+        "attempt-000087",
+        "attempt-000088",
+        "attempt-000089",
+        "attempt-000091",
+        "attempt-000093",
+        "attempt-000094",
+        "attempt-000095",
+        "attempt-000096",
+        "attempt-000097",
+        "attempt-000099",
+        "attempt-000100",
+        "attempt-000101",
+        "attempt-000102",
+        "attempt-000103",
+        "attempt-000104",
+        "attempt-000105",
+        "attempt-000106",
+        "attempt-000107",
+        "attempt-000108",
+        "attempt-000109",
+        "attempt-000138",
+        "attempt-000507",
+        "attempt-000494",
+        "attempt-000966",
+        "attempt-000968",
+        "attempt-000980",
+        "attempt-002295",
+        "attempt-002296",
+        "attempt-002297",
+        "attempt-002321",
+        "attempt-003225",
+        "attempt-003227",
+        "attempt-003231"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000138",
+          "direction": "group_to_new",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-000494",
+          "direction": "group_to_new",
+          "target_id": "s0005.ss0003.p0001"
+        },
+        {
+          "attempt_id": "attempt-000980",
+          "direction": "group_to_new",
+          "target_id": "s0006.ss0002.p0001"
+        },
+        {
+          "attempt_id": "attempt-002321",
+          "direction": "group_to_new",
+          "target_id": "s0005.ss0003.p0002"
+        },
+        {
+          "attempt_id": "attempt-003225",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-b5ea45869fc6"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-1a6c0a33229f",
+          "paragraph-group-7d3a33f97ae1",
+          "paragraph-group-902c950cd1be",
+          "paragraph-group-93b14d929c2e",
+          "paragraph-group-b5ea45869fc6"
+        ],
+        "other_paper_singleton_peers": 23
+      }
+    },
+    {
+      "paper_id": "abstractexplorer",
+      "paragraph_id": "s0005.ss0001.p0007",
+      "group_id": "paragraph-group-c1f8be3dc5d4",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000079",
+        "attempt-000080",
+        "attempt-000081",
+        "attempt-000082",
+        "attempt-000083",
+        "attempt-000084",
+        "attempt-000085",
+        "attempt-000086",
+        "attempt-000087",
+        "attempt-000088",
+        "attempt-000089",
+        "attempt-000091",
+        "attempt-000093",
+        "attempt-000094",
+        "attempt-000095",
+        "attempt-000096",
+        "attempt-000097",
+        "attempt-000099",
+        "attempt-000100",
+        "attempt-000101",
+        "attempt-000102",
+        "attempt-000103",
+        "attempt-000104",
+        "attempt-000105",
+        "attempt-000106",
+        "attempt-000107",
+        "attempt-000108",
+        "attempt-000109",
+        "attempt-000131",
+        "attempt-000961",
+        "attempt-000962",
+        "attempt-000975",
+        "attempt-003186",
+        "attempt-003227",
+        "attempt-004125",
+        "attempt-004129",
+        "attempt-004136",
+        "attempt-004140",
+        "attempt-004154"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000131",
+          "direction": "group_to_new",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-000975",
+          "direction": "group_to_new",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-003186",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-83a695da8f64"
+        },
+        {
+          "attempt_id": "attempt-004154",
+          "direction": "group_to_new",
+          "target_id": "s0005.ss0002.p0003"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-004129"
+      ],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-1a6c0a33229f",
+          "paragraph-group-5d4077d0c259",
+          "paragraph-group-7d3a33f97ae1",
+          "paragraph-group-902c950cd1be",
+          "paragraph-group-93b14d929c2e",
+          "paragraph-group-b5ea45869fc6"
+        ],
+        "other_paper_singleton_peers": 23
+      }
+    },
+    {
+      "paper_id": "abstractexplorer",
+      "paragraph_id": "s0005.ss0001.p0015",
+      "group_id": "paragraph-group-0fdf95e56cba",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000079",
+        "attempt-000080",
+        "attempt-000081",
+        "attempt-000082",
+        "attempt-000083",
+        "attempt-000084",
+        "attempt-000085",
+        "attempt-000086",
+        "attempt-000087",
+        "attempt-000088",
+        "attempt-000089",
+        "attempt-000091",
+        "attempt-000093",
+        "attempt-000094",
+        "attempt-000095",
+        "attempt-000096",
+        "attempt-000097",
+        "attempt-000099",
+        "attempt-000100",
+        "attempt-000101",
+        "attempt-000102",
+        "attempt-000103",
+        "attempt-000104",
+        "attempt-000105",
+        "attempt-000106",
+        "attempt-000107",
+        "attempt-000108",
+        "attempt-000109",
+        "attempt-000110",
+        "attempt-000963",
+        "attempt-000850",
+        "attempt-003040",
+        "attempt-003227",
+        "attempt-004129",
+        "attempt-004130",
+        "attempt-004132",
+        "attempt-004136",
+        "attempt-004143",
+        "attempt-005189",
+        "attempt-005527"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000110",
+          "direction": "group_to_new",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-000850",
+          "direction": "group_to_new",
+          "target_id": "s0005.p0004"
+        },
+        {
+          "attempt_id": "attempt-003040",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-83a695da8f64"
+        },
+        {
+          "attempt_id": "attempt-004143",
+          "direction": "group_to_new",
+          "target_id": "s0005.ss0002.p0012"
+        },
+        {
+          "attempt_id": "attempt-005189",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-1a6c0a33229f"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-004130"
+      ],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-1a6c0a33229f",
+          "paragraph-group-902c950cd1be",
+          "paragraph-group-93b14d929c2e",
+          "paragraph-group-b5ea45869fc6"
+        ],
+        "other_paper_singleton_peers": 23
+      }
+    },
+    {
+      "paper_id": "abstractexplorer",
+      "paragraph_id": "s0005.ss0001.p0016",
+      "group_id": "paragraph-group-f709e4640315",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000079",
+        "attempt-000080",
+        "attempt-000081",
+        "attempt-000082",
+        "attempt-000083",
+        "attempt-000084",
+        "attempt-000085",
+        "attempt-000086",
+        "attempt-000087",
+        "attempt-000088",
+        "attempt-000089",
+        "attempt-000091",
+        "attempt-000093",
+        "attempt-000094",
+        "attempt-000095",
+        "attempt-000096",
+        "attempt-000097",
+        "attempt-000099",
+        "attempt-000100",
+        "attempt-000101",
+        "attempt-000102",
+        "attempt-000103",
+        "attempt-000104",
+        "attempt-000105",
+        "attempt-000106",
+        "attempt-000107",
+        "attempt-000108",
+        "attempt-000109",
+        "attempt-000139",
+        "attempt-000272",
+        "attempt-004125",
+        "attempt-003934",
+        "attempt-005497",
+        "attempt-005527"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000139",
+          "direction": "group_to_new",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-000272",
+          "direction": "singleton_to_group",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-003934",
+          "direction": "group_to_new",
+          "target_id": "s0005.ss0002.p0003"
+        },
+        {
+          "attempt_id": "attempt-005497",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-1a6c0a33229f"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-000104"
+      ],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-1a6c0a33229f",
+          "paragraph-group-902c950cd1be",
+          "paragraph-group-93b14d929c2e",
+          "paragraph-group-b5ea45869fc6",
+          "paragraph-group-b7480a0fa96e"
+        ],
+        "other_paper_singleton_peers": 23
+      }
+    },
+    {
+      "paper_id": "abstractexplorer",
+      "paragraph_id": "s0005.ss0002.p0004",
+      "group_id": "paragraph-group-4b923b9ef4e8",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000079",
+        "attempt-000080",
+        "attempt-000081",
+        "attempt-000082",
+        "attempt-000083",
+        "attempt-000084",
+        "attempt-000085",
+        "attempt-000086",
+        "attempt-000087",
+        "attempt-000088",
+        "attempt-000089",
+        "attempt-000091",
+        "attempt-000093",
+        "attempt-000094",
+        "attempt-000095",
+        "attempt-000096",
+        "attempt-000097",
+        "attempt-000099",
+        "attempt-000100",
+        "attempt-000101",
+        "attempt-000102",
+        "attempt-000103",
+        "attempt-000104",
+        "attempt-000105",
+        "attempt-000106",
+        "attempt-000107",
+        "attempt-000108",
+        "attempt-000109",
+        "attempt-000116",
+        "attempt-000959",
+        "attempt-000962",
+        "attempt-000963",
+        "attempt-000965",
+        "attempt-000971",
+        "attempt-004138",
+        "attempt-004141",
+        "attempt-004150"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000116",
+          "direction": "group_to_new",
+          "target_id": "s0004.ss0002.p0005"
+        },
+        {
+          "attempt_id": "attempt-000971",
+          "direction": "group_to_new",
+          "target_id": "s0005.p0006"
+        },
+        {
+          "attempt_id": "attempt-004150",
+          "direction": "group_to_new",
+          "target_id": "s0006.p0005"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-1a6c0a33229f",
+          "paragraph-group-902c950cd1be",
+          "paragraph-group-93b14d929c2e",
+          "paragraph-group-b178b7a06e80",
+          "paragraph-group-b5ea45869fc6"
+        ],
+        "other_paper_singleton_peers": 23
+      }
+    },
+    {
+      "paper_id": "abstractexplorer",
+      "paragraph_id": "s0005.ss0003.p0004",
+      "group_id": "paragraph-group-6bbff5c76533",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000079",
+        "attempt-000080",
+        "attempt-000081",
+        "attempt-000082",
+        "attempt-000083",
+        "attempt-000084",
+        "attempt-000085",
+        "attempt-000086",
+        "attempt-000087",
+        "attempt-000088",
+        "attempt-000089",
+        "attempt-000091",
+        "attempt-000093",
+        "attempt-000094",
+        "attempt-000095",
+        "attempt-000096",
+        "attempt-000097",
+        "attempt-000099",
+        "attempt-000100",
+        "attempt-000101",
+        "attempt-000102",
+        "attempt-000103",
+        "attempt-000104",
+        "attempt-000105",
+        "attempt-000106",
+        "attempt-000107",
+        "attempt-000108",
+        "attempt-000109",
+        "attempt-000121",
+        "attempt-000968",
+        "attempt-000930"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000121",
+          "direction": "group_to_new",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-000930",
+          "direction": "group_to_new",
+          "target_id": "s0006.ss0002.p0003"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-1a6c0a33229f",
+          "paragraph-group-902c950cd1be",
+          "paragraph-group-93b14d929c2e",
+          "paragraph-group-b5ea45869fc6"
+        ],
+        "other_paper_singleton_peers": 23
+      }
+    },
+    {
+      "paper_id": "abstractexplorer",
+      "paragraph_id": "s0005.ss0003.p0005",
+      "group_id": "paragraph-group-2d4532350d4d",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "model_abstained",
+      "exposed_attempt_ids": [
+        "attempt-000079",
+        "attempt-000080",
+        "attempt-000081",
+        "attempt-000082",
+        "attempt-000083",
+        "attempt-000084",
+        "attempt-000085",
+        "attempt-000086",
+        "attempt-000087",
+        "attempt-000088",
+        "attempt-000089",
+        "attempt-000091",
+        "attempt-000093",
+        "attempt-000094",
+        "attempt-000095",
+        "attempt-000096",
+        "attempt-000097",
+        "attempt-000099",
+        "attempt-000100",
+        "attempt-000101",
+        "attempt-000102",
+        "attempt-000103",
+        "attempt-000104",
+        "attempt-000105",
+        "attempt-000106",
+        "attempt-000107",
+        "attempt-000108",
+        "attempt-000109",
+        "attempt-000114"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000114",
+          "direction": "group_to_new",
+          "target_id": null
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-1a6c0a33229f",
+          "paragraph-group-902c950cd1be",
+          "paragraph-group-93b14d929c2e",
+          "paragraph-group-b5ea45869fc6",
+          "paragraph-group-b64d7dac0700"
+        ],
+        "other_paper_singleton_peers": 23
+      }
+    },
+    {
+      "paper_id": "abstractexplorer",
+      "paragraph_id": "s0006.ss0003.p0009",
+      "group_id": "paragraph-group-0a5d2df0d9aa",
+      "parent_id": "section-group-856119f080c8",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-002599",
+        "attempt-002477"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-002477",
+          "direction": "group_to_new",
+          "target_id": "s0006.ss0006.p0004"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-e03ef436cd75"
+        ],
+        "other_paper_singleton_peers": 15
+      }
+    },
+    {
+      "paper_id": "abstractexplorer",
+      "paragraph_id": "s0008.ss0001.p0004",
+      "group_id": "paragraph-group-03b06ba6937b",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000163",
+        "attempt-000164",
+        "attempt-000166",
+        "attempt-000167",
+        "attempt-000168",
+        "attempt-000169",
+        "attempt-000170",
+        "attempt-000171",
+        "attempt-000172",
+        "attempt-000173",
+        "attempt-000174",
+        "attempt-000175",
+        "attempt-000176",
+        "attempt-000177",
+        "attempt-000178",
+        "attempt-000179",
+        "attempt-000180",
+        "attempt-000181",
+        "attempt-000182",
+        "attempt-000183",
+        "attempt-000184",
+        "attempt-000185",
+        "attempt-000186",
+        "attempt-000187",
+        "attempt-000188",
+        "attempt-000190",
+        "attempt-000191",
+        "attempt-000192",
+        "attempt-000193",
+        "attempt-000194",
+        "attempt-000195",
+        "attempt-000196",
+        "attempt-000197",
+        "attempt-000198",
+        "attempt-000199",
+        "attempt-000200",
+        "attempt-000201",
+        "attempt-000202",
+        "attempt-000203",
+        "attempt-000204",
+        "attempt-000205",
+        "attempt-000206",
+        "attempt-000208",
+        "attempt-004529",
+        "attempt-004533",
+        "attempt-004538",
+        "attempt-004541"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000208",
+          "direction": "group_to_new",
+          "target_id": "s0007.p0002"
+        },
+        {
+          "attempt_id": "attempt-004541",
+          "direction": "group_to_new",
+          "target_id": "s0008.ss0003.p0001"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-000206"
+      ],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-650300459e43",
+          "paragraph-group-7b16725528e1",
+          "paragraph-group-91a83a0f8eb1",
+          "paragraph-group-bec2ef7a6e9f",
+          "paragraph-group-c0e599be8cb2",
+          "paragraph-group-d75b83b83ce5"
+        ],
+        "other_paper_singleton_peers": 27
+      }
+    },
+    {
+      "paper_id": "abstractexplorer",
+      "paragraph_id": "s0009.ss0002.p0002",
+      "group_id": "paragraph-group-81653c3028df",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000221",
+        "attempt-000222",
+        "attempt-000224",
+        "attempt-000225",
+        "attempt-000226",
+        "attempt-000228",
+        "attempt-000230",
+        "attempt-000231",
+        "attempt-000232",
+        "attempt-000233",
+        "attempt-000234",
+        "attempt-000236",
+        "attempt-000237",
+        "attempt-000238",
+        "attempt-000246",
+        "attempt-002732",
+        "attempt-002617",
+        "attempt-004721",
+        "attempt-004745"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000246",
+          "direction": "group_to_new",
+          "target_id": "s0009.ss0005.p0001"
+        },
+        {
+          "attempt_id": "attempt-002617",
+          "direction": "group_to_new",
+          "target_id": "s0008.p0001"
+        },
+        {
+          "attempt_id": "attempt-004721",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-e038157de37d"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-c28d3f04f47c",
+          "paragraph-group-e038157de37d"
+        ],
+        "other_paper_singleton_peers": 28
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0002.p0003",
+      "group_id": "paragraph-group-95c04981f47d",
+      "parent_id": "section-group-e6a0a0b75d91",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000039",
+        "attempt-000046",
+        "attempt-000047",
+        "attempt-000048",
+        "attempt-000049",
+        "attempt-000050",
+        "attempt-000051",
+        "attempt-000052",
+        "attempt-000053",
+        "attempt-003017",
+        "attempt-003034",
+        "attempt-005161",
+        "attempt-005171"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000039",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-61f566c7a1ad"
+        },
+        {
+          "attempt_id": "attempt-003017",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-a601659510a8"
+        },
+        {
+          "attempt_id": "attempt-005161",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-877381d47601"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-877381d47601"
+        ],
+        "other_paper_singleton_peers": 7
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0003.ss0001.p0002",
+      "group_id": "paragraph-group-f7c19cbe638f",
+      "parent_id": "section-group-264d31b73b39",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000057",
+        "attempt-000065",
+        "attempt-000066",
+        "attempt-000067",
+        "attempt-000068",
+        "attempt-000069",
+        "attempt-000070",
+        "attempt-000071",
+        "attempt-000073",
+        "attempt-000074",
+        "attempt-000075",
+        "attempt-000076",
+        "attempt-000077",
+        "attempt-000078",
+        "attempt-001302",
+        "attempt-001310"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000057",
+          "direction": "new_to_group",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-001302",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-b23de011475a"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-b23de011475a",
+          "paragraph-group-b7b27746e49f"
+        ],
+        "other_paper_singleton_peers": 14
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0003.ss0001.p0003",
+      "group_id": "paragraph-group-ff1860ea456d",
+      "parent_id": "section-group-264d31b73b39",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000058",
+        "attempt-000065",
+        "attempt-000066",
+        "attempt-000067",
+        "attempt-000068",
+        "attempt-000069",
+        "attempt-000070",
+        "attempt-000071",
+        "attempt-000073",
+        "attempt-000074",
+        "attempt-000075",
+        "attempt-000076",
+        "attempt-000077",
+        "attempt-000078",
+        "attempt-001305",
+        "attempt-001310",
+        "attempt-002789",
+        "attempt-002795",
+        "attempt-003855",
+        "attempt-003755",
+        "attempt-004696",
+        "attempt-004697",
+        "attempt-004699"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000058",
+          "direction": "new_to_group",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-001305",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-b23de011475a"
+        },
+        {
+          "attempt_id": "attempt-002789",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-b7b27746e49f"
+        },
+        {
+          "attempt_id": "attempt-003755",
+          "direction": "group_to_new",
+          "target_id": "s0003.p0001"
+        },
+        {
+          "attempt_id": "attempt-004696",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-b23de011475a"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-b23de011475a",
+          "paragraph-group-b7b27746e49f"
+        ],
+        "other_paper_singleton_peers": 14
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0004.ss0002.p0005",
+      "group_id": "paragraph-group-cbffcb62085d",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000085",
+        "attempt-000110",
+        "attempt-000111",
+        "attempt-000113",
+        "attempt-000114",
+        "attempt-000115",
+        "attempt-000116",
+        "attempt-000117",
+        "attempt-000119",
+        "attempt-000120",
+        "attempt-000121",
+        "attempt-000122",
+        "attempt-000123",
+        "attempt-000124",
+        "attempt-000125",
+        "attempt-000126",
+        "attempt-000128",
+        "attempt-000129",
+        "attempt-000130",
+        "attempt-000131",
+        "attempt-000132",
+        "attempt-000133",
+        "attempt-000134",
+        "attempt-000135",
+        "attempt-000136",
+        "attempt-000137",
+        "attempt-000138",
+        "attempt-000139",
+        "attempt-000959",
+        "attempt-000965",
+        "attempt-000976"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000085",
+          "direction": "new_to_group",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-000976",
+          "direction": "group_to_new",
+          "target_id": "s0005.p0006"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-000116"
+      ],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-8ca3db799e7e"
+        ],
+        "other_paper_singleton_peers": 24
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0004.ss0003.p0005",
+      "group_id": "paragraph-group-db7249a5d646",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "model_abstained",
+      "exposed_attempt_ids": [
+        "attempt-000091",
+        "attempt-000110",
+        "attempt-000111",
+        "attempt-000113",
+        "attempt-000114",
+        "attempt-000115",
+        "attempt-000116",
+        "attempt-000117",
+        "attempt-000119",
+        "attempt-000120",
+        "attempt-000121",
+        "attempt-000122",
+        "attempt-000123",
+        "attempt-000124",
+        "attempt-000125",
+        "attempt-000126",
+        "attempt-000128",
+        "attempt-000129",
+        "attempt-000130",
+        "attempt-000131",
+        "attempt-000132",
+        "attempt-000133",
+        "attempt-000134",
+        "attempt-000135",
+        "attempt-000136",
+        "attempt-000137",
+        "attempt-000138",
+        "attempt-000139"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000091",
+          "direction": "new_to_group",
+          "target_id": null
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-b5ea45869fc6"
+        ],
+        "other_paper_singleton_peers": 24
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0004.ss0003.p0010",
+      "group_id": "paragraph-group-2274819d56c4",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000097",
+        "attempt-000110",
+        "attempt-000111",
+        "attempt-000113",
+        "attempt-000114",
+        "attempt-000115",
+        "attempt-000116",
+        "attempt-000117",
+        "attempt-000119",
+        "attempt-000120",
+        "attempt-000121",
+        "attempt-000122",
+        "attempt-000123",
+        "attempt-000124",
+        "attempt-000125",
+        "attempt-000126",
+        "attempt-000128",
+        "attempt-000129",
+        "attempt-000130",
+        "attempt-000131",
+        "attempt-000132",
+        "attempt-000133",
+        "attempt-000134",
+        "attempt-000135",
+        "attempt-000136",
+        "attempt-000137",
+        "attempt-000138",
+        "attempt-000139",
+        "attempt-002294",
+        "attempt-002300",
+        "attempt-002308"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000097",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-c7a49bf8c6da"
+        },
+        {
+          "attempt_id": "attempt-002308",
+          "direction": "group_to_new",
+          "target_id": "s0005.ss0003.p0001"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-83a695da8f64"
+        ],
+        "other_paper_singleton_peers": 24
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0004.ss0003.p0011",
+      "group_id": "paragraph-group-88c3c1c21825",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000099",
+        "attempt-000110",
+        "attempt-000111",
+        "attempt-000113",
+        "attempt-000114",
+        "attempt-000115",
+        "attempt-000116",
+        "attempt-000117",
+        "attempt-000119",
+        "attempt-000120",
+        "attempt-000121",
+        "attempt-000122",
+        "attempt-000123",
+        "attempt-000124",
+        "attempt-000125",
+        "attempt-000126",
+        "attempt-000128",
+        "attempt-000129",
+        "attempt-000130",
+        "attempt-000131",
+        "attempt-000132",
+        "attempt-000133",
+        "attempt-000134",
+        "attempt-000135",
+        "attempt-000136",
+        "attempt-000137",
+        "attempt-000138",
+        "attempt-000139"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000099",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-a0c55c109d3d"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 24
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0004.ss0003.p0019",
+      "group_id": "paragraph-group-f9803ce3a562",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "model_abstained",
+      "exposed_attempt_ids": [
+        "attempt-000107",
+        "attempt-000110",
+        "attempt-000111",
+        "attempt-000113",
+        "attempt-000114",
+        "attempt-000115",
+        "attempt-000116",
+        "attempt-000117",
+        "attempt-000119",
+        "attempt-000120",
+        "attempt-000121",
+        "attempt-000122",
+        "attempt-000123",
+        "attempt-000124",
+        "attempt-000125",
+        "attempt-000126",
+        "attempt-000128",
+        "attempt-000129",
+        "attempt-000130",
+        "attempt-000131",
+        "attempt-000132",
+        "attempt-000133",
+        "attempt-000134",
+        "attempt-000135",
+        "attempt-000136",
+        "attempt-000137",
+        "attempt-000138",
+        "attempt-000139"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000107",
+          "direction": "new_to_group",
+          "target_id": null
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-93b14d929c2e"
+        ],
+        "other_paper_singleton_peers": 24
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0004.ss0004.p0002",
+      "group_id": "paragraph-group-ad6983bef766",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "model_abstained",
+      "exposed_attempt_ids": [
+        "attempt-000109",
+        "attempt-000110",
+        "attempt-000111",
+        "attempt-000113",
+        "attempt-000114",
+        "attempt-000115",
+        "attempt-000116",
+        "attempt-000117",
+        "attempt-000119",
+        "attempt-000120",
+        "attempt-000121",
+        "attempt-000122",
+        "attempt-000123",
+        "attempt-000124",
+        "attempt-000125",
+        "attempt-000126",
+        "attempt-000128",
+        "attempt-000129",
+        "attempt-000130",
+        "attempt-000131",
+        "attempt-000132",
+        "attempt-000133",
+        "attempt-000134",
+        "attempt-000135",
+        "attempt-000136",
+        "attempt-000137",
+        "attempt-000138",
+        "attempt-000139"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000109",
+          "direction": "new_to_group",
+          "target_id": null
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-93b14d929c2e"
+        ],
+        "other_paper_singleton_peers": 24
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0005.ss0001.p0001",
+      "group_id": "paragraph-group-6c4949753b37",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-002298",
+        "attempt-002203"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-002203",
+          "direction": "group_to_new",
+          "target_id": "s0005.ss0003.p0005"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-b178b7a06e80"
+        ],
+        "other_paper_singleton_peers": 24
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0006.ss0002.p0004",
+      "group_id": "paragraph-group-4c1206db2acc",
+      "parent_id": "section-group-856119f080c8",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000147",
+        "attempt-000155",
+        "attempt-000156",
+        "attempt-000158",
+        "attempt-000159",
+        "attempt-000160",
+        "attempt-000161",
+        "attempt-000162",
+        "attempt-002858",
+        "attempt-002978",
+        "attempt-004296",
+        "attempt-004196",
+        "attempt-004829",
+        "attempt-004979"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000147",
+          "direction": "new_to_group",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-002858",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-dd67557a1a89"
+        },
+        {
+          "attempt_id": "attempt-004196",
+          "direction": "group_to_new",
+          "target_id": "s0007.ss0001.p0003"
+        },
+        {
+          "attempt_id": "attempt-004829",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-dd67557a1a89"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-0bbde7bceb3c",
+          "paragraph-group-232d8e3317e5",
+          "paragraph-group-3d2ff41ff553",
+          "paragraph-group-528e112d9d90",
+          "paragraph-group-6e1a9e7546f8",
+          "paragraph-group-71316b5c67a5",
+          "paragraph-group-936204d9c400",
+          "paragraph-group-dd67557a1a89",
+          "paragraph-group-f7c7548e0664"
+        ],
+        "other_paper_singleton_peers": 15
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0007.p0004",
+      "group_id": "paragraph-group-2f94b7c53ca7",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000167",
+        "attempt-000208",
+        "attempt-000209",
+        "attempt-000210",
+        "attempt-000211",
+        "attempt-000212",
+        "attempt-000213",
+        "attempt-000214",
+        "attempt-000215",
+        "attempt-000216",
+        "attempt-000217",
+        "attempt-000219",
+        "attempt-000220",
+        "attempt-001208",
+        "attempt-001153",
+        "attempt-004537",
+        "attempt-004472"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000167",
+          "direction": "new_to_group",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-001153",
+          "direction": "group_to_new",
+          "target_id": "s0008.ss0001.p0007"
+        },
+        {
+          "attempt_id": "attempt-004472",
+          "direction": "group_to_new",
+          "target_id": "s0008.ss0002.p0005"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-91a83a0f8eb1",
+          "paragraph-group-cab857cb6db3"
+        ],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0007.ss0001.p0001",
+      "group_id": "paragraph-group-4a85b91ab780",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000168",
+        "attempt-000208",
+        "attempt-000209",
+        "attempt-000210",
+        "attempt-000211",
+        "attempt-000212",
+        "attempt-000213",
+        "attempt-000214",
+        "attempt-000215",
+        "attempt-000216",
+        "attempt-000217",
+        "attempt-000219",
+        "attempt-000220",
+        "attempt-001416",
+        "attempt-001514"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000168",
+          "direction": "new_to_group",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-001416",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-31f4d2bc55bd"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-91a83a0f8eb1",
+          "paragraph-group-cab857cb6db3"
+        ],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0007.ss0001.p0002",
+      "group_id": "paragraph-group-440d3f612fc1",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000169",
+        "attempt-000208",
+        "attempt-000209",
+        "attempt-000210",
+        "attempt-000211",
+        "attempt-000212",
+        "attempt-000213",
+        "attempt-000214",
+        "attempt-000215",
+        "attempt-000216",
+        "attempt-000217",
+        "attempt-000219",
+        "attempt-000220"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000169",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-be2b2109ec76"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-91a83a0f8eb1",
+          "paragraph-group-cab857cb6db3"
+        ],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0007.ss0001.p0005",
+      "group_id": "paragraph-group-1eb617bb97a9",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000172",
+        "attempt-000208",
+        "attempt-000209",
+        "attempt-000210",
+        "attempt-000211",
+        "attempt-000212",
+        "attempt-000213",
+        "attempt-000214",
+        "attempt-000215",
+        "attempt-000216",
+        "attempt-000217",
+        "attempt-000219",
+        "attempt-000220"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000172",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-be2b2109ec76"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-31f4d2bc55bd",
+          "paragraph-group-91a83a0f8eb1",
+          "paragraph-group-cab857cb6db3"
+        ],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0007.ss0001.p0006",
+      "group_id": "paragraph-group-6a0ae446a863",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000173",
+        "attempt-000208",
+        "attempt-000209",
+        "attempt-000210",
+        "attempt-000211",
+        "attempt-000212",
+        "attempt-000213",
+        "attempt-000214",
+        "attempt-000215",
+        "attempt-000216",
+        "attempt-000217",
+        "attempt-000219",
+        "attempt-000220",
+        "attempt-001208",
+        "attempt-001155",
+        "attempt-001432",
+        "attempt-001514"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000173",
+          "direction": "new_to_group",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-001155",
+          "direction": "group_to_new",
+          "target_id": "s0008.ss0001.p0007"
+        },
+        {
+          "attempt_id": "attempt-001432",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-31f4d2bc55bd"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-91a83a0f8eb1",
+          "paragraph-group-cab857cb6db3"
+        ],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0007.ss0002.p0001",
+      "group_id": "paragraph-group-845e290aaf8c",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000174",
+        "attempt-000208",
+        "attempt-000209",
+        "attempt-000210",
+        "attempt-000211",
+        "attempt-000212",
+        "attempt-000213",
+        "attempt-000214",
+        "attempt-000215",
+        "attempt-000216",
+        "attempt-000217",
+        "attempt-000219",
+        "attempt-000220"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000174",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-be2b2109ec76"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-91a83a0f8eb1",
+          "paragraph-group-cab857cb6db3"
+        ],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0007.ss0002.p0002",
+      "group_id": "paragraph-group-4b4d1879f068",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "model_abstained",
+      "exposed_attempt_ids": [
+        "attempt-000175",
+        "attempt-000208",
+        "attempt-000209",
+        "attempt-000210",
+        "attempt-000211",
+        "attempt-000212",
+        "attempt-000213",
+        "attempt-000214",
+        "attempt-000215",
+        "attempt-000216",
+        "attempt-000217",
+        "attempt-000219",
+        "attempt-000220"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000175",
+          "direction": "new_to_group",
+          "target_id": null
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-91a83a0f8eb1",
+          "paragraph-group-cab857cb6db3"
+        ],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0007.ss0002.p0003",
+      "group_id": "paragraph-group-3db64517ef4e",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "model_abstained",
+      "exposed_attempt_ids": [
+        "attempt-000176",
+        "attempt-000208",
+        "attempt-000209",
+        "attempt-000210",
+        "attempt-000211",
+        "attempt-000212",
+        "attempt-000213",
+        "attempt-000214",
+        "attempt-000215",
+        "attempt-000216",
+        "attempt-000217",
+        "attempt-000219",
+        "attempt-000220"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000176",
+          "direction": "new_to_group",
+          "target_id": null
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-91a83a0f8eb1",
+          "paragraph-group-cab857cb6db3"
+        ],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0007.ss0002.p0004",
+      "group_id": "paragraph-group-76a34b5fe50b",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "model_abstained",
+      "exposed_attempt_ids": [
+        "attempt-000177",
+        "attempt-000208",
+        "attempt-000209",
+        "attempt-000210",
+        "attempt-000211",
+        "attempt-000212",
+        "attempt-000213",
+        "attempt-000214",
+        "attempt-000215",
+        "attempt-000216",
+        "attempt-000217",
+        "attempt-000219",
+        "attempt-000220"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000177",
+          "direction": "new_to_group",
+          "target_id": null
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-91a83a0f8eb1",
+          "paragraph-group-cab857cb6db3"
+        ],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0007.ss0002.p0005",
+      "group_id": "paragraph-group-6ecf5fa5d475",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "model_abstained",
+      "exposed_attempt_ids": [
+        "attempt-000178",
+        "attempt-000208",
+        "attempt-000209",
+        "attempt-000210",
+        "attempt-000211",
+        "attempt-000212",
+        "attempt-000213",
+        "attempt-000214",
+        "attempt-000215",
+        "attempt-000216",
+        "attempt-000217",
+        "attempt-000219",
+        "attempt-000220"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000178",
+          "direction": "new_to_group",
+          "target_id": null
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-91a83a0f8eb1",
+          "paragraph-group-cab857cb6db3"
+        ],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0007.ss0002.p0006",
+      "group_id": "paragraph-group-d9af077f3290",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "model_abstained",
+      "exposed_attempt_ids": [
+        "attempt-000179",
+        "attempt-000208",
+        "attempt-000209",
+        "attempt-000210",
+        "attempt-000211",
+        "attempt-000212",
+        "attempt-000213",
+        "attempt-000214",
+        "attempt-000215",
+        "attempt-000216",
+        "attempt-000217",
+        "attempt-000219",
+        "attempt-000220"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000179",
+          "direction": "new_to_group",
+          "target_id": null
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-91a83a0f8eb1",
+          "paragraph-group-cab857cb6db3"
+        ],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0007.ss0002.p0007",
+      "group_id": "paragraph-group-56b811f807f5",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000180",
+        "attempt-000208",
+        "attempt-000209",
+        "attempt-000210",
+        "attempt-000211",
+        "attempt-000212",
+        "attempt-000213",
+        "attempt-000214",
+        "attempt-000215",
+        "attempt-000216",
+        "attempt-000217",
+        "attempt-000219",
+        "attempt-000220",
+        "attempt-001422",
+        "attempt-001514",
+        "attempt-005060",
+        "attempt-005148"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000180",
+          "direction": "new_to_group",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-001422",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-31f4d2bc55bd"
+        },
+        {
+          "attempt_id": "attempt-005060",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-650300459e43"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-91a83a0f8eb1",
+          "paragraph-group-cab857cb6db3"
+        ],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0007.ss0002.p0008",
+      "group_id": "paragraph-group-41fdfb02ef02",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000181",
+        "attempt-000208",
+        "attempt-000209",
+        "attempt-000210",
+        "attempt-000211",
+        "attempt-000212",
+        "attempt-000213",
+        "attempt-000214",
+        "attempt-000215",
+        "attempt-000216",
+        "attempt-000217",
+        "attempt-000219",
+        "attempt-000220",
+        "attempt-001511",
+        "attempt-001514",
+        "attempt-001516"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000181",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-be2b2109ec76"
+        },
+        {
+          "attempt_id": "attempt-001511",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-7b16725528e1"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-91a83a0f8eb1",
+          "paragraph-group-cab857cb6db3"
+        ],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0007.ss0002.p0009",
+      "group_id": "paragraph-group-8da7a5028cff",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "model_abstained",
+      "exposed_attempt_ids": [
+        "attempt-000182",
+        "attempt-000208",
+        "attempt-000209",
+        "attempt-000210",
+        "attempt-000211",
+        "attempt-000212",
+        "attempt-000213",
+        "attempt-000214",
+        "attempt-000215",
+        "attempt-000216",
+        "attempt-000217",
+        "attempt-000219",
+        "attempt-000220"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000182",
+          "direction": "new_to_group",
+          "target_id": null
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-91a83a0f8eb1",
+          "paragraph-group-cab857cb6db3"
+        ],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0007.ss0003.p0001",
+      "group_id": "paragraph-group-8680d18aa409",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000183",
+        "attempt-000208",
+        "attempt-000209",
+        "attempt-000210",
+        "attempt-000211",
+        "attempt-000212",
+        "attempt-000213",
+        "attempt-000214",
+        "attempt-000215",
+        "attempt-000216",
+        "attempt-000217",
+        "attempt-000219",
+        "attempt-000220"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000183",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-be2b2109ec76"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-91a83a0f8eb1",
+          "paragraph-group-cab857cb6db3"
+        ],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0007.ss0003.p0002",
+      "group_id": "paragraph-group-315498db4772",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "model_abstained",
+      "exposed_attempt_ids": [
+        "attempt-000184",
+        "attempt-000208",
+        "attempt-000209",
+        "attempt-000210",
+        "attempt-000211",
+        "attempt-000212",
+        "attempt-000213",
+        "attempt-000214",
+        "attempt-000215",
+        "attempt-000216",
+        "attempt-000217",
+        "attempt-000219",
+        "attempt-000220"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000184",
+          "direction": "new_to_group",
+          "target_id": null
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-91a83a0f8eb1",
+          "paragraph-group-cab857cb6db3"
+        ],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0007.ss0004.p0001",
+      "group_id": "paragraph-group-72c3ac244a1e",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000185",
+        "attempt-000208",
+        "attempt-000209",
+        "attempt-000210",
+        "attempt-000211",
+        "attempt-000212",
+        "attempt-000213",
+        "attempt-000214",
+        "attempt-000215",
+        "attempt-000216",
+        "attempt-000217",
+        "attempt-000219",
+        "attempt-000220"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000185",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-d0ea5e61e949"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-91a83a0f8eb1",
+          "paragraph-group-cab857cb6db3"
+        ],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0007.ss0004.p0002",
+      "group_id": "paragraph-group-9ea7ec0abea5",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000186",
+        "attempt-000208",
+        "attempt-000209",
+        "attempt-000210",
+        "attempt-000211",
+        "attempt-000212",
+        "attempt-000213",
+        "attempt-000214",
+        "attempt-000215",
+        "attempt-000216",
+        "attempt-000217",
+        "attempt-000219",
+        "attempt-000220"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000186",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-be2b2109ec76"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-91a83a0f8eb1",
+          "paragraph-group-cab857cb6db3"
+        ],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0007.ss0004.p0003",
+      "group_id": "paragraph-group-ae3dea08ab03",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "model_abstained",
+      "exposed_attempt_ids": [
+        "attempt-000187",
+        "attempt-000208",
+        "attempt-000209",
+        "attempt-000210",
+        "attempt-000211",
+        "attempt-000212",
+        "attempt-000213",
+        "attempt-000214",
+        "attempt-000215",
+        "attempt-000216",
+        "attempt-000217",
+        "attempt-000219",
+        "attempt-000220"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000187",
+          "direction": "new_to_group",
+          "target_id": null
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-91a83a0f8eb1",
+          "paragraph-group-cab857cb6db3"
+        ],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0007.ss0005.p0001",
+      "group_id": "paragraph-group-d5552b313466",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000191",
+        "attempt-000208",
+        "attempt-000209",
+        "attempt-000210",
+        "attempt-000211",
+        "attempt-000212",
+        "attempt-000213",
+        "attempt-000214",
+        "attempt-000215",
+        "attempt-000216",
+        "attempt-000217",
+        "attempt-000219",
+        "attempt-000220",
+        "attempt-001492",
+        "attempt-001514"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000191",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-be2b2109ec76"
+        },
+        {
+          "attempt_id": "attempt-001492",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-31f4d2bc55bd"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-91a83a0f8eb1",
+          "paragraph-group-cab857cb6db3",
+          "paragraph-group-d0ea5e61e949"
+        ],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0007.ss0005.p0002",
+      "group_id": "paragraph-group-359394885990",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000192",
+        "attempt-000208",
+        "attempt-000209",
+        "attempt-000210",
+        "attempt-000211",
+        "attempt-000212",
+        "attempt-000213",
+        "attempt-000214",
+        "attempt-000215",
+        "attempt-000216",
+        "attempt-000217",
+        "attempt-000219",
+        "attempt-000220",
+        "attempt-005030",
+        "attempt-005150"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000192",
+          "direction": "new_to_group",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-005030",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-c0e599be8cb2"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-91a83a0f8eb1",
+          "paragraph-group-cab857cb6db3"
+        ],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0007.ss0005.p0003",
+      "group_id": "paragraph-group-a51d527698d7",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "model_abstained",
+      "exposed_attempt_ids": [
+        "attempt-000193",
+        "attempt-000208",
+        "attempt-000209",
+        "attempt-000210",
+        "attempt-000211",
+        "attempt-000212",
+        "attempt-000213",
+        "attempt-000214",
+        "attempt-000215",
+        "attempt-000216",
+        "attempt-000217",
+        "attempt-000219",
+        "attempt-000220"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000193",
+          "direction": "new_to_group",
+          "target_id": null
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-91a83a0f8eb1",
+          "paragraph-group-cab857cb6db3"
+        ],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0007.ss0006.p0001",
+      "group_id": "paragraph-group-d13eb5877318",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "model_abstained",
+      "exposed_attempt_ids": [
+        "attempt-000194",
+        "attempt-000208",
+        "attempt-000209",
+        "attempt-000210",
+        "attempt-000211",
+        "attempt-000212",
+        "attempt-000213",
+        "attempt-000214",
+        "attempt-000215",
+        "attempt-000216",
+        "attempt-000217",
+        "attempt-000219",
+        "attempt-000220"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000194",
+          "direction": "new_to_group",
+          "target_id": null
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-91a83a0f8eb1",
+          "paragraph-group-cab857cb6db3"
+        ],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0008.ss0002.p0001",
+      "group_id": "paragraph-group-5cf0ad22aad0",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000203",
+        "attempt-000208",
+        "attempt-000209",
+        "attempt-000210",
+        "attempt-000211",
+        "attempt-000212",
+        "attempt-000213",
+        "attempt-000214",
+        "attempt-000215",
+        "attempt-000216",
+        "attempt-000217",
+        "attempt-000219",
+        "attempt-000220",
+        "attempt-005067",
+        "attempt-005150"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000203",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-12fbd84b8bce"
+        },
+        {
+          "attempt_id": "attempt-005067",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-c0e599be8cb2"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-01a92a6c0c0c",
+          "paragraph-group-91a83a0f8eb1",
+          "paragraph-group-cab857cb6db3"
+        ],
+        "other_paper_singleton_peers": 4
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0009.ss0002.p0002",
+      "group_id": "paragraph-group-03ea19c4472b",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000230",
+        "attempt-000239",
+        "attempt-000240",
+        "attempt-000241",
+        "attempt-000243",
+        "attempt-000244",
+        "attempt-000246",
+        "attempt-000248",
+        "attempt-000249",
+        "attempt-001265",
+        "attempt-001266",
+        "attempt-001268",
+        "attempt-001313",
+        "attempt-001327",
+        "attempt-002732",
+        "attempt-002736",
+        "attempt-002739",
+        "attempt-002740",
+        "attempt-002742",
+        "attempt-003635",
+        "attempt-003636",
+        "attempt-003637",
+        "attempt-003639",
+        "attempt-003641",
+        "attempt-003643",
+        "attempt-003645",
+        "attempt-004630",
+        "attempt-004632",
+        "attempt-004633",
+        "attempt-004637",
+        "attempt-004701",
+        "attempt-004743"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000230",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-474d73101d08"
+        },
+        {
+          "attempt_id": "attempt-001268",
+          "direction": "group_to_new",
+          "target_id": "s0009.p0003"
+        },
+        {
+          "attempt_id": "attempt-001313",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-67706c9ad734"
+        },
+        {
+          "attempt_id": "attempt-002742",
+          "direction": "group_to_new",
+          "target_id": "s0008.p0001"
+        },
+        {
+          "attempt_id": "attempt-003645",
+          "direction": "group_to_new",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-004637",
+          "direction": "group_to_new",
+          "target_id": "s0009.p0001"
+        },
+        {
+          "attempt_id": "attempt-004701",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-474d73101d08"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-003635",
+        "attempt-003637",
+        "attempt-003639",
+        "attempt-003641",
+        "attempt-004633"
+      ],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-474d73101d08"
+        ],
+        "other_paper_singleton_peers": 22
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0009.ss0002.p0003",
+      "group_id": "paragraph-group-d492529cce10",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000231",
+        "attempt-000239",
+        "attempt-000240",
+        "attempt-000241",
+        "attempt-000243",
+        "attempt-000244",
+        "attempt-000246",
+        "attempt-000248",
+        "attempt-000249",
+        "attempt-001265",
+        "attempt-001266",
+        "attempt-001274",
+        "attempt-002733",
+        "attempt-002735",
+        "attempt-002736",
+        "attempt-002737",
+        "attempt-002738",
+        "attempt-002739",
+        "attempt-002740",
+        "attempt-002749"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000231",
+          "direction": "new_to_group",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-001274",
+          "direction": "group_to_new",
+          "target_id": "s0009.p0003"
+        },
+        {
+          "attempt_id": "attempt-002749",
+          "direction": "group_to_new",
+          "target_id": "s0008.ss0001.p0007"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-474d73101d08"
+        ],
+        "other_paper_singleton_peers": 22
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0009.ss0003.p0001",
+      "group_id": "paragraph-group-4e00020c095c",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000232",
+        "attempt-000239",
+        "attempt-000240",
+        "attempt-000241",
+        "attempt-000243",
+        "attempt-000244",
+        "attempt-000246",
+        "attempt-000248",
+        "attempt-000249",
+        "attempt-004716",
+        "attempt-004743"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000232",
+          "direction": "new_to_group",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-004716",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-474d73101d08"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-474d73101d08"
+        ],
+        "other_paper_singleton_peers": 22
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0009.ss0003.p0002",
+      "group_id": "paragraph-group-02b79f5574b9",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000233",
+        "attempt-000239",
+        "attempt-000240",
+        "attempt-000241",
+        "attempt-000243",
+        "attempt-000244",
+        "attempt-000246",
+        "attempt-000248",
+        "attempt-000249",
+        "attempt-004700",
+        "attempt-004743"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000233",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-474d73101d08"
+        },
+        {
+          "attempt_id": "attempt-004700",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-474d73101d08"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-474d73101d08"
+        ],
+        "other_paper_singleton_peers": 22
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0009.ss0003.p0003",
+      "group_id": "paragraph-group-e3f5d64c7756",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000234",
+        "attempt-000239",
+        "attempt-000240",
+        "attempt-000241",
+        "attempt-000243",
+        "attempt-000244",
+        "attempt-000246",
+        "attempt-000248",
+        "attempt-000249",
+        "attempt-001326",
+        "attempt-001327",
+        "attempt-002741",
+        "attempt-002731",
+        "attempt-004737",
+        "attempt-004743"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000234",
+          "direction": "new_to_group",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-001326",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-67706c9ad734"
+        },
+        {
+          "attempt_id": "attempt-002731",
+          "direction": "group_to_new",
+          "target_id": "s0008.ss0002.p0003"
+        },
+        {
+          "attempt_id": "attempt-004737",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-474d73101d08"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-474d73101d08"
+        ],
+        "other_paper_singleton_peers": 22
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0009.ss0004.p0001",
+      "group_id": "paragraph-group-25bcbfa7a326",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000236",
+        "attempt-000239",
+        "attempt-000240",
+        "attempt-000241",
+        "attempt-000243",
+        "attempt-000244",
+        "attempt-000246",
+        "attempt-000248",
+        "attempt-000249",
+        "attempt-001314",
+        "attempt-001327",
+        "attempt-004709",
+        "attempt-004743"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000236",
+          "direction": "new_to_group",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-001314",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-67706c9ad734"
+        },
+        {
+          "attempt_id": "attempt-004709",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-474d73101d08"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-474d73101d08"
+        ],
+        "other_paper_singleton_peers": 22
+      }
+    },
+    {
+      "paper_id": "corpusstudio",
+      "paragraph_id": "s0009.ss0004.p0002",
+      "group_id": "paragraph-group-5692f8aaa99b",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "model_abstained",
+      "exposed_attempt_ids": [
+        "attempt-000237",
+        "attempt-000239",
+        "attempt-000240",
+        "attempt-000241",
+        "attempt-000243",
+        "attempt-000244",
+        "attempt-000246",
+        "attempt-000248",
+        "attempt-000249"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000237",
+          "direction": "new_to_group",
+          "target_id": null
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-474d73101d08",
+          "paragraph-group-67706c9ad734"
+        ],
+        "other_paper_singleton_peers": 22
+      }
+    },
+    {
+      "paper_id": "examplore_chi18",
+      "paragraph_id": "s0002.p0003",
+      "group_id": "paragraph-group-c4d908897f75",
+      "parent_id": "section-group-e6a0a0b75d91",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000680",
+        "attempt-000683",
+        "attempt-000685",
+        "attempt-000688",
+        "attempt-001877",
+        "attempt-001879",
+        "attempt-001888",
+        "attempt-003020",
+        "attempt-003034",
+        "attempt-005166",
+        "attempt-005172"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000680",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-61f566c7a1ad"
+        },
+        {
+          "attempt_id": "attempt-001888",
+          "direction": "group_to_new",
+          "target_id": "s0002.p0001"
+        },
+        {
+          "attempt_id": "attempt-003020",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-a601659510a8"
+        },
+        {
+          "attempt_id": "attempt-005166",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-a601659510a8"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-000685"
+      ],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-877381d47601"
+        ],
+        "other_paper_singleton_peers": 7
+      }
+    },
+    {
+      "paper_id": "examplore_chi18",
+      "paragraph_id": "s0003.ss0002.p0002",
+      "group_id": "paragraph-group-234126d69c36",
+      "parent_id": "section-group-264d31b73b39",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000804",
+        "attempt-000810",
+        "attempt-000814"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000804",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-b2a720142c7c"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-e8ed5fdd5919"
+        ],
+        "other_paper_singleton_peers": 12
+      }
+    },
+    {
+      "paper_id": "examplore_chi18",
+      "paragraph_id": "s0003.ss0002.p0003",
+      "group_id": "paragraph-group-4fa0edac2ef7",
+      "parent_id": "section-group-264d31b73b39",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000762",
+        "attempt-000814",
+        "attempt-003856",
+        "attempt-003857",
+        "attempt-003873"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000762",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-b2a720142c7c"
+        },
+        {
+          "attempt_id": "attempt-003873",
+          "direction": "group_to_new",
+          "target_id": null
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-e8ed5fdd5919"
+        ],
+        "other_paper_singleton_peers": 12
+      }
+    },
+    {
+      "paper_id": "examplore_chi18",
+      "paragraph_id": "s0004.p0001",
+      "group_id": "paragraph-group-2d999d5a3c1d",
+      "parent_id": "section-group-264d31b73b39",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-001746",
+        "attempt-001775",
+        "attempt-002000",
+        "attempt-002004",
+        "attempt-002011",
+        "attempt-003855",
+        "attempt-003750"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-001746",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-b7b27746e49f"
+        },
+        {
+          "attempt_id": "attempt-002011",
+          "direction": "group_to_new",
+          "target_id": "s0003.ss0001.p0001"
+        },
+        {
+          "attempt_id": "attempt-003750",
+          "direction": "group_to_new",
+          "target_id": "s0003.p0001"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-e8ed5fdd5919"
+        ],
+        "other_paper_singleton_peers": 12
+      }
+    },
+    {
+      "paper_id": "examplore_chi18",
+      "paragraph_id": "s0004.p0004",
+      "group_id": "paragraph-group-db1fad02b74b",
+      "parent_id": "section-group-264d31b73b39",
+      "parent_is_shared": true,
+      "reason": "never_compared",
+      "exposed_attempt_ids": [],
+      "judgments": [],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-b7b27746e49f",
+          "paragraph-group-e8ed5fdd5919"
+        ],
+        "other_paper_singleton_peers": 12
+      }
+    },
+    {
+      "paper_id": "examplore_chi18",
+      "paragraph_id": "s0005.p0003",
+      "group_id": "paragraph-group-47f75e5c1ff7",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000962",
+        "attempt-000971",
+        "attempt-000842",
+        "attempt-000974",
+        "attempt-000975",
+        "attempt-000847",
+        "attempt-000979",
+        "attempt-003086",
+        "attempt-003227",
+        "attempt-004129",
+        "attempt-004130",
+        "attempt-004132",
+        "attempt-004133",
+        "attempt-004137",
+        "attempt-004138",
+        "attempt-004140",
+        "attempt-004141",
+        "attempt-004149",
+        "attempt-005259",
+        "attempt-005529"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000962",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-da0b3b936770"
+        },
+        {
+          "attempt_id": "attempt-003086",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-83a695da8f64"
+        },
+        {
+          "attempt_id": "attempt-004149",
+          "direction": "group_to_new",
+          "target_id": "s0006.p0002"
+        },
+        {
+          "attempt_id": "attempt-005259",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-83a695da8f64"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-000842",
+        "attempt-000847"
+      ],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-0552e72cc7f7",
+          "paragraph-group-1a6c0a33229f",
+          "paragraph-group-4842db800238",
+          "paragraph-group-5d4077d0c259",
+          "paragraph-group-7d3a33f97ae1",
+          "paragraph-group-83a695da8f64",
+          "paragraph-group-8ca3db799e7e",
+          "paragraph-group-902c950cd1be",
+          "paragraph-group-93b14d929c2e",
+          "paragraph-group-b178b7a06e80",
+          "paragraph-group-b5ea45869fc6"
+        ],
+        "other_paper_singleton_peers": 28
+      }
+    },
+    {
+      "paper_id": "examplore_chi18",
+      "paragraph_id": "s0005.p0004",
+      "group_id": "paragraph-group-378cbfac00e4",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-000963",
+        "attempt-000850",
+        "attempt-000970",
+        "attempt-000971",
+        "attempt-000972",
+        "attempt-000855",
+        "attempt-000974",
+        "attempt-000979",
+        "attempt-002302",
+        "attempt-002245",
+        "attempt-003893",
+        "attempt-004123",
+        "attempt-004132",
+        "attempt-004133",
+        "attempt-004137",
+        "attempt-004138",
+        "attempt-004139",
+        "attempt-004140",
+        "attempt-004141",
+        "attempt-004147",
+        "attempt-005248",
+        "attempt-005529"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-000963",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-da0b3b936770"
+        },
+        {
+          "attempt_id": "attempt-002245",
+          "direction": "group_to_new",
+          "target_id": "s0005.ss0003.p0009"
+        },
+        {
+          "attempt_id": "attempt-004147",
+          "direction": "group_to_new",
+          "target_id": "s0006.p0004"
+        },
+        {
+          "attempt_id": "attempt-005248",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-83a695da8f64"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-000850",
+        "attempt-000855",
+        "attempt-003893",
+        "attempt-004133"
+      ],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-0552e72cc7f7",
+          "paragraph-group-1a6c0a33229f",
+          "paragraph-group-4842db800238",
+          "paragraph-group-5d4077d0c259",
+          "paragraph-group-7d3a33f97ae1",
+          "paragraph-group-83a695da8f64",
+          "paragraph-group-8ca3db799e7e",
+          "paragraph-group-902c950cd1be",
+          "paragraph-group-93b14d929c2e",
+          "paragraph-group-b178b7a06e80",
+          "paragraph-group-b5ea45869fc6"
+        ],
+        "other_paper_singleton_peers": 28
+      }
+    },
+    {
+      "paper_id": "examplore_chi18",
+      "paragraph_id": "s0006.ss0002.p0004",
+      "group_id": "paragraph-group-2bb32c9c27f0",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-005228",
+        "attempt-005529"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-005228",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-83a695da8f64"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-0552e72cc7f7",
+          "paragraph-group-1a6c0a33229f",
+          "paragraph-group-4842db800238",
+          "paragraph-group-5d4077d0c259",
+          "paragraph-group-7d3a33f97ae1",
+          "paragraph-group-83a695da8f64",
+          "paragraph-group-8ca3db799e7e",
+          "paragraph-group-902c950cd1be",
+          "paragraph-group-93b14d929c2e",
+          "paragraph-group-b178b7a06e80",
+          "paragraph-group-b5ea45869fc6",
+          "paragraph-group-b64d7dac0700"
+        ],
+        "other_paper_singleton_peers": 28
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0002.p0009",
+      "group_id": "paragraph-group-8e93861f5492",
+      "parent_id": "section-group-e6a0a0b75d91",
+      "parent_is_shared": true,
+      "reason": "never_compared",
+      "exposed_attempt_ids": [],
+      "judgments": [],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-61f566c7a1ad"
+        ],
+        "other_paper_singleton_peers": 7
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0003.ss0001.p0002",
+      "group_id": "paragraph-group-ba157809a8c6",
+      "parent_id": "section-group-264d31b73b39",
+      "parent_is_shared": true,
+      "reason": "never_compared",
+      "exposed_attempt_ids": [],
+      "judgments": [],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-b23de011475a",
+          "paragraph-group-b7b27746e49f"
+        ],
+        "other_paper_singleton_peers": 13
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0003.ss0002.p0001",
+      "group_id": "paragraph-group-2447053adcf9",
+      "parent_id": "section-group-264d31b73b39",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-002002",
+        "attempt-002010",
+        "attempt-002013",
+        "attempt-002014",
+        "attempt-002015",
+        "attempt-001930",
+        "attempt-002790",
+        "attempt-002793",
+        "attempt-002794",
+        "attempt-003855",
+        "attempt-003859",
+        "attempt-003860",
+        "attempt-003861",
+        "attempt-003862",
+        "attempt-003864",
+        "attempt-003866",
+        "attempt-003871",
+        "attempt-004644",
+        "attempt-004697"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-002002",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-b2a720142c7c"
+        },
+        {
+          "attempt_id": "attempt-002790",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-1ba77e130fb0"
+        },
+        {
+          "attempt_id": "attempt-003871",
+          "direction": "group_to_new",
+          "target_id": "s0004.ss0003.p0002"
+        },
+        {
+          "attempt_id": "attempt-004644",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-b23de011475a"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-002010",
+        "attempt-002013",
+        "attempt-002014",
+        "attempt-001930",
+        "attempt-002794"
+      ],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-b23de011475a"
+        ],
+        "other_paper_singleton_peers": 13
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0003.ss0002.p0005",
+      "group_id": "paragraph-group-33500ae34eba",
+      "parent_id": "section-group-264d31b73b39",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-002007",
+        "attempt-002010",
+        "attempt-002014",
+        "attempt-001974",
+        "attempt-002791",
+        "attempt-002793",
+        "attempt-002794",
+        "attempt-003861",
+        "attempt-003806",
+        "attempt-004650",
+        "attempt-004697"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-002007",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-b23de011475a"
+        },
+        {
+          "attempt_id": "attempt-002791",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-b23de011475a"
+        },
+        {
+          "attempt_id": "attempt-003806",
+          "direction": "group_to_new",
+          "target_id": "s0004.ss0002.p0003"
+        },
+        {
+          "attempt_id": "attempt-004650",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-b23de011475a"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-001974"
+      ],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-b23de011475a"
+        ],
+        "other_paper_singleton_peers": 13
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0004.ss0002.p0001",
+      "group_id": "paragraph-group-c7a0fb2100ff",
+      "parent_id": "section-group-cb1db7901cee",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-002061",
+        "attempt-002064",
+        "attempt-002065"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-002061",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-22651654f335"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-002064"
+      ],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 5
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0004.ss0002.p0002",
+      "group_id": "paragraph-group-39a5298d1527",
+      "parent_id": "section-group-cb1db7901cee",
+      "parent_is_shared": true,
+      "reason": "never_compared",
+      "exposed_attempt_ids": [],
+      "judgments": [],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 5
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0004.ss0002.p0003",
+      "group_id": "paragraph-group-ca38217737a7",
+      "parent_id": "section-group-cb1db7901cee",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-002045",
+        "attempt-002064"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-002045",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-0626487b3eab"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 5
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0004.ss0002.p0004",
+      "group_id": "paragraph-group-7b33c22acc7c",
+      "parent_id": "section-group-cb1db7901cee",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-002062",
+        "attempt-002064",
+        "attempt-002066"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-002062",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-b3d609da135d"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 5
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0005.ss0001.p0002",
+      "group_id": "paragraph-group-fa0b66b5a856",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-002289",
+        "attempt-002306",
+        "attempt-002313"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-002289",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-0552e72cc7f7"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-0552e72cc7f7",
+          "paragraph-group-1a6c0a33229f",
+          "paragraph-group-7d3a33f97ae1",
+          "paragraph-group-902c950cd1be",
+          "paragraph-group-b178b7a06e80",
+          "paragraph-group-b7480a0fa96e",
+          "paragraph-group-da0b3b936770"
+        ],
+        "other_paper_singleton_peers": 28
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0005.ss0001.p0003",
+      "group_id": "paragraph-group-4af8f92e2513",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-002101",
+        "attempt-002306",
+        "attempt-004122",
+        "attempt-003885"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-002101",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-0552e72cc7f7"
+        },
+        {
+          "attempt_id": "attempt-003885",
+          "direction": "group_to_new",
+          "target_id": "s0005.ss0001.p0001"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-0552e72cc7f7",
+          "paragraph-group-1a6c0a33229f",
+          "paragraph-group-7d3a33f97ae1",
+          "paragraph-group-902c950cd1be",
+          "paragraph-group-b178b7a06e80",
+          "paragraph-group-b7480a0fa96e",
+          "paragraph-group-da0b3b936770"
+        ],
+        "other_paper_singleton_peers": 28
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0005.ss0001.p0004",
+      "group_id": "paragraph-group-61325aa5054c",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-002290",
+        "attempt-002306",
+        "attempt-002311",
+        "attempt-002318",
+        "attempt-004127",
+        "attempt-003939",
+        "attempt-005305",
+        "attempt-005530"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-002290",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-0552e72cc7f7"
+        },
+        {
+          "attempt_id": "attempt-003939",
+          "direction": "group_to_new",
+          "target_id": "s0005.ss0002.p0004"
+        },
+        {
+          "attempt_id": "attempt-005305",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-902c950cd1be"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-0552e72cc7f7",
+          "paragraph-group-1a6c0a33229f",
+          "paragraph-group-7d3a33f97ae1",
+          "paragraph-group-902c950cd1be",
+          "paragraph-group-b178b7a06e80",
+          "paragraph-group-b7480a0fa96e",
+          "paragraph-group-da0b3b936770"
+        ],
+        "other_paper_singleton_peers": 28
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0006.ss0002.p0001",
+      "group_id": "paragraph-group-7be663d5dff2",
+      "parent_id": "section-group-856119f080c8",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-002371",
+        "attempt-002604",
+        "attempt-004870",
+        "attempt-004979"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-002371",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-3d2ff41ff553"
+        },
+        {
+          "attempt_id": "attempt-004870",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-dd67557a1a89"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-02cc1b1af7c7",
+          "paragraph-group-04cc37247dd7",
+          "paragraph-group-232d8e3317e5",
+          "paragraph-group-24052c65334c",
+          "paragraph-group-6e1a9e7546f8",
+          "paragraph-group-71316b5c67a5",
+          "paragraph-group-ae758ca40a31",
+          "paragraph-group-cc4425ba5acd",
+          "paragraph-group-dd67557a1a89",
+          "paragraph-group-e03ef436cd75"
+        ],
+        "other_paper_singleton_peers": 6
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0006.ss0005.p0001",
+      "group_id": "paragraph-group-620dfdbb29c7",
+      "parent_id": "section-group-856119f080c8",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-002595",
+        "attempt-002604",
+        "attempt-002609"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-002595",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-3d2ff41ff553"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-02cc1b1af7c7",
+          "paragraph-group-04cc37247dd7",
+          "paragraph-group-24052c65334c",
+          "paragraph-group-6e1a9e7546f8",
+          "paragraph-group-71316b5c67a5",
+          "paragraph-group-aa25e3dc6e65",
+          "paragraph-group-ae758ca40a31",
+          "paragraph-group-cc4425ba5acd",
+          "paragraph-group-dd67557a1a89",
+          "paragraph-group-e03ef436cd75"
+        ],
+        "other_paper_singleton_peers": 6
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0006.ss0006.p0005",
+      "group_id": "paragraph-group-39dcb21ecc7c",
+      "parent_id": "section-group-856119f080c8",
+      "parent_is_shared": true,
+      "reason": "never_compared",
+      "exposed_attempt_ids": [],
+      "judgments": [],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-02cc1b1af7c7",
+          "paragraph-group-04cc37247dd7",
+          "paragraph-group-0bbde7bceb3c",
+          "paragraph-group-24052c65334c",
+          "paragraph-group-6e1a9e7546f8",
+          "paragraph-group-71316b5c67a5",
+          "paragraph-group-936204d9c400",
+          "paragraph-group-ae758ca40a31",
+          "paragraph-group-cc4425ba5acd",
+          "paragraph-group-dd67557a1a89",
+          "paragraph-group-e03ef436cd75"
+        ],
+        "other_paper_singleton_peers": 6
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0006.ss0007.p0002",
+      "group_id": "paragraph-group-344274e518ab",
+      "parent_id": "section-group-856119f080c8",
+      "parent_is_shared": true,
+      "reason": "never_compared",
+      "exposed_attempt_ids": [],
+      "judgments": [],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-02cc1b1af7c7",
+          "paragraph-group-04cc37247dd7",
+          "paragraph-group-0bbde7bceb3c",
+          "paragraph-group-24052c65334c",
+          "paragraph-group-6e1a9e7546f8",
+          "paragraph-group-71316b5c67a5",
+          "paragraph-group-ae758ca40a31",
+          "paragraph-group-cc4425ba5acd",
+          "paragraph-group-dd67557a1a89",
+          "paragraph-group-e03ef436cd75"
+        ],
+        "other_paper_singleton_peers": 6
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0006.ss0007.p0003",
+      "group_id": "paragraph-group-d6cb0a1ba8fe",
+      "parent_id": "section-group-856119f080c8",
+      "parent_is_shared": true,
+      "reason": "never_compared",
+      "exposed_attempt_ids": [],
+      "judgments": [],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-02cc1b1af7c7",
+          "paragraph-group-04cc37247dd7",
+          "paragraph-group-24052c65334c",
+          "paragraph-group-6e1a9e7546f8",
+          "paragraph-group-71316b5c67a5",
+          "paragraph-group-ae758ca40a31",
+          "paragraph-group-cc4425ba5acd",
+          "paragraph-group-dd67557a1a89",
+          "paragraph-group-e03ef436cd75"
+        ],
+        "other_paper_singleton_peers": 6
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0006.ss0007.p0004",
+      "group_id": "paragraph-group-4c163ee013ec",
+      "parent_id": "section-group-856119f080c8",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-002535",
+        "attempt-002604"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-002535",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-3d2ff41ff553"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-02cc1b1af7c7",
+          "paragraph-group-04cc37247dd7",
+          "paragraph-group-24052c65334c",
+          "paragraph-group-6e1a9e7546f8",
+          "paragraph-group-71316b5c67a5",
+          "paragraph-group-ae758ca40a31",
+          "paragraph-group-cc4425ba5acd",
+          "paragraph-group-dd67557a1a89",
+          "paragraph-group-e03ef436cd75"
+        ],
+        "other_paper_singleton_peers": 6
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0006.ss0007.p0005",
+      "group_id": "paragraph-group-a7307f59a35c",
+      "parent_id": "section-group-856119f080c8",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-002546",
+        "attempt-002604"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-002546",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-3d2ff41ff553"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-02cc1b1af7c7",
+          "paragraph-group-04cc37247dd7",
+          "paragraph-group-24052c65334c",
+          "paragraph-group-6e1a9e7546f8",
+          "paragraph-group-71316b5c67a5",
+          "paragraph-group-ae758ca40a31",
+          "paragraph-group-cc4425ba5acd",
+          "paragraph-group-dd67557a1a89",
+          "paragraph-group-e03ef436cd75"
+        ],
+        "other_paper_singleton_peers": 6
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0006.ss0007.p0006",
+      "group_id": "paragraph-group-a0a38d13fe75",
+      "parent_id": "section-group-856119f080c8",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-002601",
+        "attempt-002604",
+        "attempt-002609"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-002601",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-f5ee81c80d21"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-02cc1b1af7c7",
+          "paragraph-group-04cc37247dd7",
+          "paragraph-group-24052c65334c",
+          "paragraph-group-6e1a9e7546f8",
+          "paragraph-group-71316b5c67a5",
+          "paragraph-group-ae758ca40a31",
+          "paragraph-group-cc4425ba5acd",
+          "paragraph-group-dd67557a1a89",
+          "paragraph-group-e03ef436cd75"
+        ],
+        "other_paper_singleton_peers": 6
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0006.ss0007.p0007",
+      "group_id": "paragraph-group-e0eaef472875",
+      "parent_id": "section-group-856119f080c8",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-002570",
+        "attempt-002604"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-002570",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-3d2ff41ff553"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-02cc1b1af7c7",
+          "paragraph-group-04cc37247dd7",
+          "paragraph-group-24052c65334c",
+          "paragraph-group-6e1a9e7546f8",
+          "paragraph-group-71316b5c67a5",
+          "paragraph-group-ae758ca40a31",
+          "paragraph-group-cc4425ba5acd",
+          "paragraph-group-dd67557a1a89",
+          "paragraph-group-e03ef436cd75"
+        ],
+        "other_paper_singleton_peers": 6
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0006.ss0007.p0008",
+      "group_id": "paragraph-group-4f0cdc4cc265",
+      "parent_id": "section-group-856119f080c8",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-002580",
+        "attempt-002604"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-002580",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-3d2ff41ff553"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-02cc1b1af7c7",
+          "paragraph-group-04cc37247dd7",
+          "paragraph-group-24052c65334c",
+          "paragraph-group-6e1a9e7546f8",
+          "paragraph-group-71316b5c67a5",
+          "paragraph-group-ae758ca40a31",
+          "paragraph-group-cc4425ba5acd",
+          "paragraph-group-dd67557a1a89",
+          "paragraph-group-e03ef436cd75"
+        ],
+        "other_paper_singleton_peers": 6
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0007.p0003",
+      "group_id": "paragraph-group-e49fb773929d",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-003636",
+        "attempt-003645",
+        "attempt-003646",
+        "attempt-003648"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-003636",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-c28d3f04f47c"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 12
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0007.ss0001.p0001",
+      "group_id": "paragraph-group-bece99898aef",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-003477",
+        "attempt-003647"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-003477",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-96e50dd0e3b6"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 12
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0007.ss0001.p0005",
+      "group_id": "paragraph-group-1b96c14e2846",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-003522",
+        "attempt-003648"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-003522",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-c28d3f04f47c"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 12
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0007.ss0001.p0006",
+      "group_id": "paragraph-group-6d26b97662ef",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-003641",
+        "attempt-003645",
+        "attempt-003646",
+        "attempt-003648"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-003641",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-03ea19c4472b"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 12
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0007.ss0001.p0007",
+      "group_id": "paragraph-group-8c5e9c6c7b3e",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-003642",
+        "attempt-003647",
+        "attempt-003648"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-003642",
+          "direction": "new_to_group",
+          "target_id": null
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-003647"
+      ],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 12
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0007.ss0001.p0008",
+      "group_id": "paragraph-group-52efe1393785",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "never_compared",
+      "exposed_attempt_ids": [],
+      "judgments": [],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 12
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0007.ss0001.p0009",
+      "group_id": "paragraph-group-2e33cc017bbf",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "never_compared",
+      "exposed_attempt_ids": [],
+      "judgments": [],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 12
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0007.ss0002.p0001",
+      "group_id": "paragraph-group-35c1b654adf1",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-003643",
+        "attempt-003645",
+        "attempt-003646",
+        "attempt-003647"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-003643",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-96e50dd0e3b6"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 12
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0007.ss0002.p0002",
+      "group_id": "paragraph-group-01f3901a5260",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-004633",
+        "attempt-004587"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-004587",
+          "direction": "group_to_new",
+          "target_id": "s0009.p0004"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 12
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0007.ss0002.p0003",
+      "group_id": "paragraph-group-66b59477455d",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-003600",
+        "attempt-003648"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-003600",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-c28d3f04f47c"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 12
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0007.ss0002.p0004",
+      "group_id": "paragraph-group-e88376a916c4",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "never_compared",
+      "exposed_attempt_ids": [],
+      "judgments": [],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 12
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0008.ss0001.p0002",
+      "group_id": "paragraph-group-dde1ee5b962c",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-002735",
+        "attempt-002743",
+        "attempt-002744",
+        "attempt-002745",
+        "attempt-002747",
+        "attempt-002749",
+        "attempt-002643"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-002735",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-67706c9ad734"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-002643"
+      ],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 12
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0008.ss0001.p0003",
+      "group_id": "paragraph-group-7cfb8bf5fe6d",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-002736",
+        "attempt-002742",
+        "attempt-002745",
+        "attempt-002749"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-002736",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-67706c9ad734"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 12
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0008.ss0001.p0004",
+      "group_id": "paragraph-group-31fa068568a9",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-002737",
+        "attempt-002745",
+        "attempt-002747",
+        "attempt-002749"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-002737",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-67706c9ad734"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 12
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0008.ss0001.p0005",
+      "group_id": "paragraph-group-416a71e9d67c",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-002738",
+        "attempt-002745",
+        "attempt-002747",
+        "attempt-002749"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-002738",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-67706c9ad734"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 12
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0008.ss0001.p0006",
+      "group_id": "paragraph-group-7bafc9b5908b",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-002739",
+        "attempt-002742",
+        "attempt-002744",
+        "attempt-002745",
+        "attempt-002747",
+        "attempt-002749",
+        "attempt-004636",
+        "attempt-004627"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-002739",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-67706c9ad734"
+        },
+        {
+          "attempt_id": "attempt-004627",
+          "direction": "group_to_new",
+          "target_id": "s0010.p0003"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 12
+      }
+    },
+    {
+      "paper_id": "mesotext",
+      "paragraph_id": "s0008.ss0001.p0007",
+      "group_id": "paragraph-group-afb743314ab6",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-002740",
+        "attempt-002742",
+        "attempt-002745",
+        "attempt-002749"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-002740",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-67706c9ad734"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-002749"
+      ],
+      "recovery": {
+        "status": "source_paper_already_in_groups",
+        "eligible_group_ids": [],
+        "other_paper_singleton_peers": 12
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0002.p0001",
+      "group_id": "paragraph-group-cc216bf4759e",
+      "parent_id": "section-group-e6a0a0b75d91",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-003729",
+        "attempt-003737",
+        "attempt-003738",
+        "attempt-003739",
+        "attempt-003740",
+        "attempt-003742",
+        "attempt-003743",
+        "attempt-003744",
+        "attempt-005167",
+        "attempt-005172"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-003729",
+          "direction": "new_to_group",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-005167",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-a601659510a8"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-003737",
+        "attempt-003743"
+      ],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-a601659510a8"
+        ],
+        "other_paper_singleton_peers": 5
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0002.p0002",
+      "group_id": "paragraph-group-842e4e35dedd",
+      "parent_id": "section-group-e6a0a0b75d91",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-003731",
+        "attempt-003737",
+        "attempt-003740",
+        "attempt-003741",
+        "attempt-003742",
+        "attempt-003743",
+        "attempt-003744",
+        "attempt-003672",
+        "attempt-005159",
+        "attempt-005172"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-003731",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-a601659510a8"
+        },
+        {
+          "attempt_id": "attempt-005159",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-a601659510a8"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-003741",
+        "attempt-003672"
+      ],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-a601659510a8"
+        ],
+        "other_paper_singleton_peers": 5
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0002.p0003",
+      "group_id": "paragraph-group-c3347764eedb",
+      "parent_id": "section-group-e6a0a0b75d91",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-003732",
+        "attempt-003737",
+        "attempt-003741",
+        "attempt-003742",
+        "attempt-003743",
+        "attempt-003744",
+        "attempt-005170",
+        "attempt-005172"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-003732",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-a601659510a8"
+        },
+        {
+          "attempt_id": "attempt-005170",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-a601659510a8"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-a601659510a8",
+          "paragraph-group-adefb4d2e785"
+        ],
+        "other_paper_singleton_peers": 5
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0003.p0001",
+      "group_id": "paragraph-group-f6098d7d35ff",
+      "parent_id": "section-group-264d31b73b39",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-003855",
+        "attempt-003867",
+        "attempt-003871",
+        "attempt-003750",
+        "attempt-003878",
+        "attempt-003755",
+        "attempt-004684",
+        "attempt-004699"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-003855",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-b7b27746e49f"
+        },
+        {
+          "attempt_id": "attempt-004684",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-b7b27746e49f"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-003867",
+        "attempt-003750",
+        "attempt-003755"
+      ],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-b23de011475a",
+          "paragraph-group-b7b27746e49f",
+          "paragraph-group-e8ed5fdd5919"
+        ],
+        "other_paper_singleton_peers": 11
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0004.ss0001.p0001",
+      "group_id": "paragraph-group-f471d5f7446b",
+      "parent_id": "section-group-264d31b73b39",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-003856",
+        "attempt-003869",
+        "attempt-003873",
+        "attempt-003877",
+        "attempt-003878",
+        "attempt-004695",
+        "attempt-004698",
+        "attempt-004699"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-003856",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-1ba77e130fb0"
+        },
+        {
+          "attempt_id": "attempt-004695",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-b2a720142c7c"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-003878",
+        "attempt-004699"
+      ],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-b23de011475a",
+          "paragraph-group-b7b27746e49f",
+          "paragraph-group-e8ed5fdd5919"
+        ],
+        "other_paper_singleton_peers": 11
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0004.ss0001.p0002",
+      "group_id": "paragraph-group-6936aa73aff0",
+      "parent_id": "section-group-264d31b73b39",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-003857",
+        "attempt-003867",
+        "attempt-003869",
+        "attempt-003873",
+        "attempt-003877",
+        "attempt-003878",
+        "attempt-004691",
+        "attempt-004698",
+        "attempt-004699"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-003857",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-b2a720142c7c"
+        },
+        {
+          "attempt_id": "attempt-004691",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-b2a720142c7c"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-b23de011475a",
+          "paragraph-group-b7b27746e49f",
+          "paragraph-group-e8ed5fdd5919"
+        ],
+        "other_paper_singleton_peers": 11
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0004.ss0002.p0004",
+      "group_id": "paragraph-group-2ea655ef9781",
+      "parent_id": "section-group-264d31b73b39",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-003813",
+        "attempt-003869"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-003813",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-1ba77e130fb0"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-b23de011475a",
+          "paragraph-group-b7b27746e49f",
+          "paragraph-group-e8ed5fdd5919"
+        ],
+        "other_paper_singleton_peers": 11
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0004.ss0002.p0005",
+      "group_id": "paragraph-group-39748f0f430a",
+      "parent_id": "section-group-264d31b73b39",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-003862",
+        "attempt-003867",
+        "attempt-003869",
+        "attempt-003871",
+        "attempt-003875",
+        "attempt-003877",
+        "attempt-003829",
+        "attempt-003879",
+        "attempt-004690",
+        "attempt-004697",
+        "attempt-004698"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-003862",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-1ba77e130fb0"
+        },
+        {
+          "attempt_id": "attempt-004690",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-b2a720142c7c"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-003829",
+        "attempt-003879"
+      ],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-b23de011475a",
+          "paragraph-group-b7b27746e49f",
+          "paragraph-group-e8ed5fdd5919"
+        ],
+        "other_paper_singleton_peers": 11
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0005.ss0001.p0001",
+      "group_id": "paragraph-group-8cfaf18d270a",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-004122",
+        "attempt-004142",
+        "attempt-003885",
+        "attempt-004152"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-004122",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-b5ea45869fc6"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-003885"
+      ],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-4842db800238",
+          "paragraph-group-5d4077d0c259",
+          "paragraph-group-7d3a33f97ae1",
+          "paragraph-group-8ca3db799e7e",
+          "paragraph-group-9139847c6691",
+          "paragraph-group-93b14d929c2e",
+          "paragraph-group-b178b7a06e80",
+          "paragraph-group-b64d7dac0700",
+          "paragraph-group-d11bc667dbe6"
+        ],
+        "other_paper_singleton_peers": 21
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0005.ss0001.p0002",
+      "group_id": "paragraph-group-f4d6bbd36561",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-003893",
+        "attempt-004147"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-003893",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-378cbfac00e4"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-4842db800238",
+          "paragraph-group-5d4077d0c259",
+          "paragraph-group-7d3a33f97ae1",
+          "paragraph-group-8ca3db799e7e",
+          "paragraph-group-9139847c6691",
+          "paragraph-group-93b14d929c2e",
+          "paragraph-group-b178b7a06e80",
+          "paragraph-group-b64d7dac0700",
+          "paragraph-group-d11bc667dbe6"
+        ],
+        "other_paper_singleton_peers": 21
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0005.ss0002.p0001",
+      "group_id": "paragraph-group-1ed095a787db",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "never_compared",
+      "exposed_attempt_ids": [],
+      "judgments": [],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-4842db800238",
+          "paragraph-group-5d4077d0c259",
+          "paragraph-group-7d3a33f97ae1",
+          "paragraph-group-8ca3db799e7e",
+          "paragraph-group-9139847c6691",
+          "paragraph-group-93b14d929c2e",
+          "paragraph-group-b178b7a06e80",
+          "paragraph-group-b5ea45869fc6",
+          "paragraph-group-b64d7dac0700",
+          "paragraph-group-d11bc667dbe6"
+        ],
+        "other_paper_singleton_peers": 21
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0005.ss0002.p0003",
+      "group_id": "paragraph-group-da1f4f784cd0",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-004125",
+        "attempt-004144",
+        "attempt-004151",
+        "attempt-004154",
+        "attempt-004156",
+        "attempt-003934",
+        "attempt-005524",
+        "attempt-005529",
+        "attempt-005532"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-004125",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-1a6c0a33229f"
+        },
+        {
+          "attempt_id": "attempt-005524",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-83a695da8f64"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-004154",
+        "attempt-003934"
+      ],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-4842db800238",
+          "paragraph-group-5d4077d0c259",
+          "paragraph-group-7d3a33f97ae1",
+          "paragraph-group-8ca3db799e7e",
+          "paragraph-group-902c950cd1be",
+          "paragraph-group-9139847c6691",
+          "paragraph-group-93b14d929c2e",
+          "paragraph-group-b178b7a06e80",
+          "paragraph-group-b5ea45869fc6",
+          "paragraph-group-b64d7dac0700",
+          "paragraph-group-d11bc667dbe6"
+        ],
+        "other_paper_singleton_peers": 21
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0005.ss0002.p0006",
+      "group_id": "paragraph-group-d28bf70f789a",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-003961",
+        "attempt-004151",
+        "attempt-005522",
+        "attempt-005529"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-003961",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-83a695da8f64"
+        },
+        {
+          "attempt_id": "attempt-005522",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-83a695da8f64"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-1a6c0a33229f",
+          "paragraph-group-4842db800238",
+          "paragraph-group-5d4077d0c259",
+          "paragraph-group-7d3a33f97ae1",
+          "paragraph-group-8ca3db799e7e",
+          "paragraph-group-9139847c6691",
+          "paragraph-group-93b14d929c2e",
+          "paragraph-group-b178b7a06e80",
+          "paragraph-group-b64d7dac0700",
+          "paragraph-group-d11bc667dbe6"
+        ],
+        "other_paper_singleton_peers": 21
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0005.ss0002.p0007",
+      "group_id": "paragraph-group-8b7424ad0e9d",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-004129",
+        "attempt-004143",
+        "attempt-004145",
+        "attempt-004149",
+        "attempt-004151",
+        "attempt-004154",
+        "attempt-004156",
+        "attempt-005517",
+        "attempt-005529",
+        "attempt-005532"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-004129",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-c1f8be3dc5d4"
+        },
+        {
+          "attempt_id": "attempt-005517",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-83a695da8f64"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-4842db800238",
+          "paragraph-group-5d4077d0c259",
+          "paragraph-group-7d3a33f97ae1",
+          "paragraph-group-8ca3db799e7e",
+          "paragraph-group-9139847c6691",
+          "paragraph-group-93b14d929c2e",
+          "paragraph-group-b178b7a06e80",
+          "paragraph-group-b64d7dac0700",
+          "paragraph-group-d11bc667dbe6"
+        ],
+        "other_paper_singleton_peers": 21
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0005.ss0002.p0008",
+      "group_id": "paragraph-group-22f200482b98",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-004130",
+        "attempt-004143",
+        "attempt-004149",
+        "attempt-004151",
+        "attempt-004156",
+        "attempt-003988",
+        "attempt-005513",
+        "attempt-005529",
+        "attempt-005532"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-004130",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-0fdf95e56cba"
+        },
+        {
+          "attempt_id": "attempt-005513",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-83a695da8f64"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-003988"
+      ],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-4842db800238",
+          "paragraph-group-5d4077d0c259",
+          "paragraph-group-7d3a33f97ae1",
+          "paragraph-group-8ca3db799e7e",
+          "paragraph-group-9139847c6691",
+          "paragraph-group-93b14d929c2e",
+          "paragraph-group-b178b7a06e80",
+          "paragraph-group-b64d7dac0700",
+          "paragraph-group-d11bc667dbe6"
+        ],
+        "other_paper_singleton_peers": 21
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0005.ss0002.p0009",
+      "group_id": "paragraph-group-079666d9bb5f",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-004132",
+        "attempt-004143",
+        "attempt-004147",
+        "attempt-004149",
+        "attempt-004151",
+        "attempt-004156",
+        "attempt-004157",
+        "attempt-005512",
+        "attempt-005529",
+        "attempt-005532",
+        "attempt-005534"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-004132",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-83a695da8f64"
+        },
+        {
+          "attempt_id": "attempt-005512",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-83a695da8f64"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-4842db800238",
+          "paragraph-group-5d4077d0c259",
+          "paragraph-group-7d3a33f97ae1",
+          "paragraph-group-8ca3db799e7e",
+          "paragraph-group-9139847c6691",
+          "paragraph-group-93b14d929c2e",
+          "paragraph-group-b178b7a06e80",
+          "paragraph-group-b64d7dac0700",
+          "paragraph-group-d11bc667dbe6"
+        ],
+        "other_paper_singleton_peers": 21
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0006.p0003",
+      "group_id": "paragraph-group-cc5ecb0663a1",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-004139",
+        "attempt-004144",
+        "attempt-004147",
+        "attempt-004151",
+        "attempt-004153",
+        "attempt-004157",
+        "attempt-005521",
+        "attempt-005529",
+        "attempt-005534"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-004139",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-1a6c0a33229f"
+        },
+        {
+          "attempt_id": "attempt-005521",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-83a695da8f64"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-4842db800238",
+          "paragraph-group-5d4077d0c259",
+          "paragraph-group-7d3a33f97ae1",
+          "paragraph-group-8ca3db799e7e",
+          "paragraph-group-9139847c6691",
+          "paragraph-group-93b14d929c2e",
+          "paragraph-group-b178b7a06e80",
+          "paragraph-group-b64d7dac0700",
+          "paragraph-group-d11bc667dbe6",
+          "paragraph-group-da0b3b936770"
+        ],
+        "other_paper_singleton_peers": 21
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0006.p0006",
+      "group_id": "paragraph-group-5f15286425d9",
+      "parent_id": "section-group-f494dac7115f",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-004119",
+        "attempt-004153"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-004119",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-b7480a0fa96e"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-4842db800238",
+          "paragraph-group-5d4077d0c259",
+          "paragraph-group-7d3a33f97ae1",
+          "paragraph-group-8ca3db799e7e",
+          "paragraph-group-9139847c6691",
+          "paragraph-group-93b14d929c2e",
+          "paragraph-group-b178b7a06e80",
+          "paragraph-group-b64d7dac0700",
+          "paragraph-group-d11bc667dbe6"
+        ],
+        "other_paper_singleton_peers": 21
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0007.ss0001.p0003",
+      "group_id": "paragraph-group-d70c861273c2",
+      "parent_id": "section-group-856119f080c8",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-004296",
+        "attempt-004306",
+        "attempt-004309",
+        "attempt-004196",
+        "attempt-004312",
+        "attempt-004313",
+        "attempt-004201",
+        "attempt-004973",
+        "attempt-004975",
+        "attempt-004977",
+        "attempt-004979",
+        "attempt-004934"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-004296",
+          "direction": "new_to_group",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-004973",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-084672dae852"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-004196",
+        "attempt-004201",
+        "attempt-004977",
+        "attempt-004934"
+      ],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-02cc1b1af7c7",
+          "paragraph-group-084672dae852",
+          "paragraph-group-0bbde7bceb3c",
+          "paragraph-group-24052c65334c",
+          "paragraph-group-3d2ff41ff553",
+          "paragraph-group-528e112d9d90",
+          "paragraph-group-936204d9c400",
+          "paragraph-group-ae758ca40a31",
+          "paragraph-group-cc4425ba5acd",
+          "paragraph-group-dd67557a1a89",
+          "paragraph-group-e03ef436cd75",
+          "paragraph-group-f7c7548e0664"
+        ],
+        "other_paper_singleton_peers": 12
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0007.ss0002.p0001",
+      "group_id": "paragraph-group-c986a6dfd7b9",
+      "parent_id": "section-group-856119f080c8",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-004300",
+        "attempt-004306",
+        "attempt-004309",
+        "attempt-004311",
+        "attempt-004971",
+        "attempt-004975",
+        "attempt-004977"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-004300",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-084672dae852"
+        },
+        {
+          "attempt_id": "attempt-004971",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-084672dae852"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-02cc1b1af7c7",
+          "paragraph-group-084672dae852",
+          "paragraph-group-0bbde7bceb3c",
+          "paragraph-group-24052c65334c",
+          "paragraph-group-3d2ff41ff553",
+          "paragraph-group-528e112d9d90",
+          "paragraph-group-6e1a9e7546f8",
+          "paragraph-group-936204d9c400",
+          "paragraph-group-ae758ca40a31",
+          "paragraph-group-cc4425ba5acd",
+          "paragraph-group-e03ef436cd75",
+          "paragraph-group-f7c7548e0664"
+        ],
+        "other_paper_singleton_peers": 12
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0007.ss0002.p0002",
+      "group_id": "paragraph-group-e84ca66e9674",
+      "parent_id": "section-group-856119f080c8",
+      "parent_is_shared": true,
+      "reason": "never_compared",
+      "exposed_attempt_ids": [],
+      "judgments": [],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-02cc1b1af7c7",
+          "paragraph-group-04cc37247dd7",
+          "paragraph-group-084672dae852",
+          "paragraph-group-0bbde7bceb3c",
+          "paragraph-group-24052c65334c",
+          "paragraph-group-3d2ff41ff553",
+          "paragraph-group-528e112d9d90",
+          "paragraph-group-936204d9c400",
+          "paragraph-group-ae758ca40a31",
+          "paragraph-group-cc4425ba5acd",
+          "paragraph-group-e03ef436cd75",
+          "paragraph-group-f7c7548e0664"
+        ],
+        "other_paper_singleton_peers": 12
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0007.ss0003.p0004",
+      "group_id": "paragraph-group-1ac75737ddbc",
+      "parent_id": "section-group-856119f080c8",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-004304",
+        "attempt-004308",
+        "attempt-004309",
+        "attempt-004967",
+        "attempt-004976",
+        "attempt-004977"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-004304",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-232d8e3317e5"
+        },
+        {
+          "attempt_id": "attempt-004967",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-232d8e3317e5"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-02cc1b1af7c7",
+          "paragraph-group-084672dae852",
+          "paragraph-group-0bbde7bceb3c",
+          "paragraph-group-24052c65334c",
+          "paragraph-group-3d2ff41ff553",
+          "paragraph-group-528e112d9d90",
+          "paragraph-group-936204d9c400",
+          "paragraph-group-ae758ca40a31",
+          "paragraph-group-cc4425ba5acd",
+          "paragraph-group-e03ef436cd75",
+          "paragraph-group-f7c7548e0664"
+        ],
+        "other_paper_singleton_peers": 12
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0008.ss0001.p0004",
+      "group_id": "paragraph-group-9172f3666905",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-004526",
+        "attempt-004547",
+        "attempt-004552"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-004526",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-87577e0b3981"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-12fbd84b8bce",
+          "paragraph-group-7b16725528e1",
+          "paragraph-group-cab857cb6db3"
+        ],
+        "other_paper_singleton_peers": 25
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0008.ss0001.p0006",
+      "group_id": "paragraph-group-081e5d5ce82d",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-004378",
+        "attempt-004549"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-004378",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-c0e599be8cb2"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-12fbd84b8bce",
+          "paragraph-group-7b16725528e1",
+          "paragraph-group-cab857cb6db3"
+        ],
+        "other_paper_singleton_peers": 25
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0008.ss0002.p0002",
+      "group_id": "paragraph-group-901f1b2adb34",
+      "parent_id": "section-group-b475b9d6107e",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-004533",
+        "attempt-004541",
+        "attempt-004545",
+        "attempt-004547",
+        "attempt-004549",
+        "attempt-004552",
+        "attempt-005108",
+        "attempt-005149"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-004533",
+          "direction": "new_to_group",
+          "target_id": null
+        },
+        {
+          "attempt_id": "attempt-005108",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-7b16725528e1"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-12fbd84b8bce",
+          "paragraph-group-7b16725528e1"
+        ],
+        "other_paper_singleton_peers": 25
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0009.p0004",
+      "group_id": "paragraph-group-1f50a3f99e76",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-004633",
+        "attempt-004587",
+        "attempt-004637",
+        "attempt-004704",
+        "attempt-004744"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-004633",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-03ea19c4472b"
+        },
+        {
+          "attempt_id": "attempt-004704",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-c28d3f04f47c"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-004587"
+      ],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-474d73101d08",
+          "paragraph-group-67706c9ad734",
+          "paragraph-group-c28d3f04f47c",
+          "paragraph-group-e038157de37d"
+        ],
+        "other_paper_singleton_peers": 25
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0010.p0001",
+      "group_id": "paragraph-group-41739b203036",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-004634",
+        "attempt-004639",
+        "attempt-004640",
+        "attempt-004714",
+        "attempt-004744"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-004634",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-67706c9ad734"
+        },
+        {
+          "attempt_id": "attempt-004714",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-c28d3f04f47c"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-474d73101d08",
+          "paragraph-group-c28d3f04f47c",
+          "paragraph-group-e038157de37d"
+        ],
+        "other_paper_singleton_peers": 25
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0010.p0002",
+      "group_id": "paragraph-group-9c2dcb6ed59f",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-004635",
+        "attempt-004639",
+        "attempt-004640",
+        "attempt-004732",
+        "attempt-004744"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-004635",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-67706c9ad734"
+        },
+        {
+          "attempt_id": "attempt-004732",
+          "direction": "singleton_to_group",
+          "target_id": "paragraph-group-c28d3f04f47c"
+        }
+      ],
+      "selected_by_attempt_ids": [],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-474d73101d08",
+          "paragraph-group-c28d3f04f47c",
+          "paragraph-group-e038157de37d"
+        ],
+        "other_paper_singleton_peers": 25
+      }
+    },
+    {
+      "paper_id": "paralib_uist22",
+      "paragraph_id": "s0010.p0003",
+      "group_id": "paragraph-group-9b2a5f451ed0",
+      "parent_id": "section-group-31dae278f99b",
+      "parent_is_shared": true,
+      "reason": "selected_without_acceptance",
+      "exposed_attempt_ids": [
+        "attempt-004636",
+        "attempt-004639",
+        "attempt-004627"
+      ],
+      "judgments": [
+        {
+          "attempt_id": "attempt-004636",
+          "direction": "new_to_group",
+          "target_id": "paragraph-group-67706c9ad734"
+        }
+      ],
+      "selected_by_attempt_ids": [
+        "attempt-004627"
+      ],
+      "recovery": {
+        "status": "eligible_established_group",
+        "eligible_group_ids": [
+          "paragraph-group-474d73101d08",
+          "paragraph-group-c28d3f04f47c",
+          "paragraph-group-e038157de37d"
+        ],
+        "other_paper_singleton_peers": 25
+      }
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+{
+  "existing_group_ids": [
+    "section-group-11be0cec7f77",
+    "section-group-264d31b73b39",
+    "section-group-31dae278f99b",
+    "section-group-3b857ae1dbaf",
+    "section-group-856119f080c8",
+    "section-group-95569492e9e8",
+    "section-group-b475b9d6107e",
+    "section-group-cb1db7901cee",
+    "section-group-e6a0a0b75d91",
+    "section-group-e74536c6c44a",
+    "section-group-ed52a960f4ab",
+    "section-group-f494dac7115f"
+  ],
+  "new_unit_ids": [
+    "s0001",
+    "s0002",
+    "s0003",
+    "s0004",
+    "s0005",
+    "s0006",
+    "s0007",
+    "s0008",
+    "s0009",
+    "s0010",
+    "s0011"
+  ],
+  "forward": {
+    "s0001": {
+      "source_id": "s0001",
+      "target_id": "section-group-3b857ae1dbaf",
+      "direction": "new_to_group",
+      "attempt_id": "attempt-000412"
+    },
+    "s0002": {
+      "source_id": "s0002",
+      "target_id": "section-group-e6a0a0b75d91",
+      "direction": "new_to_group",
+      "attempt_id": "attempt-000413"
+    },
+    "s0003": {
+      "source_id": "s0003",
+      "target_id": "section-group-264d31b73b39",
+      "direction": "new_to_group",
+      "attempt_id": "attempt-000414"
+    },
+    "s0005": {
+      "source_id": "s0005",
+      "target_id": "section-group-f494dac7115f",
+      "direction": "new_to_group",
+      "attempt_id": "attempt-000415"
+    },
+    "s0006": {
+      "source_id": "s0006",
+      "target_id": "section-group-f494dac7115f",
+      "direction": "new_to_group",
+      "attempt_id": "attempt-000416"
+    },
+    "s0007": {
+      "source_id": "s0007",
+      "target_id": "section-group-856119f080c8",
+      "direction": "new_to_group",
+      "attempt_id": "attempt-000417"
+    },
+    "s0008": {
+      "source_id": "s0008",
+      "target_id": "section-group-b475b9d6107e",
+      "direction": "new_to_group",
+      "attempt_id": "attempt-000418"
+    },
+    "s0009": {
+      "source_id": "s0009",
+      "target_id": "section-group-31dae278f99b",
+      "direction": "new_to_group",
+      "attempt_id": "attempt-000419"
+    },
+    "s0010": {
+      "source_id": "s0010",
+      "target_id": "section-group-ed52a960f4ab",
+      "direction": "new_to_group",
+      "attempt_id": "attempt-000420"
+    },
+    "s0011": {
+      "source_id": "s0011",
+      "target_id": "section-group-95569492e9e8",
+      "direction": "new_to_group",
+      "attempt_id": "attempt-000421"
+    }
+  },
+  "reverse": {
+    "section-group-11be0cec7f77": {
+      "source_id": "section-group-11be0cec7f77",
+      "target_id": "s0007",
+      "direction": "group_to_new",
+      "attempt_id": "attempt-000423"
+    },
+    "section-group-264d31b73b39": {
+      "source_id": "section-group-264d31b73b39",
+      "target_id": "s0003",
+      "direction": "group_to_new",
+      "attempt_id": "attempt-000424"
+    },
+    "section-group-31dae278f99b": {
+      "source_id": "section-group-31dae278f99b",
+      "target_id": "s0009",
+      "direction": "group_to_new",
+      "attempt_id": "attempt-000425"
+    },
+    "section-group-3b857ae1dbaf": {
+      "source_id": "section-group-3b857ae1dbaf",
+      "target_id": "s0001",
+      "direction": "group_to_new",
+      "attempt_id": "attempt-000295"
+    },
+    "section-group-856119f080c8": {
+      "source_id": "section-group-856119f080c8",
+      "target_id": "s0007",
+      "direction": "group_to_new",
+      "attempt_id": "attempt-000426"
+    },
+    "section-group-95569492e9e8": {
+      "source_id": "section-group-95569492e9e8",
+      "target_id": "s0011",
+      "direction": "group_to_new",
+      "attempt_id": "attempt-000427"
+    },
+    "section-group-b475b9d6107e": {
+      "source_id": "section-group-b475b9d6107e",
+      "target_id": "s0008",
+      "direction": "group_to_new",
+      "attempt_id": "attempt-000428"
+    },
+    "section-group-cb1db7901cee": {
+      "source_id": "section-group-cb1db7901cee",
+      "target_id": "s0007",
+      "direction": "group_to_new",
+      "attempt_id": "attempt-000429"
+    },
+    "section-group-e6a0a0b75d91": {
+      "source_id": "section-group-e6a0a0b75d91",
+      "target_id": "s0002",
+      "direction": "group_to_new",
+      "attempt_id": "attempt-000430"
+    },
+    "section-group-e74536c6c44a": {
+      "source_id": "section-group-e74536c6c44a",
+      "target_id": "s0006",
+      "direction": "group_to_new",
+      "attempt_id": "attempt-000431"
+    },
+    "section-group-ed52a960f4ab": {
+      "source_id": "section-group-ed52a960f4ab",
+      "target_id": "s0010",
+      "direction": "group_to_new",
+      "attempt_id": "attempt-000432"
+    },
+    "section-group-f494dac7115f": {
+      "source_id": "section-group-f494dac7115f",
+      "target_id": "s0005",
+      "direction": "group_to_new",
+      "attempt_id": "attempt-000433"
+    }
+  }
+}

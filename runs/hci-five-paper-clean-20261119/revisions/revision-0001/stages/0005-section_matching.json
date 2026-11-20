@@ -1,0 +1,152 @@
+{
+  "existing_group_ids": [
+    "section-group-264d31b73b39",
+    "section-group-31dae278f99b",
+    "section-group-3b857ae1dbaf",
+    "section-group-856119f080c8",
+    "section-group-95569492e9e8",
+    "section-group-b475b9d6107e",
+    "section-group-cb1db7901cee",
+    "section-group-d4084248c7a6",
+    "section-group-e6a0a0b75d91",
+    "section-group-ed52a960f4ab",
+    "section-group-f494dac7115f"
+  ],
+  "new_unit_ids": [
+    "s0001",
+    "s0002",
+    "s0003",
+    "s0004",
+    "s0005",
+    "s0006",
+    "s0007",
+    "s0008",
+    "s0009",
+    "s0010",
+    "s0011"
+  ],
+  "forward": {
+    "s0001": {
+      "source_id": "s0001",
+      "target_id": null,
+      "direction": "new_to_group",
+      "attempt_id": "attempt-003404"
+    },
+    "s0002": {
+      "source_id": "s0002",
+      "target_id": "section-group-e6a0a0b75d91",
+      "direction": "new_to_group",
+      "attempt_id": "attempt-003405"
+    },
+    "s0004": {
+      "source_id": "s0004",
+      "target_id": "section-group-264d31b73b39",
+      "direction": "new_to_group",
+      "attempt_id": "attempt-003406"
+    },
+    "s0005": {
+      "source_id": "s0005",
+      "target_id": "section-group-f494dac7115f",
+      "direction": "new_to_group",
+      "attempt_id": "attempt-003407"
+    },
+    "s0006": {
+      "source_id": "s0006",
+      "target_id": "section-group-f494dac7115f",
+      "direction": "new_to_group",
+      "attempt_id": "attempt-003347"
+    },
+    "s0007": {
+      "source_id": "s0007",
+      "target_id": "section-group-856119f080c8",
+      "direction": "new_to_group",
+      "attempt_id": "attempt-003408"
+    },
+    "s0008": {
+      "source_id": "s0008",
+      "target_id": "section-group-b475b9d6107e",
+      "direction": "new_to_group",
+      "attempt_id": "attempt-003365"
+    },
+    "s0009": {
+      "source_id": "s0009",
+      "target_id": "section-group-31dae278f99b",
+      "direction": "new_to_group",
+      "attempt_id": "attempt-003409"
+    },
+    "s0010": {
+      "source_id": "s0010",
+      "target_id": "section-group-31dae278f99b",
+      "direction": "new_to_group",
+      "attempt_id": "attempt-003410"
+    },
+    "s0011": {
+      "source_id": "s0011",
+      "target_id": "section-group-95569492e9e8",
+      "direction": "new_to_group",
+      "attempt_id": "attempt-003411"
+    }
+  },
+  "reverse": {
+    "section-group-264d31b73b39": {
+      "source_id": "section-group-264d31b73b39",
+      "target_id": "s0004",
+      "direction": "group_to_new",
+      "attempt_id": "attempt-003316"
+    },
+    "section-group-31dae278f99b": {
+      "source_id": "section-group-31dae278f99b",
+      "target_id": "s0009",
+      "direction": "group_to_new",
+      "attempt_id": "attempt-003412"
+    },
+    "section-group-3b857ae1dbaf": {
+      "source_id": "section-group-3b857ae1dbaf",
+      "target_id": "s0001",
+      "direction": "group_to_new",
+      "attempt_id": "attempt-003285"
+    },
+    "section-group-856119f080c8": {
+      "source_id": "section-group-856119f080c8",
+      "target_id": "s0007",
+      "direction": "group_to_new",
+      "attempt_id": "attempt-003352"
+    },
+    "section-group-95569492e9e8": {
+      "source_id": "section-group-95569492e9e8",
+      "target_id": "s0011",
+      "direction": "group_to_new",
+      "attempt_id": "attempt-003397"
+    },
+    "section-group-b475b9d6107e": {
+      "source_id": "section-group-b475b9d6107e",
+      "target_id": "s0008",
+      "direction": "group_to_new",
+      "attempt_id": "attempt-003365"
+    },
+    "section-group-cb1db7901cee": {
+      "source_id": "section-group-cb1db7901cee",
+      "target_id": "s0007",
+      "direction": "group_to_new",
+      "attempt_id": "attempt-003355"
+    },
+    "section-group-d4084248c7a6": {
+      "source_id": "section-group-d4084248c7a6",
+      "target_id": "s0009",
+      "direction": "group_to_new",
+      "attempt_id": "attempt-003414"
+    },
+    "section-group-e6a0a0b75d91": {
+      "source_id": "section-group-e6a0a0b75d91",
+      "target_id": "s0002",
+      "direction": "group_to_new",
+      "attempt_id": "attempt-003415"
+    },
+    "section-group-f494dac7115f": {
+      "source_id": "section-group-f494dac7115f",
+      "target_id": "s0005",
+      "direction": "group_to_new",
+      "attempt_id": "attempt-003416"
+    }
+  }
+}
