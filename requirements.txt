@@ -3,5 +3,5 @@ openai==2.29.0
 networkx==2.6.3
 pydantic==2.12.5
 PyYAML==6.0.3
-
+numpy==2.4.6
 jsonschema==4.26.0
