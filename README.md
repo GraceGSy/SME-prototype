@@ -1,3 +1,7 @@
+# An on-going project in the Variation Lab of Harvard SEAS
+
+Co-authors: Elena Glassman (Harvard SEAS), Kanishk Tantia (SEAS/HBS), Grace Guo (SEAS)
+
 # Structural cross-paper matching pipeline
 
 Extracts a hierarchical structure (sections → paragraphs) from a set of academic
