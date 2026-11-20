@@ -11,6 +11,8 @@ from pipeline.incremental_graph.input_data import load_manifest
 ROOT = Path(__file__).resolve().parents[1] / "datasets/reuters-technology"
 
 
+# The corpus stays out of the public repository; the checks run where it is present.
+@unittest.skipUnless(ROOT.is_dir(), "Reuters corpus is not in this checkout")
 class ReutersTechnologyCorpusTest(unittest.TestCase):
     def test_manifest_and_reviewed_inputs(self):
         manifest, papers = load_manifest(ROOT / "manifest.yaml")

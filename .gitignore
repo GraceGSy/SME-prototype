@@ -13,3 +13,6 @@ output/
 playwright-report/
 .playwright-cli/
 .ruff_cache/
+
+# Reuters articles stay out of the public repo (owner decision, Nov 20, 2026); keep them local.
+datasets/reuters-technology/
