@@ -1,2 +1,7 @@
 datasets/sherlock/raw/*.xhtml -text
 datasets/legal/raw/*.txt -text
+# Prettier and the viewer tests expect LF; keep Windows checkouts (including CI) from converting.
+*.ts text eol=lf
+*.json text eol=lf
+*.html text eol=lf
+*.css text eol=lf

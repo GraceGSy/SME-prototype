@@ -606,7 +606,10 @@ class JevTest(unittest.TestCase):
             body = json.loads(req.data)
             if body["state"].count("\nOption ") > 11 and long_context != "true":
                 raise HTTPError(
-                    "url", 400, "Bad Request", {},
+                    "url",
+                    400,
+                    "Bad Request",
+                    {},
                     io.BytesIO(b'{"detail":{"error_type":"max_tokens_exceeded"}}'),
                 )
             return io.BytesIO(json.dumps(answer(body)).encode())
