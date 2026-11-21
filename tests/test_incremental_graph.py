@@ -617,17 +617,31 @@ class IncrementalGraphTest(unittest.TestCase):
             graph.add_paper("p1", "P1", 1)
             graph.add_paper("p2", "P2", 2)
             target = graph.create_group(
-                level="section", parent_id=None, member_id="s1", paper_id="p1",
-                paper_index=1, ordinal=1,
+                level="section",
+                parent_id=None,
+                member_id="s1",
+                paper_id="p1",
+                paper_index=1,
+                ordinal=1,
             )
             graph.add_member(target, "s1", "p2", 2, 1)
             source = graph.create_group(
-                level="section", parent_id=None, member_id="s2", paper_id="p2",
-                paper_index=2, ordinal=2,
+                level="section",
+                parent_id=None,
+                member_id="s2",
+                paper_id="p2",
+                paper_index=2,
+                ordinal=2,
             )
             child = graph.create_group(
-                level="paragraph", parent_id=source, member_id="s2.p1", paper_id="p2",
-                paper_index=2, ordinal=1, unit_kind="paragraph", parent_unit_id="s2",
+                level="paragraph",
+                parent_id=source,
+                member_id="s2.p1",
+                paper_id="p2",
+                paper_index=2,
+                ordinal=1,
+                unit_kind="paragraph",
+                parent_unit_id="s2",
                 owner_group_id=source,
             )
             graph.add_hierarchy_edge(source, child, paper_id="p2", paper_index=2)
@@ -657,7 +671,9 @@ class IncrementalGraphTest(unittest.TestCase):
             self.assertTrue(all(len(data["members"]) == 1 for _, data in runner.role_graph.nodes()))
             descriptor = validate_dataset(revision / "dataset", "hci-five", "HCI Five")
             self.assertEqual(descriptor["paper_count"], 5)
-            self.assertEqual(descriptor["paragraph_count"], 466)  # Two Paralib paragraphs restored on Nov 18.
+            self.assertEqual(
+                descriptor["paragraph_count"], 466
+            )  # Two Paralib paragraphs restored on Nov 18.
             self.assertFalse((revision / "dataset" / "graph_categories.json").exists())
             snapshot = json.loads(
                 (revision / "dataset" / "final_snapshot.json").read_text(encoding="utf-8")

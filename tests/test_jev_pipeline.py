@@ -130,7 +130,8 @@ class JevPipelineTest(unittest.TestCase):
 
     def test_new_uncapped_run_reuses_exact_cached_requests(self):
         with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
+            # Windows CI gives temp folders short names (RUNNER~1); the code resolves paths.
+            root = Path(directory).resolve()
             skills = ScriptedSkills()
             with (
                 patch("pipeline.incremental_graph.runs.load_api_key", return_value="offline-key"),

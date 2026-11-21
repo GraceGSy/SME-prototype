@@ -16,7 +16,7 @@ class SkillRegistry:
     """Own local registration state; adapters supply only the provider upload."""
 
     def __init__(self, repo_root: Path, state_path: Path, api_key: str) -> None:
-        self.repo_root = repo_root
+        self.repo_root = repo_root.resolve()  # Match resolved Skill paths (Windows short names).
         self.state_path = state_path
         stored = (
             read_json(state_path) if state_path.exists() else {"schema_version": 1, "accounts": {}}
