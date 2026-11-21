@@ -35,7 +35,9 @@ class SkillRegistryTest(unittest.TestCase):
 
     def test_failed_version_upload_preserves_the_last_good_registration(self):
         with tempfile.TemporaryDirectory() as temp:
-            root = Path(temp)
+            root = (
+                Path(temp).resolve()
+            )  # Windows CI gives temp folders short names (RUNNER~1); the code resolves paths.
             skill = root / "skills" / "test"
             skill.mkdir(parents=True)
             source = skill / "SKILL.md"

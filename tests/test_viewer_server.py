@@ -100,7 +100,9 @@ class ViewerServerTest(unittest.TestCase):
 
     def test_latest_ignores_unfinished_revision_and_pins_completed_path(self):
         with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
+            root = (
+                Path(directory).resolve()
+            )  # Windows CI gives temp folders short names (RUNNER~1); the code resolves paths.
             run = root / "example"
             revision = run / "revisions/revision-0001"
             make_snapshot_dataset(revision / "dataset")
