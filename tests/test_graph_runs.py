@@ -227,6 +227,17 @@ class GraphRunTest(unittest.TestCase):
                 retried = retry_graph(run)
             self.assertEqual(added["paper_order"], ["a", "b", "c"])
             self.assertEqual(added["graph_hash"], retried["graph_hash"])
+            # Run files name repository folders relatively, so a run reads on any checkout;
+            # paths outside the repository stay absolute.
+            saved = json.loads((run / "run.json").read_text(encoding="utf-8"))["config"]
+            self.assertEqual(
+                [saved[name] for name in ("prompt_root", "context_root", "skill_root")],
+                ["prompts/graph", "prompts/contexts", "prompts/skills"],
+            )
+            summary = json.loads(
+                (run / "revisions/revision-0001/summary.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(summary["dataset_dir"], initial["dataset_dir"])
             self.assertEqual((Path(initial["dataset_dir"]) / "a.json").read_bytes(), original)
             self.assertEqual((Path(added["dataset_dir"]) / "a.json").read_bytes(), original)
             self.assertEqual(

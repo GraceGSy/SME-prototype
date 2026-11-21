@@ -6,8 +6,16 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Annotated, Any, Literal
 
-from pydantic import BaseModel, BeforeValidator, ConfigDict, Field, model_validator
+from pydantic import (
+    BaseModel,
+    BeforeValidator,
+    ConfigDict,
+    Field,
+    field_serializer,
+    model_validator,
+)
 
+from ..prompts import REPO_ROOT, repo_relative
 from ..providers.jev import JevSettings
 from ..providers.settings import ModelSettings
 
@@ -143,6 +151,18 @@ class PipelineConfig(StrictModel):
     # None asks every pair.
     shortlist: int | None = Field(default=10, gt=0)
     stages: list[StageConfig]
+
+    @field_serializer("prompt_root", "context_root", "skill_root", when_used="json")
+    def _portable_root(self, root: Path) -> str:
+        return repo_relative(root)
+
+    def resolve_roots(self) -> "PipelineConfig":
+        """Saved runs keep repository-relative roots; read them from this checkout."""
+        for name in ("prompt_root", "context_root", "skill_root"):
+            root = getattr(self, name)
+            if not root.is_absolute():
+                setattr(self, name, REPO_ROOT / root)
+        return self
 
     def result_settings(self) -> dict:
         """Scientific configuration shared by policy checks and retry validation."""

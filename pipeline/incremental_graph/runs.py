@@ -95,6 +95,7 @@ def _inputs(path: Path) -> tuple[PaperManifest, list[Any], list[dict | None]]:
 
 def _state(run_dir: Path) -> RunState:
     state = RunState.model_validate(read_json(run_dir / "run.json"))
+    state.config.resolve_roots()
     if state.policy_sha256 != _policy_hash(state.config):
         raise ValueError(
             "Scientific configuration, graph code, prompts, or Skills changed; "

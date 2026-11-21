@@ -32,7 +32,8 @@ templates, Jev instructions, and Skills, with Python wiring and saved-request gu
 
 ## Run the prepared example
 
-From this repository root in PowerShell:
+From this repository root in PowerShell. API keys can be set in the environment
+as below or kept in a `.env` file; [.env.example](.env.example) lists them.
 
 ```powershell
 py -3.11 -m venv .venv
@@ -245,3 +246,8 @@ npm run format:check
 
 These checks use scripted judgments and make no paid model calls. A live run
 and source-by-source review are still needed before interpreting its mappings.
+
+## Data sources
+
+The papers, court decisions, and stories under `datasets/` keep their own terms;
+[NOTICE.md](NOTICE.md) lists where each comes from.

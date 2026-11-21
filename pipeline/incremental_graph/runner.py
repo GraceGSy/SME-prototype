@@ -7,6 +7,7 @@ from typing import Any, Callable
 
 from ..document import ROLE_FIELD
 from ..files import write_json
+from ..prompts import repo_relative
 from ..providers.jev import JevRequestTooLarge
 from .close_calls import close_options, write_close_call_report
 from .configuration import validate_pipeline_config
@@ -134,7 +135,10 @@ class IncrementalGraphRunner:
             "attempt_count": self.journal.attempt_count,
             "dataset_dir": str((self.revision_dir / "dataset").resolve()),
         }
-        write_json(self.revision_dir / "summary.json", summary)
+        write_json(
+            self.revision_dir / "summary.json",
+            {**summary, "dataset_dir": repo_relative(Path(summary["dataset_dir"]))},
+        )
         return summary
 
     def _run_phase(self, phase: Phase, insertion: InsertionState) -> None:
