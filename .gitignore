@@ -5,7 +5,10 @@ __pycache__/
 .venv/
 venv/
 _cache/
-runs/
+# Runs stay local, except the one published example run (without its answer cache).
+runs/*
+!runs/hci-five-paper-clean-20261119/
+runs/hci-five-paper-clean-20261119/cache/
 site/
 node_modules/
 pipeline/viewer/dist/

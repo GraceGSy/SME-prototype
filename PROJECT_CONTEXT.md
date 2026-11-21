@@ -165,7 +165,7 @@ The design is documented in [docs/jev.md](docs/jev.md#node-representation).
 The application repository is the nested checkout:
 
 ```text
-C:\HBS\Glassman Lab Research\hypothesis\SME-prototype-elena-clean
+<repository root>
 ```
 
 The parent `hypothesis` directory is a broader workspace with its own Git metadata,
@@ -232,8 +232,7 @@ Preserve whole run directories, not only their exported viewer datasets. The
 inputs, policy, revisions, caches, rejected responses, and events are needed to
 understand and sometimes reuse paid work. Do not put credentials in the transfer.
 
-The local credential file previously located for this workspace is
-`C:\HBS\Glassman Lab Research\hypothesis\.env`. The loader checks the environment
+Credentials go in a `.env` file; `.env.example` lists the names. The loader checks the environment
 and then the repository and its ancestors. The audit did not read or print keys
 or verify current balances. A fresh machine needs its own credential setup.
 
@@ -987,7 +986,7 @@ dependencies can also change policy identity.
 ### Read-only or offline
 
 ```powershell
-Set-Location 'C:\HBS\Glassman Lab Research\hypothesis\SME-prototype-elena-clean'
+Set-Location '<repository root>'
 git status --short --branch
 git log -12 --oneline
 py -3.11 -m pipeline.incremental_graph.cli validate output/prepared-runs/hci-two-paper-roles-20261112/manifest.yaml
@@ -1053,11 +1052,9 @@ That chat records the November 11-13 source repair, role switch, prompt discussi
 pause request, full-text section restriction, and section-only result. Earlier
 repo-maintenance and manuscript context came from project-specific saved summaries.
 
-On this machine, additional historical context is under
-`C:\Users\kanis\.codex\memories\MEMORY.md`, the corresponding
-`rollout_summaries` directory, and `C:\Users\kanis\.codex\sessions`.
-Those are local recovery aids, not repository dependencies. Search only the
-relevant project entries; do not copy unrelated conversations or secrets into Git.
+The original developers keep more historical context in local assistant session
+notes. Those are local recovery aids, not repository dependencies; do not copy
+unrelated conversations or secrets into Git.
 
 This document is a curated handoff, not a claim that every historical conversation
 was exhaustively reviewed. If a precise old decision matters, follow its saved

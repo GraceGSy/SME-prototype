@@ -12,7 +12,7 @@ import yaml
 from jsonschema import Draft202012Validator
 from pydantic import Field, model_validator
 
-from ..prompts import request_prompts
+from ..prompts import REPO_ROOT, request_prompts
 from .models import PipelineConfig, StrictModel
 
 CONTEXT_HEADER = request_prompts("evidence")["context_header"]
@@ -33,9 +33,13 @@ def load_pipeline_config(path: Path) -> PipelineConfig:
     except (OSError, yaml.YAMLError) as error:
         raise ConfigurationError(f"Could not load pipeline config {path}: {error}") from error
     config = PipelineConfig.model_validate(payload)
-    config.prompt_root = (path.parent / config.prompt_root).resolve()
-    config.context_root = (path.parent / config.context_root).resolve()
-    config.skill_root = (path.parent / config.skill_root).resolve()
+    for name in ("prompt_root", "context_root", "skill_root"):
+        root = getattr(config, name)
+        # Relative to the config file; saved run configs are relative to the repository.
+        local = path.parent / root
+        if not local.exists() and (REPO_ROOT / root).exists():
+            local = REPO_ROOT / root
+        setattr(config, name, local.resolve())
     validate_pipeline_config(config)
     return config
 

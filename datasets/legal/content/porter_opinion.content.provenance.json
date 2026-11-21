@@ -15,7 +15,7 @@
     "pdf_indented_starts_matched": 37,
     "source_word_multiset_preserved_excluding_headings_and_attribution": true
   },
-  "source": "C:\\HBS\\Glassman Lab Research\\hypothesis\\SME-prototype-elena-clean\\output\\porter-extraction-20260910\\porter_opinion.layout.txt",
+  "source": "output/porter-extraction-20260910/porter_opinion.layout.txt",
   "source_sha256": "2c8aa2074f53ac81eccf440e5b090e5dd01dda80c412f14c6ef870765686a484",
   "domain": "legal",
   "title": "Porter v. Board of Trustees of North Carolina State University - Opinion",

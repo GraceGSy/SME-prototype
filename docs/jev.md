@@ -169,10 +169,9 @@ source .venv/bin/activate
 python -m pip install -r requirements.txt
 ```
 
-On this Windows checkout, in PowerShell:
+On Windows, in PowerShell, from the repository root:
 
 ```powershell
-cd "C:\HBS\Glassman Lab Research\hypothesis\SME-prototype-elena-clean"
 py -3.11 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
@@ -461,7 +460,7 @@ The Jev-versus-LLM demo uses the same two papers and subsection granularity:
 
 ```bash
 python -m pipeline.incremental_graph.compare runs/hci-concise-fresh-20260907/revisions/revision-0001 runs/hci-first-two-jev-uncapped-20261025-01/revisions/revision-0001 output/comparisons/llm-vs-jev-review --public
-vercel link --yes --project smelter-run-comparison --scope kanishk-tantias-projects --cwd output/comparisons/llm-vs-jev-review
+vercel link --yes --project smelter-run-comparison --scope <your-vercel-scope> --cwd output/comparisons/llm-vs-jev-review
 vercel deploy --prod --cwd output/comparisons/llm-vs-jev-review
 ```
 

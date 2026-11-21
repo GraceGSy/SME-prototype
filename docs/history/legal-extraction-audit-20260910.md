@@ -130,7 +130,7 @@ that every character, citation, footnote attachment, or boundary is perfect.
 
 ## Source files
 
-All paths below are relative to `C:/HBS/Glassman Lab Research/legal corpus/`.
+All paths below are relative to the original `legal corpus/` folder of court PDFs, kept outside the repository.
 
 - `Banuelos-Jimenez v. Garland/23a0097p-06_opinion_Griffin.pdf`
 - `Banuelos-Jimenez v. Garland/23a0097p-06_dissent_Gilman.pdf`

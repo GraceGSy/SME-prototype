@@ -4,9 +4,9 @@
   "config": {
     "schema_version": 1,
     "pipeline_id": "incremental-role-graph-v1",
-    "prompt_root": "C:\\HBS\\Glassman Lab Research\\hypothesis\\SME-prototype-elena-clean\\prompts\\graph",
-    "context_root": "C:\\HBS\\Glassman Lab Research\\hypothesis\\SME-prototype-elena-clean\\prompts\\contexts",
-    "skill_root": "C:\\HBS\\Glassman Lab Research\\hypothesis\\SME-prototype-elena-clean\\prompts\\skills",
+    "prompt_root": "prompts/graph",
+    "context_root": "prompts/contexts",
+    "skill_root": "prompts/skills",
     "model": {
       "provider": "anthropic",
       "name": "claude-sonnet-5",
