@@ -14,6 +14,7 @@ from .incremental_graph.jev_selection import JevSelector
 from .incremental_graph.match_evidence import candidate_handle
 from .incremental_graph.models import JudgmentRequest
 from .providers.jev import JevSettings, encode_request, validate_response
+from .providers.jev_store import JevStore
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -66,11 +67,13 @@ def saved_cases(revision: Path, cases: list[dict]) -> list[tuple[dict, JudgmentR
         if len(selection["calls"]) != 1:
             raise ValueError("Comparison requires original unsplit candidate pools")
         fingerprint = selection["calls"][0]["fingerprint"]
-        saved = read_json(revision.parent.parent / "cache/jev" / f"{fingerprint}.json")
-        if hashlib.sha256(encode_request(saved["request"])).hexdigest() != fingerprint:
+        cache = revision.parent.parent / "cache/jev"
+        saved = read_json(cache / f"{fingerprint}.json")
+        body = JevStore(cache).request_of(saved)
+        if hashlib.sha256(encode_request(body)).hexdigest() != fingerprint:
             raise ValueError("Saved request fingerprint mismatch")
-        validate_response(saved["response"], saved["request"])
-        context = decode_saved_state(saved["request"]["state"])
+        validate_response(saved["response"], body)
+        context = decode_saved_state(body["state"])
         ids = [candidate_handle(candidate) for candidate in context["candidates"]]
         if ids != attempt["candidate_ids"]:
             raise ValueError("Saved candidate pool differs from the attempt")

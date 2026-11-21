@@ -679,12 +679,27 @@ Within `runs/<name>/`:
 | ------------------------------------- | ------------------------------------------------------------------------------ |
 | `run.json`                            | Latest execution configuration, scientific policy identity, revision pointers |
 | `inputs/`                             | Frozen prepared source documents and manifest                                  |
-| `cache/jev/<hash>.json`               | Exact Jev request and validated selection, independent of generated evidence   |
+| `cache/jev/<hash>.json`               | Validated selection, named by its exact request's fingerprint                  |
+| `cache/jev/requests/`, `cache/jev/text/` | Each exact Jev request, stored once; its repeated paper text is stored once |
 | `cache/jev/responses/`                | Raw response records, including responses rejected by validation               |
 | `cache/<hash>.json`                   | Complete validated role statements/matches, Jev traces, and generated evidence       |
 | `cache/responses/`, `cache/rejected/` | Generative responses and rejected evidence for diagnosis                       |
 | `revisions/revision-XXXX/`            | Attempt outputs; completed attempts include reports and `dataset/`             |
 | `revisions/revision-XXXX/config.json` | Full configuration used for that attempt, including its budgets and timeout    |
+
+**Request storage (Nov 21, 2026).** Long-context requests resend whole papers, so
+the clean five-paper run saved 1.9 GB of mostly repeated text: every request twice
+(answer cache and call log), at 100 to 330 KB each. Now each request is saved once in
+`cache/jev/requests/<fingerprint>.json`. Its state is a list of blocks, one per
+unindented line and the indented lines under it. Each block is a list of lines, and
+each line of 80 characters or more is its own file in `cache/jev/text/lines/`. Blocks
+and lines are named by a 16-character content hash and shared by every request. Answer
+files and call logs carry `request_fingerprint` instead of the request, and call logs
+also list the question names. `JevStore.load` (`pipeline/providers/jev_store.py`)
+rebuilds the exact body and checks its sha256, so a damaged file fails instead of
+answering another request. Older caches with inline requests still replay. To
+convert one in place, run `python -m pipeline.providers.jev_store runs/<name>/cache/jev`;
+it checks that every request rebuilds before rewriting its file.
 
 These records contain source text, so treat them as research data. The integration
 does not save authorization headers or keys. Back up the full run, not only its

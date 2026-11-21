@@ -4,9 +4,10 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from pipeline.files import write_json
+from pipeline.files import read_json, write_json
 from pipeline.providers.contracts import SkillCallPolicy
 from pipeline.providers.jev import encode_request
+from pipeline.providers.jev_store import compact_cache
 from pipeline.providers.responses import save_response, send_recorded
 from pipeline.viewer.trace import Trace, revisions
 
@@ -94,6 +95,15 @@ class RunTraceTest(unittest.TestCase):
         self.assertEqual(trace.receipt(result["calls"][0]["receipts"][0])["attempts"], [aid])
         self.assertEqual(len(trace.event("event-000001")["affected"]["singleton"]["members"]), 1)
         self.assertEqual(len(trace.event("event-000002")["affected"]["singleton"]["members"]), 2)
+
+        # After compaction the log names the request, and the debugger rebuilds it.
+        compact_cache(self.run / "cache/jev")
+        self.assertNotIn("request", read_json(self.run / "cache/jev/responses/receipt.json"))
+        trace = Trace(self.run, self.rev.name)
+        result = trace.decision(aid)
+        self.assertEqual(result["calls"][0]["sent"], body)
+        receipt = trace.receipt(result["calls"][0]["receipts"][0])
+        self.assertEqual((receipt["sent"], receipt["attempts"]), (body, [aid]))
 
     def test_request_capture_and_unlinked_errors(self):
         store = self.run / "cache/responses"

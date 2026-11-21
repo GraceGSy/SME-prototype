@@ -10,6 +10,7 @@ from pathlib import Path
 from ..files import read_json
 from ..incremental_graph.graph import graph_from_events
 from ..providers.jev import encode_request
+from ..providers.jev_store import JevStore
 
 
 def inside(root, path):
@@ -86,7 +87,12 @@ class Trace:
         for folder in ("responses", "openai-responses", "jev/responses"):
             for p in sorted(inside(run, run / "cache" / folder).glob("*.json")):
                 record = read_json(inside(run, p))
-                if "request" in record and record.get("provider") == "jev":
+                if record.get("provider") == "jev" and "request_fingerprint" in record:
+                    identity = record["request_fingerprint"]
+                    title = " / ".join(record.get("questions", [])) or "Jev request"
+                    if record.get("call_index") is not None:
+                        title = f"Call {record['call_index']} / {title}"
+                elif "request" in record and record.get("provider") == "jev":
                     identity = hashlib.sha256(encode_request(record["request"])).hexdigest()
                     title = " / ".join(record["request"].get("questions", {})) or "Jev request"
                     if record.get("call_index") is not None:
@@ -177,7 +183,7 @@ class Trace:
             sent["messages" if raw["provider"] == "anthropic" else "input"] = raw["messages"]
         return dict(
             provider=raw.get("provider"),
-            sent=raw.get("request") if jev else sent,
+            sent=self.jev_request(raw) if jev else sent,
             capture="Saved Jev request body"
             if jev
             else "Saved SDK parameters"
@@ -187,6 +193,17 @@ class Trace:
             attempts=self.uses.get(identity, []),
             error=raw.get("http_status") or raw.get("error_type"),
             rejection=self.rejected.get(identity),
+        )
+
+    def jev_request(self, raw):
+        """Newer call logs name the request; rebuild it from the run's Jev store."""
+        if "request" in raw or "request_fingerprint" not in raw:
+            return raw.get("request")
+        store = JevStore(inside(self.run, self.run / "cache" / "jev"))
+        return (
+            store.load(raw["request_fingerprint"])
+            if store.has(raw["request_fingerprint"])
+            else None
         )
 
     def stage_result(self, a):
@@ -242,8 +259,16 @@ class Trace:
             for call in raw.get("jev", {}).get("calls", []):
                 fp = call["fingerprint"]
                 p = inside(self.run, self.run / "cache/jev" / (fp + ".json"))
-                cached = read_json(p) if re.fullmatch("[0-9a-f]{64}", fp) and p.is_file() else {}
-                sent = cached.get("request")
+                valid = re.fullmatch("[0-9a-f]{64}", fp)
+                cached = read_json(p) if valid and p.is_file() else {}
+                # Long-context answers sit in a subfolder; the store holds every request.
+                sent = (
+                    self.jev_request(
+                        cached if valid and "request" in cached else {"request_fingerprint": fp}
+                    )
+                    if valid
+                    else None
+                )
                 ids = self.by_identity.get(fp, [])
                 if sent is None and ids:
                     sent = self.receipt(ids[0])["sent"]

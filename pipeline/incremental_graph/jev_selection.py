@@ -18,6 +18,7 @@ from ..providers.jev import (
     needs_long_context,
     validate_response,
 )
+from ..providers.jev_store import JevStore
 from .evidence_encoding import paragraph_options
 from .jev_outline import focus_outline
 from .match_evidence import candidate_handle
@@ -28,7 +29,9 @@ class JevSelector:
     def __init__(self, settings: JevSettings, cache: Path):
         self.settings = settings
         self.cache = cache
-        self.client = JevClient(settings, REPO_ROOT, cache / "responses")
+        # Requests are stored once under the cache; answers and call logs name them.
+        self.store = JevStore(cache)
+        self.client = JevClient(settings, REPO_ROOT, cache / "responses", self.store)
         self.wording = request_prompts("jev")
         self.instructions = self.wording["policy"]
 
@@ -129,19 +132,25 @@ class JevSelector:
                 raise JevRequestTooLarge("Local request size limit exceeded")
             fingerprint = hashlib.sha256(encoded).hexdigest()
 
+            def same_request(saved: dict) -> None:
+                # Older caches carry the request inline; newer ones name it by fingerprint.
+                if "request" in saved:
+                    if saved["request"] != body:
+                        raise ValueError("Jev cached request changed")
+                elif saved["request_fingerprint"] != fingerprint:
+                    raise ValueError("Jev cached request changed")
+
             def rejected(marker: Path) -> bool:
                 # A size rejection is deterministic for an exact body; replay it without a call.
                 if not marker.is_file() or force:
                     return False
-                if read_json(marker)["request"] != body:
-                    raise ValueError("Jev cached request changed")
+                same_request(read_json(marker))
                 return True
 
             def answer(path: Path, too_large: Path, long_context: bool) -> tuple[dict, bool]:
                 if path.is_file() and not force:
                     saved = read_json(path)
-                    if saved["request"] != body:
-                        raise ValueError("Jev cached request changed")
+                    same_request(saved)
                     return validate_response(saved["response"], body), True
                 try:
                     response = (
@@ -150,14 +159,18 @@ class JevSelector:
                         else self.client.choose(body)
                     )
                 except JevRequestTooLarge:
-                    write_json(too_large, {"request": body})
+                    write_json(too_large, {"request_fingerprint": self.store.save(body)})
                     raise
-                write_json(path, {"request": body, "response": response})
+                saved = {"request_fingerprint": self.store.save(body), "response": response}
+                write_json(path, saved)
                 self.client.check_reported_usage()
                 return response, False
 
             # Long-context answers live apart: the same body can answer differently with it.
-            default = (self.cache / f"{fingerprint}.json", self.cache / "too-large" / f"{fingerprint}.json")
+            default = (
+                self.cache / f"{fingerprint}.json",
+                self.cache / "too-large" / f"{fingerprint}.json",
+            )
             long = (
                 self.cache / "long-context" / f"{fingerprint}.json",
                 self.cache / "too-large" / "long-context" / f"{fingerprint}.json",
@@ -166,9 +179,7 @@ class JevSelector:
             if self.settings.long_context_retry and not long_context:
                 # Requests predicted to overflow skip the default attempt, unless one was
                 # already answered without the header.
-                long_context = needs_long_context(body) and not (
-                    default[0].is_file() and not force
-                )
+                long_context = needs_long_context(body) and not (default[0].is_file() and not force)
             if long_context and not self.settings.long_context_retry:
                 raise JevRequestTooLarge("Jev rejected this exact request for size earlier")
             if not long_context:

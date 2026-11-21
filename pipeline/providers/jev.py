@@ -132,10 +132,14 @@ def encode_request(body: dict) -> bytes:
 class JevClient:
     """Keep raw responses before validation; never save the Authorization header."""
 
-    def __init__(self, settings: JevSettings, repo_root: Path, responses: Path):
+    def __init__(self, settings: JevSettings, repo_root: Path, responses: Path, store=None):
+        from .jev_store import JevStore  # The store encodes requests with this module.
+
         self.settings = settings
         self.repo_root = repo_root
         self.responses = responses
+        # Call logs name the stored request instead of copying whole papers into each log.
+        self.store = store or JevStore(responses)
         self.calls = 0
         self.input_tokens = 0
 
@@ -162,7 +166,12 @@ class JevClient:
             headers[LONG_CONTEXT_HEADER] = "true"
         request = Request(ENDPOINT, data=encoded, headers=headers, method="POST")
         self.calls += 1
-        record = {"provider": "jev", "request": body, "call_index": self.calls}
+        record = {
+            "provider": "jev",
+            "request_fingerprint": self.store.save(body),
+            "questions": list(body["questions"]),
+            "call_index": self.calls,
+        }
         if long_context:
             record["long_context"] = True
         path = self.responses / f"{uuid4().hex}.json"
